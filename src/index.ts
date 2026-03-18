@@ -5,11 +5,19 @@ import { supabase } from "./supabase";
 // ---------------------------------------------------------------------------
 // Router imports – each module exposes an Express Router
 // ---------------------------------------------------------------------------
-// import executionRouter from "./modules/execution/routes";
-// import capabilityRouter from "./modules/capability/routes";
-// import processRouter from "./modules/process/routes";
-// import currencyRouter from "./modules/currency/routes";
-// import reportsRouter from "./modules/reports/routes";
+import executionRouter from "./execution";
+import capabilityRouter from "./capability";
+import processRouter from "./process";
+import currencyRouter from "./currency";
+import reportsRouter from "./reports";
+
+// ---------------------------------------------------------------------------
+// Certified Core imports
+// ---------------------------------------------------------------------------
+import { eventsRouter } from "./events";
+import stateMachineRouter from "./state-machine";
+import { stateMachine } from "./state-machine";
+import { registerSubscribers } from "./subscribers";
 
 // ---------------------------------------------------------------------------
 // App setup
@@ -77,13 +85,18 @@ app.get("/health", (_req: Request, res: Response) => {
 
 // ---------------------------------------------------------------------------
 // Module routes
-// Uncomment each line once the corresponding module router is implemented.
 // ---------------------------------------------------------------------------
-// app.use("/api", executionRouter);
-// app.use("/api", capabilityRouter);
-// app.use("/api", processRouter);
-// app.use("/api", currencyRouter);
-// app.use("/api", reportsRouter);
+app.use(executionRouter);
+app.use(capabilityRouter);
+app.use(processRouter);
+app.use("/api", currencyRouter);
+app.use("/api", reportsRouter);
+
+// ---------------------------------------------------------------------------
+// Certified Core routes
+// ---------------------------------------------------------------------------
+app.use("/api/events", eventsRouter);
+app.use(stateMachineRouter);
 
 // ---------------------------------------------------------------------------
 // 404 handler
@@ -106,6 +119,17 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 // ---------------------------------------------------------------------------
 // Start server
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Bootstrap: load state machine configs + register event subscribers
+// ---------------------------------------------------------------------------
+async function bootstrap() {
+  await stateMachine.loadConfigs();
+  registerSubscribers();
+  console.log("Certified Core initialized: StateMachine + EventBus + Subscribers");
+}
+
+bootstrap().catch((err) => console.error("Core bootstrap failed:", err));
+
 app.listen(PORT, () => {
   console.log(`Hypbit OMS API running on http://localhost:${PORT}`);
 });

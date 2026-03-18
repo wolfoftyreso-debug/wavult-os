@@ -832,8 +832,8 @@ router.get("/api/risks/matrix", async (req: Request, res: Response) => {
     if (error) return res.status(400).json({ error: error.message });
 
     // Build a 5×5 matrix (probability × impact)
-    const matrix: Record<string, any[]>[][] = Array.from({ length: 5 }, () =>
-      Array.from({ length: 5 }, () => [])
+    const matrix: any[][] = Array.from({ length: 5 }, () =>
+      Array.from({ length: 5 }, () => [] as any[])
     );
 
     for (const risk of risks || []) {

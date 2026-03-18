@@ -287,25 +287,25 @@ export class StateMachine {
 
     // 9. Emit domain events
     const genericEvent = `${entityType}.status_changed`;
-    emitEntityEvent(genericEvent, {
-      entity_type: entityType,
-      entity_id: sourceId,
-      from_status: fromStatus,
-      to_status: toStatus,
-      actor_id: actorId,
-      timestamp: now,
-    });
+    emitEntityEvent(
+      genericEvent as any,
+      entityType,
+      sourceId,
+      entity.org_id ?? "",
+      actorId,
+      { from_status: fromStatus, to_status: toStatus, timestamp: now }
+    );
 
     const specificEvent = resolveSpecificEvent(entityType, toStatus);
     if (specificEvent) {
-      emitEntityEvent(specificEvent, {
-        entity_type: entityType,
-        entity_id: sourceId,
-        from_status: fromStatus,
-        to_status: toStatus,
-        actor_id: actorId,
-        timestamp: now,
-      });
+      emitEntityEvent(
+        specificEvent as any,
+        entityType,
+        sourceId,
+        entity.org_id ?? "",
+        actorId,
+        { from_status: fromStatus, to_status: toStatus, timestamp: now }
+      );
     }
 
     // 10. Return result

@@ -116,7 +116,7 @@ router.get("/convert", async (req: Request, res: Response) => {
     const toCurrency = String(to).toUpperCase();
     const sourceAmount = Number(amount);
 
-    if (!currencyCodes.includes(fromCurrency) || !currencyCodes.includes(toCurrency)) {
+    if (!(currencyCodes as readonly string[]).includes(fromCurrency) || !(currencyCodes as readonly string[]).includes(toCurrency)) {
       return res.status(400).json({
         error: `Unsupported currency. Supported: ${currencyCodes.join(", ")}`,
       });
