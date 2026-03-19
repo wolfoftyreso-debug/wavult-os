@@ -4,7 +4,7 @@ import cors from "cors";
 import { supabase, checkSupabaseConnectivity, isSupabaseFallback } from "./supabase";
 
 // ---------------------------------------------------------------------------
-// Router imports – each module exposes an Express Router
+// Router imports - each module exposes an Express Router
 // ---------------------------------------------------------------------------
 import executionRouter from "./execution";
 import capabilityRouter from "./capability";
@@ -70,8 +70,9 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
 });
 
 // ---------------------------------------------------------------------------
-// Auth middleware – extracts user from Supabase JWT
-// In development requests are allowed through even without a valid token.
+// Auth middleware - extracts user from Supabase JWT, then enriches with
+// org_id and role from the public.users table so downstream handlers
+// always have req.user.org_id available.
 // ---------------------------------------------------------------------------
 app.use(async (req: Request, _res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
@@ -88,8 +89,59 @@ app.use(async (req: Request, _res: Response, next: NextFunction) => {
         console.warn("Auth warning:", error.message);
       }
 
-      // Attach user to request for downstream handlers
-      (req as any).user = user ?? null;
+      if (user) {
+        // Look up org_id, role, and id from the app's users table
+        const { data: dbUser } = await supabase
+          .from("users")
+          .select("id, org_id, role, full_name")
+          .eq("auth_id", user.id)
+          .single();
+
+        if (dbUser) {
+          (req as any).user = {
+            id: dbUser.id,
+            org_id: dbUser.org_id,
+            role: dbUser.role,
+            email: user.email,
+            full_name: dbUser.full_name,
+          };
+        } else {
+          // Fallback: auth user exists but no matching users row yet
+          // Try to find by email as secondary lookup
+          const { data: dbUserByEmail } = await supabase
+            .from("users")
+            .select("id, org_id, role, full_name")
+            .eq("email", user.email)
+            .single();
+
+          if (dbUserByEmail) {
+            // Update auth_id for future lookups
+            await supabase
+              .from("users")
+              .update({ auth_id: user.id })
+              .eq("id", dbUserByEmail.id);
+
+            (req as any).user = {
+              id: dbUserByEmail.id,
+              org_id: dbUserByEmail.org_id,
+              role: dbUserByEmail.role,
+              email: user.email,
+              full_name: dbUserByEmail.full_name,
+            };
+          } else {
+            // No matching user at all - set with null org_id
+            (req as any).user = {
+              id: user.id,
+              org_id: null,
+              role: "ADMIN",
+              email: user.email,
+              full_name: null,
+            };
+          }
+        }
+      } else {
+        (req as any).user = null;
+      }
     } catch (err) {
       console.warn("Auth token verification failed:", err);
       (req as any).user = null;
@@ -98,7 +150,7 @@ app.use(async (req: Request, _res: Response, next: NextFunction) => {
     (req as any).user = null;
   }
 
-  // Allow request through regardless – individual routes can enforce auth
+  // Allow request through regardless - individual routes can enforce auth
   next();
 });
 
@@ -129,7 +181,7 @@ app.use("/api/events", eventsRouter);
 app.use(stateMachineRouter);
 
 // ---------------------------------------------------------------------------
-// Module routes — Asset Management, Customer Quality, Deputies, Suppliers, Calibration
+// Module routes - Asset Management, Customer Quality, Deputies, Suppliers, Calibration
 // ---------------------------------------------------------------------------
 app.use(assetManagementRouter);
 app.use(customerQualityRouter);
