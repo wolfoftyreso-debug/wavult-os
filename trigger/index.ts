@@ -117,3 +117,10 @@ export {
   metricsWeeklySummary,
   metricsSmartAlerts,
 } from "./metrics";
+
+export {
+  impactPathCalculation,
+  patternDetection,
+  qualityWeeklyReport,
+  costOfQualityCalc,
+} from "./quality";

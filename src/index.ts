@@ -19,6 +19,8 @@ import agreementsRouter from "./agreements";
 import subcontractorsRouter from "./subcontractors";
 import capacityEngineRouter from "./capacity-engine";
 import metricsRouter from "./metrics";
+import qualityGatesRouter from "./quality-gates";
+import decisionIntelligenceRouter from "./decision-intelligence";
 
 // ---------------------------------------------------------------------------
 // Certified Core imports
@@ -119,6 +121,8 @@ app.use(agreementsRouter);
 app.use(subcontractorsRouter);
 app.use(capacityEngineRouter);
 app.use(metricsRouter);
+app.use(qualityGatesRouter);
+app.use(decisionIntelligenceRouter);
 
 // ---------------------------------------------------------------------------
 // 404 handler
