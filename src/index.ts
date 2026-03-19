@@ -15,6 +15,10 @@ import customerQualityRouter from "./customer-quality";
 import deputiesRouter from "./deputies";
 import supplierManagementRouter from "./supplier-management";
 import calibrationImportRouter from "./calibration-import";
+import agreementsRouter from "./agreements";
+import subcontractorsRouter from "./subcontractors";
+import capacityEngineRouter from "./capacity-engine";
+import metricsRouter from "./metrics";
 
 // ---------------------------------------------------------------------------
 // Certified Core imports
@@ -111,6 +115,10 @@ app.use(customerQualityRouter);
 app.use(deputiesRouter);
 app.use(supplierManagementRouter);
 app.use(calibrationImportRouter);
+app.use(agreementsRouter);
+app.use(subcontractorsRouter);
+app.use(capacityEngineRouter);
+app.use(metricsRouter);
 
 // ---------------------------------------------------------------------------
 // 404 handler
