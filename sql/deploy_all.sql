@@ -945,15 +945,15 @@ ALTER TABLE fx_adjustments ENABLE ROW LEVEL SECURITY;
 
 -- Helper function: get org_id for current auth user
 CREATE OR REPLACE FUNCTION auth_org_id()
-RETURNS UUID AS 17078
+RETURNS UUID AS $$
   SELECT org_id FROM users WHERE auth_id = auth.uid() LIMIT 1;
-17078 LANGUAGE sql SECURITY DEFINER STABLE;
+$$ LANGUAGE sql SECURITY DEFINER STABLE;
 
 -- Helper function: get user role for current auth user
 CREATE OR REPLACE FUNCTION auth_user_role()
-RETURNS user_role AS 17078
+RETURNS user_role AS $$
   SELECT role FROM users WHERE auth_id = auth.uid() LIMIT 1;
-17078 LANGUAGE sql SECURITY DEFINER STABLE;
+$$ LANGUAGE sql SECURITY DEFINER STABLE;
 
 -- Organizations: users can only see their own org
 CREATE POLICY org_select ON organizations FOR SELECT
@@ -964,7 +964,7 @@ CREATE POLICY org_update ON organizations FOR UPDATE
 -- Generic org-based policies (SELECT for all members, INSERT/UPDATE/DELETE for ADMIN/MANAGER)
 -- Apply to all org_id-bearing tables using a DO block
 
-DO 17078
+DO $$
 DECLARE
   tbl TEXT;
 BEGIN
@@ -996,7 +996,7 @@ BEGIN
     );
   END LOOP;
 END;
-17078;
+$$;
 
 -- =============================================================================
 -- SEED DATA
