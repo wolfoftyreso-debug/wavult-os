@@ -11,19 +11,21 @@
     "db:push": "echo 'Kör SQL-filer manuellt i Supabase SQL Editor'"
   },
   "dependencies": {
-    "express": "^4.21.0",
+    "@anthropic-ai/sdk": "^0.39.0",
     "@supabase/supabase-js": "^2.45.0",
-    "stripe": "^17.0.0",
-    "cors": "^2.8.5",
     "@trigger.dev/sdk": "^3.0.0",
-    "@anthropic-ai/sdk": "^0.39.0"
+    "cors": "^2.8.5",
+    "dotenv": "^17.3.1",
+    "express": "^4.21.0",
+    "pg": "^8.20.0",
+    "stripe": "^17.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.5.0",
+    "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/node": "^22.0.0",
-    "@types/cors": "^2.8.17",
-    "tsx": "^4.19.0"
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0"
   },
   "engines": {
     "node": ">=20.0.0"
