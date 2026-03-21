@@ -184,10 +184,10 @@ router.get("/articles", async (req: Request, res: Response) => {
 
 // GET /api/learning/articles/:id
 router.get("/articles/:id", async (req: Request, res: Response) => {
-  // Increment view count
-  await supabase.rpc("increment_article_views", { article_id: req.params.id }).catch(() => {
-    // RPC may not exist yet — silent fail
-  });
+  // Increment view count via RPC (silent fail if not exists)
+  try {
+    await supabase.rpc("increment_article_views", { article_id: req.params.id });
+  } catch (_e) { /* RPC may not exist yet */ }
 
   const { data, error } = await supabase
     .from("knowledge_articles")

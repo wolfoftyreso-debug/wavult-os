@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Webhooks Integration Guide — pixdrift API</title>
+  <style>
+    :root{--bg:#0a0a0f;--surface:#12121a;--border:#2a2a3e;--accent:#6c5ce7;--accent2:#a29bfe;--green:#00b894;--text:#e8e8f0;--muted:#888899;--code-bg:#0d0d17;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sans-serif;line-height:1.7;}
+    a{color:var(--accent2);}a:hover{text-decoration:underline;}
+    .topnav{height:56px;display:flex;align-items:center;padding:0 24px;gap:16px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+    .topnav-logo{font-weight:700;font-size:16px;color:var(--text);}
+    .topnav-logo span{color:var(--accent2);}
+    .topnav-links{margin-left:auto;display:flex;gap:20px;font-size:13px;}
+    .topnav-links a{color:var(--muted);}
+    .layout{display:flex;}
+    .sidebar{width:240px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;}
+    .sidebar a{display:block;padding:8px 20px;font-size:13px;color:var(--muted);border-left:3px solid transparent;text-decoration:none;}
+    .sidebar a:hover{color:var(--text);background:rgba(108,92,231,0.08);border-left-color:var(--accent);}
+    .sidebar-group{padding:16px 20px 8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);}
+    .content{flex:1;padding:48px;max-width:860px;}
+    h1{font-size:36px;font-weight:800;margin-bottom:8px;}
+    h2{font-size:22px;font-weight:700;margin:48px 0 16px;padding-top:16px;border-top:1px solid var(--border);}
+    h3{font-size:17px;font-weight:600;margin:24px 0 12px;}
+    p{color:var(--muted);margin-bottom:16px;}
+    pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:20px;overflow-x:auto;font-size:13px;line-height:1.8;font-family:'Fira Code',monospace;margin:16px 0;}
+    code{background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:13px;font-family:monospace;}
+    .callout{background:rgba(108,92,231,0.1);border:1px solid rgba(108,92,231,0.3);border-radius:8px;padding:16px 20px;margin:20px 0;color:var(--text);}
+    .callout.warn{background:rgba(225,112,85,0.1);border-color:rgba(225,112,85,0.3);}
+    .callout.green{background:rgba(0,184,148,0.1);border-color:rgba(0,184,148,0.3);}
+    .k{color:#fd79a8;}.s{color:#55efc4;}.c{color:#636e72;font-style:italic;}.n{color:var(--accent2);}.kw{color:#74b9ff;}
+    @media(max-width:768px){.sidebar{display:none;}.content{padding:24px 16px;}}
+  </style>
+</head>
+<body>
+<div class="topnav">
+  <a href="../index.html" class="topnav-logo" style="text-decoration:none">pix<span>drift</span></a>
+  <span style="color:var(--border)">/</span>
+  <span style="color:var(--muted);font-size:14px">Webhooks Guide</span>
+  <div class="topnav-links">
+    <a href="../api-reference.html">API Reference</a>
+    <a href="../webhooks.html">Webhooks Ref</a>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-group">Guides</div>
+    <a href="quickstart.html">⚡ Quickstart</a>
+    <a href="webhooks-guide.html">🪝 Webhooks Integration</a>
+    <a href="reporting-guide.html">📊 Reports & Finance</a>
+    <a href="import-guide.html">📥 Bulk Import</a>
+  </aside>
+
+  <main class="content">
+    <h1>Webhooks Integration Guide</h1>
+    <p>A complete guide to building webhook receivers for pixdrift events using Node.js / Express.</p>
+
+    <h2>Complete Express webhook handler</h2>
+    <p>A production-ready webhook handler with signature verification, idempotency, and error handling:</p>
+
+    <pre><span class="c">// webhook-server.js</span>
+<span class="kw">const</span> express = require(<span class="s">'express'</span>)
+<span class="kw">const</span> crypto = require(<span class="s">'crypto'</span>)
+
+<span class="kw">const</span> app = express()
+<span class="kw">const</span> WEBHOOK_SECRET = process.env.PIXDRIFT_WEBHOOK_SECRET
+
+<span class="c">// Track processed event IDs to prevent duplicate processing</span>
+<span class="kw">const</span> processedEvents = <span class="kw">new</span> Set()
+
+<span class="c">// IMPORTANT: Must use raw body for HMAC verification — NOT express.json()</span>
+app.post(<span class="s">'/webhooks/pixdrift'</span>, express.raw({ type: <span class="s">'*/*'</span> }), async (req, res) => {
+  <span class="c">// 1. Verify signature</span>
+  <span class="kw">const</span> signature = req.headers[<span class="s">'x-pixdrift-signature'</span>]
+  <span class="kw">if</span> (!verifySignature(req.body, signature, WEBHOOK_SECRET)) {
+    console.error(<span class="s">'⛔ Invalid webhook signature'</span>)
+    <span class="kw">return</span> res.status(<span class="s">401</span>).json({ error: <span class="s">'Invalid signature'</span> })
+  }
+
+  <span class="kw">const</span> event = JSON.parse(req.body.toString())
+
+  <span class="c">// 2. Idempotency check</span>
+  <span class="kw">if</span> (processedEvents.has(event.id)) {
+    console.log(<span class="s">`⏭️ Duplicate event: ${event.id}`</span>)
+    <span class="kw">return</span> res.status(<span class="s">200</span>).json({ received: <span class="kw">true</span>, duplicate: <span class="kw">true</span> })
+  }
+  processedEvents.add(event.id)
+
+  <span class="c">// 3. Acknowledge immediately (async processing)</span>
+  res.status(<span class="s">200</span>).json({ received: <span class="kw">true</span> })
+
+  <span class="c">// 4. Process event asynchronously</span>
+  handleEvent(event).catch(err => {
+    console.error(<span class="s">`❌ Event processing error [${event.id}]:`</span>, err)
+  })
+})
+
+<span class="kw">function</span> verifySignature(payload, signature, secret) {
+  <span class="kw">if</span> (!signature || !secret) <span class="kw">return false</span>
+  <span class="kw">const</span> expected = <span class="s">'sha256='</span> + crypto
+    .createHmac(<span class="s">'sha256'</span>, secret)
+    .update(payload)
+    .digest(<span class="s">'hex'</span>)
+  <span class="kw">try</span> {
+    <span class="kw">return</span> crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(signature))
+  } <span class="kw">catch</span> {
+    <span class="kw">return false</span>
+  }
+}
+
+<span class="kw">async function</span> handleEvent(event) {
+  console.log(<span class="s">`📨 Event: ${event.type} [${event.id}]`</span>)
+
+  <span class="kw">switch</span> (event.type) {
+    <span class="c">// ── Deals ───────────────────────────────────</span>
+    <span class="kw">case</span> <span class="s">'deal.won'</span>: {
+      <span class="kw">const</span> { title, value, currency } = event.data
+      <span class="kw">await</span> notifySlack(
+        <span class="s">`🎉 Deal won: *${title}* — ${value.toLocaleString()} ${currency}`</span>
+      )
+      <span class="kw">await</span> updateCRM(event.data)
+      <span class="kw">break</span>
+    }
+    <span class="kw">case</span> <span class="s">'deal.created'</span>:
+      <span class="kw">await</span> syncToHubSpot(event.data)
+      <span class="kw">break</span>
+
+    <span class="c">// ── Tasks ────────────────────────────────────</span>
+    <span class="kw">case</span> <span class="s">'task.overdue'</span>:
+      <span class="kw">await</span> sendEmailReminder(event.data.assigned_to, event.data)
+      <span class="kw">break</span>
+    <span class="kw">case</span> <span class="s">'task.completed'</span>:
+      <span class="kw">await</span> logActivity(event.data)
+      <span class="kw">break</span>
+
+    <span class="c">// ── Non-conformance ──────────────────────────</span>
+    <span class="kw">case</span> <span class="s">'non_conformance.opened'</span>:
+      <span class="kw">await</span> alertQualityTeam(event.data)
+      <span class="kw">break</span>
+    <span class="kw">case</span> <span class="s">'non_conformance.closed'</span>:
+      <span class="kw">await</span> updateQualityDashboard(event.data)
+      <span class="kw">break</span>
+
+    <span class="kw">default</span>:
+      console.log(<span class="s">`Unhandled event type: ${event.type}`</span>)
+  }
+}
+
+<span class="c">// Example handler implementations</span>
+<span class="kw">async function</span> notifySlack(message) {
+  <span class="kw">if</span> (!process.env.SLACK_WEBHOOK_URL) <span class="kw">return</span>
+  <span class="kw">await</span> fetch(process.env.SLACK_WEBHOOK_URL, {
+    method: <span class="s">'POST'</span>,
+    body: JSON.stringify({ text: message }),
+    headers: { <span class="s">'Content-Type'</span>: <span class="s">'application/json'</span> }
+  })
+}
+
+app.listen(<span class="s">3000</span>, () => console.log(<span class="s">'🪝 Webhook server running on port 3000'</span>))</pre>
+
+    <h2>Testing locally with ngrok</h2>
+    <pre><span class="c"># Terminal 1: Start your webhook server</span>
+node webhook-server.js
+
+<span class="c"># Terminal 2: Expose it to the internet</span>
+ngrok http 3000
+
+<span class="c"># ngrok gives you a URL like: https://abc123.ngrok.io</span>
+<span class="c"># Register https://abc123.ngrok.io/webhooks/pixdrift in pixdrift</span></pre>
+
+    <h2>Retry handling</h2>
+    <p>pixdrift retries failed webhooks with exponential backoff: immediately, then after 5 minutes, then after 30 minutes.</p>
+    <div class="callout warn">
+      <strong>Critical:</strong> Always return <code>200</code> within 30 seconds. Use a queue (BullMQ, SQS, etc.) to handle slow processing. If your handler throws, pixdrift will retry — potentially causing duplicate side effects.
+    </div>
+
+    <h2>Production checklist</h2>
+    <pre><span class="c">✅ Verify HMAC-SHA256 signature on every request
+✅ Use raw body parser (before JSON parse) for verification
+✅ Return 200 immediately — process asynchronously
+✅ Implement idempotency (track event IDs in DB/cache)
+✅ Use Redis/DynamoDB for processedEvents in production (not in-memory Set)
+✅ Log all events with their IDs for debugging
+✅ Monitor failed webhook deliveries in pixdrift admin</span></pre>
+
+    <h2>Environment variables</h2>
+    <pre><span class="c"># .env</span>
+PIXDRIFT_API_KEY=pd_live_your_key
+PIXDRIFT_WEBHOOK_SECRET=your_webhook_secret
+SLACK_WEBHOOK_URL=https://hooks.slack.com/services/...</pre>
+
+    <div class="callout green">
+      <strong>Next:</strong> See the <a href="../webhooks.html">Webhooks Reference</a> for all event types and payload schemas.
+    </div>
+  </main>
+</div>
+</body>
+</html>

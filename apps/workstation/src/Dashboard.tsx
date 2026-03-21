@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useApi } from "./useApi";
+import LearningModule from "./LearningModule";
 
 // ─── Colour palette ──────────────────────────────────────────────────────────
 const C = {
@@ -201,6 +202,7 @@ export default function Hypbit() {
     { id: "goals", l: "Mål" }, { id: "processes", l: "Processer" }, { id: "nc", l: "Avvikelser" },
     { id: "improvements", l: "PDCA" }, { id: "compliance", l: "Compliance" }, { id: "risks", l: "Risker" },
     { id: "chat", l: "Chatt" },
+    { id: "learning", l: "Lärande" },
   ];
 
   return (
@@ -539,6 +541,11 @@ export default function Hypbit() {
               <button style={{ background: C.blue, color: "#FFF", border: "none", borderRadius: 10, padding: "10px 20px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Skicka</button>
             </div>
           </div>
+        )}
+
+        {/* LEARNING */}
+        {view === "learning" && (
+          <LearningModule user={D.user as any} />
         )}
       </div>
     </div>

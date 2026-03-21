@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cookiepolicy — pixdrift</title>
+  <meta name="description" content="pixdrift AB:s detaljerade cookiepolicy med lista över cookies, syfte och samtyckeshantering." />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+  <link rel="stylesheet" href="_legal-base.css" />
+</head>
+<body>
+
+<nav>
+  <a href="https://pixdrift.com" class="logo">pix<span>drift</span></a>
+  <div class="nav-links">
+    <a href="index.html">Juridiskt centrum</a>
+    <a href="privacy.html">Integritetspolicy</a>
+    <a href="terms.html">Användarvillkor</a>
+    <a href="https://pixdrift.com">← pixdrift.com</a>
+  </div>
+</nav>
+
+<div class="legal-layout">
+  <aside class="toc">
+    <div class="toc-inner">
+      <h3>Innehåll</h3>
+      <ul class="toc-list">
+        <li><a href="#vad-ar-cookies">1. Vad är cookies?</a></li>
+        <li><a href="#nodvandiga">2. Nödvändiga cookies</a></li>
+        <li><a href="#funktionella">3. Funktionella cookies</a></li>
+        <li><a href="#analytiska">4. Analytiska cookies (GA4)</a></li>
+        <li><a href="#marknadsföring">5. Marknadsföringscookies</a></li>
+        <li><a href="#tredjepartscookies">6. Tredjepartscookies</a></li>
+        <li><a href="#samtycke">7. Hantera samtycke</a></li>
+        <li><a href="#webblasare">8. Webbläsarinställningar</a></li>
+        <li><a href="#andringar">9. Ändringar av policyn</a></li>
+        <li><a href="#kontakt">10. Kontakt</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="legal-content">
+    <div class="doc-header">
+      <div class="doc-badge">🍪 Cookiepolicy</div>
+      <h1>Cookiepolicy</h1>
+      <p style="color:var(--muted); font-size:0.9rem;">Fullständig information om vilka cookies pixdrift använder, varför, och hur du hanterar dem.</p>
+      <div class="doc-meta">
+        <span>📅 Senast uppdaterad: <strong>2026-03-21</strong></span>
+        <span>🔖 Version: <strong>1.0.0</strong></span>
+      </div>
+      <div class="lang-notice">
+        🇸🇪 Primärspråk: Svenska. Engelsk version tillgänglig på begäran.
+      </div>
+    </div>
+
+    <!-- §1 VAD ÄR COOKIES -->
+    <section class="legal-section" id="vad-ar-cookies">
+      <h2><span class="section-num">1</span> Vad är cookies?</h2>
+      <p>Cookies är små textfiler som placeras på din enhet (dator, mobiltelefon, surfplatta) när du besöker en webbplats. De gör det möjligt för webbplatsen att komma ihåg dina handlingar och inställningar (t.ex. inloggningsstatus, språkval, tema) under en period.</p>
+      <p>Cookies kan vara:</p>
+      <ul>
+        <li><strong>Sessionscookies:</strong> Temporära, raderas när du stänger webbläsaren.</li>
+        <li><strong>Beständiga cookies:</strong> Kvarstår på din enhet tills de löper ut eller du raderar dem manuellt.</li>
+        <li><strong>Förstapartscookies:</strong> Placerade av pixdrift.com direkt.</li>
+        <li><strong>Tredjepartscookies:</strong> Placerade av externa tjänster (t.ex. Google Analytics).</li>
+      </ul>
+      <p>Utöver cookies kan pixdrift använda liknande tekniker såsom localStorage, sessionStorage och fingerprinting — dessa omfattas av samma regler i denna policy.</p>
+    </section>
+
+    <!-- §2 NÖDVÄNDIGA -->
+    <section class="legal-section" id="nodvandiga">
+      <h2><span class="section-num">2</span> Nödvändiga cookies</h2>
+      <div class="callout callout-green">
+        <strong>Inget samtycke krävs.</strong> Nödvändiga cookies är tekniskt nödvändiga för att webbplatsen ska fungera. De kan inte avaktiveras.
+      </div>
+      <table>
+        <thead><tr><th>Cookienamn</th><th>Syfte</th><th>Typ</th><th>Livstid</th><th>Utgivare</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>sb-access-token</code></td>
+            <td>Supabase JWT-autentiseringstoken. Autentiserar inloggade användare.</td>
+            <td>HttpOnly, Secure</td>
+            <td>1 timme (auto-refresh)</td>
+            <td>pixdrift.com (Supabase)</td>
+          </tr>
+          <tr>
+            <td><code>sb-refresh-token</code></td>
+            <td>Supabase refresh token. Förnyar access token utan omloggning.</td>
+            <td>HttpOnly, Secure</td>
+            <td>7 dagar</td>
+            <td>pixdrift.com (Supabase)</td>
+          </tr>
+          <tr>
+            <td><code>__cf_bm</code></td>
+            <td>Cloudflare Bot Management — Särskiljer botar från mänskliga besökare.</td>
+            <td>Secure</td>
+            <td>30 minuter</td>
+            <td>Cloudflare</td>
+          </tr>
+          <tr>
+            <td><code>cf_clearance</code></td>
+            <td>Cloudflare DDoS-skydd och utmaningslösning.</td>
+            <td>Secure</td>
+            <td>30 minuter</td>
+            <td>Cloudflare</td>
+          </tr>
+          <tr>
+            <td><code>_csrf</code></td>
+            <td>CSRF-skydd för formulär. Förhindrar cross-site request forgery-attacker.</td>
+            <td>HttpOnly, Secure, SameSite=Strict</td>
+            <td>Session</td>
+            <td>pixdrift.com</td>
+          </tr>
+          <tr>
+            <td><code>px_session</code></td>
+            <td>pixdrift sessionskookie för applikationsstate och navigation.</td>
+            <td>HttpOnly, Secure</td>
+            <td>Session</td>
+            <td>pixdrift.com</td>
+          </tr>
+          <tr>
+            <td><code>px_tenant</code></td>
+            <td>Identifierar Kundens organisation för korrekt datapartitionering (multi-tenancy).</td>
+            <td>HttpOnly, Secure</td>
+            <td>30 dagar</td>
+            <td>pixdrift.com</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- §3 FUNKTIONELLA -->
+    <section class="legal-section" id="funktionella">
+      <h2><span class="section-num">3</span> Funktionella cookies</h2>
+      <div class="callout callout-info">
+        <strong>Samtycke krävs.</strong> Funktionella cookies förbättrar upplevelsen men är inte tekniskt nödvändiga.
+      </div>
+      <table>
+        <thead><tr><th>Cookienamn</th><th>Syfte</th><th>Livstid</th><th>Utgivare</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>px_theme</code></td>
+            <td>Sparar användarens temainställning (mörkt/ljust läge).</td>
+            <td>1 år</td>
+            <td>pixdrift.com</td>
+          </tr>
+          <tr>
+            <td><code>px_lang</code></td>
+            <td>Sparar valt gränssnittsspråk (sv/en).</td>
+            <td>1 år</td>
+            <td>pixdrift.com</td>
+          </tr>
+          <tr>
+            <td><code>px_sidebar</code></td>
+            <td>Sparar sidofältets expansionsstatus (öppet/stängt).</td>
+            <td>6 månader</td>
+            <td>pixdrift.com</td>
+          </tr>
+          <tr>
+            <td><code>px_onboarding</code></td>
+            <td>Spårar genomförda onboarding-steg för att inte visa redan visade guider.</td>
+            <td>90 dagar</td>
+            <td>pixdrift.com</td>
+          </tr>
+          <tr>
+            <td><code>px_cookie_consent</code></td>
+            <td>Lagrar ditt cookie-samtycke och vald inställning.</td>
+            <td>1 år</td>
+            <td>pixdrift.com</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- §4 ANALYTISKA -->
+    <section class="legal-section" id="analytiska">
+      <h2><span class="section-num">4</span> Analytiska cookies (Google Analytics 4)</h2>
+      <div class="callout callout-warn">
+        <strong>Samtycke krävs.</strong> Analytiska cookies aktiveras enbart om du accepterat via cookie-bannern.
+      </div>
+      <p>pixdrift.com använder Google Analytics 4 (GA4) för att mäta webbplatsbesök och förstå hur besökare interagerar med webbplatsen. <strong>IP-adresser anonymiseras</strong> (IP anonymization aktiverat). pixdrift säljer aldrig analysdata till tredje part.</p>
+      <table>
+        <thead><tr><th>Cookienamn</th><th>Syfte</th><th>Livstid</th><th>Utgivare</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>_ga</code></td>
+            <td>Google Analytics — Unik besökaridentifierare för att särskilja användare.</td>
+            <td>2 år</td>
+            <td>Google (.google.com)</td>
+          </tr>
+          <tr>
+            <td><code>_ga_[ID]</code></td>
+            <td>Google Analytics 4 — Behåller sessionsstatus.</td>
+            <td>2 år</td>
+            <td>Google (.google.com)</td>
+          </tr>
+          <tr>
+            <td><code>_gid</code></td>
+            <td>Google Analytics — Identifierar sessioner (antal sidor, varaktighet).</td>
+            <td>24 timmar</td>
+            <td>Google (.google.com)</td>
+          </tr>
+          <tr>
+            <td><code>_gat</code></td>
+            <td>Google Analytics — Begränsar antalet requests (rate limiting).</td>
+            <td>1 minut</td>
+            <td>Google (.google.com)</td>
+          </tr>
+        </tbody>
+      </table>
+      <h3>GA4-konfiguration för integritet</h3>
+      <ul>
+        <li>IP-anonymisering: Aktiverat (de två sista oktetterna i IPv4 raderas)</li>
+        <li>Datadelning med Google: Inaktiverat (inga data delas för Googles egna produkter)</li>
+        <li>Datalagring i GA4: 14 månader (maximal period)</li>
+        <li>Signals (remarketering): Inaktiverat</li>
+        <li>User-ID: Används ej</li>
+      </ul>
+      <p>Google LLC agerar som dataprocessor under pixdrifts instruktioner, med SCCs som skyddsåtgärd för överföring till USA. Se <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Googles integritetspolicy</a>.</p>
+    </section>
+
+    <!-- §5 MARKNADSFÖRING -->
+    <section class="legal-section" id="marknadsföring">
+      <h2><span class="section-num">5</span> Marknadsföringscookies</h2>
+      <div class="callout callout-warn">
+        <strong>Samtycke krävs.</strong> Marknadsföringscookies aktiveras enbart om du uttryckligen accepterat.
+      </div>
+      <p>pixdrift kan använda marknadsföringscookies för konverteringsspårning (t.ex. mäta om en kampanj ledde till registrering). Vi använder <strong>inte</strong> cookies för beteendebaserad reklam eller retargeting mot tredje parts webbplatser utan ditt uttryckliga samtycke.</p>
+      <table>
+        <thead><tr><th>Cookienamn</th><th>Syfte</th><th>Livstid</th><th>Utgivare</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>_fbp</code></td>
+            <td>Meta (Facebook) Pixel — Konverteringsspårning (om aktiverat). Mäter om besök lett till registrering.</td>
+            <td>90 dagar</td>
+            <td>Meta (.facebook.com)</td>
+          </tr>
+          <tr>
+            <td><code>li_fat_id</code></td>
+            <td>LinkedIn Insight Tag — Konverteringsspårning (om aktiverat).</td>
+            <td>30 dagar</td>
+            <td>LinkedIn (.linkedin.com)</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="color:var(--muted);font-size:0.85rem;"><em>Notera: Marknadsföringscookies är inte aktiva om du inte uttryckligen accepterat dem.</em></p>
+    </section>
+
+    <!-- §6 TREDJEPARTSCOOKIES -->
+    <section class="legal-section" id="tredjepartscookies">
+      <h2><span class="section-num">6</span> Tredjepartscookies — sammanfattning</h2>
+      <table>
+        <thead><tr><th>Leverantör</th><th>Syfte</th><th>Kategori</th><th>Integritetspolicy</th></tr></thead>
+        <tbody>
+          <tr><td>Cloudflare</td><td>Säkerhet, CDN, botskydd</td><td>Nödvändig</td><td><a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">cloudflare.com</a></td></tr>
+          <tr><td>Supabase</td><td>Autentisering, databas</td><td>Nödvändig</td><td><a href="https://supabase.com/privacy" target="_blank" rel="noopener">supabase.com</a></td></tr>
+          <tr><td>Stripe</td><td>Betalningshantering</td><td>Nödvändig (checkout)</td><td><a href="https://stripe.com/en-se/privacy" target="_blank" rel="noopener">stripe.com</a></td></tr>
+          <tr><td>Google Analytics</td><td>Webbanalys</td><td>Analytisk</td><td><a href="https://policies.google.com/privacy" target="_blank" rel="noopener">google.com</a></td></tr>
+          <tr><td>Meta (Facebook)</td><td>Konverteringsspårning</td><td>Marknadsföring</td><td><a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener">facebook.com</a></td></tr>
+          <tr><td>LinkedIn</td><td>Konverteringsspårning</td><td>Marknadsföring</td><td><a href="https://www.linkedin.com/legal/privacy-policy" target="_blank" rel="noopener">linkedin.com</a></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- §7 SAMTYCKE -->
+    <section class="legal-section" id="samtycke">
+      <h2><span class="section-num">7</span> Hantera ditt cookie-samtycke</h2>
+      <h3>7.1 Cookie-banner</h3>
+      <p>När du besöker pixdrift.com för första gången visas en cookie-banner där du kan:</p>
+      <ul>
+        <li><strong>Acceptera alla cookies</strong> — aktiverar nödvändiga, funktionella, analytiska och marknadsföringscookies.</li>
+        <li><strong>Avvisa ej nödvändiga</strong> — aktiverar enbart nödvändiga cookies.</li>
+        <li><strong>Anpassa inställningar</strong> — välj exakt vilka kategorier du godkänner.</li>
+      </ul>
+      <h3>7.2 Ändra samtycke</h3>
+      <p>Du kan när som helst ändra ditt cookie-samtycke via länken "Cookie-inställningar" i sidfoten på pixdrift.com, eller genom att radera cookien <code>px_cookie_consent</code> i din webbläsare (vilket innebär att bannern visas igen vid nästa besök).</p>
+      <h3>7.3 Återkallelse av samtycke</h3>
+      <p>Återkallelse av samtycke påverkar inte cookies som redan placerats, men hindrar nya från att placeras. Befintliga analytiska/marknadsföringscookies bör du radera manuellt via webbläsarinställningarna för omedelbar effekt.</p>
+      <div class="callout callout-info">
+        <strong>Opt-out Google Analytics:</strong> Installera <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">Google Analytics Opt-out Browser Add-on</a> för att helt förhindra GA4-spårning i din webbläsare, oavsett cookie-inställning.
+      </div>
+    </section>
+
+    <!-- §8 WEBBLÄSARE -->
+    <section class="legal-section" id="webblasare">
+      <h2><span class="section-num">8</span> Webbläsarinställningar</h2>
+      <p>Du kan också hantera cookies direkt i din webbläsare. Instruktioner för de vanligaste webbläsarna:</p>
+      <table>
+        <thead><tr><th>Webbläsare</th><th>Länk till cookie-inställningar</th></tr></thead>
+        <tbody>
+          <tr><td>Google Chrome</td><td><a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener">support.google.com/chrome/answer/95647</a></td></tr>
+          <tr><td>Mozilla Firefox</td><td><a href="https://support.mozilla.org/sv/kb/aktivera-och-inaktivera-kakor" target="_blank" rel="noopener">support.mozilla.org</a></td></tr>
+          <tr><td>Apple Safari</td><td><a href="https://support.apple.com/sv-se/guide/safari/sfri11471/mac" target="_blank" rel="noopener">support.apple.com</a></td></tr>
+          <tr><td>Microsoft Edge</td><td><a href="https://support.microsoft.com/sv-se/windows/ta-bort-och-hantera-cookies" target="_blank" rel="noopener">support.microsoft.com</a></td></tr>
+        </tbody>
+      </table>
+      <p><strong>Notera:</strong> Om du blockerar nödvändiga cookies kan delar av pixdrift-plattformen sluta fungera korrekt (t.ex. inloggning).</p>
+    </section>
+
+    <!-- §9 ÄNDRINGAR -->
+    <section class="legal-section" id="andringar">
+      <h2><span class="section-num">9</span> Ändringar av denna cookiepolicy</h2>
+      <p>pixdrift kan uppdatera denna cookiepolicy när vi lägger till eller tar bort cookies, eller när lagstiftning kräver det. Vi kommunicerar materiella ändringar via cookie-bannern och/eller e-post. Datum för senaste uppdatering anges alltid i dokumenthuvudet.</p>
+    </section>
+
+    <!-- §10 KONTAKT -->
+    <section class="legal-section" id="kontakt">
+      <h2><span class="section-num">10</span> Kontakt</h2>
+      <p>Frågor om vår cookie-användning:</p>
+      <table>
+        <tbody>
+          <tr><td><strong>E-post</strong></td><td><a href="mailto:privacy@pixdrift.com">privacy@pixdrift.com</a></td></tr>
+          <tr><td><strong>Postadress</strong></td><td>pixdrift AB, Att: Dataskydd, [Adress], Stockholm</td></tr>
+          <tr><td><strong>Klagomål</strong></td><td>Integritetsskyddsmyndigheten (IMY), <a href="https://www.imy.se" target="_blank" rel="noopener">imy.se</a></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <div class="version-history">
+      <h3>📋 Versionshistorik</h3>
+      <div class="version-row"><span class="ver-num">v1.0.0</span><span class="ver-date">2026-03-21</span><span class="ver-desc">Första publicering. Fullständig cookie-lista, GA4-konfiguration, samtyckehantering.</span></div>
+    </div>
+  </main>
+</div>
+
+<footer class="legal-footer">
+  <div>© 2026 pixdrift AB. Alla rättigheter förbehållna.</div>
+  <div class="footer-links">
+    <a href="index.html">Juridiskt centrum</a>
+    <a href="terms.html">Användarvillkor</a>
+    <a href="privacy.html">Integritetspolicy</a>
+    <a href="dpa.html">DPA</a>
+    <a href="sla.html">SLA</a>
+    <a href="https://pixdrift.com">pixdrift.com</a>
+  </div>
+</footer>
+
+<script>
+const sections = document.querySelectorAll('.legal-section');
+const tocLinks = document.querySelectorAll('.toc-list a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      tocLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector(`.toc-list a[href="#${entry.target.id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

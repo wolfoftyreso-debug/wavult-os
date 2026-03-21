@@ -43,6 +43,7 @@ import auditWorkspaceRouter from "./audit-workspace";
 import integrationRouter from "./integrations/integration-api";
 import stripeRouter from "./stripe";
 import notificationsRouter from "./notifications";
+import learningRouter from "./learning";
 
 // ---------------------------------------------------------------------------
 // Certified Core imports
@@ -227,6 +228,7 @@ app.use(auditWorkspaceRouter);
 app.use(integrationRouter);
 app.use("/api/stripe", stripeRouter);
 app.use("/api/notifications", notificationsRouter);
+app.use("/api/learning", learningRouter);
 
 // ---------------------------------------------------------------------------
 // Auth helper for inline routes

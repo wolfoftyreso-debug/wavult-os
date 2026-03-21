@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Import Guide — pixdrift API</title>
+  <style>
+    :root{--bg:#0a0a0f;--surface:#12121a;--border:#2a2a3e;--accent:#6c5ce7;--accent2:#a29bfe;--green:#00b894;--text:#e8e8f0;--muted:#888899;--code-bg:#0d0d17;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sans-serif;line-height:1.7;}
+    a{color:var(--accent2);}a:hover{text-decoration:underline;}
+    .topnav{height:56px;display:flex;align-items:center;padding:0 24px;gap:16px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+    .topnav-logo{font-weight:700;font-size:16px;color:var(--text);}
+    .topnav-logo span{color:var(--accent2);}
+    .topnav-links{margin-left:auto;display:flex;gap:20px;font-size:13px;}
+    .topnav-links a{color:var(--muted);}
+    .layout{display:flex;}
+    .sidebar{width:240px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;}
+    .sidebar a{display:block;padding:8px 20px;font-size:13px;color:var(--muted);border-left:3px solid transparent;text-decoration:none;}
+    .sidebar a:hover{color:var(--text);background:rgba(108,92,231,0.08);border-left-color:var(--accent);}
+    .sidebar-group{padding:16px 20px 8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);}
+    .content{flex:1;padding:48px;max-width:860px;}
+    h1{font-size:36px;font-weight:800;margin-bottom:8px;}
+    h2{font-size:22px;font-weight:700;margin:48px 0 16px;padding-top:16px;border-top:1px solid var(--border);}
+    h3{font-size:17px;font-weight:600;margin:24px 0 12px;}
+    p{color:var(--muted);margin-bottom:16px;}
+    pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:20px;overflow-x:auto;font-size:13px;line-height:1.8;font-family:'Fira Code',monospace;margin:16px 0;}
+    code{background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:13px;font-family:monospace;}
+    .callout{background:rgba(108,92,231,0.1);border:1px solid rgba(108,92,231,0.3);border-radius:8px;padding:16px 20px;margin:20px 0;color:var(--text);}
+    .callout.warn{background:rgba(225,112,85,0.1);border-color:rgba(225,112,85,0.3);}
+    .callout.green{background:rgba(0,184,148,0.1);border-color:rgba(0,184,148,0.3);}
+    .k{color:#fd79a8;}.s{color:#55efc4;}.c{color:#636e72;font-style:italic;}.n{color:var(--accent2);}.kw{color:#74b9ff;}
+    @media(max-width:768px){.sidebar{display:none;}.content{padding:24px 16px;}}
+  </style>
+</head>
+<body>
+<div class="topnav">
+  <a href="../index.html" class="topnav-logo" style="text-decoration:none">pix<span>drift</span></a>
+  <span style="color:var(--border)">/</span>
+  <span style="color:var(--muted);font-size:14px">Import Guide</span>
+  <div class="topnav-links">
+    <a href="../api-reference.html">API Reference</a>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-group">Guides</div>
+    <a href="quickstart.html">⚡ Quickstart</a>
+    <a href="webhooks-guide.html">🪝 Webhooks Integration</a>
+    <a href="reporting-guide.html">📊 Reports & Finance</a>
+    <a href="import-guide.html">📥 Bulk Import</a>
+  </aside>
+
+  <main class="content">
+    <h1>Data Import Guide</h1>
+    <p>Migrate existing data into pixdrift via the API. This guide covers bulk import of contacts, companies, deals, and historical ledger entries.</p>
+
+    <div class="callout warn">
+      <strong>Rate limits:</strong> Bulk imports hit rate limits. Use a delay between requests or contact support for a temporary limit increase during migration.
+    </div>
+
+    <h2>Import from CSV</h2>
+    <p>A complete Node.js script to import contacts from a CSV file:</p>
+    <pre><span class="c">// import-contacts.js</span>
+<span class="kw">const</span> fs = require(<span class="s">'fs'</span>)
+<span class="kw">const</span> csv = require(<span class="s">'csv-parse/sync'</span>)
+
+<span class="kw">const</span> API_KEY = process.env.PIXDRIFT_API_KEY
+<span class="kw">const</span> BASE = <span class="s">'https://api.bc.pixdrift.com'</span>
+
+<span class="kw">async function</span> importContacts(csvFile) {
+  <span class="kw">const</span> content = fs.readFileSync(csvFile, <span class="s">'utf8'</span>)
+  <span class="kw">const</span> records = csv.parse(content, {
+    columns: true,
+    skip_empty_lines: true
+  })
+
+  console.log(<span class="s">`📥 Importing ${records.length} contacts...`</span>)
+  
+  <span class="kw">const</span> results = { success: 0, failed: 0, errors: [] }
+
+  <span class="kw">for</span> (<span class="kw">const</span> [i, row] <span class="kw">of</span> records.entries()) {
+    <span class="kw">try</span> {
+      <span class="kw">const</span> res = <span class="kw">await</span> fetch(<span class="s">`${BASE}/api/contacts`</span>, {
+        method: <span class="s">'POST'</span>,
+        headers: {
+          <span class="s">'Authorization'</span>: <span class="s">`Bearer ${API_KEY}`</span>,
+          <span class="s">'Content-Type'</span>: <span class="s">'application/json'</span>
+        },
+        body: JSON.stringify({
+          first_name: row.first_name || row.FirstName,
+          last_name: row.last_name || row.LastName,
+          email: row.email || row.Email,
+          phone: row.phone || row.Phone,
+          title: row.title || row.Title
+        })
+      })
+
+      <span class="kw">if</span> (res.ok) {
+        results.success++
+      } <span class="kw">else</span> {
+        <span class="kw">const</span> err = <span class="kw">await</span> res.json()
+        results.failed++
+        results.errors.push({ row: i + 1, error: err.error })
+      }
+    } <span class="kw">catch</span> (err) {
+      results.failed++
+      results.errors.push({ row: i + 1, error: err.message })
+    }
+
+    <span class="c">// Rate limit: max 100 req/15min = ~6.7/min → 1 per 200ms is safe</span>
+    <span class="kw">if</span> (i > 0 && i % 50 === 0) {
+      console.log(<span class="s">`  Progress: ${i}/${records.length}`</span>)
+      <span class="kw">await</span> sleep(2000) <span class="c">// Extra pause every 50 requests</span>
+    } <span class="kw">else</span> {
+      <span class="kw">await</span> sleep(200)
+    }
+  }
+
+  console.log(<span class="s">`✅ Done: ${results.success} imported, ${results.failed} failed`</span>)
+  <span class="kw">if</span> (results.errors.length > 0) {
+    console.log(<span class="s">'Errors:'</span>, results.errors)
+  }
+}
+
+<span class="kw">const</span> sleep = ms => <span class="kw">new</span> Promise(r => setTimeout(r, ms))
+
+<span class="c">// Usage: node import-contacts.js contacts.csv</span>
+importContacts(process.argv[2])</pre>
+
+    <h3>Expected CSV format</h3>
+    <pre>first_name,last_name,email,phone,title
+Anna,Svensson,anna@acme.com,+46701234567,CTO
+Erik,Johansson,erik@example.com,+46702345678,CEO</pre>
+
+    <h2>Import companies + contacts (linked)</h2>
+    <pre><span class="kw">async function</span> importWithCompanies(data) {
+  <span class="c">// data = [{ company: {...}, contacts: [...] }]</span>
+
+  <span class="kw">for</span> (<span class="kw">const</span> { company, contacts } <span class="kw">of</span> data) {
+    <span class="c">// 1. Create company first</span>
+    <span class="kw">const</span> co = <span class="kw">await</span> post(<span class="s">'/api/companies'</span>, company)
+    console.log(<span class="s">`✅ Company: ${co.name} (${co.id})`</span>)
+
+    <span class="c">// 2. Create contacts linked to company</span>
+    <span class="kw">for</span> (<span class="kw">const</span> contact <span class="kw">of</span> contacts) {
+      <span class="kw">const</span> c = <span class="kw">await</span> post(<span class="s">'/api/contacts'</span>, { ...contact, company_id: co.id })
+      console.log(<span class="s">`  → Contact: ${c.first_name} ${c.last_name}`</span>)
+      <span class="kw">await</span> sleep(200)
+    }
+    <span class="kw">await</span> sleep(500)
+  }
+}
+
+<span class="kw">async function</span> post(path, body) {
+  <span class="kw">const</span> res = <span class="kw">await</span> fetch(BASE + path, {
+    method: <span class="s">'POST'</span>,
+    headers: {
+      <span class="s">'Authorization'</span>: <span class="s">`Bearer ${API_KEY}`</span>,
+      <span class="s">'Content-Type'</span>: <span class="s">'application/json'</span>
+    },
+    body: JSON.stringify(body)
+  })
+  <span class="kw">if</span> (!res.ok) throw <span class="kw">new</span> Error(<span class="s">`${path} failed: ${await res.text()}`</span>)
+  <span class="kw">return</span> res.json()
+}</pre>
+
+    <h2>Import historical ledger entries</h2>
+    <div class="callout warn">
+      <strong>Accounting note:</strong> Each ledger entry must balance (debits = credits). Verify your source data before importing. Consider importing one month at a time.
+    </div>
+    <pre><span class="kw">async function</span> importLedgerEntries(entries) {
+  <span class="c">// entries = [{ description, reference, date, lines: [{account_id, debit, credit}] }]</span>
+  
+  <span class="kw">for</span> (<span class="kw">const</span> entry <span class="kw">of</span> entries) {
+    <span class="c">// Validate balance before sending</span>
+    <span class="kw">const</span> totalDebit = entry.lines.reduce((s, l) => s + (l.debit || 0), 0)
+    <span class="kw">const</span> totalCredit = entry.lines.reduce((s, l) => s + (l.credit || 0), 0)
+    
+    <span class="kw">if</span> (Math.abs(totalDebit - totalCredit) > 0.001) {
+      console.error(<span class="s">`⚠️ Unbalanced entry: ${entry.reference} (${totalDebit} ≠ ${totalCredit})`</span>)
+      <span class="kw">continue</span>
+    }
+
+    <span class="kw">const</span> result = <span class="kw">await</span> post(<span class="s">'/api/ledger/entries'</span>, entry)
+    console.log(<span class="s">`✅ Entry: ${entry.reference} (${result.id})`</span>)
+    <span class="kw">await</span> sleep(300)
+  }
+}</pre>
+
+    <h2>Import deals from HubSpot / Salesforce</h2>
+    <pre><span class="c">// Example: transform HubSpot deal format to pixdrift</span>
+<span class="kw">function</span> transformHubSpotDeal(hs) {
+  <span class="kw">return</span> {
+    title: hs.properties.dealname,
+    value: parseFloat(hs.properties.amount || <span class="s">'0'</span>),
+    currency: hs.properties.deal_currency_code || <span class="s">'SEK'</span>,
+    status: mapHubSpotStage(hs.properties.dealstage),
+    expected_close_date: hs.properties.closedate?.split(<span class="s">'T'</span>)[0]
+  }
+}
+
+<span class="kw">function</span> mapHubSpotStage(stage) {
+  <span class="kw">const</span> map = {
+    appointmentscheduled: <span class="s">'prospecting'</span>,
+    qualifiedtobuy: <span class="s">'qualification'</span>,
+    presentationscheduled: <span class="s">'proposal'</span>,
+    decisionmakerboughtin: <span class="s">'negotiation'</span>,
+    contractsent: <span class="s">'negotiation'</span>,
+    closedwon: <span class="s">'closed_won'</span>,
+    closedlost: <span class="s">'closed_lost'</span>
+  }
+  <span class="kw">return</span> map[stage] || <span class="s">'prospecting'</span>
+}
+
+<span class="c">// Fetch from HubSpot API and import</span>
+<span class="kw">const</span> hubspotDeals = <span class="c">/* ... fetch from HubSpot ... */</span>
+<span class="kw">for</span> (<span class="kw">const</span> hsDeal <span class="kw">of</span> hubspotDeals) {
+  <span class="kw">await</span> post(<span class="s">'/api/deals'</span>, transformHubSpotDeal(hsDeal))
+  <span class="kw">await</span> sleep(200)
+}</pre>
+
+    <h2>Import checklist</h2>
+    <pre><span class="c">Before import:
+  ✅ Test with 5-10 records first
+  ✅ Validate CSV encoding (UTF-8)
+  ✅ Check required fields per endpoint
+  ✅ Prepare a rollback plan (note what you imported)
+
+During import:
+  ✅ Log all created IDs with original source IDs
+  ✅ Respect rate limits (sleep between requests)
+  ✅ Handle errors gracefully (don't abort on first failure)
+
+After import:
+  ✅ Verify counts: contacts, companies, deals
+  ✅ Spot-check 5 records manually
+  ✅ Run GET /api/dashboards/admin to see totals</span></pre>
+
+    <div class="callout green">
+      Need to import large datasets (10,000+ records)? Contact <a href="mailto:api@pixdrift.com">api@pixdrift.com</a> for a temporary rate limit increase during your migration window.
+    </div>
+  </main>
+</div>
+</body>
+</html>

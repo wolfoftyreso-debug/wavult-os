@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reports & Finance Guide — pixdrift API</title>
+  <style>
+    :root{--bg:#0a0a0f;--surface:#12121a;--border:#2a2a3e;--accent:#6c5ce7;--accent2:#a29bfe;--green:#00b894;--text:#e8e8f0;--muted:#888899;--code-bg:#0d0d17;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sans-serif;line-height:1.7;}
+    a{color:var(--accent2);}a:hover{text-decoration:underline;}
+    .topnav{height:56px;display:flex;align-items:center;padding:0 24px;gap:16px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+    .topnav-logo{font-weight:700;font-size:16px;color:var(--text);}
+    .topnav-logo span{color:var(--accent2);}
+    .topnav-links{margin-left:auto;display:flex;gap:20px;font-size:13px;}
+    .topnav-links a{color:var(--muted);}
+    .layout{display:flex;}
+    .sidebar{width:240px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;}
+    .sidebar a{display:block;padding:8px 20px;font-size:13px;color:var(--muted);border-left:3px solid transparent;text-decoration:none;}
+    .sidebar a:hover{color:var(--text);background:rgba(108,92,231,0.08);border-left-color:var(--accent);}
+    .sidebar-group{padding:16px 20px 8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);}
+    .content{flex:1;padding:48px;max-width:860px;}
+    h1{font-size:36px;font-weight:800;margin-bottom:8px;}
+    h2{font-size:22px;font-weight:700;margin:48px 0 16px;padding-top:16px;border-top:1px solid var(--border);}
+    h3{font-size:17px;font-weight:600;margin:24px 0 12px;}
+    p{color:var(--muted);margin-bottom:16px;}
+    pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:20px;overflow-x:auto;font-size:13px;line-height:1.8;font-family:'Fira Code',monospace;margin:16px 0;}
+    code{background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:13px;font-family:monospace;}
+    .callout{background:rgba(108,92,231,0.1);border:1px solid rgba(108,92,231,0.3);border-radius:8px;padding:16px 20px;margin:20px 0;color:var(--text);}
+    .callout.green{background:rgba(0,184,148,0.1);border-color:rgba(0,184,148,0.3);}
+    .k{color:#fd79a8;}.s{color:#55efc4;}.c{color:#636e72;font-style:italic;}.n{color:var(--accent2);}.kw{color:#74b9ff;}
+    @media(max-width:768px){.sidebar{display:none;}.content{padding:24px 16px;}}
+  </style>
+</head>
+<body>
+<div class="topnav">
+  <a href="../index.html" class="topnav-logo" style="text-decoration:none">pix<span>drift</span></a>
+  <span style="color:var(--border)">/</span>
+  <span style="color:var(--muted);font-size:14px">Reports Guide</span>
+  <div class="topnav-links">
+    <a href="../api-reference.html">API Reference</a>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-group">Guides</div>
+    <a href="quickstart.html">⚡ Quickstart</a>
+    <a href="webhooks-guide.html">🪝 Webhooks Integration</a>
+    <a href="reporting-guide.html">📊 Reports & Finance</a>
+    <a href="import-guide.html">📥 Bulk Import</a>
+  </aside>
+
+  <main class="content">
+    <h1>Reports & Finance API Guide</h1>
+    <p>Build custom financial dashboards, automate bookkeeping, and export data to accounting software using the pixdrift Reports and Currency APIs.</p>
+
+    <h2>Financial reports overview</h2>
+    <pre><span class="kw">const</span> BASE = <span class="s">'https://api.bc.pixdrift.com'</span>
+<span class="kw">const</span> headers = { <span class="s">'Authorization'</span>: <span class="s">`Bearer ${process.env.PIXDRIFT_API_KEY}`</span> }
+
+<span class="c">// Helper to fetch reports</span>
+<span class="kw">async function</span> getReport(path, params = {}) {
+  <span class="kw">const</span> url = <span class="kw">new</span> URL(BASE + path)
+  Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v))
+  <span class="kw">return</span> fetch(url, { headers }).then(r => r.json())
+}
+
+<span class="c">// Q1 2026 financial picture</span>
+<span class="kw">const</span> [pnl, balance, vat, cashflow] = <span class="kw">await</span> Promise.all([
+  getReport(<span class="s">'/api/reports/income-statement'</span>, { from: <span class="s">'2026-01-01'</span>, to: <span class="s">'2026-03-31'</span> }),
+  getReport(<span class="s">'/api/reports/balance-sheet'</span>, { date: <span class="s">'2026-03-31'</span> }),
+  getReport(<span class="s">'/api/reports/vat'</span>, { from: <span class="s">'2026-01-01'</span>, to: <span class="s">'2026-03-31'</span> }),
+  getReport(<span class="s">'/api/reports/cashflow'</span>, { from: <span class="s">'2026-01-01'</span>, to: <span class="s">'2026-03-31'</span> })
+])
+
+console.log(<span class="s">'Revenue:'</span>, pnl.revenue)
+console.log(<span class="s">'Net income:'</span>, pnl.net_income)
+console.log(<span class="s">'Cash balance:'</span>, cashflow.closing_balance)
+console.log(<span class="s">'VAT to pay:'</span>, vat.net_vat)</pre>
+
+    <h2>SIE4 export (Swedish bookkeeping)</h2>
+    <p>SIE4 is the standard format for Swedish accounting software (Fortnox, Visma, Björn Lundén). Export your full fiscal year:</p>
+    <pre><span class="c"># Download SIE4 file</span>
+<span class="k">curl</span> <span class="s">"https://api.bc.pixdrift.com/api/reports/sie4?from=2026-01-01&to=2026-12-31"</span> \
+  <span class="k">-H</span> <span class="s">"Authorization: Bearer $PIXDRIFT_API_KEY"</span> \
+  <span class="k">-o</span> pixdrift_2026.se
+
+<span class="c"># File starts with #FLAGGA 0 etc. — import directly to Fortnox</span></pre>
+
+    <pre><span class="c">// Node.js — save to disk</span>
+<span class="kw">const</span> fs = require(<span class="s">'fs'</span>)
+<span class="kw">const</span> sie4 = <span class="kw">await</span> fetch(
+  <span class="s">`${BASE}/api/reports/sie4?from=2026-01-01&to=2026-12-31`</span>,
+  { headers }
+).then(r => r.text())
+
+fs.writeFileSync(<span class="s">'pixdrift_2026.se'</span>, sie4, <span class="s">'latin1'</span>)  <span class="c">// SIE4 uses ISO 8859-1</span>
+console.log(<span class="s">'✅ SIE4 file saved'</span>)</pre>
+
+    <h2>Multi-currency reports</h2>
+    <p>If your organization operates in multiple currencies, pixdrift automatically converts values to your base currency for reports. You can also request conversion:</p>
+    <pre><span class="c">// Convert deal values to EUR for reporting</span>
+<span class="kw">const</span> pipeline = <span class="kw">await</span> getReport(<span class="s">'/api/deals/pipeline/multi'</span>, { currency: <span class="s">'EUR'</span> })
+
+<span class="c">// Multi-currency trial balance in SEK</span>
+<span class="kw">const</span> trialBalance = <span class="kw">await</span> getReport(<span class="s">'/api/ledger/trial-balance/multi'</span>, { currency: <span class="s">'SEK'</span> })
+
+<span class="c">// FX exposure (which currencies create risk?)</span>
+<span class="kw">const</span> fxExposure = <span class="kw">await</span> getReport(<span class="s">'/api/fx/exposure'</span>)
+console.log(<span class="s">'FX exposure by currency:'</span>, fxExposure)</pre>
+
+    <h2>Custom dashboard example</h2>
+    <p>Combine multiple endpoints to build a custom executive dashboard:</p>
+    <pre><span class="kw">async function</span> buildExecutiveDashboard() {
+  <span class="kw">const</span> [admin, sales, finance, risks, nc] = <span class="kw">await</span> Promise.all([
+    getReport(<span class="s">'/api/dashboards/admin'</span>),
+    getReport(<span class="s">'/api/dashboards/sales'</span>),
+    getReport(<span class="s">'/api/dashboards/finance'</span>),
+    getReport(<span class="s">'/api/risks/matrix'</span>),
+    getReport(<span class="s">'/api/nc/summary'</span>)
+  ])
+
+  <span class="kw">return</span> {
+    summary: {
+      users: admin.total_users,
+      pipeline_value: sales.pipeline_value,
+      revenue_mtd: finance.revenue_mtd,
+      cashflow: finance.cashflow,
+      high_risks: risks.high?.length ?? 0,
+      open_nc: nc.open_count ?? 0
+    },
+    pipeline: sales.deals_by_stage,
+    risk_matrix: risks,
+    quality: nc
+  }
+}
+
+<span class="kw">const</span> dashboard = <span class="kw">await</span> buildExecutiveDashboard()
+console.log(JSON.stringify(dashboard, null, 2))</pre>
+
+    <h2>Automated monthly report</h2>
+    <p>Schedule a cron job to generate and email a monthly P&L report:</p>
+    <pre><span class="c">// monthly-report.js — run via cron: 0 9 1 * *</span>
+<span class="kw">const</span> nodemailer = require(<span class="s">'nodemailer'</span>)
+
+<span class="kw">async function</span> sendMonthlyReport() {
+  <span class="kw">const</span> now = <span class="kw">new</span> Date()
+  <span class="kw">const</span> firstDay = <span class="kw">new</span> Date(now.getFullYear(), now.getMonth() - 1, 1)
+  <span class="kw">const</span> lastDay = <span class="kw">new</span> Date(now.getFullYear(), now.getMonth(), 0)
+
+  <span class="kw">const</span> from = firstDay.toISOString().split(<span class="s">'T'</span>)[0]
+  <span class="kw">const</span> to = lastDay.toISOString().split(<span class="s">'T'</span>)[0]
+
+  <span class="kw">const</span> [pnl, sie4] = <span class="kw">await</span> Promise.all([
+    getReport(<span class="s">'/api/reports/income-statement'</span>, { from, to }),
+    fetch(<span class="s">`${BASE}/api/reports/sie4?from=${from}&to=${to}`</span>, { headers }).then(r => r.text())
+  ])
+
+  <span class="kw">const</span> subject = <span class="s">`Monthly Report: ${from} – ${to}`</span>
+  <span class="kw">const</span> body = <span class="s">`
+Revenue: ${pnl.revenue.toLocaleString('sv-SE')} SEK
+Expenses: ${pnl.operating_expenses.toLocaleString('sv-SE')} SEK
+Net Income: ${pnl.net_income.toLocaleString('sv-SE')} SEK
+
+SIE4 export attached for Fortnox import.
+  `</span>
+
+  <span class="c">// Send via nodemailer (configure your SMTP)</span>
+  <span class="c">// await mailer.sendMail({ to: 'cfo@company.com', subject, text: body, ... })</span>
+  console.log(subject, body)
+}
+
+sendMonthlyReport()</pre>
+
+    <div class="callout green">
+      The full chart of accounts (BAS plan) is available via <code>GET /api/reports/chart-of-accounts</code> — no authentication required. Use account codes when creating ledger entries.
+    </div>
+  </main>
+</div>
+</body>
+</html>
