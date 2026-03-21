@@ -8,6 +8,14 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
 import { supabase, checkSupabaseConnectivity, isSupabaseFallback } from "./supabase";
+import { errorHandler, ValidationError, NotFoundError, AuthorizationError, ForbiddenError } from "./shared/middleware/error-handler";
+import { validate } from "./shared/validation/middleware";
+import {
+  CreateTaskExecutionSchema,
+  AdvanceTaskSchema,
+  OverrideTaskSchema,
+  CreateQueueSchema,
+} from "./shared/validation/schemas";
 
 // ---------------------------------------------------------------------------
 // Router imports - each module exposes an Express Router
@@ -243,12 +251,35 @@ app.use("/api/auth", authRouter);
 
 // ---------------------------------------------------------------------------
 // Health check — MUST be before auth middleware so it's always public
+// Enterprise-grade: checks actual service connectivity
 // ---------------------------------------------------------------------------
-app.get("/health", (_req: Request, res: Response) => {
-  res.json({
-    status: "ok",
+app.get("/health", async (_req: Request, res: Response) => {
+  const start = Date.now();
+
+  interface ServiceStatus { name: string; status: string; error?: string }
+
+  const services: ServiceStatus[] = [];
+
+  try {
+    await supabase.from('organizations').select('id', { count: 'exact', head: true }).limit(1);
+    services.push({ name: 'database', status: 'ok' });
+  } catch (e: any) {
+    services.push({ name: 'database', status: 'error', error: String(e?.message ?? e) });
+  }
+
+  services.push({
+    name: 'supabase_client',
+    status: isSupabaseFallback() ? 'fallback' : 'ok',
+  });
+
+  const allOk = services.every((s) => s.status === 'ok');
+
+  res.status(allOk ? 200 : 503).json({
+    status: allOk ? 'ok' : 'degraded',
+    version: process.env.npm_package_version ?? '1.0.0',
     timestamp: new Date().toISOString(),
-    supabase: isSupabaseFallback() ? "fallback" : "connected",
+    latency_ms: Date.now() - start,
+    services,
   });
 });
 
@@ -514,7 +545,7 @@ app.get('/api/task-catalog/types/:code/positions', auth, async (req, res) => {
 });
 
 // ── TASK EXECUTIONS: Starta en uppgift ──
-app.post('/api/task-executions', auth, async (req, res) => {
+app.post('/api/task-executions', auth, validate(CreateTaskExecutionSchema), async (req, res) => {
   const { task_type_code, queue_source, deadline, linked_entity_type, linked_entity_id } = req.body;
   
   const { data: taskType } = await supabase
@@ -599,7 +630,7 @@ app.get('/api/task-executions/:id', auth, async (req, res) => {
 });
 
 // ── TASK EXECUTIONS: Gå till nästa steg ──
-app.patch('/api/task-executions/:id/advance', auth, async (req, res) => {
+app.patch('/api/task-executions/:id/advance', auth, validate(AdvanceTaskSchema), async (req, res) => {
   const { input_data, evidence_file } = req.body;
 
   const { data: exec } = await supabase
@@ -681,9 +712,8 @@ app.patch('/api/task-executions/:id/resume', auth, async (req, res) => {
 });
 
 // ── TASK EXECUTIONS: Override (lås upp i förtid) ──
-app.patch('/api/task-executions/:id/override', auth, async (req, res) => {
+app.patch('/api/task-executions/:id/override', auth, validate(OverrideTaskSchema), async (req, res) => {
   const { reason } = req.body;
-  if (!reason || reason.length < 30) return res.status(400).json({ error: 'Motivering krävs (minst 30 tecken)' });
 
   const { data, error } = await supabase
     .from('task_executions')
@@ -715,7 +745,7 @@ app.get('/api/queues/my', auth, async (req, res) => {
 });
 
 // ── USER QUEUES: Skapa kö ──
-app.post('/api/queues', auth, async (req, res) => {
+app.post('/api/queues', auth, validate(CreateQueueSchema), async (req, res) => {
   const { queue_name, queue_type } = req.body;
   const { data, error } = await supabase
     .from('user_queues')
@@ -803,19 +833,15 @@ app.get('/api/task-catalog/stats', auth, async (req, res) => {
 // 404 handler
 // ---------------------------------------------------------------------------
 app.use((_req: Request, res: Response) => {
-  res.status(404).json({ error: "Not found" });
+  res.status(404).json({ error: "NOT_FOUND", message: "Resource not found" });
 });
 
 // ---------------------------------------------------------------------------
-// Error handling middleware
+// Centralized error handler (must be last middleware)
+// Handles AppError subclasses (ValidationError, NotFoundError, etc.)
+// and unknown errors uniformly.
 // ---------------------------------------------------------------------------
-app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
-  console.error("Unhandled error:", err);
-  res.status(500).json({
-    error: "Internal server error",
-    ...(process.env.NODE_ENV !== "production" && { message: err.message }),
-  });
-});
+app.use(errorHandler);
 
 // ---------------------------------------------------------------------------
 // Bootstrap: check Supabase, load state machine configs, register subscribers

@@ -63,19 +63,21 @@ export default function LoginScreen({ onLogin }: { onLogin: (token: string, user
         return;
       }
 
-      // Password login
-      const res = await fetch(`${API}/api/auth/login`, {
+      // Direct Supabase auth
+      const SUPABASE_URL = "https://znmxtnxxjpmgtycmsqjv.supabase.co";
+      const ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpubXh0bnh4anBtZ3R5Y21zcWp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4ODA2NjUsImV4cCI6MjA4OTQ1NjY2NX0.3LzBF2cE95X0vtW-5LwfJu8iGebnE9AUXglHchMPH60";
+      const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
+        headers: { "apikey": ANON_KEY, "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Inloggningen misslyckades");
+      if (!res.ok) throw new Error(data.error_description || data.error || "Inloggningen misslyckades");
 
+      const user = { id: data.user?.id, email: data.user?.email, role: data.user?.user_metadata?.role || "USER" };
       localStorage.setItem("pixdrift_token", data.access_token);
-      localStorage.setItem("pixdrift_user", JSON.stringify(data.user));
-      onLogin(data.access_token, data.user);
+      localStorage.setItem("pixdrift_user", JSON.stringify(user));
+      onLogin(data.access_token, user);
     } catch (err: any) {
       setError(err.message);
     } finally {
