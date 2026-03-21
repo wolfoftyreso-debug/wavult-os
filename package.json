@@ -10,7 +10,10 @@
     "dev": "turbo run dev",
     "build": "turbo run build && npm run seo:inject",
     "build:only": "turbo run build",
-    "test": "turbo run test",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:api": "vitest run server/src/__tests__/api.test.ts",
+    "test:turbo": "turbo run test",
     "seo:inject": "node scripts/inject-seo.js",
     "seo:report": "curl -s https://api.bc.pixdrift.com/api/seo/report | node -e \"const d=require('fs').readFileSync('/dev/stdin','utf8'); console.log(JSON.stringify(JSON.parse(d),null,2))\"",
     "seo:ping": "curl -s 'https://www.google.com/ping?sitemap=https://pixdrift.com/sitemap.xml' -o /dev/null && echo 'Google pinged' && curl -s 'https://www.bing.com/webmaster/ping.aspx?siteMap=https://pixdrift.com/sitemap.xml' -o /dev/null && echo 'Bing pinged'",
@@ -19,6 +22,7 @@
   "packageManager": "npm@10.9.4",
   "devDependencies": {
     "turbo": "latest",
-    "typescript": "^5.5.0"
+    "typescript": "^5.5.0",
+    "vitest": "^4.1.0"
   }
 }
