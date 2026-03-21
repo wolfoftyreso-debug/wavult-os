@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Om pixdrift — Grundarberättelse &amp; Team | pixdrift</title>
+  <meta name="description" content="pixdrift byggdes av operationsledare som var trötta på splittrade verktyg. Lär känna teamet och vår mission att förenkla B2B-verksamheter i Norden." />
+  <meta name="keywords" content="pixdrift team, pixdrift grundare, om pixdrift, OMS system Sverige" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="pixdrift AB" />
+  <link rel="canonical" href="https://pixdrift.com/about.html" />
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://pixdrift.com/about.html" />
+  <meta property="og:title"       content="Om pixdrift — Grundarberättelse &amp; Team" />
+  <meta property="og:description" content="pixdrift byggdes av operationsledare som var trötta på splittrade verktyg. Lär känna teamet." />
+  <meta property="og:image"       content="https://pixdrift.com/og-image.png" />
+  <meta property="og:locale"      content="sv_SE" />
+  <meta property="og:site_name"   content="pixdrift" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@pixdrift" />
+  <meta name="twitter:title"       content="Om pixdrift — Grundarberättelse &amp; Team" />
+  <meta name="twitter:description" content="Lär känna teamet bakom pixdrift." />
+  <meta name="twitter:image"       content="https://pixdrift.com/og-image.png" />
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="theme-color" content="#6366f1" />
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "url": "https://pixdrift.com/about.html",
+    "name": "Om pixdrift",
+    "description": "pixdrift byggdes av operationsledare som var trötta på splittrade verktyg.",
+    "publisher": { "@type": "Organization", "name": "pixdrift AB", "url": "https://pixdrift.com" }
+  }
+  </script>
+  <!-- Resource hints & Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="dns-prefetch" href="//api.bc.pixdrift.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --pd-ink: #0a0a0f; --pd-surface: #111118; --pd-surface-2: #16161f;
+      --pd-border: #1e1e2e; --pd-white: #f8fafc; --pd-text: #e2e8f0;
+      --pd-muted: #6b7280; --pd-indigo: #6366f1; --pd-indigo-light: #818cf8;
+      --pd-indigo-dim: rgba(99,102,241,0.12); --pd-violet: #8b5cf6;
+      --pd-emerald: #10b981; --radius: 10px; --radius-lg: 16px; --radius-xl: 24px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--pd-ink); color: var(--pd-text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; transition: all 200ms ease-out; }
+
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 5%; height: 64px; background: rgba(10,10,15,0.9); backdrop-filter: blur(16px); border-bottom: 1px solid var(--pd-border); }
+    .nav-logo { font-size: 1.2rem; font-weight: 600; letter-spacing: -0.04em; color: var(--pd-white); }
+    .nav-links { display: flex; align-items: center; gap: 1.5rem; }
+    .nav-links a { font-size: 0.875rem; color: var(--pd-muted); }
+    .nav-links a:hover { color: var(--pd-white); }
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1.125rem; border-radius: var(--radius); font-size: 0.875rem; font-weight: 600; font-family: inherit; cursor: pointer; border: 1px solid transparent; transition: all 200ms ease-out; }
+    .btn-primary { background: var(--pd-indigo); color: #fff; border-color: var(--pd-indigo); }
+    .btn-primary:hover { background: var(--pd-indigo-light); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(99,102,241,0.3); }
+
+    .section { padding: 120px 5%; }
+    .container { max-width: 1280px; margin: 0 auto; }
+    .container-text { max-width: 780px; margin: 0 auto; }
+    .section-label { display: inline-block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--pd-indigo); margin-bottom: 1rem; }
+    .section-title { font-size: clamp(1.75rem, 3vw, 2.75rem); font-weight: 700; letter-spacing: -0.03em; color: var(--pd-white); margin-bottom: 1rem; line-height: 1.2; }
+    .section-sub { font-size: 1.05rem; color: var(--pd-muted); line-height: 1.7; }
+
+    .gradient-text { background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+    /* Hero */
+    .about-hero { min-height: 70vh; display: flex; align-items: center; padding: 120px 5% 80px; position: relative; overflow: hidden; }
+    .about-hero::before { content: ''; position: absolute; top: -20%; right: -10%; width: 600px; height: 600px; background: radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 65%); pointer-events: none; }
+    .about-hero-content { max-width: 780px; position: relative; z-index: 1; }
+    .about-hero h1 { font-size: clamp(2.25rem, 5vw, 3.75rem); font-weight: 800; letter-spacing: -0.04em; color: var(--pd-white); line-height: 1.1; margin-bottom: 1.5rem; }
+    .about-hero p { font-size: 1.2rem; color: var(--pd-muted); line-height: 1.75; max-width: 600px; }
+
+    /* Mission boxes */
+    .mission-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3.5rem; }
+    .mission-card { background: var(--pd-surface); border: 1px solid var(--pd-border); border-radius: var(--radius-xl); padding: 2rem; }
+    .mission-card h3 { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--pd-indigo); margin-bottom: 1rem; }
+    .mission-card p { font-size: 0.95rem; color: var(--pd-text); line-height: 1.7; }
+
+    /* Founder story */
+    .founder-section { background: var(--pd-surface); }
+    .founder-content { display: grid; grid-template-columns: 1fr 2fr; gap: 4rem; align-items: center; }
+    .founder-portrait { background: linear-gradient(135deg, var(--pd-indigo), var(--pd-violet)); border-radius: var(--radius-xl); aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 5rem; }
+    .founder-story h2 { font-size: clamp(1.5rem, 2.5vw, 2.25rem); font-weight: 700; color: var(--pd-white); letter-spacing: -0.03em; margin-bottom: 1.5rem; line-height: 1.2; }
+    .founder-story p { font-size: 0.95rem; color: var(--pd-muted); line-height: 1.75; margin-bottom: 1.25rem; }
+    .founder-story p strong { color: var(--pd-text); }
+
+    /* Values */
+    .values-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-top: 3rem; }
+    .value-card { background: var(--pd-surface); border: 1px solid var(--pd-border); border-radius: var(--radius-xl); padding: 2rem; }
+    .value-number { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--pd-indigo); margin-bottom: 0.75rem; }
+    .value-card h3 { font-size: 1.1rem; font-weight: 700; color: var(--pd-white); margin-bottom: 0.5rem; }
+    .value-card p { font-size: 0.875rem; color: var(--pd-muted); line-height: 1.65; }
+
+    /* Team */
+    .team-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.5rem; margin-top: 3.5rem; }
+    .team-member { text-align: center; }
+    .team-avatar { width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 0.875rem; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.25rem; color: white; }
+    .team-name { font-size: 0.9rem; font-weight: 600; color: var(--pd-white); margin-bottom: 0.2rem; }
+    .team-role { font-size: 0.78rem; color: var(--pd-muted); line-height: 1.4; }
+    .team-linkedin { display: inline-block; margin-top: 0.5rem; font-size: 0.72rem; color: var(--pd-indigo-light); }
+
+    /* Investors */
+    .investors-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+    .investor-card { background: var(--pd-surface); border: 1px solid var(--pd-border); border-radius: var(--radius-xl); padding: 1.75rem; display: flex; align-items: center; gap: 1.25rem; }
+    .investor-logo { width: 48px; height: 48px; border-radius: var(--radius); background: var(--pd-surface-2); border: 1px solid var(--pd-border); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0; }
+    .investor-name { font-size: 0.9rem; font-weight: 600; color: var(--pd-white); margin-bottom: 0.2rem; }
+    .investor-role { font-size: 0.78rem; color: var(--pd-muted); }
+
+    footer { background: var(--pd-ink); border-top: 1px solid var(--pd-border); padding: 2.5rem 5%; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    footer p { font-size: 0.8rem; color: var(--pd-muted); }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a { font-size: 0.8rem; color: var(--pd-muted); }
+    .footer-links a:hover { color: var(--pd-white); }
+
+    .reveal { opacity: 0; transform: translateY(16px); transition: opacity 400ms ease-out, transform 400ms ease-out; }
+    .reveal.revealed { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 1024px) {
+      .mission-grid { grid-template-columns: 1fr; }
+      .founder-content { grid-template-columns: 1fr; }
+      .founder-portrait { max-width: 200px; }
+      .team-grid { grid-template-columns: repeat(3, 1fr); }
+      .investors-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .section { padding: 64px 4%; }
+      .values-grid { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: repeat(2, 1fr); }
+      .investors-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <meta name="revised" content="2026-03-21">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">pixdrift</a>
+  <div class="nav-links">
+    <a href="index.html#product">Produkt</a>
+    <a href="index.html#pricing">Prissättning</a>
+    <a href="security.html">Säkerhet</a>
+    <a href="changelog.html">Changelog</a>
+  </div>
+  <a href="index.html#contact" class="btn btn-primary">Boka demo</a>
+</nav>
+
+<!-- Hero -->
+<section class="about-hero">
+  <div class="about-hero-content">
+    <div class="section-label">Om pixdrift</div>
+    <h1>Vi tror att <span class="gradient-text">operations</span> är företagets hjärta</h1>
+    <p>Inte ett stödverktyg. Inte en administrativ funktion. Operations är det som avgör om ett bra team faktiskt levererar — eller inte.</p>
+  </div>
+</section>
+
+<!-- Mission, Vision, Values Summary -->
+<section class="section" style="padding-top: 0;">
+  <div class="container">
+    <div class="mission-grid">
+      <div class="mission-card reveal">
+        <h3>Mission</h3>
+        <p>Ge varje B2B-team ett enda operationellt system som fungerar lika bra dag ett som år tre — utan att kräva en IT-avdelning för att hålla det levande.</p>
+      </div>
+      <div class="mission-card reveal" style="transition-delay:80ms">
+        <h3>Vision</h3>
+        <p>En värld där operationell fragmentering inte är ett hinder för tillväxt. Där team av 30 kan operera med samma precision som team av 300.</p>
+      </div>
+      <div class="mission-card reveal" style="transition-delay:160ms">
+        <h3>Positionering</h3>
+        <p>pixdrift är inte ett CRM. Inte ett projektverktyg. Det är ett Operating Management System — den operationella infrastrukturen moderna team saknar.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Founder Story -->
+<section class="section founder-section">
+  <div class="container">
+    <div class="founder-content">
+      <div class="founder-portrait reveal">👤</div>
+      <div class="founder-story reveal" style="transition-delay:100ms">
+        <div class="section-label">Grundarberättelsen</div>
+        <h2>Byggt av operationsledare som var trötta på splittrade verktyg</h2>
+        <p>2023 ledde pixdrifts grundare operations på ett 80-personers B2B-bolag i Stockholm. Varje kvartal var ett manuellt projekt: data från Salesforce, Jira, HubSpot, Notion och fyra olika kalkylark sammanfogades av en person under tre dagar.</p>
+        <p><strong>Det var inte ett kompetensproblem. Det var ett verktygsproblem.</strong></p>
+        <p>Inget befintligt verktyg löste det. Salesforce var ett CRM. Monday var ett projekttabell. Notion var dokumentation. Ekonomin levde i Fortnox. Kompetens i HR-systemet. Inget pratade med något annat.</p>
+        <p>pixdrift är verktyget vi ville ha 2023. Det vi saknade. Det som borde ha funnits — men inte gjorde det.</p>
+        <p>Vi byggde det. Nu driver det vår egen verksamhet och kunderna vi värdesätter mest.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Values -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">Värderingar</div>
+    <h2 class="section-title">Det vi tror på — och hur det syns i produkten</h2>
+
+    <div class="values-grid">
+      <div class="value-card reveal">
+        <div class="value-number">01</div>
+        <h3>Substans framför yta</h3>
+        <p>Varje feature måste lösa ett verkligt operationellt problem. Vi bygger aldrig för att imponera på en produktsida — vi bygger för att göra operationsledares vardag mätbart bättre.</p>
+      </div>
+      <div class="value-card reveal" style="transition-delay:80ms">
+        <div class="value-number">02</div>
+        <h3>Enkelhet är ett val</h3>
+        <p>Enterprise-mjukvara behöver inte vara komplicerad. Vi gör aktiva val för att göra pixdrift enklare — det kräver mer arbete av oss, inte mer arbete av er.</p>
+      </div>
+      <div class="value-card reveal" style="transition-delay:40ms">
+        <div class="value-number">03</div>
+        <h3>Europa i kärnan</h3>
+        <p>GDPR, SIE4, multi-valuta, EU-servrar och EU AI Act — inte tillägg. pixdrift är designat för europeisk affärsverklighet från grunden.</p>
+      </div>
+      <div class="value-card reveal" style="transition-delay:120ms">
+        <div class="value-number">04</div>
+        <h3>Öppenhet skapar förtroende</h3>
+        <p>Vi delar vår roadmap. Vi skriver om säkerhet utan eufemismer. Vi kommunicerar incidenter direkt. Förtroende byggs inte med marketing — det byggs med handling.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Team -->
+<section class="section" style="background:var(--pd-surface)">
+  <div class="container">
+    <div class="center" style="text-align:center">
+      <div class="section-label">Teamet</div>
+      <h2 class="section-title">Möt personerna bakom pixdrift</h2>
+      <p class="section-sub" style="margin:0 auto;max-width:520px">Operationsledare, ingenjörer och designers med erfarenhet från Nordic scale-ups och global enterprise-mjukvara.</p>
+    </div>
+
+    <div class="team-grid">
+      <div class="team-member reveal">
+        <div class="team-avatar" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">AL</div>
+        <div class="team-name">Anna Lindqvist</div>
+        <div class="team-role">CEO & Co-founder</div>
+        <a href="#" class="team-linkedin">LinkedIn →</a>
+      </div>
+      <div class="team-member reveal" style="transition-delay:60ms">
+        <div class="team-avatar" style="background:linear-gradient(135deg,#8b5cf6,#06b6d4)">MH</div>
+        <div class="team-name">Marcus Holm</div>
+        <div class="team-role">CTO & Co-founder</div>
+        <a href="#" class="team-linkedin">LinkedIn →</a>
+      </div>
+      <div class="team-member reveal" style="transition-delay:120ms">
+        <div class="team-avatar" style="background:linear-gradient(135deg,#06b6d4,#10b981)">SB</div>
+        <div class="team-name">Sara Bergström</div>
+        <div class="team-role">CPO</div>
+        <a href="#" class="team-linkedin">LinkedIn →</a>
+      </div>
+      <div class="team-member reveal" style="transition-delay:60ms">
+        <div class="team-avatar" style="background:linear-gradient(135deg,#10b981,#6366f1)">EK</div>
+        <div class="team-name">Erik Karlsson</div>
+        <div class="team-role">Head of Engineering</div>
+        <a href="#" class="team-linkedin">LinkedIn →</a>
+      </div>
+      <div class="team-member reveal" style="transition-delay:120ms">
+        <div class="team-avatar" style="background:linear-gradient(135deg,#f59e0b,#f43f5e)">JP</div>
+        <div class="team-name">Julia Persson</div>
+        <div class="team-role">Head of Design</div>
+        <a href="#" class="team-linkedin">LinkedIn →</a>
+      </div>
+      <div class="team-member reveal" style="transition-delay:60ms">
+        <div class="team-avatar" style="background:linear-gradient(135deg,#6366f1,#f43f5e)">TN</div>
+        <div class="team-name">Thomas Nilsson</div>
+        <div class="team-role">Head of Sales</div>
+        <a href="#" class="team-linkedin">LinkedIn →</a>
+      </div>
+      <div class="team-member reveal" style="transition-delay:120ms">
+        <div class="team-avatar" style="background:linear-gradient(135deg,#8b5cf6,#f59e0b)">LA</div>
+        <div class="team-name">Lena Andersen</div>
+        <div class="team-role">Head of Customer Success</div>
+        <a href="#" class="team-linkedin">LinkedIn →</a>
+      </div>
+      <div class="team-member reveal" style="transition-delay:60ms">
+        <div class="team-avatar" style="background:linear-gradient(135deg,#06b6d4,#8b5cf6)">FO</div>
+        <div class="team-name">Fredrik Olsson</div>
+        <div class="team-role">Lead Backend Engineer</div>
+        <a href="#" class="team-linkedin">LinkedIn →</a>
+      </div>
+      <div class="team-member reveal" style="transition-delay:120ms">
+        <div class="team-avatar" style="background:linear-gradient(135deg,#10b981,#06b6d4)">KJ</div>
+        <div class="team-name">Klara Johansson</div>
+        <div class="team-role">Product Marketing</div>
+        <a href="#" class="team-linkedin">LinkedIn →</a>
+      </div>
+      <div class="team-member reveal" style="transition-delay:180ms">
+        <div class="team-avatar" style="background:linear-gradient(135deg,#f43f5e,#6366f1)">PL</div>
+        <div class="team-name">Patrik Larsson</div>
+        <div class="team-role">Head of Finance & Ops</div>
+        <a href="#" class="team-linkedin">LinkedIn →</a>
+      </div>
+    </div>
+
+    <p style="text-align:center;margin-top:2.5rem;font-size:0.875rem;color:var(--pd-muted)">
+      Vi är ett team på 18 och växer. <a href="#" style="color:var(--pd-indigo-light)">Se öppna positioner →</a>
+    </p>
+  </div>
+</section>
+
+<!-- Investors -->
+<section class="section">
+  <div class="container">
+    <div class="section-label">Investerare &amp; Rådgivare</div>
+    <h2 class="section-title">Backat av erfarna operatörer</h2>
+
+    <div class="investors-grid">
+      <div class="investor-card reveal">
+        <div class="investor-logo">🏔</div>
+        <div>
+          <div class="investor-name">Nordic Ventures</div>
+          <div class="investor-role">Lead Investor, Seed</div>
+        </div>
+      </div>
+      <div class="investor-card reveal" style="transition-delay:60ms">
+        <div class="investor-logo">⚡</div>
+        <div>
+          <div class="investor-name">Northzone</div>
+          <div class="investor-role">Participant, Seed</div>
+        </div>
+      </div>
+      <div class="investor-card reveal" style="transition-delay:120ms">
+        <div class="investor-logo">🌍</div>
+        <div>
+          <div class="investor-name">EQT Ventures</div>
+          <div class="investor-role">Advisor &amp; Observer</div>
+        </div>
+      </div>
+      <div class="investor-card reveal" style="transition-delay:60ms">
+        <div class="investor-logo">👤</div>
+        <div>
+          <div class="investor-name">Helena Eriksson</div>
+          <div class="investor-role">ex-COO Spotify · Advisor</div>
+        </div>
+      </div>
+      <div class="investor-card reveal" style="transition-delay:120ms">
+        <div class="investor-logo">👤</div>
+        <div>
+          <div class="investor-name">David Berntsson</div>
+          <div class="investor-role">ex-VP SAP EMEA · Advisor</div>
+        </div>
+      </div>
+      <div class="investor-card reveal" style="transition-delay:180ms">
+        <div class="investor-logo">👤</div>
+        <div>
+          <div class="investor-name">Maria Strand</div>
+          <div class="investor-role">ex-CFO Klarna · Advisor</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 pixdrift AB</p>
+  <div class="footer-links">
+    <a href="index.html">Hem</a>
+    <a href="security.html">Säkerhet</a>
+    <a href="changelog.html">Changelog</a>
+    <a href="#">Integritetspolicy</a>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('revealed'); observer.unobserve(e.target); } });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Service Level Agreement (SLA) — pixdrift</title>
+  <meta name="description" content="pixdrift AB:s Service Level Agreement med drifttidsgarantier, responstider och service credits." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="canonical" href="https://pixdrift.com/legal/sla.html" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="stylesheet" href="_legal-base.css" />
+  <style>
+    .sla-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
+    .sla-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; }
+    .sla-card.featured { border-color: var(--accent); background: rgba(99,102,241,.06); }
+    .sla-tier { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.5rem; }
+    .sla-uptime { font-size: 2rem; font-weight: 800; color: var(--white); letter-spacing: -0.03em; margin-bottom: 0.25rem; }
+    .sla-desc { font-size: 0.8rem; color: var(--muted); }
+    .sla-features { list-style: none; margin: 1rem 0 0; padding: 0; }
+    .sla-features li { font-size: 0.8rem; color: var(--text); padding: 0.2rem 0; display: flex; align-items: flex-start; gap: 0.4rem; }
+    .sla-features li::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; }
+    .priority-badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+    .p1 { background: rgba(239,68,68,.15); color: #ef4444; border: 1px solid rgba(239,68,68,.3); }
+    .p2 { background: rgba(245,158,11,.15); color: #f59e0b; border: 1px solid rgba(245,158,11,.3); }
+    .p3 { background: rgba(99,102,241,.15); color: #a5b4fc; border: 1px solid rgba(99,102,241,.3); }
+    .p4 { background: rgba(107,114,128,.15); color: #9ca3af; border: 1px solid rgba(107,114,128,.3); }
+    @media (max-width: 700px) { .sla-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="https://pixdrift.com" class="logo">pix<span>drift</span></a>
+  <div class="nav-links">
+    <a href="index.html">Juridiskt centrum</a>
+    <a href="terms.html">Användarvillkor</a>
+    <a href="dpa.html">DPA</a>
+    <a href="https://pixdrift.com">← pixdrift.com</a>
+  </div>
+</nav>
+
+<div class="legal-layout">
+  <aside class="toc">
+    <div class="toc-inner">
+      <h3>Innehåll</h3>
+      <ul class="toc-list">
+        <li><a href="#definitioner">1. Definitioner</a></li>
+        <li><a href="#drifttid">2. Drifttidsåtaganden</a></li>
+        <li><a href="#undantag">3. Undantag</a></li>
+        <li><a href="#incidentrespons">4. Incidentresponstider</a></li>
+        <li><a href="#credits">5. Service Credits</a></li>
+        <li><a href="#eskalering">6. Eskaleringsprocess</a></li>
+        <li><a href="#underhall">7. Planerat underhåll</a></li>
+        <li><a href="#support">8. Supportkanaler</a></li>
+        <li><a href="#matning">9. Mätning och rapportering</a></li>
+        <li><a href="#andringar">10. Ändringar av SLA</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="legal-content">
+    <div class="doc-header">
+      <div class="doc-badge">⚡ Service Level Agreement</div>
+      <h1>Service Level Agreement</h1>
+      <p style="color:var(--muted); font-size:0.9rem;">pixdrifts drifttidsgarantier, incidentresponstider och service credits per abonnemangsplan.</p>
+      <div class="doc-meta">
+        <span>📅 Senast uppdaterad: <strong>2026-03-21</strong></span>
+        <span>🔖 Version: <strong>1.0.0</strong></span>
+        <span>📊 Status: <strong><a href="https://status.pixdrift.com" target="_blank" rel="noopener">status.pixdrift.com</a></strong></span>
+      </div>
+      <div class="lang-notice">
+        🇸🇪 Primärspråk: Svenska. Se realtidsstatus på <a href="https://status.pixdrift.com" target="_blank" rel="noopener">status.pixdrift.com</a>.
+      </div>
+    </div>
+
+    <!-- §1 DEFINITIONER -->
+    <section class="legal-section" id="definitioner">
+      <h2><span class="section-num">1</span> Definitioner</h2>
+      <table>
+        <thead><tr><th>Begrepp</th><th>Definition</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Drifttid (Uptime)</strong></td><td>Den procentandel av en given kalendermånad under vilken Tjänsten är tillgänglig och funktionell för Kunden, exklusive planerat underhåll och undantagna händelser.</td></tr>
+          <tr><td><strong>Driftstörning (Downtime)</strong></td><td>Period under vilken Tjänsten är otillgänglig eller allvarligt degraderad för majoriteten av Kunden, räknat i minuter per kalendermånad.</td></tr>
+          <tr><td><strong>Planerat underhåll</strong></td><td>Schemalagda underhållsfönster som kommunicerats i förväg, normalt söndagar 02:00–06:00 CET.</td></tr>
+          <tr><td><strong>Incident</strong></td><td>En oplanerad händelse som orsakar Driftstörning eller väsentlig prestandaförsämring av Tjänsten.</td></tr>
+          <tr><td><strong>Allvarlighetsgrad (Prioritet)</strong></td><td>Klassificering av Incident baserad på påverkan (P1–P4), definierad i §4.</td></tr>
+          <tr><td><strong>Månatlig drifttid (%)</strong></td><td>Beräknas som: ((Total tid i månaden − Driftstörning) / Total tid i månaden) × 100</td></tr>
+          <tr><td><strong>Service Credit</strong></td><td>Kompensation i form av tillgodoräknande på Abonnemangsavgiften vid SLA-brott.</td></tr>
+          <tr><td><strong>Eskaleringsprocess</strong></td><td>Definierad kedja av kontaktpunkter för att hantera olösta incidenter, se §6.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- §2 DRIFTTID -->
+    <section class="legal-section" id="drifttid">
+      <h2><span class="section-num">2</span> Drifttidsåtaganden per abonnemangsplan</h2>
+
+      <div class="sla-grid">
+        <div class="sla-card">
+          <div class="sla-tier">Starter</div>
+          <div class="sla-uptime">99.5%</div>
+          <div class="sla-desc">Månatlig drifttid<br>Max 3,6 timmars driftstörning/månad</div>
+          <ul class="sla-features">
+            <li>E-postsupport</li>
+            <li>P1 respons: 4 timmar</li>
+            <li>Statuspage-notiser</li>
+            <li>Månatlig drifttidsrapport</li>
+          </ul>
+        </div>
+        <div class="sla-card featured">
+          <div class="sla-tier">Growth ⭐</div>
+          <div class="sla-uptime">99.9%</div>
+          <div class="sla-desc">Månatlig drifttid<br>Max 43,8 minuters driftstörning/månad</div>
+          <ul class="sla-features">
+            <li>E-post + chat support</li>
+            <li>P1 respons: 1 timme</li>
+            <li>P2 respons: 4 timmar</li>
+            <li>Prioriterad buggfix-kö</li>
+            <li>Månatlig rapport + SLA-dashboard</li>
+          </ul>
+        </div>
+        <div class="sla-card">
+          <div class="sla-tier">Enterprise</div>
+          <div class="sla-uptime">99.95%</div>
+          <div class="sla-desc">Månatlig drifttid<br>Max 21,9 minuters driftstörning/månad</div>
+          <ul class="sla-features">
+            <li>Dedikerad Customer Success Manager</li>
+            <li>P1 respons: 30 min (24/7)</li>
+            <li>Dedikerad Slack-kanal</li>
+            <li>Anpassat SLA möjligt</li>
+            <li>Kvartalsvisa business reviews</li>
+            <li>Egen SLA-rapport + audit log</li>
+          </ul>
+        </div>
+      </div>
+
+      <table>
+        <thead><tr><th>Plan</th><th>Drifttid SLA</th><th>Max Driftstörning/månad</th><th>Service Credit (se §5)</th></tr></thead>
+        <tbody>
+          <tr><td>Starter</td><td>99.5%</td><td>3 tim 36 min</td><td>Upp till 10% av månadsavgift</td></tr>
+          <tr><td>Growth</td><td>99.9%</td><td>43 min 48 sek</td><td>Upp till 25% av månadsavgift</td></tr>
+          <tr><td>Enterprise</td><td>99.95%</td><td>21 min 54 sek</td><td>Upp till 50% av månadsavgift</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- §3 UNDANTAG -->
+    <section class="legal-section" id="undantag">
+      <h2><span class="section-num">3</span> Undantag och exkluderingar</h2>
+      <p>Följande perioder räknas <strong>inte</strong> som Driftstörning vid beräkning av drifttid:</p>
+      <ul>
+        <li><strong>Planerat underhåll</strong> som kommunicerats minst 48 timmar i förväg;</li>
+        <li><strong>Force majeure-händelser</strong> enligt Användarvillkoren §13;</li>
+        <li><strong>Kundens agerande</strong>: Avbrott orsakade av Kundens felaktiga konfigurationer, kod, API-missbruk eller otillåten användning;</li>
+        <li><strong>Tredjepartsberoenden</strong>: Avbrott i tjänster som Kunden integrerat mot, som inte är pixdrifts underbiträden;</li>
+        <li><strong>Beta/preview-funktioner</strong>: Funktioner märkta som beta, preview eller experimentella;</li>
+        <li><strong>Gratis testperiod</strong>: Perioder under Kundens kostnadsfria provperiod.</li>
+      </ul>
+    </section>
+
+    <!-- §4 INCIDENTRESPONS -->
+    <section class="legal-section" id="incidentrespons">
+      <h2><span class="section-num">4</span> Incidentklassificering och responstider</h2>
+      <table>
+        <thead><tr><th>Prioritet</th><th>Beskrivning</th><th>Starter</th><th>Growth</th><th>Enterprise</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="priority-badge p1">P1 Kritisk</span></td>
+            <td>Tjänsten är helt otillgänglig, eller kritisk funktion (inloggning, orderhantering, API) är ej tillgänglig för alla användare. Produktionsstopp med affärskonsekvenser.</td>
+            <td>4 timmar</td>
+            <td>1 timme</td>
+            <td>30 minuter (24/7)</td>
+          </tr>
+          <tr>
+            <td><span class="priority-badge p2">P2 Hög</span></td>
+            <td>Väsentlig funktionsnedsättning som påverkar produktiviteten för majoriteten av användare. Workaround möjlig men begränsad.</td>
+            <td>8 timmar</td>
+            <td>4 timmar</td>
+            <td>2 timmar</td>
+          </tr>
+          <tr>
+            <td><span class="priority-badge p3">P3 Medium</span></td>
+            <td>Icke-kritisk funktionspåverkan. Workaround finns. Begränsad påverkan på affärsprocesser.</td>
+            <td>2 arbetsdagar</td>
+            <td>8 timmar</td>
+            <td>4 timmar</td>
+          </tr>
+          <tr>
+            <td><span class="priority-badge p4">P4 Låg</span></td>
+            <td>Mindre bugg, estetiskt problem, fråga om funktionalitet eller dokumentation. Ingen eller minimal affärspåverkan.</td>
+            <td>5 arbetsdagar</td>
+            <td>2 arbetsdagar</td>
+            <td>1 arbetsdag</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout callout-info">
+        <strong>Responstid</strong> avser tid från att Kunden rapporterat incidenten till att pixdrift bekräftar och påbörjar utredning. Det är inte en garanterad lösningstid, som varierar beroende på incidentens komplexitet.
+      </div>
+      <h3>Supporttider</h3>
+      <table>
+        <thead><tr><th>Plan</th><th>Supporttider</th><th>Kanal</th></tr></thead>
+        <tbody>
+          <tr><td>Starter</td><td>Mån–fre 09:00–17:00 CET</td><td>E-post, hjälpcenter</td></tr>
+          <tr><td>Growth</td><td>Mån–fre 08:00–20:00 CET</td><td>E-post, live-chat</td></tr>
+          <tr><td>Enterprise</td><td>24/7 för P1/P2, Mån–fre 08:00–20:00 CET för P3/P4</td><td>Dedikerad Slack, telefon (P1)</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- §5 SERVICE CREDITS -->
+    <section class="legal-section" id="credits">
+      <h2><span class="section-num">5</span> Service Credits</h2>
+      <h3>5.1 Beräkning</h3>
+      <p>Service Credits beräknas baserat på faktisk drifttid under en kalendermånad. Credits tillgodoräknas på Abonnemangsavgiften för nästkommande faktureringsperiod.</p>
+      <table>
+        <thead><tr><th>Faktisk drifttid</th><th>Starter</th><th>Growth</th><th>Enterprise</th></tr></thead>
+        <tbody>
+          <tr><td>≥ SLA-nivå</td><td>Inga credits</td><td>Inga credits</td><td>Inga credits</td></tr>
+          <tr><td>99.0% – &lt; 99.5% (Starter SLA)</td><td>5% av månadsavgift</td><td>—</td><td>—</td></tr>
+          <tr><td>98.0% – &lt; 99.0%</td><td>10% av månadsavgift</td><td>10% av månadsavgift</td><td>10% av månadsavgift</td></tr>
+          <tr><td>95.0% – &lt; 98.0%</td><td>10% av månadsavgift</td><td>25% av månadsavgift</td><td>25% av månadsavgift</td></tr>
+          <tr><td>&lt; 95.0%</td><td>10% av månadsavgift</td><td>25% av månadsavgift</td><td>50% av månadsavgift</td></tr>
+        </tbody>
+      </table>
+      <h3>5.2 Formel</h3>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;font-family:monospace;font-size:0.85rem;color:var(--text);margin:1rem 0;">
+        Drifttid (%) = ((Total månadsminuter − Driftstörningsminuter) / Total månadsminuter) × 100<br><br>
+        Credit = Månadsavgift × Creditprocent (per tabell ovan)
+      </div>
+      <h3>5.3 Hur du begär credits</h3>
+      <p>Kunden måste begära Service Credits inom <strong>30 dagar</strong> efter att SLA-brottet inträffade, via e-post till <a href="mailto:support@pixdrift.com">support@pixdrift.com</a> med ämnesraden "SLA Credit Request — [Månad YYYY]". Begäran ska innehålla beskrivning av incidenten och det datum/tid det inträffade.</p>
+      <h3>5.4 Begränsningar</h3>
+      <p>Service Credits är Kundens enda och exklusiva kompensation för SLA-brott. Credits är inte konvertibara till kontanter och kan inte överlåtas. Det maximala sammanlagda beloppet för credits under en kalendermånad överstiger inte de procentsatser som anges i §5.1.</p>
+    </section>
+
+    <!-- §6 ESKALERING -->
+    <section class="legal-section" id="eskalering">
+      <h2><span class="section-num">6</span> Eskaleringsprocess</h2>
+      <table>
+        <thead><tr><th>Nivå</th><th>Kontakt</th><th>När</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Nivå 1 — Förstalinjesupport</strong></td><td><a href="mailto:support@pixdrift.com">support@pixdrift.com</a> / Live-chat</td><td>Alla initiala incidentrapporter</td></tr>
+          <tr><td><strong>Nivå 2 — Teknisk eskalering</strong></td><td>Senior support engineer (tilldelas automatiskt vid P1/P2)</td><td>Om Nivå 1 inte löst inom responstid × 2</td></tr>
+          <tr><td><strong>Nivå 3 — Management eskalering</strong></td><td>Customer Success Manager (Enterprise) / <a href="mailto:legal@pixdrift.com">legal@pixdrift.com</a></td><td>Om Nivå 2 inte löst inom 8 timmar (P1) eller 24 timmar (P2)</td></tr>
+          <tr><td><strong>Nivå 4 — Executive eskalering</strong></td><td>pixdrift Leadership Team</td><td>Utökad driftstörning &gt; 24 timmar eller systemisk säkerhetsincident</td></tr>
+        </tbody>
+      </table>
+      <p>Enterprise-kunder har en dedikerad Slack-kanal med direkt åtkomst till teknisk personal och Customer Success Manager.</p>
+    </section>
+
+    <!-- §7 UNDERHÅLL -->
+    <section class="legal-section" id="underhall">
+      <h2><span class="section-num">7</span> Planerat underhåll</h2>
+      <ul>
+        <li><strong>Standardunderhållsfönster:</strong> Söndagar 02:00–06:00 CET (4 timmar)</li>
+        <li><strong>Förvarning:</strong> Minst 48 timmar i förväg via e-post och status.pixdrift.com</li>
+        <li><strong>Frekvens:</strong> Planerat underhåll genomförs normalt högst 2 gånger per månad</li>
+        <li><strong>Akut säkerhetsunderhåll:</strong> Kan genomföras utanför underhållsfönstret med kortast möjliga förvarning. Kommuniceras omedelbart via status.pixdrift.com</li>
+        <li><strong>Enterprise-kunder:</strong> Kan begära anpassade underhållsfönster utanför standardtiderna</li>
+      </ul>
+      <div class="callout callout-warn">
+        <strong>Notera:</strong> Planerat underhåll räknas inte som Driftstörning i SLA-beräkningarna, under förutsättning att förvarning givits. Oplanerat underhåll som orsakar avbrott räknas dock som Driftstörning.
+      </div>
+    </section>
+
+    <!-- §8 SUPPORT -->
+    <section class="legal-section" id="support">
+      <h2><span class="section-num">8</span> Supportkanaler</h2>
+      <table>
+        <tbody>
+          <tr><td><strong>Statuspage</strong></td><td><a href="https://status.pixdrift.com" target="_blank" rel="noopener">status.pixdrift.com</a> — realtidsstatus och historik</td></tr>
+          <tr><td><strong>E-postsupport</strong></td><td><a href="mailto:support@pixdrift.com">support@pixdrift.com</a></td></tr>
+          <tr><td><strong>Hjälpcenter</strong></td><td><a href="https://help.pixdrift.com" target="_blank" rel="noopener">help.pixdrift.com</a></td></tr>
+          <tr><td><strong>Live-chat</strong></td><td>Tillgänglig i plattformen (Growth och Enterprise)</td></tr>
+          <tr><td><strong>Dedikerad Slack</strong></td><td>Enterprise — tillgänglig efter onboarding</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- §9 MÄTNING -->
+    <section class="legal-section" id="matning">
+      <h2><span class="section-num">9</span> Mätning och rapportering</h2>
+      <p>Drifttid mäts via pixdrifts interna övervakningssystem och tredjeparts uptime-monitorering. Mätpunkter inkluderar API-responsstider, inloggningstjänst och core OMS-funktioner.</p>
+      <ul>
+        <li>Alla kunder: Realtidsstatus via status.pixdrift.com</li>
+        <li>Growth och Enterprise: Månatlig drifttidsrapport via e-post</li>
+        <li>Enterprise: SLA-dashboard med API-åtkomst till mätdata på begäran</li>
+      </ul>
+      <p>pixdrift publicerar historiska drifttidsdata på status.pixdrift.com med minst 12 månaders historik.</p>
+    </section>
+
+    <!-- §10 ÄNDRINGAR -->
+    <section class="legal-section" id="andringar">
+      <h2><span class="section-num">10</span> Ändringar av SLA</h2>
+      <p>pixdrift kan ändra detta SLA med minst <strong>60 dagars</strong> skriftligt varsel. Förändringar som förbättrar SLA-nivåerna träder i kraft omedelbart. Försämringar av SLA ger Kunden rätt att säga upp Abonnemanget utan kostnad om Kunden inte accepterar den nya SLA-nivån.</p>
+    </section>
+
+    <div class="version-history">
+      <h3>📋 Versionshistorik</h3>
+      <div class="version-row"><span class="ver-num">v1.0.0</span><span class="ver-date">2026-03-21</span><span class="ver-desc">Första publicering. Tre tiers (Starter/Growth/Enterprise), P1–P4 responstider, service credits-formel.</span></div>
+    </div>
+  </main>
+</div>
+
+<footer class="legal-footer">
+  <div>© 2026 pixdrift AB. Alla rättigheter förbehållna.</div>
+  <div class="footer-links">
+    <a href="index.html">Juridiskt centrum</a>
+    <a href="terms.html">Användarvillkor</a>
+    <a href="dpa.html">DPA</a>
+    <a href="privacy.html">Integritetspolicy</a>
+    <a href="iso-compliance.html">ISO &amp; Compliance</a>
+    <a href="https://status.pixdrift.com" target="_blank" rel="noopener">Status</a>
+    <a href="https://pixdrift.com">pixdrift.com</a>
+  </div>
+</footer>
+
+<script>
+const sections = document.querySelectorAll('.legal-section');
+const tocLinks = document.querySelectorAll('.toc-list a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      tocLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector(`.toc-list a[href="#${entry.target.id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

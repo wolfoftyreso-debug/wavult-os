@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SDKs — pixdrift API</title>
+  <meta name="description" content="pixdrift official SDKs — JavaScript, Python, Go, and more. Integrate with the pixdrift OMS API in your language of choice." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://pixdrift.com/developers/sdks.html" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="theme-color" content="#6366f1" />
+  <style>
+    :root{--bg:#0a0a0f;--surface:#12121a;--border:#2a2a3e;--accent:#6c5ce7;--accent2:#a29bfe;--green:#00b894;--text:#e8e8f0;--muted:#888899;--code-bg:#0d0d17;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sans-serif;line-height:1.7;}
+    a{color:var(--accent2);text-decoration:none;}a:hover{text-decoration:underline;}
+    .topnav{height:56px;display:flex;align-items:center;padding:0 24px;gap:16px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+    .topnav-logo{font-weight:700;font-size:16px;color:var(--text);}
+    .topnav-logo span{color:var(--accent2);}
+    .topnav-links{margin-left:auto;display:flex;gap:20px;font-size:13px;}
+    .topnav-links a{color:var(--muted);}
+    .content{max-width:860px;margin:0 auto;padding:48px;}
+    h1{font-size:36px;font-weight:800;margin-bottom:12px;}
+    h2{font-size:24px;font-weight:700;margin:56px 0 16px;padding-top:20px;border-top:1px solid var(--border);}
+    h3{font-size:18px;font-weight:600;margin:24px 0 12px;}
+    p{color:var(--muted);margin-bottom:16px;}
+    .callout{background:rgba(108,92,231,0.1);border:1px solid rgba(108,92,231,0.3);border-radius:8px;padding:16px 20px;margin:20px 0;color:var(--text);}
+    pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:20px;overflow-x:auto;font-size:13px;line-height:1.8;font-family:'Fira Code',monospace;margin:16px 0;}
+    code{background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:13px;font-family:monospace;}
+    .k{color:#fd79a8;}.s{color:#55efc4;}.c{color:#636e72;font-style:italic;}.n{color:var(--accent2);}.kw{color:#74b9ff;}
+    .sdk-header{display:flex;align-items:center;gap:16px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px;margin-bottom:24px;}
+    .sdk-icon{font-size:40px;}
+    .sdk-info h2{margin:0;padding:0;border:none;font-size:22px;}
+    .sdk-info p{margin:4px 0 0;font-size:14px;}
+    .badge-coming{display:inline-block;padding:4px 12px;background:rgba(225,112,85,0.15);color:#e17055;border-radius:20px;font-size:12px;font-weight:600;margin-left:12px;}
+    @media(max-width:768px){.content{padding:24px 16px;}}
+  </style>
+  <meta name="revised" content="2026-03-21">
+</head>
+<body>
+<div class="topnav">
+  <a href="index.html" class="topnav-logo">pix<span>drift</span></a>
+  <span style="color:var(--border)">/</span>
+  <span style="color:var(--muted);font-size:14px">SDKs</span>
+  <div class="topnav-links">
+    <a href="api-reference.html">API Reference</a>
+    <a href="authentication.html">Auth</a>
+    <a href="guides/quickstart.html">Guides</a>
+  </div>
+</div>
+
+<div class="content">
+  <h1>SDKs & Client Libraries</h1>
+  <p>Official SDKs make it easier to integrate with pixdrift in your preferred language. All SDKs are wrappers around the REST API — you can always use the raw API directly.</p>
+
+  <div class="callout">
+    SDKs are currently in development. The REST API is available now and works with any HTTP client.
+    Use the <a href="guides/quickstart.html">Quickstart Guide</a> to get started today.
+  </div>
+
+  <!-- NODE.JS -->
+  <div id="nodejs">
+    <div class="sdk-header">
+      <div class="sdk-icon">🟢</div>
+      <div class="sdk-info">
+        <h2>Node.js / TypeScript SDK <span class="badge-coming">Coming Soon</span></h2>
+        <p>Full TypeScript support with auto-complete for all endpoints and response types.</p>
+      </div>
+    </div>
+
+    <h3>Installation</h3>
+    <pre>npm install @pixdrift/sdk
+<span class="c"># or</span>
+yarn add @pixdrift/sdk
+<span class="c"># or</span>
+pnpm add @pixdrift/sdk</pre>
+
+    <h3>Quick Example</h3>
+    <pre><span class="kw">import</span> { PixdriftClient } <span class="kw">from</span> <span class="s">'@pixdrift/sdk'</span>
+
+<span class="kw">const</span> client = <span class="kw">new</span> PixdriftClient({
+  apiKey: process.env.PIXDRIFT_API_KEY,
+  <span class="c">// baseUrl: 'https://api.bc.pixdrift.com' (default)</span>
+})
+
+<span class="c">// List contacts</span>
+<span class="kw">const</span> contacts = <span class="kw">await</span> client.contacts.list()
+
+<span class="c">// Create a deal</span>
+<span class="kw">const</span> deal = <span class="kw">await</span> client.deals.create({
+  title: <span class="s">'Enterprise Q2'</span>,
+  value: <span class="s">250000</span>,
+  currency: <span class="s">'SEK'</span>,
+  status: <span class="s">'proposal'</span>
+})
+
+<span class="c">// Update deal status</span>
+<span class="kw">await</span> client.deals.updateStatus(deal.id, <span class="s">'closed_won'</span>)
+
+<span class="c">// Get admin dashboard</span>
+<span class="kw">const</span> dashboard = <span class="kw">await</span> client.dashboards.admin()
+
+<span class="c">// Generate income statement</span>
+<span class="kw">const</span> report = <span class="kw">await</span> client.reports.incomeStatement({
+  from: <span class="s">'2026-01-01'</span>,
+  to: <span class="s">'2026-03-31'</span>
+})</pre>
+
+    <h3>TypeScript Types</h3>
+    <pre><span class="kw">import</span> type { Contact, Deal, Task, CapabilityProfile } <span class="kw">from</span> <span class="s">'@pixdrift/sdk'</span>
+
+<span class="kw">async function</span> getWonDeals(): Promise&lt;Deal[]&gt; {
+  <span class="kw">const</span> deals = <span class="kw">await</span> client.deals.list()
+  <span class="kw">return</span> deals.filter(d => d.status === <span class="s">'closed_won'</span>)
+}</pre>
+
+    <p><a href="https://github.com/pixdrift/node-sdk">GitHub (placeholder) →</a> · <a href="https://www.npmjs.com/package/@pixdrift/sdk">npm (placeholder) →</a></p>
+  </div>
+
+  <!-- PYTHON -->
+  <div id="python">
+    <div class="sdk-header">
+      <div class="sdk-icon">🐍</div>
+      <div class="sdk-info">
+        <h2>Python SDK <span class="badge-coming">Coming Soon</span></h2>
+        <p>Pythonic interface with type hints and dataclasses. Supports sync and async.</p>
+      </div>
+    </div>
+
+    <h3>Installation</h3>
+    <pre>pip install pixdrift
+<span class="c"># or</span>
+poetry add pixdrift</pre>
+
+    <h3>Quick Example</h3>
+    <pre><span class="kw">from</span> pixdrift <span class="kw">import</span> PixdriftClient
+
+client = PixdriftClient(api_key=<span class="s">"pd_live_..."</span>)
+
+<span class="c"># List contacts</span>
+contacts = client.contacts.list()
+
+<span class="c"># Create a deal</span>
+deal = client.deals.create(
+    title=<span class="s">"Enterprise Q2"</span>,
+    value=<span class="s">250000</span>,
+    currency=<span class="s">"SEK"</span>
+)
+
+<span class="c"># Update status</span>
+client.deals.update_status(deal.id, <span class="s">"closed_won"</span>)
+
+<span class="c"># Reports</span>
+report = client.reports.income_statement(
+    from_date=<span class="s">"2026-01-01"</span>,
+    to_date=<span class="s">"2026-03-31"</span>
+)
+
+<span class="c"># Async version</span>
+<span class="kw">import</span> asyncio
+<span class="kw">from</span> pixdrift <span class="kw">import</span> AsyncPixdriftClient
+
+<span class="kw">async def</span> main():
+    async_client = AsyncPixdriftClient(api_key=<span class="s">"pd_live_..."</span>)
+    deals = <span class="kw">await</span> async_client.deals.list()
+
+asyncio.run(main())</pre>
+
+    <p><a href="https://github.com/pixdrift/python-sdk">GitHub (placeholder) →</a> · <a href="https://pypi.org/project/pixdrift">PyPI (placeholder) →</a></p>
+  </div>
+
+  <!-- GO -->
+  <div id="go">
+    <div class="sdk-header">
+      <div class="sdk-icon">🐹</div>
+      <div class="sdk-info">
+        <h2>Go SDK <span class="badge-coming">Coming Soon</span></h2>
+        <p>Idiomatic Go client with context support and structured error handling.</p>
+      </div>
+    </div>
+
+    <h3>Installation</h3>
+    <pre>go get github.com/pixdrift/go-sdk</pre>
+
+    <h3>Quick Example</h3>
+    <pre><span class="kw">package</span> main
+
+<span class="kw">import</span> (
+    <span class="s">"context"</span>
+    <span class="s">"fmt"</span>
+    pixdrift <span class="s">"github.com/pixdrift/go-sdk"</span>
+)
+
+<span class="kw">func</span> main() {
+    client := pixdrift.NewClient(pixdrift.Config{
+        APIKey: <span class="s">"pd_live_..."</span>,
+    })
+
+    ctx := context.Background()
+
+    <span class="c">// List contacts</span>
+    contacts, err := client.Contacts.List(ctx)
+    <span class="kw">if</span> err != nil {
+        panic(err)
+    }
+    fmt.Printf(<span class="s">"Found %d contacts\n"</span>, len(contacts))
+
+    <span class="c">// Create deal</span>
+    deal, err := client.Deals.Create(ctx, pixdrift.DealInput{
+        Title:    <span class="s">"Enterprise Q2"</span>,
+        Value:    <span class="s">250000</span>,
+        Currency: <span class="s">"SEK"</span>,
+    })
+    <span class="kw">if</span> err != nil {
+        panic(err)
+    }
+    fmt.Println(<span class="s">"Deal created:"</span>, deal.ID)
+}</pre>
+
+    <p><a href="https://github.com/pixdrift/go-sdk">GitHub (placeholder) →</a> · <a href="https://pkg.go.dev/github.com/pixdrift/go-sdk">pkg.go.dev (placeholder) →</a></p>
+  </div>
+
+  <!-- OPENAPI / CUSTOM -->
+  <div id="openapi">
+    <div class="sdk-header">
+      <div class="sdk-icon">📋</div>
+      <div class="sdk-info">
+        <h2>Generate Your Own SDK</h2>
+        <p>Use the OpenAPI spec to generate a client in any language.</p>
+      </div>
+    </div>
+    <p>The pixdrift OpenAPI 3.0 spec is available and can be used to auto-generate clients in 40+ languages:</p>
+    <pre><span class="c"># Download the spec</span>
+<span class="k">curl</span> -o pixdrift.yaml https://api.bc.pixdrift.com/openapi.yaml
+
+<span class="c"># Generate a client with openapi-generator</span>
+openapi-generator-cli generate \
+  -i pixdrift.yaml \
+  -g typescript-fetch \
+  -o ./pixdrift-client
+
+<span class="c"># Or with fern</span>
+fern generate --api pixdrift.yaml --language typescript</pre>
+    <p>Supported generators: typescript, typescript-fetch, typescript-axios, csharp, java, kotlin, ruby, rust, php, swift, and more.</p>
+  </div>
+
+  <!-- USING THE REST API DIRECTLY -->
+  <h2>Using the REST API directly</h2>
+  <p>You don't need an SDK. The API works with any HTTP client. Here's how to call it in common environments:</p>
+
+  <h3>Browser (fetch)</h3>
+  <pre><span class="kw">const</span> apiKey = <span class="s">'pd_live_...'</span>
+<span class="kw">const</span> base = <span class="s">'https://api.bc.pixdrift.com'</span>
+<span class="kw">const</span> headers = { <span class="s">'Authorization'</span>: <span class="s">`Bearer ${apiKey}`</span>, <span class="s">'Content-Type'</span>: <span class="s">'application/json'</span> }
+
+<span class="kw">const</span> contacts = <span class="kw">await</span> fetch(<span class="s">`${base}/api/contacts`</span>, { headers }).then(r => r.json())</pre>
+
+  <h3>Server-side (Node.js — native fetch or axios)</h3>
+  <pre><span class="c">// Using axios</span>
+<span class="kw">const</span> axios = require(<span class="s">'axios'</span>)
+<span class="kw">const</span> client = axios.create({
+  baseURL: <span class="s">'https://api.bc.pixdrift.com'</span>,
+  headers: { <span class="s">'Authorization'</span>: <span class="s">`Bearer ${process.env.PIXDRIFT_API_KEY}`</span> }
+})
+<span class="kw">const</span> { data: contacts } = <span class="kw">await</span> client.get(<span class="s">'/api/contacts'</span>)</pre>
+
+</div>
+</body>
+</html>

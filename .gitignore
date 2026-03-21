@@ -3,3 +3,17 @@ dist/
 .env
 *.log
 .DS_Store
+
+# Terraform
+infra/terraform/.terraform/
+infra/terraform/*.tfstate
+infra/terraform/*.tfstate.backup
+infra/terraform/.terraform.lock.hcl
+infra/terraform/terraform.tfvars
+
+# Build outputs
+apps/*/dist/
+server/dist/
+
+# Turbo cache
+.turbo/

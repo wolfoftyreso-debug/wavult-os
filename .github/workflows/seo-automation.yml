@@ -1,0 +1,98 @@
+name: SEO Automation
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'  # Every Monday 03:00 UTC
+  workflow_dispatch:       # Manual trigger
+  push:
+    branches: [main]
+    paths:
+      - 'apps/landing/**'
+      - 'server/src/**'
+
+jobs:
+  update-sitemap:
+    name: Ping Search Engines & IndexNow
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ping Google Search Console
+        run: |
+          echo "Pinging Google..."
+          curl -s "https://www.google.com/ping?sitemap=https://pixdrift.com/sitemap.xml" -o /dev/null
+          echo "Pinging Bing..."
+          curl -s "https://www.bing.com/webmaster/ping.aspx?siteMap=https://pixdrift.com/sitemap.xml" -o /dev/null
+          echo "Done."
+
+      - name: Submit sitemap to IndexNow
+        run: |
+          curl -X POST "https://api.indexnow.org/indexnow" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "host": "pixdrift.com",
+              "key": "${{ secrets.INDEXNOW_KEY }}",
+              "keyLocation": "https://pixdrift.com/${{ secrets.INDEXNOW_KEY }}.txt",
+              "urlList": [
+                "https://pixdrift.com/",
+                "https://pixdrift.com/about.html",
+                "https://pixdrift.com/changelog.html",
+                "https://pixdrift.com/developers/",
+                "https://pixdrift.com/blog/",
+                "https://pixdrift.com/press/",
+                "https://pixdrift.com/security.html",
+                "https://pixdrift.com/roadmap.html"
+              ]
+            }'
+
+      - name: Invalidate SEO cache
+        run: |
+          curl -s -X POST https://api.bc.pixdrift.com/api/seo/invalidate-cache \
+            -H "Content-Type: application/json" || true
+
+  lighthouse-audit:
+    name: Lighthouse CI Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          urls: |
+            https://pixdrift.com/
+            https://pixdrift.com/developers/
+            https://pixdrift.com/about.html
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+      - name: Comment PR with Lighthouse results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '## 🔍 Lighthouse Results\nSee attached artifacts for the full report.\n\nExpected scores: Performance ≥90, SEO ≥95, Accessibility ≥90, Best Practices ≥90'
+            })
+
+  check-broken-links:
+    name: Check for Broken Links
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install broken-link-checker
+        run: npm install -g broken-link-checker
+
+      - name: Check for broken links
+        run: |
+          echo "=== Broken Link Check ==="
+          blc https://pixdrift.com -ro \
+            --exclude linkedin.com \
+            --exclude twitter.com \
+            --exclude x.com \
+            --exclude facebook.com \
+            2>&1 | tail -30 || true

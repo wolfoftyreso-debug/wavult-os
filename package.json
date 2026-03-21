@@ -1,30 +1,24 @@
 {
   "name": "hypbit",
-  "version": "1.0.0",
-  "description": "Hypbit OMS — Operating Management System",
-  "main": "src/index.ts",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "server"
+  ],
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "start": "tsx src/index.ts",
-    "build": "tsc",
-    "trigger:dev": "npx trigger.dev@latest dev",
-    "db:push": "echo 'Kör SQL-filer manuellt i Supabase SQL Editor'"
+    "dev": "turbo run dev",
+    "build": "turbo run build && npm run seo:inject",
+    "build:only": "turbo run build",
+    "test": "turbo run test",
+    "seo:inject": "node scripts/inject-seo.js",
+    "seo:report": "curl -s https://api.bc.pixdrift.com/api/seo/report | node -e \"const d=require('fs').readFileSync('/dev/stdin','utf8'); console.log(JSON.stringify(JSON.parse(d),null,2))\"",
+    "seo:ping": "curl -s 'https://www.google.com/ping?sitemap=https://pixdrift.com/sitemap.xml' -o /dev/null && echo 'Google pinged' && curl -s 'https://www.bing.com/webmaster/ping.aspx?siteMap=https://pixdrift.com/sitemap.xml' -o /dev/null && echo 'Bing pinged'",
+    "seo:cache-clear": "curl -s -X POST https://api.bc.pixdrift.com/api/seo/invalidate-cache"
   },
-  "dependencies": {
-    "express": "^4.21.0",
-    "@supabase/supabase-js": "^2.45.0",
-    "stripe": "^17.0.0",
-    "cors": "^2.8.5",
-    "@trigger.dev/sdk": "^3.0.0"
-  },
+  "packageManager": "npm@10.9.4",
   "devDependencies": {
-    "typescript": "^5.5.0",
-    "@types/express": "^4.17.21",
-    "@types/node": "^22.0.0",
-    "@types/cors": "^2.8.17",
-    "tsx": "^4.19.0"
-  },
-  "engines": {
-    "node": ">=20.0.0"
+    "turbo": "latest",
+    "typescript": "^5.5.0"
   }
 }

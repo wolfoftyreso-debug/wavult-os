@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Webhooks — pixdrift API</title>
+  <meta name="description" content="pixdrift webhooks documentation — event types, payload schemas, retry logic, and integration examples." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://pixdrift.com/developers/webhooks.html" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="theme-color" content="#6366f1" />
+  <style>
+    :root{--bg:#0a0a0f;--surface:#12121a;--border:#2a2a3e;--accent:#6c5ce7;--accent2:#a29bfe;--green:#00b894;--text:#e8e8f0;--muted:#888899;--code-bg:#0d0d17;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sans-serif;line-height:1.7;}
+    a{color:var(--accent2);text-decoration:none;}a:hover{text-decoration:underline;}
+    .topnav{height:56px;display:flex;align-items:center;padding:0 24px;gap:16px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+    .topnav-logo{font-weight:700;font-size:16px;color:var(--text);}
+    .topnav-logo span{color:var(--accent2);}
+    .topnav-links{margin-left:auto;display:flex;gap:20px;font-size:13px;}
+    .topnav-links a{color:var(--muted);}
+    .layout{display:flex;}
+    .sidebar{width:240px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;}
+    .sidebar a{display:block;padding:8px 20px;font-size:13px;color:var(--muted);border-left:3px solid transparent;}
+    .sidebar a:hover{color:var(--text);background:rgba(108,92,231,0.08);border-left-color:var(--accent);text-decoration:none;}
+    .sidebar-group{padding:16px 20px 8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);}
+    .content{flex:1;padding:48px;max-width:860px;}
+    h1{font-size:36px;font-weight:800;margin-bottom:12px;}
+    h2{font-size:24px;font-weight:700;margin:48px 0 16px;padding-top:16px;border-top:1px solid var(--border);}
+    h3{font-size:18px;font-weight:600;margin:28px 0 12px;}
+    p{color:var(--muted);margin-bottom:16px;}
+    .callout{background:rgba(108,92,231,0.1);border:1px solid rgba(108,92,231,0.3);border-radius:8px;padding:16px 20px;margin:20px 0;color:var(--text);}
+    .callout.warn{background:rgba(225,112,85,0.1);border-color:rgba(225,112,85,0.3);}
+    .callout.green{background:rgba(0,184,148,0.1);border-color:rgba(0,184,148,0.3);}
+    pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:20px;overflow-x:auto;font-size:13px;line-height:1.8;font-family:'Fira Code',monospace;margin:16px 0;}
+    code{background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:13px;font-family:monospace;}
+    .k{color:#fd79a8;}.s{color:#55efc4;}.c{color:#636e72;font-style:italic;}.n{color:var(--accent2);}.kw{color:#74b9ff;}
+    .event-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin:20px 0;}
+    .event-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;}
+    .event-name{font-family:monospace;font-size:13px;color:var(--accent2);font-weight:600;margin-bottom:4px;}
+    .event-desc{font-size:13px;color:var(--muted);}
+    .try-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px;margin-top:24px;}
+    .try-box h3{margin-top:0;margin-bottom:16px;}
+    .try-form{display:flex;flex-direction:column;gap:12px;}
+    .try-form label{font-size:13px;color:var(--muted);}
+    .try-form input,.try-form select,.try-form textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px 14px;color:var(--text);font-size:14px;font-family:monospace;}
+    .try-form input:focus,.try-form textarea:focus{outline:none;border-color:var(--accent);}
+    .try-btn{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;width:fit-content;}
+    .try-btn:hover{background:#7d6ff0;}
+    .try-response{margin-top:16px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:16px;font-family:monospace;font-size:13px;min-height:80px;white-space:pre-wrap;color:var(--green);display:none;}
+    @media(max-width:768px){.sidebar{display:none;}.content{padding:24px 16px;}}
+  </style>
+  <meta name="revised" content="2026-03-21">
+</head>
+<body>
+<div class="topnav">
+  <a href="index.html" class="topnav-logo">pix<span>drift</span></a>
+  <span style="color:var(--border)">/</span>
+  <span style="color:var(--muted);font-size:14px">Webhooks</span>
+  <div class="topnav-links">
+    <a href="api-reference.html">API Reference</a>
+    <a href="authentication.html">Auth</a>
+    <a href="guides/quickstart.html">Guides</a>
+  </div>
+</div>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-group">Webhooks</div>
+    <a href="#overview">Overview</a>
+    <a href="#events">Event Types</a>
+    <a href="#payload">Payload Format</a>
+    <a href="#verification">Signature Verification</a>
+    <a href="#retry">Retry Logic</a>
+    <a href="#test">Test Tool</a>
+  </aside>
+  <main class="content">
+    <h1>Webhooks</h1>
+    <p>pixdrift sends real-time webhook events to your endpoints when important things happen in the system. Build event-driven integrations without polling the API.</p>
+
+    <div class="callout green">
+      Webhooks are sent as HTTP POST requests with a JSON body and an HMAC-SHA256 signature header for security verification.
+    </div>
+
+    <h2 id="events">Event Types</h2>
+    <p>All events pixdrift can send to your webhook endpoint:</p>
+
+    <h3>Deals</h3>
+    <div class="event-list">
+      <div class="event-item"><div class="event-name">deal.created</div><div class="event-desc">A new deal was added to the pipeline</div></div>
+      <div class="event-item"><div class="event-name">deal.updated</div><div class="event-desc">Deal properties were modified</div></div>
+      <div class="event-item"><div class="event-name">deal.won</div><div class="event-desc">Deal moved to closed_won</div></div>
+      <div class="event-item"><div class="event-name">deal.lost</div><div class="event-desc">Deal moved to closed_lost</div></div>
+    </div>
+
+    <h3>Tasks</h3>
+    <div class="event-list">
+      <div class="event-item"><div class="event-name">task.created</div><div class="event-desc">A new task was created</div></div>
+      <div class="event-item"><div class="event-name">task.completed</div><div class="event-desc">Task marked as completed</div></div>
+      <div class="event-item"><div class="event-name">task.overdue</div><div class="event-desc">Task passed its due date without completion</div></div>
+    </div>
+
+    <h3>Invoices</h3>
+    <div class="event-list">
+      <div class="event-item"><div class="event-name">invoice.created</div><div class="event-desc">New invoice generated</div></div>
+      <div class="event-item"><div class="event-name">invoice.paid</div><div class="event-desc">Invoice payment registered</div></div>
+    </div>
+
+    <h3>Processes</h3>
+    <div class="event-list">
+      <div class="event-item"><div class="event-name">process.started</div><div class="event-desc">Process execution started</div></div>
+      <div class="event-item"><div class="event-name">process.completed</div><div class="event-desc">All process steps completed</div></div>
+    </div>
+
+    <h3>Non-Conformance</h3>
+    <div class="event-list">
+      <div class="event-item"><div class="event-name">non_conformance.opened</div><div class="event-desc">New NC report filed</div></div>
+      <div class="event-item"><div class="event-name">non_conformance.closed</div><div class="event-desc">NC report closed/resolved</div></div>
+    </div>
+
+    <h3>Users</h3>
+    <div class="event-list">
+      <div class="event-item"><div class="event-name">user.invited</div><div class="event-desc">User invitation sent</div></div>
+      <div class="event-item"><div class="event-name">user.activated</div><div class="event-desc">User completed registration</div></div>
+    </div>
+
+    <h2 id="payload">Payload Format</h2>
+    <p>Every webhook has a consistent envelope structure:</p>
+    <pre>{
+  <span class="n">"id"</span>: <span class="s">"evt_01HX9..."</span>,           <span class="c">// Unique event ID (idempotency)</span>
+  <span class="n">"type"</span>: <span class="s">"deal.won"</span>,              <span class="c">// Event type</span>
+  <span class="n">"timestamp"</span>: <span class="s">"2026-03-21T10:00:00Z"</span>,
+  <span class="n">"org_id"</span>: <span class="s">"uuid"</span>,                <span class="c">// Your organization</span>
+  <span class="n">"data"</span>: {
+    <span class="c">// The full resource object that triggered the event</span>
+    <span class="n">"id"</span>: <span class="s">"uuid"</span>,
+    <span class="n">"title"</span>: <span class="s">"Enterprise License Q1"</span>,
+    <span class="n">"value"</span>: <span class="s">250000</span>,
+    <span class="n">"status"</span>: <span class="s">"closed_won"</span>,
+    <span class="c">// ... full resource fields</span>
+  }
+}</pre>
+
+    <h2 id="verification">Signature Verification</h2>
+    <p>Always verify webhook signatures. pixdrift signs every payload with HMAC-SHA256 using your webhook secret.</p>
+
+    <h3>Header</h3>
+    <pre>X-Pixdrift-Signature: sha256=a1b2c3d4...</pre>
+
+    <h3>Node.js / Express</h3>
+    <pre><span class="kw">const</span> express = require(<span class="s">'express'</span>)
+<span class="kw">const</span> crypto = require(<span class="s">'crypto'</span>)
+
+<span class="kw">const</span> app = express()
+
+<span class="c">// IMPORTANT: Use raw body (not parsed JSON) for signature verification</span>
+app.post(<span class="s">'/webhook'</span>, express.raw({ type: <span class="s">'application/json'</span> }), (req, res) => {
+  <span class="kw">const</span> signature = req.headers[<span class="s">'x-pixdrift-signature'</span>]
+  <span class="kw">const</span> secret = process.env.PIXDRIFT_WEBHOOK_SECRET
+
+  <span class="c">// Compute expected signature</span>
+  <span class="kw">const</span> expected = <span class="s">'sha256='</span> + crypto
+    .createHmac(<span class="s">'sha256'</span>, secret)
+    .update(req.body)
+    .digest(<span class="s">'hex'</span>)
+
+  <span class="c">// Timing-safe comparison (prevents timing attacks)</span>
+  <span class="kw">const</span> valid = crypto.timingSafeEqual(
+    Buffer.from(expected, <span class="s">'utf8'</span>),
+    Buffer.from(signature, <span class="s">'utf8'</span>)
+  )
+
+  <span class="kw">if</span> (!valid) {
+    <span class="kw">return</span> res.status(<span class="s">401</span>).json({ error: <span class="s">'Invalid signature'</span> })
+  }
+
+  <span class="kw">const</span> event = JSON.parse(req.body)
+  
+  <span class="c">// Handle event types</span>
+  <span class="kw">switch</span> (event.type) {
+    <span class="kw">case</span> <span class="s">'deal.won'</span>:
+      console.log(<span class="s">'🎉 Deal won!'</span>, event.data.title, event.data.value)
+      <span class="kw">break</span>
+    <span class="kw">case</span> <span class="s">'task.overdue'</span>:
+      <span class="c">// Send Slack notification, etc.</span>
+      <span class="kw">break</span>
+  }
+
+  res.status(<span class="s">200</span>).json({ received: <span class="kw">true</span> })
+})
+
+app.listen(<span class="s">3000</span>)</pre>
+
+    <h3>Python / Flask</h3>
+    <pre><span class="kw">import</span> hmac, hashlib
+<span class="kw">from</span> flask <span class="kw">import</span> Flask, request
+
+app = Flask(__name__)
+
+@app.route(<span class="s">'/webhook'</span>, methods=[<span class="s">'POST'</span>])
+<span class="kw">def</span> webhook():
+    signature = request.headers.get(<span class="s">'X-Pixdrift-Signature'</span>, <span class="s">''</span>)
+    secret = os.environ[<span class="s">'PIXDRIFT_WEBHOOK_SECRET'</span>]
+    
+    expected = <span class="s">'sha256='</span> + hmac.new(
+        secret.encode(), request.data, hashlib.sha256
+    ).hexdigest()
+    
+    <span class="kw">if not</span> hmac.compare_digest(expected, signature):
+        <span class="kw">return</span> {<span class="s">'error'</span>: <span class="s">'Invalid signature'</span>}, 401
+    
+    event = request.json
+    print(f<span class="s">"Event: {event['type']}"</span>)
+    
+    <span class="kw">return</span> {<span class="s">'received'</span>: True}</pre>
+
+    <h2 id="retry">Retry Logic</h2>
+    <p>If your endpoint doesn't respond with 2xx within 30 seconds, pixdrift will retry the delivery.</p>
+
+    <div class="event-list">
+      <div class="event-item"><div class="event-name">Attempt 1</div><div class="event-desc">Immediate delivery</div></div>
+      <div class="event-item"><div class="event-name">Attempt 2</div><div class="event-desc">5 minutes after failure</div></div>
+      <div class="event-item"><div class="event-name">Attempt 3</div><div class="event-desc">30 minutes after failure</div></div>
+    </div>
+
+    <p>After 3 failed attempts, the event is marked as failed. Each event has a unique <code>id</code> — use this for idempotency to avoid processing the same event twice on retries.</p>
+
+    <div class="callout">
+      <strong>Best practice:</strong> Return <code>200 OK</code> immediately and process the event asynchronously (e.g., add to a queue). Don't make your webhook handler do heavy work synchronously.
+    </div>
+
+    <h2 id="test">Webhook Test Tool</h2>
+    <p>Send a test webhook payload to verify your endpoint is set up correctly.</p>
+
+    <div class="try-box">
+      <h3>Send test webhook</h3>
+      <div class="try-form">
+        <label>Your webhook URL</label>
+        <input type="url" id="wh-url" placeholder="https://your.app/webhook" />
+        <label>Event type</label>
+        <select id="wh-event">
+          <option value="deal.won">deal.won</option>
+          <option value="deal.created">deal.created</option>
+          <option value="task.completed">task.completed</option>
+          <option value="task.overdue">task.overdue</option>
+          <option value="non_conformance.opened">non_conformance.opened</option>
+          <option value="process.completed">process.completed</option>
+        </select>
+        <label>Webhook secret (optional — for signature display)</label>
+        <input type="text" id="wh-secret" placeholder="your_webhook_secret" />
+        <button class="try-btn" onclick="testWebhook()">Send Test Event</button>
+      </div>
+      <div class="try-response" id="wh-response"></div>
+    </div>
+
+    <p style="margin-top:24px; font-size:14px">For deeper webhook testing, see the <a href="guides/webhooks-guide.html">Webhook Integration Guide</a>.</p>
+  </main>
+</div>
+
+<script>
+async function testWebhook() {
+  const url = document.getElementById('wh-url').value.trim();
+  const eventType = document.getElementById('wh-event').value;
+  const res = document.getElementById('wh-response');
+  
+  if (!url) {
+    res.style.display = 'block';
+    res.style.color = '#e17055';
+    res.textContent = '⚠️ Enter your webhook URL';
+    return;
+  }
+
+  const payload = {
+    id: `evt_test_${Date.now()}`,
+    type: eventType,
+    timestamp: new Date().toISOString(),
+    org_id: 'test-org-uuid',
+    data: {
+      id: 'test-resource-uuid',
+      title: 'Test Event from pixdrift',
+      status: 'test',
+      created_at: new Date().toISOString()
+    }
+  };
+
+  res.style.display = 'block';
+  res.style.color = '#a29bfe';
+  res.textContent = `Sending ${eventType} to ${url}...\n\nPayload:\n${JSON.stringify(payload, null, 2)}`;
+}
+</script>
+</body>
+</html>

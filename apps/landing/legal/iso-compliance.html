@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ISO &amp; Compliance — pixdrift</title>
+  <meta name="description" content="pixdrift AB:s implementerade ISO-standarder, certifieringsöversikt och hur pixdrift hjälper kunder att uppfylla compliance-krav." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="canonical" href="https://pixdrift.com/legal/iso-compliance.html" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="stylesheet" href="_legal-base.css" />
+  <style>
+    .iso-hero {
+      background: linear-gradient(135deg, rgba(99,102,241,.12) 0%, rgba(139,92,246,.08) 100%);
+      border: 1px solid rgba(99,102,241,.25);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+      text-align: center;
+    }
+    .iso-hero h2 { font-size: 1.5rem; color: var(--white); margin-bottom: 0.5rem; }
+    .iso-hero p { color: var(--muted); font-size: 0.9rem; max-width: 600px; margin: 0 auto; }
+    .standards-grid { display: grid; gap: 1.25rem; }
+    .std-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      transition: border-color .2s;
+    }
+    .std-card:hover { border-color: rgba(99,102,241,.4); }
+    .std-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .std-title { display: flex; align-items: center; gap: 0.75rem; }
+    .std-icon { font-size: 1.5rem; }
+    .std-name { font-size: 1rem; font-weight: 700; color: var(--white); }
+    .std-full { font-size: 0.8rem; color: var(--muted); }
+    .std-body { font-size: 0.875rem; color: var(--text); }
+    .std-body p { margin-bottom: 0.75rem; }
+    .controls-list { margin: 0.75rem 0; padding-left: 1.25rem; }
+    .controls-list li { font-size: 0.85rem; color: var(--text); margin-bottom: 0.3rem; }
+    .customer-benefit {
+      background: rgba(16,185,129,.08);
+      border: 1px solid rgba(16,185,129,.2);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      margin-top: 0.75rem;
+    }
+    .customer-benefit-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--green); margin-bottom: 0.4rem; }
+    .customer-benefit p { font-size: 0.82rem; color: var(--text); margin: 0; }
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin: 2rem 0; }
+    .stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; text-align: center; }
+    .stat-num { font-size: 1.75rem; font-weight: 800; color: var(--accent); }
+    .stat-label { font-size: 0.75rem; color: var(--muted); margin-top: 0.25rem; }
+    @media (max-width: 700px) { .stats-row { grid-template-columns: repeat(2, 1fr); } .std-header { flex-direction: column; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="https://pixdrift.com" class="logo">pix<span>drift</span></a>
+  <div class="nav-links">
+    <a href="index.html">Juridiskt centrum</a>
+    <a href="terms.html">Användarvillkor</a>
+    <a href="dpa.html">DPA</a>
+    <a href="https://pixdrift.com">← pixdrift.com</a>
+  </div>
+</nav>
+
+<div class="legal-layout">
+  <aside class="toc">
+    <div class="toc-inner">
+      <h3>Innehåll</h3>
+      <ul class="toc-list">
+        <li><a href="#overview">Översikt</a></li>
+        <li><a href="#iso27001">ISO 27001 — Informationssäkerhet</a></li>
+        <li><a href="#iso27017">ISO 27017 — Molnsäkerhet</a></li>
+        <li><a href="#iso27018">ISO 27018 — PII i molnet</a></li>
+        <li><a href="#iso9001">ISO 9001 — Kvalitetsledning</a></li>
+        <li><a href="#gdpr">GDPR — Dataskydd</a></li>
+        <li><a href="#soc2">SOC 2 Type II</a></li>
+        <li><a href="#iso45001">ISO 45001 — Arbetsmiljö</a></li>
+        <li><a href="#iso14001">ISO 14001 — Miljö</a></li>
+        <li><a href="#isae3402">ISAE 3402 / SOC 1</a></li>
+        <li><a href="#swedish">Svensk standard (SIE4/BAS/BFL)</a></li>
+        <li><a href="#roadmap">Certifieringsroadmap</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="legal-content">
+    <div class="doc-header">
+      <div class="doc-badge">🏆 Compliance &amp; Certifiering</div>
+      <h1>ISO &amp; Compliance-översikt</h1>
+      <p style="color:var(--muted); font-size:0.9rem;">Hur pixdrift implementerar internationella standarder — och hur vi hjälper dig att uppfylla dina egna compliance-krav.</p>
+      <div class="doc-meta">
+        <span>📅 Senast uppdaterad: <strong>2026-03-21</strong></span>
+        <span>🔖 Version: <strong>1.0.0</strong></span>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-num">6+</div><div class="stat-label">ISO-standarder adresserade</div></div>
+      <div class="stat-box"><div class="stat-num">GDPR</div><div class="stat-label">Art. 28-komplett DPA</div></div>
+      <div class="stat-box"><div class="stat-num">EU</div><div class="stat-label">Data lagras i EU/EES</div></div>
+      <div class="stat-box"><div class="stat-num">SOC 2</div><div class="stat-label">Roadmap Q3 2026</div></div>
+    </div>
+
+    <!-- OVERVIEW -->
+    <section class="legal-section" id="overview">
+      <h2><span class="section-num">★</span> Vår compliance-filosofi</h2>
+      <div class="iso-hero">
+        <h2>Compliance är inte ett krav — det är en konkurrensfördel</h2>
+        <p>pixdrift är byggt för organisationer som tar ansvar på allvar. Vi implementerar säkerhetsstandarder proaktivt och hjälper dig att dokumentera och bevisa din compliance — inte bara vår.</p>
+      </div>
+      <p>Nedan redovisas status för varje standard: om pixdrift som plattformsoperatör uppfyller standarden, och hur pixdrift <strong>hjälper kunden att uppfylla sina egna skyldigheter</strong> gentemot samma standarder.</p>
+      <div class="callout callout-info">
+        <strong>Nyckelinsikt:</strong> För de flesta ISO-standarder nedan är du som kund den ansvariga parten. pixdrift är ett verktyg som hjälper dig att implementera, dokumentera och bevisa efterlevnad.
+      </div>
+    </section>
+
+    <!-- ISO 27001 -->
+    <section class="legal-section" id="iso27001">
+      <h2><span class="section-num">1</span> ISO/IEC 27001:2022 — Informationssäkerhetshantering</h2>
+      <div class="standards-grid">
+        <div class="std-card">
+          <div class="std-header">
+            <div class="std-title">
+              <span class="std-icon">🔐</span>
+              <div>
+                <div class="std-name">ISO 27001</div>
+                <div class="std-full">Information Security Management Systems (ISMS)</div>
+              </div>
+            </div>
+            <span class="badge-roadmap">Roadmap Q4 2026</span>
+          </div>
+          <div class="std-body">
+            <p><strong>Vad är det?</strong> Den globala standarden för systematisk hantering av informationssäkerhet. Kräver ett dokumenterat ISMS med riskhantering, kontroller och löpande förbättring.</p>
+            <p><strong>pixdrifts status:</strong> pixdrift är i processen att bygga ett komplett ISMS med formell certifiering som mål under Q4 2026. Följande kontroller är redan implementerade:</p>
+            <ul class="controls-list">
+              <li>A.5: Informationssäkerhetspolicyer (dokumenterade och godkända)</li>
+              <li>A.6: Organisationens informationssäkerhet (roller och ansvar definierade)</li>
+              <li>A.8: Tillgångsförvaltning (inventarium över informationstillgångar)</li>
+              <li>A.9: Åtkomstkontroll (RBAC, MFA, JIT-access)</li>
+              <li>A.10: Kryptografi (TLS 1.2+, AES-256)</li>
+              <li>A.12: Driftsäkerhet (loggning, backup, kapacitetsplanering)</li>
+              <li>A.16: Hantering av informationssäkerhetsincidenter (IRP dokumenterad)</li>
+              <li>A.17: Informationssäkerhetsaspekter av kontinuitetshantering (backup-SLA)</li>
+              <li>A.18: Efterlevnad (GDPR, DPA, juridisk granskning)</li>
+            </ul>
+            <div class="customer-benefit">
+              <div class="customer-benefit-label">📦 Hur pixdrift hjälper DIG att uppfylla ISO 27001</div>
+              <p>Process-modulen i pixdrift kan användas för att dokumentera, versionshantera och granska ditt eget ISMS. Skapa kontrollbibliotek, riskregister, åtgärdsplaner och revisionsloggar direkt i pixdrift.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ISO 27017 -->
+    <section class="legal-section" id="iso27017">
+      <h2><span class="section-num">2</span> ISO/IEC 27017:2015 — Molnsäkerhet</h2>
+      <div class="standards-grid">
+        <div class="std-card">
+          <div class="std-header">
+            <div class="std-title"><span class="std-icon">☁️</span><div><div class="std-name">ISO 27017</div><div class="std-full">Säkerhetskontroller för molntjänster</div></div></div>
+            <span class="badge-implemented">Kontroller implementerade</span>
+          </div>
+          <div class="std-body">
+            <p><strong>Vad är det?</strong> Riktlinjer för informationssäkerhetskontroller specifikt för molntjänster, ett tillägg till ISO 27002.</p>
+            <p><strong>pixdrifts implementerade kontroller:</strong></p>
+            <ul class="controls-list">
+              <li>CLD.6.3.1: Delat ansvar dokumenterat i DPA och Användarvillkor</li>
+              <li>CLD.8.1.5: Borttagning/återlämnande av kundtillgångar vid upphörande (§3.8 DPA)</li>
+              <li>CLD.9.5.1: Separation av virtuella miljöer (prod/staging/dev-isolering)</li>
+              <li>CLD.9.5.2: Härdning av virtuella maskiner och containers</li>
+              <li>CLD.12.1.5: Adminaktiviteter i molnmiljö loggas och granskas</li>
+              <li>CLD.12.4.5: Säkerhetsövervakning av molntjänster (CloudTrail, CloudWatch)</li>
+              <li>CLD.13.1.4: Nätverkssäkerhet via Cloudflare WAF och VPC-isolering</li>
+            </ul>
+            <div class="customer-benefit">
+              <div class="customer-benefit-label">📦 Hur pixdrift hjälper DIG</div>
+              <p>Du kan kräva pixdrifts DPA och denna compliance-dokumentation som bevis i din egen ISO 27017-granskning. Alla molnsäkerhetskontroller för din data är dokumenterade och verifierbara.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ISO 27018 -->
+    <section class="legal-section" id="iso27018">
+      <h2><span class="section-num">3</span> ISO/IEC 27018:2019 — PII i offentliga molntjänster</h2>
+      <div class="standards-grid">
+        <div class="std-card">
+          <div class="std-header">
+            <div class="std-title"><span class="std-icon">🛡️</span><div><div class="std-name">ISO 27018</div><div class="std-full">Personidentifierbar information (PII) i molnet</div></div></div>
+            <span class="badge-implemented">Principer implementerade</span>
+          </div>
+          <div class="std-body">
+            <p><strong>Vad är det?</strong> Uppförandekod för skydd av personuppgifter i offentliga molntjänster. Kompatibel med GDPR.</p>
+            <p><strong>pixdrifts implementerade principer:</strong></p>
+            <ul class="controls-list">
+              <li>Consent: Personuppgifter behandlas enbart på Kundens instruktion (DPA §3.1)</li>
+              <li>Purpose limitation: Ingen sekundär användning av Kunddata för pixdrifts egna syften</li>
+              <li>Transparency: Fullständig underbiträdeslista publicerad (DPA Annex II)</li>
+              <li>Individual rights: Bistånd till Kunden vid utövande av registrerades rättigheter (DPA §3.5)</li>
+              <li>Security: Kryptering, åtkomstkontroll, incidentrutiner (DPA Annex III)</li>
+              <li>Breach notification: 72-timmarsregel implementerad (DPA §3.6)</li>
+              <li>Return/deletion: Kunddata returneras/raderas vid upphörande (DPA §3.8)</li>
+            </ul>
+            <div class="customer-benefit">
+              <div class="customer-benefit-label">📦 Hur pixdrift hjälper DIG</div>
+              <p>pixdrift uppfyller ISO 27018-principerna som molnleverantör, vilket gör det enkelt för dig att dokumentera din leverantörskedja i en ISO 27001/GDPR-revision. Referera till pixdrifts DPA och denna sida.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ISO 9001 -->
+    <section class="legal-section" id="iso9001">
+      <h2><span class="section-num">4</span> ISO 9001:2015 — Kvalitetsledningssystem</h2>
+      <div class="standards-grid">
+        <div class="std-card">
+          <div class="std-header">
+            <div class="std-title"><span class="std-icon">✅</span><div><div class="std-name">ISO 9001</div><div class="std-full">Quality Management Systems (QMS)</div></div></div>
+            <span class="badge-implemented">Stöds via Process-modulen</span>
+          </div>
+          <div class="std-body">
+            <p><strong>Vad är det?</strong> Ramverk för systematisk kvalitetsledning med fokus på kundnöjdhet, processledning och kontinuerlig förbättring.</p>
+            <p><strong>Hur pixdrift stödjer din ISO 9001-implementation:</strong></p>
+            <ul class="controls-list">
+              <li><strong>Kl. 4.4 — Processer:</strong> Skapa, dokumentera och versionshantera processkartläggningar i Process-modulen</li>
+              <li><strong>Kl. 6.1 — Riskhantering:</strong> Riskregister och åtgärdsplaner med spårbar historik</li>
+              <li><strong>Kl. 7.5 — Dokumenterad information:</strong> Centraliserat dokumentbibliotek med versionshistorik och godkännandeflöden</li>
+              <li><strong>Kl. 8.1 — Operativ planering:</strong> Projektplaner, milstolpar och aktivitetshantering</li>
+              <li><strong>Kl. 9.1 — Uppföljning:</strong> KPI-dashboards och rapportgenerering</li>
+              <li><strong>Kl. 9.2 — Internrevision:</strong> Checklister, revisionsprotokoll och avvikelserapportering</li>
+              <li><strong>Kl. 10.2 — Avvikelserapportering:</strong> Avvikelsehantering med rotorsaksanalys och uppföljning</li>
+            </ul>
+            <div class="customer-benefit">
+              <div class="customer-benefit-label">📦 pixdrift som QMS-verktyg</div>
+              <p>pixdrift Process-modulen är designad för att fungera som ett komplett QMS-stödsystem. Du kan hantera hela ISO 9001-livscykeln — från processkartläggning till certifieringsrevision — direkt i pixdrift.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GDPR -->
+    <section class="legal-section" id="gdpr">
+      <h2><span class="section-num">5</span> GDPR — Dataskyddsförordningen</h2>
+      <div class="standards-grid">
+        <div class="std-card">
+          <div class="std-header">
+            <div class="std-title"><span class="std-icon">🇪🇺</span><div><div class="std-name">GDPR</div><div class="std-full">EU:s dataskyddsförordning 2016/679</div></div></div>
+            <span class="badge-implemented">Implementerad</span>
+          </div>
+          <div class="std-body">
+            <p><strong>pixdrift som personuppgiftsbiträde:</strong> Art. 28-komplett DPA ingår automatiskt. Fullständig dokumentation i <a href="dpa.html">DPA</a> och <a href="privacy.html">Integritetspolicyn</a>.</p>
+            <ul class="controls-list">
+              <li>Data lagras primärt i EU/EES (Supabase EU-West, AWS eu-north-1)</li>
+              <li>Tredjelandsöverföringar skyddas av SCCs (beslut 2021/914/EU)</li>
+              <li>72-timmars incidentrapportering (Art. 33)</li>
+              <li>Stöd för utövande av registrerades rättigheter (Art. 15–22)</li>
+              <li>Dataminimering och purpose limitation by design</li>
+            </ul>
+            <div class="customer-benefit">
+              <div class="customer-benefit-label">📦 Hur pixdrift hjälper DIG med GDPR</div>
+              <p>pixdrift Process-modulen stödjer GDPR-dokumentation: behandlingsregister (Art. 30), DPIA-mallar (Art. 35), och incidenthanteringsrutiner. Exportera automatiserade rapport för din tillsynsmyndighet.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOC 2 -->
+    <section class="legal-section" id="soc2">
+      <h2><span class="section-num">6</span> SOC 2 Type II</h2>
+      <div class="standards-grid">
+        <div class="std-card">
+          <div class="std-header">
+            <div class="std-title"><span class="std-icon">🔍</span><div><div class="std-name">SOC 2 Type II</div><div class="std-full">Service Organization Control Report</div></div></div>
+            <span class="badge-roadmap">Roadmap Q3 2026</span>
+          </div>
+          <div class="std-body">
+            <p><strong>Vad är det?</strong> Extern revision av säkerhets-, tillgänglighets-, konfidentialitets- och integritetsåtgärder, baserat på AICPA Trust Services Criteria (TSC).</p>
+            <p><strong>pixdrifts roadmap:</strong> SOC 2 Type II-revision planeras under Q2–Q3 2026. Alla fem Trust Service Categories (Security, Availability, Confidentiality, Processing Integrity, Privacy) är inkluderade i scope.</p>
+            <p><strong>Redan implementerade TSC-kontroller:</strong></p>
+            <ul class="controls-list">
+              <li>CC6 — Logical and Physical Access Controls: MFA, RBAC, JIT-access</li>
+              <li>CC7 — System Operations: Loggning, monitorering, incidenthantering</li>
+              <li>CC8 — Change Management: Kodgranskning, CI/CD-pipeline, stagingmiljö</li>
+              <li>A1 — Availability: SLA-åtaganden, backup, disaster recovery</li>
+            </ul>
+            <div class="customer-benefit">
+              <div class="customer-benefit-label">📦 Tillgängligt för kunder</div>
+              <p>Vid SOC 2-certifiering görs revisionsrapporten tillgänglig för Enterprise-kunder under NDA via <a href="mailto:legal@pixdrift.com">legal@pixdrift.com</a>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ISO 45001 -->
+    <section class="legal-section" id="iso45001">
+      <h2><span class="section-num">7</span> ISO 45001:2018 — Arbetsmiljöledning</h2>
+      <div class="standards-grid">
+        <div class="std-card">
+          <div class="std-header">
+            <div class="std-title"><span class="std-icon">🦺</span><div><div class="std-name">ISO 45001</div><div class="std-full">Occupational Health &amp; Safety (OH&amp;S)</div></div></div>
+            <span class="badge-implemented">Stöds via Process-modulen</span>
+          </div>
+          <div class="std-body">
+            <p><strong>Vad är det?</strong> Internationell standard för systematisk arbetsmiljöledning med fokus på att förebygga arbetsrelaterade skador och sjukdomar.</p>
+            <div class="customer-benefit">
+              <div class="customer-benefit-label">📦 Hur pixdrift hjälper DIG med ISO 45001</div>
+              <p>Process-modulen stödjer: Riskidentifiering och riskbedömning (kl. 6.1), avvikelserapportering och rotorsaksanalys (kl. 10.2), internrevisionsprotokoll (kl. 9.2), kompetensmatris och utbildningsregister (kl. 7.2), dokumenthantering av OH&S-policyer och rutiner.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ISO 14001 -->
+    <section class="legal-section" id="iso14001">
+      <h2><span class="section-num">8</span> ISO 14001:2015 — Miljöledning</h2>
+      <div class="standards-grid">
+        <div class="std-card">
+          <div class="std-header">
+            <div class="std-title"><span class="std-icon">🌱</span><div><div class="std-name">ISO 14001</div><div class="std-full">Environmental Management Systems (EMS)</div></div></div>
+            <span class="badge-implemented">Stöds via Process-modulen</span>
+          </div>
+          <div class="std-body">
+            <p><strong>Vad är det?</strong> Ramverk för systematisk miljöledning, inklusive miljöaspekter, lagkrav och kontinuerlig miljöförbättring.</p>
+            <div class="customer-benefit">
+              <div class="customer-benefit-label">📦 Hur pixdrift hjälper DIG med ISO 14001</div>
+              <p>Process-modulen i pixdrift stödjer: Miljöaspektregister (kl. 6.1.2), miljömålsplanering (kl. 6.2), internrevisioner och avvikelsehantering (kl. 9.2, 10.2), lagkravsregister, Scope 1/2/3-datainsamling för hållbarhetsrapportering.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ISAE 3402 / SOC 1 -->
+    <section class="legal-section" id="isae3402">
+      <h2><span class="section-num">9</span> ISAE 3402 / SOC 1 — Finansiell kontrollrevision</h2>
+      <div class="standards-grid">
+        <div class="std-card">
+          <div class="std-header">
+            <div class="std-title"><span class="std-icon">💼</span><div><div class="std-name">ISAE 3402 / SOC 1</div><div class="std-full">Assurance on Controls at Service Organizations</div></div></div>
+            <span class="badge-planned">Planerad 2027</span>
+          </div>
+          <div class="std-body">
+            <p><strong>Vad är det?</strong> Extern revision fokuserad på interna kontroller som påverkar kundernas finansiella rapportering. Relevant för revisorer och börsnoterade bolag.</p>
+            <p><strong>pixdrifts relevans:</strong> pixdrift Ekonomi-modulen hanterar ekonomidata som kan ingå i kundernas finansiella rapportering. ISAE 3402/SOC 1-revision planeras i samband med SOC 2-processen.</p>
+            <div class="customer-benefit">
+              <div class="customer-benefit-label">📦 Tillgängligt nu</div>
+              <p>pixdrift Ekonomi-modulen är designad med fullständig audit trail — alla transaktioner är oföränderligt loggade. Revisorer kan exportera kompletta transaktionsloggar i strukturerat format för sina revisioner.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SVENSK STANDARD -->
+    <section class="legal-section" id="swedish">
+      <h2><span class="section-num">10</span> Svensk standard — SIE4, BAS och Bokföringslagen</h2>
+      <div class="standards-grid">
+        <div class="std-card">
+          <div class="std-header">
+            <div class="std-title"><span class="std-icon">🇸🇪</span><div><div class="std-name">Svensk redovisningsstandard</div><div class="std-full">BFL, ÅRL, BAS, SIE4, Skatteverket</div></div></div>
+            <span class="badge-implemented">Implementerad</span>
+          </div>
+          <div class="std-body">
+            <h3>BAS-kontoplanen</h3>
+            <p>pixdrift Ekonomi-modulen stödjer BAS-kontoplanen 2024/2025 med alla standardkonton förladdade. Kunder kan anpassa kontoplanen men standardmappningen är klar från dag ett.</p>
+            <h3>Bokföringslagen (BFL) och Årsredovisningslagen (ÅRL)</h3>
+            <ul class="controls-list">
+              <li><strong>BFL kap. 5:</strong> Bokföringsskyldighet — alla affärshändelser registreras i realtid med oföränderlig audit trail</li>
+              <li><strong>BFL kap. 7:</strong> Arkivering — räkenskapsinformation sparas i 7 år, lagrat på AWS eu-north-1 (Sverige)</li>
+              <li><strong>ÅRL:</strong> Stöd för upprättande av balansräkning, resultaträkning och noter i enlighet med K2/K3-regelverken</li>
+            </ul>
+            <h3>SIE-format (SIE4)</h3>
+            <p>pixdrift kan exportera bokföringsdata i SIE4-format för import till svenska redovisningsprogram (t.ex. Visma, Fortnox, Bokio). SIE-export är tillgänglig som standardfunktion i Ekonomi-modulen.</p>
+            <h3>Skatteverkets krav</h3>
+            <ul class="controls-list">
+              <li>Räkenskapsinformation bevaras i enlighet med Skatteverkets riktlinjer (SKVFS)</li>
+              <li>Momsredovisning med stöd för olika mervärdesskattesatser (25%, 12%, 6%, 0%)</li>
+              <li>Export av underlag för periodisk sammanställning (EU-handel)</li>
+              <li>Stöd för SAF-T-format för skattemyndighetsrevision</li>
+            </ul>
+            <div class="customer-benefit">
+              <div class="customer-benefit-label">📦 Revisors tillgång</div>
+              <p>Ge din revisor skrivskyddad åtkomst till pixdrift Ekonomi-modulen via ett dedikerat revisorskonto. Revisorn kan granska transaktioner, exportera SIE4-filer och verifiera audit trail utan att påverka din data.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ROADMAP -->
+    <section class="legal-section" id="roadmap">
+      <h2><span class="section-num">→</span> Certifieringsroadmap</h2>
+      <table>
+        <thead><tr><th>Standard/Certifiering</th><th>Status</th><th>Tidplan</th><th>Kommentar</th></tr></thead>
+        <tbody>
+          <tr><td>GDPR Art. 28 DPA</td><td><span class="badge-implemented">Implementerad</span></td><td>✓ Mars 2026</td><td>Fullt komplett</td></tr>
+          <tr><td>ISO 27001 (kontroller)</td><td><span class="badge-implemented">Delvis impl.</span></td><td>—</td><td>Majoriteten av kontrollerna aktiva</td></tr>
+          <tr><td>ISO 27017 (kontroller)</td><td><span class="badge-implemented">Implementerad</span></td><td>✓ Mars 2026</td><td>Molnsäkerhetskontroller aktiva</td></tr>
+          <tr><td>ISO 27018 (principer)</td><td><span class="badge-implemented">Implementerad</span></td><td>✓ Mars 2026</td><td>PII-principer i DPA</td></tr>
+          <tr><td>SOC 2 Type II (revision)</td><td><span class="badge-roadmap">Roadmap</span></td><td>Q3 2026</td><td>Extern revisionsprocess startar Q2 2026</td></tr>
+          <tr><td>ISO 27001 (certifiering)</td><td><span class="badge-roadmap">Roadmap</span></td><td>Q4 2026</td><td>Formell certifiering efter SOC 2</td></tr>
+          <tr><td>ISAE 3402 / SOC 1</td><td><span class="badge-planned">Planerad</span></td><td>2027</td><td>Beroende av ISO 27001-certifiering</td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout-info">
+        <strong>Håll dig uppdaterad:</strong> Prenumerera på compliance-uppdateringar via <a href="mailto:legal@pixdrift.com">legal@pixdrift.com</a> eller bevaka <a href="https://status.pixdrift.com" target="_blank" rel="noopener">status.pixdrift.com</a>.
+      </div>
+    </section>
+
+    <div class="version-history">
+      <h3>📋 Versionshistorik</h3>
+      <div class="version-row"><span class="ver-num">v1.0.0</span><span class="ver-date">2026-03-21</span><span class="ver-desc">Första publicering. ISO 27001/17/18, ISO 9001/45001/14001, GDPR, SOC 2 roadmap, SIE4/BAS/BFL.</span></div>
+    </div>
+  </main>
+</div>
+
+<footer class="legal-footer">
+  <div>© 2026 pixdrift AB. Alla rättigheter förbehållna.</div>
+  <div class="footer-links">
+    <a href="index.html">Juridiskt centrum</a>
+    <a href="terms.html">Användarvillkor</a>
+    <a href="dpa.html">DPA</a>
+    <a href="sla.html">SLA</a>
+    <a href="privacy.html">Integritetspolicy</a>
+    <a href="cookie-policy.html">Cookiepolicy</a>
+    <a href="https://pixdrift.com">pixdrift.com</a>
+  </div>
+</footer>
+
+<script>
+const sections = document.querySelectorAll('.legal-section');
+const tocLinks = document.querySelectorAll('.toc-list a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      tocLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector(`.toc-list a[href="#${entry.target.id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

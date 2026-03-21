@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <!-- Mörk bakgrund -->
+  <rect width="1200" height="630" fill="#0a0a0f"/>
+
+  <!-- Gradient overlay -->
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#0a0a0f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <ellipse cx="600" cy="315" rx="500" ry="300" fill="url(#glow)"/>
+
+  <!-- pixdrift logotyp -->
+  <text x="100" y="200" font-family="Inter, sans-serif" font-size="32" font-weight="700" fill="#6366f1">pixdrift</text>
+
+  <!-- Tagline -->
+  <text x="100" y="300" font-family="Inter, sans-serif" font-size="56" font-weight="700" fill="#f8fafc">Business Operating</text>
+  <text x="100" y="370" font-family="Inter, sans-serif" font-size="56" font-weight="700" fill="#f8fafc">System</text>
+
+  <!-- Subtext -->
+  <text x="100" y="440" font-family="Inter, sans-serif" font-size="24" fill="#94a3b8">Your Business, Running on pixdrift.</text>
+
+  <!-- URL -->
+  <text x="100" y="560" font-family="Inter, sans-serif" font-size="20" fill="#6366f1">pixdrift.com</text>
+</svg>

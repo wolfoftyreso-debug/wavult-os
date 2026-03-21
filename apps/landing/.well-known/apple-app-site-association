@@ -1,0 +1,17 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "TEAMID.com.pixdrift.app",
+        "paths": ["*"]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["TEAMID.com.pixdrift.app"]
+  },
+  "activitycontinuation": {
+    "apps": ["TEAMID.com.pixdrift.app"]
+  }
+}

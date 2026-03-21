@@ -1,0 +1,72 @@
+name: Weekly SEO Report
+
+on:
+  schedule:
+    - cron: '0 8 * * 1'  # Every Monday 08:00 UTC
+  workflow_dispatch:
+
+jobs:
+  seo-check:
+    name: SEO Health Report
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check HTTP status of all pages
+        run: |
+          echo "=== SEO Health Report $(date) ==="
+          echo ""
+          echo "--- HTTP Status & Response Times ---"
+          for url in \
+            "https://pixdrift.com/" \
+            "https://pixdrift.com/about.html" \
+            "https://pixdrift.com/security.html" \
+            "https://pixdrift.com/changelog.html" \
+            "https://pixdrift.com/roadmap.html" \
+            "https://pixdrift.com/sitemap.xml" \
+            "https://pixdrift.com/robots.txt" \
+            "https://pixdrift.com/developers/" \
+            "https://pixdrift.com/developers/api-reference.html" \
+            "https://pixdrift.com/blog/" \
+            "https://pixdrift.com/press/"; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$url" || echo "000")
+            TIME=$(curl -s -o /dev/null -w "%{time_total}" "$url" || echo "0")
+            if [ "$STATUS" = "200" ]; then
+              echo "✅ $STATUS | ${TIME}s | $url"
+            else
+              echo "❌ $STATUS | ${TIME}s | $url"
+            fi
+          done
+
+      - name: Count sitemap URLs
+        run: |
+          echo ""
+          echo "--- Sitemap ---"
+          URL_COUNT=$(curl -s https://pixdrift.com/sitemap.xml | grep -c "<loc>" || echo "0")
+          echo "Indexed URLs in sitemap: $URL_COUNT"
+          echo ""
+          echo "--- Sitemap preview (first 5 URLs) ---"
+          curl -s https://pixdrift.com/sitemap.xml | grep "<loc>" | head -5
+
+      - name: Check meta tags on homepage
+        run: |
+          echo ""
+          echo "--- Meta tags on homepage ---"
+          curl -s https://pixdrift.com/ | grep -E "<title>|<meta name=\"description\"|<meta property=\"og:|<link rel=\"canonical\"" | head -10
+
+      - name: Check robots.txt
+        run: |
+          echo ""
+          echo "--- robots.txt ---"
+          curl -s https://pixdrift.com/robots.txt
+
+      - name: Check OG image generator
+        run: |
+          echo ""
+          echo "--- OG Image Generator ---"
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://api.bc.pixdrift.com/og-image.svg?title=Test&description=SEO+test" || echo "000")
+          echo "OG Image endpoint: $STATUS"
+
+      - name: Check SEO API report
+        run: |
+          echo ""
+          echo "--- SEO API Report ---"
+          curl -s https://api.bc.pixdrift.com/api/seo/report | python3 -m json.tool 2>/dev/null || echo "SEO API unavailable"

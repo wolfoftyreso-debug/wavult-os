@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Changelog | pixdrift</title>
+  <meta name="description" content="Versionshistorik för pixdrift OMS-plattform. Senaste uppdateringar, nya funktioner, förbättringar och buggfixar." />
+  <meta name="keywords" content="pixdrift changelog, uppdateringar, release notes, versionshistorik" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="pixdrift AB" />
+  <link rel="canonical" href="https://pixdrift.com/changelog.html" />
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://pixdrift.com/changelog.html" />
+  <meta property="og:title"       content="Changelog | pixdrift" />
+  <meta property="og:description" content="Versionshistorik för pixdrift. Senaste uppdateringar, förbättringar och nyheter." />
+  <meta property="og:image"       content="https://pixdrift.com/og-image.png" />
+  <meta property="og:locale"      content="sv_SE" />
+  <meta property="og:site_name"   content="pixdrift" />
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@pixdrift" />
+  <meta name="twitter:title"       content="Changelog | pixdrift" />
+  <meta name="twitter:description" content="Senaste uppdateringar och nyheter från pixdrift." />
+  <meta name="twitter:image"       content="https://pixdrift.com/og-image.png" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="theme-color" content="#6366f1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="dns-prefetch" href="//api.bc.pixdrift.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --pd-ink: #0a0a0f; --pd-surface: #111118; --pd-surface-2: #16161f;
+      --pd-border: #1e1e2e; --pd-white: #f8fafc; --pd-text: #e2e8f0;
+      --pd-muted: #6b7280; --pd-subtle: #374151; --pd-indigo: #6366f1;
+      --pd-indigo-light: #818cf8; --pd-indigo-dim: rgba(99,102,241,0.12);
+      --pd-violet: #8b5cf6; --pd-emerald: #10b981; --pd-amber: #f59e0b;
+      --pd-rose: #f43f5e; --radius: 10px; --radius-lg: 16px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--pd-ink); color: var(--pd-text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; transition: all 200ms ease-out; }
+
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 5%; height: 64px; background: rgba(10,10,15,0.9); backdrop-filter: blur(16px); border-bottom: 1px solid var(--pd-border); }
+    .nav-logo { font-size: 1.2rem; font-weight: 600; letter-spacing: -0.04em; color: var(--pd-white); }
+    .nav-links { display: flex; align-items: center; gap: 1.5rem; }
+    .nav-links a { font-size: 0.875rem; color: var(--pd-muted); }
+    .nav-links a:hover, .nav-links a.active { color: var(--pd-white); }
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1.125rem; border-radius: var(--radius); font-size: 0.875rem; font-weight: 600; font-family: inherit; cursor: pointer; border: 1px solid transparent; transition: all 200ms ease-out; }
+    .btn-primary { background: var(--pd-indigo); color: #fff; border-color: var(--pd-indigo); }
+    .btn-primary:hover { background: var(--pd-indigo-light); transform: translateY(-1px); }
+
+    /* Page layout */
+    .page { padding: 120px 5% 80px; max-width: 960px; margin: 0 auto; }
+
+    .page-header { margin-bottom: 4rem; }
+    .page-label { display: inline-block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--pd-indigo); margin-bottom: 1rem; }
+    .page-title { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; letter-spacing: -0.04em; color: var(--pd-white); margin-bottom: 0.875rem; }
+    .page-sub { font-size: 1rem; color: var(--pd-muted); max-width: 480px; line-height: 1.7; }
+
+    /* Subscribe */
+    .subscribe-bar {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 1rem 1.25rem; background: var(--pd-surface);
+      border: 1px solid var(--pd-border); border-radius: var(--radius-lg);
+      margin-bottom: 3.5rem;
+    }
+    .subscribe-icon { font-size: 1.1rem; }
+    .subscribe-text { flex: 1; font-size: 0.875rem; color: var(--pd-muted); }
+    .subscribe-text strong { color: var(--pd-text); }
+    .btn-sm { padding: 0.4rem 0.875rem; font-size: 0.8rem; }
+    .btn-soft { background: var(--pd-indigo-dim); color: var(--pd-indigo-light); border-color: transparent; }
+    .btn-soft:hover { background: rgba(99,102,241,0.2); color: var(--pd-white); }
+
+    /* Release entries */
+    .release {
+      display: grid; grid-template-columns: 200px 1fr;
+      gap: 2rem; margin-bottom: 0; position: relative;
+    }
+
+    .release::before {
+      content: '';
+      position: absolute; left: 199px; top: 8px; bottom: -60px;
+      width: 1px; background: var(--pd-border); z-index: 0;
+    }
+
+    .release:last-child::before { display: none; }
+
+    .release-meta { position: relative; padding-top: 4px; }
+
+    .release-version {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.875rem; font-weight: 500;
+      color: var(--pd-muted); margin-bottom: 0.375rem;
+    }
+
+    .release-date {
+      font-size: 0.78rem; color: var(--pd-subtle);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .release-timeline-dot {
+      position: absolute; right: -6px; top: 6px;
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--pd-ink); border: 2px solid var(--pd-border); z-index: 1;
+    }
+
+    .release-timeline-dot.major { border-color: var(--pd-indigo); background: var(--pd-indigo); }
+    .release-timeline-dot.minor { border-color: var(--pd-indigo); background: var(--pd-ink); }
+    .release-timeline-dot.patch { border-color: var(--pd-muted); background: var(--pd-ink); }
+
+    .release-content {
+      background: var(--pd-surface); border: 1px solid var(--pd-border);
+      border-radius: var(--radius-lg); padding: 2rem; margin-bottom: 2.5rem;
+      transition: border-color 200ms;
+    }
+
+    .release-content:hover { border-color: rgba(99,102,241,0.2); }
+
+    .release-header { margin-bottom: 1.75rem; }
+
+    .release-title {
+      font-size: 1.25rem; font-weight: 700; color: var(--pd-white);
+      letter-spacing: -0.02em; margin-bottom: 0.625rem;
+    }
+
+    .release-summary { font-size: 0.9rem; color: var(--pd-muted); line-height: 1.65; }
+
+    .release-badges { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.875rem; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 0.2rem 0.625rem; border-radius: 999px;
+      font-size: 0.7rem; font-weight: 600;
+    }
+    .badge-new      { background: var(--pd-indigo-dim); color: var(--pd-indigo-light); border: 1px solid rgba(99,102,241,0.2); }
+    .badge-improved { background: rgba(16,185,129,0.1); color: var(--pd-emerald); border: 1px solid rgba(16,185,129,0.2); }
+    .badge-fix      { background: rgba(245,158,11,0.1); color: var(--pd-amber); border: 1px solid rgba(245,158,11,0.2); }
+    .badge-breaking { background: rgba(244,63,94,0.1); color: var(--pd-rose); border: 1px solid rgba(244,63,94,0.2); }
+    .badge-module   { background: var(--pd-surface-2); color: var(--pd-muted); border: 1px solid var(--pd-border); }
+
+    .release-section { margin-bottom: 1.5rem; }
+    .release-section:last-child { margin-bottom: 0; }
+
+    .release-section-title {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--pd-muted); margin-bottom: 0.75rem;
+    }
+
+    .change-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+
+    .change-item {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      font-size: 0.875rem; color: var(--pd-text); line-height: 1.5;
+    }
+
+    .change-tag {
+      flex-shrink: 0; padding: 0.15rem 0.4rem; border-radius: 4px;
+      font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.04em; margin-top: 0.1em;
+    }
+    .tag-new      { background: var(--pd-indigo-dim); color: var(--pd-indigo-light); }
+    .tag-fix      { background: rgba(245,158,11,0.12); color: var(--pd-amber); }
+    .tag-improved { background: rgba(16,185,129,0.12); color: var(--pd-emerald); }
+    .tag-security { background: rgba(244,63,94,0.1); color: var(--pd-rose); }
+
+    .change-text { flex: 1; }
+    .change-text strong { color: var(--pd-white); }
+
+    /* Divider between major releases */
+    .release-spacer { height: 1.5rem; }
+
+    footer { background: var(--pd-ink); border-top: 1px solid var(--pd-border); padding: 2.5rem 5%; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    footer p { font-size: 0.8rem; color: var(--pd-muted); }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a { font-size: 0.8rem; color: var(--pd-muted); }
+    .footer-links a:hover { color: var(--pd-white); }
+
+    @media (max-width: 768px) {
+      .release { grid-template-columns: 1fr; }
+      .release::before { display: none; }
+      .release-timeline-dot { display: none; }
+      .release-meta { padding-top: 0; margin-bottom: 0.75rem; }
+    }
+  </style>
+  <meta name="revised" content="2026-03-21">
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">pixdrift</a>
+  <div class="nav-links">
+    <a href="index.html#product">Produkt</a>
+    <a href="index.html#pricing">Prissättning</a>
+    <a href="security.html">Säkerhet</a>
+    <a href="changelog.html" class="active">Changelog</a>
+  </div>
+  <a href="index.html#contact" class="btn btn-primary">Boka demo</a>
+</nav>
+
+<main class="page">
+  <header class="page-header">
+    <div class="page-label">Versionshistorik</div>
+    <h1 class="page-title">Changelog</h1>
+    <p class="page-sub">Alla förändringar, förbättringar och fixar — transparant och i kronologisk ordning.</p>
+  </header>
+
+  <!-- Subscribe -->
+  <div class="subscribe-bar">
+    <span class="subscribe-icon">📬</span>
+    <span class="subscribe-text"><strong>Prenumerera på uppdateringar.</strong> Få en sammanfattning i din inbox när vi releasar.</span>
+    <a href="#" class="btn btn-soft btn-sm">Prenumerera →</a>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       v1.2.0
+  ═══════════════════════════════════════════ -->
+  <div class="release">
+    <div class="release-meta">
+      <div class="release-version">v1.2.0</div>
+      <div class="release-date">2026-03-21</div>
+      <div class="release-timeline-dot major"></div>
+    </div>
+    <div>
+      <div class="release-content">
+        <div class="release-header">
+          <div class="release-title">pixdrift rebrand · Ny landningssida · Admin-, CRM- och Sales-appar</div>
+          <p class="release-summary">En major release. pixdrift får sin fullständiga varumärkesidentitet och enterprise-landningssida. Tre nya fristående appar. Design system v1.0 lanserat. Rebrand från intern arbetsnamn till officiellt "pixdrift".</p>
+          <div class="release-badges">
+            <span class="badge badge-new">Ny app</span>
+            <span class="badge badge-new">Rebrand</span>
+            <span class="badge badge-improved">Design system</span>
+            <span class="badge badge-module">Admin</span>
+            <span class="badge badge-module">CRM</span>
+            <span class="badge badge-module">Sales</span>
+          </div>
+        </div>
+
+        <div class="release-section">
+          <div class="release-section-title">Nya appar</div>
+          <ul class="change-list">
+            <li class="change-item">
+              <span class="change-tag tag-new">Ny</span>
+              <span class="change-text"><strong>Admin-app</strong> — Organisationsinställningar, användarhantering, RBAC-konfiguration och faktureringsöversikt. Tillgänglig för administratörs- och ägarroller.</span>
+            </li>
+            <li class="change-item">
+              <span class="change-tag tag-new">Ny</span>
+              <span class="change-text"><strong>CRM-app</strong> — Dedikerad vy för kontakt- och kontohantering. Fullständig kommunikationshistorik, aktivitetsspårning och noteringar per kontakt.</span>
+            </li>
+            <li class="change-item">
+              <span class="change-tag tag-new">Ny</span>
+              <span class="change-text"><strong>Sales-app</strong> — Pipeline-centrerad vy med Kanban-board, förlopp per affär och säljcoachningspanel. Filtrering per ägare, stage och datum.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="release-section">
+          <div class="release-section-title">Varumärke &amp; Design</div>
+          <ul class="change-list">
+            <li class="change-item">
+              <span class="change-tag tag-new">Ny</span>
+              <span class="change-text"><strong>pixdrift rebrand</strong> — Officiell varumärkesidentitet. Inter-typografi, utökat indigo-färgsystem, logotypriktlinjer och brandstrategi v1.0 publicerad.</span>
+            </li>
+            <li class="change-item">
+              <span class="change-tag tag-new">Ny</span>
+              <span class="change-text"><strong>pixdrift-design.css</strong> — Komplett CSS design system med tokens, typografiskala, knappar, kort, badges och animationer.</span>
+            </li>
+            <li class="change-item">
+              <span class="change-tag tag-new">Ny</span>
+              <span class="change-text"><strong>Enterprise-landningssida</strong> — Ny landningssida med 14 sektioner, tabbed produktvisning, prissättning, testimonials och GDPR-sektion.</span>
+            </li>
+            <li class="change-item">
+              <span class="change-tag tag-new">Ny</span>
+              <span class="change-text"><strong>Kompletterande sidor</strong> — about.html (grundarberättelse, team, investerare), security.html (fullständig säkerhetsdokumentation), changelog.html.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="release-section">
+          <div class="release-section-title">Förbättringar</div>
+          <ul class="change-list">
+            <li class="change-item">
+              <span class="change-tag tag-improved">Förbättrad</span>
+              <span class="change-text">Navigation har fått en ny sticky-bar med blur-effekt och förbättrad responsivitet för mobil.</span>
+            </li>
+            <li class="change-item">
+              <span class="change-tag tag-improved">Förbättrad</span>
+              <span class="change-text">Dashboard-mockupen i hero-sektionen visar nu realistisk pipeline-data med interaktiva bars.</span>
+            </li>
+            <li class="change-item">
+              <span class="change-tag tag-improved">Förbättrad</span>
+              <span class="change-text">Laddningstid för landningssidan reducerad med 40% via font-preconnect och lazy-loading.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="release-section">
+          <div class="release-section-title">Buggfixar</div>
+          <ul class="change-list">
+            <li class="change-item">
+              <span class="change-tag tag-fix">Fix</span>
+              <span class="change-text">Cookie-bannern visas nu korrekt på Safari iOS (backdrop-filter-fallback tillagd).</span>
+            </li>
+            <li class="change-item">
+              <span class="change-tag tag-fix">Fix</span>
+              <span class="change-text">Tab-switcher i produktsektionen är nu korrekt horisontellt scrollbar på mobil.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="release-spacer"></div>
+
+  <!-- ═══════════════════════════════════════════
+       v1.1.0
+  ═══════════════════════════════════════════ -->
+  <div class="release">
+    <div class="release-meta">
+      <div class="release-version">v1.1.0</div>
+      <div class="release-date">2026-02-15</div>
+      <div class="release-timeline-dot minor"></div>
+    </div>
+    <div>
+      <div class="release-content">
+        <div class="release-header">
+          <div class="release-title">Multi-currency support · FX revaluation · Stripe-integration</div>
+          <p class="release-summary">Currency-modulen expanderas med stöd för 40+ valutor, automatisk FX-revalvering och native Stripe-integration. Kritisk förbättring för kunder med internationella intäkter.</p>
+          <div class="release-badges">
+            <span class="badge badge-new">Ny feature</span>
+            <span class="badge badge-improved">Currency</span>
+            <span class="badge badge-module">Reports</span>
+          </div>
+        </div>
+
+        <div class="release-section">
+          <div class="release-section-title">Currency-modulen</div>
+          <ul class="change-list">
+            <li class="change-item">
+              <span class="change-tag tag-new">Ny</span>
+              <span class="change-text"><strong>Multi-currency support</strong> — Stöd för EUR, SEK, GBP, USD, CHF, DKK, NOK och 35+ ytterligare valutor. Kurser hämtas dagligen från ECB.</span>
+            </li>
+            <li class="change-item">
+              <span class="change-tag tag-new">Ny</span>
+              <span class="change-text"><strong>FX Revaluation</strong> — Automatisk omräkning av utländska balanser vid periodbokslut. Realiserade och orealiserade kursdifferenser separeras automatiskt.</span>
+            </li>
+            <li class="change-item">
+              <span class="change-tag tag-new">Ny</span>
+              <span class="change-text"><strong>Stripe-integration</strong> — Native integration mot Stripe för betalningsspårning, automatisk matchning mot fakturor och FX-hantering.</span>
+            </li>
+            <li class="change-item">
+              <span class="change-tag tag-new">Ny</span>
+              <span class="change-text"><strong>Valutaexponeringsrapport</strong> — Ny rapport som visar exponering per valuta och kund, med hedge-spårning och riskanalys.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="release-section">
+          <div class="release-section-title">Reports</div>
+          <ul class="change-list">
+            <li class="change-item">
+              <span class="change-tag tag-improved">Förbättrad</span>
+              <span class="change-text">P&amp;L-rapporten visar nu kursdifferenser som separat rad. Exportformat uppdaterat för kompatibilitet med Fortnox och Visma.</span>
+            </li>
+            <li class="change-item">
+              <span class="change-tag tag-improved">Förbättrad</span>
+              <span class="change-text">Balanräkning inkluderar nu valutaseparering per konto för revisorer.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="release-section">
+          <div class="release-section-title">Buggfixar</div>
+          <ul class="change-list">
+            <li class="change-item">
+              <span class="change-tag tag-fix">Fix</span>
+              <span class="change-text">Rounding error vid valutakonvertering för belopp &gt;1M fixad (Banker's rounding tillämpas nu konsekvent).</span>
+            </li>
+            <li class="change-item">
+              <span class="change-tag tag-fix">Fix</span>
+              <span class="change-text">SIE4-export missade kursdifferenskonton vid multi-currency bokslut — åtgärdat.</span>
+            </li>
+            <li class="change-item">
+              <span class="change-tag tag-fix">Fix</span>
+              <span class="change-text">Dagliga ECB-kurshämtningar failade sporadiskt 04:00–05:00 UTC — retry-logik tillagd.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="release-spacer"></div>
+
+  <!-- ═══════════════════════════════════════════
+       v1.0.0
+  ═══════════════════════════════════════════ -->
+  <div class="release">
+    <div class="release-meta">
+      <div class="release-version">v1.0.0</div>
+      <div class="release-date">2026-01-10</div>
+      <div class="release-timeline-dot major"></div>
+    </div>
+    <div>
+      <div class="release-content">
+        <div class="release-header">
+          <div class="release-title">Initial release — Execution · Capability · Process</div>
+          <p class="release-summary">pixdrift lanseras. De tre grundläggande modulerna är klara: Execution för pipeline och CRM, Capability för kompetens och mål, Process för kvalitet och compliance. Grundinfrastrukturen är på plats.</p>
+          <div class="release-badges">
+            <span class="badge badge-new">Launch</span>
+            <span class="badge badge-module">Execution</span>
+            <span class="badge badge-module">Capability</span>
+            <span class="badge badge-module">Process</span>
+          </div>
+        </div>
+
+        <div class="release-section">
+          <div class="release-section-title">Execution</div>
+          <ul class="change-list">
+            <li class="change-item">
+              <span class="change-tag tag-new">Ny</span>
+              <span class="change-text"><strong>Pipeline-hantering</strong> — Kanban- och listvy för affärer med anpassningsbara stages, ägare och värden.</span>
+            </li>
+            <li class="change-item">
+              <span class="change-tag tag-new">Ny</span>
+              <span class="change-text"><strong>Kontakt- och kontohantering</strong> — CRM-kärna med hierarki (konto → kontakt → affär), fullständig historik och aktivitetsspårning.</span>
+            </li>
+            <li class="change-item">
+              <span class="change-tag tag-new">Ny</span>
+              <span class="change-text"><strong>Uppgiftshantering</strong> — Uppgifter kopplade till affärer, kontakter och konton med förfallodatum, påminnelser och ägartilldelning.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="release-section">
+          <div class="release-section-title">Capability</div>
+          <ul class="change-list">
+            <li class="change-item">
+              <span class="change-tag tag-new">Ny</span>
+              <span class="change-text"><strong>Kompetensmatris</strong> — Definiera kompetenser per roll. Mappa medarbetare mot roller. Identifiera gap automatiskt.</span>
+            </li>
+            <li class="change-item">
+              <span class="change-tag tag-new">Ny</span>
+              <span class="change-text"><strong>OKR-hantering</strong> — Kvartalsvisa och årliga OKR:er på organisationsnivå, teamnivå och individnivå. Automatisk framstegsspårning.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="release-section">
+          <div class="release-section-title">Process</div>
+          <ul class="change-list">
+            <li class="change-item">
+              <span class="change-tag tag-new">Ny</span>
+              <span class="change-text"><strong>Processbibliotek</strong> — Dokumentera och versionskontrollera era processer. Processer kopplas till ansvariga roller och granskningscykler.</span>
+            </li>
+            <li class="change-item">
+              <span class="change-tag tag-new">Ny</span>
+              <span class="change-text"><strong>GDPR-modul</strong> — Registerföring av behandlingsaktiviteter (RoPA), samtycken och Subject Access Request-hantering.</span>
+            </li>
+            <li class="change-item">
+              <span class="change-tag tag-new">Ny</span>
+              <span class="change-text"><strong>Revisionslogg</strong> — Fullständig audit trail för alla ändringar i alla moduler. Exporterbar för externa revisioner.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="release-section">
+          <div class="release-section-title">Infrastruktur</div>
+          <ul class="change-list">
+            <li class="change-item">
+              <span class="change-tag tag-new">Ny</span>
+              <span class="change-text">Multi-tenant arkitektur med row-level security (RLS) på databasnivå. Logisk isolering per organisation.</span>
+            </li>
+            <li class="change-item">
+              <span class="change-tag tag-new">Ny</span>
+              <span class="change-text">AES-256 kryptering at rest. TLS 1.3 in transit. Datalagring: eu-north-1 (Stockholm).</span>
+            </li>
+            <li class="change-item">
+              <span class="change-tag tag-new">Ny</span>
+              <span class="change-text">Dagliga automatiska backups med 30 dagars retention och point-in-time recovery.</span>
+            </li>
+            <li class="change-item">
+              <span class="change-tag tag-security">Säkerhet</span>
+              <span class="change-text">GDPR-kompatibel arkitektur från dag ett. DPA tillgängligt på begäran.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Roadmap teaser -->
+  <div style="margin-top:3rem;padding:2rem;background:var(--pd-surface);border:1px solid var(--pd-border);border-radius:var(--radius-lg);text-align:center">
+    <div style="font-size:1.25rem;margin-bottom:0.5rem">🗺</div>
+    <h3 style="font-size:1rem;font-weight:600;color:var(--pd-white);margin-bottom:0.5rem">Se vad som kommer härnäst</h3>
+    <p style="font-size:0.875rem;color:var(--pd-muted);margin-bottom:1.25rem">SSO/SAML, SOC 2 Type II, mobilappar och mer finns på roadmapen för 2026.</p>
+    <a href="#" class="btn btn-primary" style="display:inline-flex">Se roadmap →</a>
+  </div>
+</main>
+
+<footer>
+  <p>© 2026 pixdrift AB</p>
+  <div class="footer-links">
+    <a href="index.html">Hem</a>
+    <a href="about.html">Om oss</a>
+    <a href="security.html">Säkerhet</a>
+    <a href="#">Integritetspolicy</a>
+  </div>
+</footer>
+
+</body>
+</html>

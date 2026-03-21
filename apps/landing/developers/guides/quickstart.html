@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quickstart Guide — pixdrift API</title>
+  <meta name="description" content="Get started with the pixdrift API in minutes. Quickstart guide with authentication, first API call, and integration examples." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://pixdrift.com/developers/guides/quickstart.html" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="theme-color" content="#6366f1" />
+  <style>
+    :root{--bg:#0a0a0f;--surface:#12121a;--border:#2a2a3e;--accent:#6c5ce7;--accent2:#a29bfe;--green:#00b894;--text:#e8e8f0;--muted:#888899;--code-bg:#0d0d17;}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sans-serif;line-height:1.7;}
+    a{color:var(--accent2);text-decoration:none;}a:hover{text-decoration:underline;}
+    .topnav{height:56px;display:flex;align-items:center;padding:0 24px;gap:16px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+    .topnav-logo{font-weight:700;font-size:16px;color:var(--text);}
+    .topnav-logo span{color:var(--accent2);}
+    .topnav-links{margin-left:auto;display:flex;gap:20px;font-size:13px;}
+    .topnav-links a{color:var(--muted);}
+    .layout{display:flex;}
+    .sidebar{width:240px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;}
+    .sidebar a{display:block;padding:8px 20px;font-size:13px;color:var(--muted);border-left:3px solid transparent;}
+    .sidebar a:hover{color:var(--text);background:rgba(108,92,231,0.08);border-left-color:var(--accent);text-decoration:none;}
+    .sidebar-group{padding:16px 20px 8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);}
+    .content{flex:1;padding:48px;max-width:860px;}
+    h1{font-size:36px;font-weight:800;margin-bottom:8px;}
+    .subtitle{font-size:20px;color:var(--muted);margin-bottom:40px;}
+    h2{font-size:22px;font-weight:700;margin:48px 0 16px;}
+    h3{font-size:17px;font-weight:600;margin:24px 0 12px;}
+    p{color:var(--muted);margin-bottom:16px;}
+    .step-block{border-left:3px solid var(--accent);padding-left:24px;margin-bottom:40px;}
+    .step-num{color:var(--accent2);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+    pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:20px;overflow-x:auto;font-size:13px;line-height:1.8;font-family:'Fira Code',monospace;margin:16px 0;}
+    code{background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:13px;font-family:monospace;}
+    .callout{background:rgba(108,92,231,0.1);border:1px solid rgba(108,92,231,0.3);border-radius:8px;padding:16px 20px;margin:20px 0;color:var(--text);}
+    .callout.green{background:rgba(0,184,148,0.1);border-color:rgba(0,184,148,0.3);}
+    .k{color:#fd79a8;}.s{color:#55efc4;}.c{color:#636e72;font-style:italic;}.n{color:var(--accent2);}.kw{color:#74b9ff;}
+    .next-steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-top:24px;}
+    .next-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;transition:border-color 0.2s;}
+    .next-card:hover{border-color:var(--accent2);}
+    .next-card h4{margin-bottom:8px;font-size:15px;}
+    .next-card p{font-size:13px;margin-bottom:12px;}
+    @media(max-width:768px){.sidebar{display:none;}.content{padding:24px 16px;}}
+  </style>
+  <meta name="revised" content="2026-03-21">
+</head>
+<body>
+<div class="topnav">
+  <a href="../index.html" class="topnav-logo">pix<span>drift</span></a>
+  <span style="color:var(--border)">/</span>
+  <span style="color:var(--muted);font-size:14px">Quickstart</span>
+  <div class="topnav-links">
+    <a href="../api-reference.html">API Reference</a>
+    <a href="../authentication.html">Auth</a>
+    <a href="../webhooks.html">Webhooks</a>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-group">Guides</div>
+    <a href="quickstart.html">⚡ Quickstart (5 min)</a>
+    <a href="webhooks-guide.html">🪝 Webhooks Integration</a>
+    <a href="reporting-guide.html">📊 Reports & Finance</a>
+    <a href="import-guide.html">📥 Bulk Import</a>
+  </aside>
+
+  <main class="content">
+    <h1>Quickstart Guide</h1>
+    <div class="subtitle">From zero to your first API call in 5 minutes</div>
+
+    <!-- STEP 1 -->
+    <div class="step-block">
+      <div class="step-num">Step 1 — Create your pixdrift account</div>
+      <h2>Create your account</h2>
+      <p>If you don't have a pixdrift account, sign up at <a href="https://app.pixdrift.com">app.pixdrift.com</a>. You'll create your organization during onboarding.</p>
+      <p>Note your <strong>Organization ID</strong> from Admin → Settings — you'll need it for some API calls.</p>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step-block">
+      <div class="step-num">Step 2 — Get your API key</div>
+      <h2>Create an API key</h2>
+      <p>Navigate to <strong>Admin → Settings → API Keys</strong> in the pixdrift app, or create one via the API:</p>
+      <pre><span class="k">curl</span> -X POST https://api.bc.pixdrift.com/api/admin/api-keys \
+  <span class="k">-H</span> <span class="s">"Authorization: Bearer YOUR_SUPABASE_JWT"</span> \
+  <span class="k">-H</span> <span class="s">"Content-Type: application/json"</span> \
+  <span class="k">-d</span> <span class="s">'{"name": "My First Integration", "scopes": ["read", "write"]}'</span></pre>
+      <p>You'll receive a key like <code>pd_live_a1b2c3d4e5f6...</code></p>
+      <div class="callout">Store your key securely — it's only shown once. Use environment variables, not hardcoded strings.</div>
+      <h3>Set your key as an environment variable</h3>
+      <pre><span class="c"># Add to your .env or shell profile</span>
+export PIXDRIFT_API_KEY=pd_live_your_key_here</pre>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step-block">
+      <div class="step-num">Step 3 — Make your first API call</div>
+      <h2>Verify with the admin dashboard</h2>
+      <p>The admin dashboard is the perfect first call — it returns a snapshot of your organization.</p>
+      <pre><span class="k">curl</span> https://api.bc.pixdrift.com/api/dashboards/admin \
+  <span class="k">-H</span> <span class="s">"Authorization: Bearer $PIXDRIFT_API_KEY"</span></pre>
+      <p>You should see something like:</p>
+      <pre>{
+  <span class="n">"total_users"</span>: 12,
+  <span class="n">"total_deals"</span>: 34,
+  <span class="n">"total_revenue"</span>: 485000,
+  <span class="n">"active_processes"</span>: 7,
+  <span class="n">"open_nc"</span>: 2
+}</pre>
+      <div class="callout green">✅ If you got a response, your API key is working!</div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="step-block">
+      <div class="step-num">Step 4 — Create your first deal</div>
+      <h2>Create a deal via API</h2>
+      <p>Let's add a deal to the pipeline:</p>
+      <pre><span class="k">curl</span> -X POST https://api.bc.pixdrift.com/api/deals \
+  <span class="k">-H</span> <span class="s">"Authorization: Bearer $PIXDRIFT_API_KEY"</span> \
+  <span class="k">-H</span> <span class="s">"Content-Type: application/json"</span> \
+  <span class="k">-d</span> <span class="s">'{
+    "title": "Acme Corp Q2 License",
+    "value": 125000,
+    "currency": "SEK",
+    "status": "proposal",
+    "expected_close_date": "2026-06-30"
+  }'</span></pre>
+      <p>You'll get back the full deal object with its new UUID. Save the <code>id</code> for the next step.</p>
+
+      <h3>Move the deal forward</h3>
+      <pre><span class="k">curl</span> -X PATCH https://api.bc.pixdrift.com/api/deals/DEAL_ID/status \
+  <span class="k">-H</span> <span class="s">"Authorization: Bearer $PIXDRIFT_API_KEY"</span> \
+  <span class="k">-H</span> <span class="s">"Content-Type: application/json"</span> \
+  <span class="k">-d</span> <span class="s">'{"status": "closed_won"}'</span></pre>
+
+      <h3>Same pattern in JavaScript</h3>
+      <pre><span class="kw">const</span> API = <span class="s">'https://api.bc.pixdrift.com'</span>
+<span class="kw">const</span> headers = {
+  <span class="s">'Authorization'</span>: <span class="s">`Bearer ${process.env.PIXDRIFT_API_KEY}`</span>,
+  <span class="s">'Content-Type'</span>: <span class="s">'application/json'</span>
+}
+
+<span class="c">// Create deal</span>
+<span class="kw">const</span> deal = <span class="kw">await</span> fetch(<span class="s">`${API}/api/deals`</span>, {
+  method: <span class="s">'POST'</span>,
+  headers,
+  body: JSON.stringify({
+    title: <span class="s">'Acme Corp Q2 License'</span>,
+    value: <span class="s">125000</span>,
+    currency: <span class="s">'SEK'</span>,
+    status: <span class="s">'proposal'</span>
+  })
+}).then(r => r.json())
+
+console.log(<span class="s">'Created deal:'</span>, deal.id)
+
+<span class="c">// Update status</span>
+<span class="kw">await</span> fetch(<span class="s">`${API}/api/deals/${deal.id}/status`</span>, {
+  method: <span class="s">'PATCH'</span>, headers,
+  body: JSON.stringify({ status: <span class="s">'closed_won'</span> })
+})</pre>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="step-block">
+      <div class="step-num">Step 5 — Set up a webhook</div>
+      <h2>Get real-time events</h2>
+      <p>Instead of polling the API, subscribe to events. When a deal closes, you'll get an instant notification.</p>
+
+      <h3>1. Expose a public endpoint</h3>
+      <p>For local development, use <a href="https://ngrok.com">ngrok</a> to expose your localhost:</p>
+      <pre>ngrok http 3000
+<span class="c"># → https://abc123.ngrok.io</span></pre>
+
+      <h3>2. Handle the webhook</h3>
+      <pre><span class="kw">const</span> express = require(<span class="s">'express'</span>)
+<span class="kw">const</span> app = express()
+
+app.post(<span class="s">'/webhook'</span>, express.json(), (req, res) => {
+  <span class="kw">const</span> { type, data } = req.body
+
+  <span class="kw">if</span> (type === <span class="s">'deal.won'</span>) {
+    console.log(<span class="s">`🎉 Deal won: ${data.title} — ${data.value} SEK`</span>)
+    <span class="c">// Trigger Slack notification, CRM update, etc.</span>
+  }
+
+  res.json({ received: <span class="kw">true</span> })
+})
+
+app.listen(<span class="s">3000</span>)</pre>
+
+      <h3>3. Register your webhook URL</h3>
+      <p>Contact API support or use the pixdrift admin UI to register your webhook endpoint. Full webhook docs at <a href="../webhooks.html">webhooks documentation</a>.</p>
+    </div>
+
+    <!-- NEXT STEPS -->
+    <h2>What's next?</h2>
+    <div class="next-steps">
+      <a href="../api-reference.html" class="next-card" style="text-decoration:none;color:inherit">
+        <h4>📖 Full API Reference</h4>
+        <p>Explore all 80+ endpoints with interactive examples.</p>
+        <span style="color:var(--accent2);font-size:13px">View reference →</span>
+      </a>
+      <a href="webhooks-guide.html" class="next-card" style="text-decoration:none;color:inherit">
+        <h4>🪝 Webhooks Guide</h4>
+        <p>Build event-driven integrations with Express or Flask.</p>
+        <span style="color:var(--accent2);font-size:13px">Read guide →</span>
+      </a>
+      <a href="reporting-guide.html" class="next-card" style="text-decoration:none;color:inherit">
+        <h4>📊 Reports Guide</h4>
+        <p>Financial reports, SIE4 export, VAT, multi-currency.</p>
+        <span style="color:var(--accent2);font-size:13px">Read guide →</span>
+      </a>
+      <a href="import-guide.html" class="next-card" style="text-decoration:none;color:inherit">
+        <h4>📥 Import Guide</h4>
+        <p>Bulk import contacts, deals, and historical data.</p>
+        <span style="color:var(--accent2);font-size:13px">Read guide →</span>
+      </a>
+    </div>
+  </main>
+</div>
+</body>
+</html>

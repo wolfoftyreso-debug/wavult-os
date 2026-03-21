@@ -1,0 +1,169 @@
+name: Deploy Frontends
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/**'
+      - 'packages/**'
+      - 'turbo.json'
+      - 'package.json'
+      - '.github/workflows/deploy-frontend.yml'
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: eu-north-1
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy Frontends
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Build all frontends
+        run: npx turbo build
+        env:
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Deploy workstation → S3
+        run: |
+          aws s3 sync apps/workstation/dist/ s3://pixdrift-bc-workstation-prod/ \
+            --delete --region ${{ env.AWS_REGION }} \
+            --cache-control "public,max-age=31536000,immutable" \
+            --exclude "index.html"
+          aws s3 cp apps/workstation/dist/index.html s3://pixdrift-bc-workstation-prod/index.html \
+            --region ${{ env.AWS_REGION }} \
+            --cache-control "no-cache,no-store,must-revalidate"
+
+      - name: Deploy admin → S3
+        run: |
+          aws s3 sync apps/admin/dist/ s3://pixdrift-bc-admin-prod/ \
+            --delete --region ${{ env.AWS_REGION }} \
+            --cache-control "public,max-age=31536000,immutable" \
+            --exclude "index.html"
+          aws s3 cp apps/admin/dist/index.html s3://pixdrift-bc-admin-prod/index.html \
+            --region ${{ env.AWS_REGION }} \
+            --cache-control "no-cache,no-store,must-revalidate"
+
+      - name: Deploy CRM → S3
+        run: |
+          aws s3 sync apps/crm/dist/ s3://pixdrift-bc-crm-prod/ \
+            --delete --region ${{ env.AWS_REGION }} \
+            --cache-control "public,max-age=31536000,immutable" \
+            --exclude "index.html"
+          aws s3 cp apps/crm/dist/index.html s3://pixdrift-bc-crm-prod/index.html \
+            --region ${{ env.AWS_REGION }} \
+            --cache-control "no-cache,no-store,must-revalidate"
+
+      - name: Deploy sales → S3
+        run: |
+          aws s3 sync apps/sales/dist/ s3://pixdrift-bc-sales-prod/ \
+            --delete --region ${{ env.AWS_REGION }} \
+            --cache-control "public,max-age=31536000,immutable" \
+            --exclude "index.html"
+          aws s3 cp apps/sales/dist/index.html s3://pixdrift-bc-sales-prod/index.html \
+            --region ${{ env.AWS_REGION }} \
+            --cache-control "no-cache,no-store,must-revalidate"
+
+      - name: Invalidate CloudFront — workstation
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CF_DISTRIBUTION_WORKSTATION }} \
+            --paths "/*" --region us-east-1
+
+      - name: Invalidate CloudFront — admin
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CF_DISTRIBUTION_ADMIN }} \
+            --paths "/*" --region us-east-1
+
+      - name: Invalidate CloudFront — CRM
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CF_DISTRIBUTION_CRM }} \
+            --paths "/*" --region us-east-1
+
+      - name: Invalidate CloudFront — sales
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CF_DISTRIBUTION_SALES }} \
+            --paths "/*" --region us-east-1
+
+      - name: Smoke test frontends
+        run: |
+          sleep 10
+          for url in \
+            "https://app.bc.pixdrift.com" \
+            "https://admin.bc.pixdrift.com" \
+            "https://crm.bc.pixdrift.com" \
+            "https://sales.bc.pixdrift.com"; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$url" || echo "000")
+            echo "$url → $STATUS"
+          done
+
+      - name: Notify pixdrift of deploy
+        if: always()
+        run: |
+          DEPLOY_TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          curl -s -X POST https://api.bc.pixdrift.com/api/notifications/webhook \
+            -H "Content-Type: application/json" \
+            -d "{\"type\":\"deploy\",\"title\":\"Frontend deployed\",\"body\":\"Version ${{ github.sha }} deployed to production by ${{ github.actor }}\",\"severity\":\"info\",\"timestamp\":\"${DEPLOY_TIMESTAMP}\"}" \
+            || echo "Deploy notification failed (non-fatal)"
+
+      - name: Submit changed pages to IndexNow
+        run: |
+          CHANGED_URLS=""
+          # Build list of changed HTML files
+          for file in $(git diff --name-only HEAD~1 HEAD -- apps/landing/*.html 2>/dev/null); do
+            page=$(basename "$file")
+            CHANGED_URLS="${CHANGED_URLS}\"https://pixdrift.com/${page}\","
+          done
+          # Always include root if changed
+          if git diff --name-only HEAD~1 HEAD -- apps/landing/index.html 2>/dev/null | grep -q "index.html"; then
+            CHANGED_URLS="${CHANGED_URLS}\"https://pixdrift.com/\","
+          fi
+          if [ -n "$CHANGED_URLS" ]; then
+            echo "Submitting to IndexNow: ${CHANGED_URLS%,}"
+            curl -X POST "https://api.indexnow.org/indexnow" \
+              -H "Content-Type: application/json" \
+              -d "{\"host\":\"pixdrift.com\",\"key\":\"${{ secrets.INDEXNOW_KEY }}\",\"keyLocation\":\"https://pixdrift.com/${{ secrets.INDEXNOW_KEY }}.txt\",\"urlList\":[${CHANGED_URLS%,}]}" \
+              || echo "IndexNow submission failed (non-fatal)"
+          else
+            echo "No HTML pages changed, skipping IndexNow submission"
+          fi
+
+      - name: Ping search engines
+        run: |
+          echo "Pinging Google..."
+          curl -s "https://www.google.com/ping?sitemap=https://pixdrift.com/sitemap.xml" -o /dev/null
+          echo "Pinging Bing..."
+          curl -s "https://www.bing.com/webmaster/ping.aspx?siteMap=https://pixdrift.com/sitemap.xml" -o /dev/null
+          echo "Done."
+
+      - name: Invalidate SEO cache
+        run: |
+          curl -s -X POST https://api.bc.pixdrift.com/api/seo/invalidate-cache \
+            -H "Content-Type: application/json" || true

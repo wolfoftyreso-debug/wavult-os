@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+Disallow: /legal/
+Disallow: /checkout.html
+Disallow: /success.html
+Disallow: /status.html
+Disallow: /*.json$
+
+# Crawl-delay för respektfulla bots
+Crawl-delay: 10
+
+# Sitemap
+Sitemap: https://pixdrift.com/sitemap.xml
+
+# Tillåt specifika bots
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 5

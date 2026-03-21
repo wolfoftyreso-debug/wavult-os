@@ -1,0 +1,488 @@
+{
+  "info": {
+    "_postman_id": "pixdrift-api-v1",
+    "name": "pixdrift API",
+    "description": "Complete API collection for the pixdrift SaaS OMS platform. Configure BASE_URL and API_KEY in the environment before use.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "BASE_URL", "value": "https://api.bc.pixdrift.com" },
+    { "key": "API_KEY", "value": "pd_live_your_key_here" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{API_KEY}}", "type": "string" }]
+  },
+  "item": [
+
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": "{{BASE_URL}}/health",
+            "auth": { "type": "noauth" }
+          },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"] } }]
+        },
+        {
+          "name": "Execution Health",
+          "request": {
+            "method": "GET",
+            "url": "{{BASE_URL}}/api/execution/health",
+            "auth": { "type": "noauth" }
+          },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"] } }]
+        }
+      ]
+    },
+
+    {
+      "name": "Contacts",
+      "item": [
+        {
+          "name": "List Contacts",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/contacts" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));", "pm.test('Is array', () => pm.expect(pm.response.json()).to.be.an('array'));"] } }]
+        },
+        {
+          "name": "Create Contact",
+          "request": {
+            "method": "POST",
+            "url": "{{BASE_URL}}/api/contacts",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"first_name\":\"Anna\",\"last_name\":\"Svensson\",\"email\":\"anna@example.com\",\"phone\":\"+46701234567\",\"title\":\"CTO\"}"
+            }
+          },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 201', () => pm.response.to.have.status(201));", "pm.collectionVariables.set('contact_id', pm.response.json().id);"] } }]
+        }
+      ]
+    },
+
+    {
+      "name": "Companies",
+      "item": [
+        {
+          "name": "List Companies",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/companies" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"] } }]
+        },
+        {
+          "name": "Create Company",
+          "request": {
+            "method": "POST",
+            "url": "{{BASE_URL}}/api/companies",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\":\"Acme Corp\",\"org_number\":\"556123-4567\",\"industry\":\"Technology\",\"country\":\"SE\"}"
+            }
+          },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 201', () => pm.response.to.have.status(201));", "pm.collectionVariables.set('company_id', pm.response.json().id);"] } }]
+        }
+      ]
+    },
+
+    {
+      "name": "Leads",
+      "item": [
+        {
+          "name": "List Leads",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/leads" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"] } }]
+        },
+        {
+          "name": "Create Lead",
+          "request": {
+            "method": "POST",
+            "url": "{{BASE_URL}}/api/leads",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\":\"Enterprise software interest\",\"source\":\"website\",\"status\":\"new\"}"
+            }
+          },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 201', () => pm.response.to.have.status(201));"] } }]
+        }
+      ]
+    },
+
+    {
+      "name": "Deals",
+      "item": [
+        {
+          "name": "List Deals",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/deals" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"] } }]
+        },
+        {
+          "name": "Create Deal",
+          "request": {
+            "method": "POST",
+            "url": "{{BASE_URL}}/api/deals",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\":\"Q2 Enterprise License\",\"value\":250000,\"currency\":\"SEK\",\"status\":\"proposal\",\"expected_close_date\":\"2026-06-30\"}"
+            }
+          },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 201', () => pm.response.to.have.status(201));", "pm.collectionVariables.set('deal_id', pm.response.json().id);"] } }]
+        },
+        {
+          "name": "Update Deal Status",
+          "request": {
+            "method": "PATCH",
+            "url": "{{BASE_URL}}/api/deals/{{deal_id}}/status",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"status\":\"closed_won\"}" }
+          },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"] } }]
+        }
+      ]
+    },
+
+    {
+      "name": "Tasks",
+      "item": [
+        {
+          "name": "List Tasks",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/tasks" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"] } }]
+        },
+        {
+          "name": "My Tasks",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/tasks/my" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"] } }]
+        },
+        {
+          "name": "Create Task",
+          "request": {
+            "method": "POST",
+            "url": "{{BASE_URL}}/api/tasks",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"title\":\"Follow up with client\",\"priority\":\"high\",\"due_date\":\"2026-04-01T09:00:00Z\"}" }
+          },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 201', () => pm.response.to.have.status(201));"] } }]
+        }
+      ]
+    },
+
+    {
+      "name": "Ledger",
+      "item": [
+        {
+          "name": "Create Ledger Entry",
+          "request": {
+            "method": "POST",
+            "url": "{{BASE_URL}}/api/ledger/entries",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"description\":\"Invoice payment\",\"reference\":\"INV-001\",\"lines\":[{\"account_id\":\"1510\",\"debit\":10000,\"credit\":0},{\"account_id\":\"3000\",\"debit\":0,\"credit\":10000}]}"
+            }
+          },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 201', () => pm.response.to.have.status(201));"] } }]
+        },
+        {
+          "name": "Trial Balance",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/ledger/trial-balance" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));", "pm.test('Has balanced field', () => pm.expect(pm.response.json()).to.have.property('balanced'));"] } }]
+        },
+        {
+          "name": "Multi-currency Trial Balance",
+          "request": { "method": "GET", "url": { "raw": "{{BASE_URL}}/api/ledger/trial-balance/multi?currency=SEK", "query": [{ "key": "currency", "value": "SEK" }] } }
+        }
+      ]
+    },
+
+    {
+      "name": "Dashboards",
+      "item": [
+        {
+          "name": "Admin Dashboard",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/dashboards/admin" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"] } }]
+        },
+        {
+          "name": "Sales Dashboard",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/dashboards/sales" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"] } }]
+        },
+        {
+          "name": "Finance Dashboard",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/dashboards/finance" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"] } }]
+        },
+        {
+          "name": "Management Dashboard",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/dashboards/management" }
+        },
+        {
+          "name": "Capabilities Dashboard",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/dashboards/capabilities" }
+        }
+      ]
+    },
+
+    {
+      "name": "Audit Log",
+      "item": [
+        {
+          "name": "List Audit Logs",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/audit" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 200', () => pm.response.to.have.status(200));"] } }]
+        }
+      ]
+    },
+
+    {
+      "name": "Capability",
+      "item": [
+        {
+          "name": "Capability Profile",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/capabilities/profile/{{user_id}}" }
+        },
+        {
+          "name": "Team Heatmap",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/capabilities/team" }
+        },
+        {
+          "name": "Create Assessment",
+          "request": {
+            "method": "POST",
+            "url": "{{BASE_URL}}/api/capabilities/assess/{{user_id}}",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"capability_id\":\"{{cap_id}}\",\"level\":\"L3\",\"target_level\":\"L4\",\"assessed_by\":\"{{user_id}}\"}" }
+          }
+        },
+        {
+          "name": "Submit Feedback",
+          "request": {
+            "method": "POST",
+            "url": "{{BASE_URL}}/api/feedback",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"from_user_id\":\"{{user_id}}\",\"to_user_id\":\"{{target_user_id}}\",\"content\":\"Great work on the project delivery!\"}" }
+          }
+        },
+        {
+          "name": "Development Plan",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/development/plan/{{user_id}}" }
+        },
+        {
+          "name": "Generate Development Plan",
+          "request": { "method": "POST", "url": "{{BASE_URL}}/api/development/generate/{{user_id}}" }
+        },
+        {
+          "name": "List Goals",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/goals" }
+        },
+        {
+          "name": "Goal Readiness",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/goals/{{goal_id}}/readiness" }
+        }
+      ]
+    },
+
+    {
+      "name": "Process",
+      "item": [
+        {
+          "name": "List Processes",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/processes" }
+        },
+        {
+          "name": "Create Process",
+          "request": {
+            "method": "POST",
+            "url": "{{BASE_URL}}/api/processes",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"name\":\"Onboarding Process\",\"description\":\"Customer onboarding steps\",\"steps\":[]}" }
+          }
+        },
+        {
+          "name": "Execute Process",
+          "request": {
+            "method": "POST",
+            "url": "{{BASE_URL}}/api/processes/{{process_id}}/execute",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" }
+          }
+        },
+        {
+          "name": "Process Performance",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/processes/performance" }
+        }
+      ]
+    },
+
+    {
+      "name": "Non-Conformance",
+      "item": [
+        {
+          "name": "List NCs",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/nc" }
+        },
+        {
+          "name": "NC Summary",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/nc/summary" }
+        },
+        {
+          "name": "Create NC",
+          "request": {
+            "method": "POST",
+            "url": "{{BASE_URL}}/api/nc",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"title\":\"Delivery delay\",\"type\":\"delivery\",\"severity\":\"medium\"}" }
+          }
+        },
+        {
+          "name": "Update NC Status",
+          "request": {
+            "method": "PATCH",
+            "url": "{{BASE_URL}}/api/nc/{{nc_id}}/status",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"status\":\"investigating\"}" }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Risks",
+      "item": [
+        {
+          "name": "List Risks",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/risks" }
+        },
+        {
+          "name": "Risk Matrix",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/risks/matrix" }
+        },
+        {
+          "name": "Create Risk",
+          "request": {
+            "method": "POST",
+            "url": "{{BASE_URL}}/api/risks",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"title\":\"Supplier dependency\",\"likelihood\":3,\"impact\":4}" }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "Currency",
+      "item": [
+        {
+          "name": "List Currencies",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/currencies", "auth": { "type": "noauth" } }
+        },
+        {
+          "name": "Exchange Rates",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/exchange-rates" }
+        },
+        {
+          "name": "Convert Currency",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{BASE_URL}}/api/convert?amount=1000&from=USD&to=SEK", "query": [{ "key": "amount", "value": "1000" }, { "key": "from", "value": "USD" }, { "key": "to", "value": "SEK" }] }
+          }
+        },
+        {
+          "name": "FX Exposure",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/fx/exposure" }
+        },
+        {
+          "name": "FX Adjustments",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/fx/adjustments" }
+        },
+        {
+          "name": "Multi-currency Pipeline",
+          "request": { "method": "GET", "url": { "raw": "{{BASE_URL}}/api/deals/pipeline/multi?currency=SEK", "query": [{ "key": "currency", "value": "SEK" }] } }
+        }
+      ]
+    },
+
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Chart of Accounts",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/reports/chart-of-accounts", "auth": { "type": "noauth" } }
+        },
+        {
+          "name": "Income Statement",
+          "request": { "method": "GET", "url": { "raw": "{{BASE_URL}}/api/reports/income-statement?from=2026-01-01&to=2026-03-31", "query": [{ "key": "from", "value": "2026-01-01" }, { "key": "to", "value": "2026-03-31" }] } }
+        },
+        {
+          "name": "Balance Sheet",
+          "request": { "method": "GET", "url": { "raw": "{{BASE_URL}}/api/reports/balance-sheet?date=2026-03-31", "query": [{ "key": "date", "value": "2026-03-31" }] } }
+        },
+        {
+          "name": "General Ledger",
+          "request": { "method": "GET", "url": { "raw": "{{BASE_URL}}/api/reports/general-ledger?from=2026-01-01&to=2026-03-31", "query": [{ "key": "from", "value": "2026-01-01" }, { "key": "to", "value": "2026-03-31" }] } }
+        },
+        {
+          "name": "VAT Report",
+          "request": { "method": "GET", "url": { "raw": "{{BASE_URL}}/api/reports/vat?from=2026-01-01&to=2026-03-31", "query": [{ "key": "from", "value": "2026-01-01" }, { "key": "to", "value": "2026-03-31" }] } }
+        },
+        {
+          "name": "Cashflow Statement",
+          "request": { "method": "GET", "url": { "raw": "{{BASE_URL}}/api/reports/cashflow?from=2026-01-01&to=2026-03-31", "query": [{ "key": "from", "value": "2026-01-01" }, { "key": "to", "value": "2026-03-31" }] } }
+        },
+        {
+          "name": "SIE4 Export",
+          "request": { "method": "GET", "url": { "raw": "{{BASE_URL}}/api/reports/sie4?from=2026-01-01&to=2026-12-31", "query": [{ "key": "from", "value": "2026-01-01" }, { "key": "to", "value": "2026-12-31" }] } }
+        }
+      ]
+    },
+
+    {
+      "name": "Stripe",
+      "item": [
+        {
+          "name": "List Plans",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/stripe/plans", "auth": { "type": "noauth" } }
+        },
+        {
+          "name": "Create Checkout Session",
+          "request": {
+            "method": "POST",
+            "url": "{{BASE_URL}}/api/stripe/create-checkout-session",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"plan_id\":\"growth\",\"success_url\":\"https://app.pixdrift.com/success\",\"cancel_url\":\"https://app.pixdrift.com/billing\"}" }
+          }
+        }
+      ]
+    },
+
+    {
+      "name": "API Keys (Admin)",
+      "item": [
+        {
+          "name": "List API Keys",
+          "request": { "method": "GET", "url": "{{BASE_URL}}/api/admin/api-keys" }
+        },
+        {
+          "name": "Create API Key",
+          "request": {
+            "method": "POST",
+            "url": "{{BASE_URL}}/api/admin/api-keys",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\"name\":\"My Integration\",\"scopes\":[\"read\",\"write\"]}" }
+          },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status 201', () => pm.response.to.have.status(201));", "pm.test('Has key field', () => pm.expect(pm.response.json()).to.have.property('key'));"] } }]
+        },
+        {
+          "name": "Revoke API Key",
+          "request": { "method": "DELETE", "url": "{{BASE_URL}}/api/admin/api-keys/{{api_key_id}}" }
+        }
+      ]
+    }
+
+  ]
+}

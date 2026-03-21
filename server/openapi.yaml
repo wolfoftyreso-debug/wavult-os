@@ -1,0 +1,3004 @@
+openapi: 3.0.3
+info:
+  title: pixdrift API
+  description: |
+    pixdrift SaaS OMS (Order Management System) platform API.
+    
+    All endpoints require Bearer token authentication via Supabase JWT or API key.
+    Rate limits: 100 requests/15min (Standard), 1000 requests/15min (Enterprise).
+  version: 1.3.0
+  contact:
+    name: pixdrift Developer Support
+    url: https://api.bc.pixdrift.com/developers
+  license:
+    name: Proprietary
+    url: https://pixdrift.com/terms
+
+servers:
+  - url: https://api.bc.pixdrift.com
+    description: Production
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Health
+    description: System health and status
+  - name: Execution
+    description: CRM — Contacts, Companies, Leads, Deals, Tasks, Meetings, Ledger, Payouts, Decisions, Channels, Dashboards
+  - name: Capability
+    description: Capability assessments, feedback, development plans, goals
+  - name: Process
+    description: Process management, NC, improvements, compliance, documents, audits, risks, training
+  - name: Currency
+    description: Multi-currency support, exchange rates, FX exposure
+  - name: Reports
+    description: Financial reports — SIE4, income statement, balance sheet, VAT, cashflow
+  - name: Stripe
+    description: Subscription plans, checkout sessions, webhooks
+
+paths:
+
+  # ─── HEALTH ────────────────────────────────────────────────────────────────
+
+  /health:
+    get:
+      summary: System health check
+      tags: [Health]
+      security: []
+      responses:
+        '200':
+          description: System is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /api/execution/health:
+    get:
+      summary: Execution module health check
+      tags: [Health]
+      security: []
+      responses:
+        '200':
+          description: Execution module is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  module:
+                    type: string
+                    example: execution
+
+  # ─── CONTACTS ──────────────────────────────────────────────────────────────
+
+  /api/contacts:
+    get:
+      summary: List contacts
+      tags: [Execution]
+      responses:
+        '200':
+          description: List of contacts for the authenticated organization
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Contact'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      summary: Create contact
+      tags: [Execution]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactInput'
+      responses:
+        '201':
+          description: Contact created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ─── COMPANIES ─────────────────────────────────────────────────────────────
+
+  /api/companies:
+    get:
+      summary: List companies
+      tags: [Execution]
+      responses:
+        '200':
+          description: List of companies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Company'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      summary: Create company
+      tags: [Execution]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyInput'
+      responses:
+        '201':
+          description: Company created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ─── LEADS ─────────────────────────────────────────────────────────────────
+
+  /api/leads:
+    get:
+      summary: List leads
+      tags: [Execution]
+      responses:
+        '200':
+          description: List of leads
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Lead'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      summary: Create lead
+      tags: [Execution]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadInput'
+      responses:
+        '201':
+          description: Lead created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lead'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ─── DEALS ─────────────────────────────────────────────────────────────────
+
+  /api/deals:
+    get:
+      summary: List deals
+      tags: [Execution]
+      responses:
+        '200':
+          description: List of deals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Deal'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      summary: Create deal
+      tags: [Execution]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DealInput'
+      responses:
+        '201':
+          description: Deal created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deal'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/deals/{id}/status:
+    patch:
+      summary: Update deal status
+      tags: [Execution]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status:
+                  type: string
+                  enum: [prospecting, qualification, proposal, negotiation, closed_won, closed_lost]
+      responses:
+        '200':
+          description: Deal status updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deal'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ─── TASKS ─────────────────────────────────────────────────────────────────
+
+  /api/tasks:
+    get:
+      summary: List all tasks
+      tags: [Execution]
+      responses:
+        '200':
+          description: List of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      summary: Create task
+      tags: [Execution]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskInput'
+      responses:
+        '201':
+          description: Task created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/tasks/my:
+    get:
+      summary: List tasks assigned to current user
+      tags: [Execution]
+      responses:
+        '200':
+          description: Tasks assigned to authenticated user, ordered by due date
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+
+  /api/tasks/{id}/status:
+    patch:
+      summary: Update task status
+      tags: [Execution]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status:
+                  type: string
+                  example: completed
+      responses:
+        '200':
+          description: Task status updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ─── MEETINGS ──────────────────────────────────────────────────────────────
+
+  /api/meetings:
+    post:
+      summary: Create meeting
+      tags: [Execution]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeetingInput'
+      responses:
+        '201':
+          description: Meeting created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Meeting'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  # ─── LEDGER ────────────────────────────────────────────────────────────────
+
+  /api/ledger/entries:
+    post:
+      summary: Create double-entry ledger transaction
+      tags: [Execution]
+      description: Creates a balanced journal entry. Debits must equal credits.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LedgerEntryInput'
+      responses:
+        '201':
+          description: Ledger entry created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LedgerEntry'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/ledger/trial-balance:
+    get:
+      summary: Get trial balance
+      tags: [Execution]
+      responses:
+        '200':
+          description: Trial balance aggregated by account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrialBalance'
+
+  # ─── PAYOUTS ───────────────────────────────────────────────────────────────
+
+  /api/payouts:
+    get:
+      summary: List payouts
+      tags: [Execution]
+      responses:
+        '200':
+          description: List of payouts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Payout'
+    post:
+      summary: Create payout request
+      tags: [Execution]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayoutInput'
+      responses:
+        '201':
+          description: Payout created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payout'
+
+  /api/payouts/{id}/approve:
+    patch:
+      summary: Approve payout
+      tags: [Execution]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Payout approved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payout'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ─── CONFIG ────────────────────────────────────────────────────────────────
+
+  /api/config:
+    get:
+      summary: Get organization config
+      tags: [Execution]
+      responses:
+        '200':
+          description: Organization configuration
+          content:
+            application/json:
+              schema:
+                type: object
+    patch:
+      summary: Update organization config
+      tags: [Execution]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Config updated
+
+  # ─── DECISIONS ─────────────────────────────────────────────────────────────
+
+  /api/decisions:
+    get:
+      summary: List decisions
+      tags: [Execution]
+      responses:
+        '200':
+          description: List of decisions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Decision'
+    post:
+      summary: Create decision
+      tags: [Execution]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DecisionInput'
+      responses:
+        '201':
+          description: Decision created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Decision'
+
+  # ─── CHANNELS & MESSAGES ───────────────────────────────────────────────────
+
+  /api/channels:
+    get:
+      summary: List channels
+      tags: [Execution]
+      responses:
+        '200':
+          description: List of communication channels
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Channel'
+
+  /api/channels/{id}/messages:
+    get:
+      summary: Get messages in channel
+      tags: [Execution]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Messages in channel
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+
+  /api/messages:
+    post:
+      summary: Send message to channel
+      tags: [Execution]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageInput'
+      responses:
+        '201':
+          description: Message sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  # ─── DASHBOARDS ────────────────────────────────────────────────────────────
+
+  /api/dashboards/admin:
+    get:
+      summary: Admin dashboard metrics
+      tags: [Execution]
+      responses:
+        '200':
+          description: Admin KPIs and metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminDashboard'
+
+  /api/dashboards/sales:
+    get:
+      summary: Sales dashboard metrics
+      tags: [Execution]
+      responses:
+        '200':
+          description: Sales pipeline and KPIs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SalesDashboard'
+
+  /api/dashboards/finance:
+    get:
+      summary: Finance dashboard metrics
+      tags: [Execution]
+      responses:
+        '200':
+          description: Financial KPIs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinanceDashboard'
+
+  /api/dashboards/management:
+    get:
+      summary: Management dashboard metrics
+      tags: [Process]
+      responses:
+        '200':
+          description: Management overview
+          content:
+            application/json:
+              schema:
+                type: object
+
+  # ─── AUDIT ─────────────────────────────────────────────────────────────────
+
+  /api/audit:
+    get:
+      summary: List audit log entries
+      tags: [Execution]
+      parameters:
+        - name: entity
+          in: query
+          schema:
+            type: string
+          description: Filter by entity type
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 100
+      responses:
+        '200':
+          description: Audit log entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditLog'
+
+  # ─── CAPABILITY ─────────────────────────────────────────────────────────────
+
+  /api/capabilities/profile/{userId}:
+    get:
+      summary: Get user capability profile
+      tags: [Capability]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Capability profile with assessments and gaps
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CapabilityProfile'
+
+  /api/capabilities/team:
+    get:
+      summary: Get team capability heatmap
+      tags: [Capability]
+      responses:
+        '200':
+          description: Team capability overview with heatmap data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamHeatmap'
+
+  /api/capabilities/assess/{userId}:
+    post:
+      summary: Create capability assessment for user
+      tags: [Capability]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssessmentInput'
+      responses:
+        '201':
+          description: Assessment created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assessment'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /api/feedback:
+    post:
+      summary: Submit feedback for a user
+      tags: [Capability]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeedbackInput'
+      responses:
+        '201':
+          description: Feedback submitted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Feedback'
+
+  /api/development/plan/{userId}:
+    get:
+      summary: Get user development plan
+      tags: [Capability]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Development plan with actions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DevelopmentPlan'
+
+  /api/development/generate/{userId}:
+    post:
+      summary: Auto-generate development plan from capability gaps
+      tags: [Capability]
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '201':
+          description: Development plan generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DevelopmentPlan'
+
+  /api/goals:
+    get:
+      summary: List organizational goals
+      tags: [Capability]
+      responses:
+        '200':
+          description: List of organizational goals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Goal'
+    post:
+      summary: Create organizational goal
+      tags: [Capability]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoalInput'
+      responses:
+        '201':
+          description: Goal created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Goal'
+
+  /api/goals/{id}/readiness:
+    get:
+      summary: Check team readiness for a goal
+      tags: [Capability]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Readiness assessment for the goal
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  goal_id:
+                    type: string
+                    format: uuid
+                  readiness_score:
+                    type: number
+                  gaps:
+                    type: array
+                    items:
+                      type: object
+
+  /api/dashboards/capabilities:
+    get:
+      summary: Capabilities dashboard
+      tags: [Capability]
+      responses:
+        '200':
+          description: Capability KPIs and team overview
+          content:
+            application/json:
+              schema:
+                type: object
+
+  # ─── PROCESS ────────────────────────────────────────────────────────────────
+
+  /api/processes:
+    get:
+      summary: List processes
+      tags: [Process]
+      responses:
+        '200':
+          description: List of processes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Process'
+    post:
+      summary: Create process
+      tags: [Process]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProcessInput'
+      responses:
+        '201':
+          description: Process created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Process'
+
+  /api/processes/{id}/execute:
+    post:
+      summary: Start process execution
+      tags: [Process]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                context:
+                  type: object
+      responses:
+        '201':
+          description: Process execution started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessExecution'
+
+  /api/processes/performance:
+    get:
+      summary: Get process performance metrics
+      tags: [Process]
+      responses:
+        '200':
+          description: Process performance data
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /api/process-executions/{id}/step:
+    patch:
+      summary: Advance process execution to next step
+      tags: [Process]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [step_id, status]
+              properties:
+                step_id:
+                  type: string
+                status:
+                  type: string
+                  enum: [completed, skipped, failed]
+                notes:
+                  type: string
+      responses:
+        '200':
+          description: Step updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessExecution'
+
+  # ─── NON-CONFORMANCE ────────────────────────────────────────────────────────
+
+  /api/nc:
+    get:
+      summary: List non-conformances
+      tags: [Process]
+      responses:
+        '200':
+          description: List of non-conformances
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NonConformance'
+    post:
+      summary: Create non-conformance report
+      tags: [Process]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NonConformanceInput'
+      responses:
+        '201':
+          description: Non-conformance created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NonConformance'
+
+  /api/nc/{id}/status:
+    patch:
+      summary: Update non-conformance status
+      tags: [Process]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status:
+                  type: string
+                  enum: [open, investigating, resolved, closed]
+      responses:
+        '200':
+          description: Status updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NonConformance'
+
+  /api/nc/summary:
+    get:
+      summary: Non-conformance summary statistics
+      tags: [Process]
+      responses:
+        '200':
+          description: NC summary by status, type, and trend
+          content:
+            application/json:
+              schema:
+                type: object
+
+  # ─── IMPROVEMENTS ───────────────────────────────────────────────────────────
+
+  /api/improvements:
+    get:
+      summary: List improvement actions
+      tags: [Process]
+      responses:
+        '200':
+          description: List of improvements
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Improvement'
+    post:
+      summary: Create improvement action
+      tags: [Process]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImprovementInput'
+      responses:
+        '201':
+          description: Improvement created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Improvement'
+
+  /api/improvements/{id}:
+    patch:
+      summary: Update improvement action
+      tags: [Process]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImprovementInput'
+      responses:
+        '200':
+          description: Improvement updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Improvement'
+
+  # ─── COMPLIANCE ─────────────────────────────────────────────────────────────
+
+  /api/compliance:
+    get:
+      summary: List compliance frameworks
+      tags: [Process]
+      responses:
+        '200':
+          description: Compliance frameworks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ComplianceFramework'
+
+  /api/compliance/{id}/requirements:
+    get:
+      summary: Get requirements for a compliance framework
+      tags: [Process]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Requirements list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ComplianceRequirement'
+
+  /api/compliance/requirements/{id}:
+    patch:
+      summary: Update compliance requirement status
+      tags: [Process]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [compliant, non_compliant, partial, not_applicable]
+                evidence:
+                  type: string
+      responses:
+        '200':
+          description: Requirement updated
+
+  # ─── DOCUMENTS ──────────────────────────────────────────────────────────────
+
+  /api/documents:
+    get:
+      summary: List documents
+      tags: [Process]
+      responses:
+        '200':
+          description: Document list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+    post:
+      summary: Create document
+      tags: [Process]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentInput'
+      responses:
+        '201':
+          description: Document created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+
+  /api/documents/review-due:
+    get:
+      summary: List documents due for review
+      tags: [Process]
+      responses:
+        '200':
+          description: Documents needing review
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+
+  # ─── AUDITS ─────────────────────────────────────────────────────────────────
+
+  /api/audits:
+    get:
+      summary: List quality audits
+      tags: [Process]
+      responses:
+        '200':
+          description: List of audits
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Audit'
+    post:
+      summary: Create audit
+      tags: [Process]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuditInput'
+      responses:
+        '201':
+          description: Audit created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Audit'
+
+  # ─── RISKS ──────────────────────────────────────────────────────────────────
+
+  /api/risks:
+    get:
+      summary: List risks
+      tags: [Process]
+      responses:
+        '200':
+          description: List of risks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Risk'
+    post:
+      summary: Create risk
+      tags: [Process]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RiskInput'
+      responses:
+        '201':
+          description: Risk created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Risk'
+
+  /api/risks/matrix:
+    get:
+      summary: Get risk matrix
+      tags: [Process]
+      responses:
+        '200':
+          description: Risk matrix by likelihood and impact
+          content:
+            application/json:
+              schema:
+                type: object
+
+  # ─── TRAINING ───────────────────────────────────────────────────────────────
+
+  /api/training:
+    get:
+      summary: List training records
+      tags: [Process]
+      responses:
+        '200':
+          description: Training records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Training'
+    post:
+      summary: Create training record
+      tags: [Process]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrainingInput'
+      responses:
+        '201':
+          description: Training record created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Training'
+
+  # ─── CURRENCY ───────────────────────────────────────────────────────────────
+
+  /api/currencies:
+    get:
+      summary: List supported currencies
+      tags: [Currency]
+      security: []
+      responses:
+        '200':
+          description: List of supported ISO 4217 currencies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Currency'
+
+  /api/exchange-rates:
+    get:
+      summary: Get current exchange rates
+      tags: [Currency]
+      responses:
+        '200':
+          description: Current exchange rates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExchangeRate'
+    post:
+      summary: Set exchange rate
+      tags: [Currency]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExchangeRateInput'
+      responses:
+        '201':
+          description: Exchange rate set
+
+  /api/convert:
+    get:
+      summary: Convert amount between currencies
+      tags: [Currency]
+      parameters:
+        - name: amount
+          in: query
+          required: true
+          schema:
+            type: number
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+            example: USD
+        - name: to
+          in: query
+          required: true
+          schema:
+            type: string
+            example: SEK
+      responses:
+        '200':
+          description: Converted amount
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  from:
+                    type: string
+                  to:
+                    type: string
+                  amount:
+                    type: number
+                  converted:
+                    type: number
+                  rate:
+                    type: number
+
+  /api/fx/exposure:
+    get:
+      summary: Get FX exposure analysis
+      tags: [Currency]
+      responses:
+        '200':
+          description: FX exposure by currency
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /api/fx/adjustments:
+    get:
+      summary: Get FX adjustment entries
+      tags: [Currency]
+      responses:
+        '200':
+          description: FX adjustments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /api/ledger/trial-balance/multi:
+    get:
+      summary: Multi-currency trial balance
+      tags: [Currency]
+      parameters:
+        - name: currency
+          in: query
+          schema:
+            type: string
+          description: Reporting currency (default: org base currency)
+      responses:
+        '200':
+          description: Trial balance in reporting currency
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrialBalance'
+
+  /api/deals/pipeline/multi:
+    get:
+      summary: Multi-currency deal pipeline
+      tags: [Currency]
+      parameters:
+        - name: currency
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Deal pipeline with currency conversion
+          content:
+            application/json:
+              schema:
+                type: object
+
+  # ─── REPORTS ────────────────────────────────────────────────────────────────
+
+  /api/reports/chart-of-accounts:
+    get:
+      summary: Get chart of accounts
+      tags: [Reports]
+      security: []
+      responses:
+        '200':
+          description: Complete chart of accounts (BAS plan for Swedish GAAP)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AccountCode'
+
+  /api/reports/sie4:
+    get:
+      summary: Export SIE4 accounting file
+      tags: [Reports]
+      parameters:
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: SIE4 formatted export file
+          content:
+            text/plain:
+              schema:
+                type: string
+
+  /api/reports/income-statement:
+    get:
+      summary: Get income statement (P&L)
+      tags: [Reports]
+      parameters:
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Income statement
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IncomeStatement'
+
+  /api/reports/balance-sheet:
+    get:
+      summary: Get balance sheet
+      tags: [Reports]
+      parameters:
+        - name: date
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Balance sheet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BalanceSheet'
+
+  /api/reports/general-ledger:
+    get:
+      summary: Get general ledger
+      tags: [Reports]
+      parameters:
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: account_id
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: General ledger transactions
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /api/reports/vat:
+    get:
+      summary: Get VAT report
+      tags: [Reports]
+      parameters:
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: VAT summary and breakdown
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VatReport'
+
+  /api/reports/cashflow:
+    get:
+      summary: Get cash flow statement
+      tags: [Reports]
+      parameters:
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Cash flow statement
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CashflowStatement'
+
+  # ─── STRIPE ─────────────────────────────────────────────────────────────────
+
+  /api/stripe/plans:
+    get:
+      summary: List subscription plans
+      tags: [Stripe]
+      security: []
+      responses:
+        '200':
+          description: Available subscription plans
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Plan'
+
+  /api/stripe/create-checkout-session:
+    post:
+      summary: Create Stripe checkout session
+      tags: [Stripe]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [plan_id]
+              properties:
+                plan_id:
+                  type: string
+                org_id:
+                  type: string
+                  format: uuid
+                success_url:
+                  type: string
+                  format: uri
+                cancel_url:
+                  type: string
+                  format: uri
+      responses:
+        '200':
+          description: Checkout session URL
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    format: uri
+                  session_id:
+                    type: string
+
+  /api/stripe/webhook:
+    post:
+      summary: Stripe webhook handler
+      tags: [Stripe]
+      security: []
+      description: Receives Stripe webhook events. Requires Stripe-Signature header.
+      parameters:
+        - name: Stripe-Signature
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Webhook processed
+        '400':
+          description: Invalid signature
+
+  # ─── API KEYS (Admin) ────────────────────────────────────────────────────────
+
+  /api/admin/api-keys:
+    get:
+      summary: List API keys for organization
+      tags: [Admin]
+      responses:
+        '200':
+          description: List of API keys
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApiKey'
+    post:
+      summary: Create API key
+      tags: [Admin]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                scopes:
+                  type: array
+                  items:
+                    type: string
+                  default: [read]
+                expires_at:
+                  type: string
+                  format: date-time
+      responses:
+        '201':
+          description: API key created (key shown only once)
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ApiKey'
+                  - type: object
+                    properties:
+                      key:
+                        type: string
+                        description: Full API key — store securely, shown only once
+
+  /api/admin/api-keys/{id}:
+    delete:
+      summary: Revoke API key
+      tags: [Admin]
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '204':
+          description: Key revoked
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+# ─── COMPONENTS ──────────────────────────────────────────────────────────────
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    IdParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  responses:
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  schemas:
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Resource not found
+
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: ok
+        version:
+          type: string
+          example: 1.3.0
+        timestamp:
+          type: string
+          format: date-time
+        services:
+          type: object
+          properties:
+            database:
+              type: string
+              example: ok
+            supabase:
+              type: string
+              example: ok
+        uptime:
+          type: number
+          description: Uptime in seconds
+
+    Contact:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        company_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        created_by:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+
+    ContactInput:
+      type: object
+      required: [first_name, last_name]
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        company_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+
+    Company:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        org_number:
+          type: string
+        industry:
+          type: string
+        website:
+          type: string
+        country:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    CompanyInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        org_number:
+          type: string
+        industry:
+          type: string
+        website:
+          type: string
+        country:
+          type: string
+
+    Lead:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        contact_id:
+          type: string
+          format: uuid
+        company_id:
+          type: string
+          format: uuid
+        source:
+          type: string
+        status:
+          type: string
+          enum: [new, contacted, qualified, converted, lost]
+        created_at:
+          type: string
+          format: date-time
+
+    LeadInput:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+        contact_id:
+          type: string
+          format: uuid
+        company_id:
+          type: string
+          format: uuid
+        source:
+          type: string
+        status:
+          type: string
+          default: new
+
+    Deal:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        value:
+          type: number
+        currency:
+          type: string
+          example: SEK
+        status:
+          type: string
+          enum: [prospecting, qualification, proposal, negotiation, closed_won, closed_lost]
+        contact_id:
+          type: string
+          format: uuid
+        company_id:
+          type: string
+          format: uuid
+        expected_close_date:
+          type: string
+          format: date
+        created_at:
+          type: string
+          format: date-time
+
+    DealInput:
+      type: object
+      required: [title, value]
+      properties:
+        title:
+          type: string
+        value:
+          type: number
+        currency:
+          type: string
+          default: SEK
+        status:
+          type: string
+          default: prospecting
+        contact_id:
+          type: string
+          format: uuid
+        company_id:
+          type: string
+          format: uuid
+        expected_close_date:
+          type: string
+          format: date
+
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+        assigned_to:
+          type: string
+          format: uuid
+        due_date:
+          type: string
+          format: date-time
+        priority:
+          type: string
+          enum: [low, medium, high, urgent]
+        created_at:
+          type: string
+          format: date-time
+
+    TaskInput:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        assigned_to:
+          type: string
+          format: uuid
+        due_date:
+          type: string
+          format: date-time
+        priority:
+          type: string
+          default: medium
+
+    Meeting:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        scheduled_at:
+          type: string
+          format: date-time
+        duration_minutes:
+          type: integer
+        location:
+          type: string
+        notes:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    MeetingInput:
+      type: object
+      required: [title, scheduled_at]
+      properties:
+        title:
+          type: string
+        scheduled_at:
+          type: string
+          format: date-time
+        duration_minutes:
+          type: integer
+          default: 60
+        location:
+          type: string
+        notes:
+          type: string
+        attendees:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: User IDs to invite
+
+    LedgerEntryInput:
+      type: object
+      required: [lines, description]
+      properties:
+        description:
+          type: string
+        reference:
+          type: string
+        lines:
+          type: array
+          minItems: 2
+          items:
+            type: object
+            required: [account_id]
+            properties:
+              account_id:
+                type: string
+              debit:
+                type: number
+                default: 0
+              credit:
+                type: number
+                default: 0
+
+    LedgerEntry:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        description:
+          type: string
+        reference:
+          type: string
+        created_by:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+
+    TrialBalance:
+      type: object
+      properties:
+        accounts:
+          type: array
+          items:
+            type: object
+            properties:
+              account_id:
+                type: string
+              total_debit:
+                type: number
+              total_credit:
+                type: number
+              balance:
+                type: number
+        total_debits:
+          type: number
+        total_credits:
+          type: number
+        balanced:
+          type: boolean
+
+    Payout:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        amount:
+          type: number
+        currency:
+          type: string
+        recipient_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [pending, approved, paid, cancelled]
+        created_at:
+          type: string
+          format: date-time
+
+    PayoutInput:
+      type: object
+      required: [amount, currency, recipient_id]
+      properties:
+        amount:
+          type: number
+        currency:
+          type: string
+        recipient_id:
+          type: string
+          format: uuid
+        notes:
+          type: string
+
+    Decision:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        decided_by:
+          type: string
+          format: uuid
+        decided_at:
+          type: string
+          format: date-time
+
+    DecisionInput:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+
+    Channel:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    Message:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        channel_id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        content:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    MessageInput:
+      type: object
+      required: [channel_id, content]
+      properties:
+        channel_id:
+          type: string
+          format: uuid
+        content:
+          type: string
+
+    AdminDashboard:
+      type: object
+      properties:
+        total_users:
+          type: integer
+        total_deals:
+          type: integer
+        total_revenue:
+          type: number
+        active_processes:
+          type: integer
+        open_nc:
+          type: integer
+
+    SalesDashboard:
+      type: object
+      properties:
+        pipeline_value:
+          type: number
+        deals_by_stage:
+          type: object
+        conversion_rate:
+          type: number
+        top_deals:
+          type: array
+          items:
+            $ref: '#/components/schemas/Deal'
+
+    FinanceDashboard:
+      type: object
+      properties:
+        revenue_mtd:
+          type: number
+        expenses_mtd:
+          type: number
+        cashflow:
+          type: number
+        outstanding_payouts:
+          type: number
+
+    AuditLog:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        action:
+          type: string
+        entity:
+          type: string
+        entity_id:
+          type: string
+          format: uuid
+        meta:
+          type: object
+        created_at:
+          type: string
+          format: date-time
+
+    CapabilityProfile:
+      type: object
+      properties:
+        user_id:
+          type: string
+          format: uuid
+        assessments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Assessment'
+        summary:
+          type: object
+          properties:
+            total_capabilities:
+              type: integer
+            average_level:
+              type: string
+            gaps:
+              type: array
+              items:
+                type: object
+
+    TeamHeatmap:
+      type: object
+      properties:
+        heatmap:
+          type: array
+          items:
+            type: object
+            properties:
+              capability_id:
+                type: string
+              user_count:
+                type: integer
+              average_level:
+                type: number
+              gap_count:
+                type: integer
+
+    Assessment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        capability_id:
+          type: string
+          format: uuid
+        level:
+          type: string
+          enum: [L1, L2, L3, L4, L5]
+        level_label:
+          type: string
+          enum: [Novice, Advanced Beginner, Competent, Proficient, Expert]
+        target_level:
+          type: string
+          enum: [L1, L2, L3, L4, L5]
+        gap:
+          type: integer
+        assessed_by:
+          type: string
+          format: uuid
+        assessed_at:
+          type: string
+          format: date-time
+        notes:
+          type: string
+
+    AssessmentInput:
+      type: object
+      required: [capability_id, level, assessed_by]
+      properties:
+        capability_id:
+          type: string
+          format: uuid
+        level:
+          type: string
+          enum: [L1, L2, L3, L4, L5]
+        target_level:
+          type: string
+          enum: [L1, L2, L3, L4, L5]
+        assessed_by:
+          type: string
+          format: uuid
+        notes:
+          type: string
+
+    Feedback:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        from_user_id:
+          type: string
+          format: uuid
+        to_user_id:
+          type: string
+          format: uuid
+        capability_id:
+          type: string
+          format: uuid
+        content:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    FeedbackInput:
+      type: object
+      required: [from_user_id, to_user_id, content]
+      properties:
+        from_user_id:
+          type: string
+          format: uuid
+        to_user_id:
+          type: string
+          format: uuid
+        capability_id:
+          type: string
+          format: uuid
+        content:
+          type: string
+
+    DevelopmentPlan:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        actions:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              capability_id:
+                type: string
+              type:
+                type: string
+                enum: [TRAINING, COACHING, PRACTICE, MENTORING, PROJECT]
+              title:
+                type: string
+              status:
+                type: string
+                enum: [PENDING, ACTIVE, COMPLETED, CANCELLED]
+              due_date:
+                type: string
+                format: date
+        created_at:
+          type: string
+          format: date-time
+
+    Goal:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        required_capabilities:
+          type: array
+          items:
+            type: object
+            properties:
+              capability_id:
+                type: string
+                format: uuid
+              target_level:
+                type: string
+                enum: [L1, L2, L3, L4, L5]
+        created_at:
+          type: string
+          format: date-time
+
+    GoalInput:
+      type: object
+      required: [title, required_capabilities]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        required_capabilities:
+          type: array
+          items:
+            type: object
+            required: [capability_id, target_level]
+            properties:
+              capability_id:
+                type: string
+                format: uuid
+              target_level:
+                type: string
+                enum: [L1, L2, L3, L4, L5]
+
+    Process:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        steps:
+          type: array
+          items:
+            type: object
+        created_at:
+          type: string
+          format: date-time
+
+    ProcessInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        steps:
+          type: array
+          items:
+            type: object
+
+    ProcessExecution:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        process_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [running, paused, completed, failed]
+        current_step:
+          type: integer
+        context:
+          type: object
+        started_at:
+          type: string
+          format: date-time
+
+    NonConformance:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+        status:
+          type: string
+          enum: [open, investigating, resolved, closed]
+        severity:
+          type: string
+          enum: [low, medium, high, critical]
+        reported_by:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+
+    NonConformanceInput:
+      type: object
+      required: [title, type]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+        severity:
+          type: string
+          default: medium
+
+    Improvement:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        status:
+          type: string
+        owner_id:
+          type: string
+          format: uuid
+        due_date:
+          type: string
+          format: date
+        created_at:
+          type: string
+          format: date-time
+
+    ImprovementInput:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        owner_id:
+          type: string
+          format: uuid
+        due_date:
+          type: string
+          format: date
+        status:
+          type: string
+          default: open
+
+    ComplianceFramework:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        version:
+          type: string
+
+    ComplianceRequirement:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        framework_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        status:
+          type: string
+          enum: [compliant, non_compliant, partial, not_applicable]
+        evidence:
+          type: string
+
+    Document:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        content:
+          type: string
+        version:
+          type: string
+        review_date:
+          type: string
+          format: date
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    DocumentInput:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        version:
+          type: string
+          default: "1.0"
+        review_date:
+          type: string
+          format: date
+
+    Audit:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        type:
+          type: string
+          enum: [internal, external, supplier]
+        status:
+          type: string
+        scheduled_date:
+          type: string
+          format: date
+        auditor_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+
+    AuditInput:
+      type: object
+      required: [title, type, scheduled_date]
+      properties:
+        title:
+          type: string
+        type:
+          type: string
+          enum: [internal, external, supplier]
+        scheduled_date:
+          type: string
+          format: date
+        auditor_id:
+          type: string
+          format: uuid
+
+    Risk:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        likelihood:
+          type: integer
+          minimum: 1
+          maximum: 5
+        impact:
+          type: integer
+          minimum: 1
+          maximum: 5
+        risk_score:
+          type: integer
+        status:
+          type: string
+        owner_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+
+    RiskInput:
+      type: object
+      required: [title, likelihood, impact]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        likelihood:
+          type: integer
+          minimum: 1
+          maximum: 5
+        impact:
+          type: integer
+          minimum: 1
+          maximum: 5
+        owner_id:
+          type: string
+          format: uuid
+
+    Training:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        status:
+          type: string
+          enum: [planned, in_progress, completed, expired]
+        completed_at:
+          type: string
+          format: date-time
+        expires_at:
+          type: string
+          format: date-time
+
+    TrainingInput:
+      type: object
+      required: [user_id, title]
+      properties:
+        user_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        status:
+          type: string
+          default: planned
+        expires_at:
+          type: string
+          format: date-time
+
+    Currency:
+      type: object
+      properties:
+        code:
+          type: string
+          example: SEK
+        name:
+          type: string
+          example: Swedish Krona
+        symbol:
+          type: string
+          example: kr
+
+    ExchangeRate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        from_currency:
+          type: string
+        to_currency:
+          type: string
+        rate:
+          type: number
+        effective_date:
+          type: string
+          format: date
+        created_at:
+          type: string
+          format: date-time
+
+    ExchangeRateInput:
+      type: object
+      required: [from_currency, to_currency, rate]
+      properties:
+        from_currency:
+          type: string
+        to_currency:
+          type: string
+        rate:
+          type: number
+        effective_date:
+          type: string
+          format: date
+
+    AccountCode:
+      type: object
+      properties:
+        code:
+          type: string
+          example: "1510"
+        name:
+          type: string
+          example: Kundfordringar
+        type:
+          type: string
+          enum: [asset, liability, equity, revenue, expense]
+        vat_code:
+          type: string
+
+    IncomeStatement:
+      type: object
+      properties:
+        period:
+          type: object
+          properties:
+            from:
+              type: string
+              format: date
+            to:
+              type: string
+              format: date
+        revenue:
+          type: number
+        cost_of_goods:
+          type: number
+        gross_profit:
+          type: number
+        operating_expenses:
+          type: number
+        operating_income:
+          type: number
+        net_income:
+          type: number
+
+    BalanceSheet:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        assets:
+          type: object
+          properties:
+            current:
+              type: number
+            fixed:
+              type: number
+            total:
+              type: number
+        liabilities:
+          type: object
+          properties:
+            current:
+              type: number
+            long_term:
+              type: number
+            total:
+              type: number
+        equity:
+          type: number
+
+    VatReport:
+      type: object
+      properties:
+        period:
+          type: object
+        output_vat:
+          type: number
+        input_vat:
+          type: number
+        net_vat:
+          type: number
+        breakdown:
+          type: array
+          items:
+            type: object
+
+    CashflowStatement:
+      type: object
+      properties:
+        period:
+          type: object
+        operating:
+          type: number
+        investing:
+          type: number
+        financing:
+          type: number
+        net_change:
+          type: number
+        opening_balance:
+          type: number
+        closing_balance:
+          type: number
+
+    Plan:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          example: Growth
+        price_monthly:
+          type: number
+        price_yearly:
+          type: number
+        currency:
+          type: string
+          default: SEK
+        features:
+          type: array
+          items:
+            type: string
+        stripe_price_id:
+          type: string
+
+    ApiKey:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        org_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        scopes:
+          type: array
+          items:
+            type: string
+        last_used_at:
+          type: string
+          format: date-time
+        expires_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time

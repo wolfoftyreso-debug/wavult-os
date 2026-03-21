@@ -1,0 +1,77 @@
+name: Deploy API
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'server/**'
+      - 'Dockerfile'
+      - '.github/workflows/deploy-api.yml'
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: eu-north-1
+  ECR_REGISTRY: 155407238699.dkr.ecr.eu-north-1.amazonaws.com
+  ECS_CLUSTER: hypbit
+  ECS_SERVICE: hypbit-api
+
+jobs:
+  deploy:
+    name: Build & Deploy API
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set image tag
+        id: meta
+        run: echo "tag=${{ github.sha }}" >> $GITHUB_OUTPUT
+
+      - name: Build, tag, and push Docker image
+        run: |
+          IMAGE="${{ env.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:${{ steps.meta.outputs.tag }}"
+          LATEST="${{ env.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:latest"
+
+          docker build -t "$IMAGE" -t "$LATEST" .
+          docker push "$IMAGE"
+          docker push "$LATEST"
+
+          echo "image=$IMAGE" >> $GITHUB_OUTPUT
+        id: build
+
+      - name: Update ECS service
+        run: |
+          aws ecs update-service \
+            --cluster ${{ env.ECS_CLUSTER }} \
+            --service ${{ env.ECS_SERVICE }} \
+            --force-new-deployment \
+            --region ${{ env.AWS_REGION }}
+
+      - name: Wait for ECS stability
+        run: |
+          aws ecs wait services-stable \
+            --cluster ${{ env.ECS_CLUSTER }} \
+            --services ${{ env.ECS_SERVICE }} \
+            --region ${{ env.AWS_REGION }}
+
+      - name: Health check
+        run: |
+          sleep 15
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://api.bc.pixdrift.com/health || echo "000")
+          echo "API health: $STATUS"
+          [ "$STATUS" = "200" ] && echo "✅ API healthy" || echo "⚠️ API not yet healthy (may still be starting)"

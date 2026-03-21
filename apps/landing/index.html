@@ -1,0 +1,2430 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Primary Meta -->
+  <title>pixdrift — Business Operating System for Modern Teams</title>
+  <meta name="description" content="pixdrift is the operating system modern teams run their business on. Replace 5+ tools with one platform. Execution, Capability, Process, Currency, Reports. From €499/mo." />
+  <meta name="keywords" content="OMS system, operations management software, business operating system, team operations platform, process management, SaaS operations, affärssystem, OMS Sverige" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="pixdrift AB" />
+  <meta name="language" content="sv,en" />
+
+  <!-- Canonical & Hreflang -->
+  <link rel="canonical" href="https://pixdrift.com/" />
+  <link rel="alternate" hreflang="sv" href="https://pixdrift.com/" />
+  <link rel="alternate" hreflang="sv-SE" href="https://pixdrift.com/" />
+  <link rel="alternate" hreflang="x-default" href="https://pixdrift.com/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type"             content="website" />
+  <meta property="og:url"              content="https://pixdrift.com/" />
+  <meta property="og:title"            content="pixdrift — Business Operating System for Modern Teams" />
+  <meta property="og:description"      content="Replace 5+ tools with one platform. Execution, Capability, Process, Currency, Reports. The OS your business runs on." />
+  <meta property="og:image"            content="https://pixdrift.com/og-image.png" />
+  <meta property="og:image:width"      content="1200" />
+  <meta property="og:image:height"     content="630" />
+  <meta property="og:image:alt"        content="pixdrift dashboard overview" />
+  <meta property="og:locale"           content="sv_SE" />
+  <meta property="og:locale:alternate" content="en_US" />
+  <meta property="og:site_name"        content="pixdrift" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@pixdrift" />
+  <meta name="twitter:creator"     content="@pixdrift" />
+  <meta name="twitter:title"       content="pixdrift — Business Operating System" />
+  <meta name="twitter:description" content="Replace 5+ tools with one platform. From €499/mo." />
+  <meta name="twitter:image"       content="https://pixdrift.com/og-image.png" />
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="theme-color" content="#6366f1" />
+
+  <!-- Schema.org structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "name": "pixdrift",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web, iOS, Android",
+        "url": "https://pixdrift.com",
+        "description": "Business Operating System for modern teams. Replace 5+ tools with one platform.",
+        "offers": [
+          { "@type": "Offer", "name": "Starter", "price": "499", "priceCurrency": "EUR" },
+          { "@type": "Offer", "name": "Growth",  "price": "999", "priceCurrency": "EUR" }
+        ],
+        "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "47" }
+      },
+      {
+        "@type": "Organization",
+        "name": "pixdrift AB",
+        "url": "https://pixdrift.com",
+        "logo": "https://pixdrift.com/logo.png",
+        "contactPoint": { "@type": "ContactPoint", "email": "hello@pixdrift.com", "contactType": "sales" },
+        "address": { "@type": "PostalAddress", "addressLocality": "Stockholm", "addressCountry": "SE" },
+        "sameAs": ["https://linkedin.com/company/pixdrift","https://twitter.com/pixdrift","https://github.com/pixdrift"]
+      },
+      {
+        "@type": "WebSite",
+        "url": "https://pixdrift.com",
+        "name": "pixdrift",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://pixdrift.com/developers/api-reference.html?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    ]
+  }
+  </script>
+
+  <!-- Resource hints & Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style" />
+  <link rel="dns-prefetch" href="//api.bc.pixdrift.com" />
+  <link rel="preconnect" href="https://api.bc.pixdrift.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════
+       RESET
+    ═══════════════════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    img, svg { display: block; max-width: 100%; }
+    button, a { cursor: pointer; }
+    ul { list-style: none; }
+
+    /* ═══════════════════════════════════════════════════════════
+       DESIGN TOKENS
+    ═══════════════════════════════════════════════════════════ */
+    :root {
+      --bg:             #0a0a0f;
+      --surface:        #111118;
+      --surface-2:      #16161f;
+      --border:         #1e1e2e;
+      --border-subtle:  #14141c;
+      --text:           #e2e8f0;
+      --text-secondary: #94a3b8;
+      --text-muted:     #64748b;
+      --white:          #f8fafc;
+      --accent:         #6366f1;
+      --accent-hover:   #4f46e5;
+      --accent-2:       #8b5cf6;
+      --success:        #10b981;
+      --warning:        #f59e0b;
+      --danger:         #ef4444;
+      --radius:         12px;
+      --radius-sm:      8px;
+      --radius-lg:      16px;
+      --ease-apple:     cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --section-py:     48px;
+      --container-px:   20px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       BASE / TYPOGRAPHY
+    ═══════════════════════════════════════════════════════════ */
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: clamp(14px, 2vw, 16px);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    h1 { font-size: clamp(28px, 6vw, 64px); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; }
+    h2 { font-size: clamp(22px, 4vw, 40px); font-weight: 700; line-height: 1.2; letter-spacing: -0.01em; }
+    h3 { font-size: clamp(18px, 3vw, 24px); font-weight: 600; line-height: 1.3; }
+    p { color: var(--text-secondary); }
+    a { text-decoration: none; color: inherit; }
+
+    /* ═══════════════════════════════════════════════════════════
+       LAYOUT HELPERS
+    ═══════════════════════════════════════════════════════════ */
+    .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 var(--container-px); }
+    section { padding: var(--section-py) 0; }
+
+    /* ═══════════════════════════════════════════════════════════
+       BUTTONS
+    ═══════════════════════════════════════════════════════════ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius);
+      padding: 14px 24px;
+      min-height: 44px;
+      transition: background 0.2s, transform 0.15s, opacity 0.2s;
+      white-space: nowrap;
+    }
+    .btn:active { transform: scale(0.97); }
+
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-hover); }
+
+    .btn-ghost { background: transparent; color: var(--text); border: 1.5px solid var(--border); }
+    .btn-ghost:hover { border-color: var(--text-secondary); }
+
+    .btn-ghost-white { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,0.3); }
+    .btn-ghost-white:hover { border-color: rgba(255,255,255,0.7); }
+
+    .btn-white { background: #fff; color: #111; }
+    .btn-white:hover { background: #f0f0f0; }
+
+    .btn-full { width: 100%; }
+    .btn-lg { min-height: 52px; font-size: 16px; padding: 16px 28px; }
+
+    /* ═══════════════════════════════════════════════════════════
+       SCROLL PROGRESS INDICATOR (Linear.app-style)
+    ═══════════════════════════════════════════════════════════ */
+    #scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: linear-gradient(90deg, #6366f1, #8b5cf6);
+      z-index: 9999;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 8px rgba(99,102,241,0.6);
+      pointer-events: none;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       SCROLL-DRIVEN ANIMATIONS (Apple-style)
+    ═══════════════════════════════════════════════════════════ */
+    .animate-on-scroll {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s var(--ease-apple),
+                  transform 0.7s var(--ease-apple);
+    }
+    .animate-on-scroll.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Staggered children */
+    .stagger-children > * {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s var(--ease-apple),
+                  transform 0.6s var(--ease-apple);
+    }
+    .stagger-children.visible > *:nth-child(1) { transition-delay: 0s; }
+    .stagger-children.visible > *:nth-child(2) { transition-delay: 0.1s; }
+    .stagger-children.visible > *:nth-child(3) { transition-delay: 0.2s; }
+    .stagger-children.visible > *:nth-child(4) { transition-delay: 0.3s; }
+    .stagger-children.visible > *:nth-child(5) { transition-delay: 0.4s; }
+    .stagger-children.visible > * { opacity: 1; transform: translateY(0); }
+
+    /* Legacy fade-in (keep for backwards compat) */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s var(--ease-apple), transform 0.6s var(--ease-apple);
+    }
+    .fade-in.visible { opacity: 1; transform: none; }
+
+    /* ═══════════════════════════════════════════════════════════
+       GRADIENT TEXT (Apple-style)
+    ═══════════════════════════════════════════════════════════ */
+    .gradient-text {
+      background: linear-gradient(135deg, #e2e8f0 0%, #a5b4fc 50%, #e2e8f0 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: textShimmer 4s linear infinite;
+    }
+
+    @keyframes textShimmer {
+      to { background-position: 200% center; }
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       GLASS MORPHISM CARDS
+    ═══════════════════════════════════════════════════════════ */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.03) !important;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.05) inset,
+        0 20px 60px rgba(0,0,0,0.3);
+    }
+    .glass-card:hover {
+      background: rgba(255, 255, 255, 0.055) !important;
+      border-color: rgba(99, 102, 241, 0.3) !important;
+      transform: translateY(-2px) !important;
+      transition: all 0.3s var(--ease-apple) !important;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.08) inset,
+        0 24px 80px rgba(0,0,0,0.4);
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       1. NAVIGATION
+    ═══════════════════════════════════════════════════════════ */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 10, 15, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+
+    .nav-logo { font-size: 20px; font-weight: 700; color: var(--white); letter-spacing: -0.03em; }
+    .nav-logo span { color: var(--accent); }
+
+    .nav-links { display: none; align-items: center; gap: 4px; }
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+
+    .nav-actions { display: none; align-items: center; gap: 8px; }
+
+    .nav-hamburger {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px; height: 44px;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 22px;
+      border-radius: var(--radius-sm);
+      transition: background 0.2s;
+    }
+    .nav-hamburger:hover { background: var(--surface); }
+
+    .drawer-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 200;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .drawer-overlay.open { display: block; opacity: 1; }
+
+    .drawer {
+      position: fixed;
+      top: 0; right: 0;
+      width: min(320px, 85vw);
+      height: 100dvh;
+      background: var(--surface);
+      z-index: 201;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      overflow-y: auto;
+    }
+    .drawer.open { transform: translateX(0); }
+
+    .drawer-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
+
+    .drawer-close {
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--surface-2);
+      border: none;
+      color: var(--text);
+      font-size: 20px;
+      border-radius: var(--radius-sm);
+    }
+
+    .drawer-nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+    .drawer-nav a {
+      font-size: 16px; font-weight: 500; color: var(--text-secondary);
+      padding: 14px 16px; border-radius: var(--radius); min-height: 48px;
+      display: flex; align-items: center;
+      transition: background 0.2s, color 0.2s;
+    }
+    .drawer-nav a:hover { background: var(--surface-2); color: var(--white); }
+
+    .drawer-divider { height: 1px; background: var(--border); margin: 16px 0; }
+    .drawer-cta { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+
+    /* ═══════════════════════════════════════════════════════════
+       2. HERO  — living gradient background (Microsoft-style)
+    ═══════════════════════════════════════════════════════════ */
+    .hero {
+      padding: 0 0 64px;
+      overflow: hidden;
+      background: linear-gradient(
+        135deg,
+        #0a0a0f 0%,
+        #0f0f1e 25%,
+        #0d0d18 50%,
+        #0a0a14 75%,
+        #0a0a0f 100%
+      );
+      background-size: 400% 400%;
+      animation: gradientShift 12s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Hero visual */
+    .hero-visual {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      margin-bottom: 40px;
+      overflow: visible;
+    }
+
+    .sphere {
+      position: absolute;
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+      transition: transform 0.1s ease-out;
+      will-change: transform;
+    }
+    /* Glow layer behind spheres */
+    .sphere::after {
+      content: '';
+      position: absolute;
+      inset: -30%;
+      border-radius: 50%;
+      opacity: 0.45;
+      filter: blur(18px);
+      pointer-events: none;
+    }
+    .s1 {
+      width: 120px; height: 120px;
+      background: radial-gradient(circle at 30% 30%, #818cf8, #6366f1);
+      top: 20%; left: 30%;
+      box-shadow: 0 0 60px rgba(99,102,241,0.5);
+      animation-duration: 6s;
+    }
+    .s1::after { background: rgba(99,102,241,0.6); }
+    .s2 {
+      width: 80px; height: 80px;
+      background: radial-gradient(circle at 30% 30%, #a78bfa, #8b5cf6);
+      top: 10%; left: 55%;
+      animation-delay: -2s;
+      box-shadow: 0 0 40px rgba(139,92,246,0.45);
+      animation-duration: 7s;
+    }
+    .s2::after { background: rgba(139,92,246,0.5); }
+    .s3 {
+      width: 60px; height: 60px;
+      background: radial-gradient(circle at 30% 30%, #34d399, #10b981);
+      top: 50%; left: 15%;
+      animation-delay: -4s;
+      box-shadow: 0 0 30px rgba(16,185,129,0.4);
+      animation-duration: 8s;
+    }
+    .s3::after { background: rgba(16,185,129,0.45); }
+    .s4 {
+      width: 40px; height: 40px;
+      background: radial-gradient(circle at 30% 30%, #c7d2fe, #a5b4fc);
+      top: 60%; left: 65%;
+      animation-delay: -1s;
+      box-shadow: 0 0 20px rgba(165,180,252,0.35);
+      animation-duration: 9s;
+    }
+    .s4::after { background: rgba(165,180,252,0.3); }
+    .s5 {
+      width: 20px; height: 20px;
+      background: radial-gradient(circle at 30% 30%, #fcd34d, #f59e0b);
+      top: 30%; left: 80%;
+      animation-delay: -3s;
+      opacity: 0.7;
+    }
+
+    /* S1 gets a color-shift animation */
+    @keyframes sphereColorShift {
+      0%,100% { box-shadow: 0 0 60px rgba(99,102,241,0.5); }
+      50%      { box-shadow: 0 0 80px rgba(139,92,246,0.6); }
+    }
+    .s1 { animation: float 6s ease-in-out infinite, sphereColorShift 4s ease-in-out infinite; }
+
+    .hero-visual-lines { position: absolute; inset: 0; pointer-events: none; }
+    .hero-visual-lines line { stroke: rgba(99,102,241,0.15); stroke-width: 1; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      33%       { transform: translateY(-12px) rotate(3deg); }
+      66%       { transform: translateY(6px) rotate(-2deg); }
+    }
+
+    .hero-content { display: flex; flex-direction: column; gap: 0; }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .hero h1 {
+      margin-bottom: 16px;
+      color: var(--white);
+    }
+
+    /* Hero h1 first line stays white; gradient-text span animates */
+    .hero-sub {
+      font-size: clamp(15px, 2.5vw, 18px);
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 32px;
+      max-width: 48ch;
+    }
+
+    .hero-ctas { display: flex; flex-direction: column; gap: 12px; margin-bottom: 40px; }
+
+    .hero-social-proof { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+    .avatars { display: flex; }
+    .avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      border: 2px solid var(--bg);
+      margin-right: -8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: #fff;
+    }
+    .avatar:nth-child(1) { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+    .avatar:nth-child(2) { background: linear-gradient(135deg, #10b981, #059669); }
+    .avatar:nth-child(3) { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+    .social-proof-text { font-size: 13px; color: var(--text-muted); }
+    .stars { color: var(--warning); font-size: 13px; letter-spacing: -1px; }
+
+    /* ═══════════════════════════════════════════════════════════
+       3. LOGO STRIP — seamless infinite scroll (Microsoft-style)
+    ═══════════════════════════════════════════════════════════ */
+    .logos-section {
+      padding: 32px 0;
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      background: var(--surface);
+      overflow: hidden;
+    }
+
+    .logos-label {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .logos-track-wrapper {
+      position: relative;
+      overflow: hidden;
+    }
+    .logos-track-wrapper::before,
+    .logos-track-wrapper::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 80px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .logos-track-wrapper::before { left: 0; background: linear-gradient(to right, var(--surface), transparent); }
+    .logos-track-wrapper::after  { right: 0; background: linear-gradient(to left, var(--surface), transparent); }
+
+    .logos-track {
+      display: flex;
+      gap: 48px;
+      align-items: center;
+      width: max-content;
+      animation: logoScroll 25s linear infinite;
+    }
+
+    @keyframes logoScroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    .logos-section:hover .logos-track {
+      animation-play-state: paused;
+    }
+
+    .logo-item {
+      flex-shrink: 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      opacity: 0.6;
+      white-space: nowrap;
+      letter-spacing: 0.02em;
+      transition: opacity 0.2s;
+    }
+    .logo-item:hover { opacity: 1; }
+
+    /* ═══════════════════════════════════════════════════════════
+       STATS SECTION — counter animation targets
+    ═══════════════════════════════════════════════════════════ */
+    .stats-section {
+      padding: 48px 0;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 28px 20px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--radius-lg);
+      transition: border-color 0.3s var(--ease-apple), background 0.3s var(--ease-apple);
+    }
+    .stat-item:hover {
+      border-color: rgba(99,102,241,0.25);
+      background: rgba(99,102,241,0.03);
+    }
+
+    .stat-counter {
+      display: block;
+      font-size: clamp(32px, 6vw, 52px);
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 8px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stat-label { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
+
+    /* ═══════════════════════════════════════════════════════════
+       4. PROBLEM SECTION
+    ═══════════════════════════════════════════════════════════ */
+    .problem-section { background: var(--bg); }
+
+    .section-header { text-align: center; margin-bottom: 48px; }
+    .section-eyebrow {
+      font-size: 12px; font-weight: 600; color: var(--accent);
+      letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 12px;
+    }
+    .section-header h2 { margin-bottom: 12px; }
+    .section-header p { font-size: clamp(15px, 2vw, 17px); max-width: 52ch; margin: 0 auto; }
+
+    .problem-grid { display: flex; flex-direction: column; gap: 16px; }
+
+    .problem-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+      transition: border-color 0.3s var(--ease-apple), transform 0.3s var(--ease-apple);
+    }
+    .problem-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+    .problem-icon {
+      width: 48px; height: 48px;
+      border-radius: var(--radius);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      margin-bottom: 16px;
+      background: var(--surface-2);
+    }
+    .problem-icon.red   { background: rgba(239,68,68,0.12); }
+    .problem-icon.amber { background: rgba(245,158,11,0.12); }
+    .problem-icon.blue  { background: rgba(99,102,241,0.12); }
+
+    .problem-card h3 { margin-bottom: 8px; font-size: 17px; }
+    .problem-card p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+
+    /* ═══════════════════════════════════════════════════════════
+       5. STICKY FEATURE SECTION (Apple iPhone-style)
+    ═══════════════════════════════════════════════════════════ */
+    .sticky-feature-section {
+      background: var(--surface);
+      overflow: hidden;
+    }
+
+    .sticky-feature-section .section-header {
+      padding: var(--section-py) 0 0;
+    }
+
+    /* Mobile: stacked cards */
+    .sticky-feature-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 32px 0 var(--section-py);
+    }
+
+    .feature-step {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+      transition: all 0.4s var(--ease-apple);
+    }
+    .feature-step.active {
+      background: rgba(99,102,241,0.06);
+      border-color: rgba(99,102,241,0.25);
+    }
+
+    .module-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .feature-step h3 { margin-bottom: 10px; font-size: clamp(18px, 2.5vw, 22px); }
+    .feature-step p { font-size: 15px; color: var(--text-secondary); line-height: 1.65; margin-bottom: 16px; }
+
+    .feature-list { display: flex; flex-direction: column; gap: 7px; }
+    .feature-list li { font-size: 14px; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+    .feature-list li::before {
+      content: '✓';
+      color: var(--success);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* DESKTOP: sticky mockup left, steps scroll right */
+    @media (min-width: 768px) {
+      .sticky-feature-section {
+        /* height auto — determined by steps */
+      }
+      .sticky-feature-section .section-header {
+        padding: var(--section-py) 0 40px;
+      }
+      .sticky-feature-inner {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        min-height: 450vh;
+        padding: 0;
+        align-items: start;
+      }
+      .sticky-mockup-col {
+        position: sticky;
+        top: 15vh;
+        height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+      }
+      .sticky-mockup-col .app-mockup {
+        width: 100%;
+        max-width: 420px;
+        height: 340px;
+        transition: opacity 0.2s ease;
+      }
+      .feature-steps-col {
+        padding: 15vh 0 30vh;
+        display: flex;
+        flex-direction: column;
+      }
+      .feature-step {
+        min-height: 90vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 0 4rem 0 2rem;
+        opacity: 0.25;
+        background: transparent !important;
+        border: none !important;
+        border-radius: 0 !important;
+        transition: opacity 0.5s var(--ease-apple);
+      }
+      .feature-step.active { opacity: 1; }
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       6. PRODUCT TABS
+    ═══════════════════════════════════════════════════════════ */
+    .product-section { background: var(--bg); }
+
+    .tabs-nav {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 4px;
+      margin-bottom: 32px;
+    }
+    .tabs-nav::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      flex-shrink: 0;
+      font-family: inherit;
+      font-size: 14px; font-weight: 500;
+      color: var(--text-muted);
+      background: var(--surface-2);
+      border: 1.5px solid var(--border);
+      border-radius: 100px;
+      padding: 10px 18px;
+      min-height: 44px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .tab-btn:hover { color: var(--text); border-color: var(--text-muted); }
+    .tab-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .tab-content { display: flex; flex-direction: column; gap: 32px; }
+
+    .tab-features { display: flex; flex-direction: column; gap: 16px; }
+    .tab-features li {
+      display: flex; align-items: flex-start; gap: 12px;
+      color: var(--text-secondary); font-size: 14px; line-height: 1.5;
+    }
+    .tab-features li::before {
+      content: '';
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: rgba(16,185,129,0.15);
+      display: flex; flex-shrink: 0; align-items: center; justify-content: center;
+      margin-top: 1px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M3 8l3.5 3.5L13 4.5' stroke='%2310b981' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 12px;
+    }
+
+    .tab-mockup {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      min-height: 220px;
+      position: relative;
+      overflow: hidden;
+    }
+    .tab-mockup::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 160px; height: 160px;
+      background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .mockup-topbar { display: flex; align-items: center; gap: 6px; margin-bottom: 16px; }
+    .mockup-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); }
+    .mockup-dot:nth-child(1) { background: rgba(239,68,68,0.5); }
+    .mockup-dot:nth-child(2) { background: rgba(245,158,11,0.5); }
+    .mockup-dot:nth-child(3) { background: rgba(16,185,129,0.5); }
+
+    .mockup-row { height: 10px; background: var(--border); border-radius: 100px; margin-bottom: 10px; }
+    .mockup-row.short { width: 60%; }
+    .mockup-row.medium { width: 80%; }
+    .mockup-row.accent-row { background: rgba(99,102,241,0.25); height: 32px; border-radius: var(--radius-sm); }
+    .mockup-row.wide { width: 95%; }
+
+    .mockup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .mockup-cell { height: 48px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+    .mockup-cell.highlight { background: rgba(99,102,241,0.1); border-color: rgba(99,102,241,0.3); }
+
+    /* ═══════════════════════════════════════════════════════════
+       7. DIFFERENTIATION
+    ═══════════════════════════════════════════════════════════ */
+    .diff-section { background: var(--bg); }
+    .diff-grid { display: flex; flex-direction: column; gap: 32px; }
+    .diff-item { display: flex; flex-direction: column; gap: 12px; }
+    .diff-icon { font-size: 36px; line-height: 1; }
+    .diff-item h3 { font-size: clamp(18px, 2.5vw, 22px); }
+    .diff-item p { font-size: 15px; color: var(--text-secondary); line-height: 1.65; }
+    .diff-item p strong { color: var(--text); font-weight: 500; }
+
+    /* ═══════════════════════════════════════════════════════════
+       8. PRICING — featured glow border
+    ═══════════════════════════════════════════════════════════ */
+    .pricing-section { background: var(--surface); }
+    .pricing-grid { display: flex; flex-direction: column; gap: 16px; }
+
+    .pricing-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+      position: relative;
+      transition: transform 0.3s var(--ease-apple);
+    }
+
+    .pricing-card.featured {
+      border-color: var(--accent);
+      background: rgba(99,102,241,0.05);
+      overflow: hidden;
+      z-index: 0;
+    }
+    .pricing-card.featured::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6, #6366f1);
+      background-size: 200% 200%;
+      border-radius: 17px;
+      z-index: -1;
+      animation: borderGlow 3s ease infinite;
+    }
+
+    @keyframes borderGlow {
+      0%, 100% { background-position: 0% 50%; }
+      50%       { background-position: 100% 50%; }
+    }
+
+    .pricing-badge {
+      position: absolute;
+      top: -12px; right: 20px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 4px 12px;
+      border-radius: 100px;
+    }
+
+    .pricing-plan { font-size: 13px; font-weight: 600; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px; }
+
+    .pricing-price { display: flex; align-items: baseline; gap: 4px; margin-bottom: 4px; }
+    .pricing-amount { font-size: 36px; font-weight: 700; color: var(--white); letter-spacing: -0.02em; }
+    .pricing-period { font-size: 14px; color: var(--text-muted); }
+
+    .pricing-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+    .pricing-divider { height: 1px; background: var(--border); margin-bottom: 20px; }
+
+    .pricing-features { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+    .pricing-features li { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text-secondary); }
+    .pricing-features .check { color: var(--success); font-size: 16px; flex-shrink: 0; }
+
+    /* ═══════════════════════════════════════════════════════════
+       9. TESTIMONIALS — 3D tilt on hover
+    ═══════════════════════════════════════════════════════════ */
+    .testimonials-section { background: var(--bg); }
+
+    .testimonials-track {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      gap: 16px;
+      scrollbar-width: none;
+      padding-bottom: 16px;
+      margin: 0 calc(-1 * var(--container-px));
+      padding-left: var(--container-px);
+      padding-right: var(--container-px);
+    }
+    .testimonials-track::-webkit-scrollbar { display: none; }
+
+    .testimonial-card {
+      scroll-snap-align: start;
+      flex-shrink: 0;
+      width: 300px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .testimonial-stars { color: var(--warning); font-size: 14px; margin-bottom: 12px; }
+    .testimonial-quote { font-size: 14px; color: var(--text-secondary); line-height: 1.65; margin-bottom: 16px; font-style: italic; }
+    .testimonial-author { display: flex; align-items: center; gap: 10px; }
+    .testimonial-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .testimonial-name { font-size: 13px; font-weight: 600; color: var(--text); }
+    .testimonial-role { font-size: 12px; color: var(--text-muted); }
+
+    .testimonials-dots { display: flex; justify-content: center; gap: 6px; margin-top: 20px; }
+    .t-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); transition: background 0.2s, width 0.2s; }
+    .t-dot.active { background: var(--accent); width: 16px; border-radius: 100px; }
+
+    /* ═══════════════════════════════════════════════════════════
+       10. CTA SECTION
+    ═══════════════════════════════════════════════════════════ */
+    .cta-section {
+      background: linear-gradient(135deg, #1a1040 0%, #0d0d1a 40%, #0a1628 100%);
+      position: relative;
+      overflow: hidden;
+      padding: 80px 0;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: -100px; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 400px;
+      background: radial-gradient(ellipse, rgba(99,102,241,0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-inner { position: relative; text-align: center; }
+    .cta-inner h2 { color: #fff; margin-bottom: 12px; }
+    .cta-inner p { font-size: 16px; color: rgba(255,255,255,0.65); margin-bottom: 36px; }
+    .cta-buttons { display: flex; flex-direction: column; gap: 12px; }
+
+    /* ═══════════════════════════════════════════════════════════
+       11. FOOTER
+    ═══════════════════════════════════════════════════════════ */
+    .footer { background: var(--surface); border-top: 1px solid var(--border); padding: 48px 0 32px; }
+
+    .footer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px 20px; margin-bottom: 40px; }
+    .footer-brand { grid-column: 1 / -1; }
+
+    .footer-logo { font-size: 18px; font-weight: 700; color: var(--white); letter-spacing: -0.03em; margin-bottom: 8px; }
+    .footer-logo span { color: var(--accent); }
+    .footer-tagline { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .footer-socials { display: flex; gap: 12px; }
+    .footer-social {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-sm);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .footer-social:hover { border-color: var(--accent); color: var(--accent); }
+    .footer-social svg { width: 16px; height: 16px; }
+
+    .footer-col-title { font-size: 12px; font-weight: 600; color: var(--text-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 12px; }
+    .footer-col ul { display: flex; flex-direction: column; gap: 8px; }
+    .footer-col a { font-size: 13px; color: var(--text-secondary); transition: color 0.2s; min-height: 28px; display: flex; align-items: center; }
+    .footer-col a:hover { color: var(--white); }
+
+    .footer-bottom { border-top: 1px solid var(--border-subtle); padding-top: 24px; text-align: center; }
+    .footer-legal { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+    .footer-legal a { color: var(--text-muted); }
+    .footer-legal a:hover { color: var(--text); }
+
+    /* ═══════════════════════════════════════════════════════════
+       APP MOCKUP SYSTEM
+    ═══════════════════════════════════════════════════════════ */
+    .app-mockup {
+      background: #0f0f1a;
+      border-radius: 12px;
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 320px;
+      font-size: 11px;
+      box-shadow: 0 0 0 1px rgba(99,102,241,0.1), 0 20px 60px rgba(0,0,0,0.5);
+      flex: 1;
+    }
+    .mock-titlebar {
+      background: #1a1a2e;
+      padding: 8px 12px;
+      display: flex; align-items: center; gap: 6px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      flex-shrink: 0;
+    }
+    .mock-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .mock-title { color: #6b7280; font-size: 10px; margin-left: 8px; }
+    .mock-body { display: flex; flex: 1; overflow: hidden; }
+    .mock-sidebar {
+      width: 100px;
+      background: #111118;
+      padding: 8px;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      display: flex; flex-direction: column; gap: 2px;
+      flex-shrink: 0;
+    }
+    .mock-nav { padding: 6px 8px; border-radius: 6px; color: #6b7280; cursor: default; font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mock-nav.active { background: rgba(99,102,241,0.15); color: #818cf8; }
+    .mock-content { flex: 1; padding: 10px; overflow: hidden; display: flex; flex-direction: column; gap: 8px; }
+    .mock-kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .mock-kpi { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 8px; text-align: center; }
+    .mock-kpi-value { font-size: 16px; font-weight: 700; }
+    .mock-kpi-label { color: #6b7280; font-size: 9px; margin-top: 2px; }
+    .mock-list { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+    .mock-list-header { color: #6b7280; font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+    .mock-list-row { display: flex; align-items: center; gap: 8px; padding: 6px 8px; background: rgba(255,255,255,0.02); border-radius: 6px; border: 1px solid rgba(255,255,255,0.04); }
+    .mock-badge { font-size: 8px; padding: 2px 6px; border-radius: 4px; font-weight: 600; white-space: nowrap; }
+    .mock-row-name { flex: 1; color: #e2e8f0; font-size: 10px; }
+    .mock-row-value { color: #10b981; font-weight: 600; font-variant-numeric: tabular-nums; font-size: 10px; }
+    .mock-skill-row { display: flex; align-items: center; gap: 8px; padding: 5px 8px; background: rgba(255,255,255,0.02); border-radius: 6px; border: 1px solid rgba(255,255,255,0.04); }
+    .mock-skill-name { width: 55px; color: #e2e8f0; font-size: 9px; flex-shrink: 0; }
+    .mock-skill-dots { display: flex; gap: 3px; flex: 1; }
+    .mock-skill-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .mock-skill-dot.filled { background: #6366f1; }
+    .mock-skill-dot.empty  { background: rgba(255,255,255,0.1); }
+    .mock-progress-bar { height: 4px; background: rgba(255,255,255,0.06); border-radius: 100px; overflow: hidden; }
+    .mock-progress-fill { height: 100%; background: linear-gradient(90deg, #6366f1, #10b981); border-radius: 100px; }
+    .mock-severity { font-size: 8px; padding: 2px 5px; border-radius: 3px; font-weight: 700; white-space: nowrap; }
+    .mock-status { font-size: 8px; color: #6b7280; margin-left: auto; white-space: nowrap; }
+    .mock-status.open { color: #ef4444; }
+    .mock-status.progress { color: #f59e0b; }
+    .mock-status.closed  { color: #10b981; }
+    .mock-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+    .mock-table th { color: #6b7280; font-weight: 600; font-size: 9px; text-transform: uppercase; padding: 4px 6px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .mock-table td { padding: 5px 6px; border-bottom: 1px solid rgba(255,255,255,0.03); color: #e2e8f0; }
+    .mock-trend-up { color: #10b981; }
+    .mock-trend-down { color: #ef4444; }
+    .mock-fx-exposure { background: rgba(99,102,241,0.08); border: 1px solid rgba(99,102,241,0.2); border-radius: 8px; padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+    .mock-fx-label { color: #6b7280; font-size: 9px; }
+    .mock-fx-value { color: #818cf8; font-weight: 700; font-size: 14px; }
+    .mock-pl-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 8px; border-radius: 6px; }
+    .mock-pl-label { color: #94a3b8; font-size: 10px; }
+    .mock-pl-value { font-size: 10px; font-variant-numeric: tabular-nums; }
+    .mock-pl-value.positive { color: #10b981; }
+    .mock-pl-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 2px 0; }
+    .mock-pl-total .mock-pl-label { color: #e2e8f0; font-weight: 700; }
+
+    /* ═══════════════════════════════════════════════════════════
+       DESKTOP BREAKPOINTS
+    ═══════════════════════════════════════════════════════════ */
+    @media (min-width: 768px) {
+      :root { --section-py: 80px; --container-px: 32px; }
+
+      .hero-ctas { flex-direction: row; }
+      .hero-ctas .btn-full { width: auto; flex: 1; }
+
+      .problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+      .tab-content { flex-direction: row; align-items: flex-start; }
+      .tab-features { flex: 1; }
+      .tab-mockup { flex: 1; }
+
+      .diff-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+
+      .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+      .testimonial-card { width: 340px; }
+
+      .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; }
+      .footer-brand { grid-column: 1; }
+
+      .cta-buttons { flex-direction: row; justify-content: center; }
+      .cta-buttons .btn-full { width: auto; }
+
+      .stats-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    @media (min-width: 1024px) {
+      :root { --section-py: 96px; --container-px: 48px; }
+
+      .nav-links { display: flex; }
+      .nav-actions { display: flex; }
+      .nav-hamburger { display: none; }
+
+      .hero { padding: 80px 0; }
+      .hero-inner { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 64px; }
+      .hero-visual { height: 420px; margin-bottom: 0; order: 2; }
+      .hero-content { order: 1; }
+      .hero-ctas .btn { min-width: 180px; }
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       REDUCED MOTION — kill ALL animations
+    ═══════════════════════════════════════════════════════════ */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+      .animate-on-scroll,
+      .stagger-children > *,
+      .fade-in {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+      html { scroll-behavior: auto; }
+      .sphere { animation: none !important; }
+      .logos-track { animation: none !important; }
+      #scroll-progress { transition: none !important; }
+      .testimonial-card { transform: none !important; }
+    }
+  </style>
+  <meta name="revised" content="2026-03-21">
+</head>
+<body>
+
+  <!-- Scroll progress indicator -->
+  <div id="scroll-progress" aria-hidden="true"></div>
+
+  <!-- ══════════════════════════════════════
+       NAVIGATION
+  ══════════════════════════════════════ -->
+  <nav class="nav" aria-label="Huvudnavigation">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="/" class="nav-logo">pix<span>drift</span></a>
+
+        <div class="nav-links" role="list">
+          <a href="#produkt" role="listitem">Produkt</a>
+          <a href="#losningar" role="listitem">Lösningar</a>
+          <a href="#pris" role="listitem">Pris</a>
+          <a href="/developers/" role="listitem">Docs</a>
+        </div>
+
+        <div class="nav-actions">
+          <a href="https://app.pixdrift.com/login" class="btn btn-ghost" style="font-size:14px;padding:10px 18px;">Logga in</a>
+          <a href="#boka-demo" class="btn btn-primary" style="font-size:14px;padding:10px 18px;">Boka demo →</a>
+        </div>
+
+        <button class="nav-hamburger" id="hamburgerBtn" aria-label="Öppna meny" aria-expanded="false" aria-controls="mobileDrawer">☰</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+
+  <div class="drawer" id="mobileDrawer" role="dialog" aria-modal="true" aria-label="Navigation">
+    <div class="drawer-header">
+      <span class="nav-logo">pix<span>drift</span></span>
+      <button class="drawer-close" id="drawerClose" aria-label="Stäng meny">✕</button>
+    </div>
+    <nav class="drawer-nav">
+      <a href="#produkt">Produkt</a>
+      <a href="#losningar">Lösningar</a>
+      <a href="#pris">Pris</a>
+      <a href="/developers/">Docs</a>
+      <a href="https://app.pixdrift.com/login">Logga in</a>
+    </nav>
+    <div class="drawer-divider"></div>
+    <div class="drawer-cta">
+      <a href="#boka-demo" class="btn btn-primary btn-full btn-lg">Boka demo →</a>
+      <a href="https://app.pixdrift.com/register" class="btn btn-ghost btn-full">Starta gratis</a>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       HERO — living gradient + parallax spheres
+  ══════════════════════════════════════ -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-inner">
+
+        <div class="hero-visual" id="heroVisual" aria-hidden="true">
+          <svg class="hero-visual-lines" viewBox="0 0 400 280" preserveAspectRatio="xMidYMid meet">
+            <line x1="168" y1="76" x2="244" y2="44"/>
+            <line x1="168" y1="76" x2="80" y2="154"/>
+            <line x1="244" y1="44" x2="310" y2="182"/>
+            <line x1="80" y1="154" x2="244" y2="44"/>
+          </svg>
+          <div class="sphere s1" data-depth="8"></div>
+          <div class="sphere s2" data-depth="16"></div>
+          <div class="sphere s3" data-depth="12"></div>
+          <div class="sphere s4" data-depth="6"></div>
+          <div class="sphere s5" data-depth="20"></div>
+        </div>
+
+        <div class="hero-content animate-on-scroll">
+          <div class="hero-eyebrow">Business Operating System</div>
+
+          <h1>Your Business,<br><span class="gradient-text">Running on pixdrift.</span></h1>
+
+          <p class="hero-sub">
+            pixdrift är operativsystemet moderna team kör sina verksamheter på. Execution, capability, process, ekonomi — allt i ett system, live.
+          </p>
+
+          <div class="hero-ctas">
+            <a href="#boka-demo" class="btn btn-primary btn-full btn-lg">Boka en demo</a>
+            <a href="#produkt" class="btn btn-ghost btn-full btn-lg">Se hur det fungerar →</a>
+          </div>
+
+          <div class="hero-social-proof">
+            <div class="avatars" aria-hidden="true">
+              <div class="avatar">E</div>
+              <div class="avatar">M</div>
+              <div class="avatar">J</div>
+            </div>
+            <div>
+              <div class="stars" aria-label="5 av 5 stjärnor">★★★★★</div>
+              <div class="social-proof-text">Används av 50+ team i Norden · 4.9/5</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       LOGO STRIP — seamless infinite scroll
+  ══════════════════════════════════════ -->
+  <div class="logos-section">
+    <div class="container">
+      <p class="logos-label">Betrodda av snabbväxande bolag</p>
+      <div class="logos-track-wrapper">
+        <!-- Doubled for seamless loop -->
+        <div class="logos-track" role="list" aria-label="Kunder">
+          <span class="logo-item" role="listitem">NordTech AB</span>
+          <span class="logo-item" role="listitem">Valhalla Group</span>
+          <span class="logo-item" role="listitem">Svea Digital</span>
+          <span class="logo-item" role="listitem">Fjord Ventures</span>
+          <span class="logo-item" role="listitem">Boreal Labs</span>
+          <span class="logo-item" role="listitem">Linkern AB</span>
+          <span class="logo-item" role="listitem">Arctiq Systems</span>
+          <span class="logo-item" role="listitem">Polaris SaaS</span>
+          <span class="logo-item" role="listitem">Meridian AB</span>
+          <span class="logo-item" role="listitem">Kvasir Tech</span>
+          <span class="logo-item" role="listitem">Stormwind AB</span>
+          <span class="logo-item" role="listitem">Fenix Digital</span>
+          <!-- Duplicate for seamless loop -->
+          <span class="logo-item" aria-hidden="true">NordTech AB</span>
+          <span class="logo-item" aria-hidden="true">Valhalla Group</span>
+          <span class="logo-item" aria-hidden="true">Svea Digital</span>
+          <span class="logo-item" aria-hidden="true">Fjord Ventures</span>
+          <span class="logo-item" aria-hidden="true">Boreal Labs</span>
+          <span class="logo-item" aria-hidden="true">Linkern AB</span>
+          <span class="logo-item" aria-hidden="true">Arctiq Systems</span>
+          <span class="logo-item" aria-hidden="true">Polaris SaaS</span>
+          <span class="logo-item" aria-hidden="true">Meridian AB</span>
+          <span class="logo-item" aria-hidden="true">Kvasir Tech</span>
+          <span class="logo-item" aria-hidden="true">Stormwind AB</span>
+          <span class="logo-item" aria-hidden="true">Fenix Digital</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       STATS — counter animation
+  ══════════════════════════════════════ -->
+  <div class="stats-section animate-on-scroll">
+    <div class="container">
+      <div class="stats-grid stagger-children">
+        <div class="stat-item">
+          <span class="stat-counter counter" data-value="50" data-suffix="+">50+</span>
+          <span class="stat-label">team använder pixdrift</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-counter counter" data-value="82" data-suffix="">82</span>
+          <span class="stat-label">API-endpoints</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-counter counter" data-value="99" data-suffix=".9%">99.9%</span>
+          <span class="stat-label">uptime SLA</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-counter counter" data-value="5" data-suffix=" moduler">5</span>
+          <span class="stat-label">i ett system</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       PROBLEM SECTION
+  ══════════════════════════════════════ -->
+  <section class="problem-section" id="losningar">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <p class="section-eyebrow">Problemet</p>
+        <h2>Utan ett OS kör varje del av verksamheten sitt eget system</h2>
+        <p>Fragmenterade verktyg skapar osynliga kostnader — i tid, fokus och beslutskvalitet.</p>
+      </div>
+
+      <div class="problem-grid stagger-children">
+        <div class="problem-card glass-card animate-on-scroll">
+          <div class="problem-icon red" aria-hidden="true">🔥</div>
+          <h3>Verktygens fragmenteringsproblem</h3>
+          <p>Ert team jobbar i 5+ verktyg. Ingen har hela sanningen. Möten handlar om att synka — inte om att agera.</p>
+        </div>
+
+        <div class="problem-card glass-card animate-on-scroll">
+          <div class="problem-icon amber" aria-hidden="true">🧠</div>
+          <h3>Processer i huvudet</h3>
+          <p>Kritisk kunskap sitter hos nyckelpersoner. När de slutar — tar kunskapen med sig. Det är en verksamhetsrisk.</p>
+        </div>
+
+        <div class="problem-card glass-card animate-on-scroll">
+          <div class="problem-icon blue" aria-hidden="true">📊</div>
+          <h3>Rapporter tar dagar</h3>
+          <p>Månadsrapporten kommer för sent för att agera. Beslut fattas på gamla data när världen redan rört sig.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       STICKY FEATURE SECTION (Apple-style)
+  ══════════════════════════════════════ -->
+  <section class="sticky-feature-section" id="moduler">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <p class="section-eyebrow">Plattformen</p>
+        <h2>Fem moduler. Ett system.</h2>
+        <p>Varje modul löser ett kritiskt affärsproblem. Tillsammans ger de full kontroll.</p>
+      </div>
+    </div>
+
+    <div class="container" style="max-width:1200px">
+      <div class="sticky-feature-inner" id="stickyFeatureInner">
+
+        <!-- Sticky mockup (desktop only) -->
+        <div class="sticky-mockup-col" id="stickyMockup">
+          <div class="app-mockup" id="stickyMockupContent">
+            <div class="mock-titlebar">
+              <span class="mock-dot" style="background:#ff5f57"></span>
+              <span class="mock-dot" style="background:#febc2e"></span>
+              <span class="mock-dot" style="background:#28c840"></span>
+              <span class="mock-title">pixdrift — Execution</span>
+            </div>
+            <div class="mock-body">
+              <div class="mock-sidebar">
+                <div class="mock-nav active">📊 Översikt</div>
+                <div class="mock-nav">🤝 Deals</div>
+                <div class="mock-nav">✓ Tasks</div>
+                <div class="mock-nav">👥 Kontakter</div>
+              </div>
+              <div class="mock-content">
+                <div class="mock-kpi-row">
+                  <div class="mock-kpi"><div class="mock-kpi-value" style="color:#6366f1">€64k</div><div class="mock-kpi-label">Pipeline</div></div>
+                  <div class="mock-kpi"><div class="mock-kpi-value" style="color:#10b981">7</div><div class="mock-kpi-label">Deals</div></div>
+                  <div class="mock-kpi"><div class="mock-kpi-value" style="color:#f59e0b">3</div><div class="mock-kpi-label">Tasks</div></div>
+                </div>
+                <div class="mock-list">
+                  <div class="mock-list-header">Aktiva deals</div>
+                  <div class="mock-list-row"><span class="mock-badge" style="background:rgba(99,102,241,0.15);color:#6366f1">PROPOSAL</span><span class="mock-row-name">Novacode AB</span><span class="mock-row-value">€12k</span></div>
+                  <div class="mock-list-row"><span class="mock-badge" style="background:rgba(16,185,129,0.15);color:#10b981">WON</span><span class="mock-row-name">Nordic Shop</span><span class="mock-row-value">€8.5k</span></div>
+                  <div class="mock-list-row"><span class="mock-badge" style="background:rgba(245,158,11,0.15);color:#f59e0b">QUALIFIED</span><span class="mock-row-name">VVS Proffsen</span><span class="mock-row-value">€5.2k</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feature steps (scroll past on desktop) -->
+        <div class="feature-steps-col" id="featureStepsCol">
+
+          <div class="feature-step active" data-module="execution">
+            <span class="module-label">Execution</span>
+            <h3>Allt som rör sig i verksamheten — synligt</h3>
+            <p>Deals, tasks, kontakter och kommunikation i ett flöde. Ingenting faller mellan stolarna.</p>
+            <ul class="feature-list">
+              <li>CRM med deal-pipeline</li>
+              <li>Tasks med automatisk eskalering</li>
+              <li>Beslutsdokumentation</li>
+              <li>Realtidsstatus på alla projekt</li>
+            </ul>
+          </div>
+
+          <div class="feature-step" data-module="capability">
+            <span class="module-label">Capability</span>
+            <h3>Vet vem som kan vad — och vem som är redo nästa</h3>
+            <p>Kompetenskartan som gör att rätt person alltid hamnar på rätt uppdrag.</p>
+            <ul class="feature-list">
+              <li>Kompetensmatris för hela organisationen</li>
+              <li>Individuella gap-analyser</li>
+              <li>Skills-matching för projektteam</li>
+              <li>Succession planning</li>
+            </ul>
+          </div>
+
+          <div class="feature-step" data-module="process">
+            <span class="module-label">Process</span>
+            <h3>Processer som lever i systemet — inte i folks huvuden</h3>
+            <p>Dokumentera, automatisera och mät dina processer. Compliance utan konsulter.</p>
+            <ul class="feature-list">
+              <li>Processbibliotek med versionshantering</li>
+              <li>Visuell process-builder (no-code)</li>
+              <li>Automatiserade godkännandeflöden</li>
+              <li>Compliance-spårning och revision</li>
+            </ul>
+          </div>
+
+          <div class="feature-step" data-module="currency">
+            <span class="module-label">Currency</span>
+            <h3>Ekonomin i realtid — inte i Excel nästa vecka</h3>
+            <p>Multi-valuta, SIE4-export och live P&amp;L per affärsområde. Bokföring som hänger med.</p>
+            <ul class="feature-list">
+              <li>Multi-valuta (SEK, EUR, NOK, DKK)</li>
+              <li>SIE4 och BAS-plan export</li>
+              <li>Realtids P&amp;L per affärsområde</li>
+              <li>Automatisk momshantering</li>
+            </ul>
+          </div>
+
+          <div class="feature-step" data-module="reports">
+            <span class="module-label">Reports</span>
+            <h3>Ledningsrapporten klar på 20 minuter, inte tre dagar</h3>
+            <p>Anpassningsbara dashboards och automatiska rapporter. Beslut baserade på data som är mer än en vecka gammal hör till det förflutna.</p>
+            <ul class="feature-list">
+              <li>Ledningsrapporter genererade automatiskt</li>
+              <li>Custom dashboards per roll</li>
+              <li>Export: PDF, Excel, API</li>
+              <li>Schemalagda rapportutskick</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       PRODUCT TABS (detailed feature explorer)
+  ══════════════════════════════════════ -->
+  <section class="product-section" id="produkt">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <p class="section-eyebrow">Produkten i detalj</p>
+        <h2>Modulerna i pixdrift OS</h2>
+        <p>Som Windows-komponenter — varje modul fyller en roll i systemet. Tillsammans ger de full kontroll.</p>
+      </div>
+
+      <div class="tabs-nav" role="tablist" aria-label="Produktmoduler">
+        <button class="tab-btn active" role="tab" aria-selected="true"  aria-controls="tab-execution" id="btn-execution">Execution</button>
+        <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="tab-capability" id="btn-capability">Capability</button>
+        <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="tab-process"    id="btn-process">Process</button>
+        <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="tab-currency"   id="btn-currency">Currency</button>
+        <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="tab-reports"    id="btn-reports">Reports</button>
+      </div>
+
+      <!-- Execution -->
+      <div class="tab-panel active animate-on-scroll" id="tab-execution" role="tabpanel" aria-labelledby="btn-execution">
+        <div class="tab-content">
+          <ul class="tab-features">
+            <li>Projektportfölj med realtidsstatus</li>
+            <li>Uppgiftshantering med smart prioritering</li>
+            <li>Milstolpar och leverabler kopplade till affärsmål</li>
+            <li>Automatiska påminnelser och eskaleringar</li>
+            <li>Integrerad tidsloggning per projekt</li>
+            <li>OKR-koppling och framstegsspårning</li>
+          </ul>
+          <div class="app-mockup" aria-hidden="true">
+            <div class="mock-titlebar">
+              <span class="mock-dot" style="background:#ff5f57"></span>
+              <span class="mock-dot" style="background:#febc2e"></span>
+              <span class="mock-dot" style="background:#28c840"></span>
+              <span class="mock-title">pixdrift — Execution</span>
+            </div>
+            <div class="mock-body">
+              <div class="mock-sidebar">
+                <div class="mock-nav active">📊 Översikt</div>
+                <div class="mock-nav">🤝 Deals</div>
+                <div class="mock-nav">✓ Tasks</div>
+                <div class="mock-nav">👥 Kontakter</div>
+              </div>
+              <div class="mock-content">
+                <div class="mock-kpi-row">
+                  <div class="mock-kpi"><div class="mock-kpi-value" style="color:#6366f1">€64k</div><div class="mock-kpi-label">Pipeline</div></div>
+                  <div class="mock-kpi"><div class="mock-kpi-value" style="color:#10b981">7</div><div class="mock-kpi-label">Aktiva deals</div></div>
+                  <div class="mock-kpi"><div class="mock-kpi-value" style="color:#f59e0b">3</div><div class="mock-kpi-label">Tasks idag</div></div>
+                </div>
+                <div class="mock-list">
+                  <div class="mock-list-header">Aktiva deals</div>
+                  <div class="mock-list-row"><span class="mock-badge" style="background:rgba(99,102,241,0.15);color:#6366f1">PROPOSAL</span><span class="mock-row-name">Novacode AB</span><span class="mock-row-value">€12 000</span></div>
+                  <div class="mock-list-row"><span class="mock-badge" style="background:rgba(16,185,129,0.15);color:#10b981">WON</span><span class="mock-row-name">Nordic Shop</span><span class="mock-row-value">€8 500</span></div>
+                  <div class="mock-list-row"><span class="mock-badge" style="background:rgba(245,158,11,0.15);color:#f59e0b">QUALIFIED</span><span class="mock-row-name">VVS Proffsen</span><span class="mock-row-value">€5 200</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Capability -->
+      <div class="tab-panel animate-on-scroll" id="tab-capability" role="tabpanel" aria-labelledby="btn-capability">
+        <div class="tab-content">
+          <ul class="tab-features">
+            <li>Kompetenskarta för hela organisationen</li>
+            <li>Individuella kompetensprofiler och gaps</li>
+            <li>Utbildnings- och certifieringsspårning</li>
+            <li>Succession planning och bench-styrka</li>
+            <li>Onboarding-checklistor med progress</li>
+            <li>Skills-matching för projektteam</li>
+          </ul>
+          <div class="app-mockup" aria-hidden="true">
+            <div class="mock-titlebar">
+              <span class="mock-dot" style="background:#ff5f57"></span>
+              <span class="mock-dot" style="background:#febc2e"></span>
+              <span class="mock-dot" style="background:#28c840"></span>
+              <span class="mock-title">pixdrift — Capability</span>
+            </div>
+            <div class="mock-body">
+              <div class="mock-sidebar">
+                <div class="mock-nav active">🗺 Kompetens</div>
+                <div class="mock-nav">📈 Mål</div>
+                <div class="mock-nav">🎓 Utbildning</div>
+                <div class="mock-nav">👤 Profiler</div>
+              </div>
+              <div class="mock-content">
+                <div class="mock-list-header">Kompetensmatris — Team Alpha</div>
+                <div class="mock-skill-row"><span class="mock-skill-name">Anna K.</span><div class="mock-skill-dots"><span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot empty"></span></div><span style="color:#6b7280;font-size:9px">L4</span></div>
+                <div class="mock-skill-row"><span class="mock-skill-name">Marcus H.</span><div class="mock-skill-dots"><span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot empty"></span><span class="mock-skill-dot empty"></span></div><span style="color:#6b7280;font-size:9px">L3</span></div>
+                <div class="mock-skill-row"><span class="mock-skill-name">Johan L.</span><div class="mock-skill-dots"><span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span></div><span style="color:#6b7280;font-size:9px">L5</span></div>
+                <div class="mock-skill-row"><span class="mock-skill-name">Sara E.</span><div class="mock-skill-dots"><span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot empty"></span><span class="mock-skill-dot empty"></span><span class="mock-skill-dot empty"></span></div><span style="color:#6b7280;font-size:9px">L2</span></div>
+                <div style="margin-top:8px">
+                  <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                    <span style="color:#94a3b8;font-size:9px">Teamets mål — Q2 2026</span>
+                    <span style="color:#818cf8;font-size:9px;font-weight:600">68%</span>
+                  </div>
+                  <div class="mock-progress-bar"><div class="mock-progress-fill" style="width:68%"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Process -->
+      <div class="tab-panel animate-on-scroll" id="tab-process" role="tabpanel" aria-labelledby="btn-process">
+        <div class="tab-content">
+          <ul class="tab-features">
+            <li>Processbibliotek med versionshantering</li>
+            <li>Visuell process-builder (no-code)</li>
+            <li>Automatiserade godkännandeflöden</li>
+            <li>Compliance-spårning och revision</li>
+            <li>Processmätningar och KPI-koppling</li>
+            <li>Rollbaserade ansvarsmatriser (RACI)</li>
+          </ul>
+          <div class="app-mockup" aria-hidden="true">
+            <div class="mock-titlebar">
+              <span class="mock-dot" style="background:#ff5f57"></span>
+              <span class="mock-dot" style="background:#febc2e"></span>
+              <span class="mock-dot" style="background:#28c840"></span>
+              <span class="mock-title">pixdrift — Process</span>
+            </div>
+            <div class="mock-body">
+              <div class="mock-sidebar">
+                <div class="mock-nav active">⚠ Avvikelser</div>
+                <div class="mock-nav">📋 Processer</div>
+                <div class="mock-nav">✅ Revision</div>
+                <div class="mock-nav">📊 KPI</div>
+              </div>
+              <div class="mock-content">
+                <div class="mock-list">
+                  <div class="mock-list-header">Non-Conformances — öppna</div>
+                  <div class="mock-list-row"><span class="mock-severity" style="background:rgba(239,68,68,0.15);color:#ef4444">CRITICAL</span><span class="mock-row-name">Leverantörsdokument saknas</span><span class="mock-status open">OPEN</span></div>
+                  <div class="mock-list-row"><span class="mock-severity" style="background:rgba(245,158,11,0.15);color:#f59e0b">MAJOR</span><span class="mock-row-name">Kalibreringsdatum utgånget</span><span class="mock-status progress">IN PROGRESS</span></div>
+                  <div class="mock-list-row"><span class="mock-severity" style="background:rgba(245,158,11,0.15);color:#f59e0b">MAJOR</span><span class="mock-row-name">Revisionsprotokoll ofullständigt</span><span class="mock-status progress">IN PROGRESS</span></div>
+                  <div class="mock-list-row"><span class="mock-severity" style="background:rgba(234,179,8,0.15);color:#ca8a04">MINOR</span><span class="mock-row-name">Märkning ej uppdaterad</span><span class="mock-status closed">CLOSED</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Currency -->
+      <div class="tab-panel animate-on-scroll" id="tab-currency" role="tabpanel" aria-labelledby="btn-currency">
+        <div class="tab-content">
+          <ul class="tab-features">
+            <li>Budgethantering per projekt och avdelning</li>
+            <li>SIE4 och BAS-plan export</li>
+            <li>Multi-valuta (SEK, EUR, NOK, DKK)</li>
+            <li>Fakturering och betaluppföljning</li>
+            <li>Realtids P&amp;L per affärsområde</li>
+            <li>Automatisk momshantering och rapportering</li>
+          </ul>
+          <div class="app-mockup" aria-hidden="true">
+            <div class="mock-titlebar">
+              <span class="mock-dot" style="background:#ff5f57"></span>
+              <span class="mock-dot" style="background:#febc2e"></span>
+              <span class="mock-dot" style="background:#28c840"></span>
+              <span class="mock-title">pixdrift — Currency</span>
+            </div>
+            <div class="mock-body">
+              <div class="mock-sidebar">
+                <div class="mock-nav active">💱 Valutor</div>
+                <div class="mock-nav">📄 Fakturor</div>
+                <div class="mock-nav">💰 Budget</div>
+                <div class="mock-nav">📤 SIE4</div>
+              </div>
+              <div class="mock-content">
+                <div class="mock-list-header">Växelkurser — live</div>
+                <table class="mock-table">
+                  <thead><tr><th>Valuta</th><th>Kurs (SEK)</th><th>Trend</th><th>+/−%</th></tr></thead>
+                  <tbody>
+                    <tr><td>EUR</td><td>11.48</td><td class="mock-trend-up">↑</td><td class="mock-trend-up">+0.3%</td></tr>
+                    <tr><td>USD</td><td>10.62</td><td class="mock-trend-down">↓</td><td class="mock-trend-down">−0.7%</td></tr>
+                    <tr><td>GBP</td><td>13.41</td><td class="mock-trend-up">↑</td><td class="mock-trend-up">+0.1%</td></tr>
+                    <tr><td>NOK</td><td>0.98</td><td class="mock-trend-down">↓</td><td class="mock-trend-down">−0.2%</td></tr>
+                  </tbody>
+                </table>
+                <div class="mock-fx-exposure">
+                  <span class="mock-fx-label">Total FX-exponering</span>
+                  <span class="mock-fx-value">€142 500</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reports -->
+      <div class="tab-panel animate-on-scroll" id="tab-reports" role="tabpanel" aria-labelledby="btn-reports">
+        <div class="tab-content">
+          <ul class="tab-features">
+            <li>Ledningsrapporter genererade automatiskt</li>
+            <li>Anpassningsbara dashboards per roll</li>
+            <li>Realtidsdata utan manuell export</li>
+            <li>Exportformat: PDF, Excel, API</li>
+            <li>Trendanalys och prognoser</li>
+            <li>Schemalagda rapportutskick via e-post</li>
+          </ul>
+          <div class="app-mockup" aria-hidden="true">
+            <div class="mock-titlebar">
+              <span class="mock-dot" style="background:#ff5f57"></span>
+              <span class="mock-dot" style="background:#febc2e"></span>
+              <span class="mock-dot" style="background:#28c840"></span>
+              <span class="mock-title">pixdrift — Reports</span>
+            </div>
+            <div class="mock-body">
+              <div class="mock-sidebar">
+                <div class="mock-nav active">📑 P&amp;L</div>
+                <div class="mock-nav">📊 Dashboard</div>
+                <div class="mock-nav">📤 Export</div>
+                <div class="mock-nav">🗓 Schema</div>
+              </div>
+              <div class="mock-content">
+                <div class="mock-list-header">Resultaträkning — Mars 2026</div>
+                <div class="mock-pl-row"><span class="mock-pl-label">Nettoomsättning</span><span class="mock-pl-value positive">€ 284 000</span></div>
+                <div class="mock-pl-row"><span class="mock-pl-label">Kostnad sålda varor</span><span class="mock-pl-value" style="color:#ef4444">− € 112 000</span></div>
+                <div class="mock-pl-divider"></div>
+                <div class="mock-pl-row"><span class="mock-pl-label">Bruttoresultat</span><span class="mock-pl-value positive">€ 172 000</span></div>
+                <div class="mock-pl-row"><span class="mock-pl-label">Rörelsekostnader</span><span class="mock-pl-value" style="color:#ef4444">− € 98 000</span></div>
+                <div class="mock-pl-divider"></div>
+                <div class="mock-pl-row mock-pl-total" style="background:rgba(99,102,241,0.08);border-radius:6px;border:1px solid rgba(99,102,241,0.15)">
+                  <span class="mock-pl-label" style="color:#e2e8f0;font-weight:700">Periodens resultat</span>
+                  <span class="mock-pl-value positive" style="font-weight:700;font-size:13px">€ 61 200</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       DIFFERENTIATION
+  ══════════════════════════════════════ -->
+  <section class="diff-section">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <p class="section-eyebrow">Varför pixdrift</p>
+        <h2>Operativsystemet. Inte ännu ett verktyg.</h2>
+      </div>
+
+      <div class="diff-grid stagger-children">
+        <div class="diff-item animate-on-scroll">
+          <div class="diff-icon" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect width="48" height="48" rx="12" fill="rgba(99,102,241,0.15)"/>
+              <rect x="12" y="16" width="24" height="16" rx="3" stroke="#6366f1" stroke-width="2" fill="none"/>
+              <line x1="12" y1="24" x2="36" y2="24" stroke="#6366f1" stroke-width="2"/>
+              <circle cx="24" cy="20" r="2" fill="#6366f1"/>
+            </svg>
+          </div>
+          <h3>Ett system. Inte en integration.</h3>
+          <p>Starter på <strong>€499/mo</strong> ersätter Jira <strong>(€300)</strong> + HubSpot <strong>(€500)</strong> + Notion <strong>(€200)</strong> + Sage <strong>(€300)</strong> + mer. ROI från dag ett.</p>
+        </div>
+
+        <div class="diff-item animate-on-scroll">
+          <div class="diff-icon" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect width="48" height="48" rx="12" fill="rgba(16,185,129,0.15)"/>
+              <circle cx="24" cy="24" r="10" stroke="#10b981" stroke-width="2" fill="none"/>
+              <path d="M14 24h20M24 14c-3 4-3 12 0 20M24 14c3 4 3 12 0 20" stroke="#10b981" stroke-width="1.5" fill="none"/>
+            </svg>
+          </div>
+          <h3>Byggt för europeisk verksamhet.</h3>
+          <p><strong>SIE4</strong>, <strong>BAS-plan</strong>, <strong>GDPR</strong>, multi-valuta (SEK/EUR/NOK/DKK). Inga eftertankar. Inget "internationellt anpassat" som egentligen betyder USA.</p>
+        </div>
+
+        <div class="diff-item animate-on-scroll">
+          <div class="diff-icon" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect width="48" height="48" rx="12" fill="rgba(245,158,11,0.15)"/>
+              <path d="M24 12L13 17v8c0 6.6 4.7 12.8 11 14 6.3-1.2 11-7.4 11-14v-8L24 12z" stroke="#f59e0b" stroke-width="2" fill="none"/>
+              <path d="M19 24l3 3 7-7" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>Alltid live. Alltid uppdaterat.</h3>
+          <p><strong>GDPR-compliant</strong> by design. Data stannar i EU. Krypterat i transit och i vila. <strong>SSO</strong> på roadmap. Pen-test genomfört.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       PRICING
+  ══════════════════════════════════════ -->
+  <section class="pricing-section" id="pris">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <p class="section-eyebrow">Prissättning</p>
+        <h2>Transparent. Enkel. Skalbar.</h2>
+        <p>Inga dolda avgifter. Inga per-seat-chockar. Byt plan när som helst.</p>
+      </div>
+
+      <div class="pricing-grid stagger-children">
+
+        <!-- Starter -->
+        <div class="pricing-card glass-card animate-on-scroll">
+          <p class="pricing-plan">Starter</p>
+          <div class="pricing-price">
+            <span class="pricing-amount">€499</span>
+            <span class="pricing-period">/månad</span>
+          </div>
+          <p class="pricing-desc">Upp till 25 användare. Perfekt för bolag som vill konsolidera sin stack.</p>
+          <div class="pricing-divider"></div>
+          <ul class="pricing-features">
+            <li><span class="check">✓</span> Execution-modulen</li>
+            <li><span class="check">✓</span> Capability basic</li>
+            <li><span class="check">✓</span> Process-bibliotek</li>
+            <li><span class="check">✓</span> Standard rapporter</li>
+            <li><span class="check">✓</span> E-post support</li>
+            <li><span class="check">✓</span> GDPR-compliance</li>
+          </ul>
+          <a href="https://app.pixdrift.com/register?plan=starter" class="btn btn-ghost btn-full">Kom igång</a>
+        </div>
+
+        <!-- Growth (featured) -->
+        <div class="pricing-card featured animate-on-scroll">
+          <div class="pricing-badge">Mest vald</div>
+          <p class="pricing-plan">Growth</p>
+          <div class="pricing-price">
+            <span class="pricing-amount">€999</span>
+            <span class="pricing-period">/månad</span>
+          </div>
+          <p class="pricing-desc">Upp till 100 användare. Alla moduler. Prioriterad onboarding.</p>
+          <div class="pricing-divider"></div>
+          <ul class="pricing-features">
+            <li><span class="check">✓</span> Alla fem moduler</li>
+            <li><span class="check">✓</span> Currency + SIE4</li>
+            <li><span class="check">✓</span> Custom dashboards</li>
+            <li><span class="check">✓</span> API-access</li>
+            <li><span class="check">✓</span> Prioriterad support</li>
+            <li><span class="check">✓</span> Onboarding-workshop</li>
+          </ul>
+          <a href="#boka-demo" class="btn btn-primary btn-full">Boka demo</a>
+        </div>
+
+        <!-- Enterprise -->
+        <div class="pricing-card glass-card animate-on-scroll">
+          <p class="pricing-plan">Enterprise</p>
+          <div class="pricing-price">
+            <span class="pricing-amount">Custom</span>
+          </div>
+          <p class="pricing-desc">Obegränsade användare. Dedikerad Customer Success Manager.</p>
+          <div class="pricing-divider"></div>
+          <ul class="pricing-features">
+            <li><span class="check">✓</span> Allt i Growth</li>
+            <li><span class="check">✓</span> SSO / SAML (roadmap)</li>
+            <li><span class="check">✓</span> SLA-avtal</li>
+            <li><span class="check">✓</span> Dedikerad CSM</li>
+            <li><span class="check">✓</span> Custom integrationer</li>
+            <li><span class="check">✓</span> Pen-test rapport</li>
+          </ul>
+          <a href="mailto:enterprise@pixdrift.com" class="btn btn-ghost btn-full">Kontakta oss</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       TESTIMONIALS
+  ══════════════════════════════════════ -->
+  <section class="testimonials-section">
+    <div class="container">
+      <div class="section-header animate-on-scroll">
+        <p class="section-eyebrow">Kundberättelser</p>
+        <h2>Vad teamen säger</h2>
+      </div>
+
+      <div class="testimonials-track" id="testimonialsTrack" role="list">
+
+        <article class="testimonial-card glass-card" role="listitem">
+          <div class="testimonial-stars" aria-label="5 av 5 stjärnor">★★★★★</div>
+          <p class="testimonial-quote">"Vi ersatte Jira, Notion och ett gammalt Excel-baserat ekonomisystem på sex veckor. Implementationen var smidigare än vi vågat hoppas."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);" aria-hidden="true">AK</div>
+            <div>
+              <div class="testimonial-name">Anna Karlsson</div>
+              <div class="testimonial-role">COO, NordTech AB</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="testimonial-card glass-card" role="listitem">
+          <div class="testimonial-stars" aria-label="5 av 5 stjärnor">★★★★★</div>
+          <p class="testimonial-quote">"Månadsrapporten som tog tre dagar tar nu 20 minuter. Jag kan ägna min tid åt att faktiskt leda bolaget istället för att samla data."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:linear-gradient(135deg,#10b981,#059669);" aria-hidden="true">MH</div>
+            <div>
+              <div class="testimonial-name">Marcus Hellström</div>
+              <div class="testimonial-role">VD, Svea Digital</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="testimonial-card glass-card" role="listitem">
+          <div class="testimonial-stars" aria-label="5 av 5 stjärnor">★★★★★</div>
+          <p class="testimonial-quote">"Som CTO älskar jag att det faktiskt finns ett API. Vi har byggt en integration med vår faktureringsplattform på en eftermiddag."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706);" aria-hidden="true">JL</div>
+            <div>
+              <div class="testimonial-name">Johan Lindberg</div>
+              <div class="testimonial-role">CTO, Fjord Ventures</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="testimonial-card glass-card" role="listitem">
+          <div class="testimonial-stars" aria-label="5 av 5 stjärnor">★★★★★</div>
+          <p class="testimonial-quote">"GDPR och SIE4-exporten var dealbreakers för oss. pixdrift är det enda systemet vi utvärderade som levererade båda utan konsulthjälp."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:linear-gradient(135deg,#ef4444,#dc2626);" aria-hidden="true">SE</div>
+            <div>
+              <div class="testimonial-name">Sara Ekström</div>
+              <div class="testimonial-role">CFO, Boreal Labs</div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+      <div class="testimonials-dots" id="testimonialsDots" aria-hidden="true">
+        <div class="t-dot active"></div>
+        <div class="t-dot"></div>
+        <div class="t-dot"></div>
+        <div class="t-dot"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       CTA SECTION
+  ══════════════════════════════════════ -->
+  <section class="cta-section" id="boka-demo">
+    <div class="container">
+      <div class="cta-inner animate-on-scroll">
+        <h2 class="gradient-text" style="-webkit-text-fill-color:transparent">One System. Every Operation.</h2>
+        <p>pixdrift OS. Kostnadsfritt i 30 dagar. Inget kreditkort.</p>
+        <div class="cta-buttons">
+          <a href="mailto:demo@pixdrift.com?subject=Demo-förfrågan" class="btn btn-white btn-full btn-lg">Boka demo</a>
+          <a href="https://app.pixdrift.com/register" class="btn btn-ghost-white btn-full btn-lg">Starta gratis →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+
+        <div class="footer-brand">
+          <div class="footer-logo">pix<span>drift</span></div>
+          <p class="footer-tagline">Your Business, Running on pixdrift.</p>
+          <div class="footer-socials">
+            <a href="https://linkedin.com/company/pixdrift" class="footer-social" aria-label="LinkedIn" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            </a>
+            <a href="https://twitter.com/pixdrift" class="footer-social" aria-label="X (Twitter)" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.741l7.73-8.835L1.254 2.25H8.08l4.26 5.632L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>
+            </a>
+            <a href="https://github.com/pixdrift" class="footer-social" aria-label="GitHub" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <p class="footer-col-title">Produkt</p>
+          <ul>
+            <li><a href="#produkt">Features</a></li>
+            <li><a href="#pris">Prissättning</a></li>
+            <li><a href="#integrations">Integrationer</a></li>
+            <li><a href="/roadmap.html">Roadmap</a></li>
+            <li><a href="/changelog.html">Changelog</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <p class="footer-col-title">Lösningar</p>
+          <ul>
+            <li><a href="/#solutions">SaaS</a></li>
+            <li><a href="/#solutions">Tjänsteföretag</a></li>
+            <li><a href="/#solutions">Handel</a></li>
+            <li><a href="/#solutions">Tillverkning</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <p class="footer-col-title">Resurser</p>
+          <ul>
+            <li><a href="/developers/">Dokumentation</a></li>
+            <li><a href="/developers/api-reference.html">API</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/press/">Case studies</a></li>
+            <li><a href="/status.html">Status</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <p class="footer-col-title">Företag</p>
+          <ul>
+            <li><a href="/about.html">Om oss</a></li>
+            <li><a href="mailto:careers@pixdrift.com">Karriär</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="mailto:partners@pixdrift.com">Partners</a></li>
+            <li><a href="mailto:hello@pixdrift.com">Kontakt</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <p class="footer-legal">
+          © 2026 pixdrift AB · Org.nr 559XXX-XXXX · Stockholm, Sverige ·
+          <a href="/legal/privacy.html">Integritetspolicy</a> ·
+          <a href="/legal/terms.html">Villkor</a> ·
+          <a href="/legal/dpa.html">GDPR</a> ·
+          <a href="/security.html">Säkerhet</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══════════════════════════════════════
+       JAVASCRIPT — vanilla, inline
+  ══════════════════════════════════════ -->
+  <script>
+  'use strict';
+
+  /* ── Reduced motion detection ─────────────────────────── */
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── Scroll progress indicator ───────────────────────── */
+  const scrollProgress = document.getElementById('scroll-progress');
+  let scrollRAF = null;
+
+  function updateScrollProgress() {
+    const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+    scrollProgress.style.width = Math.min(scrolled, 100) + '%';
+    scrollRAF = null;
+  }
+
+  if (!prefersReducedMotion) {
+    window.addEventListener('scroll', () => {
+      if (!scrollRAF) scrollRAF = requestAnimationFrame(updateScrollProgress);
+    }, { passive: true });
+  }
+
+  /* ── Mouse parallax for hero spheres ─────────────────── */
+  const heroEl = document.querySelector('.hero');
+  const spheres = document.querySelectorAll('.sphere');
+  let parallaxRAF = null;
+
+  if (!prefersReducedMotion && heroEl && spheres.length) {
+    document.addEventListener('mousemove', (e) => {
+      if (parallaxRAF) return;
+      parallaxRAF = requestAnimationFrame(() => {
+        const rect = heroEl.getBoundingClientRect();
+        // Only apply when mouse is reasonably near hero
+        if (e.clientY > rect.bottom + 200) { parallaxRAF = null; return; }
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+
+        spheres.forEach((sphere, i) => {
+          const depth = (i + 1) * 8;
+          // We must not override the float animation's translateY entirely,
+          // so we use CSS custom properties to blend the effect
+          sphere.style.setProperty('--px', (x * depth) + 'px');
+          sphere.style.setProperty('--py', (y * depth) + 'px');
+          sphere.style.transform = `translate(var(--px, 0px), var(--py, 0px))`;
+        });
+        parallaxRAF = null;
+      });
+    }, { passive: true });
+  }
+
+  /* ── Hamburger / Drawer ───────────────────────────────── */
+  const hamburgerBtn  = document.getElementById('hamburgerBtn');
+  const drawerOverlay = document.getElementById('drawerOverlay');
+  const mobileDrawer  = document.getElementById('mobileDrawer');
+  const drawerClose   = document.getElementById('drawerClose');
+
+  function openDrawer() {
+    mobileDrawer.classList.add('open');
+    drawerOverlay.classList.add('open');
+    hamburgerBtn.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+    drawerClose.focus();
+  }
+
+  function closeDrawer() {
+    mobileDrawer.classList.remove('open');
+    drawerOverlay.classList.remove('open');
+    hamburgerBtn.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+    hamburgerBtn.focus();
+  }
+
+  hamburgerBtn.addEventListener('click', openDrawer);
+  drawerClose.addEventListener('click', closeDrawer);
+  drawerOverlay.addEventListener('click', closeDrawer);
+  mobileDrawer.querySelectorAll('a').forEach(link => link.addEventListener('click', closeDrawer));
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && mobileDrawer.classList.contains('open')) closeDrawer();
+  });
+
+  /* ── Product Tabs ─────────────────────────────────────── */
+  const tabBtns   = document.querySelectorAll('.tab-btn');
+  const tabPanels = document.querySelectorAll('.tab-panel');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('aria-controls');
+      tabBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+      tabPanels.forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+      document.getElementById(targetId).classList.add('active');
+    });
+  });
+
+  /* ── Testimonials scroll dots ─────────────────────────── */
+  const track = document.getElementById('testimonialsTrack');
+  const dots  = document.querySelectorAll('#testimonialsDots .t-dot');
+
+  if (track && dots.length) {
+    track.addEventListener('scroll', () => {
+      const cardWidth = track.querySelector('.testimonial-card').offsetWidth + 16;
+      const idx = Math.round(track.scrollLeft / cardWidth);
+      dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+    }, { passive: true });
+
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => {
+        const cardWidth = track.querySelector('.testimonial-card').offsetWidth + 16;
+        track.scrollTo({ left: cardWidth * i, behavior: 'smooth' });
+      });
+    });
+  }
+
+  /* ── IntersectionObserver: animate-on-scroll + stagger-children ── */
+  if ('IntersectionObserver' in window && !prefersReducedMotion) {
+    const scrollObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          scrollObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.animate-on-scroll, .fade-in, .stagger-children').forEach(el => {
+      scrollObserver.observe(el);
+    });
+  } else {
+    // Fallback: show everything immediately
+    document.querySelectorAll('.animate-on-scroll, .fade-in, .stagger-children').forEach(el => {
+      el.classList.add('visible');
+    });
+  }
+
+  /* ── Counter animation ────────────────────────────────── */
+  function animateCounter(el, target, duration) {
+    duration = duration || 2000;
+    const suffix = el.dataset.suffix || '';
+    const prefix = el.dataset.prefix || '';
+    const startTime = performance.now();
+
+    function update(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.floor(eased * target);
+      el.textContent = prefix + current.toLocaleString('sv-SE') + suffix;
+      if (progress < 1) requestAnimationFrame(update);
+    }
+
+    requestAnimationFrame(update);
+  }
+
+  if (!prefersReducedMotion && 'IntersectionObserver' in window) {
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !entry.target.dataset.animated) {
+          entry.target.dataset.animated = 'true';
+          const val = Number(entry.target.dataset.value);
+          if (!isNaN(val)) animateCounter(entry.target, val);
+          counterObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('.counter').forEach(el => counterObserver.observe(el));
+  }
+
+  /* ── Sticky feature scroll (Apple-style, desktop only) ── */
+  const isDesktop = () => window.innerWidth >= 768;
+  const featureSteps = document.querySelectorAll('.feature-step');
+  const stickyMockupContent = document.getElementById('stickyMockupContent');
+
+  const mockupHTMLMap = {
+    execution: `
+      <div class="mock-titlebar">
+        <span class="mock-dot" style="background:#ff5f57"></span>
+        <span class="mock-dot" style="background:#febc2e"></span>
+        <span class="mock-dot" style="background:#28c840"></span>
+        <span class="mock-title">Execution — CRM & Tasks</span>
+      </div>
+      <div class="mock-body">
+        <div class="mock-sidebar">
+          <div class="mock-nav active">📊 Översikt</div>
+          <div class="mock-nav">🤝 Deals</div>
+          <div class="mock-nav">✓ Tasks</div>
+          <div class="mock-nav">👥 Kontakter</div>
+        </div>
+        <div class="mock-content">
+          <div class="mock-kpi-row">
+            <div class="mock-kpi"><div class="mock-kpi-value" style="color:#6366f1">€64k</div><div class="mock-kpi-label">Pipeline</div></div>
+            <div class="mock-kpi"><div class="mock-kpi-value" style="color:#10b981">7</div><div class="mock-kpi-label">Deals</div></div>
+            <div class="mock-kpi"><div class="mock-kpi-value" style="color:#f59e0b">3</div><div class="mock-kpi-label">Tasks</div></div>
+          </div>
+          <div class="mock-list">
+            <div class="mock-list-header">Aktiva deals</div>
+            <div class="mock-list-row"><span class="mock-badge" style="background:rgba(99,102,241,0.15);color:#6366f1">PROPOSAL</span><span class="mock-row-name">Novacode AB</span><span class="mock-row-value">€12k</span></div>
+            <div class="mock-list-row"><span class="mock-badge" style="background:rgba(16,185,129,0.15);color:#10b981">WON</span><span class="mock-row-name">Nordic Shop</span><span class="mock-row-value">€8.5k</span></div>
+            <div class="mock-list-row"><span class="mock-badge" style="background:rgba(245,158,11,0.15);color:#f59e0b">QUALIFIED</span><span class="mock-row-name">VVS Proffsen</span><span class="mock-row-value">€5.2k</span></div>
+          </div>
+        </div>
+      </div>`,
+    capability: `
+      <div class="mock-titlebar">
+        <span class="mock-dot" style="background:#ff5f57"></span>
+        <span class="mock-dot" style="background:#febc2e"></span>
+        <span class="mock-dot" style="background:#28c840"></span>
+        <span class="mock-title">Capability — Kompetensmatris</span>
+      </div>
+      <div class="mock-body">
+        <div class="mock-sidebar">
+          <div class="mock-nav active">🗺 Kompetens</div>
+          <div class="mock-nav">📈 Mål</div>
+          <div class="mock-nav">🎓 Utbildning</div>
+          <div class="mock-nav">👤 Profiler</div>
+        </div>
+        <div class="mock-content">
+          <div class="mock-list-header">Team Alpha</div>
+          <div class="mock-skill-row"><span class="mock-skill-name">Anna K.</span><div class="mock-skill-dots"><span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot empty"></span></div><span style="color:#6b7280;font-size:9px">L4</span></div>
+          <div class="mock-skill-row"><span class="mock-skill-name">Marcus H.</span><div class="mock-skill-dots"><span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot empty"></span><span class="mock-skill-dot empty"></span></div><span style="color:#6b7280;font-size:9px">L3</span></div>
+          <div class="mock-skill-row"><span class="mock-skill-name">Johan L.</span><div class="mock-skill-dots"><span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span></div><span style="color:#6b7280;font-size:9px">L5</span></div>
+          <div style="margin-top:8px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="color:#94a3b8;font-size:9px">Teamets mål Q2</span><span style="color:#818cf8;font-size:9px;font-weight:600">68%</span></div>
+            <div class="mock-progress-bar"><div class="mock-progress-fill" style="width:68%"></div></div>
+          </div>
+        </div>
+      </div>`,
+    process: `
+      <div class="mock-titlebar">
+        <span class="mock-dot" style="background:#ff5f57"></span>
+        <span class="mock-dot" style="background:#febc2e"></span>
+        <span class="mock-dot" style="background:#28c840"></span>
+        <span class="mock-title">Process — Non-Conformances</span>
+      </div>
+      <div class="mock-body">
+        <div class="mock-sidebar">
+          <div class="mock-nav active">⚠ Avvikelser</div>
+          <div class="mock-nav">📋 Processer</div>
+          <div class="mock-nav">✅ Revision</div>
+          <div class="mock-nav">📊 KPI</div>
+        </div>
+        <div class="mock-content">
+          <div class="mock-list">
+            <div class="mock-list-header">Non-Conformances — öppna</div>
+            <div class="mock-list-row"><span class="mock-severity" style="background:rgba(239,68,68,0.15);color:#ef4444">CRITICAL</span><span class="mock-row-name">Leverantörsdok saknas</span><span class="mock-status open">OPEN</span></div>
+            <div class="mock-list-row"><span class="mock-severity" style="background:rgba(245,158,11,0.15);color:#f59e0b">MAJOR</span><span class="mock-row-name">Kalibreringsdatum</span><span class="mock-status progress">IN PROGRESS</span></div>
+            <div class="mock-list-row"><span class="mock-severity" style="background:rgba(234,179,8,0.15);color:#ca8a04">MINOR</span><span class="mock-row-name">Märkning ej uppdaterad</span><span class="mock-status closed">CLOSED</span></div>
+          </div>
+        </div>
+      </div>`,
+    currency: `
+      <div class="mock-titlebar">
+        <span class="mock-dot" style="background:#ff5f57"></span>
+        <span class="mock-dot" style="background:#febc2e"></span>
+        <span class="mock-dot" style="background:#28c840"></span>
+        <span class="mock-title">Currency — Live FX</span>
+      </div>
+      <div class="mock-body">
+        <div class="mock-sidebar">
+          <div class="mock-nav active">💱 Valutor</div>
+          <div class="mock-nav">📄 Fakturor</div>
+          <div class="mock-nav">💰 Budget</div>
+          <div class="mock-nav">📤 SIE4</div>
+        </div>
+        <div class="mock-content">
+          <div class="mock-list-header">Växelkurser — live</div>
+          <table class="mock-table">
+            <thead><tr><th>Valuta</th><th>Kurs</th><th>+/−%</th></tr></thead>
+            <tbody>
+              <tr><td>EUR</td><td>11.48</td><td class="mock-trend-up">+0.3%</td></tr>
+              <tr><td>USD</td><td>10.62</td><td class="mock-trend-down">−0.7%</td></tr>
+              <tr><td>NOK</td><td>0.98</td><td class="mock-trend-down">−0.2%</td></tr>
+            </tbody>
+          </table>
+          <div class="mock-fx-exposure"><span class="mock-fx-label">FX-exponering</span><span class="mock-fx-value">€142 500</span></div>
+        </div>
+      </div>`,
+    reports: `
+      <div class="mock-titlebar">
+        <span class="mock-dot" style="background:#ff5f57"></span>
+        <span class="mock-dot" style="background:#febc2e"></span>
+        <span class="mock-dot" style="background:#28c840"></span>
+        <span class="mock-title">Reports — P&amp;L Mars 2026</span>
+      </div>
+      <div class="mock-body">
+        <div class="mock-sidebar">
+          <div class="mock-nav active">📑 P&amp;L</div>
+          <div class="mock-nav">📊 Dashboard</div>
+          <div class="mock-nav">📤 Export</div>
+          <div class="mock-nav">🗓 Schema</div>
+        </div>
+        <div class="mock-content">
+          <div class="mock-list-header">Resultaträkning — Mars 2026</div>
+          <div class="mock-pl-row"><span class="mock-pl-label">Nettoomsättning</span><span class="mock-pl-value positive">€ 284 000</span></div>
+          <div class="mock-pl-row"><span class="mock-pl-label">Bruttoresultat</span><span class="mock-pl-value positive">€ 172 000</span></div>
+          <div class="mock-pl-divider"></div>
+          <div class="mock-pl-row mock-pl-total" style="background:rgba(99,102,241,0.08);border-radius:6px;border:1px solid rgba(99,102,241,0.15)">
+            <span class="mock-pl-label" style="color:#e2e8f0;font-weight:700">Periodens resultat</span>
+            <span class="mock-pl-value positive" style="font-weight:700;font-size:13px">€ 61 200</span>
+          </div>
+        </div>
+      </div>`
+  };
+
+  function updateStickyMockup(module) {
+    if (!stickyMockupContent || !mockupHTMLMap[module]) return;
+    stickyMockupContent.style.opacity = '0';
+    stickyMockupContent.style.transition = 'opacity 0.2s ease';
+    setTimeout(() => {
+      stickyMockupContent.innerHTML = mockupHTMLMap[module];
+      stickyMockupContent.style.opacity = '1';
+    }, 200);
+  }
+
+  if (featureSteps.length && !prefersReducedMotion) {
+    const stepObserver = new IntersectionObserver((entries) => {
+      if (!isDesktop()) return;
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          featureSteps.forEach(s => s.classList.remove('active'));
+          entry.target.classList.add('active');
+          updateStickyMockup(entry.target.dataset.module);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    featureSteps.forEach(step => stepObserver.observe(step));
+  }
+
+  /* ── Testimonial card 3D tilt ─────────────────────────── */
+  if (!prefersReducedMotion) {
+    document.querySelectorAll('.testimonial-card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        card.style.transform = `perspective(1000px) rotateX(${y * -6}deg) rotateY(${x * 6}deg) translateZ(8px)`;
+        card.style.transition = 'none';
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+        card.style.transition = 'transform 0.4s ease';
+      });
+    });
+  }
+
+  /* ── Smooth scroll for anchor links ──────────────────── */
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', e => {
+      const target = document.querySelector(anchor.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  /* ── Prefetch next likely pages ───────────────────────── */
+  document.addEventListener('DOMContentLoaded', () => {
+    ['checkout.html', 'about.html', 'developers/'].forEach(href => {
+      const link = document.createElement('link');
+      link.rel = 'prefetch';
+      link.href = href;
+      document.head.appendChild(link);
+    });
+  });
+
+  </script>
+
+</body>
+</html>

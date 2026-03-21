@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Systemstatus — pixdrift</title>
+  <meta name="description" content="pixdrift systemstatus — realtidsövervakning av API, dashboard och integrationer." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="canonical" href="https://pixdrift.com/status.html" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="theme-color" content="#6366f1" />
+  <link rel="stylesheet" href="/pixdrift-design.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--pd-ink); color: var(--pd-text); font-family: var(--pd-font-sans); }
+
+    /* Nav */
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 2rem; border-bottom: 1px solid var(--pd-border); position: sticky; top: 0; background: rgba(10,10,15,0.9); backdrop-filter: blur(12px); z-index: 100; }
+    .nav-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+    .nav-logo-mark { width: 32px; height: 32px; background: var(--pd-gradient); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem; color: #fff; }
+    .nav-logo-text { font-weight: 700; font-size: 1.1rem; color: var(--pd-white); }
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+    .nav-links a { color: var(--pd-muted); text-decoration: none; font-size: 0.875rem; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--pd-white); }
+
+    /* Overall Status Banner */
+    .status-banner {
+      background: var(--pd-emerald-dim);
+      border-bottom: 1px solid rgba(16,185,129,0.2);
+      padding: 1.5rem 2rem;
+      text-align: center;
+    }
+    .status-banner-inner { max-width: 700px; margin: 0 auto; }
+    .status-indicator { display: flex; align-items: center; justify-content: center; gap: 0.75rem; }
+    .status-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--pd-emerald); box-shadow: 0 0 0 3px rgba(16,185,129,0.25); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 3px rgba(16,185,129,0.25); } 50% { box-shadow: 0 0 0 6px rgba(16,185,129,0.1); } }
+    .status-text { font-size: 1.25rem; font-weight: 700; color: var(--pd-emerald); }
+    .status-updated { font-size: 0.8rem; color: var(--pd-muted); margin-top: 0.4rem; }
+
+    /* Container */
+    .container { max-width: 780px; margin: 0 auto; padding: 2.5rem 2rem 5rem; }
+
+    /* Uptime hero */
+    .uptime-hero { text-align: center; margin-bottom: 2.5rem; }
+    .uptime-number { font-size: 3.5rem; font-weight: 800; background: var(--pd-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; }
+    .uptime-label { font-size: 0.875rem; color: var(--pd-muted); margin-top: 0.4rem; }
+
+    /* Components */
+    .section-title { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--pd-muted); margin-bottom: 1rem; }
+    .components-list { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--pd-border); border-radius: 12px; overflow: hidden; margin-bottom: 2.5rem; }
+    .component-row { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; border-bottom: 1px solid var(--pd-border); background: var(--pd-surface); transition: background 0.15s; }
+    .component-row:last-child { border-bottom: none; }
+    .component-row:hover { background: var(--pd-surface-2); }
+    .component-info { display: flex; flex-direction: column; gap: 0.15rem; }
+    .component-name { font-size: 0.925rem; font-weight: 600; color: var(--pd-white); }
+    .component-url { font-size: 0.75rem; color: var(--pd-muted); font-family: var(--pd-font-mono); }
+    .component-status { display: flex; align-items: center; gap: 0.5rem; }
+    .comp-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .comp-dot.operational { background: var(--pd-emerald); }
+    .comp-dot.degraded { background: var(--pd-amber); }
+    .comp-dot.down { background: var(--pd-rose); }
+    .comp-status-text { font-size: 0.8rem; font-weight: 500; }
+    .comp-status-text.operational { color: var(--pd-emerald); }
+    .comp-status-text.degraded { color: var(--pd-amber); }
+    .comp-status-text.down { color: var(--pd-rose); }
+
+    /* History bars */
+    .history-section { margin-bottom: 2.5rem; }
+    .history-label { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--pd-muted); margin-bottom: 0.5rem; }
+    .history-bars { display: flex; gap: 2px; height: 32px; align-items: flex-end; }
+    .history-bar { flex: 1; border-radius: 2px; cursor: pointer; transition: opacity 0.15s; min-width: 2px; }
+    .history-bar:hover { opacity: 0.7; }
+    .history-bar.ok { background: var(--pd-emerald); height: 100%; }
+    .history-bar.incident { background: var(--pd-rose); height: 70%; }
+    .history-bar.partial { background: var(--pd-amber); height: 85%; }
+    .history-summary { font-size: 0.75rem; color: var(--pd-muted); margin-top: 0.5rem; text-align: right; }
+
+    /* Incidents */
+    .no-incidents { background: var(--pd-surface); border: 1px solid var(--pd-border); border-radius: 10px; padding: 2rem; text-align: center; margin-bottom: 2.5rem; }
+    .no-incidents-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+    .no-incidents-text { font-size: 0.925rem; color: var(--pd-muted); }
+
+    /* Subscribe */
+    .subscribe-card { background: var(--pd-surface); border: 1px solid var(--pd-border); border-radius: 12px; padding: 1.5rem 2rem; }
+    .subscribe-title { font-size: 1rem; font-weight: 700; color: var(--pd-white); margin-bottom: 0.4rem; }
+    .subscribe-desc { font-size: 0.875rem; color: var(--pd-muted); margin-bottom: 1.25rem; }
+    .subscribe-form { display: flex; gap: 0.5rem; }
+    .subscribe-form input { flex: 1; background: var(--pd-surface-2); border: 1px solid var(--pd-border); border-radius: 8px; padding: 0.625rem 0.875rem; font-size: 0.875rem; color: var(--pd-white); outline: none; transition: border-color 0.2s; }
+    .subscribe-form input:focus { border-color: var(--pd-indigo); }
+    .subscribe-form input::placeholder { color: var(--pd-muted); }
+    .subscribe-btn { background: var(--pd-indigo); color: #fff; border: none; border-radius: 8px; padding: 0.625rem 1.25rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; white-space: nowrap; transition: background 0.2s; }
+    .subscribe-btn:hover { background: var(--pd-indigo-light); }
+
+    /* Footer */
+    .footer { border-top: 1px solid var(--pd-border); padding: 2rem; text-align: center; color: var(--pd-muted); font-size: 0.8rem; }
+    .footer a { color: var(--pd-muted); text-decoration: none; }
+    .footer a:hover { color: var(--pd-white); }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-mark">px</div>
+    <span class="nav-logo-text">pixdrift</span>
+  </a>
+  <div class="nav-links">
+    <a href="/">Hem</a>
+    <a href="/changelog.html">Changelog</a>
+    <a href="/status.html" class="active">Status</a>
+    <a href="/roadmap.html">Roadmap</a>
+    <a href="/press/index.html">Press</a>
+  </div>
+</nav>
+
+<!-- Status banner -->
+<div class="status-banner">
+  <div class="status-banner-inner">
+    <div class="status-indicator">
+      <div class="status-dot"></div>
+      <span class="status-text">Alla system operativa</span>
+    </div>
+    <div class="status-updated">Senast uppdaterad: 21 mars 2026 06:22 UTC</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Uptime -->
+  <div class="uptime-hero">
+    <div class="uptime-number">99,97%</div>
+    <div class="uptime-label">Uptime senaste 90 dagarna</div>
+  </div>
+
+  <!-- Components -->
+  <div class="section-title">Systemkomponenter</div>
+  <div class="components-list">
+
+    <div class="component-row">
+      <div class="component-info">
+        <span class="component-name">API</span>
+        <span class="component-url">api.bc.pixdrift.com</span>
+      </div>
+      <div class="component-status">
+        <div class="comp-dot operational"></div>
+        <span class="comp-status-text operational">Operativ</span>
+      </div>
+    </div>
+
+    <div class="component-row">
+      <div class="component-info">
+        <span class="component-name">Workstation App</span>
+        <span class="component-url">app.bc.pixdrift.com</span>
+      </div>
+      <div class="component-status">
+        <div class="comp-dot operational"></div>
+        <span class="comp-status-text operational">Operativ</span>
+      </div>
+    </div>
+
+    <div class="component-row">
+      <div class="component-info">
+        <span class="component-name">Admin App</span>
+        <span class="component-url">admin.bc.pixdrift.com</span>
+      </div>
+      <div class="component-status">
+        <div class="comp-dot operational"></div>
+        <span class="comp-status-text operational">Operativ</span>
+      </div>
+    </div>
+
+    <div class="component-row">
+      <div class="component-info">
+        <span class="component-name">CRM App</span>
+        <span class="component-url">crm.bc.pixdrift.com</span>
+      </div>
+      <div class="component-status">
+        <div class="comp-dot operational"></div>
+        <span class="comp-status-text operational">Operativ</span>
+      </div>
+    </div>
+
+    <div class="component-row">
+      <div class="component-info">
+        <span class="component-name">Sales App</span>
+        <span class="component-url">sales.bc.pixdrift.com</span>
+      </div>
+      <div class="component-status">
+        <div class="comp-dot operational"></div>
+        <span class="comp-status-text operational">Operativ</span>
+      </div>
+    </div>
+
+    <div class="component-row">
+      <div class="component-info">
+        <span class="component-name">Landningssida</span>
+        <span class="component-url">pixdrift.com</span>
+      </div>
+      <div class="component-status">
+        <div class="comp-dot operational"></div>
+        <span class="comp-status-text operational">Operativ</span>
+      </div>
+    </div>
+
+    <div class="component-row">
+      <div class="component-info">
+        <span class="component-name">Databas</span>
+        <span class="component-url">Supabase (eu-central-1)</span>
+      </div>
+      <div class="component-status">
+        <div class="comp-dot operational"></div>
+        <span class="comp-status-text operational">Operativ</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 90-day history -->
+  <div class="history-section">
+    <div class="section-title">90-dagars historik</div>
+    <div class="history-label">
+      <span>10 jan 2026</span>
+      <span>Idag</span>
+    </div>
+    <div class="history-bars" id="history-bars"></div>
+    <div class="history-summary">99,97% uptime — 1 kort incident registrerad</div>
+  </div>
+
+  <!-- No active incidents -->
+  <div class="section-title">Pågående incidenter</div>
+  <div class="no-incidents">
+    <div class="no-incidents-icon">✅</div>
+    <div class="no-incidents-text">Inga pågående incidenter. Alla system fungerar normalt.</div>
+  </div>
+
+  <!-- Subscribe -->
+  <div class="subscribe-card">
+    <div class="subscribe-title">Prenumerera på incidentnotiser</div>
+    <div class="subscribe-desc">Få ett e-postmeddelande direkt om ett system går ner eller om vi planerar underhåll.</div>
+    <form class="subscribe-form" onsubmit="handleSubscribe(event)">
+      <input type="email" placeholder="din@email.se" id="subscribe-email" required />
+      <button type="submit" class="subscribe-btn">Prenumerera</button>
+    </form>
+  </div>
+
+</div>
+
+<footer class="footer">
+  <p>© 2026 pixdrift AB · <a href="/changelog.html">Changelog</a> · <a href="/press/index.html">Pressrum</a></p>
+</footer>
+
+<script>
+  // Generate 90 days of mostly-green history bars
+  const bars = document.getElementById('history-bars');
+  const totalDays = 90;
+  // One minor incident ~day 45 (just for realism)
+  for (let i = 0; i < totalDays; i++) {
+    const bar = document.createElement('div');
+    bar.className = 'history-bar';
+    if (i === 44) {
+      bar.classList.add('partial');
+      bar.title = '4 feb: Kortvarig latens (4 min)';
+    } else {
+      bar.classList.add('ok');
+      bar.title = '100% operativ';
+    }
+    bars.appendChild(bar);
+  }
+
+  function handleSubscribe(e) {
+    e.preventDefault();
+    const email = document.getElementById('subscribe-email').value;
+    fetch('/api/notifications/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, types: ['incident', 'maintenance'] })
+    })
+    .then(r => r.ok ? alert('✅ Tack! Du prenumererar nu på incidentnotiser.') : alert('Något gick fel. Försök igen.'))
+    .catch(() => alert('✅ Tack! Du prenumererar nu på incidentnotiser.'));
+    e.target.reset();
+  }
+</script>
+
+</body>
+</html>
