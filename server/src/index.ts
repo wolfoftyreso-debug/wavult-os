@@ -41,6 +41,7 @@ import legalReviewRouter from "./legal-review";
 import personnelRouter from "./personnel-api";
 import auditWorkspaceRouter from "./audit-workspace";
 import integrationRouter from "./integrations/integration-api";
+import stripeRouter from "./stripe";
 
 // ---------------------------------------------------------------------------
 // Certified Core imports
@@ -223,6 +224,7 @@ app.use(legalReviewRouter);
 app.use(personnelRouter);
 app.use(auditWorkspaceRouter);
 app.use(integrationRouter);
+app.use("/api/stripe", stripeRouter);
 
 // ---------------------------------------------------------------------------
 // Auth helper for inline routes

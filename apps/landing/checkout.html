@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kom igång — pixdrift</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0a0f;
+      --surface:   #111118;
+      --border:    #1e1e2e;
+      --muted:     #6b7280;
+      --text:      #e2e8f0;
+      --white:     #f8fafc;
+      --accent:    #6366f1;
+      --accent-2:  #8b5cf6;
+      --green:     #10b981;
+      --red:       #ef4444;
+      --radius:    12px;
+      --font:      -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--white);
+      margin-bottom: 2.5rem;
+      text-align: center;
+    }
+    .logo span { color: var(--accent); }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.03em;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+    .subtitle {
+      font-size: 0.9rem;
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 0.5rem;
+    }
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--white);
+      font-size: 0.95rem;
+      font-family: var(--font);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: var(--accent); }
+    input::placeholder { color: var(--muted); }
+
+    /* Plan radio buttons */
+    .plan-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    .plan-option {
+      position: relative;
+    }
+    .plan-option input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .plan-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .plan-option input:checked + .plan-label {
+      border-color: var(--accent);
+      background: rgba(99,102,241,0.08);
+    }
+    .plan-label:hover {
+      border-color: rgba(99,102,241,0.5);
+    }
+    .plan-name {
+      font-weight: 700;
+      color: var(--white);
+      font-size: 1rem;
+    }
+    .plan-price {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.03em;
+      margin-top: 0.25rem;
+    }
+    .plan-price .per {
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--muted);
+    }
+    .plan-popular {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-top: 0.25rem;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 0.875rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: var(--font);
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 1.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .btn-submit:hover:not(:disabled) {
+      background: var(--accent-2);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(99,102,241,0.4);
+    }
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .note {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .error-msg {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+      color: #fca5a5;
+      margin-top: 1rem;
+      display: none;
+    }
+
+    .back-link {
+      margin-top: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-align: center;
+    }
+    .back-link a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .back-link a:hover { text-decoration: underline; }
+
+    /* Cancelled state */
+    .cancelled-notice {
+      background: rgba(245,158,11,0.1);
+      border: 1px solid rgba(245,158,11,0.3);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+      color: #fcd34d;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="https://pixdrift.com" style="text-decoration:none;">
+    <div class="logo">pix<span>drift</span></div>
+  </a>
+
+  <div class="card">
+    <div class="cancelled-notice" id="cancelledNotice">
+      ⚠️ Betalning avbröts. Du kan försöka igen nedan.
+    </div>
+
+    <h1>Välkommen till pixdrift</h1>
+    <p class="subtitle">Kom igång på under en minut. Ingen bindningstid.</p>
+
+    <form id="checkoutForm">
+      <div class="form-group">
+        <label for="org_name">Organisationsnamn</label>
+        <input
+          type="text"
+          id="org_name"
+          name="org_name"
+          placeholder="Ditt företagsnamn"
+          required
+          autocomplete="organization"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="email">E-postadress</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          placeholder="du@foretag.se"
+          required
+          autocomplete="email"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Välj plan</label>
+        <div class="plan-options">
+          <div class="plan-option">
+            <input type="radio" id="plan_starter" name="plan" value="starter" />
+            <label class="plan-label" for="plan_starter">
+              <span class="plan-name">Starter</span>
+              <span class="plan-price">€499<span class="per">/mån</span></span>
+              <span class="plan-popular" style="visibility:hidden;">·</span>
+            </label>
+          </div>
+          <div class="plan-option">
+            <input type="radio" id="plan_growth" name="plan" value="growth" checked />
+            <label class="plan-label" for="plan_growth">
+              <span class="plan-name">Growth</span>
+              <span class="plan-price">€999<span class="per">/mån</span></span>
+              <span class="plan-popular">⭐ Mest populär</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="error-msg" id="errorMsg"></div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">
+        <span id="btnText">Starta prenumeration →</span>
+      </button>
+    </form>
+
+    <p class="note">🔒 Säker betalning via Stripe. Ingen bindningstid — avsluta när du vill.</p>
+  </div>
+
+  <div class="back-link">
+    <a href="https://pixdrift.com">← Tillbaka till pixdrift.com</a>
+  </div>
+
+  <script>
+    const API_BASE = "https://api.bc.pixdrift.com";
+
+    // Show cancelled notice if redirected back after cancel
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("cancelled") === "1") {
+      document.getElementById("cancelledNotice").style.display = "block";
+    }
+
+    // Pre-select plan from query string (?plan=starter)
+    const planParam = params.get("plan");
+    if (planParam === "starter" || planParam === "growth") {
+      document.querySelector(`input[value="${planParam}"]`).checked = true;
+    }
+
+    document.getElementById("checkoutForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const btn = document.getElementById("submitBtn");
+      const btnText = document.getElementById("btnText");
+      const errorMsg = document.getElementById("errorMsg");
+
+      const org_name = document.getElementById("org_name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const plan = document.querySelector('input[name="plan"]:checked').value;
+
+      // Reset error
+      errorMsg.style.display = "none";
+
+      // Loading state
+      btn.disabled = true;
+      btnText.textContent = "Ansluter till Stripe…";
+
+      try {
+        const resp = await fetch(`${API_BASE}/api/stripe/create-checkout-session`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ plan, email, org_name }),
+        });
+
+        const data = await resp.json();
+
+        if (!resp.ok) {
+          throw new Error(data.error || "Något gick fel");
+        }
+
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          throw new Error("Ingen redirect-URL från servern");
+        }
+      } catch (err) {
+        errorMsg.textContent = "⚠️ " + (err.message || "Kunde inte ansluta till servern");
+        errorMsg.style.display = "block";
+        btn.disabled = false;
+        btnText.textContent = "Starta prenumeration →";
+      }
+    });
+  </script>
+</body>
+</html>
