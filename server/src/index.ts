@@ -52,6 +52,7 @@ import spatialRouter from "./spatial-flow";
 import consumablesRouter from "./consumables";
 import { scheduleAutoConsume } from "./jobs/consumables-auto-consume";
 import cultureRouter from "./culture-engine";
+import peopleOSRouter from "./people-os";
 
 // ---------------------------------------------------------------------------
 // Customer Interaction Engine
@@ -380,6 +381,7 @@ app.use("/api/spaghetti", spaghettiRouter); // Lean spaghetti diagram & helikopt
 app.use("/api/spatial", spatialRouter);   // Spatial Flow Intelligence — zones, spaghetti, friction
 app.use("/api/consumables", consumablesRouter); // Consumables Management — operational cost control
 app.use("/api/culture", cultureRouter);       // Culture & Event Automation — birthdays, breakfast, events
+app.use("/api/people", peopleOSRouter);       // People OS (ERM) — pulse surveys, engagement, feedback, warnings, 1-on-1s
 app.use(bankingRouter); // Banking: /api/banking/* + /api/integrations/fortnox/* + /api/integrations/visma/*
 
 // ---------------------------------------------------------------------------

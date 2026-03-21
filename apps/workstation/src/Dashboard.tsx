@@ -5,6 +5,7 @@ import DMSModule from "./DMSModule";
 import SpaghettiModule from "./SpaghettiModule";
 import SpatialModule from "./SpatialModule";
 import AssetModule from "./AssetModule";
+import CultureModule from "./CultureModule";
 import ConsumablesModule from "./ConsumablesModule";
 import { useTranslation, LanguageSwitcher, formatCurrency, formatDate } from "@pixdrift/i18n";
 
@@ -278,6 +279,19 @@ const Icons = {
       <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
     </svg>
   ),
+  Cake: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/>
+      <path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/>
+      <path d="M2 21h20"/>
+      <path d="M7 8v3"/>
+      <path d="M12 8v3"/>
+      <path d="M17 8v3"/>
+      <path d="M7 4a1 1 0 0 1 1-1 1 1 0 0 1 1 1v1H7V4z"/>
+      <path d="M12 4a1 1 0 0 1 1-1 1 1 0 0 1 1 1v1h-2V4z"/>
+      <path d="M17 4a1 1 0 0 1 1-1 1 1 0 0 1 1 1v1h-2V4z"/>
+    </svg>
+  ),
   Chat: () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
@@ -330,6 +344,7 @@ const NAV_SECTIONS = [
   {
     label: "SYSTEM",
     items: [
+      { id: "culture",      icon: <Icons.Cake />,      label: "Kultur & Events" },
       { id: "dms",       icon: <Icons.Car />,       label: "DMS Bil"     },
       { id: "spaghetti", icon: <Icons.Spaghetti />, label: "Flödesanalys" },
       { id: "spatial",   icon: <Icons.Map />,       label: "Verkstadskarta" },
@@ -2149,6 +2164,7 @@ export default function App({ user: propUser, onLogout }: { user?: any; onLogout
     capability: "Kompetenser",
     development: "Utveckling",
     learning: "Utbildning",
+    culture:   "Kultur & Events",
     dms:       "DMS Bil",
     spaghetti: "Flödesanalys",
     spatial:   "Verkstadskarta",
@@ -2191,6 +2207,7 @@ export default function App({ user: propUser, onLogout }: { user?: any; onLogout
             {view === "compliance" && <ComplianceView D={D} />}
             {view === "risks" && <RisksView D={D} />}
             {view === "chat" && <ChatView D={D} />}
+            {view === "culture"    && <CultureModule />}
             {view === "learning"   && <LearningModule user={D.user as any} />}
             {view === "dms"        && <DMSModule />}
             {view === "spaghetti" && <SpaghettiModule />}
