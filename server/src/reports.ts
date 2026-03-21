@@ -1,4 +1,5 @@
 import { Router, Request, Response } from "express";
+import { requireAuth } from "./auth";
 import { supabase } from "./supabase";
 
 // ---------------------------------------------------------------------------
@@ -13,6 +14,7 @@ import { supabase } from "./supabase";
 // ---------------------------------------------------------------------------
 
 const router = Router();
+router.use(requireAuth);
 
 // ---- BAS Chart of Accounts (60+ accounts) ---------------------------------
 const BAS_CHART_OF_ACCOUNTS = [
