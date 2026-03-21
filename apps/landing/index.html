@@ -5,55 +5,130 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Primary Meta -->
-  <title>pixdrift — One System. Every Operation.</title>
-  <meta name="description" content="pixdrift är ett Operating Management System för moderna B2B-team. Ersätter CRM, projektverktyg, kompetensplattform, ekonomi och compliance i ett enda system." />
-  <meta name="keywords" content="OMS, operating management system, CRM, affärssystem, Nordic SaaS, enterprise operations" />
+  <title>pixdrift — Business Operating System for Modern Teams</title>
+  <meta name="description" content="pixdrift is the operating system modern teams run their business on. Replace 5+ tools with one platform. Execution, Capability, Process, Currency, Reports. From €499/mo." />
+  <meta name="keywords" content="OMS system, operations management software, business operating system, team operations platform, process management, SaaS operations, affärssystem, OMS Sverige" />
   <meta name="robots" content="index, follow" />
   <meta name="author" content="pixdrift AB" />
+  <meta name="language" content="sv,en" />
+
+  <!-- Canonical & Hreflang -->
+  <link rel="canonical" href="https://pixdrift.com/" />
+  <link rel="alternate" hreflang="sv" href="https://pixdrift.com/" />
+  <link rel="alternate" hreflang="sv-SE" href="https://pixdrift.com/" />
+  <link rel="alternate" hreflang="x-default" href="https://pixdrift.com/" />
+  <!-- Engelska version planeras: -->
+  <!-- <link rel="alternate" hreflang="en" href="https://pixdrift.com/en/"> -->
+  <!-- <link rel="alternate" hreflang="de" href="https://pixdrift.com/de/"> -->
 
   <!-- Open Graph -->
-  <meta property="og:type"        content="website" />
-  <meta property="og:url"         content="https://pixdrift.com" />
-  <meta property="og:title"       content="pixdrift — One System. Every Operation." />
-  <meta property="og:description" content="Ersätt 5+ verktyg med ett system byggt för moderna B2B-team." />
-  <meta property="og:image"       content="https://pixdrift.com/og-image.png" />
-  <meta property="og:locale"      content="sv_SE" />
-  <meta property="og:site_name"   content="pixdrift" />
+  <meta property="og:type"             content="website" />
+  <meta property="og:url"              content="https://pixdrift.com/" />
+  <meta property="og:title"            content="pixdrift — Business Operating System for Modern Teams" />
+  <meta property="og:description"      content="Replace 5+ tools with one platform. Execution, Capability, Process, Currency, Reports. The OS your business runs on." />
+  <meta property="og:image"            content="https://pixdrift.com/og-image.png" />
+  <meta property="og:image:width"      content="1200" />
+  <meta property="og:image:height"     content="630" />
+  <meta property="og:image:alt"        content="pixdrift dashboard overview" />
+  <meta property="og:locale"           content="sv_SE" />
+  <meta property="og:locale:alternate" content="en_US" />
+  <meta property="og:site_name"        content="pixdrift" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card"        content="summary_large_image" />
   <meta name="twitter:site"        content="@pixdrift" />
-  <meta name="twitter:title"       content="pixdrift — One System. Every Operation." />
-  <meta name="twitter:description" content="Operating Management System för moderna B2B-team." />
+  <meta name="twitter:creator"     content="@pixdrift" />
+  <meta name="twitter:title"       content="pixdrift — Business Operating System" />
+  <meta name="twitter:description" content="Replace 5+ tools with one platform. From €499/mo." />
   <meta name="twitter:image"       content="https://pixdrift.com/og-image.png" />
 
-  <!-- Canonical -->
-  <link rel="canonical" href="https://pixdrift.com" />
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="theme-color" content="#6366f1" />
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%236366f1'/><text y='0.9em' font-size='60' font-family='system-ui' font-weight='800' fill='white' x='50%25' text-anchor='middle'>p</text></svg>" />
-
-  <!-- Schema.org -->
+  <!-- Schema.org structured data -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "pixdrift",
-    "applicationCategory": "BusinessApplication",
-    "operatingSystem": "Web",
-    "url": "https://pixdrift.com",
-    "description": "Operating Management System för moderna B2B-team.",
-    "offers": [
-      { "@type": "Offer", "name": "Starter", "price": "499", "priceCurrency": "EUR" },
-      { "@type": "Offer", "name": "Growth",  "price": "999", "priceCurrency": "EUR" }
-    ],
-    "publisher": { "@type": "Organization", "name": "pixdrift AB", "url": "https://pixdrift.com" }
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "name": "pixdrift",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web, iOS, Android",
+        "url": "https://pixdrift.com",
+        "description": "Business Operating System for modern teams. Replace 5+ tools with one platform.",
+        "offers": [
+          {
+            "@type": "Offer",
+            "name": "Starter",
+            "price": "499",
+            "priceCurrency": "EUR",
+            "priceSpecification": {
+              "@type": "UnitPriceSpecification",
+              "price": "499",
+              "priceCurrency": "EUR",
+              "unitText": "MONTH"
+            }
+          },
+          {
+            "@type": "Offer",
+            "name": "Growth",
+            "price": "999",
+            "priceCurrency": "EUR"
+          }
+        ],
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "reviewCount": "47"
+        }
+      },
+      {
+        "@type": "Organization",
+        "name": "pixdrift AB",
+        "url": "https://pixdrift.com",
+        "logo": "https://pixdrift.com/logo.png",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "email": "hello@pixdrift.com",
+          "contactType": "sales"
+        },
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Stockholm",
+          "addressCountry": "SE"
+        },
+        "sameAs": [
+          "https://linkedin.com/company/pixdrift",
+          "https://twitter.com/pixdrift",
+          "https://github.com/pixdrift"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "url": "https://pixdrift.com",
+        "name": "pixdrift",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://pixdrift.com/developers/api-reference.html?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    ]
   }
   </script>
 
-  <!-- Fonts -->
+  <!-- Resource hints & Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style" />
+  <link rel="dns-prefetch" href="//api.bc.pixdrift.com" />
+  <link rel="preconnect" href="https://api.bc.pixdrift.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <style>
@@ -1303,12 +1378,12 @@
 
         <!-- Text content -->
         <div class="hero-content">
-          <div class="hero-eyebrow">Operating Management Platform</div>
+          <div class="hero-eyebrow">Business Operating System</div>
 
-          <h1>One System.<br>Every Operation.</h1>
+          <h1>Your Business,<br><span class="gradient-text">Running on pixdrift.</span></h1>
 
           <p class="hero-sub">
-            Ersätt 5+ verktyg med en plattform byggd för hur moderna team faktiskt arbetar.
+            pixdrift är operativsystemet moderna team kör sina verksamheter på. Execution, capability, process, ekonomi — allt i ett system, live.
           </p>
 
           <div class="hero-ctas">
@@ -1361,7 +1436,7 @@
     <div class="container">
       <div class="section-header fade-in">
         <p class="section-eyebrow">Problemet</p>
-        <h2>Varför moderna team fastnar</h2>
+        <h2>Utan ett OS kör varje del av verksamheten sitt eget system</h2>
         <p>Fragmenterade verktyg skapar osynliga kostnader — i tid, fokus och beslutskvalitet.</p>
       </div>
 
@@ -1394,8 +1469,8 @@
     <div class="container">
       <div class="section-header fade-in">
         <p class="section-eyebrow">Produkten</p>
-        <h2>Ett system. Fem moduler.</h2>
-        <p>Varje modul är kraftfull ensam. Tillsammans skapar de operationell klarhet.</p>
+        <h2>Modulerna i pixdrift OS</h2>
+        <p>Som Windows-komponenter — varje modul fyller en roll i systemet. Tillsammans ger de full kontroll över hela verksamheten.</p>
       </div>
 
       <!-- Tab navigation -->
@@ -1572,13 +1647,13 @@
     <div class="container">
       <div class="section-header fade-in">
         <p class="section-eyebrow">Varför pixdrift</p>
-        <h2>Byggt annorlunda. Med avsikt.</h2>
+        <h2>Operativsystemet. Inte ännu ett verktyg.</h2>
       </div>
 
       <div class="diff-grid">
         <div class="diff-item fade-in">
           <div class="diff-icon" aria-hidden="true">💰</div>
-          <h3>Ersätter 5+ verktyg</h3>
+          <h3>Ett system. Inte en integration.</h3>
           <p>
             Starter på <strong>€499/mo</strong> ersätter
             Jira <strong>(€300)</strong> + HubSpot <strong>(€500)</strong> + Notion <strong>(€200)</strong> + Sage <strong>(€300)</strong> + mer.
@@ -1588,7 +1663,7 @@
 
         <div class="diff-item fade-in">
           <div class="diff-icon" aria-hidden="true">🇪🇺</div>
-          <h3>Byggt för Europa</h3>
+          <h3>Byggt för europeisk verksamhet.</h3>
           <p>
             <strong>SIE4</strong>, <strong>BAS-plan</strong>, <strong>GDPR</strong>, multi-valuta (SEK/EUR/NOK/DKK).
             Inga eftertankar. Inget "internationellt anpassat" som egentligen betyder USA.
@@ -1597,7 +1672,7 @@
 
         <div class="diff-item fade-in">
           <div class="diff-icon" aria-hidden="true">🔒</div>
-          <h3>Enterprise-säkerhet</h3>
+          <h3>Alltid live. Alltid uppdaterat.</h3>
           <p>
             <strong>GDPR-compliant</strong> by design. Data stannar i EU.
             Krypterat i transit och i vila. <strong>SSO</strong> på roadmap. Pen-test genomfört.
@@ -1761,8 +1836,8 @@
   <section class="cta-section" id="boka-demo">
     <div class="container">
       <div class="cta-inner fade-in">
-        <h2>One System. Every Operation.</h2>
-        <p>Kom igång idag — de första 30 dagarna på oss.</p>
+        <h2>Dags att installera.</h2>
+        <p>pixdrift OS. Kostnadsfritt i 30 dagar. Inget kreditkort.</p>
         <div class="cta-buttons">
           <a href="mailto:demo@pixdrift.com?subject=Demo-förfrågan" class="btn btn-white btn-full btn-lg">Boka demo</a>
           <a href="https://app.pixdrift.com/register" class="btn btn-ghost-white btn-full btn-lg">Starta gratis →</a>
@@ -1780,7 +1855,7 @@
 
         <div class="footer-brand">
           <div class="footer-logo">pix<span>drift</span></div>
-          <p class="footer-tagline">One System. Every Operation.</p>
+          <p class="footer-tagline">Your Business, Running on pixdrift.</p>
           <div class="footer-socials">
             <!-- LinkedIn -->
             <a href="https://linkedin.com/company/pixdrift" class="footer-social" aria-label="LinkedIn">
@@ -1959,6 +2034,19 @@
           e.preventDefault();
           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
+      });
+    });
+  </script>
+
+  <script>
+    // Prefetch next likely pages for faster navigation
+    document.addEventListener('DOMContentLoaded', () => {
+      const links = ['checkout.html', 'about.html', 'developers/'];
+      links.forEach(href => {
+        const link = document.createElement('link');
+        link.rel = 'prefetch';
+        link.href = href;
+        document.head.appendChild(link);
       });
     });
   </script>

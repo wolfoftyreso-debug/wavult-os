@@ -71,7 +71,7 @@
 - [ ] Publish landing page (pixdrift.com live)
 - [ ] Set up waitlist with ConvertKit / Loops
 - [ ] Personal outreach: Erik's network — 50 warm emails (CEOs, COOs, founders)
-- [ ] LinkedIn announcement post (see template below)
+- [ ] LinkedIn announcement post (se OS-positionerings-template nedan)
 - [ ] Add to Linktree / personal bio
 
 **Metric:** 200 waitlist signups
@@ -80,11 +80,42 @@
 
 ### Week 3–4: Content & Community
 
-**LinkedIn (3x/week):**
-- "Why we built pixdrift" (founder story)
-- "The 4-tool stack that kills team velocity" (problem framing)
-- Demo GIF / screenshot of key feature
-- Customer story (even if it's beta user feedback)
+### 🚀 LinkedIn-lanserings-post (OS-positionering)
+
+```
+Vi lanserade pixdrift idag.
+
+Inte ett CRM.
+Inte ett projektverktyg.
+Inte ännu en dashboard.
+
+Ett operativsystem för din verksamhet.
+
+Precis som Windows är grunden alla program körs på —
+är pixdrift grunden all verksamhet körs på.
+
+Sales. Ops. Ekonomi. Compliance. HR.
+Allt i ett system. Allt live. Allt sammankopplat.
+
+Vi har byggt det vi alltid velat ha som ops-team:
+en enda sanning om verksamheten. Inte fem verktyg
+som pratar förbi varandra.
+
+pixdrift OS lanserar nu.
+30 dagars fri installation. Inget kreditkort.
+
+→ pixdrift.com
+
+#pixdrift #SaaS #OperatingSystem #Nordic
+```
+
+---
+
+**LinkedIn (3x/week — OS-tema):**
+- "Ditt företag saknar ett operativsystem" (problem framing — OS-analogin)
+- "Varför vi inte bygger ett CRM" (founder story med Windows-positionering)
+- Demo GIF: onboarding-flödet (OOBE-känsla)
+- Customer story: "Vi installerade pixdrift på 3 minuter"
 
 **Twitter/X:**
 - Build-in-public thread: "We just launched X. Here's what we learned in 30 days."
@@ -199,6 +230,16 @@ Erik
 
 P.S. Early access customers get their first 3 months free. Offer ends when we hit 50 teams.
 ```
+
+---
+
+### Cold email — OS-tema subject lines (A/B-testa)
+
+- `Vilket OS kör [Bolagsnamn] på?`
+- `Ni har Windows för era datorer. Vad kör ni era operationer på?`
+- `[Förnamn], vad händer när någon slutar på [Bolagsnamn]?`
+- `[Förnamn] — ert team jobbar i 5 system. Vi är ett.`
+- `Operativsystem för verksamheten (inte ännu ett CRM)`
 
 ---
 
