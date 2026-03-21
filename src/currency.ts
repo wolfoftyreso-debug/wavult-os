@@ -205,7 +205,16 @@ router.get("/fx/exposure", async (_req: Request, res: Response) => {
       .from("journal_entries")
       .select("currency, amount");
 
-    if (error) throw error;
+    if (error) {
+      // Table may not exist yet — return empty exposure rather than 500
+      console.warn("journal_entries query error:", error.message);
+      return res.json({
+        reportingCurrency: REPORTING_CURRENCY,
+        exposure: [],
+        generatedAt: new Date().toISOString(),
+        note: "No journal entries found",
+      });
+    }
 
     const exposure: Record<string, { totalAmount: number; count: number }> = {};
 
@@ -231,7 +240,7 @@ router.get("/fx/exposure", async (_req: Request, res: Response) => {
             .eq("to_currency", REPORTING_CURRENCY)
             .order("effective_date", { ascending: false })
             .limit(1)
-            .single();
+            .maybeSingle();
 
           if (rateRow) {
             eurEquivalent =

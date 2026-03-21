@@ -85,6 +85,17 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
 });
 
 // ---------------------------------------------------------------------------
+// Health check — MUST be before auth middleware so it's always public
+// ---------------------------------------------------------------------------
+app.get("/api/health", (_req: Request, res: Response) => {
+  res.json({
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    supabase: isSupabaseFallback() ? "fallback" : "connected",
+  });
+});
+
+// ---------------------------------------------------------------------------
 // Auth middleware - extracts user from Supabase JWT, then enriches with
 // org_id and role from the public.users table so downstream handlers
 // always have req.user.org_id available.
@@ -167,17 +178,6 @@ app.use(async (req: Request, _res: Response, next: NextFunction) => {
 
   // Allow request through regardless - individual routes can enforce auth
   next();
-});
-
-// ---------------------------------------------------------------------------
-// Health check
-// ---------------------------------------------------------------------------
-app.get("/health", (_req: Request, res: Response) => {
-  res.json({
-    status: "ok",
-    timestamp: new Date().toISOString(),
-    supabase: isSupabaseFallback() ? "fallback" : "connected",
-  });
 });
 
 // ---------------------------------------------------------------------------
