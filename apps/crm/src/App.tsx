@@ -408,6 +408,7 @@ function ContactsView() {
 }
 
 function CompaniesView() {
+  const { t } = useTranslation();
   const { data, loading } = useApi<typeof FALLBACK_COMPANIES>(`${API}/api/companies`);
   const companies = (data && data.length > 0) ? data : FALLBACK_COMPANIES;
   const totalVal = companies.reduce((s, c) => s + (c.dealValue ?? 0), 0);
@@ -416,9 +417,9 @@ function CompaniesView() {
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10 }}>
         {[
-          { label: "Antal företag", value: companies.length, color: C.blue },
-          { label: "Total deal-värde", value: formatEur(totalVal), color: C.green },
-          { label: "Kunder", value: companies.filter(c => c.status === "CUSTOMER").length, color: C.purple },
+          { label: t('companies.title'), value: companies.length, color: C.blue },
+          { label: t('deals.totalPipeline'), value: formatEur(totalVal), color: C.green },
+          { label: t('common.active'), value: companies.filter(c => c.status === "CUSTOMER").length, color: C.purple },
         ].map((s, i) => (
           <div key={i} className="card-animate" style={{
             background: C.surface, borderRadius: 12, padding: "18px 20px", boxShadow: shadow.sm,
@@ -437,7 +438,7 @@ function CompaniesView() {
       {loading ? (
         <Card><Skeleton height="200px" /></Card>
       ) : (
-        <Card title="Företag">
+        <Card title={t('companies.title')}>
           {companies.map((c, i) => {
             const pct = (c.dealValue ?? 0) / (totalVal || 1) * 100;
             const statusCol = c.status === "CUSTOMER" ? C.green : c.status === "PROSPECT" ? C.blue : C.tertiary;
@@ -592,6 +593,7 @@ function LeadsView() {
 }
 
 function DealsView() {
+  const { t } = useTranslation();
   const { data, loading } = useApi<typeof FALLBACK_DEALS>(`${API}/api/deals`);
   const deals = (data && data.length > 0) ? data : FALLBACK_DEALS;
   const [sortBy, setSortBy] = useState<"value" | "probability">("value");
@@ -614,19 +616,19 @@ function DealsView() {
                 transition: "all 0.15s", fontFamily: "inherit",
               }}
             >
-              {s === "value" ? "Värde" : "Sannolikhet"}
+              {s === "value" ? t('deals.value') : t('deals.probability')}
             </button>
           ))}
         </div>
-        <Btn>+ Nytt deal</Btn>
+        <Btn>+ {t('deals.new')}</Btn>
       </div>
 
       {loading ? (
         <Card><Skeleton height="200px" /></Card>
       ) : (
-        <Card title={`${deals.length} deals`}>
+        <Card title={t('deals.title')}>
           <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1.5fr 1fr" }}>
-            {["Deal", "Värde", "Fas", "Sannolikhet", "Stänger"].map(h => (
+            {[t('deals.title'), t('deals.value'), t('common.status'), t('deals.probability'), t('common.date')].map(h => (
               <div key={h} style={{
                 padding: "8px 0",
                 fontSize: 11, fontWeight: 600, color: C.tertiary,
@@ -697,6 +699,7 @@ function DealsView() {
 }
 
 function ActivitiesView() {
+  const { t } = useTranslation();
   const [filter, setFilter] = useState<"ALL" | "TASK" | "MEETING" | "CALL" | "EMAIL">("ALL");
   const activities = FALLBACK_ACTIVITIES.filter(a => filter === "ALL" || a.type === filter);
 
@@ -717,21 +720,21 @@ function ActivitiesView() {
                 transition: "all 0.15s", fontFamily: "inherit",
               }}
             >
-              {f === "ALL" ? "Alla" : f}
+              {f === "ALL" ? t('common.all') : f}
             </button>
           ))}
         </div>
         <div style={{ marginLeft: "auto" }}>
-          <Btn size="sm">+ Ny aktivitet</Btn>
+          <Btn size="sm">+ {t('nav.activities')}</Btn>
         </div>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
         {[
-          { label: "Idag (kvar)", value: FALLBACK_ACTIVITIES.filter(a => a.date === "2026-03-21" && !a.done).length, color: C.blue },
-          { label: "Klara idag", value: FALLBACK_ACTIVITIES.filter(a => a.date === "2026-03-21" && a.done).length, color: C.green },
-          { label: "Möten v.", value: FALLBACK_ACTIVITIES.filter(a => a.type === "MEETING").length, color: C.purple },
-          { label: "Uppgifter", value: FALLBACK_ACTIVITIES.filter(a => a.type === "TASK").length, color: C.yellow },
+          { label: t('tasks.dueToday'), value: FALLBACK_ACTIVITIES.filter(a => a.date === "2026-03-21" && !a.done).length, color: C.blue },
+          { label: t('common.completed'), value: FALLBACK_ACTIVITIES.filter(a => a.date === "2026-03-21" && a.done).length, color: C.green },
+          { label: t('common.type'), value: FALLBACK_ACTIVITIES.filter(a => a.type === "MEETING").length, color: C.purple },
+          { label: t('tasks.title'), value: FALLBACK_ACTIVITIES.filter(a => a.type === "TASK").length, color: C.yellow },
         ].map((s, i) => (
           <div key={i} className="card-animate" style={{
             background: C.surface, borderRadius: 12, padding: "16px 18px", boxShadow: shadow.sm,
@@ -747,7 +750,7 @@ function ActivitiesView() {
         ))}
       </div>
 
-      <Card title={`Aktiviteter (${activities.length})`}>
+      <Card title={`${t('nav.activities')} (${activities.length})`}>
         {activities.length === 0 ? (
           <EmptyState icon="📅" title={t('common.noData')} subtitle={t('nav.activities')} cta={`+ ${t('common.add')}`} />
         ) : (
@@ -801,6 +804,7 @@ function ActivitiesView() {
 
 // ─── App Shell ─────────────────────────────────────────────────────────────────
 export default function App() {
+  const { t } = useTranslation();
   const [view, setView] = useState("overview");
   const navItems = useNavItems();
 
@@ -920,7 +924,7 @@ export default function App() {
           </div>
 
           <div style={{ flex: 1, padding: "24px 28px 60px" }}>
-            {viewComponents[view] ?? <EmptyState icon="🔍" title="Vy saknas" />}
+            {viewComponents[view] ?? <EmptyState icon="🔍" title={t('common.noData')} />}
           </div>
         </div>
       </div>

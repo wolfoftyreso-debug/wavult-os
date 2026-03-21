@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useApi } from "./useApi";
-import { LanguageSwitcher } from "@pixdrift/i18n";
+import { LanguageSwitcher, useTranslation } from "@pixdrift/i18n";
 
 // ─── Design tokens ─────────────────────────────────────────────────────────────
 const C = {
@@ -128,14 +128,19 @@ const EmptyState = ({ icon, title, subtitle }: { icon?: string; title: string; s
 // ─── Nav ─────────────────────────────────────────────────────────────────────
 type NavItem = { id: string; label: string; icon: React.ReactNode };
 
-const navItems: NavItem[] = [
-  { id: "overview", label: "Översikt", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> },
-  { id: "pipeline", label: "Pipeline", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> },
-  { id: "reports", label: "Rapporter", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> },
-  { id: "payouts", label: "Utbetalningar", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> },
-  { id: "currencies", label: "Valutor", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> },
-  { id: "forecast", label: "Prognoser", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg> },
+const SALES_NAV_ICONS: { id: string; i18nKey: string; icon: React.ReactNode }[] = [
+  { id: "overview", i18nKey: "nav.overview", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> },
+  { id: "pipeline", i18nKey: "deals.pipeline", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> },
+  { id: "reports", i18nKey: "nav.reports", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> },
+  { id: "payouts", i18nKey: "banking.payments", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> },
+  { id: "currencies", i18nKey: "nav.currencies", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> },
+  { id: "forecast", i18nKey: "reports.title", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg> },
 ];
+
+function useSalesNavItems(): NavItem[] {
+  const { t } = useTranslation();
+  return SALES_NAV_ICONS.map(n => ({ ...n, label: t(n.i18nKey) }));
+}
 
 // ─── Fallback data ─────────────────────────────────────────────────────────────
 const FALLBACK_DEALS = [
@@ -202,6 +207,7 @@ const payoutColor = (s: string) =>
 
 // ─── Views ─────────────────────────────────────────────────────────────────────
 function OverviewView() {
+  const { t } = useTranslation();
   const { data: salesDash, loading } = useApi<{ revenue_mtd: number; pipeline_value: number; win_rate: number; avg_deal_size: number }>(`${API}/api/dashboards/sales`);
   const deals = FALLBACK_DEALS;
   const wonDeals = deals.filter(d => d.stage === "WON");
@@ -211,10 +217,10 @@ function OverviewView() {
   const avgDeal = wonDeals.length > 0 ? Math.round(wonVal / wonDeals.length) : 0;
 
   const kpis = [
-    { label: "Revenue (MTD)", value: formatEur(salesDash?.revenue_mtd ?? wonVal), sub: "Innevarande månad", color: C.green, trend: "↑" as const },
-    { label: "Pipeline-värde", value: formatEur(salesDash?.pipeline_value ?? pipelineVal), sub: `${deals.filter(d => !["WON", "LOST"].includes(d.stage)).length} aktiva deals`, color: C.blue, trend: "↑" as const },
-    { label: "Win Rate", value: `${salesDash?.win_rate ?? winRate}%`, sub: "Senaste 30 dagar", color: C.purple, trend: winRate >= 50 ? "↑" as const : "↓" as const },
-    { label: "Snitt deal-storlek", value: formatEur(salesDash?.avg_deal_size ?? avgDeal), sub: "Vunna deals", color: C.yellow, trend: "↑" as const },
+    { label: t('reports.revenue'), value: formatEur(salesDash?.revenue_mtd ?? wonVal), sub: t('common.completed'), color: C.green, trend: "↑" as const },
+    { label: t('deals.pipeline'), value: formatEur(salesDash?.pipeline_value ?? pipelineVal), sub: `${deals.filter(d => !["WON", "LOST"].includes(d.stage)).length} ${t('common.active').toLowerCase()}`, color: C.blue, trend: "↑" as const },
+    { label: t('deals.winRate'), value: `${salesDash?.win_rate ?? winRate}%`, sub: t('common.completed'), color: C.purple, trend: winRate >= 50 ? "↑" as const : "↓" as const },
+    { label: t('deals.value'), value: formatEur(salesDash?.avg_deal_size ?? avgDeal), sub: t('deals.stage.won'), color: C.yellow, trend: "↑" as const },
   ];
 
   return (
@@ -262,7 +268,7 @@ function OverviewView() {
 
       {/* Pipeline forecast + Win/Loss */}
       <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 16 }}>
-        <Card title="Pipeline Forecast">
+        <Card title={t('deals.totalPipeline')}>
           {["NEW", "QUALIFIED", "PROPOSAL"].map(stage => {
             const stDeals = deals.filter(d => d.stage === stage);
             const stVal = stDeals.reduce((s, d) => s + d.value * (d.probability / 100), 0);
@@ -304,10 +310,10 @@ function OverviewView() {
           </div>
         </Card>
 
-        <Card title="Win / Loss (MTD)">
+        <Card title={`${t('deals.stage.won')} / ${t('deals.stage.lost')}`}>
           {[
-            { label: "Vunna", val: wonVal, count: wonDeals.length, color: C.green },
-            { label: "Förlorade", val: deals.filter(d => d.stage === "LOST").reduce((s, d) => s + d.value, 0), count: deals.filter(d => d.stage === "LOST").length, color: C.red },
+            { label: t('deals.wonDeals'), val: wonVal, count: wonDeals.length, color: C.green },
+            { label: t('deals.lostDeals'), val: deals.filter(d => d.stage === "LOST").reduce((s, d) => s + d.value, 0), count: deals.filter(d => d.stage === "LOST").length, color: C.red },
           ].map((item, i) => (
             <div key={i} style={{
               padding: "14px 0",
@@ -347,13 +353,14 @@ function OverviewView() {
 }
 
 function PipelineView() {
+  const { t } = useTranslation();
   const deals = FALLBACK_DEALS;
   const stages = ["NEW", "QUALIFIED", "PROPOSAL", "WON"];
   const maxVal = Math.max(...stages.map(s => deals.filter(d => d.stage === s).reduce((sum, d) => sum + d.value, 0)));
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      <Card title="Pipeline per fas">
+      <Card title={t('deals.pipeline')}>
         {stages.map(stage => {
           const stDeals = deals.filter(d => d.stage === stage);
           const stVal = stDeals.reduce((s, d) => s + d.value, 0);
@@ -430,6 +437,7 @@ function PipelineView() {
 }
 
 function ReportsView() {
+  const { t } = useTranslation();
   const [tab, setTab] = useState<"income" | "balance" | "cashflow">("income");
   const { data: incomeData, loading: incLoading } = useApi<typeof FALLBACK_INCOME_STATEMENT>(`${API}/api/reports/income-statement`);
   const { data: balanceData, loading: balLoading } = useApi<typeof FALLBACK_BALANCE_SHEET>(`${API}/api/reports/balance-sheet`);
@@ -440,23 +448,23 @@ function ReportsView() {
   const cash = cashData ?? FALLBACK_CASHFLOW;
 
   const tabs = [
-    { id: "income" as const, label: "Resultaträkning" },
-    { id: "balance" as const, label: "Balansräkning" },
-    { id: "cashflow" as const, label: "Kassaflöde" },
+    { id: "income" as const, label: t('reports.incomeStatement') },
+    { id: "balance" as const, label: t('reports.balanceSheet') },
+    { id: "cashflow" as const, label: t('reports.cashflow') },
   ];
 
   const incomeRows = [
-    { label: "Intäkter", value: income.revenue, bold: false, indent: false, color: C.green },
-    { label: "Kostnad sålda varor", value: -income.cost_of_revenue, bold: false, indent: true, color: C.red },
-    { label: "Bruttoresultat", value: income.gross_profit, bold: true, indent: false, color: income.gross_profit >= 0 ? C.green : C.red },
-    { label: "Rörelsekostnader", value: -income.operating_expenses, bold: false, indent: true, color: C.red },
+    { label: t('reports.revenue'), value: income.revenue, bold: false, indent: false, color: C.green },
+    { label: t('reports.expenses'), value: -income.cost_of_revenue, bold: false, indent: true, color: C.red },
+    { label: t('reports.profit'), value: income.gross_profit, bold: true, indent: false, color: income.gross_profit >= 0 ? C.green : C.red },
+    { label: t('reports.expenses'), value: -income.operating_expenses, bold: false, indent: true, color: C.red },
     { label: "EBITDA", value: income.ebitda, bold: true, indent: false, color: income.ebitda >= 0 ? C.blue : C.red },
-    { label: "Avskrivningar", value: -income.depreciation, bold: false, indent: true, color: C.secondary },
+    { label: t('common.total'), value: -income.depreciation, bold: false, indent: true, color: C.secondary },
     { label: "EBIT", value: income.ebit, bold: false, indent: false, color: C.text },
-    { label: "Räntekostnader", value: -income.interest, bold: false, indent: true, color: C.red },
-    { label: "Resultat före skatt", value: income.ebt, bold: false, indent: false, color: C.text },
-    { label: "Skatt", value: -income.tax, bold: false, indent: true, color: C.red },
-    { label: "Nettoresultat", value: income.net_income, bold: true, indent: false, color: income.net_income >= 0 ? C.green : C.red },
+    { label: t('reports.expenses'), value: -income.interest, bold: false, indent: true, color: C.red },
+    { label: t('reports.profit'), value: income.ebt, bold: false, indent: false, color: C.text },
+    { label: t('common.total'), value: -income.tax, bold: false, indent: true, color: C.red },
+    { label: t('reports.profit'), value: income.net_income, bold: true, indent: false, color: income.net_income >= 0 ? C.green : C.red },
   ];
 
   const FinRow = ({ label, value, bold, indent, color }: { label: string; value: number; bold: boolean; indent: boolean; color: string }) => (
@@ -521,12 +529,12 @@ function ReportsView() {
                 </div>
               ))}
               <div style={{ display: "flex", justifyContent: "space-between", padding: "13px 0", borderTop: `1px solid ${C.border}`, fontWeight: 700 }}>
-                <span>Totalt</span>
+                <span>{t('common.total')}</span>
                 <span style={{ color: C.blue, fontFamily: "monospace", fontVariantNumeric: "tabular-nums" }}>{formatEur(balance.assets.total)}</span>
               </div>
             </Card>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              <Card title="Skulder">
+              <Card title={t('reports.liabilities')}>
                 {Object.entries(balance.liabilities).filter(([k]) => k !== "total").map(([key, val], i) => (
                   <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "9px 0", borderBottom: `0.5px solid ${C.separator}` }}>
                     <span style={{ fontSize: 13, color: C.secondary, textTransform: "capitalize" }}>{key.replace(/_/g, " ")}</span>
@@ -534,11 +542,11 @@ function ReportsView() {
                   </div>
                 ))}
                 <div style={{ display: "flex", justifyContent: "space-between", padding: "13px 0", borderTop: `1px solid ${C.border}`, fontWeight: 700, fontSize: 14 }}>
-                  <span>Totalt</span>
+                  <span>{t('common.total')}</span>
                   <span style={{ color: C.red, fontFamily: "monospace", fontVariantNumeric: "tabular-nums" }}>{formatEur(balance.liabilities.total)}</span>
                 </div>
               </Card>
-              <Card title="Eget kapital">
+              <Card title={t('reports.equity')}>
                 {Object.entries(balance.equity).filter(([k]) => k !== "total").map(([key, val], i) => (
                   <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "9px 0", borderBottom: `0.5px solid ${C.separator}` }}>
                     <span style={{ fontSize: 13, color: C.secondary, textTransform: "capitalize" }}>{key.replace(/_/g, " ")}</span>
@@ -546,7 +554,7 @@ function ReportsView() {
                   </div>
                 ))}
                 <div style={{ display: "flex", justifyContent: "space-between", padding: "13px 0", borderTop: `1px solid ${C.border}`, fontWeight: 700, fontSize: 14 }}>
-                  <span>Totalt</span>
+                  <span>{t('common.total')}</span>
                   <span style={{ color: C.green, fontFamily: "monospace", fontVariantNumeric: "tabular-nums" }}>{formatEur(balance.equity.total)}</span>
                 </div>
               </Card>
@@ -561,9 +569,9 @@ function ReportsView() {
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10 }}>
               {[
-                { label: "Från rörelsen", value: cash.operating, color: C.green },
-                { label: "Investeringar", value: cash.investing, color: cash.investing >= 0 ? C.green : C.red },
-                { label: "Finansiering", value: cash.financing, color: cash.financing >= 0 ? C.green : C.red },
+                { label: t('reports.cashflow'), value: cash.operating, color: C.green },
+                { label: t('reports.assets'), value: cash.investing, color: cash.investing >= 0 ? C.green : C.red },
+                { label: t('reports.revenue'), value: cash.financing, color: cash.financing >= 0 ? C.green : C.red },
               ].map((c, i) => (
                 <div key={i} className="card-animate" style={{
                   background: C.surface, borderRadius: 12, padding: "16px 20px", boxShadow: shadow.sm,
@@ -578,14 +586,14 @@ function ReportsView() {
                 </div>
               ))}
             </div>
-            <Card title={`Kassaflödesanalys — ${cash.period}`}>
+            <Card title={`${t('reports.cashflow')} — ${cash.period}`}>
               {[
-                { label: "Ingående kassa", value: cash.opening_balance, color: C.text, bold: false },
-                { label: "Kassaflöde rörelse", value: cash.operating, color: cash.operating >= 0 ? C.green : C.red, bold: false },
-                { label: "Kassaflöde investeringar", value: cash.investing, color: cash.investing >= 0 ? C.green : C.red, bold: false },
-                { label: "Kassaflöde finansiering", value: cash.financing, color: cash.financing >= 0 ? C.green : C.red, bold: false },
-                { label: "Netto kassaflöde", value: cash.net, color: cash.net >= 0 ? C.green : C.red, bold: true },
-                { label: "Utgående kassa", value: cash.closing_balance, color: C.blue, bold: true },
+                { label: t('banking.balance'), value: cash.opening_balance, color: C.text, bold: false },
+                { label: t('reports.cashflow'), value: cash.operating, color: cash.operating >= 0 ? C.green : C.red, bold: false },
+                { label: t('reports.assets'), value: cash.investing, color: cash.investing >= 0 ? C.green : C.red, bold: false },
+                { label: t('reports.revenue'), value: cash.financing, color: cash.financing >= 0 ? C.green : C.red, bold: false },
+                { label: `${t('reports.cashflow')} ${t('common.total')}`, value: cash.net, color: cash.net >= 0 ? C.green : C.red, bold: true },
+                { label: t('banking.balance'), value: cash.closing_balance, color: C.blue, bold: true },
               ].map((row, i) => (
                 <div key={i} style={{
                   display: "flex", justifyContent: "space-between",
@@ -612,6 +620,7 @@ function ReportsView() {
 }
 
 function PayoutsView() {
+  const { t } = useTranslation();
   const { data, loading } = useApi<typeof FALLBACK_PAYOUTS>(`${API}/api/payouts`);
   const payouts = (data && data.length > 0) ? data : FALLBACK_PAYOUTS;
   const [filter, setFilter] = useState("ALL");
@@ -622,10 +631,10 @@ function PayoutsView() {
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
         {[
-          { label: "Väntande", value: formatEur(payouts.filter(p => p.status === "PENDING").reduce((s, p) => s + p.amount, 0)), color: C.yellow, count: payouts.filter(p => p.status === "PENDING").length },
-          { label: "Godkänt", value: formatEur(payouts.filter(p => p.status === "APPROVED").reduce((s, p) => s + p.amount, 0)), color: C.blue, count: payouts.filter(p => p.status === "APPROVED").length },
-          { label: "Utbetalt", value: formatEur(payouts.filter(p => p.status === "PAID").reduce((s, p) => s + p.amount, 0)), color: C.green, count: payouts.filter(p => p.status === "PAID").length },
-          { label: "Avvisade", value: formatEur(payouts.filter(p => p.status === "REJECTED").reduce((s, p) => s + p.amount, 0)), color: C.red, count: payouts.filter(p => p.status === "REJECTED").length },
+          { label: t('common.pending'), value: formatEur(payouts.filter(p => p.status === "PENDING").reduce((s, p) => s + p.amount, 0)), color: C.yellow, count: payouts.filter(p => p.status === "PENDING").length },
+          { label: t('common.approve'), value: formatEur(payouts.filter(p => p.status === "APPROVED").reduce((s, p) => s + p.amount, 0)), color: C.blue, count: payouts.filter(p => p.status === "APPROVED").length },
+          { label: t('common.completed'), value: formatEur(payouts.filter(p => p.status === "PAID").reduce((s, p) => s + p.amount, 0)), color: C.green, count: payouts.filter(p => p.status === "PAID").length },
+          { label: t('common.reject'), value: formatEur(payouts.filter(p => p.status === "REJECTED").reduce((s, p) => s + p.amount, 0)), color: C.red, count: payouts.filter(p => p.status === "REJECTED").length },
         ].map((s, i) => (
           <div key={i} className="card-animate" style={{
             background: C.surface, borderRadius: 12, padding: "16px 18px", boxShadow: shadow.sm,
@@ -657,7 +666,7 @@ function PayoutsView() {
               transition: "all 0.15s", fontFamily: "inherit",
             }}
           >
-            {s === "ALL" ? "Alla" : s}
+            {s === "ALL" ? t('common.all') : s}
           </button>
         ))}
       </div>
@@ -665,9 +674,9 @@ function PayoutsView() {
       {loading ? (
         <Card><Skeleton height="200px" /></Card>
       ) : (
-        <Card title={`Utbetalningar (${filtered.length})`}>
+        <Card title={`${t('banking.payments')} (${filtered.length})`}>
           {filtered.length === 0 ? (
-            <EmptyState icon="💰" title="Inga utbetalningar" />
+            <EmptyState icon="💰" title={t('common.noData')} />
           ) : (
             filtered.map((p, i) => {
               const col = payoutColor(p.status);
@@ -725,6 +734,7 @@ function PayoutsView() {
 }
 
 function CurrenciesView() {
+  const { t } = useTranslation();
   const { data: ratesData, loading: ratesLoading } = useApi<typeof FALLBACK_EXCHANGE_RATES>(`${API}/api/exchange-rates`);
   const { data: curData } = useApi<typeof FALLBACK_CURRENCIES>(`${API}/api/currencies`);
   const rates = (ratesData && ratesData.length > 0) ? ratesData : FALLBACK_EXCHANGE_RATES;
@@ -735,7 +745,7 @@ function CurrenciesView() {
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10 }}>
         {[
-          { label: "Total FX-exponering", value: formatEur(totalExposure), color: C.blue },
+          { label: t('nav.currencies'), value: formatEur(totalExposure), color: C.blue },
           { label: "EUR/SEK", value: `${FALLBACK_CURRENCIES[0].rate_to_sek}`, color: C.text },
           { label: "EUR/USD", value: `${FALLBACK_CURRENCIES[0].rate_to_usd}`, color: C.text },
         ].map((s, i) => (
@@ -753,7 +763,7 @@ function CurrenciesView() {
         ))}
       </div>
 
-      <Card title="Valutaexponering">
+      <Card title={t('nav.currencies')}>
         {currencies.map((c, i) => {
           const pct = (c.exposure ?? 0) / (totalExposure || 1) * 100;
           const changePos = (c.change_24h ?? 0) >= 0;
@@ -795,12 +805,12 @@ function CurrenciesView() {
         })}
       </Card>
 
-      <Card title="Växelkurser">
+      <Card title={t('nav.exchangeRates')}>
         {ratesLoading ? (
           <Skeleton height="150px" />
         ) : (
           <div style={{ display: "grid", gridTemplateColumns: "80px 80px 1fr 80px" }}>
-            {["Från", "Till", "Kurs", "24h"].map((h, i) => (
+            {[t('nav.currencies'), t('nav.currencies'), t('nav.exchangeRates'), "24h"].map((h, i) => (
               <div key={h} style={{
                 padding: "8px 0",
                 fontSize: 11, fontWeight: 600, color: C.tertiary,
@@ -832,6 +842,7 @@ function CurrenciesView() {
 }
 
 function ForecastView() {
+  const { t } = useTranslation();
   const deals = FALLBACK_DEALS.filter(d => !["WON", "LOST"].includes(d.stage));
   const months = ["Apr 2026", "Maj 2026", "Jun 2026", "Jul 2026", "Aug 2026", "Sep 2026"];
   const closeMonths: Record<string, number> = {
@@ -858,9 +869,9 @@ function ForecastView() {
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10 }}>
         {[
-          { label: "Total forecast (vägt)", value: formatEur(totalWeighted), color: C.blue },
-          { label: "Total pipeline (brutto)", value: formatEur(deals.reduce((s, d) => s + d.value, 0)), color: C.text },
-          { label: "Aktiva deals", value: deals.length, color: C.purple },
+          { label: t('deals.totalPipeline'), value: formatEur(totalWeighted), color: C.blue },
+          { label: t('deals.pipeline'), value: formatEur(deals.reduce((s, d) => s + d.value, 0)), color: C.text },
+          { label: t('common.active'), value: deals.length, color: C.purple },
         ].map((s, i) => (
           <div key={i} className="card-animate" style={{
             background: C.surface, borderRadius: 12, padding: "16px 20px", boxShadow: shadow.sm,
@@ -876,7 +887,7 @@ function ForecastView() {
         ))}
       </div>
 
-      <Card title="Månadsvis prognos (vägt)">
+      <Card title={t('reports.title')}>
         <div style={{ display: "flex", gap: 10, alignItems: "flex-end", height: 160, marginBottom: 8 }}>
           {forecastData.map((f, i) => {
             const barH = (f.raw / maxForecast) * 120;
@@ -912,8 +923,8 @@ function ForecastView() {
           paddingTop: 12, borderTop: `0.5px solid ${C.separator}`,
         }}>
           {[
-            { color: C.blue + "25", label: "Brutto" },
-            { color: C.blue, label: "Vägt" },
+            { color: C.blue + "25", label: t('deals.pipeline') },
+            { color: C.blue, label: t('deals.totalPipeline') },
           ].map((l, i) => (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
               <div style={{ width: 10, height: 10, borderRadius: 2, background: l.color }} />
@@ -923,9 +934,9 @@ function ForecastView() {
         </div>
       </Card>
 
-      <Card title="Deals i prognosen">
+      <Card title={t('deals.title')}>
         {deals.length === 0 ? (
-          <EmptyState icon="📈" title="Inga deals i prognosen" />
+          <EmptyState icon="📈" title={t('common.noData')} />
         ) : (
           deals.map((d, i) => {
             const overdue = new Date(d.close) < new Date();
@@ -966,7 +977,9 @@ function ForecastView() {
 
 // ─── App Shell ─────────────────────────────────────────────────────────────────
 export default function App() {
+  const { t } = useTranslation();
   const [view, setView] = useState("overview");
+  const navItems = useSalesNavItems();
 
   const viewComponents: Record<string, React.ReactNode> = {
     overview: <OverviewView />,
@@ -1087,7 +1100,7 @@ export default function App() {
           </div>
 
           <div style={{ flex: 1, padding: "24px 28px 60px" }}>
-            {viewComponents[view] ?? <EmptyState icon="🔍" title="Vy saknas" />}
+            {viewComponents[view] ?? <EmptyState icon="🔍" title={t('common.noData')} />}
           </div>
         </div>
       </div>
