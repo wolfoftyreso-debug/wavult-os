@@ -50,6 +50,14 @@ import bankingRouter from "./banking";
 import spaghettiRouter from "./spaghetti";
 
 // ---------------------------------------------------------------------------
+// Customer Interaction Engine
+// ---------------------------------------------------------------------------
+import brandRouter from "./brand-layer";
+import paymentOrchestrationRouter from "./payment-orchestration";
+import customerStateRouter from "./customer-state";
+import customerPortalRouter from "./customer-portal";
+
+// ---------------------------------------------------------------------------
 // Auth router
 // ---------------------------------------------------------------------------
 import authRouter from "./auth";
@@ -367,6 +375,14 @@ app.use("/api/spaghetti", spaghettiRouter); // Lean spaghetti diagram & helikopt
 app.use(bankingRouter); // Banking: /api/banking/* + /api/integrations/fortnox/* + /api/integrations/visma/*
 
 // ---------------------------------------------------------------------------
+// Customer Interaction Engine — Brand Layer, Payment Orchestration, Customer State
+// ---------------------------------------------------------------------------
+app.use('/api/brand', brandRouter);           // GET/PUT /api/brand/:org_id, GET /api/brand/by-subdomain/:sub, POST /api/brand/upload-logo
+app.use('/api/payments', paymentOrchestrationRouter); // GET /api/payments/config, POST /api/payments/create-intent|create-invoice|partial
+app.use('/api/customer-state', customerStateRouter);  // GET/POST /api/customer-state/:contact_id, GET /api/customer-state/by-token/:token
+app.use('/api/customer-portal', customerPortalRouter); // GET /api/customer-portal/:token
+
+// ---------------------------------------------------------------------------
 // DMS — Dealer Management System (pixdrift automotive)
 // ---------------------------------------------------------------------------
 app.use(vehiclesRouter);       // /api/vehicles/*
@@ -386,6 +402,12 @@ app.use('/api/seo', seoRouter); // /api/seo/schema/:page, /api/seo/report, /api/
 
 // ---------------------------------------------------------------------------
 // Tax Compliance (SFL 2011:1244, ML 2023:200, BFL 1999:1078, SKVFS 2014:9)
+// ---------------------------------------------------------------------------
+// Approval Engine — Video-first customer approvals
+// ---------------------------------------------------------------------------
+import approvalEngineRouter from './approval-engine';
+app.use('/api/approvals', approvalEngineRouter); // POST /capture, GET /pending, /customer/:token, etc.
+
 // ---------------------------------------------------------------------------
 app.use('/api/personnel-ledger', personnelLedgerRouter); // Personalliggare (SFL 39 kap.)
 app.use('/api/cash-register',    cashRegisterRouter);    // Kassaregister (SKVFS 2014:9)

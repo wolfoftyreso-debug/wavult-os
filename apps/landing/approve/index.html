@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Godkänn arbete</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand-primary: #1C3A1A;
+      --brand-secondary: #4A7A2A;
+      --brand-accent: #C4973A;
+      --green: #34C759;
+      --red: #FF3B30;
+      --gray-1: #8E8E93;
+      --gray-5: #E5E5EA;
+      --gray-6: #F2F2F7;
+      --text: #000000;
+      --text-secondary: #6E6E73;
+      --separator: rgba(60,60,67,0.12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--gray-6);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .header {
+      background: var(--brand-primary);
+      padding: 20px;
+      padding-top: calc(20px + env(safe-area-inset-top, 0px));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .workshop-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      overflow: hidden;
+    }
+
+    .workshop-name {
+      color: white;
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    .workshop-sub {
+      color: rgba(255,255,255,0.65);
+      font-size: 13px;
+    }
+
+    .content { padding: 20px 16px; max-width: 480px; margin: 0 auto; }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      padding: 14px 16px 0;
+    }
+
+    .card-body { padding: 12px 16px 16px; }
+
+    .amount-display {
+      text-align: center;
+      padding: 24px 16px;
+    }
+
+    .amount-label { font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; }
+    .amount-value { font-size: 42px; font-weight: 700; color: var(--brand-primary); line-height: 1; }
+    .amount-currency { font-size: 20px; font-weight: 400; vertical-align: super; font-size: 20px; }
+
+    .line-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-top: 1px solid var(--separator);
+    }
+
+    .line-item:first-child { border-top: none; }
+    .line-desc { font-size: 15px; }
+    .line-amount { font-size: 15px; font-weight: 500; }
+
+    .line-total {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0 0;
+      margin-top: 4px;
+      border-top: 2px solid var(--separator);
+    }
+
+    .line-total-label { font-size: 16px; font-weight: 700; }
+    .line-total-amount { font-size: 16px; font-weight: 700; }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-top: 1px solid var(--separator);
+      font-size: 14px;
+    }
+
+    .info-row:first-child { border-top: none; }
+    .info-label { color: var(--text-secondary); }
+    .info-value { font-weight: 500; text-align: right; max-width: 60%; }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      padding: 0 0 4px;
+    }
+
+    .photo-thumb {
+      aspect-ratio: 1;
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--gray-6);
+    }
+
+    .photo-thumb img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .btn-approve {
+      flex: 2;
+      padding: 16px;
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      font-size: 17px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .btn-approve:active { opacity: 0.85; transform: scale(0.98); }
+    .btn-approve:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-decline {
+      flex: 1;
+      padding: 16px;
+      background: white;
+      color: var(--red);
+      border: 2px solid var(--red);
+      border-radius: 14px;
+      font-size: 17px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .btn-decline:active { opacity: 0.7; }
+
+    /* Success screen */
+    .success-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      text-align: center;
+      padding: 40px 24px;
+    }
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      margin-bottom: 20px;
+      animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes pop {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .success-title { font-size: 24px; font-weight: 700; margin-bottom: 10px; }
+    .success-sub { font-size: 16px; color: var(--text-secondary); line-height: 1.5; }
+
+    /* Decline modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      align-items: flex-end;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: white;
+      border-radius: 20px 20px 0 0;
+      padding: 20px;
+      padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+      width: 100%;
+    }
+
+    .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .modal-sub { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      border: 1.5px solid var(--gray-5);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 15px;
+      font-family: inherit;
+      resize: none;
+      outline: none;
+      margin-bottom: 12px;
+    }
+
+    textarea:focus { border-color: var(--brand-primary); }
+
+    .btn-modal-cancel {
+      width: 100%;
+      padding: 14px;
+      background: var(--gray-6);
+      color: var(--text);
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .btn-confirm-decline {
+      width: 100%;
+      padding: 14px;
+      background: var(--red);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    /* Loading */
+    .spinner {
+      width: 24px; height: 24px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="workshop-logo" id="workshop-logo">🔧</div>
+  <div class="workshop-name" id="workshop-name">Verkstad</div>
+  <div class="workshop-sub" id="approval-page-title">Godkänn arbete</div>
+</div>
+
+<!-- Main content -->
+<div id="main-content" class="content">
+
+  <!-- Loading -->
+  <div id="loading-card" class="card" style="padding:40px 20px;text-align:center;color:var(--text-secondary)">
+    Hämtar information…
+  </div>
+
+  <!-- Amount hero -->
+  <div id="amount-card" class="card hidden">
+    <div class="amount-display">
+      <div class="amount-label">Totalkostnad för godkännande</div>
+      <div class="amount-value" id="amount-value">0</div>
+      <div style="font-size:14px;color:var(--text-secondary);margin-top:4px">inkl. moms</div>
+    </div>
+  </div>
+
+  <!-- Line items -->
+  <div id="line-items-card" class="card hidden">
+    <div class="card-title">Arbeten och delar</div>
+    <div class="card-body">
+      <div id="line-items-list"></div>
+      <div class="line-total">
+        <span class="line-total-label">Totalt</span>
+        <span class="line-total-amount" id="line-items-total"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vehicle + job info -->
+  <div id="info-card" class="card hidden">
+    <div class="card-title">Fordons&shy;information</div>
+    <div class="card-body" id="info-list"></div>
+  </div>
+
+  <!-- Photos -->
+  <div id="photos-card" class="card hidden">
+    <div class="card-title" style="padding-bottom:12px">Bilder</div>
+    <div class="photo-grid" id="photo-grid"></div>
+  </div>
+
+  <!-- Action buttons -->
+  <div id="btn-row" class="btn-row hidden">
+    <button class="btn-approve" id="btn-approve" onclick="handleApprove()">✓ Godkänn</button>
+    <button class="btn-decline" onclick="openDeclineModal()">Neka</button>
+  </div>
+
+  <!-- Success -->
+  <div id="success-screen" class="success-screen">
+    <div class="success-icon">✓</div>
+    <div class="success-title">Godkänt!</div>
+    <div class="success-sub" id="success-sub">Tack! Verkstaden har fått din bekräftelse och arbetet kan nu påbörjas.</div>
+  </div>
+
+</div>
+
+<!-- Decline modal -->
+<div class="modal-overlay" id="decline-modal">
+  <div class="modal">
+    <div class="modal-title">Neka arbete?</div>
+    <div class="modal-sub">Berätta gärna varför så kan verkstaden kontakta dig.</div>
+    <textarea id="decline-reason" placeholder="Valfri anledning…"></textarea>
+    <button class="btn-confirm-decline" onclick="handleDecline()">Neka arbetet</button>
+    <button class="btn-modal-cancel" onclick="closeDeclineModal()">Avbryt</button>
+  </div>
+</div>
+
+<script>
+const API_BASE = 'https://api.bc.pixdrift.com';
+
+let approvalData = null;
+let approvalToken = null;
+let approvalId = null;
+
+function el(id) { return document.getElementById(id); }
+function show(id) { el(id)?.classList.remove('hidden'); el(id) && (el(id).style.display !== 'none' ? null : null); }
+function hide(id) { el(id)?.classList.add('hidden'); }
+
+function fmtAmount(amt) {
+  if (!amt && amt !== 0) return '';
+  return new Intl.NumberFormat('sv-SE', {
+    style: 'currency', currency: 'SEK', minimumFractionDigits: 0
+  }).format(amt);
+}
+
+// ── Brand loading ──────────────────────────────────────────────────────────
+async function loadBrand(token) {
+  try {
+    const res = await fetch(`${API_BASE}/api/approvals/customer/${token}`);
+    if (!res.ok) return;
+    const data = await res.json();
+
+    if (data.brand) {
+      const b = data.brand;
+      if (b.primary_color) document.documentElement.style.setProperty('--brand-primary', b.primary_color);
+      if (b.secondary_color) document.documentElement.style.setProperty('--brand-secondary', b.secondary_color);
+      if (b.accent_color) document.documentElement.style.setProperty('--brand-accent', b.accent_color);
+
+      el('workshop-logo').style.background = b.primary_color || 'rgba(255,255,255,0.15)';
+      el('btn-approve').style.background = b.secondary_color || '#34C759';
+      document.title = `${b.approval_page_title || 'Godkänn arbete'} — ${b.name}`;
+      el('workshop-name').textContent = b.name || 'Verkstad';
+      el('approval-page-title').textContent = b.approval_page_title || 'Godkänn arbete';
+
+      if (b.logo_url) {
+        el('workshop-logo').innerHTML = `<img src="${b.logo_url}" style="width:100%;height:100%;object-fit:contain;border-radius:10px;" alt="${b.name}">`;
+      }
+    }
+
+    return data;
+  } catch (err) {
+    console.warn('Brand load error:', err);
+  }
+}
+
+// ── Load approval data ─────────────────────────────────────────────────────
+async function loadApproval() {
+  const params = new URLSearchParams(window.location.search);
+  approvalId = params.get('id') || params.get('approval_id');
+  approvalToken = params.get('t') || params.get('token');
+
+  if (!approvalId && !approvalToken) {
+    el('loading-card').textContent = 'Ogiltig länk — kontakta din verkstad.';
+    return;
+  }
+
+  // Load brand first (non-blocking visual)
+  let data = null;
+  if (approvalToken) {
+    data = await loadBrand(approvalToken);
+  }
+
+  // If we got approval data from the brand endpoint, use it
+  if (!data?.approval && approvalId) {
+    try {
+      const res = await fetch(`${API_BASE}/api/approvals/customer/${approvalToken || approvalId}`);
+      if (res.ok) data = await res.json();
+    } catch (err) {
+      console.warn('Approval fetch error:', err);
+    }
+  }
+
+  approvalData = data?.approval || data;
+
+  if (!approvalData) {
+    el('loading-card').textContent = 'Kunde inte hämta godkännandedetaljer. Försök igen.';
+    return;
+  }
+
+  renderApproval(approvalData);
+}
+
+function renderApproval(approval) {
+  hide('loading-card');
+
+  // Amount hero
+  if (approval.total_amount || approval.amount) {
+    const amt = approval.total_amount || approval.amount;
+    el('amount-value').textContent = fmtAmount(amt).replace('SEK', '').trim();
+    show('amount-card');
+    el('amount-card').classList.remove('hidden');
+  }
+
+  // Line items
+  const items = approval.line_items || approval.items || [];
+  if (items.length > 0) {
+    let total = 0;
+    el('line-items-list').innerHTML = items.map(item => {
+      const lineTotal = (item.quantity || 1) * (item.unit_price || item.price || 0);
+      total += lineTotal;
+      return `
+        <div class="line-item">
+          <div class="line-desc">${item.description || item.name || 'Arbete'}</div>
+          <div class="line-amount">${fmtAmount(lineTotal)}</div>
+        </div>
+      `;
+    }).join('');
+    el('line-items-total').textContent = fmtAmount(total);
+    show('line-items-card');
+    el('line-items-card').classList.remove('hidden');
+  }
+
+  // Vehicle / job info
+  const infoRows = [];
+  if (approval.vehicle_reg) infoRows.push(['Registreringsnummer', approval.vehicle_reg]);
+  if (approval.vehicle_brand) infoRows.push(['Märke/modell', `${approval.vehicle_brand} ${approval.vehicle_model || ''}`]);
+  if (approval.mechanic_name) infoRows.push(['Mekaniker', approval.mechanic_name]);
+  if (approval.estimated_time) infoRows.push(['Beräknad tid', approval.estimated_time]);
+  if (approval.valid_until) {
+    infoRows.push(['Gäller till', new Date(approval.valid_until).toLocaleDateString('sv-SE')]);
+  }
+
+  if (infoRows.length > 0) {
+    el('info-list').innerHTML = infoRows.map(([label, value]) => `
+      <div class="info-row">
+        <span class="info-label">${label}</span>
+        <span class="info-value">${value}</span>
+      </div>
+    `).join('');
+    show('info-card');
+    el('info-card').classList.remove('hidden');
+  }
+
+  // Photos
+  const photos = approval.photos || approval.images || [];
+  if (photos.length > 0) {
+    el('photo-grid').innerHTML = photos.slice(0, 6).map(p =>
+      `<div class="photo-thumb"><img src="${p.url || p}" alt="Bild" loading="lazy"></div>`
+    ).join('');
+    show('photos-card');
+    el('photos-card').classList.remove('hidden');
+  }
+
+  // Show action buttons (hide if already responded)
+  if (approval.status === 'APPROVED' || approval.status === 'DECLINED') {
+    showSuccess(approval.status === 'APPROVED');
+  } else {
+    show('btn-row');
+    el('btn-row').classList.remove('hidden');
+  }
+}
+
+// ── Approve ────────────────────────────────────────────────────────────────
+async function handleApprove() {
+  const btn = el('btn-approve');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Godkänner…';
+
+  try {
+    const id = approvalId || approvalData?.id;
+    const res = await fetch(`${API_BASE}/api/approvals/customer/${approvalToken || id}/approve`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ approved: true, token: approvalToken }),
+    });
+
+    if (!res.ok) throw new Error('API error');
+
+    showSuccess(true);
+  } catch (err) {
+    console.error('Approve error:', err);
+    btn.disabled = false;
+    btn.innerHTML = '✓ Godkänn';
+    alert('Något gick fel. Försök igen eller kontakta verkstaden.');
+  }
+}
+
+// ── Decline ────────────────────────────────────────────────────────────────
+function openDeclineModal() {
+  el('decline-modal').classList.add('open');
+}
+
+function closeDeclineModal() {
+  el('decline-modal').classList.remove('open');
+}
+
+async function handleDecline() {
+  const reason = el('decline-reason').value;
+  closeDeclineModal();
+
+  try {
+    const id = approvalId || approvalData?.id;
+    await fetch(`${API_BASE}/api/approvals/customer/${approvalToken || id}/decline`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ declined: true, reason, token: approvalToken }),
+    });
+
+    showSuccess(false);
+  } catch (err) {
+    console.error('Decline error:', err);
+    alert('Något gick fel. Försök igen.');
+  }
+}
+
+// ── Success state ──────────────────────────────────────────────────────────
+function showSuccess(approved) {
+  hide('btn-row');
+  hide('loading-card');
+
+  const successEl = el('success-screen');
+  successEl.style.display = 'flex';
+
+  if (approved) {
+    successEl.querySelector('.success-icon').textContent = '✓';
+    successEl.querySelector('.success-title').textContent = 'Godkänt!';
+    el('success-sub').textContent = 'Tack! Verkstaden har fått din bekräftelse och arbetet kan nu påbörjas.';
+  } else {
+    successEl.querySelector('.success-icon').innerHTML = '✗';
+    successEl.querySelector('.success-icon').style.background = 'var(--red)';
+    successEl.querySelector('.success-title').textContent = 'Nekat';
+    el('success-sub').textContent = 'Vi har informerat verkstaden om ditt beslut. De kommer att kontakta dig.';
+  }
+
+  // Link back to portal
+  if (approvalToken) {
+    const portalLink = document.createElement('a');
+    portalLink.href = `https://portal.bc.pixdrift.com/?t=${approvalToken}`;
+    portalLink.textContent = '← Tillbaka till Mina sidor';
+    portalLink.style.cssText = 'display:block;margin-top:20px;color:var(--brand-primary);font-size:15px;text-decoration:none;font-weight:500';
+    successEl.appendChild(portalLink);
+  }
+}
+
+// ── Start ──────────────────────────────────────────────────────────────────
+loadApproval();
+</script>
+
+</body>
+</html>
