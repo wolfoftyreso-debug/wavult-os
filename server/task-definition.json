@@ -1,0 +1,75 @@
+{
+  "family": "hypbit-api",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "arn:aws:iam::ACCOUNT_ID:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::ACCOUNT_ID:role/hypbitTaskRole",
+  "containerDefinitions": [
+    {
+      "name": "hypbit-api",
+      "image": "ACCOUNT_ID.dkr.ecr.eu-north-1.amazonaws.com/hypbit-api:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 3001,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        { "name": "NODE_ENV", "value": "production" },
+        { "name": "PORT", "value": "3001" },
+        { "name": "CORS_ORIGIN", "value": "https://app.hypbit.com" }
+      ],
+      "secrets": [
+        {
+          "name": "SUPABASE_URL",
+          "valueFrom": "arn:aws:ssm:eu-north-1:ACCOUNT_ID:parameter/hypbit/SUPABASE_URL"
+        },
+        {
+          "name": "SUPABASE_ANON_KEY",
+          "valueFrom": "arn:aws:ssm:eu-north-1:ACCOUNT_ID:parameter/hypbit/SUPABASE_ANON_KEY"
+        },
+        {
+          "name": "SUPABASE_SERVICE_ROLE_KEY",
+          "valueFrom": "arn:aws:ssm:eu-north-1:ACCOUNT_ID:parameter/hypbit/SUPABASE_SERVICE_ROLE_KEY"
+        },
+        {
+          "name": "STRIPE_SECRET_KEY",
+          "valueFrom": "arn:aws:ssm:eu-north-1:ACCOUNT_ID:parameter/hypbit/STRIPE_SECRET_KEY"
+        },
+        {
+          "name": "STRIPE_WEBHOOK_SECRET",
+          "valueFrom": "arn:aws:ssm:eu-north-1:ACCOUNT_ID:parameter/hypbit/STRIPE_WEBHOOK_SECRET"
+        },
+        {
+          "name": "TRIGGER_API_KEY",
+          "valueFrom": "arn:aws:ssm:eu-north-1:ACCOUNT_ID:parameter/hypbit/TRIGGER_API_KEY"
+        },
+        {
+          "name": "ANTHROPIC_API_KEY",
+          "valueFrom": "arn:aws:ssm:eu-north-1:ACCOUNT_ID:parameter/hypbit/ANTHROPIC_API_KEY"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/hypbit-api",
+          "awslogs-region": "eu-north-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "wget -qO- http://localhost:3001/api/health || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 10,
+        "retries": 3,
+        "startPeriod": 40
+      }
+    }
+  ]
+}

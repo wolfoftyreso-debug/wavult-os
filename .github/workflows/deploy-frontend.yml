@@ -1,0 +1,131 @@
+name: Deploy Frontends to S3 + CloudFront
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/**"
+      - "packages/**"
+      - ".github/workflows/deploy-frontend.yml"
+
+env:
+  AWS_REGION: eu-north-1
+
+jobs:
+  detect-changes:
+    name: Detect changed apps
+    runs-on: ubuntu-latest
+    outputs:
+      admin: ${{ steps.filter.outputs.admin }}
+      workstation: ${{ steps.filter.outputs.workstation }}
+      crm: ${{ steps.filter.outputs.crm }}
+      sales: ${{ steps.filter.outputs.sales }}
+      packages: ${{ steps.filter.outputs.packages }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            admin:
+              - 'apps/admin/**'
+            workstation:
+              - 'apps/workstation/**'
+            crm:
+              - 'apps/crm/**'
+            sales:
+              - 'apps/sales/**'
+            packages:
+              - 'packages/**'
+
+  build-and-deploy:
+    name: Build & Deploy ${{ matrix.app }}
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    permissions:
+      id-token: write
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - app: admin
+            changed: ${{ needs.detect-changes.outputs.admin == 'true' || needs.detect-changes.outputs.packages == 'true' }}
+            s3_bucket: admin.hypbit.com
+            cf_distribution_id_secret: CF_DISTRIBUTION_ADMIN
+          - app: workstation
+            changed: ${{ needs.detect-changes.outputs.workstation == 'true' || needs.detect-changes.outputs.packages == 'true' }}
+            s3_bucket: workstation.hypbit.com
+            cf_distribution_id_secret: CF_DISTRIBUTION_WORKSTATION
+          - app: crm
+            changed: ${{ needs.detect-changes.outputs.crm == 'true' || needs.detect-changes.outputs.packages == 'true' }}
+            s3_bucket: crm.hypbit.com
+            cf_distribution_id_secret: CF_DISTRIBUTION_CRM
+          - app: sales
+            changed: ${{ needs.detect-changes.outputs.sales == 'true' || needs.detect-changes.outputs.packages == 'true' }}
+            s3_bucket: sales.hypbit.com
+            cf_distribution_id_secret: CF_DISTRIBUTION_SALES
+
+    steps:
+      - name: Skip if no changes
+        if: matrix.changed != 'true'
+        run: echo "No changes detected for ${{ matrix.app }}, skipping."
+
+      - name: Checkout
+        if: matrix.changed == 'true'
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        if: matrix.changed == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        if: matrix.changed == 'true'
+        run: npm ci
+
+      - name: Build app
+        if: matrix.changed == 'true'
+        working-directory: apps/${{ matrix.app }}
+        run: npm run build
+        env:
+          VITE_API_URL: https://api.hypbit.com
+
+      - name: Configure AWS credentials (OIDC)
+        if: matrix.changed == 'true'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Sync to S3
+        if: matrix.changed == 'true'
+        run: |
+          # Sync with cache-busting: HTML no-cache, assets long-cache
+          aws s3 sync apps/${{ matrix.app }}/dist s3://${{ matrix.s3_bucket }} \
+            --delete \
+            --exclude "assets/*"
+
+          aws s3 sync apps/${{ matrix.app }}/dist/assets s3://${{ matrix.s3_bucket }}/assets \
+            --delete \
+            --cache-control "public, max-age=31536000, immutable"
+
+          # HTML files: no cache
+          aws s3 cp apps/${{ matrix.app }}/dist/index.html \
+            s3://${{ matrix.s3_bucket }}/index.html \
+            --cache-control "no-cache, no-store, must-revalidate"
+
+      - name: Invalidate CloudFront cache
+        if: matrix.changed == 'true'
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets[matrix.cf_distribution_id_secret] }} \
+            --paths "/*"
+
+      - name: Verify deployment
+        if: matrix.changed == 'true'
+        run: |
+          sleep 15
+          curl -f -o /dev/null -s -w "%{http_code}" https://${{ matrix.s3_bucket }} || echo "Verification failed"
