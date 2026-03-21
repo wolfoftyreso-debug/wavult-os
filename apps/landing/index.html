@@ -1158,7 +1158,63 @@
         animation: none !important;
       }
     }
+
+    /* ─── HERO TAB BAR ─────────────────────────────────── */
+    .hero-tabs {
+      display: flex;
+      gap: 4px;
+      background: rgba(255,255,255,0.05);
+      border: 0.5px solid rgba(255,255,255,0.1);
+      border-radius: 980px;
+      padding: 4px;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-tab {
+      padding: 7px 16px;
+      border-radius: 980px;
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(245,245,247,0.45);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+    .hero-tab.active {
+      background: #6366f1;
+      color: #fff;
+    }
+    .hero-tab:hover:not(.active) {
+      color: rgba(245,245,247,0.8);
+      background: rgba(255,255,255,0.06);
+    }
+
+    /* ─── SLIDE-IN NOTIFICATION ────────────────────────── */
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(40px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ─── PULSE LIVE ────────────────────────────────────── */
+    @keyframes pulseLive {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.45; }
+    }
+    .kpi-value-live {
+      animation: pulseLive 1.8s ease-in-out infinite;
+    }
+    .kpi-live-dot {
+      display: inline-block;
+      width: 6px; height: 6px;
+      background: #34c759;
+      border-radius: 50%;
+      margin-left: 4px;
+      animation: pulseLive 1.8s ease-in-out infinite;
+      vertical-align: middle;
+    }
   </style>
+  <meta name="revised" content="2026-03-21">
 </head>
 <body>
 
@@ -1185,14 +1241,93 @@
   </div>
 </nav>
 
-<!-- Mobile menu -->
-<div class="mobile-menu" id="mobile-menu">
-  <a href="#product" class="mobile-nav-link">Produkt</a>
-  <a href="#solutions" class="mobile-nav-link">Lösningar</a>
-  <a href="#pricing" class="mobile-nav-link">Priser</a>
-  <a href="/developers/" class="mobile-nav-link">Developers</a>
-  <a href="https://app.bc.pixdrift.com" class="mobile-nav-link">Logga in</a>
-  <a href="/checkout.html" class="mobile-cta">Kom igång — gratis 14 dagar</a>
+<!-- Mobile menu — Apple-style rich menu -->
+<div id="mobile-menu" style="display:none; position:fixed; inset:0; z-index:99; background:#000; overflow-y:auto; padding:80px 24px 40px;">
+
+  <!-- Stäng-knapp -->
+  <button onclick="closeMobileMenu()" style="position:absolute; top:16px; right:20px; background:none; border:none; color:#f5f5f7; font-size:24px; cursor:pointer;">✕</button>
+
+  <!-- PRODUKT-sektion -->
+  <div style="margin-bottom:40px;">
+    <div style="font-size:11px; color:rgba(245,245,247,0.4); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:16px;">Produkt</div>
+
+    <a href="/produkt.html" style="display:flex; gap:16px; align-items:flex-start; padding:14px 0; border-bottom:0.5px solid rgba(255,255,255,0.08); text-decoration:none;">
+      <div style="width:40px; height:40px; background:rgba(99,102,241,0.2); border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:18px;">⚡</div>
+      <div>
+        <div style="font-size:16px; font-weight:500; color:#f5f5f7; margin-bottom:4px;">Execution</div>
+        <div style="font-size:13px; color:rgba(245,245,247,0.5);">CRM, deals, tasks och kommunikation</div>
+      </div>
+    </a>
+
+    <a href="/produkt.html#capability" style="display:flex; gap:16px; align-items:flex-start; padding:14px 0; border-bottom:0.5px solid rgba(255,255,255,0.08); text-decoration:none;">
+      <div style="width:40px; height:40px; background:rgba(52,199,89,0.2); border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:18px;">🎯</div>
+      <div>
+        <div style="font-size:16px; font-weight:500; color:#f5f5f7; margin-bottom:4px;">Capability</div>
+        <div style="font-size:13px; color:rgba(245,245,247,0.5);">Kompetens, mål och medarbetarutveckling</div>
+      </div>
+    </a>
+
+    <a href="/produkt.html#process" style="display:flex; gap:16px; align-items:flex-start; padding:14px 0; border-bottom:0.5px solid rgba(255,255,255,0.08); text-decoration:none;">
+      <div style="width:40px; height:40px; background:rgba(255,149,0,0.2); border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:18px;">⚙️</div>
+      <div>
+        <div style="font-size:16px; font-weight:500; color:#f5f5f7; margin-bottom:4px;">Process</div>
+        <div style="font-size:13px; color:rgba(245,245,247,0.5);">Processer, avvikelser och compliance</div>
+      </div>
+    </a>
+
+    <a href="/produkt.html#currency" style="display:flex; gap:16px; align-items:flex-start; padding:14px 0; border-bottom:0.5px solid rgba(255,255,255,0.08); text-decoration:none;">
+      <div style="width:40px; height:40px; background:rgba(255,214,10,0.2); border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:18px;">💱</div>
+      <div>
+        <div style="font-size:16px; font-weight:500; color:#f5f5f7; margin-bottom:4px;">Currency</div>
+        <div style="font-size:13px; color:rgba(245,245,247,0.5);">Multi-valuta, FX och ekonomirapporter</div>
+      </div>
+    </a>
+
+    <a href="/produkt.html#reports" style="display:flex; gap:16px; align-items:flex-start; padding:14px 0; text-decoration:none;">
+      <div style="width:40px; height:40px; background:rgba(175,82,222,0.2); border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:18px;">📊</div>
+      <div>
+        <div style="font-size:16px; font-weight:500; color:#f5f5f7; margin-bottom:4px;">Reports</div>
+        <div style="font-size:13px; color:rgba(245,245,247,0.5);">SIE4, bokslut och kassaflöde</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- LÖSNINGAR-sektion -->
+  <div style="margin-bottom:40px;">
+    <div style="font-size:11px; color:rgba(245,245,247,0.4); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:16px;">Lösningar</div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+      <a href="/losningar/saas.html" style="padding:12px; background:rgba(255,255,255,0.05); border-radius:10px; text-decoration:none;">
+        <div style="font-size:14px; font-weight:500; color:#f5f5f7; margin-bottom:2px;">SaaS</div>
+        <div style="font-size:11px; color:rgba(245,245,247,0.4);">Tech-bolag</div>
+      </a>
+      <a href="/losningar/tjansteforetag.html" style="padding:12px; background:rgba(255,255,255,0.05); border-radius:10px; text-decoration:none;">
+        <div style="font-size:14px; font-weight:500; color:#f5f5f7; margin-bottom:2px;">Tjänster</div>
+        <div style="font-size:11px; color:rgba(245,245,247,0.4);">Konsult & service</div>
+      </a>
+      <a href="/losningar/handel.html" style="padding:12px; background:rgba(255,255,255,0.05); border-radius:10px; text-decoration:none;">
+        <div style="font-size:14px; font-weight:500; color:#f5f5f7; margin-bottom:2px;">Handel</div>
+        <div style="font-size:11px; color:rgba(245,245,247,0.4);">E-handel & retail</div>
+      </a>
+      <a href="/losningar/industri.html" style="padding:12px; background:rgba(255,255,255,0.05); border-radius:10px; text-decoration:none;">
+        <div style="font-size:14px; font-weight:500; color:#f5f5f7; margin-bottom:2px;">Industri</div>
+        <div style="font-size:11px; color:rgba(245,245,247,0.4);">Tillverkning & VVS</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Övriga länkar -->
+  <div style="display:flex; flex-direction:column; gap:0;">
+    <a href="/priser.html" style="padding:16px 0; border-top:0.5px solid rgba(255,255,255,0.08); font-size:18px; color:#f5f5f7; text-decoration:none; display:flex; justify-content:space-between; align-items:center;">Priser <span style="color:rgba(245,245,247,0.4);">›</span></a>
+    <a href="/developers/" style="padding:16px 0; border-top:0.5px solid rgba(255,255,255,0.08); font-size:18px; color:#f5f5f7; text-decoration:none; display:flex; justify-content:space-between; align-items:center;">Developers <span style="color:rgba(245,245,247,0.4);">›</span></a>
+    <a href="/om-oss.html" style="padding:16px 0; border-top:0.5px solid rgba(255,255,255,0.08); font-size:18px; color:#f5f5f7; text-decoration:none; display:flex; justify-content:space-between; align-items:center;">Om oss <span style="color:rgba(245,245,247,0.4);">›</span></a>
+    <a href="https://app.bc.pixdrift.com" style="padding:16px 0; border-top:0.5px solid rgba(255,255,255,0.08); font-size:18px; color:#6366f1; text-decoration:none; display:flex; justify-content:space-between; align-items:center;">Logga in <span style="color:#6366f1;">›</span></a>
+  </div>
+
+  <!-- CTA-knapp -->
+  <a href="/checkout.html" style="display:block; text-align:center; background:#6366f1; color:#fff; padding:16px; border-radius:980px; font-size:17px; font-weight:500; text-decoration:none; margin-top:32px;">
+    Kom igång — gratis 14 dagar
+  </a>
 </div>
 
 <!-- ═══════════════════════════ HERO ═══════════════════════════════── -->
@@ -1222,10 +1357,19 @@
     <a href="#product" class="btn-secondary">Se hur det fungerar ↓</a>
   </div>
 
+  <!-- Module tab bar -->
+  <div class="hero-tabs reveal reveal-delay-3" id="hero-tabs">
+    <div class="hero-tab active" onclick="switchHeroTab('execution', this)">Execution</div>
+    <div class="hero-tab" onclick="switchHeroTab('capability', this)">Capability</div>
+    <div class="hero-tab" onclick="switchHeroTab('process', this)">Process</div>
+    <div class="hero-tab" onclick="switchHeroTab('currency', this)">Currency</div>
+    <div class="hero-tab" onclick="switchHeroTab('reports', this)">Reports</div>
+  </div>
+
   <!-- Dashboard mockup -->
   <div class="hero-mockup-wrap reveal reveal-delay-4">
     <div class="hero-mockup-glow"></div>
-    <div class="mockup-frame">
+    <div class="mockup-frame" style="position:relative;">
       <!-- Titlebar -->
       <div class="mockup-titlebar">
         <div class="tb-dot tb-dot-r"></div>
@@ -1250,12 +1394,25 @@
           <div class="sidebar-item">⚙️ Inställningar</div>
         </div>
 
+        <!-- Notification slide-in -->
+        <div id="mock-notification" style="
+          position:absolute; top:50px; right:16px;
+          background:#1c1c1e; border:0.5px solid rgba(255,255,255,0.1);
+          border-left:3px solid #34c759;
+          border-radius:10px; padding:10px 14px;
+          animation:slideInRight 0.4s ease 1.2s both;
+          max-width:220px; z-index:10;
+        ">
+          <div style="font-size:11px; color:#34c759; font-weight:600; margin-bottom:2px;">✓ Deal stängd</div>
+          <div style="font-size:12px; color:rgba(245,245,247,0.7);">Novacode AB · €12 000</div>
+        </div>
+
         <!-- Main -->
         <div class="mockup-main">
           <div class="kpi-grid">
             <div class="kpi-card">
               <div class="kpi-label">Pipeline</div>
-              <div class="kpi-value color-indigo">€64k</div>
+              <div class="kpi-value color-indigo kpi-value-live">€64k<span class="kpi-live-dot"></span></div>
               <div class="kpi-change color-green">↑ 12%</div>
             </div>
             <div class="kpi-card">
@@ -1630,6 +1787,99 @@
   </div>
 </section>
 
+<!-- ═══════════════════════════ LEAN OPERATIONS ════════════════════ -->
+<section style="padding:100px 24px; background:#000; border-top:0.5px solid rgba(255,255,255,0.06);">
+  <div style="max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center;">
+    <div class="reveal">
+      <div style="font-size:12px; color:#6366f1; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:16px;">Lean Operations Intelligence</div>
+      <h2 style="font-size:clamp(28px,4vw,48px); font-weight:700; color:#f5f5f7; line-height:1.1; letter-spacing:-0.02em; margin-bottom:20px;">
+        Se ditt team<br/>som ett system
+      </h2>
+      <p style="font-size:17px; color:rgba(245,245,247,0.6); line-height:1.6; margin-bottom:32px;">
+        Helikopterperspektiv i realtid. Spagettidiagram som avslöjar onödiga rörelser.
+        AI-genererade Lean-förbättringsförslag. Allt inbyggt i pixdrift.
+      </p>
+      <ul style="list-style:none; padding:0; display:flex; flex-direction:column; gap:10px;">
+        <li style="display:flex; gap:10px; align-items:flex-start;">
+          <span style="color:#6366f1; font-weight:700; flex-shrink:0;">✓</span>
+          <span style="color:rgba(245,245,247,0.7); font-size:15px;">Live-vy av hela teamets aktiviteter — se vem som gör vad just nu</span>
+        </li>
+        <li style="display:flex; gap:10px; align-items:flex-start;">
+          <span style="color:#6366f1; font-weight:700; flex-shrink:0;">✓</span>
+          <span style="color:rgba(245,245,247,0.7); font-size:15px;">Spagettidiagram identifierar waste och flaskhalsar i arbetsflödet</span>
+        </li>
+        <li style="display:flex; gap:10px; align-items:flex-start;">
+          <span style="color:#6366f1; font-weight:700; flex-shrink:0;">✓</span>
+          <span style="color:rgba(245,245,247,0.7); font-size:15px;">Flödeseffektivitetsmätning mot Lean-mål (Toyota Production System)</span>
+        </li>
+        <li style="display:flex; gap:10px; align-items:flex-start;">
+          <span style="color:#6366f1; font-weight:700; flex-shrink:0;">✓</span>
+          <span style="color:rgba(245,245,247,0.7); font-size:15px;">Automatiska optimeringsförslag — rörelseindex per person</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Spaghetti-mockup -->
+    <div class="reveal hover-lift" style="background:#1c1c1e; border:0.5px solid rgba(255,255,255,0.1); border-radius:16px; padding:24px; box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+      <div style="font-size:12px; color:rgba(255,255,255,0.4); font-weight:600; margin-bottom:12px; letter-spacing:0.06em; text-transform:uppercase;">Flödesanalys — Idag</div>
+
+      <!-- SVG spagettidiagram -->
+      <svg width="100%" height="220" viewBox="0 0 400 220">
+        <!-- Modul-labels -->
+        <text x="8" y="44"  fill="rgba(0,122,255,0.7)"   font-size="10" font-family="-apple-system,sans-serif" font-weight="600">Execution</text>
+        <text x="8" y="88"  fill="rgba(52,199,89,0.7)"   font-size="10" font-family="-apple-system,sans-serif" font-weight="600">Capability</text>
+        <text x="8" y="132" fill="rgba(255,149,0,0.7)"   font-size="10" font-family="-apple-system,sans-serif" font-weight="600">Process</text>
+        <text x="8" y="176" fill="rgba(255,204,0,0.7)"   font-size="10" font-family="-apple-system,sans-serif" font-weight="600">Currency</text>
+        <text x="8" y="210" fill="rgba(175,82,222,0.7)"  font-size="10" font-family="-apple-system,sans-serif" font-weight="600">Reports</text>
+
+        <!-- Horisontella guidelinjer -->
+        <line x1="90" y1="40"  x2="395" y2="40"  stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+        <line x1="90" y1="84"  x2="395" y2="84"  stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+        <line x1="90" y1="128" x2="395" y2="128" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+        <line x1="90" y1="172" x2="395" y2="172" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+        <line x1="90" y1="207" x2="395" y2="207" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+        <!-- Person 1 — blå linje (Erik) -->
+        <polyline points="90,40 135,84 180,40 240,128 295,40 345,40 385,84"
+          fill="none" stroke="#007AFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+
+        <!-- Person 2 — grön linje (Maria) -->
+        <polyline points="90,128 145,40 195,128 240,172 290,128 340,84 385,128"
+          fill="none" stroke="#34C759" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+
+        <!-- Person 3 — orange linje (Anna) -->
+        <polyline points="90,84 155,207 210,84 255,40 310,172 360,84 385,40"
+          fill="none" stroke="#FF9500" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+
+        <!-- Person 4 — lila linje (Dennis) -->
+        <polyline points="90,207 165,40 220,172 265,84 320,207 370,40 385,172"
+          fill="none" stroke="#AF52DE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+
+        <!-- Waste-korsningspunkter (röda ringar) -->
+        <circle cx="190" cy="40"  r="5" fill="none" stroke="#FF3B30" stroke-width="1.5" opacity="0.9"/>
+        <circle cx="255" cy="40"  r="5" fill="none" stroke="#FF3B30" stroke-width="1.5" opacity="0.9"/>
+        <circle cx="290" cy="128" r="5" fill="none" stroke="#FF9500" stroke-width="1.5" opacity="0.9"/>
+      </svg>
+
+      <!-- Metrics -->
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:16px;">
+        <div style="background:rgba(255,59,48,0.1); border:0.5px solid rgba(255,59,48,0.3); border-radius:8px; padding:10px; text-align:center;">
+          <div style="font-size:20px; font-weight:700; color:#FF3B30;">8</div>
+          <div style="font-size:10px; color:rgba(255,255,255,0.4); margin-top:2px;">Waste-punkter</div>
+        </div>
+        <div style="background:rgba(255,149,0,0.1); border:0.5px solid rgba(255,149,0,0.3); border-radius:8px; padding:10px; text-align:center;">
+          <div style="font-size:20px; font-weight:700; color:#FF9500;">47</div>
+          <div style="font-size:10px; color:rgba(255,255,255,0.4); margin-top:2px;">Modulbyten/dag</div>
+        </div>
+        <div style="background:rgba(52,199,89,0.1); border:0.5px solid rgba(52,199,89,0.3); border-radius:8px; padding:10px; text-align:center;">
+          <div style="font-size:20px; font-weight:700; color:#34C759;">64%</div>
+          <div style="font-size:10px; color:rgba(255,255,255,0.4); margin-top:2px;">Flödeseff.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ═══════════════════════════ TESTIMONIALS ════════════════════════ -->
 <section class="testimonials-section">
   <div style="max-width:1000px;margin:0 auto;">
@@ -1845,17 +2095,139 @@
 
   // ─── HAMBURGER MENU ─────────────────────────────────
   const hamburger = document.getElementById('hamburger');
-  const mobileMenu = document.getElementById('mobile-menu');
 
   hamburger.addEventListener('click', () => {
-    mobileMenu.classList.toggle('open');
+    openMobileMenu();
   });
 
-  document.querySelectorAll('.mobile-nav-link, .mobile-cta').forEach(link => {
+  function openMobileMenu() {
+    document.getElementById('mobile-menu').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMobileMenu() {
+    document.getElementById('mobile-menu').style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  // Close on anchor links inside mobile menu
+  document.querySelectorAll('#mobile-menu a').forEach(link => {
     link.addEventListener('click', () => {
-      mobileMenu.classList.remove('open');
+      closeMobileMenu();
     });
   });
+
+  // ─── HERO TAB SWITCHER ───────────────────────────────
+  const heroTabContent = {
+    execution: {
+      title: 'pixdrift — Execution',
+      kpis: [
+        { label: 'Pipeline',     value: '€64k', change: '↑ 12%', colorVal: 'color-indigo', colorChg: 'color-green', live: true },
+        { label: 'Aktiva deals', value: '7',    change: '↑ 3 nya', colorVal: 'color-white', colorChg: 'color-green', live: false },
+        { label: 'Tasks',        value: '12',   change: '3 idag', colorVal: 'color-orange', colorChg: 'color-muted', live: false },
+        { label: 'Win rate',     value: '68%',  change: '↑ 5%',  colorVal: 'color-green',  colorChg: 'color-green', live: false },
+      ],
+      deals: [
+        { name: 'Novacode AB',   stage: 'PROPOSAL', stageColor: 'color-muted',  amount: '€12 000', amtColor: 'color-indigo' },
+        { name: 'Nordic Shop AB',stage: 'WON ✓',    stageColor: 'color-green',  amount: '€8 500',  amtColor: 'color-green'  },
+        { name: 'VVS Proffsen',  stage: 'QUALIFIED', stageColor:'color-orange', amount: '€5 200',  amtColor: 'color-white'  },
+      ]
+    },
+    capability: {
+      title: 'pixdrift — Capability',
+      kpis: [
+        { label: 'Tillgängliga', value: '8',  change: '+2 idag', colorVal: 'color-indigo', colorChg: 'color-green', live: false },
+        { label: 'Belagda',      value: '14', change: '83% avg', colorVal: 'color-orange', colorChg: 'color-muted', live: false },
+        { label: 'Cert. aktiva', value: '23', change: '↑ 3 nya', colorVal: 'color-white',  colorChg: 'color-green', live: false },
+        { label: 'Kompetenser',  value: '94', change: '5 gap',   colorVal: 'color-green',  colorChg: 'color-orange', live: true  },
+      ],
+      deals: [
+        { name: 'Anna K — React',    stage: 'CERTIFIERAD', stageColor: 'color-green',  amount: 'Senior', amtColor: 'color-white'  },
+        { name: 'Johan L — DevOps',  stage: 'AKTIV',       stageColor: 'color-indigo', amount: 'Mid',    amtColor: 'color-white'  },
+        { name: 'Sara M — Design',   stage: 'FÖRNYELSE',   stageColor: 'color-orange', amount: 'Junior', amtColor: 'color-orange' },
+      ]
+    },
+    process: {
+      title: 'pixdrift — Process',
+      kpis: [
+        { label: 'Aktiva',   value: '8',    change: '2 nya', colorVal: 'color-indigo', colorChg: 'color-green', live: false },
+        { label: 'Klara idag', value: '12', change: '↑ 4',  colorVal: 'color-green',  colorChg: 'color-green', live: false },
+        { label: 'SLA-fel',  value: '2',    change: 'Åtgärda', colorVal: 'color-orange', colorChg: 'color-orange', live: true },
+        { label: 'Compliance', value: '98%',change: '↑ 1%', colorVal: 'color-green',  colorChg: 'color-green', live: false },
+      ],
+      deals: [
+        { name: 'Onboarding kund',    stage: 'AKTIV',  stageColor: 'color-indigo', amount: 'Steg 3/5', amtColor: 'color-white'  },
+        { name: 'Offertgodkännande',  stage: 'KLAR',   stageColor: 'color-green',  amount: '✓',        amtColor: 'color-green'  },
+        { name: 'Fakturahantering',   stage: 'VÄNTAR', stageColor: 'color-orange', amount: 'Steg 1/3', amtColor: 'color-muted'  },
+      ]
+    },
+    currency: {
+      title: 'pixdrift — Currency',
+      kpis: [
+        { label: 'EUR',    value: '€128k', change: '↑ 8%',  colorVal: 'color-indigo', colorChg: 'color-green', live: true  },
+        { label: 'SEK',    value: '1.3M',  change: '↑ 14%', colorVal: 'color-white',  colorChg: 'color-green', live: false },
+        { label: 'GBP',    value: '£42k',  change: '→ 0%',  colorVal: 'color-white',  colorChg: 'color-muted', live: false },
+        { label: 'USD',    value: '$89k',  change: '↑ 22%', colorVal: 'color-green',  colorChg: 'color-green', live: false },
+      ],
+      deals: [
+        { name: 'Novacode AB',  stage: 'FAKTURERAD', stageColor: 'color-indigo', amount: '€12 000', amtColor: 'color-indigo' },
+        { name: 'Nordic Shop',  stage: 'BETALD',     stageColor: 'color-green',  amount: '89 000 kr', amtColor: 'color-green' },
+        { name: 'Global SaaS', stage: 'VÄNTAR FX',  stageColor: 'color-orange', amount: '$4 800',  amtColor: 'color-orange' },
+      ]
+    },
+    reports: {
+      title: 'pixdrift — Reports',
+      kpis: [
+        { label: 'Intäkter',  value: '€247k', change: '↑ 34%', colorVal: 'color-indigo', colorChg: 'color-green', live: true  },
+        { label: 'Marginalen',value: '42%',   change: '↑ 6%',  colorVal: 'color-green',  colorChg: 'color-green', live: false },
+        { label: 'Cashflow',  value: '+€48k', change: 'Positivt', colorVal: 'color-green', colorChg: 'color-green', live: false },
+        { label: 'QoQ Growth',value: '34%',   change: 'Bästa Q', colorVal: 'color-white',  colorChg: 'color-green', live: false },
+      ],
+      deals: [
+        { name: 'AI-insikt',         stage: 'TREND',    stageColor: 'color-indigo', amount: '📈 +34%', amtColor: 'color-indigo' },
+        { name: '3 deals nära',      stage: 'PROGNOS',  stageColor: 'color-green',  amount: '7 dagar', amtColor: 'color-green'  },
+        { name: 'SIE4 export klar',  stage: 'RAPPORT',  stageColor: 'color-orange', amount: 'Q1 2025', amtColor: 'color-muted'  },
+      ]
+    }
+  };
+
+  function switchHeroTab(tab, el) {
+    // Update tab active state
+    document.querySelectorAll('.hero-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+
+    const data = heroTabContent[tab];
+    if (!data) return;
+
+    // Update titlebar
+    document.querySelector('.tb-title').textContent = data.title;
+
+    // Update KPIs
+    const kpiCards = document.querySelectorAll('.kpi-card');
+    data.kpis.forEach((k, i) => {
+      if (!kpiCards[i]) return;
+      kpiCards[i].querySelector('.kpi-label').textContent = k.label;
+      const valEl = kpiCards[i].querySelector('.kpi-value');
+      valEl.className = 'kpi-value ' + k.colorVal + (k.live ? ' kpi-value-live' : '');
+      valEl.innerHTML = k.value + (k.live ? '<span class="kpi-live-dot"></span>' : '');
+      const chgEl = kpiCards[i].querySelector('.kpi-change');
+      chgEl.className = 'kpi-change ' + k.colorChg;
+      chgEl.textContent = k.change;
+    });
+
+    // Update deals list
+    const dealRows = document.querySelectorAll('.deal-row');
+    data.deals.forEach((d, i) => {
+      if (!dealRows[i]) return;
+      dealRows[i].querySelector('.deal-name').textContent = d.name;
+      const stageEl = dealRows[i].querySelector('.deal-stage');
+      stageEl.className = 'deal-stage ' + d.stageColor;
+      stageEl.textContent = d.stage;
+      const amtEl = dealRows[i].querySelector('.deal-amount');
+      amtEl.className = 'deal-amount ' + d.amtColor;
+      amtEl.textContent = d.amount;
+    });
+  }
 
   // ─── REVEAL ON SCROLL ───────────────────────────────
   const revealEls = document.querySelectorAll('.reveal');

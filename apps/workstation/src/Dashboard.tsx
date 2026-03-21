@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useApi } from "./useApi";
 import LearningModule from "./LearningModule";
 import DMSModule from "./DMSModule";
+import SpaghettiModule from "./SpaghettiModule";
 import { useTranslation, LanguageSwitcher, formatCurrency, formatDate } from "@pixdrift/i18n";
 
 // ─── Design tokens — Apple HIG precision ──────────────────────────────────────
@@ -212,6 +213,13 @@ const Icons = {
       <circle cx="16.5" cy="17" r="2.5"/>
     </svg>
   ),
+  Spaghetti: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 6 C6 6, 8 14, 12 10 S18 4, 21 8"/>
+      <path d="M3 12 C7 10, 9 18, 13 14 S17 8, 21 14"/>
+      <path d="M3 18 C5 16, 9 20, 13 18 S19 12, 21 18"/>
+    </svg>
+  ),
   Receipt: () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M4 2v20l3-3 2 2 3-3 2 2 3-3 2 2V2z"/>
@@ -298,7 +306,8 @@ const NAV_SECTIONS = [
   {
     label: "SYSTEM",
     items: [
-      { id: "dms", icon: <Icons.Car />, label: "DMS Bil" },
+      { id: "dms",       icon: <Icons.Car />,       label: "DMS Bil"     },
+      { id: "spaghetti", icon: <Icons.Spaghetti />, label: "Flödesanalys" },
     ],
   },
 ];
@@ -2113,7 +2122,8 @@ export default function App({ user: propUser, onLogout }: { user?: any; onLogout
     capability: "Kompetenser",
     development: "Utveckling",
     learning: "Utbildning",
-    dms: "DMS Bil",
+    dms:       "DMS Bil",
+    spaghetti: "Flödesanalys",
   };
 
   return (
@@ -2153,8 +2163,9 @@ export default function App({ user: propUser, onLogout }: { user?: any; onLogout
             {view === "compliance" && <ComplianceView D={D} />}
             {view === "risks" && <RisksView D={D} />}
             {view === "chat" && <ChatView D={D} />}
-            {view === "learning" && <LearningModule user={D.user as any} />}
-            {view === "dms" && <DMSModule />}
+            {view === "learning"   && <LearningModule user={D.user as any} />}
+            {view === "dms"        && <DMSModule />}
+            {view === "spaghetti" && <SpaghettiModule />}
           </main>
         </div>
       </div>

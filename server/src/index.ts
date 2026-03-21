@@ -47,6 +47,7 @@ import notificationsRouter from "./notifications";
 import learningRouter from "./learning";
 import seoRouter from "./seo";
 import bankingRouter from "./banking";
+import spaghettiRouter from "./spaghetti";
 
 // ---------------------------------------------------------------------------
 // Auth router
@@ -325,6 +326,7 @@ app.use(integrationRouter);
 app.use("/api/stripe", stripeRouter);
 app.use("/api/notifications", notificationsRouter);
 app.use("/api/learning", learningRouter);
+app.use("/api/spaghetti", spaghettiRouter); // Lean spaghetti diagram & helikopterperspektiv
 app.use(bankingRouter); // Banking: /api/banking/* + /api/integrations/fortnox/* + /api/integrations/visma/*
 
 // ---------------------------------------------------------------------------

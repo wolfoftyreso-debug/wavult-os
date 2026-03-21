@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Om oss — pixdrift | Byggt av operationsledare</title>
+  <meta name="description" content="pixdrift är byggt av operationsledare som tröttnade på att jonglera fem verktyg. Vi är ett team i Stockholm som tror att operativ excellens är tillgänglig för alla." />
+  <link rel="canonical" href="https://pixdrift.com/om-oss.html" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #000; color: #f5f5f7; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    a { cursor: pointer; } ul { list-style: none; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: rgba(0,0,0,0.72); backdrop-filter: saturate(180%) blur(20px); border-bottom: 0.5px solid rgba(255,255,255,0.12); }
+    .nav-logo { color: #f5f5f7; font-size: 18px; font-weight: 700; text-decoration: none; letter-spacing: -0.03em; }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a { color: rgba(245,245,247,0.75); font-size: 12px; text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: #f5f5f7; }
+    .nav-actions { display: flex; gap: 16px; align-items: center; }
+    .nav-actions a { color: rgba(245,245,247,0.75); font-size: 12px; text-decoration: none; }
+    .nav-cta { background: #fff; color: #1d1d1f !important; padding: 6px 14px; border-radius: 980px; font-size: 12px !important; font-weight: 500; }
+    .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .nav-hamburger span { display: block; width: 22px; height: 1.5px; background: #f5f5f7; border-radius: 2px; }
+
+    /* PAGE HERO */
+    .page-hero { padding: 140px 24px 100px; text-align: center; background: #000; position: relative; overflow: hidden; }
+    .page-hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 70% 50% at 50% -5%, rgba(99,102,241,0.25) 0%, transparent 70%); pointer-events: none; }
+    .page-hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; background: rgba(99,102,241,0.12); border: 0.5px solid rgba(99,102,241,0.4); border-radius: 980px; padding: 6px 14px; margin-bottom: 24px; font-size: 12px; color: #a5b4fc; font-weight: 500; position: relative; z-index: 1; }
+    .page-hero h1 { font-size: clamp(36px, 6vw, 72px); font-weight: 800; letter-spacing: -0.04em; line-height: 1.04; margin-bottom: 24px; background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.5) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; max-width: 800px; margin-left: auto; margin-right: auto; position: relative; z-index: 1; }
+    .page-hero-sub { font-size: 19px; color: rgba(245,245,247,0.55); max-width: 600px; margin: 0 auto; line-height: 1.6; position: relative; z-index: 1; }
+
+    /* MISSION */
+    .mission-section { padding: 80px 24px; background: #030305; }
+    .mission-inner { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+    .mission-block h2 { font-size: 32px; font-weight: 700; color: #f5f5f7; letter-spacing: -0.025em; margin-bottom: 16px; }
+    .mission-block p { font-size: 16px; color: rgba(245,245,247,0.6); line-height: 1.7; }
+
+    /* FOUNDER STORY */
+    .founder-section { padding: 100px 24px; background: #000; }
+    .founder-inner { max-width: 800px; margin: 0 auto; }
+    .founder-label { font-size: 11px; color: #6366f1; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; }
+    .founder-h2 { font-size: clamp(28px, 4vw, 44px); font-weight: 700; color: #f5f5f7; letter-spacing: -0.025em; margin-bottom: 32px; line-height: 1.1; }
+    .founder-text { font-size: 18px; color: rgba(245,245,247,0.65); line-height: 1.75; margin-bottom: 24px; }
+    .founder-quote { background: rgba(99,102,241,0.08); border-left: 3px solid #6366f1; padding: 24px 28px; border-radius: 0 12px 12px 0; margin: 40px 0; }
+    .founder-quote p { font-size: 20px; font-style: italic; color: rgba(245,245,247,0.85); line-height: 1.6; margin-bottom: 12px; }
+    .founder-quote cite { font-size: 13px; color: rgba(245,245,247,0.4); font-style: normal; }
+
+    /* TEAM */
+    .team-section { padding: 80px 24px; background: #030305; }
+    .team-section-header { text-align: center; margin-bottom: 56px; }
+    .team-section-h2 { font-size: clamp(32px, 5vw, 52px); font-weight: 800; color: #f5f5f7; letter-spacing: -0.04em; margin-bottom: 12px; }
+    .team-section-sub { font-size: 17px; color: rgba(245,245,247,0.5); }
+    .team-grid { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; }
+    .team-card { background: #111113; border: 0.5px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 24px 16px; text-align: center; transition: transform 0.3s ease, border-color 0.3s ease; }
+    .team-card:hover { transform: translateY(-4px); border-color: rgba(99,102,241,0.3); }
+    .team-avatar { width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; }
+    .team-name { font-size: 14px; font-weight: 600; color: #f5f5f7; margin-bottom: 4px; }
+    .team-role { font-size: 12px; color: rgba(245,245,247,0.4); line-height: 1.4; }
+
+    /* VALUES */
+    .values-section { padding: 100px 24px; background: #000; }
+    .values-header { text-align: center; margin-bottom: 56px; }
+    .values-grid { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .value-card { background: #111113; border: 0.5px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 32px; }
+    .value-icon { font-size: 36px; margin-bottom: 16px; }
+    .value-title { font-size: 20px; font-weight: 700; color: #f5f5f7; margin-bottom: 10px; letter-spacing: -0.02em; }
+    .value-desc { font-size: 15px; color: rgba(245,245,247,0.55); line-height: 1.65; }
+
+    /* CTA */
+    .cta-section { padding: 120px 24px; background: #030305; text-align: center; }
+    .cta-h2 { font-size: clamp(36px, 6vw, 64px); font-weight: 800; letter-spacing: -0.04em; line-height: 1.04; margin-bottom: 20px; background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.5) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .cta-sub { font-size: 19px; color: rgba(245,245,247,0.5); margin-bottom: 40px; }
+    .cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { background: #6366f1; color: #fff; padding: 14px 28px; border-radius: 980px; font-size: 17px; font-weight: 500; text-decoration: none; transition: background 0.2s, transform 0.2s; }
+    .btn-primary:hover { background: #4f46e5; transform: translateY(-1px); }
+    .btn-secondary { background: rgba(255,255,255,0.08); border: 0.5px solid rgba(255,255,255,0.18); color: #f5f5f7; padding: 14px 28px; border-radius: 980px; font-size: 17px; font-weight: 500; text-decoration: none; transition: background 0.2s, transform 0.2s; }
+    .btn-secondary:hover { background: rgba(255,255,255,0.12); transform: translateY(-1px); }
+
+    footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.08); padding: 40px 24px; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .footer-brand { font-size: 16px; font-weight: 700; color: #f5f5f7; text-decoration: none; letter-spacing: -0.03em; }
+    .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+    .footer-links a { font-size: 13px; color: rgba(245,245,247,0.4); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: rgba(245,245,247,0.7); }
+    .footer-copy { font-size: 12px; color: rgba(245,245,247,0.25); }
+
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-d1 { transition-delay: 0.08s; } .reveal-d2 { transition-delay: 0.16s; } .reveal-d3 { transition-delay: 0.24s; }
+
+    #mobile-menu { display:none; position:fixed; inset:0; z-index:99; background:#000; overflow-y:auto; padding:80px 24px 40px; }
+
+    @media (max-width: 900px) {
+      .mission-inner { grid-template-columns: 1fr; gap: 40px; }
+      .team-grid { grid-template-columns: repeat(2, 1fr); }
+      .values-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+    }
+    @media (max-width: 600px) {
+      .team-grid { grid-template-columns: 1fr 1fr; }
+      .cta-btns { flex-direction: column; align-items: center; }
+    }
+    @media (prefers-reduced-motion: reduce) { .reveal, * { transition: none !important; animation: none !important; } }
+  </style>
+  <meta name="revised" content="2026-03-21">
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">pixdrift</a>
+  <div class="nav-links">
+    <a href="/produkt.html">Produkt</a>
+    <a href="/#solutions">Lösningar</a>
+    <a href="/priser.html">Priser</a>
+    <a href="/developers/">Developers</a>
+  </div>
+  <div class="nav-actions">
+    <a href="https://app.bc.pixdrift.com">Logga in</a>
+    <a href="/checkout.html" class="nav-cta">Kom igång</a>
+    <div class="nav-hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<div id="mobile-menu">
+  <button onclick="closeMobileMenu()" style="position:absolute;top:16px;right:20px;background:none;border:none;color:#f5f5f7;font-size:24px;cursor:pointer;">✕</button>
+  <div style="display:flex;flex-direction:column;gap:0;margin-top:8px;">
+    <a href="/produkt.html" style="padding:16px 0;border-bottom:0.5px solid rgba(255,255,255,0.08);font-size:18px;color:#f5f5f7;text-decoration:none;">Produkt</a>
+    <a href="/priser.html" style="padding:16px 0;border-bottom:0.5px solid rgba(255,255,255,0.08);font-size:18px;color:#f5f5f7;text-decoration:none;">Priser</a>
+    <a href="/om-oss.html" style="padding:16px 0;border-bottom:0.5px solid rgba(255,255,255,0.08);font-size:18px;color:#f5f5f7;text-decoration:none;">Om oss</a>
+    <a href="https://app.bc.pixdrift.com" style="padding:16px 0;font-size:18px;color:#6366f1;text-decoration:none;">Logga in</a>
+  </div>
+  <a href="/checkout.html" style="display:block;text-align:center;background:#6366f1;color:#fff;padding:16px;border-radius:980px;font-size:17px;font-weight:500;text-decoration:none;margin-top:32px;">Kom igång — gratis 14 dagar</a>
+</div>
+
+<!-- HERO -->
+<section class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="page-hero-eyebrow reveal">Vårt varför</div>
+  <h1 class="reveal reveal-d1">Byggt av operationsledare<br>för operationsledare.</h1>
+  <p class="page-hero-sub reveal reveal-d2">Vi tröttnade på att jonglera fem verktyg, sammanfoga Excel-ark och förklara för styrelsen varför dashboarden inte stämde med verkligheten. Så vi byggde pixdrift.</p>
+</section>
+
+<!-- MISSION & VISION -->
+<section class="mission-section">
+  <div class="mission-inner">
+    <div class="reveal">
+      <h2>Vår mission</h2>
+      <p>Vi gör operativ excellens tillgänglig för varje modern verksamhet — oavsett om du är ett fem-personersteam i Stockholm eller ett 200-personers bolag med kontor i tre länder. Operationer ska vara en superkraft, inte en belastning.</p>
+    </div>
+    <div class="reveal reveal-d1">
+      <h2>Vår vision</h2>
+      <p>En värld där varje beslutsfattare har fullständig, realtids-insyn i sin verksamhet. Där processer körs automatiskt. Där ekonomi, personal och kunder hänger ihop naturligt. pixdrift är det operativsystem som gör det möjligt.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDER STORY -->
+<section class="founder-section">
+  <div class="founder-inner">
+    <div class="founder-label reveal">Grundarberättelsen</div>
+    <h2 class="founder-h2 reveal reveal-d1">Det var 2021. Tredje Excel-arket den<br>veckan tog slut på raderna.</h2>
+    <p class="founder-text reveal reveal-d2">Vårt founding team hade spenderat sammanlagt 40+ år i operativa roller — som COO, CFO och CTO på bolag i Norden. Vi visste hur det skulle se ut. Deals i HubSpot, uppgifter i Jira, dokumentation i Notion, ekonomi i Fortnox, rapporter i... ett Excel ingen utom en person förstod.</p>
+    <p class="founder-text reveal reveal-d2">Vi sökte alternativ. Inget var byggt för oss. Salesforce var för stort och dyrt. monday.com saknade ekonomi. Pipedrive saknade HR. Allt krävde en lösare och månads av integration-projekt.</p>
+
+    <div class="founder-quote reveal">
+      <p>"Vi ville ha ett system som tänker som en operationsledare, inte som en IT-konsult. Så vi byggde det själva."</p>
+      <cite>— Grundarteamet, pixdrift AB, Stockholm 2021</cite>
+    </div>
+
+    <p class="founder-text reveal">pixdrift 1.0 lanserades internt Q3 2022. Vi körde hela vår egen verksamhet på det i sex månader innan vi visade det för världen. Idag kör 50+ team i Norden sin hela operation på pixdrift — och vi är precis i början.</p>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="team-section">
+  <div class="team-section-header reveal">
+    <h2 class="team-section-h2">Teamet bakom pixdrift</h2>
+    <p class="team-section-sub">Operationsledare, ingenjörer och designers — med ett gemensamt mål</p>
+  </div>
+  <div class="team-grid">
+    <div class="team-card reveal">
+      <div class="team-avatar" style="background:rgba(99,102,241,0.2);color:#a5b4fc;">EL</div>
+      <div class="team-name">Erik Lindgren</div>
+      <div class="team-role">Co-founder & CEO</div>
+    </div>
+    <div class="team-card reveal reveal-d1">
+      <div class="team-avatar" style="background:rgba(52,199,89,0.15);color:#34c759;">SK</div>
+      <div class="team-name">Sara Karlsson</div>
+      <div class="team-role">Co-founder & CTO</div>
+    </div>
+    <div class="team-card reveal reveal-d2">
+      <div class="team-avatar" style="background:rgba(255,149,0,0.15);color:#ff9500;">MN</div>
+      <div class="team-name">Marcus Nilsson</div>
+      <div class="team-role">Co-founder & CFO</div>
+    </div>
+    <div class="team-card reveal">
+      <div class="team-avatar" style="background:rgba(175,82,222,0.15);color:#bf5af2;">AL</div>
+      <div class="team-name">Anna Larsson</div>
+      <div class="team-role">Head of Product</div>
+    </div>
+    <div class="team-card reveal reveal-d1">
+      <div class="team-avatar" style="background:rgba(255,214,10,0.15);color:#ffd60a;">JP</div>
+      <div class="team-name">Johan Persson</div>
+      <div class="team-role">Lead Engineer</div>
+    </div>
+    <div class="team-card reveal">
+      <div class="team-avatar" style="background:rgba(99,102,241,0.15);color:#a5b4fc;">KH</div>
+      <div class="team-name">Klara Holm</div>
+      <div class="team-role">Head of Design</div>
+    </div>
+    <div class="team-card reveal reveal-d1">
+      <div class="team-avatar" style="background:rgba(52,199,89,0.12);color:#34c759;">PA</div>
+      <div class="team-name">Pontus Åberg</div>
+      <div class="team-role">Backend Engineer</div>
+    </div>
+    <div class="team-card reveal reveal-d2">
+      <div class="team-avatar" style="background:rgba(255,69,58,0.12);color:#ff3b30;">LE</div>
+      <div class="team-name">Lisa Eriksson</div>
+      <div class="team-role">Customer Success</div>
+    </div>
+    <div class="team-card reveal">
+      <div class="team-avatar" style="background:rgba(0,199,190,0.15);color:#32ade6;">TG</div>
+      <div class="team-name">Tobias Gran</div>
+      <div class="team-role">Sales Engineer</div>
+    </div>
+    <div class="team-card reveal reveal-d1">
+      <div class="team-avatar" style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);">+</div>
+      <div class="team-name">Du?</div>
+      <div class="team-role">Vi söker fler — <a href="mailto:jobs@pixdrift.com" style="color:#6366f1;text-decoration:none;">Ansök</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- VALUES -->
+<section class="values-section">
+  <div class="values-header reveal">
+    <h2 style="font-size:clamp(32px,5vw,52px);font-weight:800;color:#f5f5f7;letter-spacing:-0.04em;margin-bottom:12px;">Våra kärnvärden</h2>
+    <p style="font-size:17px;color:rgba(245,245,247,0.5);">Det som styr varje beslut vi fattar</p>
+  </div>
+  <div class="values-grid">
+    <div class="value-card reveal">
+      <div class="value-icon">🔍</div>
+      <div class="value-title">Radikal transparens</div>
+      <div class="value-desc">Vi har inga dolda avgifter, inga svarta lådor och inga PR-svar. I pixdrift ser du exakt vad som händer i din verksamhet — och vi håller samma standard internt. Vad du ser är vad du får.</div>
+    </div>
+    <div class="value-card reveal reveal-d1">
+      <div class="value-icon">⚡</div>
+      <div class="value-title">Hastighet med precision</div>
+      <div class="value-desc">Snabbt är bra. Snabbt och rätt är bättre. Vi shipper features i snabbt tempo men aldrig på bekostnad av tillförlitlighet. Din verksamhet är beroende av att pixdrift fungerar — och vi tar det ansvaret på allvar.</div>
+    </div>
+    <div class="value-card reveal reveal-d2">
+      <div class="value-icon">🤝</div>
+      <div class="value-title">Kunden äger sin data</div>
+      <div class="value-desc">Din data tillhör dig. Alltid. Du kan exportera allt, när som helst, utan begränsningar. Vi tjänar pengar på att du väljer att stanna — inte på att det är svårt att lämna. Det är en fundamental skillnad.</div>
+    </div>
+    <div class="value-card reveal reveal-d3">
+      <div class="value-icon">🌍</div>
+      <div class="value-title">Norden first, globalt tänk</div>
+      <div class="value-desc">Vi är djupt rotade i det nordiska sättet att driva verksamhet — tillit, platt hierarki och hållbarhet. Samtidigt bygger vi för globala team med multi-valuta och flerspråkigt stöd. Det ena utesluter inte det andra.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2 class="cta-h2 reveal">Bli en del av resan.</h2>
+  <p class="cta-sub reveal reveal-d1">Kör din verksamhet på pixdrift — eller jobba med oss för att bygga nästa generation av operativt stöd.</p>
+  <div class="cta-btns reveal reveal-d2">
+    <a href="/checkout.html" class="btn-primary">Starta gratis testperiod</a>
+    <a href="mailto:jobs@pixdrift.com" class="btn-secondary">Vi anställer — se lediga roller</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <a href="/" class="footer-brand">pixdrift</a>
+    <div class="footer-links">
+      <a href="/produkt.html">Produkt</a>
+      <a href="/priser.html">Priser</a>
+      <a href="/om-oss.html">Om oss</a>
+      <a href="/developers/">Developers</a>
+      <a href="mailto:hello@pixdrift.com">Kontakt</a>
+    </div>
+    <div class="footer-copy">© 2025 pixdrift AB · Stockholm, Sverige</div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('hamburger').addEventListener('click', openMobileMenu);
+  function openMobileMenu() { document.getElementById('mobile-menu').style.display = 'block'; document.body.style.overflow = 'hidden'; }
+  function closeMobileMenu() { document.getElementById('mobile-menu').style.display = 'none'; document.body.style.overflow = ''; }
+
+  const revealEls = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08, rootMargin: '0px 0px -50px 0px' });
+  revealEls.forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
