@@ -221,6 +221,9 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
+// Eva bot (public — no auth required for Telegram webhook)
+app.use('/api/eva-bot', evaBotRouter);
+
 // Request logging
 app.use((req: Request, _res: Response, next: NextFunction) => {
   const start = Date.now();
