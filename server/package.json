@@ -17,6 +17,7 @@
     "@supabase/supabase-js": "^2.45.0",
     "@trigger.dev/sdk": "^3.0.0",
     "@types/cookie-parser": "^1.4.10",
+    "axios": "^1.13.6",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.3.1",

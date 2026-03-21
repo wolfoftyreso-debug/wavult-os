@@ -5,9 +5,14 @@ import { supabase } from "./supabase";
 const router = Router();
 
 // ---------------------------------------------------------------------------
-// Stripe client (uses env var — no real key needed until production)
+// Stripe client — requires STRIPE_SECRET_KEY in environment / AWS SSM
 // ---------------------------------------------------------------------------
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_placeholder", {
+const stripeKey = process.env.STRIPE_SECRET_KEY;
+if (!stripeKey) {
+  console.warn("[Stripe] ⚠️  Stripe not configured — set STRIPE_SECRET_KEY in SSM. Checkout will return mock URLs until configured.");
+}
+
+const stripe = new Stripe(stripeKey ?? "sk_test_unconfigured", {
   apiVersion: "2025-02-24.acacia",
 });
 
@@ -30,6 +35,18 @@ const PLANS: Record<string, { name: string; price: number; currency: string; int
     priceId: process.env.STRIPE_PRICE_GROWTH || "price_growth_placeholder",
   },
 };
+
+// ---------------------------------------------------------------------------
+// GET /api/stripe/health — check if Stripe is configured
+// ---------------------------------------------------------------------------
+router.get("/health", (_req: Request, res: Response) => {
+  const key = process.env.STRIPE_SECRET_KEY;
+  const configured = !!key;
+  let mode: "test" | "live" | "unconfigured" = "unconfigured";
+  if (key?.startsWith("sk_live_")) mode = "live";
+  else if (key?.startsWith("sk_test_")) mode = "test";
+  res.json({ configured, mode });
+});
 
 // ---------------------------------------------------------------------------
 // GET /api/stripe/plans — list available plans
@@ -61,8 +78,8 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
     return res.status(400).json({ error: `Okänd plan: ${plan}. Välj 'starter' eller 'growth'.` });
   }
 
-  // If using placeholder key, return a mock URL for development
-  if (!process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY === "sk_test_placeholder") {
+  // If Stripe not configured, return a mock URL so checkout page doesn't break
+  if (!stripeKey) {
     console.log(`[Stripe DEV] Mock checkout session for ${email}, plan=${plan}, org=${org_name}`);
     return res.json({
       url: `${process.env.APP_URL || "https://pixdrift.com"}/success.html?plan=${plan}&org=${encodeURIComponent(org_name)}&email=${encodeURIComponent(email)}&mock=1`,

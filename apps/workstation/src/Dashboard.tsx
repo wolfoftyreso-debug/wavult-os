@@ -2151,7 +2151,7 @@ export default function App({ user: propUser, onLogout }: { user?: any; onLogout
     ? apiPerf.map((p, i) => ({ code: `PROC-${String(i + 1).padStart(3, "0")}`, name: p.process_name, runs30d: p.execution_count, avgMin: Math.round(p.avg_duration_ms / 60000), ncs: p.nc_count, owner: "—" }))
     : FALLBACK.processes;
 
-  const D = {
+  const D: typeof FALLBACK = {
     ...FALLBACK,
     ncs, risks, improvements, compliance, processes,
     user: propUser

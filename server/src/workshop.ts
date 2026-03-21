@@ -9,10 +9,16 @@ const auth = (req: Request, res: Response, next: Function) => {
   next();
 };
 
-function generateOrderNumber(prefix: string): string {
+async function generateOrderNumber(prefix: string, orgId: string): Promise<string> {
   const now = new Date();
   const year = now.getFullYear();
-  const seq = Math.floor(Math.random() * 900000) + 100000;
+  // Count existing orders this year to get a deterministic sequence number
+  const { count } = await supabase
+    .from("work_orders")
+    .select("id", { count: "exact", head: true })
+    .eq("org_id", orgId)
+    .gte("created_at", `${year}-01-01T00:00:00`);
+  const seq = String((count ?? 0) + 1).padStart(6, "0");
   return `${prefix}-${year}-${seq}`;
 }
 
@@ -21,7 +27,7 @@ router.post("/api/workshop/work-orders", auth, async (req: Request, res: Respons
   const user = (req as any).user;
   const b = req.body;
 
-  const orderNumber = generateOrderNumber("WO");
+  const orderNumber = await generateOrderNumber("WO", user.org_id);
 
   const { data: wo, error: woErr } = await supabase
     .from("work_orders")
@@ -199,7 +205,7 @@ router.post("/api/workshop/work-orders/:id/invoice", auth, async (req: Request, 
   res.json({
     work_order_id: wo.id,
     order_number: wo.order_number,
-    invoice_number: generateOrderNumber("INV"),
+    invoice_number: await generateOrderNumber("INV", user.org_id),
     invoice_date: new Date().toISOString().split("T")[0],
     breakdown: {
       labor_net: Math.round(laborNet * 100) / 100,
@@ -243,7 +249,7 @@ router.post("/api/workshop/bookings", auth, async (req: Request, res: Response) 
     .from("work_orders")
     .insert({
       org_id: user.org_id,
-      order_number: `WO-${new Date().getFullYear()}-${Math.floor(Math.random() * 900000) + 100000}`,
+      order_number: await generateOrderNumber("WO", user.org_id),
       customer_id,
       vehicle_vin,
       work_type: work_type ?? "SERVICE",
@@ -260,26 +266,53 @@ router.post("/api/workshop/bookings", auth, async (req: Request, res: Response) 
 
 // ─── GET /api/workshop/availability ──────────────────────────────────────────
 router.get("/api/workshop/availability", auth, async (req: Request, res: Response) => {
+  const user = (req as any).user;
   const { date, estimated_hours } = req.query;
   const targetDate = date ? new Date(date as string) : new Date();
   const dateStr = targetDate.toISOString().split("T")[0];
 
-  // Stub — real implementation checks calendar, technician schedules, bay availability
+  // Count technicians and booked work orders for this day to compute real availability
+  const [techResult, bookedResult] = await Promise.all([
+    supabase
+      .from("users")
+      .select("id", { count: "exact", head: true })
+      .eq("org_id", user.org_id)
+      .in("role", ["TECHNICIAN", "MEKANIKER", "MECHANIC"]),
+    supabase
+      .from("work_orders")
+      .select("promised_date, bay_number")
+      .eq("org_id", user.org_id)
+      .gte("promised_date", `${dateStr}T00:00:00`)
+      .lte("promised_date", `${dateStr}T23:59:59`)
+      .not("status", "in", '("CANCELLED","CLOSED")'),
+  ]);
+
+  const totalTechs = techResult.count ?? 2;
+  const bookedOrders = bookedResult.data ?? [];
+  const estHours = Number(estimated_hours ?? 1);
+
   const slots = [];
   for (let h = 7; h <= 16; h++) {
+    const timeStr = `${String(h).padStart(2, "0")}:00`;
+    // Count orders overlapping this hour
+    const bookedAtHour = bookedOrders.filter((o: any) => {
+      if (!o.promised_date) return false;
+      const orderHour = new Date(o.promised_date).getHours();
+      return orderHour === h;
+    }).length;
+    const techsFree = Math.max(0, totalTechs - bookedAtHour);
     slots.push({
-      time: `${String(h).padStart(2, "0")}:00`,
-      available: Math.random() > 0.3,
-      technicians_free: Math.floor(Math.random() * 4) + 1,
+      time: timeStr,
+      available: techsFree > 0 && (h + estHours - 1) <= 17,
+      technicians_free: techsFree,
     });
   }
 
   res.json({
     date: dateStr,
-    estimated_hours: Number(estimated_hours ?? 1),
+    estimated_hours: estHours,
     available_slots: slots.filter((s) => s.available),
     all_slots: slots,
-    note: "[STUB] Riktig tillgänglighet kräver mekaniker- och platsdata",
   });
 });
 
@@ -370,7 +403,7 @@ router.post("/api/workshop/warranty-claims", auth, async (req: Request, res: Res
     .from("warranty_claims")
     .insert({
       org_id: user.org_id,
-      claim_number: generateOrderNumber("WC"),
+      claim_number: await generateOrderNumber("WC", user.org_id),
       work_order_id: b.work_order_id,
       vehicle_vin: b.vin,
       failure_description: b.failure_description,
