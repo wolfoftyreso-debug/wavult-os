@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useApi } from "./useApi";
-import { LanguageSwitcher } from "@pixdrift/i18n";
+import { LanguageSwitcher, useTranslation } from "@pixdrift/i18n";
 
 // ─── Design tokens ─────────────────────────────────────────────────────────────
 const C = {
@@ -158,14 +158,19 @@ const EmptyState = ({ icon, title, subtitle, cta }: {
 // ─── Nav ─────────────────────────────────────────────────────────────────────
 type NavItem = { id: string; label: string; icon: React.ReactNode };
 
-const navItems: NavItem[] = [
-  { id: "overview", label: "Översikt", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> },
-  { id: "contacts", label: "Kontakter", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> },
-  { id: "companies", label: "Företag", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> },
-  { id: "leads", label: "Leads", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/><line x1="20" y1="8" x2="20" y2="14"/></svg> },
-  { id: "deals", label: "Deals", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> },
-  { id: "activities", label: "Aktiviteter", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> },
+const NAV_ICONS: { id: string; i18nKey: string; icon: React.ReactNode }[] = [
+  { id: "overview", i18nKey: "nav.overview", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> },
+  { id: "contacts", i18nKey: "nav.contacts", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> },
+  { id: "companies", i18nKey: "nav.companies", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> },
+  { id: "leads", i18nKey: "nav.leads", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="23" y1="11" x2="17" y2="11"/><line x1="20" y1="8" x2="20" y2="14"/></svg> },
+  { id: "deals", i18nKey: "nav.deals", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> },
+  { id: "activities", i18nKey: "nav.activities", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> },
 ];
+
+function useNavItems(): NavItem[] {
+  const { t } = useTranslation();
+  return NAV_ICONS.map(n => ({ ...n, label: t(n.i18nKey) }));
+}
 
 // ─── Fallback data ─────────────────────────────────────────────────────────────
 const FALLBACK_CONTACTS = [
@@ -219,6 +224,7 @@ const actColor = (t: string) =>
 
 // ─── Views ─────────────────────────────────────────────────────────────────────
 function OverviewView() {
+  const { t } = useTranslation();
   const { data: leadsData } = useApi<typeof FALLBACK_LEADS>(`${API}/api/leads`);
   const { data: dealsData } = useApi<typeof FALLBACK_DEALS>(`${API}/api/deals`);
   const leads = (leadsData && leadsData.length > 0) ? leadsData : FALLBACK_LEADS;
@@ -234,10 +240,10 @@ function OverviewView() {
       {/* KPIs */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
         {[
-          { label: "Pipeline-värde", value: formatEur(pipelineVal), sub: `${pipeline.length} aktiva deals`, color: C.blue },
-          { label: "Leads totalt", value: leads.length, sub: `${leads.filter(l => l.stage === "NEW").length} nya`, color: C.purple },
-          { label: "Vunnet (MTD)", value: formatEur(wonVal), sub: `${deals.filter(d => d.stage === "WON").length} avslutade`, color: C.green },
-          { label: "Aktiviteter idag", value: todayActivities, sub: "Ej klara", color: C.yellow },
+          { label: t('deals.pipeline'), value: formatEur(pipelineVal), sub: `${pipeline.length} ${t('common.active').toLowerCase()}`, color: C.blue },
+          { label: t('nav.leads'), value: leads.length, sub: `${leads.filter(l => l.stage === "NEW").length} ${t('deals.stage.new').toLowerCase()}`, color: C.purple },
+          { label: t('deals.stage.won'), value: formatEur(wonVal), sub: `${deals.filter(d => d.stage === "WON").length} ${t('common.closed').toLowerCase()}`, color: C.green },
+          { label: t('nav.activities'), value: todayActivities, sub: t('common.pending'), color: C.yellow },
         ].map((kpi, i) => (
           <div key={i} className="card-animate card-hover" style={{
             background: C.surface, borderRadius: 12, padding: "18px 20px", boxShadow: shadow.sm,
@@ -256,7 +262,7 @@ function OverviewView() {
       </div>
 
       {/* Pipeline by stage */}
-      <Card title="Pipeline per fas">
+      <Card title={t('deals.pipeline')}>
         <div style={{ display: "flex", gap: 10 }}>
           {["NEW", "QUALIFIED", "PROPOSAL", "WON", "LOST"].map(stage => {
             const stDeals = leads.filter(l => l.stage === stage);
@@ -293,7 +299,7 @@ function OverviewView() {
 
       {/* Recent contacts + activities */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-        <Card title="Senaste kontakter">
+        <Card title={t('contacts.title')}>
           {FALLBACK_CONTACTS.slice(0, 4).map((c, i) => (
             <Row key={i} border={i < 3}>
               <Avatar name={c.name} />
@@ -307,7 +313,7 @@ function OverviewView() {
             </Row>
           ))}
         </Card>
-        <Card title="Kommande aktiviteter">
+        <Card title={t('nav.activities')}>
           {FALLBACK_ACTIVITIES.filter(a => !a.done).slice(0, 4).map((a, i) => (
             <Row key={i} border={i < 3}>
               <div style={{
@@ -336,6 +342,7 @@ function OverviewView() {
 }
 
 function ContactsView() {
+  const { t } = useTranslation();
   const { data, loading } = useApi<typeof FALLBACK_CONTACTS>(`${API}/api/contacts`);
   const allContacts = (data && data.length > 0) ? data : FALLBACK_CONTACTS;
   const [search, setSearch] = useState("");
@@ -351,7 +358,7 @@ function ContactsView() {
         <input
           value={search}
           onChange={e => setSearch(e.target.value)}
-          placeholder="Sök kontakter…"
+          placeholder={t('common.search') + ' ' + t('nav.contacts').toLowerCase() + '…'}
           style={{
             flex: 1, background: C.surface,
             border: `1px solid ${C.border}`, borderRadius: 10,
@@ -359,7 +366,7 @@ function ContactsView() {
             outline: "none", boxShadow: shadow.sm, fontFamily: "inherit",
           }}
         />
-        <Btn>+ Lägg till</Btn>
+        <Btn>+ {t('common.add')}</Btn>
       </div>
 
       {loading ? (
@@ -377,7 +384,7 @@ function ContactsView() {
       ) : (
         <Card title={`${contacts.length} kontakter`}>
           {contacts.length === 0 ? (
-            <EmptyState icon="👤" title="Inga kontakter hittades" subtitle="Försök med en annan sökning." />
+            <EmptyState icon="👤" title={t('common.noData')} subtitle={t('common.search')} />
           ) : (
             contacts.map((c, i) => (
               <Row key={i} border={i < contacts.length - 1}>
@@ -742,7 +749,7 @@ function ActivitiesView() {
 
       <Card title={`Aktiviteter (${activities.length})`}>
         {activities.length === 0 ? (
-          <EmptyState icon="📅" title="Inga aktiviteter" subtitle="Aktiviteter du skapar visas här." cta="+ Ny aktivitet" />
+          <EmptyState icon="📅" title={t('common.noData')} subtitle={t('nav.activities')} cta={`+ ${t('common.add')}`} />
         ) : (
           activities.map((a, i) => (
             <Row key={i} border={i < activities.length - 1}>
@@ -795,6 +802,7 @@ function ActivitiesView() {
 // ─── App Shell ─────────────────────────────────────────────────────────────────
 export default function App() {
   const [view, setView] = useState("overview");
+  const navItems = useNavItems();
 
   const viewComponents: Record<string, React.ReactNode> = {
     overview: <OverviewView />,
