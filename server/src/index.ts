@@ -48,6 +48,16 @@ import seoRouter from "./seo";
 import bankingRouter from "./banking";
 
 // ---------------------------------------------------------------------------
+// DMS — Dealer Management System (pixdrift automotive)
+// ---------------------------------------------------------------------------
+import vehiclesRouter from "./vehicles";
+import workshopRouter from "./workshop";
+import partsRouter from "./parts";
+import vehicleSalesRouter from "./vehicle-sales";
+import automotiveCrmRouter from "./automotive-crm";
+import oemRouter from "./integrations/oem";
+
+// ---------------------------------------------------------------------------
 // Tax Compliance imports (SFL + ML + BFL)
 // ---------------------------------------------------------------------------
 import personnelLedgerRouter from "./personnel-ledger";
@@ -304,6 +314,16 @@ app.use("/api/stripe", stripeRouter);
 app.use("/api/notifications", notificationsRouter);
 app.use("/api/learning", learningRouter);
 app.use(bankingRouter); // Banking: /api/banking/* + /api/integrations/fortnox/* + /api/integrations/visma/*
+
+// ---------------------------------------------------------------------------
+// DMS — Dealer Management System (pixdrift automotive)
+// ---------------------------------------------------------------------------
+app.use(vehiclesRouter);       // /api/vehicles/*
+app.use(workshopRouter);       // /api/workshop/*
+app.use(partsRouter);          // /api/parts/*
+app.use(vehicleSalesRouter);   // /api/vehicle-sales/*
+app.use(automotiveCrmRouter);  // /api/automotive-crm/*
+app.use(oemRouter);            // /api/oem/*
 
 // ---------------------------------------------------------------------------
 // SEO — sitemap.xml + robots.txt on root, /api/seo/* for endpoints

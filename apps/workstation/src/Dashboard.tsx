@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useApi } from "./useApi";
 import LearningModule from "./LearningModule";
+import DMSModule from "./DMSModule";
 import { useTranslation, LanguageSwitcher, formatCurrency, formatDate } from "@pixdrift/i18n";
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
@@ -583,6 +584,7 @@ function Sidebar({
       items: [
         { id: "chat", label: "Chatt", icon: "◻" },
         { id: "learning", label: t('nav.learning'), icon: "◑" },
+        { id: "dms", label: "DMS Bil", icon: "🚗" },
       ],
     },
   ];
@@ -1747,6 +1749,7 @@ export default function App() {
             {view === "risks" && <RisksView D={D} />}
             {view === "chat" && <ChatView D={D} />}
             {view === "learning" && <LearningModule user={D.user as any} />}
+            {view === "dms" && <DMSModule />}
           </main>
         </div>
       </div>
