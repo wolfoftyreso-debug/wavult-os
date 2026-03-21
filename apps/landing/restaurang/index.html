@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>pixdrift för restauranger — schema, kassa, HACCP och lager i ett system</title>
+  <meta name="description" content="Kör hela din restaurang från ett system. Schema, kassa-integration, lager/svinn, personalflöde och HACCP — allt i pixdrift." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://pixdrift.com/restaurang/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://pixdrift.com/restaurang/" />
+  <meta property="og:title" content="pixdrift för restauranger — schema, kassa, HACCP och lager i ett system" />
+  <meta property="og:description" content="Ersätt lösviktiga system med ett. Från personalschema till bokföring." />
+  <meta property="og:image" content="https://pixdrift.com/pixdrift-og.png" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    img { display: block; max-width: 100%; }
+    a { cursor: pointer; }
+    ul { list-style: none; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #000;
+      color: #f5f5f7;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    #scroll-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #f59e0b, #ef4444);
+      z-index: 9999;
+      transition: width 0.1s linear;
+      width: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 0.5px solid rgba(255,255,255,0.12);
+    }
+    .nav-logo {
+      font-size: 15px; font-weight: 700;
+      color: #f5f5f7; text-decoration: none; letter-spacing: -0.02em;
+    }
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+    .nav-links a {
+      color: rgba(245,245,247,0.75); font-size: 12px;
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #f5f5f7; }
+    .nav-actions { display: flex; gap: 12px; align-items: center; }
+    .nav-login {
+      color: rgba(245,245,247,0.75); font-size: 12px;
+      text-decoration: none; transition: color 0.2s;
+    }
+    .nav-cta {
+      display: inline-flex; align-items: center;
+      background: #f59e0b; color: #000;
+      font-size: 12px; font-weight: 700;
+      padding: 6px 14px; border-radius: 20px;
+      text-decoration: none; transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.88; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: -200px; left: 50%;
+      transform: translateX(-50%);
+      width: 900px; height: 900px;
+      background: radial-gradient(ellipse, rgba(245,158,11,0.12) 0%, rgba(239,68,68,0.06) 40%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(245,158,11,0.12);
+      border: 0.5px solid rgba(245,158,11,0.3);
+      color: #fcd34d;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 5px 12px; border-radius: 20px; margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: clamp(2.2rem, 6vw, 4.2rem);
+      font-weight: 800; letter-spacing: -0.03em; line-height: 1.08;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, #f5f5f7 0%, rgba(245,245,247,0.7) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero p {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: rgba(245,245,247,0.65);
+      max-width: 620px; margin-bottom: 36px; line-height: 1.7;
+    }
+
+    .tool-graveyard {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      align-items: center; justify-content: center;
+      margin-bottom: 40px; font-size: 13px;
+    }
+    .tool-graveyard s {
+      color: rgba(245,245,247,0.35);
+      text-decoration: line-through;
+      text-decoration-color: rgba(245,245,247,0.25);
+    }
+    .tool-graveyard .arrow { color: #f59e0b; font-weight: 700; font-size: 15px; }
+    .tool-graveyard .target { color: #fcd34d; font-weight: 700; }
+
+    .cta-group { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #f59e0b; color: #000;
+      font-size: 14px; font-weight: 700;
+      padding: 12px 24px; border-radius: 100px;
+      text-decoration: none; transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.06);
+      border: 0.5px solid rgba(255,255,255,0.15);
+      color: rgba(245,245,247,0.85);
+      font-size: 14px; font-weight: 500;
+      padding: 12px 24px; border-radius: 100px;
+      text-decoration: none; transition: background 0.2s, transform 0.2s;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); transform: translateY(-1px); }
+
+    /* SECTIONS */
+    .section-eyebrow {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: #f59e0b; margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700; letter-spacing: -0.025em; line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      color: rgba(245,245,247,0.6); font-size: 1.05rem;
+      max-width: 560px; line-height: 1.7; margin-bottom: 60px;
+    }
+    .section-divider {
+      height: 0.5px; background: rgba(255,255,255,0.07);
+      max-width: 1100px; margin: 0 auto;
+    }
+
+    /* FEATURES */
+    .features-section {
+      padding: 100px 24px; max-width: 1100px; margin: 0 auto;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .feature-card {
+      background: rgba(255,255,255,0.03);
+      border: 0.5px solid rgba(255,255,255,0.09);
+      border-radius: 16px; padding: 28px;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .feature-card:hover {
+      border-color: rgba(245,158,11,0.3);
+      background: rgba(245,158,11,0.04);
+    }
+    .feature-icon { font-size: 28px; margin-bottom: 14px; }
+    .feature-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 10px; }
+    .feature-card ul li {
+      font-size: 13px; color: rgba(245,245,247,0.6);
+      padding: 5px 0; display: flex; align-items: flex-start; gap: 8px;
+    }
+    .feature-card ul li::before {
+      content: '→'; color: #f59e0b; font-weight: 700;
+      flex-shrink: 0; margin-top: 1px;
+    }
+
+    /* PRICING */
+    #pricing {
+      padding: 100px 24px; max-width: 900px; margin: 0 auto; text-align: center;
+    }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px; margin-top: 48px;
+    }
+    .pricing-card {
+      background: rgba(255,255,255,0.03);
+      border: 0.5px solid rgba(255,255,255,0.1);
+      border-radius: 20px; padding: 36px 28px; text-align: left;
+      position: relative; transition: border-color 0.3s, transform 0.3s;
+    }
+    .pricing-card:hover { border-color: rgba(245,158,11,0.3); transform: translateY(-4px); }
+    .pricing-card.featured { border-color: rgba(245,158,11,0.45); background: rgba(245,158,11,0.06); }
+    .pricing-badge {
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: #f59e0b; color: #000;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 20px;
+    }
+    .pricing-plan { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #f59e0b; margin-bottom: 8px; }
+    .pricing-price { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 4px; }
+    .pricing-price span { font-size: 1rem; font-weight: 400; color: rgba(245,245,247,0.5); }
+    .pricing-tagline { font-size: 13px; color: rgba(245,245,247,0.55); margin-bottom: 24px; padding-bottom: 24px; border-bottom: 0.5px solid rgba(255,255,255,0.08); }
+    .pricing-features { list-style: none; padding: 0; margin-bottom: 28px; }
+    .pricing-features li { font-size: 13px; color: rgba(245,245,247,0.75); padding: 7px 0; display: flex; gap: 8px; align-items: flex-start; }
+    .pricing-features li .check { color: #34c759; font-weight: 700; flex-shrink: 0; }
+    .pricing-btn {
+      display: block; text-align: center;
+      padding: 11px 20px; border-radius: 100px;
+      font-size: 13px; font-weight: 600;
+      text-decoration: none; transition: opacity 0.2s;
+    }
+    .pricing-btn.primary { background: #f59e0b; color: #000; }
+    .pricing-btn.secondary {
+      background: rgba(255,255,255,0.06);
+      border: 0.5px solid rgba(255,255,255,0.15);
+      color: rgba(245,245,247,0.85);
+    }
+    .pricing-btn:hover { opacity: 0.85; }
+
+    /* FAQ */
+    #faq { padding: 100px 24px; max-width: 720px; margin: 0 auto; }
+    .faq-item { border-bottom: 0.5px solid rgba(255,255,255,0.1); }
+    .faq-question {
+      width: 100%; background: none; border: none;
+      color: #f5f5f7; text-align: left;
+      padding: 22px 0; font-size: 15px; font-weight: 600;
+      cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    }
+    .faq-question:hover { color: #fcd34d; }
+    .faq-icon {
+      flex-shrink: 0; width: 20px; height: 20px;
+      border-radius: 50%;
+      background: rgba(245,158,11,0.12);
+      border: 0.5px solid rgba(245,158,11,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; color: #fcd34d; transition: transform 0.3s;
+    }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+    .faq-answer {
+      display: none; font-size: 14px;
+      color: rgba(245,245,247,0.6); line-height: 1.75; padding-bottom: 22px;
+    }
+    .faq-item.open .faq-answer { display: block; }
+
+    /* CTA BANNER */
+    .cta-banner { padding: 80px 24px; text-align: center; }
+    .cta-banner-inner {
+      max-width: 700px; margin: 0 auto;
+      background: rgba(245,158,11,0.07);
+      border: 0.5px solid rgba(245,158,11,0.25);
+      border-radius: 24px; padding: 60px 40px;
+    }
+    .cta-banner h2 { font-size: clamp(1.8rem, 4vw, 2.4rem); font-weight: 700; letter-spacing: -0.025em; margin-bottom: 16px; }
+    .cta-banner p { color: rgba(245,245,247,0.6); font-size: 1rem; margin-bottom: 32px; line-height: 1.7; }
+
+    footer {
+      border-top: 0.5px solid rgba(255,255,255,0.08);
+      padding: 40px 24px; text-align: center;
+    }
+    .footer-logo { font-size: 16px; font-weight: 700; color: #f5f5f7; text-decoration: none; letter-spacing: -0.02em; display: inline-block; margin-bottom: 16px; }
+    .footer-links { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+    .footer-links a { color: rgba(245,245,247,0.45); font-size: 12px; text-decoration: none; }
+    .footer-links a:hover { color: rgba(245,245,247,0.75); }
+    .footer-copy { font-size: 11px; color: rgba(245,245,247,0.25); }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .pricing-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <meta name="revised" content="2026-03-21">
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">pixdrift</a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/verkstad/">Bilverkstad</a>
+    <a href="/restaurang/" style="color:#fcd34d;">Restaurang</a>
+    <a href="/#pricing">Priser</a>
+  </div>
+  <div class="nav-actions">
+    <a href="https://app.bc.pixdrift.com" class="nav-login">Logga in</a>
+    <a href="https://calendly.com/pixdrift" class="nav-cta">Boka demo →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <span class="hero-eyebrow">🍽️ För restauranger, caféer &amp; kedjor</span>
+
+  <h1>McDonald's-operativsystemet<br>för din restaurang</h1>
+
+  <p>Schema, kassa, lager, personalflöde och HACCP-dokumentation — allt i ett system. Sluta jonglera med appar och Excel. Kör hela restaurangen från pixdrift.</p>
+
+  <!-- Tool graveyard -->
+  <div class="tool-graveyard">
+    <s>Personalstyrning</s>
+    <s>Kassasystem</s>
+    <s>Excel-schema</s>
+    <s>HACCP-pärm</s>
+    <s>Lagerlista</s>
+    <s>Bokföringsprogram</s>
+    <span class="arrow">→</span>
+    <span class="target">pixdrift</span>
+  </div>
+
+  <div class="cta-group">
+    <a href="https://calendly.com/pixdrift" class="btn-primary">Boka en demo för restaurang →</a>
+    <a href="#pricing" class="btn-secondary">Se priser</a>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- FEATURES -->
+<section class="features-section">
+  <div class="section-eyebrow">Allt restaurangen behöver</div>
+  <h2 class="section-title">En plattform. Hela driften.</h2>
+  <p class="section-sub">Varje modul hänger ihop. Schema kopplas mot löner, lager mot svinn-rapporter, kassa mot bokföringen — automatiskt.</p>
+
+  <div class="features-grid">
+
+    <div class="feature-card">
+      <div class="feature-icon">📅</div>
+      <h3>Schema &amp; Personal</h3>
+      <ul>
+        <li>Drag-and-drop-schema med realtids-täckning</li>
+        <li>Frånvarohantering och semesterplanning</li>
+        <li>Automatisk löneuträkning</li>
+        <li>Personalliggare (lagkrav)</li>
+        <li>Pushnotiser till personal vid schemaändringar</li>
+      </ul>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">💳</div>
+      <h3>Kassa &amp; Betalning</h3>
+      <ul>
+        <li>Integration mot Nets, Bambora, Adyen</li>
+        <li>Bordsbeställning &amp; QR-meny</li>
+        <li>Split-betalning och kvittensutskrift</li>
+        <li>Kassarapporter i realtid</li>
+      </ul>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">🥩</div>
+      <h3>Lager &amp; Svinn</h3>
+      <ul>
+        <li>Råvaruhantering med FIFO-spårning</li>
+        <li>Automatiska lagervarningar vid låg nivå</li>
+        <li>Svinndokumentation per dag/skift</li>
+        <li>Leverantörsorder med inleverans</li>
+      </ul>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">🌡️</div>
+      <h3>HACCP &amp; Livsmedelssäkerhet</h3>
+      <ul>
+        <li>Digitala temperaturkontroller med logg</li>
+        <li>HACCP-flöden och kritiska kontrollpunkter</li>
+        <li>Avvikelsehantering och åtgärdsspårning</li>
+        <li>Revisionslogg för Livsmedelsverket</li>
+      </ul>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">💰</div>
+      <h3>Ekonomi &amp; Bokföring</h3>
+      <ul>
+        <li>Automatisk kassakoppling mot bokföring</li>
+        <li>Fortnox/Visma-integration</li>
+        <li>SIE4-export</li>
+        <li>Momsrapportering och periodavstämning</li>
+      </ul>
+    </div>
+
+    <div class="feature-card" style="background: rgba(245,158,11,0.05); border-color: rgba(245,158,11,0.2);">
+      <div class="feature-icon">📊</div>
+      <h3>Rapporter &amp; Insikter</h3>
+      <ul>
+        <li>Svinngrad per rätt och råvara</li>
+        <li>Bemanning vs omsättning per skift</li>
+        <li>Populäraste rätter och tider</li>
+        <li>Kostnadsprocent i realtid</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="section-eyebrow">Priser</div>
+  <h2 class="section-title">Enkelt och förutsägbart</h2>
+  <p class="section-sub" style="margin: 0 auto;">Inga per-seat-avgifter. En fast månadsavgift oavsett antal anställda.</p>
+
+  <div class="pricing-grid">
+
+    <div class="pricing-card">
+      <div class="pricing-plan">Starter</div>
+      <div class="pricing-price">€199 <span>/mån</span></div>
+      <div class="pricing-tagline">En restaurang. Allt det grundläggande.</div>
+      <ul class="pricing-features">
+        <li><span class="check">✓</span> Schema &amp; personalhantering</li>
+        <li><span class="check">✓</span> Kassa-integration</li>
+        <li><span class="check">✓</span> Lagersaldo</li>
+        <li><span class="check">✓</span> HACCP-logg</li>
+        <li><span class="check">✓</span> Personalliggare</li>
+        <li><span class="check">✓</span> Grundläggande bokföring</li>
+      </ul>
+      <a href="https://calendly.com/pixdrift" class="pricing-btn secondary">Boka demo →</a>
+    </div>
+
+    <div class="pricing-card featured">
+      <div class="pricing-badge">Mest populär</div>
+      <div class="pricing-plan">Growth</div>
+      <div class="pricing-price">€399 <span>/mån</span></div>
+      <div class="pricing-tagline">Obegränsat + avancerad HACCP och rapporter.</div>
+      <ul class="pricing-features">
+        <li><span class="check">✓</span> Allt i Starter</li>
+        <li><span class="check">✓</span> Svinndokumentation &amp; analys</li>
+        <li><span class="check">✓</span> Avancerade HACCP-flöden</li>
+        <li><span class="check">✓</span> Fortnox/Visma-integration</li>
+        <li><span class="check">✓</span> QR-meny &amp; bordsbeställning</li>
+        <li><span class="check">✓</span> Löneuträkning</li>
+        <li><span class="check">✓</span> Multi-skift rapporter</li>
+      </ul>
+      <a href="https://calendly.com/pixdrift" class="pricing-btn primary">Börja med Growth →</a>
+    </div>
+
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-eyebrow" style="text-align:center;">FAQ</div>
+  <h2 class="section-title" style="text-align:center;">Vanliga frågor</h2>
+
+  <div style="margin-top:40px;">
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Vilka kassasystem integrerar pixdrift med?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        pixdrift integrerar med Nets, Bambora och Adyen. Izettle och Square är på roadmap. Har ni ett äldre system kan vi titta på API-lösning — kontakta oss.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Uppfyller HACCP-modulen Livsmedelsverkets krav?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        Ja. pixdrift loggar temperaturkontroller, avvikelser och åtgärder med tidsstämpel och ansvarig personal — precis som Livsmedelsverkets riktlinjer kräver. Systemet är inte "certifierat" men uppfyller de praktiska dokumentationskraven fullt ut.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Fungerar systemet för franchisekedjor?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        Growth-planen täcker en restaurang. För kedjor med flera enheter, kontakta oss för enterprise-prissättning — vi erbjuder multi-location management med central rapportering.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Hur lång tid tar det att komma igång?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        De flesta restauranger är igång på 1–2 veckor. Vi importerar er befintliga meny, ditt schema och era leverantörsavtal. Ni betalar ingenting under onboardingen.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- CTA BANNER -->
+<div class="cta-banner">
+  <div class="cta-banner-inner">
+    <h2>Redo att köra restaurangen som en proffs?</h2>
+    <p>Boka en 30-minuters demo. Vi visar pixdrift med er typ av restaurang — schema, kassa och HACCP live.</p>
+    <div class="cta-group">
+      <a href="https://calendly.com/pixdrift" class="btn-primary">Boka demo för restaurang →</a>
+      <a href="mailto:hello@pixdrift.com" class="btn-secondary">Skriv till oss</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="/" class="footer-logo">pixdrift</a>
+  <div class="footer-links">
+    <a href="/">Hem</a>
+    <a href="/verkstad/">Bilverkstad</a>
+    <a href="/restaurang/">Restaurang</a>
+    <a href="/priser.html">Priser</a>
+    <a href="/about.html">Om oss</a>
+    <a href="/privacy.html">Integritet</a>
+  </div>
+  <p class="footer-copy">© 2025 pixdrift AB · Stockholm · hello@pixdrift.com</p>
+</footer>
+
+<script>
+  window.addEventListener('scroll', () => {
+    const el = document.getElementById('scroll-progress');
+    const scrolled = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+    el.style.width = scrolled + '%';
+  });
+  function toggleFaq(btn) {
+    btn.closest('.faq-item').classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>

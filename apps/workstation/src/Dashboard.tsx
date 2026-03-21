@@ -1,42 +1,37 @@
 import { useState } from "react";
 import { useApi } from "./useApi";
 import LearningModule from "./LearningModule";
+import DMSModule from "./DMSModule";
+import SpaghettiModule from "./SpaghettiModule";
+import SpatialModule from "./SpatialModule";
+import AssetModule from "./AssetModule";
+import CultureModule from "./CultureModule";
+import ConsumablesModule from "./ConsumablesModule";
 import { useTranslation, LanguageSwitcher, formatCurrency, formatDate } from "@pixdrift/i18n";
+import PeopleOSModule from "./PeopleOSModule";
 
-// ─── Design tokens ────────────────────────────────────────────────────────────
+// ─── Design tokens — Apple HIG precision ──────────────────────────────────────
 const C = {
-  bg: "#F5F5F7",
-  surface: "#FFFFFF",
-  elevated: "#FAFAFA",
-  border: "#E5E5EA",
-  separator: "#F2F2F7",
-  text: "#1D1D1F",
-  secondary: "#86868B",
-  tertiary: "#AEAEB2",
-  blue: "#007AFF",
-  blueLight: "#E8F3FF",
-  green: "#34C759",
-  greenLight: "#E8F8ED",
-  yellow: "#FF9500",
-  yellowLight: "#FFF3E0",
-  red: "#FF3B30",
-  redLight: "#FFF0EF",
-  purple: "#AF52DE",
-  purpleLight: "#F5EEFF",
-  fill: "#F2F2F7",
-  orange: "#FF6B35",
+  bg:        "#F2F2F7",   // iOS systemGray6
+  surface:   "#FFFFFF",
+  border:    "#D1D1D6",   // iOS systemGray4
+  text:      "#000000",   // pure black
+  secondary: "#8E8E93",   // iOS systemGray
+  tertiary:  "#C7C7CC",   // iOS systemGray3
+  blue:      "#007AFF",
+  green:     "#34C759",
+  orange:    "#FF9500",
+  red:       "#FF3B30",
+  purple:    "#AF52DE",
+  fill:      "#F2F2F7",
+  inset:     "#E5E5EA",
 };
 
-const shadow = {
-  sm: "0 1px 2px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.04)",
-  md: "0 2px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)",
-  lg: "0 8px 24px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)",
-};
+// Single shadow — only this, nothing more
+const shadow = "0 1px 3px rgba(0,0,0,0.06)";
 
 // ─── Global styles ─────────────────────────────────────────────────────────────
 const globalStyles = `
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   @keyframes shimmer {
@@ -55,26 +50,22 @@ const globalStyles = `
     from { opacity: 0; }
     to   { opacity: 1; }
   }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-  }
 
   .card-animate { animation: slideUp 0.2s ease forwards; }
   .fade-in { animation: fadeIn 0.15s ease forwards; }
 
-  .nav-btn:hover { background: ${C.fill} !important; }
-  .nav-btn.active { background: ${C.blue}12 !important; color: ${C.blue} !important; }
-  .nav-btn.active svg { stroke: ${C.blue}; }
+  .nav-item {
+    transition: background 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                color 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .nav-item:hover:not(.active) { background: rgba(60,60,67,0.08) !important; }
+  .nav-item.active { background: ${C.blue} !important; color: #FFFFFF !important; font-weight: 600 !important; }
+  .nav-item.active svg { stroke: #FFFFFF; }
 
-  .row-hover:hover { background: ${C.fill}; transition: background 0.1s ease; }
-  .clickable { transition: all 0.15s ease; cursor: pointer; }
-  .clickable:hover { opacity: 0.85; }
-  .btn-primary:hover { background: #0066D6 !important; transform: translateY(-1px); box-shadow: ${shadow.md}; }
+  .row-hover:hover { background: rgba(60,60,67,0.04); transition: background 0.08s ease; }
+  .btn-primary:hover { background: #0066D6 !important; }
   .btn-primary:active { transform: scale(0.98); }
-  .btn-secondary:hover { background: #E5E5EA !important; }
-  .btn-ghost:hover { background: ${C.blue}08 !important; }
-  .card-hover:hover { box-shadow: ${shadow.lg} !important; transform: translateY(-1px); transition: all 0.2s ease; }
+  .btn-secondary:hover { background: ${C.inset} !important; }
 
   input:focus { outline: 2px solid ${C.blue} !important; outline-offset: 0px !important; }
 
@@ -86,21 +77,19 @@ const globalStyles = `
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const statusColor = (s: string) =>
-  s === "GREEN" ? C.green : s === "YELLOW" ? C.yellow : s === "RED" ? C.red : C.tertiary;
+  s === "GREEN" ? C.green : s === "YELLOW" ? C.orange : s === "RED" ? C.red : C.tertiary;
 const levelColor = (l: string) =>
-  l === "L5" ? C.blue : l === "L4" ? C.green : l === "L3" ? C.yellow : l === "L2" ? C.orange : C.red;
-// formatEur is kept for backward compat; prefer formatCurrency(n, 'EUR', locale) where locale is available
-const formatEur = (n: number) =>
-  `€${(n || 0).toLocaleString("sv-SE")}`;
+  l === "L5" ? C.blue : l === "L4" ? C.green : l === "L3" ? C.orange : l === "L2" ? C.purple : C.red;
+const formatEur = (n: number) => `€${(n || 0).toLocaleString("sv-SE")}`;
 const ncBorderColor: Record<string, string> = {
-  CRITICAL: C.red, MAJOR: C.orange, MINOR: C.yellow, OBSERVATION: C.tertiary,
+  CRITICAL: C.red, MAJOR: C.orange, MINOR: C.orange, OBSERVATION: C.tertiary,
 };
 const ncStatusLabel: Record<string, string> = {
   OPEN: "Öppen", ANALYZING: "Analys", ACTION_PLANNED: "Planerad",
   IMPLEMENTING: "Genomförs", VERIFYING: "Verifieras", CLOSED: "Stängd",
 };
 const riskColor: Record<string, string> = {
-  CRITICAL: C.red, HIGH: C.orange, MEDIUM: C.yellow, LOW: C.green,
+  CRITICAL: C.red, HIGH: C.orange, MEDIUM: C.orange, LOW: C.green,
 };
 
 function getGreeting(): string {
@@ -117,8 +106,268 @@ function getSwedishDate(): string {
   return `${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`;
 }
 
+// ─── Inline SVG Icons — Heroicons outline, 16×16, strokeWidth 1.5 ─────────────
+const Icons = {
+  Grid: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+      <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+    </svg>
+  ),
+  Briefcase: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="7" width="20" height="14" rx="2"/>
+      <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+      <line x1="12" y1="12" x2="12" y2="12.01"/>
+    </svg>
+  ),
+  Check: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  ),
+  Person: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+      <circle cx="12" cy="7" r="4"/>
+    </svg>
+  ),
+  Calendar: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="4" width="18" height="18" rx="2"/>
+      <line x1="16" y1="2" x2="16" y2="6"/>
+      <line x1="8" y1="2" x2="8" y2="6"/>
+      <line x1="3" y1="10" x2="21" y2="10"/>
+    </svg>
+  ),
+  Flow: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+    </svg>
+  ),
+  Alert: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+      <line x1="12" y1="9" x2="12" y2="13"/>
+      <line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>
+  ),
+  Shield: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </svg>
+  ),
+  Ledger: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+      <line x1="16" y1="13" x2="8" y2="13"/>
+      <line x1="16" y1="17" x2="8" y2="17"/>
+      <polyline points="10 9 9 9 8 9"/>
+    </svg>
+  ),
+  Chart: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="20" x2="18" y2="10"/>
+      <line x1="12" y1="20" x2="12" y2="4"/>
+      <line x1="6" y1="20" x2="6" y2="14"/>
+      <line x1="2" y1="20" x2="22" y2="20"/>
+    </svg>
+  ),
+  Globe: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="2" y1="12" x2="22" y2="12"/>
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+    </svg>
+  ),
+  Star: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+    </svg>
+  ),
+  Target: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <circle cx="12" cy="12" r="6"/>
+      <circle cx="12" cy="12" r="2"/>
+    </svg>
+  ),
+  Book: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+    </svg>
+  ),
+  Bank: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="3" y1="22" x2="21" y2="22"/>
+      <line x1="6" y1="18" x2="6" y2="11"/>
+      <line x1="10" y1="18" x2="10" y2="11"/>
+      <line x1="14" y1="18" x2="14" y2="11"/>
+      <line x1="18" y1="18" x2="18" y2="11"/>
+      <polygon points="12 2 20 7 4 7"/>
+    </svg>
+  ),
+  Car: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 17H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1l3-4h10l3 4h1a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2"/>
+      <circle cx="7.5" cy="17" r="2.5"/>
+      <circle cx="16.5" cy="17" r="2.5"/>
+    </svg>
+  ),
+  Spaghetti: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 6 C6 6, 8 14, 12 10 S18 4, 21 8"/>
+      <path d="M3 12 C7 10, 9 18, 13 14 S17 8, 21 14"/>
+      <path d="M3 18 C5 16, 9 20, 13 18 S19 12, 21 18"/>
+    </svg>
+  ),
+  Map: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="2"/>
+      <line x1="3" y1="9" x2="21" y2="9"/>
+      <line x1="3" y1="15" x2="21" y2="15"/>
+      <line x1="9" y1="3" x2="9" y2="21"/>
+      <line x1="15" y1="3" x2="15" y2="21"/>
+    </svg>
+  ),
+  Wrench: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.77 3.77z"/>
+    </svg>
+  ),
+  Box: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+      <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+      <line x1="12" y1="22.08" x2="12" y2="12"/>
+    </svg>
+  ),
+  Receipt: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 2v20l3-3 2 2 3-3 2 2 3-3 2 2V2z"/>
+      <line x1="9" y1="9" x2="15" y2="9"/>
+      <line x1="9" y1="13" x2="15" y2="13"/>
+    </svg>
+  ),
+  ChevronDown: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+  ),
+  Bell: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+    </svg>
+  ),
+  Development: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+    </svg>
+  ),
+  PDCA: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+    </svg>
+  ),
+  Compliance: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 11l3 3L22 4"/>
+      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+    </svg>
+  ),
+  Cake: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/>
+      <path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/>
+      <path d="M2 21h20"/>
+      <path d="M7 8v3"/>
+      <path d="M12 8v3"/>
+      <path d="M17 8v3"/>
+      <path d="M7 4a1 1 0 0 1 1-1 1 1 0 0 1 1 1v1H7V4z"/>
+      <path d="M12 4a1 1 0 0 1 1-1 1 1 0 0 1 1 1v1h-2V4z"/>
+      <path d="M17 4a1 1 0 0 1 1-1 1 1 0 0 1 1 1v1h-2V4z"/>
+    </svg>
+  ),
+  Chat: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+  ),
+  Heart: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+    </svg>
+  ),
+};
+
+// ─── Nav sections ──────────────────────────────────────────────────────────────
+const NAV_SECTIONS = [
+  {
+    label: null,
+    items: [
+      { id: "overview", icon: <Icons.Grid />, label: "Översikt" },
+    ],
+  },
+  {
+    label: "ARBETE",
+    items: [
+      { id: "deals", icon: <Icons.Briefcase />, label: "Affärer" },
+      { id: "tasks", icon: <Icons.Check />, label: "Uppgifter" },
+      { id: "goals", icon: <Icons.Target />, label: "Mål" },
+      { id: "chat", icon: <Icons.Chat />, label: "Chatt" },
+    ],
+  },
+  {
+    label: "KVALITET",
+    items: [
+      { id: "processes", icon: <Icons.Flow />, label: "Processer" },
+      { id: "nc", icon: <Icons.Alert />, label: "Avvikelser" },
+      { id: "improvements", icon: <Icons.PDCA />, label: "PDCA" },
+      { id: "compliance", icon: <Icons.Compliance />, label: "Compliance" },
+      { id: "risks", icon: <Icons.Shield />, label: "Risker" },
+    ],
+  },
+  {
+    label: "EKONOMI",
+    items: [
+      { id: "finance", icon: <Icons.Ledger />, label: "Huvudbok" },
+      { id: "reports", icon: <Icons.Chart />, label: "Rapporter" },
+    ],
+  },
+  {
+    label: "KOMPETENS",
+    items: [
+      { id: "capability", icon: <Icons.Star />, label: "Kompetenser" },
+      { id: "development", icon: <Icons.Development />, label: "Utveckling" },
+      { id: "learning", icon: <Icons.Book />, label: "Utbildning" },
+    ],
+  },
+  {
+    label: "PERSONAL",
+    items: [
+      { id: "people", icon: <Icons.Heart />, label: "Team & Trivsel" },
+    ],
+  },
+  {
+    label: "SYSTEM",
+    items: [
+      { id: "culture",      icon: <Icons.Cake />,      label: "Kultur & Events" },
+      { id: "dms",       icon: <Icons.Car />,       label: "DMS Bil"     },
+      { id: "spaghetti", icon: <Icons.Spaghetti />, label: "Flödesanalys" },
+      { id: "spatial",   icon: <Icons.Map />,       label: "Verkstadskarta" },
+      { id: "assets",       icon: <Icons.Wrench />, label: "Tillgångar"  },
+      { id: "consumables",  icon: <Icons.Box />,    label: "Förbrukning" },
+    ],
+  },
+];
+
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
-const Skeleton = ({ width = "100%", height = "14px", radius = 6 }: { width?: string; height?: string; radius?: number }) => (
+const Skeleton = ({ width = "100%", height = "14px", radius = 4 }: { width?: string; height?: string; radius?: number }) => (
   <div style={{
     width, height,
     background: "linear-gradient(90deg, #E5E5EA 0%, #F5F5F7 50%, #E5E5EA 100%)",
@@ -130,7 +379,10 @@ const Skeleton = ({ width = "100%", height = "14px", radius = 6 }: { width?: str
 );
 
 const SkeletonCard = () => (
-  <div style={{ background: C.surface, borderRadius: 12, padding: "20px 24px", boxShadow: shadow.sm }}>
+  <div style={{
+    background: C.surface, borderRadius: 10, padding: "16px 20px",
+    border: `0.5px solid ${C.border}`, boxShadow: shadow,
+  }}>
     <Skeleton height="12px" width="60%" />
     <div style={{ marginTop: 12 }}><Skeleton height="28px" width="70%" /></div>
     <div style={{ marginTop: 8 }}><Skeleton height="10px" width="40%" /></div>
@@ -146,12 +398,19 @@ const Card = ({
 }) => (
   <div
     className={animate ? "card-animate" : ""}
-    style={{ background: C.surface, borderRadius: 12, padding: "20px 24px", boxShadow: shadow.sm, ...st }}
+    style={{
+      background: C.surface,
+      borderRadius: 10,
+      padding: "20px",
+      border: `0.5px solid ${C.border}`,
+      boxShadow: shadow,
+      ...st,
+    }}
   >
     {title && (
       <div style={{
-        fontSize: 11, fontWeight: 600, color: C.tertiary,
-        marginBottom: 16, textTransform: "uppercase", letterSpacing: "0.08em",
+        fontSize: 13, fontWeight: 600, color: C.text,
+        marginBottom: 16,
       }}>
         {title}
       </div>
@@ -181,9 +440,8 @@ const Row = ({ children, border = true, clickable = false }: {
     className={clickable ? "row-hover" : ""}
     style={{
       display: "flex", alignItems: "center", gap: 12,
-      padding: "11px 0",
-      borderBottom: border ? `0.5px solid ${C.separator}` : "none",
-      borderRadius: clickable ? 6 : 0,
+      padding: "8px 0",
+      borderBottom: border ? `0.5px solid ${C.fill}` : "none",
       cursor: clickable ? "pointer" : "default",
     }}
   >
@@ -191,16 +449,15 @@ const Row = ({ children, border = true, clickable = false }: {
   </div>
 );
 
-const Bar = ({ pct, color = C.blue, height = 6, animate = true }: {
+const Bar = ({ pct, color = C.blue, height = 3, animate = true }: {
   pct: number; color?: string; height?: number; animate?: boolean;
 }) => (
-  <div style={{ flex: 1, height, background: C.fill, borderRadius: height / 2, overflow: "hidden", minWidth: 40 }}>
+  <div style={{ flex: 1, height, background: C.fill, borderRadius: 2, overflow: "hidden", minWidth: 40 }}>
     <div style={{
       height: "100%",
       width: `${Math.min(100, Math.max(0, pct))}%`,
       background: color,
-      borderRadius: height / 2,
-      animation: animate ? "fillBar 0.6s ease forwards" : undefined,
+      borderRadius: 2,
     }} />
   </div>
 );
@@ -216,17 +473,18 @@ const Btn = ({ children, onClick, variant = "primary", size = "md", style: st }:
     primary: { background: C.blue, color: "#fff", border: "none" },
     secondary: { background: C.fill, color: C.text, border: "none" },
     ghost: { background: "transparent", color: C.blue, border: "none" },
-    destructive: { background: C.red + "10", color: C.red, border: `1px solid ${C.red}20` },
+    destructive: { background: C.red + "10", color: C.red, border: `0.5px solid ${C.red}30` },
   };
   return (
     <button
+      type="button"
       className={`btn-${variant}`}
       onClick={onClick}
       style={{
-        height: size === "sm" ? 30 : 36,
+        height: size === "sm" ? 32 : 36,
         padding: size === "sm" ? "0 12px" : "0 16px",
         borderRadius: 8,
-        fontSize: size === "sm" ? 12 : 13,
+        fontSize: 13,
         fontWeight: 500,
         cursor: "pointer",
         transition: "all 0.15s ease",
@@ -248,13 +506,13 @@ const EmptyState = ({
 }) => (
   <div style={{
     display: "flex", flexDirection: "column", alignItems: "center",
-    justifyContent: "center", padding: "48px 24px", gap: 12,
+    justifyContent: "center", padding: "48px 24px", gap: 8,
     animation: "fadeIn 0.2s ease",
   }}>
-    {icon && <div style={{ fontSize: 40, opacity: 0.3 }}>{icon}</div>}
-    <div style={{ fontSize: 15, fontWeight: 600, color: C.secondary }}>{title}</div>
-    {subtitle && <div style={{ fontSize: 13, color: C.tertiary, textAlign: "center", maxWidth: 280 }}>{subtitle}</div>}
-    {cta && <Btn variant="primary" size="sm" style={{ marginTop: 4 }}>{cta}</Btn>}
+    {icon && <div style={{ fontSize: 32, opacity: 0.25 }}>{icon}</div>}
+    <div style={{ fontSize: 13, fontWeight: 600, color: C.secondary }}>{title}</div>
+    {subtitle && <div style={{ fontSize: 12, color: C.tertiary, textAlign: "center", maxWidth: 280 }}>{subtitle}</div>}
+    {cta && <Btn variant="primary" size="sm" style={{ marginTop: 8 }}>{cta}</Btn>}
   </div>
 );
 
@@ -266,39 +524,56 @@ const KPI = ({ k, loading = false }: { k: KPIData; loading?: boolean }) => {
   const trendUp = k.trend === "UP";
   const trendColor = trendUp ? C.green : k.trend === "DOWN" ? C.red : C.tertiary;
   const pct = k.target > 0 ? Math.min(100, (k.val / k.target) * 100) : 0;
-  const statusCol = statusColor(k.status);
 
   return (
     <div
-      className="card-animate card-hover"
+      className="card-animate"
       style={{
-        background: C.surface, borderRadius: 12, padding: "18px 20px",
-        boxShadow: shadow.sm, cursor: "default",
+        background: C.surface,
+        borderRadius: 10,
+        border: `0.5px solid ${C.border}`,
+        padding: "16px 20px",
+        display: "flex",
+        flexDirection: "column",
+        gap: 4,
+        boxShadow: shadow,
       }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
-        <span style={{ fontSize: 11, fontWeight: 500, color: C.secondary }}>{k.name}</span>
-        {k.trend !== "STABLE" && (
-          <span style={{
-            fontSize: 11, fontWeight: 600, color: trendColor,
-            background: trendColor + "12", padding: "2px 6px", borderRadius: 4,
-          }}>
-            {trendUp ? "↑" : "↓"}
-          </span>
-        )}
-      </div>
+      {/* Label */}
+      <div style={{ fontSize: 12, color: C.secondary, fontWeight: 500 }}>{k.name}</div>
+
+      {/* Value */}
       <div style={{
-        fontSize: 28, fontWeight: 700, color: statusCol,
-        letterSpacing: "-0.03em", fontVariantNumeric: "tabular-nums", lineHeight: 1.1,
-        marginBottom: 4,
+        fontSize: 28, fontWeight: 700, color: C.text,
+        fontVariantNumeric: "tabular-nums",
+        letterSpacing: "-0.03em",
+        lineHeight: 1.15,
       }}>
         {k.unit === "EUR" ? formatEur(k.val) : k.val}
-        {k.unit === "mån" ? <span style={{ fontSize: 14, fontWeight: 500 }}> mån</span> : null}
+        {k.unit === "mån" && <span style={{ fontSize: 14, fontWeight: 500 }}> mån</span>}
       </div>
-      <div style={{ fontSize: 11, color: C.tertiary, marginBottom: 10 }}>
-        Mål: {k.unit === "EUR" ? formatEur(k.target) : k.target}
+
+      {/* Trend */}
+      {k.trend !== "STABLE" && (
+        <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 4 }}>
+          <span style={{ fontSize: 11, color: trendColor, fontWeight: 600 }}>
+            {trendUp ? "↑" : "↓"}
+          </span>
+          <span style={{ fontSize: 11, color: C.tertiary }}>
+            Mål: {k.unit === "EUR" ? formatEur(k.target) : k.target}
+          </span>
+        </div>
+      )}
+
+      {/* Progress bar */}
+      <div style={{ marginTop: 8 }}>
+        <div style={{ height: 3, background: C.fill, borderRadius: 2, overflow: "hidden" }}>
+          <div style={{
+            width: `${pct}%`, height: "100%",
+            background: C.blue, borderRadius: 2,
+          }} />
+        </div>
       </div>
-      <Bar pct={pct} color={statusCol} height={3} />
     </div>
   );
 };
@@ -318,18 +593,20 @@ const Dot = ({ level, size = 28 }: { level: string; size?: number }) => (
 
 // ─── Avatar ───────────────────────────────────────────────────────────────────
 const Avatar = ({
-  name, status, size = 36
+  name, status, size = 32
 }: {
   name: string; status?: string; size?: number;
 }) => {
-  const borderColor = status ? statusColor(status) : "transparent";
+  const borderColor = status ? statusColor(status) : C.border;
+  const bgColor = status ? statusColor(status) + "22" : C.blue + "15";
+  const textColor = status ? statusColor(status) : C.blue;
   return (
     <div style={{ position: "relative", flexShrink: 0 }}>
       <div style={{
         width: size, height: size, borderRadius: "50%",
-        background: C.blue + "15", color: C.blue,
+        background: bgColor, color: textColor,
         display: "flex", alignItems: "center", justifyContent: "center",
-        fontSize: size * 0.38, fontWeight: 600,
+        fontSize: 12, fontWeight: 600,
         border: `2px solid ${borderColor}`,
       }}>
         {name[0]}
@@ -337,7 +614,7 @@ const Avatar = ({
       {status && (
         <div style={{
           position: "absolute", bottom: -1, right: -1,
-          width: 10, height: 10, borderRadius: "50%",
+          width: 8, height: 8, borderRadius: "50%",
           background: statusColor(status),
           border: `2px solid ${C.surface}`,
         }} />
@@ -358,11 +635,8 @@ const StepIndicator = ({ status }: { status: string }) => {
           key={s}
           title={ncStatusLabel[s]}
           style={{
-            width: i <= idx ? 14 : 8,
-            height: 4,
-            borderRadius: 2,
+            width: 20, height: 3, borderRadius: 2,
             background: i <= idx ? C.blue : C.fill,
-            transition: "all 0.2s ease",
           }}
         />
       ))}
@@ -372,7 +646,7 @@ const StepIndicator = ({ status }: { status: string }) => {
 
 // ─── Static fallback data ─────────────────────────────────────────────────────
 const FALLBACK = {
-  user: { full_name: "Erik", role: "ADMIN" },
+  user: { id: "", full_name: "Erik", role: "ADMIN" },
   team: [
     { name: "Erik", role: "Arkitekt", tasks: 3, overdue: 0, status: "GREEN" },
     { name: "Leon", role: "CEO", tasks: 8, overdue: 1, status: "YELLOW" },
@@ -384,7 +658,6 @@ const FALLBACK = {
     { name: "Pipeline", val: 64000, target: 50000, unit: "EUR", status: "GREEN", trend: "UP" },
     { name: "Leads/v", val: 7, target: 10, unit: "st", status: "YELLOW", trend: "UP" },
     { name: "Försenade", val: 1, target: 0, unit: "st", status: "YELLOW", trend: "STABLE" },
-    { name: "Trial Bal.", val: 0, target: 0, unit: "EUR", status: "GREEN", trend: "STABLE" },
     { name: "Runway", val: 8.2, target: 6, unit: "mån", status: "GREEN", trend: "STABLE" },
   ],
   pipeline: [
@@ -474,177 +747,73 @@ const FALLBACK = {
   ],
 };
 
-// ─── Nav config ───────────────────────────────────────────────────────────────
-const NAV_SECTIONS = [
-  {
-    label: "OVERVIEW",
-    items: [{ id: "admin", label: "Översikt", icon: "⊞" }],
-  },
-  {
-    label: "WORK",
-    items: [
-      { id: "tasks", label: "Uppgifter", icon: "✓" },
-      { id: "goals", label: "Mål", icon: "◎" },
-      { id: "processes", label: "Processer", icon: "⟳" },
-    ],
-  },
-  {
-    label: "SALES",
-    items: [
-      { id: "sales", label: "Sälj & Pipeline", icon: "◈" },
-    ],
-  },
-  {
-    label: "FINANCE",
-    items: [
-      { id: "finance", label: "Ekonomi", icon: "€" },
-    ],
-  },
-  {
-    label: "PEOPLE",
-    items: [
-      { id: "capability", label: "Förmåga", icon: "◆" },
-      { id: "development", label: "Utveckling", icon: "↑" },
-    ],
-  },
-  {
-    label: "QUALITY",
-    items: [
-      { id: "nc", label: "Avvikelser", icon: "⚠" },
-      { id: "improvements", label: "PDCA", icon: "◐" },
-      { id: "compliance", label: "Compliance", icon: "✓✓" },
-      { id: "risks", label: "Risker", icon: "⊘" },
-    ],
-  },
-  {
-    label: "COMMS",
-    items: [
-      { id: "chat", label: "Chatt", icon: "◻" },
-      { id: "learning", label: "Lärande", icon: "◑" },
-    ],
-  },
-];
-
 // ─── Sidebar ──────────────────────────────────────────────────────────────────
 function Sidebar({
-  view, setView, collapsed, setCollapsed, userName
+  view, setView, userName, onLogout
 }: {
   view: string;
   setView: (v: string) => void;
-  collapsed: boolean;
-  setCollapsed: (c: boolean) => void;
   userName: string;
+  onLogout?: () => void;
 }) {
-  const { t } = useTranslation();
-  const NAV_SECTIONS_I18N = [
-    {
-      label: "OVERVIEW",
-      items: [{ id: "admin", label: t('nav.overview'), icon: "⊞" }],
-    },
-    {
-      label: "WORK",
-      items: [
-        { id: "tasks", label: t('nav.tasks'), icon: "✓" },
-        { id: "goals", label: t('nav.goals'), icon: "◎" },
-        { id: "processes", label: t('nav.processes'), icon: "⟳" },
-      ],
-    },
-    {
-      label: "SALES",
-      items: [
-        { id: "sales", label: t('nav.deals'), icon: "◈" },
-      ],
-    },
-    {
-      label: "FINANCE",
-      items: [
-        { id: "finance", label: t('nav.reports'), icon: "€" },
-      ],
-    },
-    {
-      label: "PEOPLE",
-      items: [
-        { id: "capability", label: t('nav.capabilities'), icon: "◆" },
-        { id: "development", label: t('nav.development'), icon: "↑" },
-      ],
-    },
-    {
-      label: "QUALITY",
-      items: [
-        { id: "nc", label: t('nav.nonConformances'), icon: "⚠" },
-        { id: "improvements", label: "PDCA", icon: "◐" },
-        { id: "compliance", label: t('nav.compliance'), icon: "✓✓" },
-        { id: "risks", label: t('nav.risks'), icon: "⊘" },
-      ],
-    },
-    {
-      label: "COMMS",
-      items: [
-        { id: "chat", label: "Chatt", icon: "◻" },
-        { id: "learning", label: t('nav.learning'), icon: "◑" },
-      ],
-    },
-  ];
-  const w = collapsed ? 60 : 220;
   return (
     <div style={{
-      width: w,
-      background: C.surface,
-      borderRight: `1px solid ${C.border}`,
+      width: 260,
+      background: "#FFFFFF",
+      borderRight: "0.5px solid rgba(60,60,67,0.29)",
+      height: "100vh",
       display: "flex",
       flexDirection: "column",
+      flexShrink: 0,
       position: "fixed",
       top: 0, left: 0, bottom: 0,
       zIndex: 200,
-      transition: "width 0.2s ease",
-      overflow: "hidden",
+      overflowY: "auto",
     }}>
-      {/* Logo */}
+      {/* Logo area */}
       <div style={{
-        padding: collapsed ? "18px 0" : "18px 16px",
-        borderBottom: `1px solid ${C.separator}`,
+        height: 52,
+        padding: "0 16px",
         display: "flex",
         alignItems: "center",
-        justifyContent: collapsed ? "center" : "space-between",
-        cursor: "pointer",
-      }} onClick={() => setCollapsed(!collapsed)}>
-        {!collapsed ? (
-          <>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <div style={{
-                width: 28, height: 28, borderRadius: 7,
-                background: "linear-gradient(135deg, #007AFF, #5856D6)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                flexShrink: 0,
-              }}>
-                <span style={{ color: "#fff", fontSize: 14, fontWeight: 700 }}>p</span>
-              </div>
-              <span style={{ fontSize: 16, fontWeight: 700, letterSpacing: "-0.03em", color: C.text }}>
-                pixdrift
-              </span>
-            </div>
-            <span style={{ fontSize: 14, color: C.tertiary, cursor: "pointer" }}>‹</span>
-          </>
-        ) : (
+        borderBottom: "0.5px solid rgba(60,60,67,0.29)",
+        flexShrink: 0,
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <div style={{
             width: 28, height: 28, borderRadius: 7,
             background: "linear-gradient(135deg, #007AFF, #5856D6)",
             display: "flex", alignItems: "center", justifyContent: "center",
+            flexShrink: 0,
           }}>
             <span style={{ color: "#fff", fontSize: 14, fontWeight: 700 }}>p</span>
           </div>
-        )}
+          <span style={{
+            fontSize: 17,
+            fontWeight: 700,
+            letterSpacing: "-0.41px",
+            color: "#000000",
+          }}>
+            pixdrift
+          </span>
+        </div>
       </div>
 
-      {/* Nav */}
-      <nav style={{ flex: 1, padding: "8px 8px", display: "flex", flexDirection: "column", gap: 0, overflowY: "auto" }}>
-        {NAV_SECTIONS_I18N.map(section => (
-          <div key={section.label}>
-            {!collapsed && (
+      {/* Nav content */}
+      <nav style={{
+        flex: 1,
+        overflowY: "auto",
+        padding: "8px 0",
+      }}>
+        {NAV_SECTIONS.map((section, si) => (
+          <div key={si} style={{ marginTop: section.label ? 8 : 4, marginBottom: 4 }}>
+            {section.label && (
               <div style={{
-                fontSize: 10, fontWeight: 600, color: C.tertiary,
-                letterSpacing: "0.08em", textTransform: "uppercase",
-                padding: "12px 8px 4px",
+                fontSize: 13,
+                fontWeight: 400,
+                color: "#8E8E93",
+                padding: "20px 16px 6px 16px",
+                letterSpacing: 0,
               }}>
                 {section.label}
               </div>
@@ -654,32 +823,37 @@ function Sidebar({
               return (
                 <button
                   key={item.id}
-                  className={`nav-btn clickable ${active ? "active" : ""}`}
+                  type="button"
+                  className={`nav-item ${active ? "active" : ""}`}
                   onClick={() => setView(item.id)}
-                  title={collapsed ? item.label : undefined}
+                  aria-label={item.label}
+                  aria-current={active ? "page" : undefined}
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: 10,
-                    width: "100%",
-                    height: 36,
-                    padding: collapsed ? "0" : "0 10px",
-                    justifyContent: collapsed ? "center" : "flex-start",
-                    borderRadius: 8,
+                    gap: 12,
+                    width: "calc(100% - 16px)",
+                    height: 44,
+                    padding: "0 12px",
+                    borderRadius: 10,
                     border: "none",
-                    background: active ? C.blue + "12" : "transparent",
-                    color: active ? C.blue : C.secondary,
-                    fontSize: 13,
+                    background: active ? "#007AFF" : "transparent",
+                    color: active ? "#FFFFFF" : "#000000",
+                    fontSize: 17,
                     fontWeight: active ? 600 : 400,
+                    letterSpacing: "-0.41px",
                     cursor: "pointer",
                     textAlign: "left",
-                    transition: "all 0.12s ease",
                     marginBottom: 2,
+                    marginLeft: 8,
                     fontFamily: "inherit",
+                    flexShrink: 0,
                   }}
                 >
-                  <span style={{ fontSize: 14, width: 16, textAlign: "center", flexShrink: 0 }}>{item.icon}</span>
-                  {!collapsed && <span>{item.label}</span>}
+                  <span style={{ width: 16, height: 16, flexShrink: 0, display: "flex", alignItems: "center" }}>
+                    {item.icon}
+                  </span>
+                  <span>{item.label}</span>
                 </button>
               );
             })}
@@ -687,29 +861,48 @@ function Sidebar({
         ))}
       </nav>
 
-      {/* User */}
+      {/* User area */}
       <div style={{
-        padding: collapsed ? "12px 0" : "12px 14px",
-        borderTop: `1px solid ${C.separator}`,
+        padding: "12px 16px",
+        borderTop: "0.5px solid rgba(60,60,67,0.29)",
         display: "flex",
         alignItems: "center",
-        gap: 10,
-        justifyContent: collapsed ? "center" : "flex-start",
+        gap: 12,
+        flexShrink: 0,
       }}>
         <div style={{
-          width: 32, height: 32, borderRadius: "50%",
+          width: 36, height: 36, borderRadius: "50%",
           background: "linear-gradient(135deg, #007AFF, #5856D6)",
           color: "#fff",
           display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: 13, fontWeight: 700, flexShrink: 0,
+          fontSize: 15, fontWeight: 600, flexShrink: 0,
         }}>
           {userName[0]}
         </div>
-        {!collapsed && (
-          <div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: C.text }}>{userName}</div>
-            <div style={{ fontSize: 11, color: C.tertiary }}>Admin</div>
-          </div>
+        <div>
+          <div style={{ fontSize: 17, fontWeight: 400, letterSpacing: "-0.41px", color: "#000000" }}>{userName}</div>
+          <div style={{ fontSize: 13, color: "#8E8E93" }}>Admin</div>
+        </div>
+        {onLogout && (
+          <button
+            type="button"
+            onClick={onLogout}
+            title="Logga ut"
+            style={{
+              marginLeft: "auto",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: 4,
+              borderRadius: 6,
+              color: "#8E8E93",
+              fontSize: 16,
+              lineHeight: 1,
+              fontFamily: "inherit",
+            }}
+          >
+            ⏏
+          </button>
         )}
       </div>
     </div>
@@ -717,42 +910,49 @@ function Sidebar({
 }
 
 // ─── Top bar ──────────────────────────────────────────────────────────────────
-function TopBar({ title, onNew }: { title: string; onNew?: () => void }) {
+function TopBar({ title, onNew, userName = "Erik" }: { title: string; onNew?: () => void; userName?: string }) {
   const { t, locale } = useTranslation();
-  const h = new Date().getHours();
-  const greeting = h < 12 ? t('dashboard.goodMorning') : h < 17 ? t('dashboard.goodAfternoon') : t('dashboard.goodEvening');
-  const dateStr = formatDate(new Date(), locale);
   return (
     <div style={{
-      background: "rgba(255,255,255,0.85)",
+      height: 52,
+      background: "rgba(255,255,255,0.92)",
       backdropFilter: "blur(20px)",
       WebkitBackdropFilter: "blur(20px)",
-      borderBottom: `0.5px solid ${C.border}`,
-      padding: "0 28px",
-      height: 56,
+      borderBottom: "0.5px solid rgba(60,60,67,0.29)",
       display: "flex",
       alignItems: "center",
-      justifyContent: "space-between",
+      padding: "0 20px",
+      gap: 16,
+      flexShrink: 0,
       position: "sticky",
       top: 0,
       zIndex: 100,
     }}>
-      <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: "-0.03em", color: C.text }}>
+      {/* Page title */}
+      <div style={{
+        fontSize: 17,
+        fontWeight: 600,
+        color: "#000000",
+        letterSpacing: "-0.41px",
+      }}>
         {title}
       </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        <span style={{ fontSize: 13, color: C.secondary }}>
-          {greeting}, Erik · {dateStr}
-        </span>
+
+      {/* Actions — right */}
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: "auto" }}>
         <LanguageSwitcher />
-        <button style={{
-          width: 34, height: 34, borderRadius: 8,
-          background: C.fill, border: "none",
-          cursor: "pointer", fontSize: 16,
-          display: "flex", alignItems: "center", justifyContent: "center",
-          transition: "all 0.15s",
-        }}>
-          🔔
+        <button
+          type="button"
+          aria-label="Notifikationer"
+          style={{
+            width: 44, height: 44, borderRadius: 22,
+            background: "transparent", border: "none",
+            cursor: "pointer",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            color: "#007AFF",
+            transition: "background 0.1s",
+          }}>
+          <Icons.Bell />
         </button>
         {onNew && (
           <Btn variant="primary" onClick={onNew} size="sm">+ Ny</Btn>
@@ -764,115 +964,286 @@ function TopBar({ title, onNew }: { title: string; onNew?: () => void }) {
 
 // ─── Views ─────────────────────────────────────────────────────────────────────
 
-function AdminView({ D }: { D: typeof FALLBACK }) {
+function OverviewView({ D }: { D: typeof FALLBACK }) {
+  const stageColors: Record<string, string> = {
+    NEW: C.tertiary, QUALIFIED: C.blue, DEMO: C.purple, OFFER: C.orange, WON: C.green,
+  };
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-      {/* Quick actions */}
-      <div style={{ display: "flex", gap: 8 }}>
-        {["+ Deal", "+ Uppgift", "+ Avvikelse"].map((label, i) => (
-          <button
-            key={i}
-            className="clickable"
-            style={{
-              background: C.surface, border: `1px solid ${C.border}`,
-              borderRadius: 20, padding: "6px 14px",
-              fontSize: 13, fontWeight: 500, color: C.secondary,
-              cursor: "pointer", transition: "all 0.15s ease",
-              fontFamily: "inherit",
-            }}
-          >
-            {label}
-          </button>
-        ))}
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      {/* Large title */}
+      <div style={{
+        fontSize: 34,
+        fontWeight: 700,
+        letterSpacing: "-0.41px",
+        color: "#000000",
+        padding: "8px 4px 2px",
+      }}>
+        {getGreeting()}, {D.user.full_name}
+      </div>
+      <div style={{
+        fontSize: 15,
+        color: "#8E8E93",
+        padding: "0 4px 20px",
+        letterSpacing: "-0.24px",
+      }}>
+        {getSwedishDate()} · {D.tasks.filter(t => t.st !== "DONE").length} öppna uppgifter · {D.ncs.filter(n => n.status !== "CLOSED").length} aktiva avvikelser
       </div>
 
-      {/* KPI grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 12 }}>
-        {D.kpis.map((k, i) => <KPI key={i} k={k} />)}
+      {/* KPI — Inset Grouped List (Aktier-stil) */}
+      <div style={{ fontSize: 13, fontWeight: 400, color: "#8E8E93", padding: "0 4px 8px", letterSpacing: "-0.08px" }}>
+        Nyckeltal
       </div>
-
-      {/* Team + Decisions */}
-      <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 16 }}>
-        <Card title="Team">
-          {D.team.map((t, i) => (
-            <Row key={i} border={i < D.team.length - 1} clickable>
-              <Avatar name={t.name} status={t.status} size={36} />
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 14, fontWeight: 500, color: C.text }}>{t.name}</div>
-                <div style={{ fontSize: 12, color: C.secondary, marginTop: 1 }}>{t.role}</div>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ fontSize: 12, color: C.secondary, fontVariantNumeric: "tabular-nums" }}>
-                  {t.tasks} uppgifter
-                </span>
-                {t.overdue > 0 && <Badge color={C.yellow}>{t.overdue} sen</Badge>}
-              </div>
-            </Row>
-          ))}
-        </Card>
-
-        <Card title="Beslutlogg">
-          {D.decisions.map((d, i) => (
+      <div style={{
+        margin: "0 0 32px 0",
+        background: "#FFFFFF",
+        borderRadius: 10,
+        overflow: "hidden",
+      }}>
+        {D.kpis.map((k, i) => {
+          const trendUp = k.trend === "UP";
+          const trendColor = trendUp ? C.green : k.trend === "DOWN" ? C.red : C.tertiary;
+          const trendArrow = trendUp ? "↑" : k.trend === "DOWN" ? "↓" : "→";
+          const pct = k.target > 0 ? Math.min(100, Math.round((k.val / k.target) * 100)) : 0;
+          const statusCol = k.status === "GREEN" ? C.green : k.status === "YELLOW" ? C.orange : C.red;
+          return (
             <div
               key={i}
-              className="clickable"
+              className="row-hover"
               style={{
-                padding: "12px 0",
-                borderBottom: i < D.decisions.length - 1 ? `0.5px solid ${C.separator}` : "none",
+                display: "flex",
+                alignItems: "center",
+                padding: "12px 16px",
+                borderBottom: i < D.kpis.length - 1 ? "0.5px solid rgba(60,60,67,0.29)" : "none",
+                minHeight: 52,
+                cursor: "pointer",
               }}
             >
-              <div style={{ fontSize: 14, fontWeight: 500, color: C.text }}>{d.title}</div>
-              <div style={{ fontSize: 12, color: C.secondary, marginTop: 3 }}>{d.rat}</div>
-              <div style={{ fontSize: 11, color: C.tertiary, marginTop: 4 }}>
-                {d.by} · {d.date}
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 17, fontWeight: 400, color: "#000000", letterSpacing: "-0.41px" }}>{k.name}</div>
+                <div style={{ fontSize: 13, color: "#8E8E93" }}>Mål: {k.unit === "EUR" ? formatEur(k.target) : k.target}</div>
               </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{
+                  fontSize: 17, fontWeight: 600, color: statusCol,
+                  letterSpacing: "-0.41px", fontVariantNumeric: "tabular-nums",
+                }}>
+                  {k.unit === "EUR" ? formatEur(k.val) : k.val}
+                  {k.unit === "mån" && <span style={{ fontSize: 13, fontWeight: 400 }}> mån</span>}
+                </div>
+                <div style={{ fontSize: 13, color: trendColor }}>{trendArrow} {pct}%</div>
+              </div>
+              <div style={{ marginLeft: 8, color: "#C7C7CC", fontSize: 18 }}>›</div>
             </div>
-          ))}
-        </Card>
+          );
+        })}
       </div>
 
-      {/* Activity feed */}
-      <Card title="Aktivitetsflöde">
-        <div style={{ position: "relative", paddingLeft: 20 }}>
+      {/* Main + Side layout */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 0.54fr", gap: 24, alignItems: "start" }}>
+        {/* Main column */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+          {/* Aktiva affärer */}
+          <div style={{ fontSize: 13, fontWeight: 400, color: "#8E8E93", padding: "0 4px 8px", letterSpacing: "-0.08px" }}>
+            Aktiva affärer
+          </div>
           <div style={{
-            position: "absolute", left: 6, top: 0, bottom: 0,
-            width: 1, background: C.separator,
-          }} />
-          {D.msgs.map((m, i) => (
-            <div key={i} style={{
-              display: "flex", gap: 12, marginBottom: 16,
-              animation: `slideUp 0.2s ease ${i * 0.05}s backwards`,
-            }}>
-              <div style={{
-                width: 28, height: 28,
-                borderRadius: "50%",
-                background: m.s ? C.blue + "15" : C.fill,
-                color: m.s ? C.blue : C.secondary,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 11, fontWeight: 600, flexShrink: 0,
-                marginLeft: -8,
-                border: `2px solid ${C.surface}`,
-                zIndex: 1, position: "relative",
-              }}>
-                {m.s ? "⚙" : m.u[0]}
-              </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 13, color: C.text, lineHeight: 1.4 }}>{m.t}</div>
-                <div style={{ display: "flex", gap: 8, marginTop: 3 }}>
-                  <Badge color={C.tertiary}>{m.ch}</Badge>
+            margin: "0 0 32px 0",
+            background: "#FFFFFF",
+            borderRadius: 10,
+            overflow: "hidden",
+          }}>
+            {D.pipeline.map((p, i) => {
+              const col = stageColors[p.st] ?? C.tertiary;
+              return (
+                <div
+                  key={i}
+                  className="row-hover"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "10px 16px",
+                    borderBottom: i < D.pipeline.length - 1 ? "0.5px solid rgba(60,60,67,0.29)" : "none",
+                    minHeight: 44,
+                    cursor: "pointer",
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1 }}>
+                    <div style={{ width: 8, height: 8, borderRadius: "50%", background: col, flexShrink: 0 }} />
+                    <span style={{ fontSize: 17, fontWeight: 400, color: "#000000", letterSpacing: "-0.41px" }}>{p.st}</span>
+                  </div>
+                  <span style={{ fontSize: 17, fontWeight: 400, color: "#000000", fontVariantNumeric: "tabular-nums", letterSpacing: "-0.41px", marginRight: 16 }}>
+                    {formatEur(p.eur)}
+                  </span>
+                  <span style={{ fontSize: 13, color: "#8E8E93", fontVariantNumeric: "tabular-nums", marginRight: 8 }}>
+                    {p.deals}
+                  </span>
+                  <div style={{ color: "#C7C7CC", fontSize: 18 }}>›</div>
                 </div>
-              </div>
+              );
+            })}
+            {/* Total row */}
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              padding: "12px 16px",
+              borderTop: "0.5px solid rgba(60,60,67,0.29)",
+              background: "#FAFAFA",
+            }}>
+              <span style={{ fontSize: 17, fontWeight: 600, color: "#000000", letterSpacing: "-0.41px", flex: 1 }}>Totalt</span>
+              <span style={{
+                fontSize: 17, fontWeight: 700, color: "#007AFF",
+                fontVariantNumeric: "tabular-nums", letterSpacing: "-0.41px",
+              }}>
+                {formatEur(D.pipeline.reduce((s, p) => s + p.eur, 0))}
+              </span>
             </div>
-          ))}
+          </div>
+
+          {/* Senaste avvikelser */}
+          <div style={{ fontSize: 13, fontWeight: 400, color: "#8E8E93", padding: "0 4px 8px", letterSpacing: "-0.08px" }}>
+            Senaste avvikelser
+          </div>
+          <div style={{
+            margin: "0 0 32px 0",
+            background: "#FFFFFF",
+            borderRadius: 10,
+            overflow: "hidden",
+          }}>
+            {D.ncs.filter(n => n.status !== "CLOSED").slice(0, 3).length === 0 ? (
+              <EmptyState icon="✓" title="Inga aktiva avvikelser" />
+            ) : (
+              D.ncs.filter(n => n.status !== "CLOSED").slice(0, 3).map((n, i, arr) => {
+                const severityColor = ncBorderColor[n.severity] ?? C.tertiary;
+                return (
+                  <div
+                    key={i}
+                    className="row-hover"
+                    style={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      padding: "12px 16px",
+                      gap: 12,
+                      borderBottom: i < arr.length - 1 ? "0.5px solid rgba(60,60,67,0.29)" : "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <div style={{
+                      width: 22, height: 22,
+                      borderRadius: "50%",
+                      background: severityColor,
+                      flexShrink: 0,
+                      marginTop: 1,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                    }}>
+                      <span style={{ color: "#fff", fontSize: 12, fontWeight: 700 }}>!</span>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 17, fontWeight: 400, color: "#000000", letterSpacing: "-0.41px" }}>{n.title}</div>
+                      <div style={{ fontSize: 13, color: "#8E8E93", marginTop: 2 }}>
+                        {n.code} · {n.who} · {n.days}d · {ncStatusLabel[n.status] ?? n.status}
+                      </div>
+                    </div>
+                    <div style={{ color: "#C7C7CC", fontSize: 18, marginTop: 2 }}>›</div>
+                  </div>
+                );
+              })
+            )}
+          </div>
         </div>
-      </Card>
+
+        {/* Side column */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+          {/* Teamstatus */}
+          <div style={{ fontSize: 13, fontWeight: 400, color: "#8E8E93", padding: "0 4px 8px", letterSpacing: "-0.08px" }}>
+            Teamstatus
+          </div>
+          <div style={{
+            margin: "0 0 32px 0",
+            background: "#FFFFFF",
+            borderRadius: 10,
+            overflow: "hidden",
+          }}>
+            {D.team.map((member, i) => {
+              const sc = statusColor(member.status);
+              return (
+                <div
+                  key={i}
+                  className="row-hover"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "8px 16px",
+                    gap: 12,
+                    minHeight: 52,
+                    borderBottom: i < D.team.length - 1 ? "0.5px solid rgba(60,60,67,0.29)" : "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  <div style={{
+                    width: 36, height: 36, borderRadius: "50%",
+                    background: sc + "22",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 15, fontWeight: 600, color: sc, flexShrink: 0,
+                  }}>
+                    {member.name[0]}
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 17, fontWeight: 400, color: "#000000", letterSpacing: "-0.41px" }}>{member.name}</div>
+                    <div style={{ fontSize: 13, color: "#8E8E93" }}>{member.role} · {member.tasks} uppgifter</div>
+                  </div>
+                  <div style={{
+                    width: 10, height: 10, borderRadius: "50%",
+                    background: sc, flexShrink: 0,
+                  }} />
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Beslutlogg */}
+          <div style={{ fontSize: 13, fontWeight: 400, color: "#8E8E93", padding: "0 4px 8px", letterSpacing: "-0.08px" }}>
+            Beslutlogg
+          </div>
+          <div style={{
+            margin: "0 0 32px 0",
+            background: "#FFFFFF",
+            borderRadius: 10,
+            overflow: "hidden",
+          }}>
+            {D.decisions.map((d, i) => (
+              <div
+                key={i}
+                className="row-hover"
+                style={{
+                  padding: "12px 16px",
+                  borderBottom: i < D.decisions.length - 1 ? "0.5px solid rgba(60,60,67,0.29)" : "none",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: 8,
+                }}
+              >
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 17, fontWeight: 400, color: "#000000", letterSpacing: "-0.41px" }}>{d.title}</div>
+                  <div style={{ fontSize: 13, color: "#8E8E93", marginTop: 2 }}>{d.rat}</div>
+                  <div style={{ fontSize: 13, color: "#C7C7CC", marginTop: 4 }}>
+                    {d.by} · {d.date}
+                  </div>
+                </div>
+                <div style={{ color: "#C7C7CC", fontSize: 18, marginTop: 2 }}>›</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
 
 function SalesView({ D }: { D: typeof FALLBACK }) {
   const stageColors: Record<string, string> = {
-    NEW: C.tertiary, QUALIFIED: C.blue, DEMO: C.purple, OFFER: C.yellow, WON: C.green,
+    NEW: C.tertiary, QUALIFIED: C.blue, DEMO: C.purple, OFFER: C.orange, WON: C.green,
   };
   const maxEur = Math.max(...D.pipeline.map(p => p.eur));
 
@@ -885,17 +1256,16 @@ function SalesView({ D }: { D: typeof FALLBACK }) {
             return (
               <div
                 key={i}
-                className="card-hover"
                 style={{
                   flex: 1, background: col + "08",
-                  borderRadius: 10, padding: "16px 14px",
-                  border: `1px solid ${col}20`,
+                  borderRadius: 10, padding: "16px",
+                  border: `0.5px solid ${col}20`,
                   cursor: "pointer",
                   animation: `slideUp 0.2s ease ${i * 0.06}s backwards`,
                 }}
               >
                 <div style={{
-                  fontSize: 10, fontWeight: 600, color: col,
+                  fontSize: 11, fontWeight: 600, color: col,
                   textTransform: "uppercase", letterSpacing: "0.06em",
                 }}>
                   {p.st}
@@ -910,7 +1280,7 @@ function SalesView({ D }: { D: typeof FALLBACK }) {
                 <div style={{ fontSize: 12, color: C.secondary, marginTop: 4 }}>
                   {p.deals} deals
                 </div>
-                <div style={{ marginTop: 10 }}>
+                <div style={{ marginTop: 8 }}>
                   <Bar pct={(p.eur / maxEur) * 100} color={col} height={3} />
                 </div>
               </div>
@@ -919,7 +1289,7 @@ function SalesView({ D }: { D: typeof FALLBACK }) {
         </div>
         <div style={{
           display: "flex", justifyContent: "space-between",
-          padding: "14px 0 0", borderTop: `0.5px solid ${C.separator}`,
+          padding: "12px 0 0", borderTop: `0.5px solid ${C.border}`,
         }}>
           <span style={{ fontSize: 13, color: C.secondary }}>Total pipeline</span>
           <span style={{
@@ -945,9 +1315,9 @@ function FinanceView({ D }: { D: typeof FALLBACK }) {
           {["Konto", "Namn", "Debet", "Kredit"].map((h, i) => (
             <div key={h} style={{
               padding: "8px 0",
-              fontSize: 11, fontWeight: 600, color: C.tertiary,
+              fontSize: 11, fontWeight: 600, color: C.secondary,
               textTransform: "uppercase", letterSpacing: "0.06em",
-              borderBottom: `1px solid ${C.border}`,
+              borderBottom: `0.5px solid ${C.border}`,
               textAlign: i >= 2 ? "right" : "left",
             }}>
               {h}
@@ -956,66 +1326,65 @@ function FinanceView({ D }: { D: typeof FALLBACK }) {
 
           {D.tb.rows.map((r, i) => [
             <div key={`c${i}`} style={{
-              padding: "11px 0",
+              padding: "8px 0",
               fontSize: 12, color: C.secondary, fontFamily: "monospace",
-              borderBottom: `0.5px solid ${C.separator}`,
+              borderBottom: `0.5px solid ${C.fill}`,
               fontVariantNumeric: "tabular-nums",
             }}>
               {r.code}
             </div>,
             <div key={`n${i}`} style={{
-              padding: "11px 0",
-              fontSize: 14, fontWeight: 500, color: C.text,
-              borderBottom: `0.5px solid ${C.separator}`,
+              padding: "8px 0",
+              fontSize: 13, fontWeight: 500, color: C.text,
+              borderBottom: `0.5px solid ${C.fill}`,
             }}>
               {r.name}
             </div>,
             <div key={`d${i}`} style={{
-              padding: "11px 0",
+              padding: "8px 0",
               textAlign: "right",
-              fontSize: 14, fontFamily: "monospace",
+              fontSize: 13, fontFamily: "monospace",
               fontVariantNumeric: "tabular-nums",
               color: r.d > 0 ? C.text : C.tertiary,
-              borderBottom: `0.5px solid ${C.separator}`,
+              borderBottom: `0.5px solid ${C.fill}`,
             }}>
               {r.d > 0 ? formatEur(r.d) : "—"}
             </div>,
             <div key={`k${i}`} style={{
-              padding: "11px 0",
+              padding: "8px 0",
               textAlign: "right",
-              fontSize: 14, fontFamily: "monospace",
+              fontSize: 13, fontFamily: "monospace",
               fontVariantNumeric: "tabular-nums",
               color: r.c > 0 ? C.text : C.tertiary,
-              borderBottom: `0.5px solid ${C.separator}`,
+              borderBottom: `0.5px solid ${C.fill}`,
             }}>
               {r.c > 0 ? formatEur(r.c) : "—"}
             </div>,
           ])}
 
-          {/* Total row */}
           <div />
           <div style={{
-            padding: "13px 0",
-            fontSize: 14, fontWeight: 700, color: C.text,
-            borderTop: `1px solid ${C.border}`,
+            padding: "12px 0",
+            fontSize: 13, fontWeight: 700, color: C.text,
+            borderTop: `0.5px solid ${C.border}`,
           }}>
             Totalt
           </div>
           <div style={{
-            padding: "13px 0",
+            padding: "12px 0",
             textAlign: "right",
-            fontSize: 15, fontWeight: 700, color: C.blue,
+            fontSize: 13, fontWeight: 700, color: C.blue,
             fontFamily: "monospace", fontVariantNumeric: "tabular-nums",
-            borderTop: `1px solid ${C.border}`,
+            borderTop: `0.5px solid ${C.border}`,
           }}>
             {formatEur(D.tb.d)}
           </div>
           <div style={{
-            padding: "13px 0",
+            padding: "12px 0",
             textAlign: "right",
-            fontSize: 15, fontWeight: 700, color: C.blue,
+            fontSize: 13, fontWeight: 700, color: C.blue,
             fontFamily: "monospace", fontVariantNumeric: "tabular-nums",
-            borderTop: `1px solid ${C.border}`,
+            borderTop: `0.5px solid ${C.border}`,
           }}>
             {formatEur(D.tb.c)}
           </div>
@@ -1024,13 +1393,23 @@ function FinanceView({ D }: { D: typeof FALLBACK }) {
         {D.tb.ok && (
           <div style={{
             marginTop: 16, padding: "10px 14px",
-            background: C.greenLight, borderRadius: 8,
+            background: C.green + "12", borderRadius: 8,
             fontSize: 13, color: C.green, fontWeight: 600,
             display: "flex", alignItems: "center", gap: 6,
           }}>
             ✓ Balansen stämmer — debet = kredit = {formatEur(D.tb.d)}
           </div>
         )}
+      </Card>
+    </div>
+  );
+}
+
+function ReportsView({ D }: { D: typeof FALLBACK }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <Card title="Rapporter">
+        <EmptyState icon="📊" title="Rapporter kommer snart" subtitle="Pipeline-rapporter, intäktsrapporter och mer." />
       </Card>
     </div>
   );
@@ -1047,17 +1426,19 @@ function TasksView({ D }: { D: typeof FALLBACK }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {/* Stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
         {[
           { l: "Totalt", v: sorted.length, c: C.text },
           { l: "Pågående", v: sorted.filter(t => t.st === "IN_PROGRESS").length, c: C.blue },
           { l: "Att göra", v: sorted.filter(t => t.st === "TODO").length, c: C.secondary },
         ].map((s, i) => (
           <div key={i} className="card-animate" style={{
-            background: C.surface, borderRadius: 12,
-            padding: "16px 20px", boxShadow: shadow.sm,
+            background: C.surface, borderRadius: 10,
+            padding: "16px 20px",
+            border: `0.5px solid ${C.border}`,
+            boxShadow: shadow,
           }}>
-            <div style={{ fontSize: 11, fontWeight: 500, color: C.secondary }}>{s.l}</div>
+            <div style={{ fontSize: 12, fontWeight: 500, color: C.secondary }}>{s.l}</div>
             <div style={{
               fontSize: 28, fontWeight: 700, color: s.c,
               fontVariantNumeric: "tabular-nums", letterSpacing: "-0.03em",
@@ -1070,6 +1451,19 @@ function TasksView({ D }: { D: typeof FALLBACK }) {
       </div>
 
       <Card>
+        {/* Table header */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 96px 80px 96px",
+          padding: "0 0 8px 0",
+          borderBottom: `0.5px solid ${C.border}`,
+          marginBottom: 4,
+        }}>
+          <span style={{ fontSize: 11, fontWeight: 600, color: C.secondary }}>UPPGIFT</span>
+          <span style={{ fontSize: 11, fontWeight: 600, color: C.secondary }}>VEM</span>
+          <span style={{ fontSize: 11, fontWeight: 600, color: C.secondary, textAlign: "right" }}>DEADLINE</span>
+          <span style={{ fontSize: 11, fontWeight: 600, color: C.secondary, textAlign: "right" }}>STATUS</span>
+        </div>
         {sorted.length === 0 ? (
           <EmptyState
             icon="✓"
@@ -1086,29 +1480,32 @@ function TasksView({ D }: { D: typeof FALLBACK }) {
                 key={i}
                 className="row-hover"
                 style={{
-                  display: "flex", alignItems: "center", gap: 12,
-                  padding: "12px 8px",
-                  borderBottom: i < sorted.length - 1 ? `0.5px solid ${C.separator}` : "none",
-                  borderRadius: 6, cursor: "pointer",
+                  display: "grid",
+                  gridTemplateColumns: "1fr 96px 80px 96px",
+                  padding: "8px 0",
+                  borderBottom: i < sorted.length - 1 ? `0.5px solid ${C.fill}` : "none",
+                  alignItems: "center",
                   borderLeft: `3px solid ${pc.color}`,
-                  paddingLeft: 14,
+                  paddingLeft: 8,
+                  cursor: "pointer",
                   animation: `slideUp 0.15s ease ${i * 0.04}s backwards`,
                 }}
               >
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 14, fontWeight: 500, color: C.text }}>{t.title}</div>
-                  <div style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{t.who}</div>
-                </div>
-                <Badge color={t.st === "IN_PROGRESS" ? C.blue : C.tertiary}>
-                  {t.st === "IN_PROGRESS" ? "Pågående" : "Att göra"}
-                </Badge>
+                <div style={{ fontSize: 13, fontWeight: 500, color: C.text }}>{t.title}</div>
+                <div style={{ fontSize: 13, color: C.secondary }}>{t.who}</div>
                 <span style={{
                   fontSize: 12, color: overdue ? C.red : C.tertiary,
-                  fontFamily: "monospace", fontVariantNumeric: "tabular-nums",
+                  fontVariantNumeric: "tabular-nums",
                   fontWeight: overdue ? 600 : 400,
+                  textAlign: "right",
                 }}>
                   {overdue ? "⚠ " : ""}{t.dl}
                 </span>
+                <div style={{ textAlign: "right" }}>
+                  <Badge color={t.st === "IN_PROGRESS" ? C.blue : C.tertiary}>
+                    {t.st === "IN_PROGRESS" ? "Pågående" : "Att göra"}
+                  </Badge>
+                </div>
               </div>
             );
           })
@@ -1128,14 +1525,14 @@ function CapabilityView({ D }: { D: typeof FALLBACK }) {
             gridTemplateColumns: "180px repeat(5, 1fr)",
             minWidth: 500,
           }}>
-            <div style={{ padding: "8px 0", fontSize: 11, color: C.tertiary, fontWeight: 600, letterSpacing: "0.04em", borderBottom: `1px solid ${C.border}` }}>
+            <div style={{ padding: "8px 0", fontSize: 11, color: C.secondary, fontWeight: 600, letterSpacing: "0.04em", borderBottom: `0.5px solid ${C.border}` }}>
               FÖRMÅGA
             </div>
             {["Erik", "Leon", "Johan", "Dennis", "Winston"].map(n => (
               <div key={n} style={{
                 padding: "8px 0", fontSize: 11, color: C.secondary,
                 textAlign: "center", fontWeight: 600,
-                borderBottom: `1px solid ${C.border}`,
+                borderBottom: `0.5px solid ${C.border}`,
               }}>
                 {n}
               </div>
@@ -1143,16 +1540,16 @@ function CapabilityView({ D }: { D: typeof FALLBACK }) {
 
             {D.heatmap.map((r, i) => [
               <div key={`n${i}`} style={{
-                padding: "10px 0",
-                borderBottom: `0.5px solid ${C.separator}`,
+                padding: "8px 0",
+                borderBottom: `0.5px solid ${C.fill}`,
               }}>
                 <div style={{ fontSize: 13, fontWeight: 500, color: C.text }}>{r.cap}</div>
                 <div style={{ fontSize: 11, color: C.tertiary, marginTop: 1 }}>{r.dom}</div>
               </div>,
               ...["E", "L", "J", "Dn", "W"].map(p => (
                 <div key={`${i}${p}`} style={{
-                  padding: "10px 0",
-                  borderBottom: `0.5px solid ${C.separator}`,
+                  padding: "8px 0",
+                  borderBottom: `0.5px solid ${C.fill}`,
                   display: "flex", justifyContent: "center",
                 }}>
                   <Dot level={(r as Record<string, string>)[p]} />
@@ -1169,9 +1566,9 @@ function CapabilityView({ D }: { D: typeof FALLBACK }) {
         ) : (
           D.gaps.map((g, i) => (
             <Row key={i} border={i < D.gaps.length - 1} clickable>
-              <Avatar name={g.who} size={36} />
+              <Avatar name={g.who} size={32} />
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 14, fontWeight: 500, color: C.text }}>{g.who}</div>
+                <div style={{ fontSize: 13, fontWeight: 500, color: C.text }}>{g.who}</div>
                 <div style={{ fontSize: 12, color: C.secondary }}>{g.cap}</div>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -1179,7 +1576,7 @@ function CapabilityView({ D }: { D: typeof FALLBACK }) {
                 <span style={{ fontSize: 12, color: C.tertiary }}>→</span>
                 <Dot level={g.tgt} />
               </div>
-              <Badge color={C.yellow}>+{g.gap}</Badge>
+              <Badge color={C.orange}>+{g.gap}</Badge>
             </Row>
           ))
         )}
@@ -1204,13 +1601,13 @@ function DevelopmentView({ D }: { D: typeof FALLBACK }) {
             {p.actions.map((a, i) => (
               <Row key={i} border={i < p.actions.length - 1} clickable>
                 <div style={{
-                  width: 3, height: 36, borderRadius: 2,
+                  width: 3, height: 32, borderRadius: 2,
                   background: a.st === "ACTIVE" ? C.blue : C.tertiary,
                   flexShrink: 0,
                 }} />
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 14, fontWeight: 500, color: C.text }}>{a.title}</div>
-                  <div style={{ display: "flex", gap: 6, marginTop: 6 }}>
+                  <div style={{ fontSize: 13, fontWeight: 500, color: C.text }}>{a.title}</div>
+                  <div style={{ display: "flex", gap: 6, marginTop: 4 }}>
                     <Badge color={C.purple}>{a.cap}</Badge>
                     <Badge color={C.secondary}>{a.type}</Badge>
                   </div>
@@ -1232,7 +1629,7 @@ function GoalsView({ D }: { D: typeof FALLBACK }) {
   const statusConfig: Record<string, { color: string; label: string }> = {
     ON_TRACK: { color: C.green, label: "I tid" },
     ACTIVE: { color: C.blue, label: "Aktiv" },
-    AT_RISK: { color: C.yellow, label: "Risk" },
+    AT_RISK: { color: C.orange, label: "Risk" },
     DELAYED: { color: C.red, label: "Försenad" },
   };
 
@@ -1253,10 +1650,10 @@ function GoalsView({ D }: { D: typeof FALLBACK }) {
                 <Badge color={sc.color} size="md">{sc.label}</Badge>
               </div>
 
-              <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 14 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 12 }}>
                 <Bar pct={pct} color={pct >= 100 ? C.green : C.blue} height={6} />
                 <span style={{
-                  fontSize: 16, fontWeight: 700, minWidth: 60,
+                  fontSize: 16, fontWeight: 700, minWidth: 56,
                   fontVariantNumeric: "tabular-nums", color: C.text,
                 }}>
                   {g.cur}/{g.tgt}
@@ -1272,7 +1669,7 @@ function GoalsView({ D }: { D: typeof FALLBACK }) {
                   <span style={{ fontSize: 12, color: C.secondary }}>Beredskap</span>
                   <span style={{
                     fontSize: 13, fontWeight: 600,
-                    color: g.ready >= 70 ? C.green : g.ready >= 40 ? C.yellow : C.red,
+                    color: g.ready >= 70 ? C.green : g.ready >= 40 ? C.orange : C.red,
                     fontVariantNumeric: "tabular-nums",
                   }}>
                     {g.ready}%
@@ -1295,17 +1692,19 @@ function ProcessesView({ D }: { D: typeof FALLBACK }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
         {[
           { l: "Aktiva processer", v: D.processes.length, c: C.blue },
           { l: "Körningar / 30d", v: totalRuns, c: C.green },
           { l: "Snitt duration", v: `${avgDur} min`, c: C.secondary },
         ].map((s, i) => (
           <div key={i} className="card-animate" style={{
-            background: C.surface, borderRadius: 12,
-            padding: "18px 20px", boxShadow: shadow.sm,
+            background: C.surface, borderRadius: 10,
+            padding: "16px 20px",
+            border: `0.5px solid ${C.border}`,
+            boxShadow: shadow,
           }}>
-            <div style={{ fontSize: 11, fontWeight: 500, color: C.secondary }}>{s.l}</div>
+            <div style={{ fontSize: 12, fontWeight: 500, color: C.secondary }}>{s.l}</div>
             <div style={{
               fontSize: 28, fontWeight: 700, color: s.c,
               fontVariantNumeric: "tabular-nums", letterSpacing: "-0.03em", marginTop: 4,
@@ -1317,33 +1716,47 @@ function ProcessesView({ D }: { D: typeof FALLBACK }) {
       </div>
 
       <Card title="Processregister">
+        {/* Header */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "80px 1fr 80px 80px 80px",
+          padding: "0 0 8px 0",
+          borderBottom: `0.5px solid ${C.border}`,
+          marginBottom: 4,
+        }}>
+          {["KOD", "PROCESS", "KÖRN.", "MIN", "STATUS"].map((h, i) => (
+            <span key={h} style={{ fontSize: 11, fontWeight: 600, color: C.secondary, textAlign: i > 1 ? "right" : "left" }}>{h}</span>
+          ))}
+        </div>
         {D.processes.length === 0 ? (
           <EmptyState icon="⟳" title="Inga processer" subtitle="Processer du dokumenterar visas här." />
         ) : (
           D.processes.map((p, i) => (
-            <Row key={i} border={i < D.processes.length - 1} clickable>
-              <div style={{
-                minWidth: 80, fontSize: 11,
-                fontFamily: "monospace", color: C.tertiary,
-              }}>
-                {p.code}
+            <div
+              key={i}
+              className="row-hover"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "80px 1fr 80px 80px 80px",
+                padding: "8px 0",
+                borderBottom: i < D.processes.length - 1 ? `0.5px solid ${C.fill}` : "none",
+                alignItems: "center",
+                cursor: "pointer",
+              }}
+            >
+              <span style={{ fontSize: 11, fontFamily: "monospace", color: C.tertiary }}>{p.code}</span>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 500, color: C.text }}>{p.name}</div>
+                <div style={{ fontSize: 11, color: C.secondary }}>Ägare: {p.owner}</div>
               </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 14, fontWeight: 500, color: C.text }}>{p.name}</div>
-                <div style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>
-                  Ägare: {p.owner}
-                </div>
+              <span style={{ fontSize: 13, color: C.secondary, fontVariantNumeric: "tabular-nums", textAlign: "right" }}>{p.runs30d}</span>
+              <span style={{ fontSize: 13, color: C.secondary, fontVariantNumeric: "tabular-nums", textAlign: "right" }}>{p.avgMin}</span>
+              <div style={{ textAlign: "right" }}>
+                <Badge color={p.ncs > 0 ? C.orange : C.green}>
+                  {p.ncs > 0 ? `${p.ncs} NC` : "OK"}
+                </Badge>
               </div>
-              <span style={{ fontSize: 12, color: C.secondary, fontVariantNumeric: "tabular-nums" }}>
-                {p.runs30d} körn.
-              </span>
-              <span style={{ fontSize: 12, color: C.secondary, fontVariantNumeric: "tabular-nums" }}>
-                {p.avgMin} min
-              </span>
-              <Badge color={p.ncs > 0 ? C.yellow : C.green}>
-                {p.ncs > 0 ? `${p.ncs} NC` : "OK"}
-              </Badge>
-            </Row>
+            </div>
           ))
         )}
       </Card>
@@ -1361,7 +1774,7 @@ function NCView({ D }: { D: typeof FALLBACK }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
         {[
           { l: "Öppna", v: openCount, c: openCount > 0 ? C.red : C.green },
           { l: "Stängda", v: closedCount, c: C.green },
@@ -1369,10 +1782,12 @@ function NCView({ D }: { D: typeof FALLBACK }) {
           { l: "MAJOR+", v: majorPlus, c: majorPlus > 0 ? C.orange : C.green },
         ].map((s, i) => (
           <div key={i} className="card-animate" style={{
-            background: C.surface, borderRadius: 12,
-            padding: "18px 20px", boxShadow: shadow.sm,
+            background: C.surface, borderRadius: 10,
+            padding: "16px 20px",
+            border: `0.5px solid ${C.border}`,
+            boxShadow: shadow,
           }}>
-            <div style={{ fontSize: 11, fontWeight: 500, color: C.secondary }}>{s.l}</div>
+            <div style={{ fontSize: 12, fontWeight: 500, color: C.secondary }}>{s.l}</div>
             <div style={{
               fontSize: 28, fontWeight: 700, color: s.c,
               fontVariantNumeric: "tabular-nums", letterSpacing: "-0.03em", marginTop: 4,
@@ -1392,37 +1807,49 @@ function NCView({ D }: { D: typeof FALLBACK }) {
             cta="+ Registrera avvikelse"
           />
         ) : (
-          D.ncs.map((n, i) => (
-            <div
-              key={i}
-              className="row-hover"
-              style={{
-                display: "flex", alignItems: "center", gap: 12,
-                padding: "14px 12px",
-                borderBottom: i < D.ncs.length - 1 ? `0.5px solid ${C.separator}` : "none",
-                borderLeft: `4px solid ${ncBorderColor[n.severity] ?? C.tertiary}`,
-                paddingLeft: 16,
-                borderRadius: "0 6px 6px 0",
-                cursor: "pointer",
-                animation: `slideUp 0.15s ease ${i * 0.05}s backwards`,
-              }}
-            >
-              <div style={{ minWidth: 100, fontSize: 11, fontFamily: "monospace", color: C.tertiary }}>
-                {n.code}
-              </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 14, fontWeight: 500, color: C.text }}>{n.title}</div>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 6 }}>
-                  <span style={{ fontSize: 12, color: C.secondary }}>{n.who} · {n.days}d</span>
-                  <StepIndicator status={n.status} />
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {D.ncs.map((n, i) => {
+              const severityColor = ncBorderColor[n.severity] ?? C.tertiary;
+              const currentStep = STEPS.indexOf(n.status);
+              return (
+                <div
+                  key={i}
+                  className="row-hover"
+                  style={{
+                    background: C.surface,
+                    border: `0.5px solid ${C.border}`,
+                    borderLeft: `3px solid ${severityColor}`,
+                    borderRadius: "0 10px 10px 0",
+                    padding: "12px 16px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 6,
+                    cursor: "pointer",
+                    animation: `slideUp 0.15s ease ${i * 0.05}s backwards`,
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                    <span style={{ fontSize: 13, fontWeight: 500, color: C.text }}>{n.title}</span>
+                    <Badge color={severityColor}>{n.severity}</Badge>
+                  </div>
+                  <div style={{ fontSize: 12, color: C.secondary }}>
+                    {n.code} · {n.who} · {n.days}d
+                  </div>
+                  <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 4 }}>
+                    {STEPS.map((step, si) => (
+                      <div key={step} style={{
+                        width: 20, height: 3, borderRadius: 2,
+                        background: si <= currentStep ? severityColor : C.fill,
+                      }} />
+                    ))}
+                    <span style={{ fontSize: 11, color: C.secondary, marginLeft: 4 }}>
+                      {ncStatusLabel[n.status] ?? n.status}
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <Badge color={ncBorderColor[n.severity] ?? C.tertiary}>{n.severity}</Badge>
-              <Badge color={n.status === "CLOSED" ? C.green : C.blue}>
-                {ncStatusLabel[n.status] ?? n.status}
-              </Badge>
-            </div>
-          ))
+              );
+            })}
+          </div>
         )}
       </Card>
     </div>
@@ -1431,7 +1858,7 @@ function NCView({ D }: { D: typeof FALLBACK }) {
 
 function ImprovementsView({ D }: { D: typeof FALLBACK }) {
   const pdcaColor: Record<string, string> = {
-    "PLAN": C.blue, "DO": C.green, "CHECK": C.yellow, "ACT": C.purple, "-": C.tertiary,
+    "PLAN": C.blue, "DO": C.green, "CHECK": C.orange, "ACT": C.purple, "-": C.tertiary,
   };
 
   return (
@@ -1444,29 +1871,49 @@ function ImprovementsView({ D }: { D: typeof FALLBACK }) {
           cta="+ Ny idé"
         />
       ) : (
-        D.improvements.map((imp, i) => (
-          <Row key={i} border={i < D.improvements.length - 1} clickable>
-            <div style={{ minWidth: 110, fontSize: 11, fontFamily: "monospace", color: C.tertiary }}>
-              {imp.code}
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 14, fontWeight: 500, color: C.text }}>{imp.title}</div>
-              <div style={{ display: "flex", gap: 6, marginTop: 6 }}>
+        <>
+          {/* Table header */}
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "112px 1fr 80px 96px",
+            padding: "0 0 8px 0",
+            borderBottom: `0.5px solid ${C.border}`,
+            marginBottom: 4,
+          }}>
+            {["KOD", "TITEL", "PDCA", "STATUS"].map((h, i) => (
+              <span key={h} style={{ fontSize: 11, fontWeight: 600, color: C.secondary, textAlign: i > 1 ? "right" : "left" }}>{h}</span>
+            ))}
+          </div>
+          {D.improvements.map((imp, i) => (
+            <div
+              key={i}
+              className="row-hover"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "112px 1fr 80px 96px",
+                padding: "8px 0",
+                borderBottom: i < D.improvements.length - 1 ? `0.5px solid ${C.fill}` : "none",
+                alignItems: "center",
+                cursor: "pointer",
+              }}
+            >
+              <span style={{ fontSize: 11, fontFamily: "monospace", color: C.tertiary }}>{imp.code}</span>
+              <div style={{ fontSize: 13, fontWeight: 500, color: C.text }}>{imp.title}</div>
+              <div style={{ textAlign: "right" }}>
                 <Badge color={pdcaColor[imp.pdca] ?? C.tertiary}>{imp.pdca}</Badge>
-                <span style={{ fontSize: 11, color: C.secondary }}>
-                  Impact: {imp.impact} · Effort: {imp.effort}
-                </span>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <Badge color={
+                  imp.status === "IMPLEMENTING" ? C.blue
+                    : imp.status === "APPROVED" ? C.green
+                      : C.tertiary
+                }>
+                  {imp.status}
+                </Badge>
               </div>
             </div>
-            <Badge color={
-              imp.status === "IMPLEMENTING" ? C.blue
-              : imp.status === "APPROVED" ? C.green
-              : C.tertiary
-            }>
-              {imp.status}
-            </Badge>
-          </Row>
-        ))
+          ))}
+        </>
       )}
     </Card>
   );
@@ -1476,7 +1923,7 @@ function ComplianceView({ D }: { D: typeof FALLBACK }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {D.compliance.map((c, i) => {
-        const col = c.pct >= 80 ? C.green : c.pct >= 60 ? C.yellow : C.red;
+        const col = c.pct >= 80 ? C.green : c.pct >= 60 ? C.orange : C.red;
         return (
           <Card key={i} animate>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
@@ -1484,10 +1931,10 @@ function ComplianceView({ D }: { D: typeof FALLBACK }) {
               <Badge color={col} size="md">{c.pct}%</Badge>
             </div>
             <Bar pct={c.pct} color={col} height={6} />
-            <div style={{ display: "flex", gap: 20, marginTop: 14, fontSize: 12 }}>
+            <div style={{ display: "flex", gap: 20, marginTop: 12, fontSize: 12 }}>
               {[
                 { label: "Uppfyllda", v: c.ok, c: C.green },
-                { label: "Partiella", v: c.partial, c: C.yellow },
+                { label: "Partiella", v: c.partial, c: C.orange },
                 { label: "Ej uppfyllda", v: c.fail, c: C.red },
                 { label: "Ej bedömda", v: c.na, c: C.tertiary },
               ].map((s, j) => (
@@ -1516,24 +1963,26 @@ function RisksView({ D }: { D: typeof FALLBACK }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
         {(["CRITICAL", "HIGH", "MEDIUM", "LOW"] as const).map(l => {
           const count = D.risks.filter(r => r.level === l).length;
           return (
             <div key={l} className="card-animate" style={{
-              background: C.surface, borderRadius: 12,
-              padding: "18px 20px", boxShadow: shadow.sm,
+              background: C.surface, borderRadius: 10,
+              padding: "16px 20px",
+              border: `0.5px solid ${C.border}`,
               borderTop: `3px solid ${riskColor[l]}`,
+              boxShadow: shadow,
             }}>
               <div style={{
-                fontSize: 10, fontWeight: 600, color: riskColor[l],
-                textTransform: "uppercase", letterSpacing: "0.08em",
+                fontSize: 11, fontWeight: 600, color: riskColor[l],
+                textTransform: "uppercase", letterSpacing: "0.06em",
               }}>
                 {l}
               </div>
               <div style={{
                 fontSize: 28, fontWeight: 700, color: riskColor[l],
-                fontVariantNumeric: "tabular-nums", marginTop: 6,
+                fontVariantNumeric: "tabular-nums", marginTop: 8,
               }}>
                 {count}
               </div>
@@ -1543,29 +1992,52 @@ function RisksView({ D }: { D: typeof FALLBACK }) {
       </div>
 
       <Card title="Riskregister">
+        {/* Header */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "80px 1fr 96px 40px 80px",
+          padding: "0 0 8px 0",
+          borderBottom: `0.5px solid ${C.border}`,
+          marginBottom: 4,
+        }}>
+          {["KOD", "RISK", "KATEGORI", "SCORE", "NIVÅ"].map((h, i) => (
+            <span key={h} style={{ fontSize: 11, fontWeight: 600, color: C.secondary, textAlign: i > 2 ? "right" : "left" }}>{h}</span>
+          ))}
+        </div>
         {sorted.map((r, i) => (
-          <Row key={i} border={i < sorted.length - 1} clickable>
-            <div style={{ minWidth: 90, fontSize: 11, fontFamily: "monospace", color: C.tertiary }}>
-              {r.code}
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 14, fontWeight: 500, color: C.text }}>{r.title}</div>
-              <div style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{r.mit}</div>
+          <div
+            key={i}
+            className="row-hover"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "80px 1fr 96px 40px 80px",
+              padding: "8px 0",
+              borderBottom: i < sorted.length - 1 ? `0.5px solid ${C.fill}` : "none",
+              alignItems: "center",
+              cursor: "pointer",
+            }}
+          >
+            <span style={{ fontSize: 11, fontFamily: "monospace", color: C.tertiary }}>{r.code}</span>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 500, color: C.text }}>{r.title}</div>
+              <div style={{ fontSize: 12, color: C.secondary }}>{r.mit}</div>
             </div>
             <Badge color={C.tertiary}>{r.cat}</Badge>
-            <div style={{ textAlign: "center", minWidth: 44 }}>
+            <div style={{ textAlign: "right" }}>
               <div style={{
                 fontSize: 16, fontWeight: 700, color: riskColor[r.level],
                 fontVariantNumeric: "tabular-nums",
               }}>
                 {r.score}
               </div>
-              <div style={{ fontSize: 9, color: C.tertiary, fontVariantNumeric: "tabular-nums" }}>
+              <div style={{ fontSize: 11, color: C.tertiary, fontVariantNumeric: "tabular-nums" }}>
                 {r.prob}×{r.imp}
               </div>
             </div>
-            <Badge color={riskColor[r.level]}>{r.level}</Badge>
-          </Row>
+            <div style={{ textAlign: "right" }}>
+              <Badge color={riskColor[r.level]}>{r.level}</Badge>
+            </div>
+          </div>
         ))}
       </Card>
     </div>
@@ -1578,14 +2050,13 @@ function ChatView({ D }: { D: typeof FALLBACK }) {
   const msgs = D.msgs.filter(m => m.ch === chatCh);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 12, height: "calc(100vh - 130px)" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 12, height: "calc(100vh - 132px)" }}>
       {/* Channel tabs */}
-      <div style={{ display: "flex", gap: 6 }}>
+      <div style={{ display: "flex", gap: 8 }}>
         {channels.map(ch => (
           <button
             key={ch}
             onClick={() => setChatCh(ch)}
-            className="clickable"
             style={{
               background: chatCh === ch ? C.blue : C.surface,
               color: chatCh === ch ? "#FFF" : C.secondary,
@@ -1593,6 +2064,7 @@ function ChatView({ D }: { D: typeof FALLBACK }) {
               borderRadius: 20, padding: "6px 14px",
               fontSize: 12, fontWeight: 500, cursor: "pointer",
               fontFamily: "inherit",
+              transition: "all 0.1s ease",
             }}
           >
             #{ch.toLowerCase()}
@@ -1602,18 +2074,19 @@ function ChatView({ D }: { D: typeof FALLBACK }) {
 
       {/* Message list */}
       <div style={{
-        flex: 1, background: C.surface, borderRadius: 12,
-        boxShadow: shadow.sm, padding: "16px 20px",
+        flex: 1, background: C.surface, borderRadius: 10,
+        border: `0.5px solid ${C.border}`,
+        boxShadow: shadow, padding: "16px 20px",
         overflowY: "auto",
-        display: "flex", flexDirection: "column-reverse", gap: 14,
+        display: "flex", flexDirection: "column-reverse", gap: 12,
       }}>
         {msgs.length === 0 ? (
           <EmptyState icon="💬" title={`Inga meddelanden i #${chatCh.toLowerCase()}`} />
         ) : (
           msgs.map((m, i) => (
-            <div key={i} style={{ display: "flex", gap: 10 }}>
+            <div key={i} style={{ display: "flex", gap: 8 }}>
               <div style={{
-                width: 30, height: 30, borderRadius: "50%",
+                width: 32, height: 32, borderRadius: "50%",
                 background: m.s ? C.blue + "15" : C.fill,
                 color: m.s ? C.blue : C.text,
                 display: "flex", alignItems: "center", justifyContent: "center",
@@ -1637,9 +2110,9 @@ function ChatView({ D }: { D: typeof FALLBACK }) {
           placeholder={`Skriv i #${chatCh.toLowerCase()}…`}
           style={{
             flex: 1, background: C.surface,
-            border: `1px solid ${C.border}`, borderRadius: 10,
+            border: `0.5px solid ${C.border}`, borderRadius: 10,
             padding: "10px 14px", fontSize: 13, color: C.text,
-            outline: "none", boxShadow: shadow.sm, fontFamily: "inherit",
+            outline: "none", boxShadow: shadow, fontFamily: "inherit",
           }}
         />
         <Btn variant="primary">Skicka</Btn>
@@ -1649,14 +2122,11 @@ function ChatView({ D }: { D: typeof FALLBACK }) {
 }
 
 // ─── Main App ─────────────────────────────────────────────────────────────────
-export default function App() {
-  const [view, setView] = useState("admin");
-  const [collapsed, setCollapsed] = useState(false);
+export default function App({ user: propUser, onLogout }: { user?: any; onLogout?: () => void }) {
+  const [view, setView] = useState("overview");
 
-  const { data: apiDashboard } = useApi<typeof FALLBACK>("/api/dashboards/management");
   const { data: apiNCs } = useApi<{ id: string; title: string; severity: string; status: string; code?: string; who?: string; days?: number }[]>("/api/nc");
   const { data: apiRisks } = useApi<{ id: string; title: string; category: string; probability: number; impact: number; score: number; level: string; mitigation_plan: string; code?: string }[]>("/api/risks");
-  const { data: apiProcesses } = useApi<{ id: string; name: string; category: string; code?: string }[]>("/api/processes");
   const { data: apiPerf } = useApi<{ process_id: string; process_name: string; execution_count: number; avg_duration_ms: number; nc_count: number }[]>("/api/processes/performance");
   const { data: apiImprovements } = useApi<{ id: string; title: string; status: string; pdca_phase: string; code?: string }[]>("/api/improvements");
   const { data: apiCompliance } = useApi<{ id: string; name: string; completion_pct: number; total_requirements: number; met_requirements: number }[]>("/api/compliance");
@@ -1681,54 +2151,65 @@ export default function App() {
     ? apiPerf.map((p, i) => ({ code: `PROC-${String(i + 1).padStart(3, "0")}`, name: p.process_name, runs30d: p.execution_count, avgMin: Math.round(p.avg_duration_ms / 60000), ncs: p.nc_count, owner: "—" }))
     : FALLBACK.processes;
 
-  const D = { ...FALLBACK, ncs, risks, improvements, compliance, processes };
+  const D: typeof FALLBACK = {
+    ...FALLBACK,
+    ncs, risks, improvements, compliance, processes,
+    user: propUser
+      ? { id: propUser.id ?? "", full_name: propUser.full_name ?? propUser.email ?? "Användare", role: propUser.role ?? "ADMIN" }
+      : FALLBACK.user,
+  };
 
   const { t } = useTranslation();
   const viewTitles: Record<string, string> = {
-    admin: t('nav.overview'),
-    sales: t('nav.deals'),
-    finance: t('nav.reports'),
-    tasks: t('nav.tasks'),
-    capability: t('nav.capabilities'),
-    development: t('nav.development'),
-    goals: t('nav.goals'),
-    processes: t('nav.processes'),
-    nc: t('nav.nonConformances'),
-    improvements: "PDCA",
-    compliance: t('nav.compliance'),
-    risks: t('nav.risks'),
+    overview: "Översikt",
+    deals: "Affärer",
+    tasks: "Uppgifter",
+    goals: "Mål",
     chat: "Chatt",
-    learning: t('nav.learning'),
+    processes: "Processer",
+    nc: "Avvikelser",
+    improvements: "PDCA",
+    compliance: "Compliance",
+    risks: "Risker",
+    finance: "Huvudbok",
+    reports: "Rapporter",
+    capability: "Kompetenser",
+    development: "Utveckling",
+    learning: "Utbildning",
+    culture:   "Kultur & Events",
+    dms:       "DMS Bil",
+    spaghetti: "Flödesanalys",
+    spatial:   "Verkstadskarta",
+    people:    "Team & Trivsel",
   };
-
-  const sidebarWidth = collapsed ? 60 : 220;
 
   return (
     <>
       <style>{globalStyles}</style>
       <div style={{
         width: "100%", minHeight: "100vh",
-        background: C.bg,
-        fontFamily: "Inter, -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif",
-        color: C.text,
+        background: "#F2F2F7",
+        fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif",
+        color: "#000000",
         WebkitFontSmoothing: "antialiased",
         MozOsxFontSmoothing: "grayscale",
+        display: "flex",
       }}>
         <Sidebar
           view={view}
           setView={setView}
-          collapsed={collapsed}
-          setCollapsed={setCollapsed}
           userName={D.user.full_name}
+          onLogout={onLogout}
         />
 
-        <div style={{ marginLeft: sidebarWidth, flex: 1, display: "flex", flexDirection: "column", transition: "margin-left 0.2s ease" }}>
-          <TopBar title={viewTitles[view] ?? view} />
+        <div style={{ marginLeft: 260, flex: 1, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+          <TopBar title={viewTitles[view] ?? view} userName={D.user.full_name} />
 
-          <div style={{ flex: 1, padding: "24px 28px 60px" }}>
-            {view === "admin" && <AdminView D={D} />}
-            {view === "sales" && <SalesView D={D} />}
+          <main role="main" style={{ flex: 1, padding: "24px 24px 64px", maxWidth: 1280, width: "100%" }}>
+            {view === "overview" && <OverviewView D={D} />}
+            {view === "deals" && <SalesView D={D} />}
             {view === "finance" && <FinanceView D={D} />}
+            {view === "reports" && <ReportsView D={D} />}
             {view === "tasks" && <TasksView D={D} />}
             {view === "capability" && <CapabilityView D={D} />}
             {view === "development" && <DevelopmentView D={D} />}
@@ -1739,8 +2220,15 @@ export default function App() {
             {view === "compliance" && <ComplianceView D={D} />}
             {view === "risks" && <RisksView D={D} />}
             {view === "chat" && <ChatView D={D} />}
-            {view === "learning" && <LearningModule user={D.user as any} />}
-          </div>
+            {view === "culture"    && <CultureModule />}
+            {view === "learning"   && <LearningModule user={D.user as any} />}
+            {view === "dms"        && <DMSModule />}
+            {view === "spaghetti" && <SpaghettiModule />}
+            {view === "spatial"   && <SpatialModule />}
+            {view === "assets"       && <AssetModule user={D.user as any} />}
+            {view === "consumables"  && <ConsumablesModule />}
+            {view === "people"       && <PeopleOSModule D={D as any} />}
+          </main>
         </div>
       </div>
     </>

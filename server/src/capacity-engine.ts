@@ -36,12 +36,19 @@ interface WorkforcePlanBody {
 
 const router = Router();
 
+// Auth middleware — all capacity routes require a logged-in user
+const auth = (req: Request, res: Response, next: Function) => {
+  if (!(req as any).user) return res.status(401).json({ error: "Unauthorized" });
+  next();
+};
+
 // ---------------------------------------------------------------------------
 // GET /api/capacity/current — Org-level capacity summary
 // ---------------------------------------------------------------------------
-router.get("/api/capacity/current", async (req: Request, res: Response) => {
+router.get("/api/capacity/current", auth, async (req: Request, res: Response) => {
   try {
-    const { org_id } = req.query as Record<string, string | undefined>;
+    // org_id comes from authenticated user — query param is ignored for security
+    const org_id: string | undefined = (req as any).user?.org_id ?? (req.query as Record<string, string>).org_id;
 
     let query = supabase.from("v_org_capacity_summary").select("*");
     if (org_id) query = query.eq("org_id", org_id);
@@ -61,9 +68,9 @@ router.get("/api/capacity/current", async (req: Request, res: Response) => {
 // ---------------------------------------------------------------------------
 // GET /api/capacity/by-role — Capacity grouped by role
 // ---------------------------------------------------------------------------
-router.get("/api/capacity/by-role", async (req: Request, res: Response) => {
+router.get("/api/capacity/by-role", auth, async (req: Request, res: Response) => {
   try {
-    const { org_id } = req.query as Record<string, string | undefined>;
+    const org_id: string | undefined = (req as any).user?.org_id ?? (req.query as Record<string, string>).org_id;
 
     let query = supabase.from("v_current_capacity").select("*");
     if (org_id) query = query.eq("org_id", org_id);
@@ -107,9 +114,9 @@ router.get("/api/capacity/by-role", async (req: Request, res: Response) => {
 // ---------------------------------------------------------------------------
 // GET /api/capacity/by-user — Per-user capacity details
 // ---------------------------------------------------------------------------
-router.get("/api/capacity/by-user", async (req: Request, res: Response) => {
+router.get("/api/capacity/by-user", auth, async (req: Request, res: Response) => {
   try {
-    const { org_id } = req.query as Record<string, string | undefined>;
+    const org_id: string | undefined = (req as any).user?.org_id ?? (req.query as Record<string, string>).org_id;
 
     let query = supabase.from("v_current_capacity").select("*");
     if (org_id) query = query.eq("org_id", org_id);
@@ -129,9 +136,9 @@ router.get("/api/capacity/by-user", async (req: Request, res: Response) => {
 // ---------------------------------------------------------------------------
 // GET /api/capacity/utilization — Actual vs target utilization
 // ---------------------------------------------------------------------------
-router.get("/api/capacity/utilization", async (req: Request, res: Response) => {
+router.get("/api/capacity/utilization", auth, async (req: Request, res: Response) => {
   try {
-    const { org_id } = req.query as Record<string, string | undefined>;
+    const org_id: string | undefined = (req as any).user?.org_id ?? (req.query as Record<string, string>).org_id;
 
     let query = supabase.from("v_capacity_utilization").select("*");
     if (org_id) query = query.eq("org_id", org_id);
@@ -151,12 +158,10 @@ router.get("/api/capacity/utilization", async (req: Request, res: Response) => {
 // ---------------------------------------------------------------------------
 // GET /api/capacity/trends — Historical capacity snapshots
 // ---------------------------------------------------------------------------
-router.get("/api/capacity/trends", async (req: Request, res: Response) => {
+router.get("/api/capacity/trends", auth, async (req: Request, res: Response) => {
   try {
-    const { org_id, period, snapshot_type: sType } = req.query as Record<
-      string,
-      string | undefined
-    >;
+    const { period, snapshot_type: sType } = req.query as Record<string, string | undefined>;
+    const org_id: string | undefined = (req as any).user?.org_id ?? (req.query as Record<string, string>).org_id;
 
     let query = supabase
       .from("capacity_snapshots")
@@ -198,7 +203,7 @@ router.get("/api/capacity/trends", async (req: Request, res: Response) => {
 // ---------------------------------------------------------------------------
 // POST /api/time-entries — Log a time entry
 // ---------------------------------------------------------------------------
-router.post("/api/time-entries", async (req: Request, res: Response) => {
+router.post("/api/time-entries", auth, async (req: Request, res: Response) => {
   try {
     const user = (req as any).user;
     if (!user) {
@@ -261,17 +266,15 @@ router.post("/api/time-entries", async (req: Request, res: Response) => {
 // ---------------------------------------------------------------------------
 // GET /api/time-entries/my — My time entries for a period
 // ---------------------------------------------------------------------------
-router.get("/api/time-entries/my", async (req: Request, res: Response) => {
+router.get("/api/time-entries/my", auth, async (req: Request, res: Response) => {
   try {
     const user = (req as any).user;
     if (!user) {
       return res.status(401).json({ error: "Authentication required" });
     }
 
-    const { org_id, date_from, date_to } = req.query as Record<
-      string,
-      string | undefined
-    >;
+    const { date_from, date_to } = req.query as Record<string, string | undefined>;
+    const org_id: string | undefined = (req as any).user?.org_id ?? (req.query as Record<string, string>).org_id;
 
     let query = supabase
       .from("time_entries")
@@ -298,17 +301,15 @@ router.get("/api/time-entries/my", async (req: Request, res: Response) => {
 // ---------------------------------------------------------------------------
 // GET /api/time-entries/team — Team time entries (manager view)
 // ---------------------------------------------------------------------------
-router.get("/api/time-entries/team", async (req: Request, res: Response) => {
+router.get("/api/time-entries/team", auth, async (req: Request, res: Response) => {
   try {
     const user = (req as any).user;
     if (!user) {
       return res.status(401).json({ error: "Authentication required" });
     }
 
-    const { org_id, date_from, date_to, user_id } = req.query as Record<
-      string,
-      string | undefined
-    >;
+    const { date_from, date_to, user_id } = req.query as Record<string, string | undefined>;
+    const org_id: string | undefined = (req as any).user?.org_id ?? (req.query as Record<string, string>).org_id;
 
     let query = supabase
       .from("time_entries")
@@ -337,6 +338,7 @@ router.get("/api/time-entries/team", async (req: Request, res: Response) => {
 // ---------------------------------------------------------------------------
 router.patch(
   "/api/time-entries/:id/approve",
+  auth,
   async (req: Request, res: Response) => {
     try {
       const user = (req as any).user;
@@ -375,7 +377,7 @@ router.patch(
 // ---------------------------------------------------------------------------
 // POST /api/capacity/simulate — Run a what-if simulation
 // ---------------------------------------------------------------------------
-router.post("/api/capacity/simulate", async (req: Request, res: Response) => {
+router.post("/api/capacity/simulate", auth, async (req: Request, res: Response) => {
   try {
     const user = (req as any).user;
     if (!user) {
@@ -552,6 +554,7 @@ router.post("/api/capacity/simulate", async (req: Request, res: Response) => {
 // ---------------------------------------------------------------------------
 router.post(
   "/api/capacity/simulate/attrition/:userId",
+  auth,
   async (req: Request, res: Response) => {
     try {
       const { userId } = req.params;
@@ -651,6 +654,7 @@ router.post(
 // ---------------------------------------------------------------------------
 router.post(
   "/api/capacity/simulate/ai-analyze",
+  auth,
   async (req: Request, res: Response) => {
     try {
       const { org_id } = req.body as { org_id: string };
@@ -756,9 +760,10 @@ router.post(
 // ---------------------------------------------------------------------------
 // GET /api/capacity/simulations — List saved simulations
 // ---------------------------------------------------------------------------
-router.get("/api/capacity/simulations", async (req: Request, res: Response) => {
+router.get("/api/capacity/simulations", auth, async (req: Request, res: Response) => {
   try {
-    const { org_id, status } = req.query as Record<string, string | undefined>;
+    const { status } = req.query as Record<string, string | undefined>;
+    const org_id: string | undefined = (req as any).user?.org_id ?? (req.query as Record<string, string>).org_id;
 
     let query = supabase
       .from("capacity_simulations")
@@ -785,6 +790,7 @@ router.get("/api/capacity/simulations", async (req: Request, res: Response) => {
 // ---------------------------------------------------------------------------
 router.get(
   "/api/capacity/simulations/:id",
+  auth,
   async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
@@ -815,6 +821,7 @@ router.get(
 // ---------------------------------------------------------------------------
 router.post(
   "/api/capacity/workforce-plan",
+  auth,
   async (req: Request, res: Response) => {
     try {
       const user = (req as any).user;
@@ -922,9 +929,10 @@ router.post(
 // ---------------------------------------------------------------------------
 router.get(
   "/api/capacity/workforce-plan/current",
+  auth,
   async (req: Request, res: Response) => {
     try {
-      const { org_id } = req.query as Record<string, string | undefined>;
+      const org_id: string | undefined = (req as any).user?.org_id ?? (req.query as Record<string, string>).org_id;
 
       let query = supabase
         .from("workforce_plans")
@@ -954,6 +962,7 @@ router.get(
 // ---------------------------------------------------------------------------
 router.patch(
   "/api/capacity/workforce-plan/:id",
+  auth,
   async (req: Request, res: Response) => {
     try {
       const user = (req as any).user;
@@ -1015,6 +1024,7 @@ router.patch(
 // ---------------------------------------------------------------------------
 router.get(
   "/api/capacity/workforce-plan/:id/gap",
+  auth,
   async (req: Request, res: Response) => {
     try {
       const { id } = req.params;

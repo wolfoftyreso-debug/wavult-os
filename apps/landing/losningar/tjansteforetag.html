@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pixdrift för tjänsteföretag | Konsult, bemanning & service</title>
+  <meta name="description" content="pixdrift hjälper konsultbolag och tjänsteföretag att hantera resursplanering, kunduppdrag och fakturering — i ett system istället för tre." />
+  <link rel="canonical" href="https://pixdrift.com/losningar/tjansteforetag.html" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #000; color: #f5f5f7; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    a { cursor: pointer; } ul { list-style: none; }
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 22px; background: rgba(0,0,0,0.72); backdrop-filter: blur(20px); border-bottom: 0.5px solid rgba(255,255,255,0.12); }
+    .nav-logo { color: #f5f5f7; font-size: 18px; font-weight: 700; text-decoration: none; letter-spacing: -0.03em; }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a { color: rgba(245,245,247,0.75); font-size: 12px; text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover { color: #f5f5f7; }
+    .nav-actions { display: flex; gap: 16px; align-items: center; }
+    .nav-actions a { color: rgba(245,245,247,0.75); font-size: 12px; text-decoration: none; }
+    .nav-cta { background: #fff; color: #1d1d1f !important; padding: 6px 14px; border-radius: 980px; font-size: 12px !important; font-weight: 500; }
+    .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .nav-hamburger span { display: block; width: 22px; height: 1.5px; background: #f5f5f7; border-radius: 2px; }
+
+    .page-hero { padding: 140px 24px 100px; text-align: center; background: #000; position: relative; overflow: hidden; }
+    .page-hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 70% 50% at 50% -5%, rgba(52,199,89,0.2) 0%, transparent 70%); pointer-events: none; }
+    .hero-breadcrumb { font-size: 12px; color: rgba(245,245,247,0.35); margin-bottom: 20px; position: relative; z-index: 1; }
+    .hero-breadcrumb a { color: rgba(245,245,247,0.35); text-decoration: none; }
+    .hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; background: rgba(52,199,89,0.1); border: 0.5px solid rgba(52,199,89,0.3); border-radius: 980px; padding: 6px 14px; margin-bottom: 24px; font-size: 12px; color: #34c759; font-weight: 500; position: relative; z-index: 1; }
+    .page-hero h1 { font-size: clamp(36px, 6vw, 70px); font-weight: 800; letter-spacing: -0.04em; line-height: 1.04; margin-bottom: 24px; background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.5) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; max-width: 760px; margin-left: auto; margin-right: auto; position: relative; z-index: 1; }
+    .page-hero-sub { font-size: 19px; color: rgba(245,245,247,0.55); max-width: 600px; margin: 0 auto 40px; line-height: 1.6; position: relative; z-index: 1; }
+    .hero-ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
+    .btn-primary { background: #6366f1; color: #fff; padding: 14px 28px; border-radius: 980px; font-size: 17px; font-weight: 500; text-decoration: none; transition: background 0.2s; display: inline-block; }
+    .btn-primary:hover { background: #4f46e5; }
+    .btn-secondary { background: rgba(255,255,255,0.08); border: 0.5px solid rgba(255,255,255,0.18); color: #f5f5f7; padding: 14px 28px; border-radius: 980px; font-size: 17px; font-weight: 500; text-decoration: none; display: inline-block; }
+    .btn-secondary:hover { background: rgba(255,255,255,0.12); }
+
+    .usecase-section { padding: 80px 24px 100px; }
+    .usecase-section:nth-child(odd) { background: #000; }
+    .usecase-section:nth-child(even) { background: #030305; }
+    .usecase-inner { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center; }
+    .usecase-inner.flip { direction: rtl; }
+    .usecase-inner.flip > * { direction: ltr; }
+    .uc-tag { font-size: 11px; color: #34c759; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 14px; }
+    .uc-h2 { font-size: clamp(26px, 3.5vw, 40px); font-weight: 700; color: #f5f5f7; letter-spacing: -0.025em; line-height: 1.15; margin-bottom: 16px; }
+    .uc-desc { font-size: 16px; color: rgba(245,245,247,0.6); line-height: 1.7; margin-bottom: 24px; }
+    .feat-list { display: flex; flex-direction: column; gap: 10px; }
+    .feat-item { display: flex; gap: 10px; align-items: flex-start; }
+    .feat-check { color: #34c759; font-size: 13px; flex-shrink: 0; margin-top: 2px; }
+    .feat-text { font-size: 14px; color: rgba(245,245,247,0.65); line-height: 1.5; }
+    .uc-card { background: #1c1c1e; border: 0.5px solid rgba(255,255,255,0.09); border-radius: 16px; padding: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.55); }
+    .uc-card-label { font-size: 11px; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; }
+    .stat-row { display: flex; gap: 8px; margin-bottom: 14px; }
+    .stat-chip { flex: 1; border-radius: 8px; padding: 12px; text-align: center; }
+    .stat-chip-label { font-size: 11px; margin-bottom: 4px; }
+    .stat-chip-value { font-size: 20px; font-weight: 700; color: #f5f5f7; }
+    .c-green { background: rgba(52,199,89,0.1); border: 0.5px solid rgba(52,199,89,0.2); }
+    .c-green .stat-chip-label { color: #34c759; }
+    .c-indigo { background: rgba(99,102,241,0.1); border: 0.5px solid rgba(99,102,241,0.2); }
+    .c-indigo .stat-chip-label { color: #a5b4fc; }
+    .c-orange { background: rgba(255,149,0,0.1); border: 0.5px solid rgba(255,149,0,0.2); }
+    .c-orange .stat-chip-label { color: #ff9500; }
+    .uc-list-items { background: rgba(255,255,255,0.025); border: 0.5px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 14px 16px; }
+    .uc-list-label { font-size: 11px; color: rgba(255,255,255,0.3); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .uc-list-item { font-size: 13px; color: rgba(255,255,255,0.6); padding: 4px 0; }
+
+    .testimonial-section { padding: 80px 24px; background: #000; }
+    .testimonial-inner { max-width: 700px; margin: 0 auto; text-align: center; }
+    .testimonial-stars { color: #f59e0b; font-size: 20px; letter-spacing: 2px; margin-bottom: 24px; }
+    .testimonial-text { font-size: 22px; font-style: italic; color: rgba(245,245,247,0.8); line-height: 1.6; margin-bottom: 28px; }
+    .testimonial-author-name { font-size: 15px; font-weight: 700; color: #f5f5f7; }
+    .testimonial-author-role { font-size: 13px; color: rgba(245,245,247,0.4); }
+
+    .features-section { padding: 80px 24px 120px; background: #030305; }
+    .features-grid { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .feature-card { background: #111113; border: 0.5px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 24px; }
+    .feature-icon { font-size: 28px; margin-bottom: 12px; }
+    .feature-title { font-size: 16px; font-weight: 600; color: #f5f5f7; margin-bottom: 8px; }
+    .feature-desc { font-size: 14px; color: rgba(245,245,247,0.5); line-height: 1.55; }
+
+    .cta-section { padding: 120px 24px; background: #000; text-align: center; }
+    .cta-h2 { font-size: clamp(36px, 6vw, 60px); font-weight: 800; letter-spacing: -0.04em; line-height: 1.04; margin-bottom: 20px; background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.5) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .cta-sub { font-size: 19px; color: rgba(245,245,247,0.5); margin-bottom: 40px; }
+    .cta-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    .other-solutions { padding: 60px 24px; background: #030305; }
+    .other-solutions h3 { font-size: 18px; color: rgba(245,245,247,0.5); text-align: center; margin-bottom: 24px; font-weight: 500; }
+    .sol-grid { max-width: 600px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .sol-chip { background: #111113; border: 0.5px solid rgba(255,255,255,0.07); border-radius: 10px; padding: 14px; text-align: center; text-decoration: none; transition: border-color 0.2s; }
+    .sol-chip:hover { border-color: rgba(99,102,241,0.4); }
+    .sol-chip-title { font-size: 14px; font-weight: 500; color: #f5f5f7; margin-bottom: 2px; }
+    .sol-chip-sub { font-size: 11px; color: rgba(245,245,247,0.35); }
+
+    footer { background: #000; border-top: 0.5px solid rgba(255,255,255,0.08); padding: 40px 24px; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .footer-brand { font-size: 16px; font-weight: 700; color: #f5f5f7; text-decoration: none; letter-spacing: -0.03em; }
+    .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+    .footer-links a { font-size: 13px; color: rgba(245,245,247,0.4); text-decoration: none; }
+    .footer-copy { font-size: 12px; color: rgba(245,245,247,0.25); }
+
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-d1 { transition-delay: 0.08s; } .reveal-d2 { transition-delay: 0.16s; }
+    #mobile-menu { display:none; position:fixed; inset:0; z-index:99; background:#000; overflow-y:auto; padding:80px 24px 40px; }
+
+    @media (max-width: 900px) { .usecase-inner { grid-template-columns: 1fr; gap: 48px; } .usecase-inner.flip { direction: ltr; } .uc-card { order: -1; } .features-grid { grid-template-columns: 1fr 1fr; } .sol-grid { grid-template-columns: 1fr 1fr; } .nav-links { display: none; } .nav-hamburger { display: flex; } }
+    @media (max-width: 600px) { .hero-ctas, .cta-btns { flex-direction: column; align-items: stretch; } .features-grid { grid-template-columns: 1fr; } }
+    @media (prefers-reduced-motion: reduce) { .reveal, * { transition: none !important; animation: none !important; } }
+  </style>
+  <meta name="revised" content="2026-03-21">
+</head>
+<body>
+<nav>
+  <a href="/" class="nav-logo">pixdrift</a>
+  <div class="nav-links">
+    <a href="/produkt.html">Produkt</a>
+    <a href="/#solutions">Lösningar</a>
+    <a href="/priser.html">Priser</a>
+    <a href="/developers/">Developers</a>
+  </div>
+  <div class="nav-actions">
+    <a href="https://app.bc.pixdrift.com">Logga in</a>
+    <a href="/checkout.html" class="nav-cta">Kom igång</a>
+    <div class="nav-hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+<div id="mobile-menu">
+  <button onclick="closeMobileMenu()" style="position:absolute;top:16px;right:20px;background:none;border:none;color:#f5f5f7;font-size:24px;cursor:pointer;">✕</button>
+  <div style="display:flex;flex-direction:column;gap:0;margin-top:8px;">
+    <a href="/produkt.html" style="padding:16px 0;border-bottom:0.5px solid rgba(255,255,255,0.08);font-size:18px;color:#f5f5f7;text-decoration:none;">Produkt</a>
+    <a href="/priser.html" style="padding:16px 0;border-bottom:0.5px solid rgba(255,255,255,0.08);font-size:18px;color:#f5f5f7;text-decoration:none;">Priser</a>
+    <a href="https://app.bc.pixdrift.com" style="padding:16px 0;font-size:18px;color:#6366f1;text-decoration:none;">Logga in</a>
+  </div>
+  <a href="/checkout.html" style="display:block;text-align:center;background:#6366f1;color:#fff;padding:16px;border-radius:980px;font-size:17px;font-weight:500;text-decoration:none;margin-top:32px;">Kom igång — gratis 14 dagar</a>
+</div>
+
+<section class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="hero-breadcrumb reveal"><a href="/">pixdrift</a> / <a href="/#solutions">Lösningar</a> / Tjänsteföretag</div>
+  <div class="hero-eyebrow reveal reveal-d1">Lösning: Tjänsteföretag</div>
+  <h1 class="reveal reveal-d1">pixdrift för<br>tjänsteföretag.</h1>
+  <p class="page-hero-sub reveal reveal-d2">Resursplanering, uppdragsstyrning och fakturering utan Excel och utan att din konsultchef hanterar fem olika system. Allt i ett.</p>
+  <div class="hero-ctas reveal reveal-d2">
+    <a href="/checkout.html" class="btn-primary">Starta gratis testperiod</a>
+    <a href="/priser.html" class="btn-secondary">Se priser</a>
+  </div>
+</section>
+
+<section class="usecase-section">
+  <div class="usecase-inner">
+    <div class="reveal">
+      <div class="uc-tag">Use case 1</div>
+      <h2 class="uc-h2">Resursplanering utan Excel-krig</h2>
+      <p class="uc-desc">Konsultbolag spenderar oproportionerligt mycket tid på att matcha rätt person med rätt uppdrag. pixdrift Capability ger dig realtidsöversikt över vem som är ledig, vilka kompetenser de har och hur beläggning ser ut nästa kvartal.</p>
+      <ul class="feat-list">
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text">Beläggningsöversikt per konsult, team och period</span></li>
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text">Kompetensmatris för snabb matchning mot kundkrav</span></li>
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text">Certifieringsspårning för branschspecifika krav</span></li>
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text">Frånvarohantering integrerad med resursplanering</span></li>
+      </ul>
+    </div>
+    <div class="uc-card reveal reveal-d2">
+      <div class="uc-card-label">Resursöversikt vecka 12–15</div>
+      <div class="stat-row">
+        <div class="stat-chip c-green"><div class="stat-chip-label">Belagda</div><div class="stat-chip-value">18</div></div>
+        <div class="stat-chip c-indigo"><div class="stat-chip-label">Tillgängliga</div><div class="stat-chip-value">4</div></div>
+        <div class="stat-chip c-orange"><div class="stat-chip-label">Beläggning</div><div class="stat-chip-value">82%</div></div>
+      </div>
+      <div class="uc-list-items">
+        <div class="uc-list-label">Aktuell beläggning</div>
+        <div class="uc-list-item">✓ Anna K — Kunduppdrag Volvo · t.o.m. v16</div>
+        <div class="uc-list-item">✓ Johan P — Internprojekt · v12–14</div>
+        <div class="uc-list-item">⚡ Sara M — Tillgänglig v13 — tilldela uppdrag</div>
+        <div class="uc-list-item">⚠ Lars H — Certifiering löper ut v14</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="usecase-section">
+  <div class="usecase-inner flip">
+    <div class="reveal">
+      <div class="uc-tag">Use case 2</div>
+      <h2 class="uc-h2">Uppdragsstyrning från offert till leverans</h2>
+      <p class="uc-desc">Följ varje kunduppdrag från första kontakt till avslutat och fakturerat. Execution-modulen håller koll på tasks, milstenar, beslut och kommunikation — utan att du behöver Jira och Notion vid sidan.</p>
+      <ul class="feat-list">
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text">Uppdragspipeline med scope, budget och tidslinje</span></li>
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text">Leveransplan med milstenar och automatisk uppföljning</span></li>
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text">Kundkommunikation och beslutsdokumentation samlat</span></li>
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text">Budget-tracking med varning vid överskridning</span></li>
+      </ul>
+    </div>
+    <div class="uc-card reveal reveal-d2">
+      <div class="uc-card-label">Aktiva uppdrag</div>
+      <div class="stat-row">
+        <div class="stat-chip c-indigo"><div class="stat-chip-label">Pågående</div><div class="stat-chip-value">9</div></div>
+        <div class="stat-chip c-green"><div class="stat-chip-label">Levererade Q1</div><div class="stat-chip-value">5</div></div>
+        <div class="stat-chip c-orange"><div class="stat-chip-label">Risk</div><div class="stat-chip-value">1</div></div>
+      </div>
+      <div class="uc-list-items">
+        <div class="uc-list-label">Uppdragsöversikt</div>
+        <div class="uc-list-item">✓ Volvo Cars — Digitaliseringsprojekt · På plan</div>
+        <div class="uc-list-item">✓ Ikea Supply — Processoptimering · 80% klart</div>
+        <div class="uc-list-item">⚠ Sandvik AB — Budget 92% förbrukad · Åtgärda</div>
+        <div class="uc-list-item">🕐 ABB — Offert skickad · Väntar svar</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="usecase-section">
+  <div class="usecase-inner">
+    <div class="reveal">
+      <div class="uc-tag">Use case 3</div>
+      <h2 class="uc-h2">Fakturering kopplad till leverans — automatiskt</h2>
+      <p class="uc-desc">Sluta skicka fakturor manuellt. pixdrift Currency kopplar ihop levererade milstenar med fakturering. Timmar loggas, godkänns och omvandlas till faktura i ett flöde — i vilken valuta kunden än betalar.</p>
+      <ul class="feat-list">
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text">Automatisk fakturering vid godkänt milstene</span></li>
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text">Tidrapportering per uppdrag med godkännandeflöde</span></li>
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text">Multi-valuta för internationella kunduppdrag</span></li>
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text">Integration med Fortnox och Visma för bokföring</span></li>
+      </ul>
+    </div>
+    <div class="uc-card reveal reveal-d2">
+      <div class="uc-card-label">Faktureringsöversikt mars</div>
+      <div class="stat-row">
+        <div class="stat-chip c-green"><div class="stat-chip-label">Fakturerat</div><div class="stat-chip-value">€124k</div></div>
+        <div class="stat-chip c-indigo"><div class="stat-chip-label">Betalt</div><div class="stat-chip-value">€98k</div></div>
+        <div class="stat-chip c-orange"><div class="stat-chip-label">Förfaller</div><div class="stat-chip-value">€26k</div></div>
+      </div>
+      <div class="uc-list-items">
+        <div class="uc-list-label">Senaste fakturor</div>
+        <div class="uc-list-item">✓ Volvo Cars — Milstene 3 — €42 000</div>
+        <div class="uc-list-item">✓ Ikea Supply — Löpande timmar — SEK 180k</div>
+        <div class="uc-list-item">⏳ Sandvik AB — Faktura förfaller om 3 dagar</div>
+        <div class="uc-list-item">⚡ ABB — Automatisk faktura skapad vid godkänt</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="testimonial-section">
+  <div class="testimonial-inner reveal">
+    <div class="testimonial-stars">★★★★★</div>
+    <p class="testimonial-text">"pixdrift ersatte vår kombination av Salesforce, Harvest och Visma. Konsultcheferna sparar nu 6 timmar i veckan på resursplanering och fakturering."</p>
+    <div class="testimonial-author-name">Nordic Consulting Group — Placeholder</div>
+    <div class="testimonial-author-role">COO, Management Consulting · Göteborg</div>
+  </div>
+</section>
+
+<section class="features-section">
+  <h2 style="font-size:clamp(28px,4vw,44px);font-weight:800;color:#f5f5f7;letter-spacing:-0.03em;text-align:center;margin-bottom:40px;" class="reveal">Byggt för hur tjänsteföretag jobbar</h2>
+  <div class="features-grid">
+    <div class="feature-card reveal"><div class="feature-icon">👥</div><div class="feature-title">Resursplanering</div><div class="feature-desc">Realtids beläggningsöversikt. Matcha kompetens mot uppdrag automatiskt.</div></div>
+    <div class="feature-card reveal reveal-d1"><div class="feature-icon">📋</div><div class="feature-title">Uppdragsstyrning</div><div class="feature-desc">Scope, milstenar och budget i ett uppdragssystem integrerat med CRM.</div></div>
+    <div class="feature-card reveal reveal-d2"><div class="feature-icon">⏱</div><div class="feature-title">Tidrapportering</div><div class="feature-desc">Enkelt loggning per uppdrag med godkännandeflöde och direktfakturering.</div></div>
+    <div class="feature-card reveal"><div class="feature-icon">💰</div><div class="feature-title">Automatisk fakturering</div><div class="feature-desc">Fakturor skapas vid godkänt milstene. Exporteras direkt till Fortnox.</div></div>
+    <div class="feature-card reveal reveal-d1"><div class="feature-icon">🌍</div><div class="feature-title">Multi-valuta</div><div class="feature-desc">Fakturera i EUR, SEK, NOK, DKK och mer — med automatisk FX-omräkning.</div></div>
+    <div class="feature-card reveal reveal-d2"><div class="feature-icon">📊</div><div class="feature-title">Lönsamhetsanalys</div><div class="feature-desc">Faktisk marginal per uppdrag, per kund och per konsult i realtid.</div></div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <h2 class="cta-h2 reveal">Effektivisera hela<br>konsultoperationen.</h2>
+  <p class="cta-sub reveal reveal-d1">14 dagar gratis. Hela teamet. Inga kreditkort.</p>
+  <div class="cta-btns reveal reveal-d2">
+    <a href="/checkout.html" class="btn-primary">Starta gratis testperiod</a>
+    <a href="/priser.html" class="btn-secondary">Se priser</a>
+  </div>
+</section>
+
+<section class="other-solutions">
+  <h3>Lösningar för andra branscher</h3>
+  <div class="sol-grid">
+    <a href="/losningar/saas.html" class="sol-chip"><div class="sol-chip-title">SaaS</div><div class="sol-chip-sub">Tech-bolag</div></a>
+    <a href="/losningar/handel.html" class="sol-chip"><div class="sol-chip-title">Handel</div><div class="sol-chip-sub">E-handel & retail</div></a>
+    <a href="/losningar/industri.html" class="sol-chip"><div class="sol-chip-title">Industri</div><div class="sol-chip-sub">Tillverkning & VVS</div></a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <a href="/" class="footer-brand">pixdrift</a>
+    <div class="footer-links">
+      <a href="/produkt.html">Produkt</a><a href="/priser.html">Priser</a><a href="/om-oss.html">Om oss</a><a href="/developers/">Developers</a>
+    </div>
+    <div class="footer-copy">© 2025 pixdrift AB</div>
+  </div>
+</footer>
+<script>
+  document.getElementById('hamburger').addEventListener('click', openMobileMenu);
+  function openMobileMenu() { document.getElementById('mobile-menu').style.display = 'block'; document.body.style.overflow = 'hidden'; }
+  function closeMobileMenu() { document.getElementById('mobile-menu').style.display = 'none'; document.body.style.overflow = ''; }
+  const revealEls = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } }); }, { threshold: 0.08, rootMargin: '0px 0px -50px 0px' });
+  revealEls.forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

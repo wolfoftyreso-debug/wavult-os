@@ -30,7 +30,20 @@ output "ecr_repository_url" {
 
 output "cloudfront_distribution_ids" {
   description = "CloudFront distribution IDs per app"
-  value       = { for app, dist in aws_cloudfront_distribution.frontends : app => dist.id }
+  value       = merge(
+    { for app, dist in aws_cloudfront_distribution.frontends : app => dist.id },
+    { landing = aws_cloudfront_distribution.landing.id }
+  )
+}
+
+output "landing_cloudfront_id" {
+  description = "Landing page CloudFront distribution ID"
+  value       = aws_cloudfront_distribution.landing.id
+}
+
+output "landing_url" {
+  description = "Landing page URL"
+  value       = "https://${var.domain}"
 }
 
 output "alb_dns" {

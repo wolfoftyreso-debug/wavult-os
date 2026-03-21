@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>pixdrift för bilverkstäder — DMS, bokföring och ISO i ett system</title>
+  <meta name="description" content="Driv hela din verkstad från ett system. Arbetsorder, reservdelar, garanti, bokföring och ISO-krav — allt i pixdrift. Ersätter Keyloop, Winbas och Fortnox." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://pixdrift.com/verkstad/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://pixdrift.com/verkstad/" />
+  <meta property="og:title" content="pixdrift för bilverkstäder — Driv hela din verkstad från ett system" />
+  <meta property="og:description" content="Arbetsorder, reservdelar, garanti, personalliggare och ISO-krav — allt i pixdrift. Ersätter Keyloop, Winbas och Fortnox." />
+  <meta property="og:image" content="https://pixdrift.com/pixdrift-og.png" />
+
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "pixdrift för bilverkstäder",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web, iOS, Android",
+    "url": "https://pixdrift.com/verkstad/",
+    "description": "DMS, bokföring och ISO i ett system för bilverkstäder och generalagenter.",
+    "offers": [
+      { "@type": "Offer", "name": "Starter", "price": "499", "priceCurrency": "EUR" },
+      { "@type": "Offer", "name": "Growth", "price": "999", "priceCurrency": "EUR" },
+      { "@type": "Offer", "name": "DMS Pro", "price": "1499", "priceCurrency": "EUR" }
+    ]
+  }
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <style>
+    /* ─── RESET ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    img { display: block; max-width: 100%; height: auto; }
+    a { cursor: pointer; }
+    ul { list-style: none; }
+
+    /* ─── BASE ──────────────────────────────────────────── */
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+      background: #000;
+      color: #f5f5f7;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ─── SCROLL PROGRESS ───────────────────────────────── */
+    #scroll-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #6366f1, #8b5cf6);
+      z-index: 9999;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 8px rgba(99,102,241,0.6);
+      width: 0;
+    }
+
+    /* ─── NAV ───────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 0.5px solid rgba(255,255,255,0.12);
+    }
+    .nav-logo {
+      font-size: 15px;
+      font-weight: 700;
+      color: #f5f5f7;
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+    .nav-links a {
+      color: rgba(245,245,247,0.75);
+      font-size: 12px;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: #f5f5f7; }
+    .nav-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .nav-login {
+      color: rgba(245,245,247,0.75);
+      font-size: 12px;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-login:hover { color: #f5f5f7; }
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      background: #6366f1;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 20px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.88; }
+
+    /* ─── HERO ──────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px; left: 50%;
+      transform: translateX(-50%);
+      width: 900px; height: 900px;
+      background: radial-gradient(ellipse, rgba(99,102,241,0.18) 0%, rgba(139,92,246,0.08) 40%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(99,102,241,0.15);
+      border: 0.5px solid rgba(99,102,241,0.35);
+      color: #a5b4fc;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 6vw, 4.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.08;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, #f5f5f7 0%, rgba(245,245,247,0.7) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: rgba(245,245,247,0.65);
+      max-width: 620px;
+      margin-bottom: 36px;
+      line-height: 1.7;
+    }
+
+    /* ─── TOOL GRAVEYARD ─────────────────────────────────── */
+    .tool-graveyard {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 40px;
+      font-size: 13px;
+    }
+    .tool-graveyard s {
+      color: rgba(245,245,247,0.35);
+      text-decoration: line-through;
+      text-decoration-color: rgba(245,245,247,0.25);
+    }
+    .tool-graveyard .arrow {
+      color: #6366f1;
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .tool-graveyard .target {
+      color: #a5b4fc;
+      font-weight: 700;
+    }
+
+    /* ─── CTA GROUP ─────────────────────────────────────── */
+    .cta-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #6366f1;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 24px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.06);
+      border: 0.5px solid rgba(255,255,255,0.15);
+      color: rgba(245,245,247,0.85);
+      font-size: 14px;
+      font-weight: 500;
+      padding: 12px 24px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); transform: translateY(-1px); }
+
+    /* ─── SECTION SHARED ─────────────────────────────────── */
+    section {
+      padding: 100px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .section-eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #6366f1;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      color: rgba(245,245,247,0.6);
+      font-size: 1.05rem;
+      max-width: 560px;
+      line-height: 1.7;
+      margin-bottom: 60px;
+    }
+
+    /* ─── CALCULATOR ─────────────────────────────────────── */
+    #kalkylator {
+      padding: 100px 24px;
+    }
+    .calculator-wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.04);
+      border: 0.5px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 48px 40px;
+    }
+    .calc-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .calc-header h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      margin-bottom: 12px;
+    }
+    .calc-header p {
+      color: rgba(245,245,247,0.55);
+      font-size: 0.95rem;
+    }
+    .slider-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .slider-label span:first-child {
+      font-size: 14px;
+      color: rgba(245,245,247,0.75);
+    }
+    .slider-label strong {
+      font-size: 22px;
+      font-weight: 700;
+      color: #a5b4fc;
+    }
+    input[type="range"] {
+      width: 100%;
+      height: 4px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 2px;
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+      margin-bottom: 40px;
+      accent-color: #6366f1;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px; height: 20px;
+      background: #6366f1;
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(99,102,241,0.5);
+      cursor: pointer;
+    }
+    .cost-breakdown {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .cost-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 10px;
+      border: 0.5px solid rgba(255,255,255,0.07);
+      font-size: 14px;
+    }
+    .cost-row .label { color: rgba(245,245,247,0.6); }
+    .cost-row .value { font-weight: 600; color: rgba(245,245,247,0.85); }
+    .cost-row.pixdrift-row { border-color: rgba(99,102,241,0.3); background: rgba(99,102,241,0.08); }
+    .cost-row.pixdrift-row .value { color: #a5b4fc; }
+    .savings-highlight {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      background: rgba(52,199,89,0.08);
+      border: 1px solid rgba(52,199,89,0.25);
+      border-radius: 12px;
+      margin-top: 8px;
+    }
+    .savings-highlight .slabel {
+      font-size: 15px;
+      font-weight: 600;
+      color: rgba(245,245,247,0.85);
+    }
+    .savings-highlight .samount {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #34c759;
+    }
+    .calc-cta {
+      text-align: center;
+      margin-top: 32px;
+    }
+
+    /* ─── FEATURE GRID ───────────────────────────────────── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .feature-card {
+      background: rgba(255,255,255,0.03);
+      border: 0.5px solid rgba(255,255,255,0.09);
+      border-radius: 16px;
+      padding: 28px;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .feature-card:hover {
+      border-color: rgba(99,102,241,0.3);
+      background: rgba(99,102,241,0.05);
+    }
+    .feature-icon {
+      font-size: 28px;
+      margin-bottom: 14px;
+    }
+    .feature-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #f5f5f7;
+    }
+    .feature-card ul {
+      list-style: none;
+      padding: 0;
+    }
+    .feature-card ul li {
+      font-size: 13px;
+      color: rgba(245,245,247,0.6);
+      padding: 5px 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .feature-card ul li::before {
+      content: '→';
+      color: #6366f1;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ─── FEATURES SECTION FULL WIDTH ───────────────────── */
+    .features-section {
+      padding: 100px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ─── PRICING ────────────────────────────────────────── */
+    #pricing {
+      padding: 100px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 48px;
+    }
+    .pricing-card {
+      background: rgba(255,255,255,0.03);
+      border: 0.5px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 36px 28px;
+      text-align: left;
+      position: relative;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .pricing-card:hover {
+      border-color: rgba(99,102,241,0.35);
+      transform: translateY(-4px);
+    }
+    .pricing-card.featured {
+      border-color: rgba(99,102,241,0.5);
+      background: rgba(99,102,241,0.07);
+    }
+    .pricing-badge {
+      position: absolute;
+      top: -12px; left: 50%;
+      transform: translateX(-50%);
+      background: #6366f1;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+    .pricing-plan {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #6366f1;
+      margin-bottom: 8px;
+    }
+    .pricing-price {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 4px;
+    }
+    .pricing-price span {
+      font-size: 1rem;
+      font-weight: 400;
+      color: rgba(245,245,247,0.5);
+    }
+    .pricing-tagline {
+      font-size: 13px;
+      color: rgba(245,245,247,0.55);
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+      border-bottom: 0.5px solid rgba(255,255,255,0.08);
+    }
+    .pricing-features {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 28px;
+    }
+    .pricing-features li {
+      font-size: 13px;
+      color: rgba(245,245,247,0.75);
+      padding: 7px 0;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    .pricing-features li .check {
+      color: #34c759;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .pricing-btn {
+      display: block;
+      text-align: center;
+      padding: 11px 20px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .pricing-btn.primary { background: #6366f1; color: #fff; }
+    .pricing-btn.secondary {
+      background: rgba(255,255,255,0.06);
+      border: 0.5px solid rgba(255,255,255,0.15);
+      color: rgba(245,245,247,0.85);
+    }
+    .pricing-btn:hover { opacity: 0.85; }
+
+    /* ─── TESTIMONIALS ───────────────────────────────────── */
+    #testimonials {
+      padding: 100px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 48px;
+    }
+    .testimonial-card {
+      background: rgba(255,255,255,0.03);
+      border: 0.5px solid rgba(255,255,255,0.09);
+      border-radius: 16px;
+      padding: 28px;
+    }
+    .testimonial-quote {
+      font-size: 14px;
+      line-height: 1.75;
+      color: rgba(245,245,247,0.8);
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+    .testimonial-author {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .testimonial-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .testimonial-meta .name { font-size: 13px; font-weight: 600; }
+    .testimonial-meta .role { font-size: 11px; color: rgba(245,245,247,0.45); }
+    /* PLACEHOLDER NOTICE */
+    .placeholder-notice {
+      font-size: 10px;
+      color: rgba(245,245,247,0.25);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    /* ─── FAQ ────────────────────────────────────────────── */
+    #faq {
+      padding: 100px 24px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .faq-item {
+      border-bottom: 0.5px solid rgba(255,255,255,0.1);
+    }
+    .faq-question {
+      width: 100%;
+      background: none;
+      border: none;
+      color: #f5f5f7;
+      text-align: left;
+      padding: 22px 0;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .faq-question:hover { color: #a5b4fc; }
+    .faq-icon {
+      flex-shrink: 0;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: rgba(99,102,241,0.15);
+      border: 0.5px solid rgba(99,102,241,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: #a5b4fc;
+      transition: transform 0.3s;
+    }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+    .faq-answer {
+      display: none;
+      font-size: 14px;
+      color: rgba(245,245,247,0.6);
+      line-height: 1.75;
+      padding-bottom: 22px;
+    }
+    .faq-item.open .faq-answer { display: block; }
+
+    /* ─── CTA BANNER ─────────────────────────────────────── */
+    .cta-banner {
+      padding: 80px 24px;
+      text-align: center;
+    }
+    .cta-banner-inner {
+      max-width: 700px;
+      margin: 0 auto;
+      background: rgba(99,102,241,0.08);
+      border: 0.5px solid rgba(99,102,241,0.3);
+      border-radius: 24px;
+      padding: 60px 40px;
+    }
+    .cta-banner h2 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      margin-bottom: 16px;
+    }
+    .cta-banner p {
+      color: rgba(245,245,247,0.6);
+      font-size: 1rem;
+      margin-bottom: 32px;
+      line-height: 1.7;
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────────── */
+    footer {
+      border-top: 0.5px solid rgba(255,255,255,0.08);
+      padding: 40px 24px;
+      text-align: center;
+    }
+    .footer-logo {
+      font-size: 16px;
+      font-weight: 700;
+      color: #f5f5f7;
+      text-decoration: none;
+      letter-spacing: -0.02em;
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+    .footer-links {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .footer-links a {
+      color: rgba(245,245,247,0.45);
+      font-size: 12px;
+      text-decoration: none;
+    }
+    .footer-links a:hover { color: rgba(245,245,247,0.75); }
+    .footer-copy {
+      font-size: 11px;
+      color: rgba(245,245,247,0.25);
+    }
+
+    /* ─── DIVIDER ────────────────────────────────────────── */
+    .section-divider {
+      height: 0.5px;
+      background: rgba(255,255,255,0.07);
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .calculator-wrap { padding: 32px 20px; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <meta name="revised" content="2026-03-21">
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+
+<!-- ─── NAV ─────────────────────────────────────────────── -->
+<nav>
+  <a href="/" class="nav-logo">pixdrift</a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/verkstad/" style="color:#a5b4fc;">Bilverkstad</a>
+    <a href="/restaurang/">Restaurang</a>
+    <a href="/#pricing">Priser</a>
+    <a href="/developers/">Developers</a>
+  </div>
+  <div class="nav-actions">
+    <a href="https://app.bc.pixdrift.com" class="nav-login">Logga in</a>
+    <a href="https://calendly.com/pixdrift" class="nav-cta">Boka demo →</a>
+  </div>
+</nav>
+
+<!-- ─── HERO ─────────────────────────────────────────────── -->
+<section class="hero">
+  <span class="hero-eyebrow">🔧 För bilverkstäder &amp; generalagenter</span>
+
+  <h1>Driv hela din verkstad<br>från ett system</h1>
+
+  <!-- Replacement cost breakdown -->
+  <div style="background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 20px 24px; margin-bottom: 32px; max-width: 560px; text-align: left;">
+    <div style="font-size: 12px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px;">Idag betalar du för:</div>
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px;">
+        <span style="color: rgba(255,255,255,0.6); text-decoration: line-through;">DMS (Automaster/CDK)</span>
+        <span style="color: #ff3b30; font-variant-numeric: tabular-nums;">€800–1,500/mo</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px;">
+        <span style="color: rgba(255,255,255,0.6); text-decoration: line-through;">Fortnox / Visma</span>
+        <span style="color: #ff3b30; font-variant-numeric: tabular-nums;">€200–400/mo</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px;">
+        <span style="color: rgba(255,255,255,0.6); text-decoration: line-through;">CRM (AutoFutura)</span>
+        <span style="color: #ff3b30; font-variant-numeric: tabular-nums;">€150–300/mo</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px;">
+        <span style="color: rgba(255,255,255,0.6); text-decoration: line-through;">ISO-konsult</span>
+        <span style="color: #ff3b30; font-variant-numeric: tabular-nums;">€300–800/mo</span>
+      </div>
+      <div style="height: 1px; background: rgba(255,255,255,0.08); margin: 4px 0;"></div>
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 15px; font-weight: 600;">
+        <span style="color: rgba(255,255,255,0.4);">Total idag</span>
+        <span style="color: #ff3b30; font-variant-numeric: tabular-nums;">€1,450–3,000/mo</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 15px; font-weight: 700; margin-top: 4px;">
+        <span style="color: #f5f5f7;">pixdrift Growth</span>
+        <span style="color: #34c759; font-variant-numeric: tabular-nums;">€999/mo</span>
+      </div>
+    </div>
+  </div>
+
+  <p>Från servicebokning till bokföring. Arbetsorder, reservdelar, garanti, personalliggare och ISO-krav — allt i pixdrift. Inget mer pysslande mellan fem system.</p>
+
+  <!-- Tool graveyard -->
+  <div class="tool-graveyard">
+    <s>Keyloop/CDK</s>
+    <s>Winbas</s>
+    <s>Fortnox</s>
+    <s>AutoFutura</s>
+    <s>Cabas</s>
+    <s>Excel-scheman</s>
+    <s>ISO-pärmar</s>
+    <span class="arrow">→</span>
+    <span class="target">pixdrift</span>
+  </div>
+
+  <div class="cta-group">
+    <a href="https://calendly.com/pixdrift" class="btn-primary">Boka en demo för verkstad →</a>
+    <a href="#kalkylator" class="btn-secondary">Se din besparing 💰</a>
+  </div>
+</section>
+
+<!-- ─── ROI-KALKYLATOR ────────────────────────────────────── -->
+<div id="kalkylator" style="padding: 0 0 20px;">
+  <div class="calculator-wrap">
+    <div class="calc-header">
+      <div class="section-eyebrow">ROI-kalkylator</div>
+      <h2>Hur mycket sparar din verkstad?</h2>
+      <p>Justera antal mekaniker och se din faktiska månadsbesparing direkt.</p>
+    </div>
+
+    <div class="slider-label">
+      <span>Antal mekaniker</span>
+      <strong id="mechanics-display">5</strong>
+    </div>
+    <input type="range" min="1" max="50" value="5" id="mechanics-slider" />
+
+    <div class="cost-breakdown">
+      <div class="cost-row">
+        <span class="label">Keyloop/CDK DMS <em style="opacity:0.5; font-size:11px;">(€300/mek/mån)</em></span>
+        <span class="value" id="cost-keyloop">€1,500</span>
+      </div>
+      <div class="cost-row">
+        <span class="label">Fortnox/Visma</span>
+        <span class="value">€200</span>
+      </div>
+      <div class="cost-row">
+        <span class="label">AutoFutura CRM</span>
+        <span class="value">€150</span>
+      </div>
+      <div class="cost-row">
+        <span class="label">ISO-konsult</span>
+        <span class="value">€500</span>
+      </div>
+      <div class="cost-row" style="border-top: 0.5px solid rgba(255,255,255,0.1); margin-top:4px;">
+        <span class="label" style="font-weight:600; color: rgba(245,245,247,0.85);">Nuvarande total</span>
+        <span class="value" id="total-current" style="font-weight:700; color:#f5f5f7;">€2,350</span>
+      </div>
+      <div class="cost-row pixdrift-row">
+        <span class="label" style="font-weight:600;">pixdrift Growth</span>
+        <span class="value">€999/mån</span>
+      </div>
+    </div>
+
+    <div class="savings-highlight">
+      <span class="slabel">Din månadsbesparing</span>
+      <span class="samount" id="savings-display">€1,351/mån</span>
+    </div>
+
+    <div class="calc-cta">
+      <a href="https://calendly.com/pixdrift" class="btn-primary">Boka demo — se din ROI live →</a>
+    </div>
+  </div>
+</div>
+
+<div class="section-divider" style="margin-top:80px;"></div>
+
+<!-- ─── FEATURES ──────────────────────────────────────────── -->
+<section class="features-section">
+  <div class="section-eyebrow">Allt verkstaden behöver</div>
+  <h2 class="section-title">Ett system. Fem kärnmoduler.</h2>
+  <p class="section-sub">Varje del av verkstaden kommunicerar med varandra. Arbetsorder kopplas mot lager, garanti och fakturering automatiskt.</p>
+
+  <div class="features-grid">
+
+    <!-- Sektion 1 -->
+    <div class="feature-card">
+      <div class="feature-icon">🔧</div>
+      <h3>Arbetsorder &amp; Verkstad</h3>
+      <ul>
+        <li>Digitala arbetsorder med tid och material</li>
+        <li>Mekaniker-app — mobil, offline-redo</li>
+        <li>PDI-protokoll för nybilar</li>
+        <li>Servicebokning med kalendervy</li>
+        <li>Tekniker-kapacitet och planering</li>
+      </ul>
+    </div>
+
+    <!-- Sektion 2 -->
+    <div class="feature-card">
+      <div class="feature-icon">📦</div>
+      <h3>Reservdelar &amp; Lager</h3>
+      <ul>
+        <li>Lagersaldo i realtid per del och position</li>
+        <li>Automatiska beställningar vid låg nivå</li>
+        <li>ETKA/ELSA-integration (VW, Volvo)</li>
+        <li>Leverantörsorder och inleverans</li>
+      </ul>
+    </div>
+
+    <!-- Sektion 3 -->
+    <div class="feature-card">
+      <div class="feature-icon">🛡️</div>
+      <h3>Garanti &amp; OEM</h3>
+      <ul>
+        <li>Garantiärenden direkt mot Volvo/BMW/VW</li>
+        <li>Återkallelse-tracker med status per fordon</li>
+        <li>TSB-hantering (Technical Service Bulletins)</li>
+        <li>OEM KPI-rapportering</li>
+      </ul>
+    </div>
+
+    <!-- Sektion 4 -->
+    <div class="feature-card">
+      <div class="feature-icon">💰</div>
+      <h3>Ekonomi &amp; Bokföring</h3>
+      <ul>
+        <li>Fakturering direkt från arbetsorder</li>
+        <li>Fortnox/Visma-integration</li>
+        <li>SIE4-export för revision</li>
+        <li>ROT-avdrag hanteras automatiskt</li>
+      </ul>
+    </div>
+
+    <!-- Sektion 5 -->
+    <div class="feature-card">
+      <div class="feature-icon">📋</div>
+      <h3>ISO &amp; Personalliggare</h3>
+      <ul>
+        <li>Personalliggare — uppfyller SFL 39 kap.</li>
+        <li>ISO 9001-processer inbyggda</li>
+        <li>Avvikelsehantering med ärendeflöde</li>
+        <li>Full revisionslogg för alla händelser</li>
+      </ul>
+    </div>
+
+    <!-- Bonus-kort: Integration -->
+    <div class="feature-card" style="background: rgba(99,102,241,0.06); border-color: rgba(99,102,241,0.2);">
+      <div class="feature-icon">🔗</div>
+      <h3>Integrationer</h3>
+      <ul>
+        <li>Volvo, BMW, VW, Stellantis, Mercedes OEM API</li>
+        <li>ETKA / ELSA reservdelskatalog</li>
+        <li>Fortnox, Visma, SIE4</li>
+        <li>Volvo VIDA &amp; BMW ISTA — roadmap Q3 2026</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ─── PRICING ────────────────────────────────────────────── -->
+<section id="pricing">
+  <div class="section-eyebrow">Priser</div>
+  <h2 class="section-title">Enkla, förutsägbara priser</h2>
+  <p class="section-sub" style="margin: 0 auto 0;">Inga per-seat-avgifter. Inga dolda tillägg. Betala en fast månadsavgift.</p>
+
+  <div class="pricing-grid">
+
+    <div class="pricing-card">
+      <div class="pricing-plan">Starter</div>
+      <div class="pricing-price">€499 <span>/mån</span></div>
+      <div class="pricing-tagline">Upp till 5 mekaniker. Allt det grundläggande.</div>
+      <ul class="pricing-features">
+        <li><span class="check">✓</span> Digitala arbetsorder</li>
+        <li><span class="check">✓</span> Servicebokning</li>
+        <li><span class="check">✓</span> Lagersaldo &amp; reservdelar</li>
+        <li><span class="check">✓</span> Fakturering</li>
+        <li><span class="check">✓</span> Personalliggare (SFL 39 kap.)</li>
+        <li><span class="check">✓</span> Fortnox-integration</li>
+      </ul>
+      <a href="https://calendly.com/pixdrift" class="pricing-btn secondary">Boka demo →</a>
+    </div>
+
+    <div class="pricing-card featured">
+      <div class="pricing-badge">Mest populär</div>
+      <div class="pricing-plan">Growth</div>
+      <div class="pricing-price">€999 <span>/mån</span></div>
+      <div class="pricing-tagline">Obegränsat antal mekaniker + OEM-integrationer.</div>
+      <ul class="pricing-features">
+        <li><span class="check">✓</span> Allt i Starter</li>
+        <li><span class="check">✓</span> Obegränsat mekaniker</li>
+        <li><span class="check">✓</span> OEM-garanti API (Volvo, VW, BMW)</li>
+        <li><span class="check">✓</span> ISO 9001-processer</li>
+        <li><span class="check">✓</span> Avvikelsehantering</li>
+        <li><span class="check">✓</span> PDI-protokoll</li>
+        <li><span class="check">✓</span> Mekaniker-app (mobil)</li>
+        <li><span class="check">✓</span> ETKA/ELSA-integration</li>
+      </ul>
+      <a href="https://calendly.com/pixdrift" class="pricing-btn primary">Börja med Growth →</a>
+    </div>
+
+    <div class="pricing-card">
+      <div class="pricing-plan">DMS Pro</div>
+      <div class="pricing-price">€1,499 <span>/mån</span></div>
+      <div class="pricing-tagline">Generalagenter, certifiering och multi-location.</div>
+      <ul class="pricing-features">
+        <li><span class="check">✓</span> Allt i Growth</li>
+        <li><span class="check">✓</span> Generalagent-certifiering</li>
+        <li><span class="check">✓</span> Multi-location management</li>
+        <li><span class="check">✓</span> OEM KPI-rapportering</li>
+        <li><span class="check">✓</span> Återkallelse-tracker</li>
+        <li><span class="check">✓</span> Dedikerad onboarding</li>
+        <li><span class="check">✓</span> SLA-garanti 99.9%</li>
+      </ul>
+      <a href="https://calendly.com/pixdrift" class="pricing-btn secondary">Kontakta oss →</a>
+    </div>
+
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ─── TESTIMONIALS ──────────────────────────────────────── -->
+<section id="testimonials">
+  <div class="section-eyebrow">Kundberättelser</div>
+  <h2 class="section-title">Verkstäder som kör på pixdrift</h2>
+
+  <div class="testimonials-grid">
+
+    <!-- PLACEHOLDER TESTIMONIAL 1 -->
+    <div class="testimonial-card">
+      <!-- PLACEHOLDER: Ersätt med riktigt kundcitat -->
+      <span class="placeholder-notice">⚠ placeholder — ersätt med verkligt citat</span>
+      <p class="testimonial-quote">"Vi körde Keyloop, Fortnox och ett Excel-schema för personalliggaren. Nu är det ett system. Onboardingen tog tre veckor — precis som de lovade. Sparar strax under €1 200 i månaden."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">MS</div>
+        <div class="testimonial-meta">
+          <div class="name">Mikael Strand</div>
+          <div class="role">Verkstadschef, Strand Bil AB, Göteborg</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLACEHOLDER TESTIMONIAL 2 -->
+    <div class="testimonial-card">
+      <!-- PLACEHOLDER: Ersätt med riktigt kundcitat -->
+      <span class="placeholder-notice">⚠ placeholder — ersätt med verkligt citat</span>
+      <p class="testimonial-quote">"OEM-garantiärendena mot Volvo tar nu en tredjedel av den tid det tog tidigare. Att det är direkt integrerat mot deras API är en game changer för oss som Volvo-auktoriserad verkstad."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">AL</div>
+        <div class="testimonial-meta">
+          <div class="name">Anna Lindqvist</div>
+          <div class="role">Servicechef, Lindqvists Volvo Center, Malmö</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLACEHOLDER TESTIMONIAL 3 -->
+    <div class="testimonial-card">
+      <!-- PLACEHOLDER: Ersätt med riktigt kundcitat -->
+      <span class="placeholder-notice">⚠ placeholder — ersätt med verkligt citat</span>
+      <p class="testimonial-quote">"ISO-revisionen gick för första gången utan att vi behövde rota fram pärmar. Allt är loggat, allt är spårbart. Revisorerna var imponerade — och det var vi också."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">PH</div>
+        <div class="testimonial-meta">
+          <div class="name">Peter Holm</div>
+          <div class="role">VD, Holm Motorservice, Stockholm</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ─── FAQ ────────────────────────────────────────────────── -->
+<section id="faq">
+  <div class="section-eyebrow" style="text-align:center;">FAQ</div>
+  <h2 class="section-title" style="text-align:center;">Vanliga frågor</h2>
+
+  <div style="margin-top:40px;">
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Kan vi behålla Keyloop?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        Nej — pixdrift ersätter Keyloop/CDK helt och hållet. Det finns dock ett importverktyg som migrerar er historik, öppna arbetsorder och kunddata. Migrationen ingår i onboardingen och ni betalar ingenting under övergångsperioden.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Hur lång är implementationen?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        2–4 veckor med vår verkstads-onboarding-guide. En dedikerad onboarding-specialist håller i processen. Data migreras, personalen utbildas och ni betalar inte en krona förrän ni är igång.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Är personalliggaren certifierad?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        pixdrift uppfyller samtliga krav enligt SFL 39 kap. (skatteförfarandelagen) för personalliggare. Notera att kassaregister kräver separat CE-certifiering — det hanteras utanför pixdrift om ni har kassa i receptionen.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Stöds Volvo VIDA och BMW ISTA?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        Direktintegration mot Volvo VIDA och BMW ISTA är på roadmap Q3 2026. API-stubs och anslutningspunkter finns redan — vi kör i beta med ett antal verkstäder. Kontakta oss om ni vill vara bland de första.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Hur hanteras OEM-garanti?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">
+        pixdrift ansluter direkt mot OEM API för Volvo, VW, BMW, Stellantis och Mercedes. Garantiärenden skapas och skickas in inifrån systemet — ingen manuell portal-inloggning behövs. Svar och utbetalningsstatus synkas tillbaka automatiskt.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ─── CTA BANNER ─────────────────────────────────────────── -->
+<div class="cta-banner">
+  <div class="cta-banner-inner">
+    <h2>Redo att samla verkstaden i ett system?</h2>
+    <p>Boka en 30-minuters demo. Vi visar pixdrift med er typ av verkstad — DMS, garanti och ISO live.</p>
+    <div class="cta-group">
+      <a href="https://calendly.com/pixdrift" class="btn-primary">Boka demo för verkstad →</a>
+      <a href="mailto:hello@pixdrift.com" class="btn-secondary">Skriv till oss</a>
+    </div>
+  </div>
+</div>
+
+<!-- ─── FOOTER ─────────────────────────────────────────────── -->
+<footer>
+  <a href="/" class="footer-logo">pixdrift</a>
+  <div class="footer-links">
+    <a href="/">Hem</a>
+    <a href="/verkstad/">Bilverkstad</a>
+    <a href="/restaurang/">Restaurang</a>
+    <a href="/priser.html">Priser</a>
+    <a href="/about.html">Om oss</a>
+    <a href="/privacy.html">Integritet</a>
+    <a href="/terms.html">Villkor</a>
+  </div>
+  <p class="footer-copy">© 2025 pixdrift AB · Stockholm · hello@pixdrift.com</p>
+</footer>
+
+<!-- ─── JS ────────────────────────────────────────────────── -->
+<script>
+  // Scroll progress
+  window.addEventListener('scroll', () => {
+    const el = document.getElementById('scroll-progress');
+    const scrolled = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+    el.style.width = scrolled + '%';
+  });
+
+  // ROI Calculator
+  const slider = document.getElementById('mechanics-slider');
+  const mechanicsDisplay = document.getElementById('mechanics-display');
+  const costKeyloop = document.getElementById('cost-keyloop');
+  const totalCurrentEl = document.getElementById('total-current');
+  const savingsDisplay = document.getElementById('savings-display');
+
+  function updateCalc() {
+    const mechanics = parseInt(slider.value);
+    mechanicsDisplay.textContent = mechanics;
+
+    const keyloop = mechanics * 300;
+    const fortnox = 200;
+    const autofutura = 150;
+    const iso = 500;
+    const total = keyloop + fortnox + autofutura + iso;
+    const pixdrift = 999;
+    const savings = total - pixdrift;
+
+    costKeyloop.textContent = '€' + keyloop.toLocaleString('sv-SE');
+    totalCurrentEl.textContent = '€' + total.toLocaleString('sv-SE');
+
+    if (savings > 0) {
+      savingsDisplay.textContent = '€' + savings.toLocaleString('sv-SE') + '/mån';
+      savingsDisplay.style.color = '#34c759';
+    } else {
+      savingsDisplay.textContent = '-€' + Math.abs(savings).toLocaleString('sv-SE') + '/mån';
+      savingsDisplay.style.color = '#ff453a';
+    }
+  }
+
+  slider.addEventListener('input', updateCalc);
+  updateCalc(); // init
+
+  // FAQ toggle
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    item.classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>

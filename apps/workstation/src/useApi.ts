@@ -2,6 +2,39 @@ import { useState, useEffect } from "react";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3001";
 
+function authHeaders(): HeadersInit {
+  const token = localStorage.getItem("pixdrift_token");
+  const headers: HeadersInit = { "Content-Type": "application/json" };
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+  return headers;
+}
+
+export const apiClient = {
+  async get<T = unknown>(endpoint: string): Promise<T> {
+    const res = await fetch(`${API_URL}${endpoint}`, { headers: authHeaders() });
+    if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    return res.json() as Promise<T>;
+  },
+  async post<T = unknown>(endpoint: string, body: unknown): Promise<T> {
+    const res = await fetch(`${API_URL}${endpoint}`, {
+      method: "POST",
+      headers: authHeaders(),
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    return res.json() as Promise<T>;
+  },
+  async patch<T = unknown>(endpoint: string, body: unknown): Promise<T> {
+    const res = await fetch(`${API_URL}${endpoint}`, {
+      method: "PATCH",
+      headers: authHeaders(),
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    return res.json() as Promise<T>;
+  },
+};
+
 interface ApiState<T> {
   data: T | null;
   loading: boolean;

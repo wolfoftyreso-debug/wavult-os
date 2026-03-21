@@ -4,18 +4,26 @@ import { LanguageSwitcher, useTranslation } from "@pixdrift/i18n";
 
 // ─── Design tokens ─────────────────────────────────────────────────────────────
 const C = {
-  bg: "#F5F5F7", surface: "#FFFFFF", elevated: "#FAFAFA",
-  border: "#E5E5EA", separator: "#F2F2F7",
-  text: "#1D1D1F", secondary: "#86868B", tertiary: "#AEAEB2",
-  blue: "#007AFF", blueLight: "#E8F3FF",
-  green: "#34C759", greenLight: "#E8F8ED",
-  yellow: "#FF9500", yellowLight: "#FFF3E0",
-  red: "#FF3B30", redLight: "#FFF0EF",
-  purple: "#AF52DE", fill: "#F2F2F7",
+  bg:        "#F2F2F7",   // iOS systemGray6
+  surface:   "#FFFFFF",
+  border:    "#D1D1D6",   // iOS systemGray4
+  text:      "#000000",   // pure black
+  secondary: "#8E8E93",   // iOS systemGray
+  tertiary:  "#C7C7CC",   // iOS systemGray3
+  blue:      "#007AFF",
+  green:     "#34C759",
+  orange:    "#FF9500",
+  red:       "#FF3B30",
+  purple:    "#AF52DE",
+  fill:      "#F2F2F7",
+  inset:     "#E5E5EA",
+  // compat aliases
+  separator: "#F2F2F7",
+  elevated:  "#FAFAFA",
 };
 const shadow = {
-  sm: "0 1px 2px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.04)",
-  md: "0 2px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)",
+  sm: "0 1px 3px rgba(0,0,0,0.06)",
+  md: "0 1px 3px rgba(0,0,0,0.06)",
 };
 const API = "https://api.bc.pixdrift.com";
 
@@ -27,7 +35,7 @@ const globalStyles = `
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   .card-animate { animation: slideUp 0.2s ease forwards; }
   .row-hover:hover { background: ${C.fill}; border-radius: 6px; transition: background 0.1s ease; }
-  .nav-btn:hover { background: ${C.fill} !important; }
+  .nav-btn:hover:not(.active-nav) { background: rgba(60,60,67,0.08) !important; }
   .card-hover:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.09) !important; transform: translateY(-1px); transition: all 0.2s ease; }
   .btn-primary:hover { background: #0066D6 !important; }
   .btn-primary:active { transform: scale(0.98); }
@@ -55,7 +63,7 @@ const Card = ({ title, children, style: st }: {
   title?: string; children: React.ReactNode; style?: React.CSSProperties;
 }) => (
   <div className="card-animate" style={{
-    background: C.surface, borderRadius: 12, padding: "20px 24px", boxShadow: shadow.sm, ...st,
+    background: C.surface, borderRadius: 10, padding: "20px 24px", boxShadow: shadow.sm, ...st,
   }}>
     {title && (
       <div style={{
@@ -203,7 +211,7 @@ const stageColor = (s: string) =>
 
 const payoutColor = (s: string) =>
   s === "PAID" ? C.green : s === "APPROVED" ? C.blue
-  : s === "PENDING" ? C.yellow : C.red;
+  : s === "PENDING" ? C.orange : C.red;
 
 // ─── Views ─────────────────────────────────────────────────────────────────────
 function OverviewView() {
@@ -220,7 +228,7 @@ function OverviewView() {
     { label: t('reports.revenue'), value: formatEur(salesDash?.revenue_mtd ?? wonVal), sub: t('common.completed'), color: C.green, trend: "↑" as const },
     { label: t('deals.pipeline'), value: formatEur(salesDash?.pipeline_value ?? pipelineVal), sub: `${deals.filter(d => !["WON", "LOST"].includes(d.stage)).length} ${t('common.active').toLowerCase()}`, color: C.blue, trend: "↑" as const },
     { label: t('deals.winRate'), value: `${salesDash?.win_rate ?? winRate}%`, sub: t('common.completed'), color: C.purple, trend: winRate >= 50 ? "↑" as const : "↓" as const },
-    { label: t('deals.value'), value: formatEur(salesDash?.avg_deal_size ?? avgDeal), sub: t('deals.stage.won'), color: C.yellow, trend: "↑" as const },
+    { label: t('deals.value'), value: formatEur(salesDash?.avg_deal_size ?? avgDeal), sub: t('deals.stage.won'), color: C.orange, trend: "↑" as const },
   ];
 
   return (
@@ -228,7 +236,7 @@ function OverviewView() {
       {loading ? (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
           {[...Array(4)].map((_, i) => (
-            <div key={i} style={{ background: C.surface, borderRadius: 12, padding: "18px 20px", boxShadow: shadow.sm }}>
+            <div key={i} style={{ background: C.surface, borderRadius: 10, padding: "18px 20px", boxShadow: shadow.sm }}>
               <Skeleton height="11px" width="60%" />
               <div style={{ marginTop: 12 }}><Skeleton height="28px" width="70%" /></div>
               <div style={{ marginTop: 8 }}><Skeleton height="11px" width="40%" /></div>
@@ -239,7 +247,7 @@ function OverviewView() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
           {kpis.map((kpi, i) => (
             <div key={i} className="card-animate card-hover" style={{
-              background: C.surface, borderRadius: 12, padding: "18px 20px",
+              background: C.surface, borderRadius: 10, padding: "18px 20px",
               boxShadow: shadow.sm, borderTop: `3px solid ${kpi.color}`,
               animation: `slideUp 0.2s ease ${i * 0.05}s backwards`,
             }}>
@@ -336,10 +344,10 @@ function OverviewView() {
               Win Rate
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <Bar pct={winRate} color={winRate >= 50 ? C.green : C.yellow} height={8} />
+              <Bar pct={winRate} color={winRate >= 50 ? C.green : C.orange} height={8} />
               <span style={{
                 fontSize: 18, fontWeight: 700,
-                color: winRate >= 50 ? C.green : C.yellow,
+                color: winRate >= 50 ? C.green : C.orange,
                 minWidth: 45, fontVariantNumeric: "tabular-nums",
               }}>
                 {winRate}%
@@ -528,7 +536,7 @@ function ReportsView() {
                   <span style={{ fontSize: 13, fontFamily: "monospace", fontVariantNumeric: "tabular-nums" }}>{formatEur(val)}</span>
                 </div>
               ))}
-              <div style={{ display: "flex", justifyContent: "space-between", padding: "13px 0", borderTop: `1px solid ${C.border}`, fontWeight: 700 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", padding: "13px 0", borderTop: `0.5px solid ${C.border}`, fontWeight: 700 }}>
                 <span>{t('common.total')}</span>
                 <span style={{ color: C.blue, fontFamily: "monospace", fontVariantNumeric: "tabular-nums" }}>{formatEur(balance.assets.total)}</span>
               </div>
@@ -541,7 +549,7 @@ function ReportsView() {
                     <span style={{ fontSize: 13, fontFamily: "monospace", fontVariantNumeric: "tabular-nums", color: C.red }}>{formatEur(val)}</span>
                   </div>
                 ))}
-                <div style={{ display: "flex", justifyContent: "space-between", padding: "13px 0", borderTop: `1px solid ${C.border}`, fontWeight: 700, fontSize: 14 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", padding: "13px 0", borderTop: `0.5px solid ${C.border}`, fontWeight: 700, fontSize: 14 }}>
                   <span>{t('common.total')}</span>
                   <span style={{ color: C.red, fontFamily: "monospace", fontVariantNumeric: "tabular-nums" }}>{formatEur(balance.liabilities.total)}</span>
                 </div>
@@ -553,7 +561,7 @@ function ReportsView() {
                     <span style={{ fontSize: 13, fontFamily: "monospace", fontVariantNumeric: "tabular-nums", color: C.green }}>{formatEur(val)}</span>
                   </div>
                 ))}
-                <div style={{ display: "flex", justifyContent: "space-between", padding: "13px 0", borderTop: `1px solid ${C.border}`, fontWeight: 700, fontSize: 14 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", padding: "13px 0", borderTop: `0.5px solid ${C.border}`, fontWeight: 700, fontSize: 14 }}>
                   <span>{t('common.total')}</span>
                   <span style={{ color: C.green, fontFamily: "monospace", fontVariantNumeric: "tabular-nums" }}>{formatEur(balance.equity.total)}</span>
                 </div>
@@ -574,7 +582,7 @@ function ReportsView() {
                 { label: t('reports.revenue'), value: cash.financing, color: cash.financing >= 0 ? C.green : C.red },
               ].map((c, i) => (
                 <div key={i} className="card-animate" style={{
-                  background: C.surface, borderRadius: 12, padding: "16px 20px", boxShadow: shadow.sm,
+                  background: C.surface, borderRadius: 10, padding: "16px 20px", boxShadow: shadow.sm,
                 }}>
                   <div style={{ fontSize: 11, fontWeight: 500, color: C.secondary }}>{c.label}</div>
                   <div style={{
@@ -631,13 +639,13 @@ function PayoutsView() {
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
         {[
-          { label: t('common.pending'), value: formatEur(payouts.filter(p => p.status === "PENDING").reduce((s, p) => s + p.amount, 0)), color: C.yellow, count: payouts.filter(p => p.status === "PENDING").length },
+          { label: t('common.pending'), value: formatEur(payouts.filter(p => p.status === "PENDING").reduce((s, p) => s + p.amount, 0)), color: C.orange, count: payouts.filter(p => p.status === "PENDING").length },
           { label: t('common.approve'), value: formatEur(payouts.filter(p => p.status === "APPROVED").reduce((s, p) => s + p.amount, 0)), color: C.blue, count: payouts.filter(p => p.status === "APPROVED").length },
           { label: t('common.completed'), value: formatEur(payouts.filter(p => p.status === "PAID").reduce((s, p) => s + p.amount, 0)), color: C.green, count: payouts.filter(p => p.status === "PAID").length },
           { label: t('common.reject'), value: formatEur(payouts.filter(p => p.status === "REJECTED").reduce((s, p) => s + p.amount, 0)), color: C.red, count: payouts.filter(p => p.status === "REJECTED").length },
         ].map((s, i) => (
           <div key={i} className="card-animate" style={{
-            background: C.surface, borderRadius: 12, padding: "16px 18px", boxShadow: shadow.sm,
+            background: C.surface, borderRadius: 10, padding: "16px 18px", boxShadow: shadow.sm,
           }}>
             <div style={{ fontSize: 11, fontWeight: 500, color: C.secondary }}>
               {s.label} ({s.count})
@@ -750,7 +758,7 @@ function CurrenciesView() {
           { label: "EUR/USD", value: `${FALLBACK_CURRENCIES[0].rate_to_usd}`, color: C.text },
         ].map((s, i) => (
           <div key={i} className="card-animate" style={{
-            background: C.surface, borderRadius: 12, padding: "16px 20px", boxShadow: shadow.sm,
+            background: C.surface, borderRadius: 10, padding: "16px 20px", boxShadow: shadow.sm,
           }}>
             <div style={{ fontSize: 11, fontWeight: 500, color: C.secondary }}>{s.label}</div>
             <div style={{
@@ -815,7 +823,7 @@ function CurrenciesView() {
                 padding: "8px 0",
                 fontSize: 11, fontWeight: 600, color: C.tertiary,
                 textTransform: "uppercase", letterSpacing: "0.06em",
-                borderBottom: `1px solid ${C.border}`,
+                borderBottom: `0.5px solid ${C.border}`,
                 textAlign: i >= 2 ? "right" : "left",
               }}>
                 {h}
@@ -874,7 +882,7 @@ function ForecastView() {
           { label: t('common.active'), value: deals.length, color: C.purple },
         ].map((s, i) => (
           <div key={i} className="card-animate" style={{
-            background: C.surface, borderRadius: 12, padding: "16px 20px", boxShadow: shadow.sm,
+            background: C.surface, borderRadius: 10, padding: "16px 20px", boxShadow: shadow.sm,
           }}>
             <div style={{ fontSize: 11, fontWeight: 500, color: C.secondary }}>{s.label}</div>
             <div style={{
@@ -997,19 +1005,20 @@ export default function App() {
       <style>{globalStyles}</style>
       <div style={{
         display: "flex", minHeight: "100vh", background: C.bg,
-        fontFamily: "Inter, -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif",
+        fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif",
         color: C.text, WebkitFontSmoothing: "antialiased",
       }}>
         {/* Sidebar */}
         <div style={{
-          width: 220, background: C.surface,
-          borderRight: `1px solid ${C.border}`,
+          width: 260, background: "#FFFFFF",
+          borderRight: `0.5px solid ${C.border}`,
           display: "flex", flexDirection: "column",
           position: "fixed", top: 0, left: 0, bottom: 0, zIndex: 100,
         }}>
           <div style={{
-            padding: "18px 16px",
-            borderBottom: `1px solid ${C.separator}`,
+            height: 52,
+            padding: "0 16px",
+            borderBottom: `0.5px solid ${C.border}`,
             display: "flex", alignItems: "center", gap: 10,
           }}>
             <div style={{
@@ -1037,11 +1046,11 @@ export default function App() {
                   className="nav-btn"
                   onClick={() => setView(item.id)}
                   style={{
-                    display: "flex", alignItems: "center", gap: 10,
-                    padding: "0 10px", height: 36, borderRadius: 8, border: "none",
-                    background: active ? C.blue + "12" : "transparent",
-                    color: active ? C.blue : C.secondary,
-                    fontSize: 13, fontWeight: active ? 600 : 400,
+                    display: "flex", alignItems: "center", gap: 8,
+                    padding: "0 12px", height: 44, borderRadius: 10, border: "none",
+                    background: active ? "#007AFF" : "transparent",
+                    color: active ? "#FFFFFF" : "#000000",
+                    fontSize: 17, fontWeight: active ? 600 : 400, letterSpacing: "-0.41px",
                     cursor: "pointer", textAlign: "left", width: "100%",
                     fontFamily: "inherit",
                   }}
@@ -1074,16 +1083,15 @@ export default function App() {
         </div>
 
         {/* Main */}
-        <div style={{ marginLeft: 220, flex: 1, display: "flex", flexDirection: "column" }}>
+        <div style={{ marginLeft: 260, flex: 1, display: "flex", flexDirection: "column" }}>
           <div style={{
-            background: "rgba(255,255,255,0.85)",
-            backdropFilter: "blur(20px)",
+            background: "rgba(255,255,255,0.92)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
             borderBottom: `0.5px solid ${C.border}`,
-            padding: "0 28px", height: 56,
+            padding: "0 24px", height: 52,
             display: "flex", alignItems: "center", justifyContent: "space-between",
             position: "sticky", top: 0, zIndex: 50,
           }}>
-            <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: "-0.03em", color: C.text }}>
+            <div style={{ fontSize: 17, fontWeight: 600, color: "#000000", letterSpacing: "-0.41px" }}>
               {current?.label}
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -1099,7 +1107,7 @@ export default function App() {
             </div>
           </div>
 
-          <div style={{ flex: 1, padding: "24px 28px 60px" }}>
+          <div style={{ flex: 1, padding: "32px 32px 64px" }}>
             {viewComponents[view] ?? <EmptyState icon="🔍" title={t('common.noData')} />}
           </div>
         </div>

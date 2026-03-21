@@ -1,5 +1,15 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { supabase } from "./supabase";
+
+// ---------------------------------------------------------------------------
+// Auth guard — rejects unauthenticated requests with 401
+// ---------------------------------------------------------------------------
+function requireAuth(req: Request, res: Response, next: NextFunction) {
+  if (!(req as any).user) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  next();
+}
 
 // ---------------------------------------------------------------------------
 // Types
@@ -100,8 +110,8 @@ function pickActionType(gap: number): ActionType {
 const router = Router();
 
 // ---- 1. GET /api/capabilities/profile/:userId ----
-// Get user's capability profile with all assessments
-router.get("/api/capabilities/profile/:userId", async (req: Request, res: Response) => {
+// Get user's capability profile with all assessments — requires auth
+router.get("/api/capabilities/profile/:userId", requireAuth, async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
 
@@ -154,12 +164,15 @@ router.get("/api/capabilities/profile/:userId", async (req: Request, res: Respon
 });
 
 // ---- 2. GET /api/capabilities/team ----
-// Get team capability overview (heatmap data)
-router.get("/api/capabilities/team", async (_req: Request, res: Response) => {
+// Get team capability overview (heatmap data) — requires auth + org isolation
+// Fix 2026-03-21: Added requireAuth + org_id filtering to prevent cross-tenant data leakage
+router.get("/api/capabilities/team", requireAuth, async (req: Request, res: Response) => {
   try {
+    const user = (req as any).user;
     const { data: assessments, error } = await supabase
       .from("capability_assessments")
-      .select("user_id, capability_id, level, target_level");
+      .select("user_id, capability_id, level, target_level, org_id")
+      .eq("org_id", user.org_id);
 
     if (error) {
       return res.status(500).json({ error: error.message });

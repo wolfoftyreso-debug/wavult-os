@@ -1,4 +1,5 @@
 import { Router, Request, Response } from "express";
+import { requireAuth } from "./auth";
 import { supabase } from "./supabase";
 
 // ---------------------------------------------------------------------------
@@ -13,6 +14,7 @@ import { supabase } from "./supabase";
 // ---------------------------------------------------------------------------
 
 const router = Router();
+router.use(requireAuth);
 
 // ---- BAS Chart of Accounts (60+ accounts) ---------------------------------
 const BAS_CHART_OF_ACCOUNTS = [
@@ -231,6 +233,10 @@ router.get("/reports/sie4", async (req: Request, res: Response) => {
 // ---------------------------------------------------------------------------
 router.get("/reports/income-statement", async (req: Request, res: Response) => {
   try {
+    // SECURITY: enforce tenant isolation — user must be authenticated and scoped to their org
+    const user = (req as any).user;
+    if (!user?.org_id) return res.status(401).json({ error: "Unauthorized" });
+
     const year = Number(req.query.year) || new Date().getFullYear();
     const startDate = `${year}-01-01`;
     const endDate = `${year}-12-31`;
@@ -238,6 +244,7 @@ router.get("/reports/income-statement", async (req: Request, res: Response) => {
     const { data: entries, error } = await supabase
       .from("journal_entries")
       .select("account_number, account_name, debit, credit")
+      .eq("org_id", user.org_id)
       .gte("date", startDate)
       .lte("date", endDate);
 
@@ -324,12 +331,17 @@ router.get("/reports/income-statement", async (req: Request, res: Response) => {
 // ---------------------------------------------------------------------------
 router.get("/reports/balance-sheet", async (req: Request, res: Response) => {
   try {
+    // SECURITY: enforce tenant isolation — user must be authenticated and scoped to their org
+    const user = (req as any).user;
+    if (!user?.org_id) return res.status(401).json({ error: "Unauthorized" });
+
     const asOfDate =
       (req.query.date as string) || new Date().toISOString().slice(0, 10);
 
     const { data: entries, error } = await supabase
       .from("journal_entries")
       .select("account_number, account_name, debit, credit")
+      .eq("org_id", user.org_id)
       .lte("date", asOfDate);
 
     if (error) throw error;

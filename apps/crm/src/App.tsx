@@ -4,18 +4,26 @@ import { LanguageSwitcher, useTranslation } from "@pixdrift/i18n";
 
 // ─── Design tokens ─────────────────────────────────────────────────────────────
 const C = {
-  bg: "#F5F5F7", surface: "#FFFFFF", elevated: "#FAFAFA",
-  border: "#E5E5EA", separator: "#F2F2F7",
-  text: "#1D1D1F", secondary: "#86868B", tertiary: "#AEAEB2",
-  blue: "#007AFF", blueLight: "#E8F3FF",
-  green: "#34C759", greenLight: "#E8F8ED",
-  yellow: "#FF9500", yellowLight: "#FFF3E0",
-  red: "#FF3B30", redLight: "#FFF0EF",
-  purple: "#AF52DE", fill: "#F2F2F7",
+  bg:        "#F2F2F7",   // iOS systemGray6
+  surface:   "#FFFFFF",
+  border:    "#D1D1D6",   // iOS systemGray4
+  text:      "#000000",   // pure black
+  secondary: "#8E8E93",   // iOS systemGray
+  tertiary:  "#C7C7CC",   // iOS systemGray3
+  blue:      "#007AFF",
+  green:     "#34C759",
+  orange:    "#FF9500",
+  red:       "#FF3B30",
+  purple:    "#AF52DE",
+  fill:      "#F2F2F7",
+  inset:     "#E5E5EA",
+  // compat aliases
+  separator: "#F2F2F7",
+  elevated:  "#FAFAFA",
 };
 const shadow = {
-  sm: "0 1px 2px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.04)",
-  md: "0 2px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)",
+  sm: "0 1px 3px rgba(0,0,0,0.06)",
+  md: "0 1px 3px rgba(0,0,0,0.06)",
 };
 const API = "https://api.bc.pixdrift.com";
 
@@ -27,7 +35,7 @@ const globalStyles = `
   @keyframes fillBar { from { width: 0%; } to { width: var(--pct); } }
   .card-animate { animation: slideUp 0.2s ease forwards; }
   .row-hover:hover { background: ${C.fill}; border-radius: 6px; transition: background 0.1s ease; }
-  .nav-btn:hover { background: ${C.fill} !important; }
+  .nav-btn:hover:not(.active-nav) { background: rgba(60,60,67,0.08) !important; }
   .card-hover:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08) !important; transform: translateY(-1px); transition: all 0.2s ease; }
   .btn-primary:hover { background: #0066D6 !important; }
   .btn-primary:active { transform: scale(0.98); }
@@ -42,7 +50,7 @@ const formatEur = (n: number) => `€${(n || 0).toLocaleString("sv-SE")}`;
 const initials = (name: string) =>
   name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
 const avatarColor = (name: string) => {
-  const colors = [C.blue, C.green, C.purple, C.yellow, C.red];
+  const colors = [C.blue, C.green, C.purple, C.orange, C.red];
   return colors[(name.charCodeAt(0) + name.charCodeAt(1 % name.length)) % colors.length];
 };
 const stageColor = (s: string) =>
@@ -64,7 +72,7 @@ const Card = ({ title, children, style: st }: {
   title?: string; children: React.ReactNode; style?: React.CSSProperties;
 }) => (
   <div className="card-animate" style={{
-    background: C.surface, borderRadius: 12, padding: "20px 24px", boxShadow: shadow.sm, ...st,
+    background: C.surface, borderRadius: 10, padding: "20px 24px", boxShadow: shadow.sm, ...st,
   }}>
     {title && (
       <div style={{
@@ -220,7 +228,7 @@ const FALLBACK_ACTIVITIES = [
 ];
 
 const actColor = (t: string) =>
-  t === "MEETING" ? C.blue : t === "TASK" ? C.purple : t === "CALL" ? C.green : C.yellow;
+  t === "MEETING" ? C.blue : t === "TASK" ? C.purple : t === "CALL" ? C.green : C.orange;
 
 // ─── Views ─────────────────────────────────────────────────────────────────────
 function OverviewView() {
@@ -243,10 +251,10 @@ function OverviewView() {
           { label: t('deals.pipeline'), value: formatEur(pipelineVal), sub: `${pipeline.length} ${t('common.active').toLowerCase()}`, color: C.blue },
           { label: t('nav.leads'), value: leads.length, sub: `${leads.filter(l => l.stage === "NEW").length} ${t('deals.stage.new').toLowerCase()}`, color: C.purple },
           { label: t('deals.stage.won'), value: formatEur(wonVal), sub: `${deals.filter(d => d.stage === "WON").length} ${t('common.closed').toLowerCase()}`, color: C.green },
-          { label: t('nav.activities'), value: todayActivities, sub: t('common.pending'), color: C.yellow },
+          { label: t('nav.activities'), value: todayActivities, sub: t('common.pending'), color: C.orange },
         ].map((kpi, i) => (
           <div key={i} className="card-animate card-hover" style={{
-            background: C.surface, borderRadius: 12, padding: "18px 20px", boxShadow: shadow.sm,
+            background: C.surface, borderRadius: 10, padding: "18px 20px", boxShadow: shadow.sm,
             animation: `slideUp 0.2s ease ${i * 0.05}s backwards`,
           }}>
             <div style={{ fontSize: 11, fontWeight: 500, color: C.secondary }}>{kpi.label}</div>
@@ -271,7 +279,7 @@ function OverviewView() {
             return (
               <div key={stage} style={{
                 flex: 1,
-                background: stage === "WON" ? C.greenLight : stage === "LOST" ? C.redLight : C.fill,
+                background: stage === "WON" ? C.green + "15" : stage === "LOST" ? C.red + "15" : C.fill,
                 borderRadius: 10, padding: "14px 14px",
                 border: `1px solid ${col}20`,
                 cursor: "pointer",
@@ -422,7 +430,7 @@ function CompaniesView() {
           { label: t('common.active'), value: companies.filter(c => c.status === "CUSTOMER").length, color: C.purple },
         ].map((s, i) => (
           <div key={i} className="card-animate" style={{
-            background: C.surface, borderRadius: 12, padding: "18px 20px", boxShadow: shadow.sm,
+            background: C.surface, borderRadius: 10, padding: "18px 20px", boxShadow: shadow.sm,
           }}>
             <div style={{ fontSize: 11, fontWeight: 500, color: C.secondary }}>{s.label}</div>
             <div style={{
@@ -500,7 +508,7 @@ function LeadsView() {
       {loading ? (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 10 }}>
           {[...Array(5)].map((_, i) => (
-            <div key={i} style={{ background: C.surface, borderRadius: 12, padding: 14, boxShadow: shadow.sm }}>
+            <div key={i} style={{ background: C.surface, borderRadius: 10, padding: 14, boxShadow: shadow.sm }}>
               <Skeleton height="100px" />
             </div>
           ))}
@@ -633,7 +641,7 @@ function DealsView() {
                 padding: "8px 0",
                 fontSize: 11, fontWeight: 600, color: C.tertiary,
                 textTransform: "uppercase", letterSpacing: "0.06em",
-                borderBottom: `1px solid ${C.border}`,
+                borderBottom: `0.5px solid ${C.border}`,
               }}>
                 {h}
               </div>
@@ -734,10 +742,10 @@ function ActivitiesView() {
           { label: t('tasks.dueToday'), value: FALLBACK_ACTIVITIES.filter(a => a.date === "2026-03-21" && !a.done).length, color: C.blue },
           { label: t('common.completed'), value: FALLBACK_ACTIVITIES.filter(a => a.date === "2026-03-21" && a.done).length, color: C.green },
           { label: t('common.type'), value: FALLBACK_ACTIVITIES.filter(a => a.type === "MEETING").length, color: C.purple },
-          { label: t('tasks.title'), value: FALLBACK_ACTIVITIES.filter(a => a.type === "TASK").length, color: C.yellow },
+          { label: t('tasks.title'), value: FALLBACK_ACTIVITIES.filter(a => a.type === "TASK").length, color: C.orange },
         ].map((s, i) => (
           <div key={i} className="card-animate" style={{
-            background: C.surface, borderRadius: 12, padding: "16px 18px", boxShadow: shadow.sm,
+            background: C.surface, borderRadius: 10, padding: "16px 18px", boxShadow: shadow.sm,
           }}>
             <div style={{ fontSize: 11, fontWeight: 500, color: C.secondary }}>{s.label}</div>
             <div style={{
@@ -824,20 +832,21 @@ export default function App() {
       <style>{globalStyles}</style>
       <div style={{
         display: "flex", minHeight: "100vh", background: C.bg,
-        fontFamily: "Inter, -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif",
+        fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif",
         color: C.text, WebkitFontSmoothing: "antialiased",
       }}>
         {/* Sidebar */}
         <div style={{
-          width: 220, background: C.surface,
-          borderRight: `1px solid ${C.border}`,
+          width: 260, background: "#FFFFFF",
+          borderRight: `0.5px solid ${C.border}`,
           display: "flex", flexDirection: "column",
           position: "fixed", top: 0, left: 0, bottom: 0, zIndex: 100,
         }}>
           {/* Logo */}
           <div style={{
-            padding: "18px 16px",
-            borderBottom: `1px solid ${C.separator}`,
+            height: 52,
+            padding: "0 16px",
+            borderBottom: `0.5px solid ${C.border}`,
             display: "flex", alignItems: "center", gap: 10,
           }}>
             <div style={{
@@ -866,11 +875,11 @@ export default function App() {
                   className="nav-btn"
                   onClick={() => setView(item.id)}
                   style={{
-                    display: "flex", alignItems: "center", gap: 10,
-                    padding: "0 10px", height: 36, borderRadius: 8, border: "none",
-                    background: active ? C.blue + "12" : "transparent",
-                    color: active ? C.blue : C.secondary,
-                    fontSize: 13, fontWeight: active ? 600 : 400,
+                    display: "flex", alignItems: "center", gap: 8,
+                    padding: "0 12px", height: 44, borderRadius: 10, border: "none",
+                    background: active ? "#007AFF" : "transparent",
+                    color: active ? "#FFFFFF" : "#000000",
+                    fontSize: 17, fontWeight: active ? 600 : 400, letterSpacing: "-0.41px",
                     cursor: "pointer", textAlign: "left", width: "100%",
                     fontFamily: "inherit",
                   }}
@@ -903,16 +912,15 @@ export default function App() {
         </div>
 
         {/* Main */}
-        <div style={{ marginLeft: 220, flex: 1, display: "flex", flexDirection: "column" }}>
+        <div style={{ marginLeft: 260, flex: 1, display: "flex", flexDirection: "column" }}>
           <div style={{
-            background: "rgba(255,255,255,0.85)",
-            backdropFilter: "blur(20px)",
+            background: "rgba(255,255,255,0.92)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
             borderBottom: `0.5px solid ${C.border}`,
-            padding: "0 28px", height: 56,
+            padding: "0 24px", height: 52,
             display: "flex", alignItems: "center", justifyContent: "space-between",
             position: "sticky", top: 0, zIndex: 50,
           }}>
-            <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: "-0.03em", color: C.text }}>
+            <div style={{ fontSize: 17, fontWeight: 600, color: "#000000", letterSpacing: "-0.41px" }}>
               {current?.label}
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -923,7 +931,7 @@ export default function App() {
             </div>
           </div>
 
-          <div style={{ flex: 1, padding: "24px 28px 60px" }}>
+          <div style={{ flex: 1, padding: "32px 32px 64px" }}>
             {viewComponents[view] ?? <EmptyState icon="🔍" title={t('common.noData')} />}
           </div>
         </div>

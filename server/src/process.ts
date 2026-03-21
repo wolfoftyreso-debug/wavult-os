@@ -1,4 +1,5 @@
 import { Router, Request, Response } from "express";
+import { requireAuth } from "./auth";
 import { supabase } from "./supabase";
 import {
   NCSeverity,
@@ -9,6 +10,7 @@ import {
 } from "./types";
 
 const router = Router();
+router.use(requireAuth);
 
 // ---------------------------------------------------------------------------
 // Helper: determine risk level from probability × impact score

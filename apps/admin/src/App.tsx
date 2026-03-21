@@ -5,18 +5,26 @@ import { IntegrationsHub } from "./IntegrationsHub";
 
 // ─── Design tokens ─────────────────────────────────────────────────────────────
 const C = {
-  bg: "#F5F5F7", surface: "#FFFFFF", elevated: "#FAFAFA",
-  border: "#E5E5EA", separator: "#F2F2F7",
-  text: "#1D1D1F", secondary: "#86868B", tertiary: "#AEAEB2",
-  blue: "#007AFF", blueLight: "#E8F3FF",
-  green: "#34C759", greenLight: "#E8F8ED",
-  yellow: "#FF9500", yellowLight: "#FFF3E0",
-  red: "#FF3B30", redLight: "#FFF0EF",
-  purple: "#AF52DE", fill: "#F2F2F7",
+  bg:        "#F2F2F7",   // iOS systemGray6
+  surface:   "#FFFFFF",
+  border:    "#D1D1D6",   // iOS systemGray4
+  text:      "#000000",   // pure black
+  secondary: "#8E8E93",   // iOS systemGray
+  tertiary:  "#C7C7CC",   // iOS systemGray3
+  blue:      "#007AFF",
+  green:     "#34C759",
+  orange:    "#FF9500",
+  red:       "#FF3B30",
+  purple:    "#AF52DE",
+  fill:      "#F2F2F7",
+  inset:     "#E5E5EA",
+  // compat aliases
+  separator: "#F2F2F7",
+  elevated:  "#FAFAFA",
 };
 const shadow = {
-  sm: "0 1px 2px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.04)",
-  md: "0 2px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04)",
+  sm: "0 1px 3px rgba(0,0,0,0.06)",
+  md: "0 1px 3px rgba(0,0,0,0.06)",
 };
 const API = "https://api.bc.pixdrift.com";
 
@@ -38,7 +46,7 @@ const globalStyles = `
   .card-animate { animation: slideUp 0.2s ease forwards; }
   .row-hover:hover { background: ${C.fill}; border-radius: 6px; transition: background 0.1s ease; }
   .nav-btn { transition: all 0.12s ease; }
-  .nav-btn:hover { background: ${C.fill} !important; }
+  .nav-btn:hover:not(.active-nav) { background: rgba(60,60,67,0.08) !important; }
   .btn-primary { transition: all 0.15s ease; }
   .btn-primary:hover { background: #0066D6 !important; transform: translateY(-1px); }
   .btn-primary:active { transform: scale(0.98); }
@@ -54,7 +62,7 @@ const fmt = (d: string) =>
   new Date(d).toLocaleString("sv-SE", { dateStyle: "short", timeStyle: "short" });
 const statusColor = (s: string) =>
   s === "GREEN" || s === "ACTIVE" || s === "SUCCESS" ? C.green
-  : s === "YELLOW" ? C.yellow
+  : s === "YELLOW" ? C.orange
   : s === "RED" || s === "FAILED" ? C.red : C.tertiary;
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
@@ -73,7 +81,7 @@ const Card = ({ title, children, style: st }: {
   title?: string; children: React.ReactNode; style?: React.CSSProperties;
 }) => (
   <div className="card-animate" style={{
-    background: C.surface, borderRadius: 12, padding: "20px 24px", boxShadow: shadow.sm, ...st,
+    background: C.surface, borderRadius: 10, padding: "20px 24px", boxShadow: shadow.sm, ...st,
   }}>
     {title && (
       <div style={{
@@ -222,7 +230,7 @@ const ROLES = [
   { name: "CEO", color: C.purple, perms: ["users.read", "settings.read", "audit.read", "compliance.read", "data.export"] },
   { name: "DEVELOPER", color: C.blue, perms: ["settings.read", "audit.read"] },
   { name: "OPERATIONS", color: C.green, perms: ["users.read", "compliance.read"] },
-  { name: "CFO", color: C.yellow, perms: ["users.read", "audit.read", "data.export"] },
+  { name: "CFO", color: C.orange, perms: ["users.read", "audit.read", "data.export"] },
 ];
 
 const ALL_PERMS = ["users.manage", "users.read", "roles.manage", "settings.write", "settings.read", "audit.read", "compliance.manage", "compliance.read", "data.export"];
@@ -248,7 +256,7 @@ function OverviewView() {
           const col = statusColor(s.status);
           return (
             <div key={i} className="card-animate" style={{
-              background: C.surface, borderRadius: 12,
+              background: C.surface, borderRadius: 10,
               padding: "16px 18px", boxShadow: shadow.sm,
               borderTop: `3px solid ${col}`,
               animation: `slideUp 0.2s ease ${i * 0.05}s backwards`,
@@ -280,7 +288,7 @@ function OverviewView() {
           { label: "Misslyckade inlogg.", value: audit.filter(a => a.status === "FAILED").length, color: C.red },
         ].map((s, i) => (
           <div key={i} className="card-animate" style={{
-            background: C.surface, borderRadius: 12, padding: "18px 20px", boxShadow: shadow.sm,
+            background: C.surface, borderRadius: 10, padding: "18px 20px", boxShadow: shadow.sm,
             animation: `slideUp 0.2s ease ${i * 0.04}s backwards`,
           }}>
             <div style={{ fontSize: 11, fontWeight: 500, color: C.secondary }}>{s.label}</div>
@@ -409,7 +417,7 @@ function UsersView() {
                 padding: "8px 0",
                 fontSize: 11, fontWeight: 600, color: C.tertiary,
                 textTransform: "uppercase", letterSpacing: "0.06em",
-                borderBottom: `1px solid ${C.border}`,
+                borderBottom: `0.5px solid ${C.border}`,
               }}>
                 {h}
               </div>
@@ -543,7 +551,7 @@ function RolesView() {
               padding: "8px 0",
               fontSize: 11, fontWeight: 600, color: C.tertiary,
               textTransform: "uppercase", letterSpacing: "0.06em",
-              borderBottom: `1px solid ${C.border}`,
+              borderBottom: `0.5px solid ${C.border}`,
             }}>
               Behörighet
             </div>
@@ -551,7 +559,7 @@ function RolesView() {
               <div key={r.name} style={{
                 padding: "8px 0",
                 fontSize: 11, fontWeight: 600, color: r.color,
-                borderBottom: `1px solid ${C.border}`, textAlign: "center",
+                borderBottom: `0.5px solid ${C.border}`, textAlign: "center",
               }}>
                 {r.name}
               </div>
@@ -591,7 +599,7 @@ function ComplianceView() {
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {loading ? (
         [...Array(3)].map((_, i) => (
-          <div key={i} style={{ background: C.surface, borderRadius: 12, padding: "20px 24px", boxShadow: shadow.sm }}>
+          <div key={i} style={{ background: C.surface, borderRadius: 10, padding: "20px 24px", boxShadow: shadow.sm }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
               <Skeleton height="18px" width="40%" />
               <Skeleton height="18px" width="14%" />
@@ -602,7 +610,7 @@ function ComplianceView() {
       ) : (
         items.map((c, i) => {
           const pct = c.completion_pct;
-          const color = pct >= 85 ? C.green : pct >= 60 ? C.yellow : C.red;
+          const color = pct >= 85 ? C.green : pct >= 60 ? C.orange : C.red;
           return (
             <Card key={i}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
@@ -620,7 +628,7 @@ function ComplianceView() {
               <div style={{ display: "flex", gap: 20, fontSize: 12 }}>
                 {[
                   { label: "Uppfyllda", v: c.met_requirements, c: C.green },
-                  { label: "Partiella", v: Math.round((c.total_requirements - c.met_requirements) * 0.5), c: C.yellow },
+                  { label: "Partiella", v: Math.round((c.total_requirements - c.met_requirements) * 0.5), c: C.orange },
                   { label: "Ej uppfyllda", v: c.total_requirements - c.met_requirements, c: C.red },
                 ].map((s, j) => (
                   <span key={j}>
@@ -647,13 +655,13 @@ function ComplianceView() {
             <Badge color={C.tertiary}>{r.category}</Badge>
             <div style={{
               fontWeight: 700,
-              color: r.level === "HIGH" ? C.red : r.level === "MEDIUM" ? C.yellow : C.green,
+              color: r.level === "HIGH" ? C.red : r.level === "MEDIUM" ? C.orange : C.green,
               minWidth: 30, textAlign: "center",
               fontVariantNumeric: "tabular-nums",
             }}>
               {r.score}
             </div>
-            <Badge color={r.level === "HIGH" ? C.red : r.level === "MEDIUM" ? C.yellow : C.green}>
+            <Badge color={r.level === "HIGH" ? C.red : r.level === "MEDIUM" ? C.orange : C.green}>
               {r.level}
             </Badge>
           </Row>
@@ -669,7 +677,7 @@ function AuditView() {
 
   const eventColor = (e: string) =>
     e.includes("FAILED") || e.includes("ERROR") ? C.red
-    : e.includes("DELETE") ? C.yellow
+    : e.includes("DELETE") ? C.orange
     : e.includes("LOGIN") ? C.green : C.blue;
 
   return (
@@ -682,7 +690,7 @@ function AuditView() {
           { label: "Unika användare", value: new Set(audit.map(a => a.user)).size, color: C.purple },
         ].map((s, i) => (
           <div key={i} className="card-animate" style={{
-            background: C.surface, borderRadius: 12, padding: "18px 20px", boxShadow: shadow.sm,
+            background: C.surface, borderRadius: 10, padding: "18px 20px", boxShadow: shadow.sm,
             animation: `slideUp 0.2s ease ${i * 0.04}s backwards`,
           }}>
             <div style={{ fontSize: 11, fontWeight: 500, color: C.secondary }}>{s.label}</div>
@@ -851,20 +859,21 @@ export default function App() {
       <style>{globalStyles}</style>
       <div style={{
         display: "flex", minHeight: "100vh", background: C.bg,
-        fontFamily: "Inter, -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif",
+        fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif",
         color: C.text, WebkitFontSmoothing: "antialiased",
       }}>
         {/* Sidebar */}
         <div style={{
-          width: 220, background: C.surface,
-          borderRight: `1px solid ${C.border}`,
+          width: 260, background: "#FFFFFF",
+          borderRight: `0.5px solid ${C.border}`,
           display: "flex", flexDirection: "column",
           position: "fixed", top: 0, left: 0, bottom: 0, zIndex: 100,
         }}>
           {/* Logo */}
           <div style={{
-            padding: "18px 16px",
-            borderBottom: `1px solid ${C.separator}`,
+            padding: "0 16px",
+            height: 52,
+            borderBottom: `0.5px solid ${C.border}`,
             display: "flex", alignItems: "center", gap: 10,
           }}>
             <div style={{
@@ -894,11 +903,11 @@ export default function App() {
                   className="nav-btn"
                   onClick={() => setView(item.id)}
                   style={{
-                    display: "flex", alignItems: "center", gap: 10,
-                    padding: "0 10px", height: 36, borderRadius: 8, border: "none",
-                    background: active ? C.blue + "12" : "transparent",
-                    color: active ? C.blue : C.secondary,
-                    fontSize: 13, fontWeight: active ? 600 : 400,
+                    display: "flex", alignItems: "center", gap: 8,
+                    padding: "0 12px", height: 44, borderRadius: 10, border: "none",
+                    background: active ? "#007AFF" : "transparent",
+                    color: active ? "#FFFFFF" : "#000000",
+                    fontSize: 17, fontWeight: active ? 600 : 400, letterSpacing: "-0.41px",
                     cursor: "pointer", textAlign: "left", width: "100%",
                     fontFamily: "inherit",
                   }}
@@ -932,16 +941,15 @@ export default function App() {
         </div>
 
         {/* Main */}
-        <div style={{ marginLeft: 220, flex: 1, display: "flex", flexDirection: "column" }}>
+        <div style={{ marginLeft: 260, flex: 1, display: "flex", flexDirection: "column" }}>
           <div style={{
-            background: "rgba(255,255,255,0.85)",
-            backdropFilter: "blur(20px)",
+            background: "rgba(255,255,255,0.92)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
             borderBottom: `0.5px solid ${C.border}`,
-            padding: "0 28px", height: 56,
+            padding: "0 24px", height: 52,
             display: "flex", alignItems: "center", justifyContent: "space-between",
             position: "sticky", top: 0, zIndex: 50,
           }}>
-            <div style={{ fontSize: 22, fontWeight: 700, letterSpacing: "-0.03em", color: C.text }}>
+            <div style={{ fontSize: 17, fontWeight: 600, color: "#000000", letterSpacing: "-0.41px" }}>
               {current?.label}
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -957,7 +965,7 @@ export default function App() {
             </div>
           </div>
 
-          <div style={{ flex: 1, padding: "24px 28px 60px" }}>
+          <div style={{ flex: 1, padding: "32px 32px 64px" }}>
             {viewComponents[view] ?? <EmptyState icon="🔍" title="Vy saknas" />}
           </div>
         </div>

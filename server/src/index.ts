@@ -6,6 +6,7 @@ import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import cookieParser from "cookie-parser";
 import { supabase, checkSupabaseConnectivity, isSupabaseFallback } from "./supabase";
 
 // ---------------------------------------------------------------------------
@@ -46,6 +47,37 @@ import notificationsRouter from "./notifications";
 import learningRouter from "./learning";
 import seoRouter from "./seo";
 import bankingRouter from "./banking";
+import spaghettiRouter from "./spaghetti";
+import spatialRouter from "./spatial-flow";
+import consumablesRouter from "./consumables";
+import { scheduleAutoConsume } from "./jobs/consumables-auto-consume";
+import cultureRouter from "./culture-engine";
+import peopleOSRouter from "./people-os";
+
+// ---------------------------------------------------------------------------
+// Customer Interaction Engine
+// ---------------------------------------------------------------------------
+import brandRouter from "./brand-layer";
+import paymentOrchestrationRouter from "./payment-orchestration";
+import customerStateRouter from "./customer-state";
+import customerPortalRouter from "./customer-portal";
+
+// ---------------------------------------------------------------------------
+// Auth router
+// ---------------------------------------------------------------------------
+import authRouter from "./auth";
+
+// ---------------------------------------------------------------------------
+// DMS — Dealer Management System (pixdrift automotive)
+// ---------------------------------------------------------------------------
+import vehiclesRouter from "./vehicles";
+import workshopRouter from "./workshop";
+import workshopStateMachineRouter from "./state-machine-workshop";
+import checklistEngineRouter from "./checklist-engine";
+import partsRouter from "./parts";
+import vehicleSalesRouter from "./vehicle-sales";
+import automotiveCrmRouter from "./automotive-crm";
+import oemRouter from "./integrations/oem";
 
 // ---------------------------------------------------------------------------
 // Tax Compliance imports (SFL + ML + BFL)
@@ -55,6 +87,7 @@ import cashRegisterRouter from "./cash-register";
 import vatComplianceRouter from "./vat-compliance";
 import payrollComplianceRouter from "./payroll-compliance";
 import complianceCheckerRouter from "./compliance-checker";
+import assetAccountabilityRouter from "./asset-accountability";
 
 // ---------------------------------------------------------------------------
 // Certified Core imports
@@ -63,6 +96,8 @@ import { eventsRouter } from "./events";
 import stateMachineRouter from "./state-machine";
 import { stateMachine } from "./state-machine";
 import { registerSubscribers } from "./subscribers";
+
+import evaBotRouter from './eva-bot';
 
 // ---------------------------------------------------------------------------
 // App setup
@@ -74,8 +109,45 @@ const PORT = Number(process.env.PORT) || 3001;
 // Middleware
 // ---------------------------------------------------------------------------
 app.use(helmet());
-app.use(cors({ origin: process.env.CORS_ORIGIN || "*" }));
+// CORS — support both legacy pixdrift.com origins and the live *.bc.pixdrift.com subdomains.
+// CORS_ORIGIN env can be a comma-separated list of allowed origins.
+// Fix 2026-03-21: Added *.bc.pixdrift.com which hosts the actual production frontends.
+const corsOrigins: string[] = (process.env.CORS_ORIGIN || "")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+// Always include the known production app origins as fallback
+const DEFAULT_ORIGINS = [
+  "https://pixdrift.com",
+  "https://app.bc.pixdrift.com",
+  "https://admin.bc.pixdrift.com",
+  "https://crm.bc.pixdrift.com",
+  "https://sales.bc.pixdrift.com",
+  "https://workstation.pixdrift.com",
+  "https://admin.pixdrift.com",
+  "https://crm.pixdrift.com",
+  "https://sales.pixdrift.com",
+];
+const allowedOrigins = corsOrigins.length > 0
+  ? [...new Set([...corsOrigins, ...DEFAULT_ORIGINS])]
+  : (process.env.NODE_ENV === "production" ? DEFAULT_ORIGINS : ["*"]);
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (server-to-server, curl, Postman)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes("*") || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      callback(new Error(`CORS: Origin '${origin}' not allowed`));
+    },
+    credentials: true,
+  })
+);
 app.use(express.json({ limit: "10mb" }));
+app.use(cookieParser());
 
 // ---------------------------------------------------------------------------
 // i18n / Accept-Language middleware
@@ -149,6 +221,9 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
+// Eva bot (public — no auth required for Telegram webhook)
+app.use('/api/eva-bot', evaBotRouter);
+
 // Request logging
 app.use((req: Request, _res: Response, next: NextFunction) => {
   const start = Date.now();
@@ -160,6 +235,11 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
   });
   next();
 });
+
+// ---------------------------------------------------------------------------
+// Auth routes — public, MUST be before global auth middleware
+// ---------------------------------------------------------------------------
+app.use("/api/auth", authRouter);
 
 // ---------------------------------------------------------------------------
 // Health check — MUST be before auth middleware so it's always public
@@ -232,14 +312,13 @@ app.use(async (req: Request, _res: Response, next: NextFunction) => {
               full_name: dbUserByEmail.full_name,
             };
           } else {
-            // No matching user at all - set with null org_id
-            (req as any).user = {
-              id: user.id,
-              org_id: null,
-              role: "ADMIN",
-              email: user.email,
-              full_name: null,
-            };
+            // No matching user at all — do NOT grant any role.
+            // Returning null forces individual auth() guards to reject with 401.
+            // SECURITY: The previous code assigned role:"ADMIN" + org_id:null here,
+            // which could allow an authenticated-but-unregistered Supabase user to
+            // bypass role checks and potentially read cross-org data. Fixed 2026-03-21.
+            console.warn(`Auth warning: Supabase user ${user.id} (${user.email}) has no matching users row — treating as unauthenticated`);
+            (req as any).user = null;
           }
         }
       } else {
@@ -303,7 +382,32 @@ app.use(integrationRouter);
 app.use("/api/stripe", stripeRouter);
 app.use("/api/notifications", notificationsRouter);
 app.use("/api/learning", learningRouter);
+app.use("/api/spaghetti", spaghettiRouter); // Lean spaghetti diagram & helikopterperspektiv
+app.use("/api/spatial", spatialRouter);   // Spatial Flow Intelligence — zones, spaghetti, friction
+app.use("/api/consumables", consumablesRouter); // Consumables Management — operational cost control
+app.use("/api/culture", cultureRouter);       // Culture & Event Automation — birthdays, breakfast, events
+app.use("/api/people", peopleOSRouter);       // People OS (ERM) — pulse surveys, engagement, feedback, warnings, 1-on-1s
 app.use(bankingRouter); // Banking: /api/banking/* + /api/integrations/fortnox/* + /api/integrations/visma/*
+
+// ---------------------------------------------------------------------------
+// Customer Interaction Engine — Brand Layer, Payment Orchestration, Customer State
+// ---------------------------------------------------------------------------
+app.use('/api/brand', brandRouter);           // GET/PUT /api/brand/:org_id, GET /api/brand/by-subdomain/:sub, POST /api/brand/upload-logo
+app.use('/api/payments', paymentOrchestrationRouter); // GET /api/payments/config, POST /api/payments/create-intent|create-invoice|partial
+app.use('/api/customer-state', customerStateRouter);  // GET/POST /api/customer-state/:contact_id, GET /api/customer-state/by-token/:token
+app.use('/api/customer-portal', customerPortalRouter); // GET /api/customer-portal/:token
+
+// ---------------------------------------------------------------------------
+// DMS — Dealer Management System (pixdrift automotive)
+// ---------------------------------------------------------------------------
+app.use(vehiclesRouter);       // /api/vehicles/*
+app.use(workshopRouter);              // /api/workshop/*
+app.use(workshopStateMachineRouter);  // /api/workshop/work-orders/:id/transition, available-transitions, state-audit
+app.use(checklistEngineRouter);       // /api/checklists/*
+app.use(partsRouter);                 // /api/parts/*
+app.use(vehicleSalesRouter);   // /api/vehicle-sales/*
+app.use(automotiveCrmRouter);  // /api/automotive-crm/*
+app.use(oemRouter);            // /api/oem/*
 
 // ---------------------------------------------------------------------------
 // SEO — sitemap.xml + robots.txt on root, /api/seo/* for endpoints
@@ -314,11 +418,18 @@ app.use('/api/seo', seoRouter); // /api/seo/schema/:page, /api/seo/report, /api/
 // ---------------------------------------------------------------------------
 // Tax Compliance (SFL 2011:1244, ML 2023:200, BFL 1999:1078, SKVFS 2014:9)
 // ---------------------------------------------------------------------------
+// Approval Engine — Video-first customer approvals
+// ---------------------------------------------------------------------------
+import approvalEngineRouter from './approval-engine';
+app.use('/api/approvals', approvalEngineRouter); // POST /capture, GET /pending, /customer/:token, etc.
+
+// ---------------------------------------------------------------------------
 app.use('/api/personnel-ledger', personnelLedgerRouter); // Personalliggare (SFL 39 kap.)
 app.use('/api/cash-register',    cashRegisterRouter);    // Kassaregister (SKVFS 2014:9)
 app.use('/api/vat',              vatComplianceRouter);   // Momshantering (ML 2023:200)
 app.use('/api/payroll',          payrollComplianceRouter); // Arbetsgivaravgifter (SAL + IL)
 app.use('/api/compliance',       complianceCheckerRouter); // Compliance-kontroll
+app.use('/api/tool-assets',      assetAccountabilityRouter); // Asset Accountability & Traceability
 
 // ---------------------------------------------------------------------------
 // Auth helper for inline routes
@@ -720,6 +831,10 @@ bootstrap().catch((err) => console.error("Core bootstrap failed:", err));
 
 app.listen(PORT, () => {
   console.log(`Hypbit OMS API running on http://localhost:${PORT}`);
+  // Schedule daily auto-consume job (runs at 06:00)
+  scheduleAutoConsume();
 });
 
 export default app;
+// Deploy trigger Sat Mar 21 18:49:08 CET 2026
+// Deploy trigger Sat Mar 21 23:55:27 CET 2026

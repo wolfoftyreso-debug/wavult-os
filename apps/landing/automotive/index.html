@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>pixdrift för bilbranschen — från skadeanmälan till utleverans</title>
+  <meta name="description" content="Verkstad. Skadehantering. Besiktning. Allt i ett system. Cabas-integration, försäkringsflöde och QC för hela bilbranschen.">
+  <link rel="icon" href="/favicon.ico">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #08080f;
+      --surface: #111118;
+      --surface2: #1a1a24;
+      --border: rgba(255,255,255,0.08);
+      --text: rgba(245,245,247,0.92);
+      --muted: rgba(245,245,247,0.5);
+      --dim: rgba(245,245,247,0.35);
+      --blue: #0a84ff;
+      --green: #34c759;
+      --orange: #ff9500;
+      --red: #ff3b30;
+      --purple: #bf5af2;
+      --teal: #5ac8fa;
+    }
+    html { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+    body { min-height: 100vh; }
+    a { color: inherit; text-decoration: none; }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 60px;
+      background: rgba(8,8,15,0.85); backdrop-filter: blur(20px);
+      border-bottom: 0.5px solid var(--border);
+    }
+    .nav-logo { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; }
+    .nav-logo span { color: var(--blue); }
+    .nav-links { display: flex; gap: 28px; font-size: 14px; color: var(--muted); }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { background: var(--blue); color: #fff; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 500; transition: opacity .15s; }
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 100px 40px 80px;
+      max-width: 860px; margin: 0 auto;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(10,132,255,0.12); border: 0.5px solid rgba(10,132,255,0.3);
+      padding: 6px 16px; border-radius: 20px;
+      font-size: 13px; color: var(--blue); margin-bottom: 28px;
+    }
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 700; letter-spacing: -0.03em; line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .hero h1 em { font-style: normal; color: var(--blue); }
+    .hero p { font-size: 20px; color: var(--muted); line-height: 1.5; margin-bottom: 40px; }
+    .hero-pills { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 44px; }
+    .hero-pill {
+      background: var(--surface); border: 0.5px solid var(--border);
+      padding: 8px 18px; border-radius: 20px; font-size: 14px; color: var(--muted);
+    }
+    .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { background: var(--blue); color: #fff; padding: 14px 32px; border-radius: 12px; font-size: 16px; font-weight: 600; transition: opacity .15s; }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-secondary { background: var(--surface); border: 0.5px solid var(--border); color: var(--text); padding: 14px 32px; border-radius: 12px; font-size: 16px; font-weight: 500; transition: background .15s; }
+    .btn-secondary:hover { background: var(--surface2); }
+
+    /* GRAVEYARD */
+    .graveyard-section {
+      max-width: 860px; margin: 0 auto 80px;
+      padding: 0 40px;
+      text-align: center;
+    }
+    .graveyard-label { font-size: 12px; font-weight: 600; color: var(--dim); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; }
+    .graveyard-tools { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
+    .dead-tool { font-size: 14px; color: var(--dim); text-decoration: line-through; }
+    .arrow-to { font-size: 20px; color: var(--muted); margin: 0 4px; }
+    .live-tool { font-size: 15px; font-weight: 700; color: var(--blue); }
+    .graveyard-sub { font-size: 13px; color: var(--dim); }
+
+    /* SECTION */
+    section { max-width: 1100px; margin: 0 auto 100px; padding: 0 40px; }
+    .section-label { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+    .section-title { font-size: clamp(28px, 4vw, 42px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 16px; }
+    .section-sub { font-size: 17px; color: var(--muted); line-height: 1.55; max-width: 620px; margin-bottom: 48px; }
+
+    /* CARDS GRID */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .card {
+      background: var(--surface); border: 0.5px solid var(--border);
+      border-radius: 16px; padding: 28px; position: relative; overflow: hidden;
+      transition: border-color .15s;
+    }
+    .card:hover { border-color: rgba(255,255,255,0.15); }
+    .card-accent { position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+    .card-icon { font-size: 24px; margin-bottom: 14px; }
+    .card-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .card-body { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    /* FLOW DIAGRAM */
+    .flow { display: flex; align-items: center; flex-wrap: wrap; gap: 0; margin-bottom: 48px; }
+    .flow-step {
+      background: var(--surface); border: 0.5px solid var(--border);
+      border-radius: 10px; padding: 12px 18px;
+      font-size: 13px; font-weight: 500; color: var(--text);
+      white-space: nowrap;
+    }
+    .flow-step.active { background: rgba(10,132,255,0.12); border-color: rgba(10,132,255,0.3); color: var(--blue); }
+    .flow-arrow { font-size: 18px; color: var(--dim); padding: 0 6px; }
+
+    /* INSURANCE TABLE */
+    .ins-table { width: 100%; border-collapse: collapse; }
+    .ins-table th { text-align: left; font-size: 12px; font-weight: 600; color: var(--dim); text-transform: uppercase; letter-spacing: 0.06em; padding: 12px 16px; border-bottom: 0.5px solid var(--border); }
+    .ins-table td { padding: 14px 16px; border-bottom: 0.5px solid rgba(255,255,255,0.04); font-size: 14px; }
+    .ins-table tr:last-child td { border-bottom: none; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 500; }
+    .badge-green { background: rgba(52,199,89,0.15); color: var(--green); }
+    .badge-orange { background: rgba(255,149,0,0.15); color: var(--orange); }
+
+    /* ROI CALC */
+    .roi-box {
+      background: var(--surface); border: 0.5px solid var(--border);
+      border-radius: 20px; padding: 40px;
+    }
+    .roi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; }
+    .roi-input-group label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+    .roi-input-group input, .roi-input-group select {
+      width: 100%; background: var(--surface2); border: 0.5px solid var(--border);
+      border-radius: 10px; padding: 10px 14px; color: var(--text); font-size: 15px;
+      outline: none;
+    }
+    .roi-result { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .roi-metric { text-align: center; }
+    .roi-number { font-size: 32px; font-weight: 700; color: var(--green); margin-bottom: 4px; }
+    .roi-label { font-size: 13px; color: var(--muted); }
+
+    /* PRICING */
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+    .price-card {
+      background: var(--surface); border: 0.5px solid var(--border);
+      border-radius: 20px; padding: 32px; position: relative;
+    }
+    .price-card.featured { border-color: var(--blue); }
+    .featured-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--blue); color: #fff; padding: 4px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+    .price-name { font-size: 14px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
+    .price-amount { font-size: 42px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 4px; }
+    .price-amount span { font-size: 18px; color: var(--muted); }
+    .price-desc { font-size: 14px; color: var(--muted); margin-bottom: 28px; }
+    .price-features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+    .price-features li { font-size: 14px; color: var(--muted); display: flex; gap: 10px; align-items: flex-start; }
+    .price-features li::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+    .price-btn { display: block; text-align: center; padding: 13px; border-radius: 12px; font-size: 15px; font-weight: 600; transition: opacity .15s; }
+    .price-btn-primary { background: var(--blue); color: #fff; }
+    .price-btn-secondary { background: var(--surface2); color: var(--text); }
+    .price-btn:hover { opacity: 0.85; }
+
+    /* FOOTER */
+    footer { border-top: 0.5px solid var(--border); padding: 40px; text-align: center; color: var(--dim); font-size: 13px; }
+    footer a { color: var(--muted); margin: 0 12px; }
+    footer a:hover { color: var(--text); }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .hero { padding: 60px 20px 60px; }
+      section { padding: 0 20px; }
+      .roi-grid, .roi-result { grid-template-columns: 1fr; }
+      .flow { gap: 4px; }
+      .flow-step { font-size: 12px; padding: 8px 12px; }
+    }
+  </style>
+  <link rel="canonical" href="https://pixdrift.com/automotive/index.html">
+  <meta name="revised" content="2026-03-21">
+  <meta property="og:image" content="https://pixdrift.com/og-image.svg?title=Business+Operating+System&description=Your+Business%2C+Running+on+pixdrift.">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">pix<span>drift</span></div>
+  <div class="nav-links">
+    <a href="#skadehantering">Skadehantering</a>
+    <a href="#verkstad">Verkstad</a>
+    <a href="#besiktning">Besiktning</a>
+    <a href="#forsakring">Försäkring</a>
+    <a href="#pris">Priser</a>
+  </div>
+  <a href="https://app.pixdrift.com/signup?vertical=automotive" class="nav-cta">Kom igång gratis</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">
+    <span>🚗</span> Byggt för den nordiska bilbranschen
+  </div>
+  <h1>pixdrift för bilbranschen —<br><em>från skadeanmälan till utleverans</em></h1>
+  <p>Verkstad. Skadehantering. Besiktning. Allt i ett system.</p>
+  <div class="hero-pills">
+    <div class="hero-pill">🔧 Cabas-integration</div>
+    <div class="hero-pill">🛡️ If · Trygg-Hansa · Folksam · Länsförsäkringar</div>
+    <div class="hero-pill">✅ Digital besiktning & QC</div>
+    <div class="hero-pill">📋 Arbetsorder & DMS</div>
+  </div>
+  <div class="hero-buttons">
+    <a href="https://app.pixdrift.com/signup?vertical=automotive" class="btn-primary">Starta demo</a>
+    <a href="#skadehantering" class="btn-secondary">Se hur det fungerar</a>
+  </div>
+</div>
+
+<!-- GRAVEYARD -->
+<div class="graveyard-section">
+  <div class="graveyard-label">Ersätter dessa system</div>
+  <div class="graveyard-tools">
+    <span class="dead-tool">Automaster</span>
+    <span class="dead-tool">Winbas</span>
+    <span class="dead-tool">Cabas</span>
+    <span class="dead-tool">CDK Global</span>
+    <span class="dead-tool">Bokningssystem</span>
+    <span class="dead-tool">Excel</span>
+    <span class="arrow-to">→</span>
+    <span class="live-tool">pixdrift</span>
+  </div>
+  <div class="graveyard-sub">Ett system. Alla flöden. Noll dubbelmatning.</div>
+</div>
+
+<!-- SECTION 1: SKADEHANTERING -->
+<section id="skadehantering">
+  <div class="section-label">Skadehantering</div>
+  <div class="section-title">Cabas-kalkyl direkt i flödet</div>
+  <div class="section-sub">Slut på telefon och e-post fram och tillbaka. Skadeanmälan, Cabas-kalkyl och försäkringsgodkännande hanteras i ett och samma ärende.</div>
+
+  <!-- State machine flow -->
+  <div class="flow" style="margin-bottom: 48px;">
+    <div class="flow-step active">📋 Anmälan</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">🔍 Bedömning</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">📊 Cabas-kalkyl</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">🛡️ Försäkring</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">🔧 Reparation</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">✅ Besiktning</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">🚗 Utleverans</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">💳 Faktura</div>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-accent" style="background: linear-gradient(90deg, var(--blue), transparent);"></div>
+      <div class="card-icon">📋</div>
+      <div class="card-title">Digital skadeanmälan</div>
+      <div class="card-body">Kunden anmäler skadan via mobilapp eller webbformulär. Foton, reg.nr och beskrivning samlas direkt i ärendet. Ärendenummer genereras automatiskt.</div>
+    </div>
+    <div class="card">
+      <div class="card-accent" style="background: linear-gradient(90deg, var(--orange), transparent);"></div>
+      <div class="card-icon">📊</div>
+      <div class="card-title">Cabas-kalkyl integrerad</div>
+      <div class="card-body">Skapa Cabas-kalkyler direkt i pixdrift. Arbetsmoment, reservdelar och lackkostnader beräknas och skickas automatiskt till försäkringsbolaget.</div>
+    </div>
+    <div class="card">
+      <div class="card-accent" style="background: linear-gradient(90deg, var(--green), transparent);"></div>
+      <div class="card-icon">🛡️</div>
+      <div class="card-title">Automatiskt försäkringsflöde</div>
+      <div class="card-body">Kalkyl skickas till If, Trygg-Hansa, Länsförsäkringar och Gjensidige via direktintegration. Godkännande registreras och startar arbetsorder automatiskt.</div>
+    </div>
+    <div class="card">
+      <div class="card-accent" style="background: linear-gradient(90deg, var(--purple), transparent);"></div>
+      <div class="card-icon">📱</div>
+      <div class="card-title">Kundnotifieringar</div>
+      <div class="card-body">Kunden får SMS och e-post vid varje statusändring. Inga fler samtal om "hur långt har det gått?". Full spårbarhet hela vägen.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2: VERKSTAD & DMS -->
+<section id="verkstad">
+  <div class="section-label">Verkstad & DMS</div>
+  <div class="section-title">Ersätt Automaster och Winbas</div>
+  <div class="section-sub">Komplett DMS-funktionalitet med arbetsorder, bokning, fordonshistorik och PDI — utan att lära sig ett nytt system per OEM.</div>
+
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-accent" style="background: linear-gradient(90deg, var(--orange), transparent);"></div>
+      <div class="card-icon">🛠️</div>
+      <div class="card-title">Arbetsorder</div>
+      <div class="card-body">Skapa, tilldela och spåra arbetsorder i realtid. Koppla direkt till skadeärende, garantiarbete eller servicebesök. Tidrapportering per mekaniker.</div>
+    </div>
+    <div class="card">
+      <div class="card-accent" style="background: linear-gradient(90deg, var(--teal), transparent);"></div>
+      <div class="card-icon">📅</div>
+      <div class="card-title">Bokningssystem</div>
+      <div class="card-body">Kundbokning online med automatisk kalendersynk. Kapacitetsplanering per lyftbock och mekaniker. SMS-påminnelser till kund.</div>
+    </div>
+    <div class="card">
+      <div class="card-accent" style="background: linear-gradient(90deg, var(--green), transparent);"></div>
+      <div class="card-icon">🔗</div>
+      <div class="card-title">OEM-system</div>
+      <div class="card-body">Integration med Volvo VIDA, BMW DIS, VW Group, Stellantis och Mercedes-Benz. Garantiärenden och teknisk data flödar direkt in i arbetsorderna.</div>
+    </div>
+    <div class="card">
+      <div class="card-accent" style="background: linear-gradient(90deg, var(--blue), transparent);"></div>
+      <div class="card-icon">🚗</div>
+      <div class="card-title">Fordonshistorik</div>
+      <div class="card-body">Komplett servicehistorik per reg.nr och VIN. PDI-protokoll, garantianspråk, skadehistorik och alla besiktningsresultat samlade.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: BESIKTNING & QC -->
+<section id="besiktning">
+  <div class="section-label">Besiktning & QC</div>
+  <div class="section-title">Digital besiktning med fotodokumentation</div>
+  <div class="section-sub">Pre-repair, post-repair och kvalitetskontroll. Digital signatur direkt på plats. Allt kopplat till skadeärendet och arbetsorden.</div>
+
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-accent" style="background: linear-gradient(90deg, var(--blue), transparent);"></div>
+      <div class="card-icon">📸</div>
+      <div class="card-title">Pre-repair dokumentation</div>
+      <div class="card-body">Fotografera och dokumentera skadan innan reparation startar. Geomärkt, tidsstämplat och knutet till ärendet. Skyddar mot tvistemål.</div>
+    </div>
+    <div class="card">
+      <div class="card-accent" style="background: linear-gradient(90deg, var(--green), transparent);"></div>
+      <div class="card-icon">✅</div>
+      <div class="card-title">Post-repair QC</div>
+      <div class="card-body">Standardiserat kvalitetschecklista efter reparation. Mekanikern signerar digitalt. Kunden godkänner med mobil signatur vid utleverans.</div>
+    </div>
+    <div class="card">
+      <div class="card-accent" style="background: linear-gradient(90deg, var(--orange), transparent);"></div>
+      <div class="card-icon">📋</div>
+      <div class="card-title">Besiktningsprotokoll</div>
+      <div class="card-body">Generera Transportstyrelsens-kompatibelt besiktningsprotokoll. Exportera som PDF direkt till kund eller försäkringsbolag.</div>
+    </div>
+    <div class="card">
+      <div class="card-accent" style="background: linear-gradient(90deg, var(--purple), transparent);"></div>
+      <div class="card-icon">🔒</div>
+      <div class="card-title">Juridisk spårbarhet</div>
+      <div class="card-body">Alla besiktningar är unveränderligt loggade med timestamp och signatur. Fullständig revision för försäkringsärenden och garantikrav.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 4: FÖRSÄKRINGSINTEGRATION -->
+<section id="forsakring">
+  <div class="section-label">Försäkringsintegration</div>
+  <div class="section-title">Direktlänkad till alla stora försäkringsbolag</div>
+  <div class="section-sub">Cabas-kalkyler skickas och godkänns direkt. Ingen manuell hantering för de bolag som stöder direktintegration.</div>
+
+  <div style="background: var(--surface); border: 0.5px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 48px;">
+    <table class="ins-table">
+      <thead>
+        <tr>
+          <th>Försäkringsbolag</th>
+          <th>Kod</th>
+          <th>Integrationstyp</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>If Skadeförsäkring</strong></td>
+          <td style="color: var(--muted);">IF</td>
+          <td style="color: var(--muted);">Cabas direkt</td>
+          <td><span class="badge badge-green">✓ Stöds</span></td>
+        </tr>
+        <tr>
+          <td><strong>Trygg-Hansa</strong></td>
+          <td style="color: var(--muted);">TH</td>
+          <td style="color: var(--muted);">Cabas direkt</td>
+          <td><span class="badge badge-green">✓ Stöds</span></td>
+        </tr>
+        <tr>
+          <td><strong>Länsförsäkringar</strong></td>
+          <td style="color: var(--muted);">LF</td>
+          <td style="color: var(--muted);">Cabas direkt</td>
+          <td><span class="badge badge-green">✓ Stöds</span></td>
+        </tr>
+        <tr>
+          <td><strong>Gjensidige</strong></td>
+          <td style="color: var(--muted);">GJ</td>
+          <td style="color: var(--muted);">Cabas direkt</td>
+          <td><span class="badge badge-green">✓ Stöds</span></td>
+        </tr>
+        <tr>
+          <td><strong>Folksam</strong></td>
+          <td style="color: var(--muted);">FS</td>
+          <td style="color: var(--muted);">Manuell process</td>
+          <td><span class="badge badge-orange">⚙ Manuell</span></td>
+        </tr>
+        <tr>
+          <td><strong>Moderna Försäkringar</strong></td>
+          <td style="color: var(--muted);">MF</td>
+          <td style="color: var(--muted);">Manuell process</td>
+          <td><span class="badge badge-orange">⚙ Manuell</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-accent" style="background: linear-gradient(90deg, var(--green), transparent);"></div>
+      <div class="card-icon">⚡</div>
+      <div class="card-title">Automatiskt godkännande</div>
+      <div class="card-body">Cabas-kalkyl skickas, godkänns och registreras utan manuell hantering. Arbetsorder startas automatiskt när försäkringsbolaget ger klartecken.</div>
+    </div>
+    <div class="card">
+      <div class="card-accent" style="background: linear-gradient(90deg, var(--orange), transparent);"></div>
+      <div class="card-icon">📎</div>
+      <div class="card-title">Tilläggsarbete enkelt</div>
+      <div class="card-body">Supplementärkalkyler skickas direkt från ärendet. Ingen ny e-postkedja. Historik och versioner sparas automatiskt.</div>
+    </div>
+    <div class="card">
+      <div class="card-accent" style="background: linear-gradient(90deg, var(--blue), transparent);"></div>
+      <div class="card-icon">📄</div>
+      <div class="card-title">Fakturaexport</div>
+      <div class="card-body">Godkänd Cabas-kalkyl konverteras direkt till faktura. Skickas automatiskt till försäkringsbolag och kund. Bokföring sker via Fortnox-integration.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 5: ROI-KALKYLATOR -->
+<section id="roi">
+  <div class="section-label">ROI-kalkylator</div>
+  <div class="section-title">Räkna på din besparing</div>
+  <div class="section-sub">Se hur mycket tid och pengar din verkstad sparar med pixdrift.</div>
+
+  <div class="roi-box">
+    <div class="roi-grid">
+      <div class="roi-input-group">
+        <label>Antal skadeärenden per månad</label>
+        <input type="number" id="roi-claims" value="40" min="1" oninput="calcRoi()">
+      </div>
+      <div class="roi-input-group">
+        <label>Timmar per ärende (admin idag)</label>
+        <input type="number" id="roi-hours" value="3.5" step="0.5" min="0.5" oninput="calcRoi()">
+      </div>
+      <div class="roi-input-group">
+        <label>Timlön admin (SEK)</label>
+        <input type="number" id="roi-wage" value="280" min="100" oninput="calcRoi()">
+      </div>
+      <div class="roi-input-group">
+        <label>Genomsnittligt ärendevärde (SEK)</label>
+        <input type="number" id="roi-value" value="18000" min="1000" step="1000" oninput="calcRoi()">
+      </div>
+    </div>
+    <div class="roi-result">
+      <div class="roi-metric">
+        <div class="roi-number" id="roi-time">—</div>
+        <div class="roi-label">Sparade timmar/mån</div>
+      </div>
+      <div class="roi-metric">
+        <div class="roi-number" id="roi-money">—</div>
+        <div class="roi-label">Besparing SEK/mån</div>
+      </div>
+      <div class="roi-metric">
+        <div class="roi-number" id="roi-payback">—</div>
+        <div class="roi-label">Återbetalningstid</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 6: PRISER -->
+<section id="pris">
+  <div class="section-label">Prissättning</div>
+  <div class="section-title">Transparent prissättning för bilbranschen</div>
+  <div class="section-sub">Inga dolda avgifter. Inga per-ärende-kostnader. Fast månadsavgift oavsett volym.</div>
+
+  <div class="pricing-grid">
+    <!-- Starter -->
+    <div class="price-card">
+      <div class="price-name">Workshop Starter</div>
+      <div class="price-amount">€499<span>/mo</span></div>
+      <div class="price-desc">Upp till 5 mekaniker. Perfekt för fristående verkstäder.</div>
+      <ul class="price-features">
+        <li>Upp till 5 mekaniker</li>
+        <li>Arbetsorder & bokning</li>
+        <li>Skadeärenden</li>
+        <li>Manuell Cabas-export (XML)</li>
+        <li>Fordonshistorik</li>
+        <li>Kundnotifieringar (SMS/email)</li>
+        <li>Fakturaexport</li>
+      </ul>
+      <a href="https://app.pixdrift.com/signup?plan=automotive-starter" class="price-btn price-btn-secondary">Starta gratis</a>
+    </div>
+
+    <!-- Pro -->
+    <div class="price-card featured">
+      <div class="featured-badge">Mest populär</div>
+      <div class="price-name">Workshop Pro</div>
+      <div class="price-amount">€999<span>/mo</span></div>
+      <div class="price-desc">Obegränsade mekaniker + full Cabas-direktintegration.</div>
+      <ul class="price-features">
+        <li>Obegränsat antal mekaniker</li>
+        <li>Full Cabas-direktintegration</li>
+        <li>Direktlänk till If, Trygg-Hansa, LF, Gjensidige</li>
+        <li>Automatiskt försäkringsflöde</li>
+        <li>Digital besiktning & QC</li>
+        <li>Fortnox-integration</li>
+        <li>OEM-systemkoppling</li>
+        <li>Prioriterad support</li>
+      </ul>
+      <a href="https://app.pixdrift.com/signup?plan=automotive-pro" class="price-btn price-btn-primary">Starta gratis</a>
+    </div>
+
+    <!-- Enterprise -->
+    <div class="price-card">
+      <div class="price-name">Automotive Enterprise</div>
+      <div class="price-amount">€1,999<span>/mo</span></div>
+      <div class="price-desc">Flerbranschen + OEM-certifiering. För dealergrupper.</div>
+      <ul class="price-features">
+        <li>Obegränsade anläggningar</li>
+        <li>OEM-certifiering (Volvo, BMW, VW m.fl.)</li>
+        <li>Flerbranschen-flöde</li>
+        <li>Dedikerad success manager</li>
+        <li>SLA-garantier</li>
+        <li>Custom API-integrationer</li>
+        <li>On-premise alternativ</li>
+        <li>Revisionslogg & compliance</li>
+      </ul>
+      <a href="mailto:sales@pixdrift.com?subject=Enterprise" class="price-btn price-btn-secondary">Kontakta sälj</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="text-align: center; padding-bottom: 120px;">
+  <div style="font-size: clamp(28px, 4vw, 48px); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px;">
+    Redo att samla allt i ett system?
+  </div>
+  <div style="font-size: 18px; color: var(--muted); margin-bottom: 40px;">
+    Demo inom 24 timmar. Ingen bindningstid de första 3 månaderna.
+  </div>
+  <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+    <a href="https://app.pixdrift.com/signup?vertical=automotive" class="btn-primary">Kom igång gratis</a>
+    <a href="mailto:sales@pixdrift.com" class="btn-secondary">Boka demo</a>
+  </div>
+</section>
+
+<footer>
+  <div style="margin-bottom: 20px;">
+    <a href="/">pixdrift.com</a>
+    <a href="/privacy">Integritetspolicy</a>
+    <a href="/terms">Villkor</a>
+    <a href="mailto:support@pixdrift.com">Support</a>
+  </div>
+  <div>© 2026 pixdrift. Byggt för den nordiska bilbranschen.</div>
+</footer>
+
+<script>
+function calcRoi() {
+  const claims = parseFloat(document.getElementById('roi-claims').value) || 0;
+  const hours  = parseFloat(document.getElementById('roi-hours').value)  || 0;
+  const wage   = parseFloat(document.getElementById('roi-wage').value)   || 0;
+  const val    = parseFloat(document.getElementById('roi-value').value)  || 0;
+
+  // pixdrift saves ~70% of admin time per claim
+  const savedHours = Math.round(claims * hours * 0.7);
+  const savedMoney = Math.round(savedHours * wage);
+  // Pro plan cost in SEK approx ~10 800/mo; payback in months
+  const planCost = 10800;
+  const payback = savedMoney > 0 ? (planCost / savedMoney * 30).toFixed(0) + ' dagar' : '—';
+
+  document.getElementById('roi-time').textContent = savedHours;
+  document.getElementById('roi-money').textContent = savedMoney.toLocaleString('sv-SE');
+  document.getElementById('roi-payback').textContent = payback;
+}
+calcRoi();
+</script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 # ============================================================
-# S3 — Statisk hosting för 4 frontend-appar
+# S3 — Statisk hosting för landningssida + 4 frontend-appar
 # ============================================================
 
 locals {
@@ -9,6 +9,50 @@ locals {
     crm         = "crm.${var.product_prefix}.${var.domain}"
     sales       = "sales.${var.product_prefix}.${var.domain}"
   }
+}
+
+# ── Landing bucket (pixdrift-landing-prod) ──────────────────────────────────
+# Publik S3 website-hosting för landningssidan (HTML/CSS/JS utan React)
+# CloudFront läser via website-endpoint (HTTP) inte direkt S3 (OAC)
+resource "aws_s3_bucket" "landing" {
+  bucket = "pixdrift-landing-${var.environment}"
+}
+
+resource "aws_s3_bucket_public_access_block" "landing" {
+  bucket = aws_s3_bucket.landing.id
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
+resource "aws_s3_bucket_website_configuration" "landing" {
+  bucket = aws_s3_bucket.landing.id
+
+  index_document { suffix = "index.html" }
+  error_document { key    = "index.html" }
+}
+
+resource "aws_s3_bucket_versioning" "landing" {
+  bucket = aws_s3_bucket.landing.id
+  versioning_configuration { status = "Enabled" }
+}
+
+resource "aws_s3_bucket_policy" "landing" {
+  bucket     = aws_s3_bucket.landing.id
+  depends_on = [aws_s3_bucket_public_access_block.landing]
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Sid       = "PublicReadGetObject"
+      Effect    = "Allow"
+      Principal = "*"
+      Action    = "s3:GetObject"
+      Resource  = "${aws_s3_bucket.landing.arn}/*"
+    }]
+  })
 }
 
 resource "aws_s3_bucket" "frontend" {

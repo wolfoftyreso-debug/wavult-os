@@ -293,7 +293,8 @@ router.post('/api/calibrations/import/fetch/:connectorId', async (req: Request, 
  * Query params: org_id, status, source, limit (default 20), offset (default 0)
  */
 router.get('/api/calibrations/import/queue', async (req: Request, res: Response) => {
-  const orgId = (req.query.org_id as string) ?? (req as any).user?.org_id;
+  // SECURITY FIX: org_id must come from authenticated session, not query params (cross-tenant risk)
+  const orgId = (req as any).user?.org_id;
   const status = req.query.status as string | undefined;
   const source = req.query.source as string | undefined;
   const limit = parseInt(req.query.limit as string) || 20;
@@ -601,7 +602,8 @@ router.post('/api/calibrations/providers/:id/test', async (req: Request, res: Re
  * Returns: { certificates }
  */
 router.get('/api/calibrations/certificates/unmatched', async (req: Request, res: Response) => {
-  const orgId = (req.query.org_id as string) ?? (req as any).user?.org_id;
+  // SECURITY FIX: org_id must come from authenticated session, not query params (cross-tenant risk)
+  const orgId = (req as any).user?.org_id;
   const limit = parseInt(req.query.limit as string) || 20;
 
   if (!orgId) {
