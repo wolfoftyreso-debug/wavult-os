@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Säkerhet & Compliance — pixdrift</title>
+  <meta name="description" content="pixdrifts säkerhetsarkitektur: datalagring, kryptering, åtkomstkontroll, GDPR-efterlevnad och subprocessorer." />
+  <meta property="og:title" content="Säkerhet & Compliance — pixdrift" />
+  <meta property="og:description" content="Enterprise-säkerhet från dag ett. AES-256, TLS 1.3, GDPR, EU-servrar." />
+  <link rel="canonical" href="https://pixdrift.com/security" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%236366f1'/><text y='0.9em' font-size='60' font-family='system-ui' font-weight='800' fill='white' x='50%' text-anchor='middle'>p</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --pd-ink: #0a0a0f; --pd-surface: #111118; --pd-surface-2: #16161f;
+      --pd-border: #1e1e2e; --pd-border-2: #2a2a3d; --pd-white: #f8fafc;
+      --pd-text: #e2e8f0; --pd-muted: #6b7280; --pd-indigo: #6366f1;
+      --pd-indigo-light: #818cf8; --pd-indigo-dim: rgba(99,102,241,0.12);
+      --pd-violet: #8b5cf6; --pd-emerald: #10b981; --pd-amber: #f59e0b;
+      --pd-rose: #f43f5e; --radius: 10px; --radius-lg: 16px; --radius-xl: 24px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--pd-ink); color: var(--pd-text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; transition: all 200ms ease-out; }
+
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 5%; height: 64px; background: rgba(10,10,15,0.9); backdrop-filter: blur(16px); border-bottom: 1px solid var(--pd-border); }
+    .nav-logo { font-size: 1.2rem; font-weight: 600; letter-spacing: -0.04em; color: var(--pd-white); }
+    .nav-links { display: flex; align-items: center; gap: 1.5rem; }
+    .nav-links a { font-size: 0.875rem; color: var(--pd-muted); }
+    .nav-links a:hover, .nav-links a.active { color: var(--pd-white); }
+    .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1.125rem; border-radius: var(--radius); font-size: 0.875rem; font-weight: 600; font-family: inherit; cursor: pointer; border: 1px solid transparent; transition: all 200ms ease-out; }
+    .btn-primary { background: var(--pd-indigo); color: #fff; border-color: var(--pd-indigo); }
+    .btn-primary:hover { background: var(--pd-indigo-light); transform: translateY(-1px); }
+
+    .section { padding: 120px 5%; }
+    .section-sm { padding: 72px 5%; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label { display: inline-block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--pd-indigo); margin-bottom: 1rem; }
+    .section-title { font-size: clamp(1.5rem, 2.5vw, 2.25rem); font-weight: 700; letter-spacing: -0.03em; color: var(--pd-white); margin-bottom: 1rem; line-height: 1.2; }
+    .section-sub { font-size: 1rem; color: var(--pd-muted); line-height: 1.7; max-width: 640px; }
+
+    /* Hero */
+    .sec-hero { padding: 140px 5% 80px; background: var(--pd-surface); }
+    .sec-hero h1 { font-size: clamp(2rem, 4vw, 3.25rem); font-weight: 800; letter-spacing: -0.04em; color: var(--pd-white); line-height: 1.1; margin-bottom: 1.25rem; max-width: 680px; }
+    .sec-hero p { font-size: 1.1rem; color: var(--pd-muted); line-height: 1.75; max-width: 580px; }
+
+    /* Summary badges */
+    .summary-bar { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2.5rem; }
+    .summary-badge { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: var(--pd-ink); border: 1px solid var(--pd-border); border-radius: var(--radius-full); font-size: 0.8rem; font-weight: 600; color: var(--pd-muted); }
+    .summary-badge .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .dot-green { background: var(--pd-emerald); }
+    .dot-amber { background: var(--pd-amber); }
+
+    /* Content sections */
+    .sec-block { padding: 64px 5%; border-top: 1px solid var(--pd-border); }
+
+    .sec-grid { display: grid; grid-template-columns: 280px 1fr; gap: 3rem; align-items: start; }
+    .sec-nav-label { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--pd-indigo); margin-bottom: 0.5rem; }
+    .sec-nav-title { font-size: 1.25rem; font-weight: 700; color: var(--pd-white); line-height: 1.3; }
+
+    .sec-content h3 { font-size: 1rem; font-weight: 600; color: var(--pd-white); margin: 1.5rem 0 0.5rem; }
+    .sec-content h3:first-child { margin-top: 0; }
+    .sec-content p { font-size: 0.9rem; color: var(--pd-muted); line-height: 1.7; margin-bottom: 0.75rem; }
+    .sec-content ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
+    .sec-content ul li { display: flex; align-items: flex-start; gap: 0.625rem; font-size: 0.875rem; color: var(--pd-text); }
+    .sec-content ul li::before { content: '✓'; color: var(--pd-emerald); font-weight: 700; flex-shrink: 0; margin-top: 0.1em; }
+    .sec-content .code-block { background: var(--pd-surface); border: 1px solid var(--pd-border); border-radius: var(--radius); padding: 1rem 1.25rem; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--pd-indigo-light); line-height: 1.6; margin: 0.75rem 0; }
+
+    /* Subprocessors table */
+    .proc-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    .proc-table th { text-align: left; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--pd-muted); padding: 0.625rem 1rem; border-bottom: 1px solid var(--pd-border); }
+    .proc-table td { font-size: 0.85rem; color: var(--pd-text); padding: 0.75rem 1rem; border-bottom: 1px solid var(--pd-border); vertical-align: top; }
+    .proc-table tr:last-child td { border-bottom: none; }
+    .proc-table tr:hover td { background: var(--pd-surface-2); }
+    .proc-country { display: inline-flex; align-items: center; gap: 0.375rem; }
+
+    /* Status pills */
+    .status-live { display: inline-block; padding: 0.2rem 0.5rem; background: rgba(16,185,129,0.1); color: var(--pd-emerald); border-radius: var(--radius-full); font-size: 0.72rem; font-weight: 600; }
+    .status-roadmap { display: inline-block; padding: 0.2rem 0.5rem; background: rgba(245,158,11,0.1); color: var(--pd-amber); border-radius: var(--radius-full); font-size: 0.72rem; font-weight: 600; }
+
+    /* Contact CTA */
+    .sec-cta { background: var(--pd-surface); text-align: center; padding: 80px 5%; }
+    .sec-cta h2 { font-size: 1.75rem; font-weight: 700; color: var(--pd-white); margin-bottom: 0.875rem; letter-spacing: -0.03em; }
+    .sec-cta p { color: var(--pd-muted); margin-bottom: 2rem; }
+    .sec-cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-outline { background: transparent; color: var(--pd-text); border: 1px solid var(--pd-border); }
+    .btn-outline:hover { border-color: var(--pd-indigo); color: var(--pd-white); }
+
+    footer { background: var(--pd-ink); border-top: 1px solid var(--pd-border); padding: 2.5rem 5%; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    footer p { font-size: 0.8rem; color: var(--pd-muted); }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a { font-size: 0.8rem; color: var(--pd-muted); }
+    .footer-links a:hover { color: var(--pd-white); }
+
+    @media (max-width: 1024px) {
+      .sec-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    }
+    @media (max-width: 768px) {
+      .section { padding: 64px 4%; }
+      .sec-block { padding: 48px 4%; }
+      .sec-hero { padding: 110px 4% 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">pixdrift</a>
+  <div class="nav-links">
+    <a href="index.html#product">Produkt</a>
+    <a href="index.html#pricing">Prissättning</a>
+    <a href="security.html" class="active">Säkerhet</a>
+    <a href="about.html">Om oss</a>
+  </div>
+  <a href="index.html#contact" class="btn btn-primary">Boka demo</a>
+</nav>
+
+<!-- Hero -->
+<div class="sec-hero">
+  <div class="container">
+    <div class="section-label">Säkerhet &amp; Compliance</div>
+    <h1>Enterprise-säkerhet.<br>Inga kompromisser.</h1>
+    <p>pixdrift är designat för organisationer som hanterar känslig affärsdata. Här är exakt hur vi skyddar den.</p>
+
+    <div class="summary-bar">
+      <div class="summary-badge"><span class="dot dot-green"></span>GDPR Compliant</div>
+      <div class="summary-badge"><span class="dot dot-green"></span>AES-256 Encryption</div>
+      <div class="summary-badge"><span class="dot dot-green"></span>TLS 1.3</div>
+      <div class="summary-badge"><span class="dot dot-green"></span>EU Data Residency</div>
+      <div class="summary-badge"><span class="dot dot-green"></span>RBAC Access Control</div>
+      <div class="summary-badge"><span class="dot dot-amber"></span>SOC 2 Type II (Q3 2026)</div>
+      <div class="summary-badge"><span class="dot dot-amber"></span>SSO / SAML (Q3 2026)</div>
+    </div>
+  </div>
+</div>
+
+<!-- Datalagring -->
+<div class="sec-block">
+  <div class="container">
+    <div class="sec-grid">
+      <div>
+        <div class="sec-nav-label">Infrastruktur</div>
+        <div class="sec-nav-title">Datalagring &amp; geografisk placering</div>
+      </div>
+      <div class="sec-content">
+        <h3>Primär datalagring</h3>
+        <p>All produktionsdata lagras i EU. Vi använder Supabase (PostgreSQL) med AWS-infrastruktur i regionerna <code>eu-north-1</code> (Stockholm) och <code>eu-west-1</code> (Dublin) som failover.</p>
+        <ul>
+          <li>Primär region: eu-north-1 (Stockholm)</li>
+          <li>Failover-region: eu-west-1 (Dublin)</li>
+          <li>Backup-frekvens: Dagligen, 30 dagars retention</li>
+          <li>Point-in-time recovery: 7 dagars fönster</li>
+        </ul>
+
+        <h3>Dataöverföring</h3>
+        <p>Kunddata lämnar aldrig EU utan explicit godkännande. Vår CDN (Cloudflare) är konfigurerad att stanna inom EU-noder för GDPR-efterlevnad. Inga dataöverföringar till tredjepartsländer utan Standard Contractual Clauses (SCC).</p>
+
+        <h3>Isolering</h3>
+        <p>Varje kundorganisation är logiskt isolerad med separata databas-schemas och row-level security (RLS) på Supabase-nivå. Multi-tenant-arkitekturen förhindrar dataläckage mellan organisationer.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Kryptering -->
+<div class="sec-block" style="background:var(--pd-surface)">
+  <div class="container">
+    <div class="sec-grid">
+      <div>
+        <div class="sec-nav-label">Kryptering</div>
+        <div class="sec-nav-title">Data i vila och transit</div>
+      </div>
+      <div class="sec-content">
+        <h3>Kryptering i vila (at rest)</h3>
+        <p>All data krypteras med AES-256 på disknivå via AWS KMS. Databas-backups krypteras separat med dedikerade nycklar. Krypteringsnycklar roteras kvartalsvis.</p>
+        <div class="code-block">
+Krypteringsstandard: AES-256-GCM
+Nyckelhantering:     AWS KMS (Bring Your Own Key tillgängligt för Enterprise)
+Nyckelrotation:      Kvartalsvis, automatisk
+Backup-kryptering:   Separata KMS-nycklar per organisation
+        </div>
+
+        <h3>Kryptering i transit (in transit)</h3>
+        <p>All kommunikation mellan klient och server kräver TLS 1.3. TLS 1.2 accepteras som fallback för äldre klienter. Svagare protokoll (TLS 1.0, 1.1, SSL 3.0) är inaktiverade.</p>
+        <ul>
+          <li>TLS 1.3 (primärt) och TLS 1.2 (fallback)</li>
+          <li>HSTS med 2 års max-age, includeSubDomains</li>
+          <li>Certificate pinning på mobilappar</li>
+          <li>Forward secrecy aktiverat (ECDHE)</li>
+        </ul>
+
+        <h3>Databasnivå-kryptering</h3>
+        <p>Känsliga fält (API-nycklar, tokens, PII-data) krypteras på applikationsnivå utöver diskkrypteringen. Krypteringsnycklar lagras aldrig i samma system som datan.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Åtkomstkontroll -->
+<div class="sec-block">
+  <div class="container">
+    <div class="sec-grid">
+      <div>
+        <div class="sec-nav-label">Åtkomstkontroll</div>
+        <div class="sec-nav-title">RBAC, autentisering och behörigheter</div>
+      </div>
+      <div class="sec-content">
+        <h3>Rollbaserad åtkomstkontroll (RBAC)</h3>
+        <p>pixdrift implementerar granulär RBAC på modul-, entitets- och fältnivå. Roller definieras per organisation och kan anpassas fritt.</p>
+        <ul>
+          <li>Standardroller: Administratör, Redaktör, Granskare, Läsare</li>
+          <li>Anpassade roller med granulär behörighetskontroll</li>
+          <li>Datafiltrering baserat på roll (field-level security)</li>
+          <li>Tvåfaktorsautentisering (TOTP) för alla administratörskonton</li>
+        </ul>
+
+        <h3>SSO / SAML 2.0 (Roadmap Q3 2026)</h3>
+        <p>SSO via SAML 2.0 och OpenID Connect planeras för Q3 2026. Kompatibla identitetsleverantörer: Okta, Azure Active Directory, Google Workspace, OneLogin.</p>
+        <span class="status-roadmap">Roadmap Q3 2026</span>
+
+        <h3>Intern åtkomstkontroll</h3>
+        <p>pixdrift-anställda har minimala behörigheter till produktionsdata. All intern åtkomst loggas och granskas. Produktionsåtkomst kräver godkännande av VD och CTO och är tidsbegränsad.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Incident Response -->
+<div class="sec-block" style="background:var(--pd-surface)">
+  <div class="container">
+    <div class="sec-grid">
+      <div>
+        <div class="sec-nav-label">Incidenthantering</div>
+        <div class="sec-nav-title">Incidentrespons och kommunikation</div>
+      </div>
+      <div class="sec-content">
+        <h3>Incidentresponsprocedur</h3>
+        <p>Vi följer ett definierat incidenthanteringsramverk med tydlig eskalationsordning och kommunikationsprotokoll.</p>
+        <ul>
+          <li>Incidentidentifiering: Automatisk via monitoring + manuell rapportering</li>
+          <li>Initial respons: &lt;30 minuter (kritiska incidenter)</li>
+          <li>Kundkommunikation: &lt;2 timmar för P1-incidenter</li>
+          <li>Post-mortem: Publicerat inom 5 arbetsdagar</li>
+        </ul>
+
+        <h3>Statuspage</h3>
+        <p>Realtidsstatus för alla tjänster finns på <a href="#" style="color:var(--pd-indigo-light)">status.pixdrift.com</a>. Prenumerera på statusuppdateringar via e-post, Slack eller webhook.</p>
+
+        <h3>GDPR Data Breach Notification</h3>
+        <p>Vid dataintrång meddelar vi berörda kunder inom 24 timmar och Datainspektionen/IMY inom 72 timmar i enlighet med GDPR artikel 33–34.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GDPR -->
+<div class="sec-block">
+  <div class="container">
+    <div class="sec-grid">
+      <div>
+        <div class="sec-nav-label">GDPR</div>
+        <div class="sec-nav-title">Dataskydd och registerföring</div>
+      </div>
+      <div class="sec-content">
+        <h3>Databehandlingsavtal (DPA)</h3>
+        <p>Vi tillhandahåller ett fullständigt DPA som uppfyller GDPR-kraven. Growth- och Enterprise-kunder kan begära undertecknande. Kontakta <a href="mailto:privacy@pixdrift.com" style="color:var(--pd-indigo-light)">privacy@pixdrift.com</a>.</p>
+
+        <h3>Den registrerades rättigheter</h3>
+        <p>pixdrift stöder alla GDPR-rättigheter för den registrerade:</p>
+        <ul>
+          <li>Rätt till tillgång (artikel 15) — Export via kundportalen</li>
+          <li>Rätt till rättelse (artikel 16) — Redigering i applikationen</li>
+          <li>Rätt till radering (artikel 17) — Self-service + admin-portal</li>
+          <li>Rätt till dataportabilitet (artikel 20) — JSON/CSV-export</li>
+          <li>Rätt att invända (artikel 21) — Kontaktformulär</li>
+        </ul>
+
+        <h3>Datalagringstider</h3>
+        <ul>
+          <li>Aktiva konton: Lagrad tills kunden raderar</li>
+          <li>Inaktiva konton: Raderas automatiskt efter 12 månader</li>
+          <li>Backup-data: 30 dagars retention, sedan permanent radering</li>
+          <li>Revisionsspår: 3 år (regulatorisk minimikrav)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Penetration Testing -->
+<div class="sec-block" style="background:var(--pd-surface)">
+  <div class="container">
+    <div class="sec-grid">
+      <div>
+        <div class="sec-nav-label">Säkerhetstestning</div>
+        <div class="sec-nav-title">Penetrationstestning och sårbarhetsprogram</div>
+      </div>
+      <div class="sec-content">
+        <h3>Penetrationstestning</h3>
+        <p>Extern penetrationstestning av certifierade tredje parter planeras kvartalsvis från Q3 2026. Interna kodsäkerhetsgranskningar genomförs löpande.</p>
+        <span class="status-roadmap">Extern pentest: Q3 2026</span>
+
+        <h3>Responsible Disclosure</h3>
+        <p>Vi välkomnar ansvarsfull rapportering av säkerhetssårbarheter. Rapportera till <a href="mailto:security@pixdrift.com" style="color:var(--pd-indigo-light)">security@pixdrift.com</a>.</p>
+        <ul>
+          <li>Bekräftelse av rapport: &lt;48 timmar</li>
+          <li>Initial bedömning: &lt;5 arbetsdagar</li>
+          <li>Kritiska sårbarheter: Åtgärdade inom 24 timmar</li>
+          <li>Vi erbjuder ett bug bounty-program (villkor vid kontakt)</li>
+        </ul>
+
+        <h3>Statisk kodanalys</h3>
+        <p>Alla pull requests genomgår automatisk SAST-analys (Static Application Security Testing) med Semgrep. Beroenden scannas dagligen med Dependabot och Snyk.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Subprocessors -->
+<div class="sec-block">
+  <div class="container">
+    <div class="sec-grid">
+      <div>
+        <div class="sec-nav-label">Subprocessorer</div>
+        <div class="sec-nav-title">Tredjepartstjänster och dataleverantörer</div>
+      </div>
+      <div class="sec-content">
+        <p>pixdrift använder följande subprocessorer för att leverera tjänsten. Alla subprocessorer har signerarna Standard Contractual Clauses (SCC) och uppfyller GDPR-krav.</p>
+
+        <table class="proc-table">
+          <thead>
+            <tr>
+              <th>Leverantör</th>
+              <th>Syfte</th>
+              <th>Datalagring</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Supabase</strong></td>
+              <td>Databas &amp; autentisering (PostgreSQL, Auth)</td>
+              <td>🇸🇪 eu-north-1 (AWS)</td>
+              <td><span class="status-live">Aktiv</span></td>
+            </tr>
+            <tr>
+              <td><strong>AWS</strong></td>
+              <td>Beräkning, lagring, nätverk (EC2, S3, CloudFront)</td>
+              <td>🇸🇪🇮🇪 EU-regioner</td>
+              <td><span class="status-live">Aktiv</span></td>
+            </tr>
+            <tr>
+              <td><strong>Stripe</strong></td>
+              <td>Betalningshantering</td>
+              <td>🇮🇪 Dublin, EU</td>
+              <td><span class="status-live">Aktiv</span></td>
+            </tr>
+            <tr>
+              <td><strong>Cloudflare</strong></td>
+              <td>CDN, DDoS-skydd, DNS</td>
+              <td>🇪🇺 EU-noder (konfigurerat)</td>
+              <td><span class="status-live">Aktiv</span></td>
+            </tr>
+            <tr>
+              <td><strong>Resend</strong></td>
+              <td>Transaktionell e-post</td>
+              <td>🇪🇺 EU</td>
+              <td><span class="status-live">Aktiv</span></td>
+            </tr>
+            <tr>
+              <td><strong>Sentry</strong></td>
+              <td>Felrapportering &amp; performance monitoring</td>
+              <td>🇩🇪 Frankfurt (EU-region)</td>
+              <td><span class="status-live">Aktiv</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p style="margin-top:1rem;font-size:0.8rem;color:var(--pd-muted)">
+          Denna lista uppdateras när subprocessorer läggs till eller tas bort. Senast uppdaterad: mars 2026.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="sec-cta">
+  <div class="container" style="max-width:640px">
+    <h2>Frågor om säkerhet?</h2>
+    <p>Vårt säkerhetsteam svarar inom 24 timmar. Enterprise-kunder kan boka en dedikerad säkerhetsgenomgång.</p>
+    <div class="sec-cta-btns">
+      <a href="mailto:security@pixdrift.com" class="btn btn-outline">security@pixdrift.com</a>
+      <a href="index.html#contact" class="btn btn-primary">Boka säkerhetsgenomgång</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 pixdrift AB</p>
+  <div class="footer-links">
+    <a href="index.html">Hem</a>
+    <a href="about.html">Om oss</a>
+    <a href="changelog.html">Changelog</a>
+    <a href="#">Integritetspolicy</a>
+  </div>
+</footer>
+
+</body>
+</html>

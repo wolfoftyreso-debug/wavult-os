@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Authentication — pixdrift API</title>
+  <style>
+    :root { --bg:#0a0a0f;--surface:#12121a;--border:#2a2a3e;--accent:#6c5ce7;--accent2:#a29bfe;--green:#00b894;--text:#e8e8f0;--muted:#888899;--code-bg:#0d0d17; }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sans-serif;line-height:1.7;}
+    a{color:var(--accent2);text-decoration:none;}a:hover{text-decoration:underline;}
+    .topnav{height:56px;display:flex;align-items:center;padding:0 24px;gap:16px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+    .topnav-logo{font-weight:700;font-size:16px;color:var(--text);}
+    .topnav-logo span{color:var(--accent2);}
+    .topnav-links{margin-left:auto;display:flex;gap:20px;font-size:13px;}
+    .topnav-links a{color:var(--muted);}
+    .topnav-links a:hover{color:var(--text);}
+    .layout{display:flex;}
+    .sidebar{width:240px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:24px 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;}
+    .sidebar a{display:block;padding:8px 20px;font-size:13px;color:var(--muted);border-left:3px solid transparent;}
+    .sidebar a:hover{color:var(--text);background:rgba(108,92,231,0.08);border-left-color:var(--accent);text-decoration:none;}
+    .sidebar-group{padding:16px 20px 8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);}
+    .content{flex:1;padding:48px;max-width:820px;}
+    h1{font-size:36px;font-weight:800;margin-bottom:12px;}
+    h2{font-size:24px;font-weight:700;margin:48px 0 16px;padding-top:16px;border-top:1px solid var(--border);}
+    h3{font-size:18px;font-weight:600;margin:28px 0 12px;}
+    p{color:var(--muted);margin-bottom:16px;}
+    .callout{background:rgba(108,92,231,0.1);border:1px solid rgba(108,92,231,0.3);border-radius:8px;padding:16px 20px;margin:20px 0;}
+    .callout.warn{background:rgba(225,112,85,0.1);border-color:rgba(225,112,85,0.3);}
+    .callout.green{background:rgba(0,184,148,0.1);border-color:rgba(0,184,148,0.3);}
+    pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:20px;overflow-x:auto;font-size:13px;line-height:1.8;font-family:'Fira Code',monospace;margin:16px 0;}
+    code{background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:13px;font-family:monospace;}
+    .k{color:#fd79a8;}.s{color:#55efc4;}.c{color:#636e72;font-style:italic;}.n{color:var(--accent2);}
+    table{width:100%;border-collapse:collapse;margin:16px 0;}
+    th{text-align:left;padding:12px;background:var(--surface);border-bottom:2px solid var(--border);font-size:13px;color:var(--muted);}
+    td{padding:12px;border-bottom:1px solid var(--border);font-size:14px;}
+    td:first-child{font-family:monospace;color:var(--accent2);}
+    @media(max-width:768px){.sidebar{display:none;}.content{padding:24px 16px;}}
+  </style>
+</head>
+<body>
+<div class="topnav">
+  <a href="index.html" class="topnav-logo">pix<span>drift</span></a>
+  <span style="color:var(--border)">/</span>
+  <span style="color:var(--muted);font-size:14px">Authentication</span>
+  <div class="topnav-links">
+    <a href="api-reference.html">API Reference</a>
+    <a href="webhooks.html">Webhooks</a>
+    <a href="guides/quickstart.html">Guides</a>
+  </div>
+</div>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-group">Authentication</div>
+    <a href="#overview">Overview</a>
+    <a href="#api-keys">API Keys</a>
+    <a href="#jwt">JWT Tokens</a>
+    <a href="#scopes">Scopes</a>
+    <a href="#rate-limits">Rate Limits</a>
+    <a href="#webhooks-sig">Webhook Signatures</a>
+    <a href="#cors">CORS</a>
+    <a href="#sandbox">Sandbox vs Production</a>
+  </aside>
+  <main class="content">
+    <h1>Authentication</h1>
+    <p>pixdrift uses Bearer token authentication. Every API request must include an <code>Authorization</code> header.</p>
+
+    <div class="callout green">
+      <strong>Quick start:</strong> Create an API key in your pixdrift app under <strong>Admin → Settings → API Keys</strong>, then include it as <code>Authorization: Bearer pd_live_&lt;key&gt;</code>.
+    </div>
+
+    <h2 id="api-keys">API Keys</h2>
+    <p>API keys are the recommended authentication method for server-to-server integrations. They are long-lived, scoped, and can be revoked individually.</p>
+
+    <h3>Key format</h3>
+    <pre>pd_live_a1b2c3d4e5f6... <span class="c">(64 hex chars after prefix)</span></pre>
+
+    <h3>Creating a key</h3>
+    <p>Via the API (requires existing auth):</p>
+    <pre><span class="k">curl</span> -X POST https://api.bc.pixdrift.com/api/admin/api-keys \
+  <span class="k">-H</span> <span class="s">"Authorization: Bearer YOUR_JWT"</span> \
+  <span class="k">-H</span> <span class="s">"Content-Type: application/json"</span> \
+  <span class="k">-d</span> <span class="s">'{"name": "My Integration", "scopes": ["read", "write"]}'</span>
+
+<span class="c"># Response:</span>
+{
+  <span class="n">"id"</span>: <span class="s">"uuid"</span>,
+  <span class="n">"name"</span>: <span class="s">"My Integration"</span>,
+  <span class="n">"key"</span>: <span class="s">"pd_live_abc123..."</span>,  <span class="c">← Store this — shown only once!</span>
+  <span class="n">"scopes"</span>: [<span class="s">"read"</span>, <span class="s">"write"</span>],
+  <span class="n">"created_at"</span>: <span class="s">"2026-03-21T10:00:00Z"</span>
+}</pre>
+
+    <div class="callout warn">
+      <strong>Security:</strong> The raw key is shown only once at creation. Store it in a secret manager (AWS Secrets Manager, Vault, etc.). The server only stores a SHA-256 hash.
+    </div>
+
+    <h3>Using a key</h3>
+    <pre><span class="k">curl</span> https://api.bc.pixdrift.com/api/contacts \
+  <span class="k">-H</span> <span class="s">"Authorization: Bearer pd_live_abc123..."</span></pre>
+
+    <h3>Listing & revoking keys</h3>
+    <pre><span class="c"># List keys (hashes never returned, only metadata)</span>
+<span class="k">curl</span> https://api.bc.pixdrift.com/api/admin/api-keys \
+  <span class="k">-H</span> <span class="s">"Authorization: Bearer YOUR_TOKEN"</span>
+
+<span class="c"># Revoke a key</span>
+<span class="k">curl</span> -X DELETE https://api.bc.pixdrift.com/api/admin/api-keys/KEY_ID \
+  <span class="k">-H</span> <span class="s">"Authorization: Bearer YOUR_TOKEN"</span></pre>
+
+    <h2 id="jwt">JWT Tokens (Supabase)</h2>
+    <p>For user-facing apps, use Supabase JWT tokens obtained from the client-side auth flow. These are short-lived (1 hour) and tied to a specific user context.</p>
+
+    <pre><span class="c">// JavaScript — Supabase client</span>
+<span class="kw">import</span> { createClient } <span class="kw">from</span> <span class="s">'@supabase/supabase-js'</span>
+<span class="kw">const</span> supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+<span class="kw">const</span> { data: { session } } = <span class="kw">await</span> supabase.auth.getSession()
+<span class="kw">const</span> token = session.access_token  <span class="c">// Use as Bearer token</span></pre>
+
+    <h2 id="scopes">Scopes</h2>
+    <p>API keys can be restricted to specific scopes:</p>
+    <table>
+      <thead><tr><th>Scope</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>read</td><td>GET requests on all resources</td></tr>
+        <tr><td>write</td><td>POST, PATCH, PUT on resources</td></tr>
+        <tr><td>delete</td><td>DELETE requests</td></tr>
+        <tr><td>admin</td><td>Admin operations (user mgmt, API keys)</td></tr>
+        <tr><td>reports</td><td>Access to all reports and exports</td></tr>
+        <tr><td>enterprise</td><td>Elevated rate limits (1000 req/15min)</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="rate-limits">Rate Limits</h2>
+    <p>Rate limits apply per API key in a sliding 15-minute window.</p>
+    <table>
+      <thead><tr><th>Plan</th><th>Limit</th></tr></thead>
+      <tbody>
+        <tr><td>Standard</td><td>100 requests / 15 min</td></tr>
+        <tr><td>Growth</td><td>300 requests / 15 min</td></tr>
+        <tr><td>Enterprise (scope)</td><td>1,000 requests / 15 min</td></tr>
+      </tbody>
+    </table>
+    <p>Rate limit headers on every response:</p>
+    <pre>X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 87
+X-RateLimit-Reset: 1711015200  <span class="c"># Unix timestamp when window resets</span></pre>
+    <p>When exceeded, you receive <code>429 Too Many Requests</code>. Retry after the <code>X-RateLimit-Reset</code> timestamp.</p>
+
+    <h2 id="webhooks-sig">Webhook Signature Verification</h2>
+    <p>Webhook payloads are signed with HMAC-SHA256. Always verify the signature before processing.</p>
+    <pre><span class="c">// Node.js</span>
+<span class="kw">const</span> crypto = require(<span class="s">'crypto'</span>)
+
+<span class="kw">function</span> verifyWebhook(payload, signature, secret) {
+  <span class="kw">const</span> expected = crypto
+    .createHmac(<span class="s">'sha256'</span>, secret)
+    .update(payload)
+    .digest(<span class="s">'hex'</span>)
+  <span class="kw">return</span> crypto.timingSafeEqual(
+    Buffer.from(expected),
+    Buffer.from(signature)
+  )
+}</pre>
+    <p>See <a href="webhooks.html">Webhooks documentation</a> for full details.</p>
+
+    <h2 id="cors">CORS</h2>
+    <p>CORS is configured to allow all origins by default (<code>*</code>). For production, set <code>CORS_ORIGIN</code> environment variable to your domain. Browser requests to the API will work without a proxy.</p>
+    <pre>Access-Control-Allow-Origin: https://app.yourcompany.com
+Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS
+Access-Control-Allow-Headers: Authorization, Content-Type</pre>
+
+    <h2 id="sandbox">Sandbox vs Production</h2>
+    <p>Currently, pixdrift operates a single production environment. A sandbox environment is on the roadmap.</p>
+    <table>
+      <thead><tr><th>Environment</th><th>Base URL</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Production</td><td>https://api.bc.pixdrift.com</td><td>✅ Live</td></tr>
+        <tr><td>Sandbox</td><td>https://sandbox.api.pixdrift.com</td><td>🚧 Coming soon</td></tr>
+      </tbody>
+    </table>
+    <p>For testing in production, create a dedicated test organization and use API keys scoped to that org.</p>
+  </main>
+</div>
+</body>
+</html>

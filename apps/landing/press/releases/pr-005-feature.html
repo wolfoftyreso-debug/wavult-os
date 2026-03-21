@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pixdrift lanserar AI-driven processoptimering — Pressmeddelande</title>
+  <link rel="stylesheet" href="/pixdrift-design.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--pd-ink); color: var(--pd-text); font-family: var(--pd-font-sans); }
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 2rem; border-bottom: 1px solid var(--pd-border); background: rgba(10,10,15,0.9); backdrop-filter: blur(12px); }
+    .nav-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+    .nav-logo-mark { width: 30px; height: 30px; background: var(--pd-gradient); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; color: #fff; }
+    .nav-logo-text { font-weight: 700; font-size: 1rem; color: var(--pd-white); }
+    .nav-back { color: var(--pd-muted); text-decoration: none; font-size: 0.875rem; }
+    .nav-back:hover { color: var(--pd-white); }
+    .container { max-width: 780px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+    .pr-meta { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .pr-badge { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.25rem 0.65rem; border-radius: 4px; background: rgba(6,182,212,0.12); color: #22d3ee; }
+    .pr-date { font-size: 0.875rem; color: var(--pd-muted); }
+    .pr-location::before { content: "·"; margin-right: 0.5rem; }
+    .pr-location { font-size: 0.875rem; color: var(--pd-muted); }
+    h1 { font-size: 2.2rem; font-weight: 800; color: var(--pd-white); line-height: 1.25; margin-bottom: 1.5rem; }
+    .lead { font-size: 1.15rem; color: var(--pd-text); line-height: 1.7; margin-bottom: 2rem; border-left: 3px solid #06b6d4; padding-left: 1.25rem; }
+    p { font-size: 1rem; color: var(--pd-text); line-height: 1.8; margin-bottom: 1.25rem; }
+    h2 { font-size: 1.2rem; font-weight: 700; color: var(--pd-white); margin: 2rem 0 0.75rem; }
+    .quote-block { background: var(--pd-surface); border: 1px solid var(--pd-border); border-left: 3px solid #06b6d4; border-radius: 0 10px 10px 0; padding: 1.5rem; margin: 2rem 0; }
+    .quote-text { font-size: 1.05rem; font-style: italic; color: var(--pd-white); line-height: 1.7; margin-bottom: 0.75rem; }
+    .quote-attribution { font-size: 0.875rem; color: var(--pd-muted); }
+    .factbox { background: var(--pd-surface); border: 1px solid var(--pd-border); border-radius: 10px; padding: 1.5rem; margin: 2rem 0; }
+    .factbox-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #22d3ee; margin-bottom: 1rem; }
+    .factbox ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .factbox ul li { font-size: 0.9rem; color: var(--pd-text); padding-left: 1rem; position: relative; }
+    .factbox ul li::before { content: "→"; position: absolute; left: 0; color: #22d3ee; }
+    .embargo { background: var(--pd-amber-dim); border: 1px solid var(--pd-amber); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 2rem; font-size: 0.875rem; color: var(--pd-amber); }
+    .boilerplate { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--pd-border); }
+    .boilerplate-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--pd-muted); margin-bottom: 0.75rem; }
+    .boilerplate p { font-size: 0.875rem; color: var(--pd-muted); line-height: 1.7; }
+    .contact-block { margin-top: 2rem; background: var(--pd-surface); border: 1px solid var(--pd-border); border-radius: 10px; padding: 1.5rem; }
+    .contact-block p { font-size: 0.875rem; color: var(--pd-text); line-height: 1.8; }
+    .contact-block a { color: var(--pd-indigo-light); text-decoration: none; }
+    .end-mark { text-align: center; margin-top: 2.5rem; font-size: 1.5rem; font-weight: 800; color: var(--pd-muted); letter-spacing: 0.3em; }
+    .breadcrumb { margin-bottom: 2rem; font-size: 0.875rem; }
+    .breadcrumb a { color: var(--pd-muted); text-decoration: none; }
+    .breadcrumb span { color: var(--pd-subtle); margin: 0 0.4rem; }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-mark">px</div>
+    <span class="nav-logo-text">pixdrift</span>
+  </a>
+  <a href="/press/index.html" class="nav-back">← Tillbaka till pressrummet</a>
+</nav>
+
+<div class="container">
+  <nav class="breadcrumb">
+    <a href="/">pixdrift.com</a>
+    <span>›</span>
+    <a href="/press/index.html">Pressrum</a>
+    <span>›</span>
+    AI-funktion Q3 2026
+  </nav>
+
+  <div class="embargo">
+    🔒 <strong>EMBARGO:</strong> Detta pressmeddelande publiceras Q3 2026. Kontakta press@pixdrift.com för exakt datum.
+  </div>
+
+  <div class="pr-meta">
+    <span class="pr-badge">Produkt</span>
+    <span class="pr-date">Q3 2026</span>
+    <span class="pr-location">Stockholm, Sverige</span>
+  </div>
+
+  <h1>pixdrift lanserar AI-driven processoptimering</h1>
+
+  <p class="lead">
+    STOCKHOLM, Q3 2026 — pixdrift AB presenterar idag pixdrift Intelligence — en maskininlärningsbaserad modul för automatisk processoptimering integrerad direkt i OMS-plattformen. Funktionen analyserar historisk processdata, identifierar flaskhalsar och föreslår konkreta åtgärder — utan att kräva datavetenskaplig kompetens hos användaren.
+  </p>
+
+  <p>
+    pixdrift Intelligence är resultatet av tolv månaders forskning och produktutveckling, och bygger på anonymiserade aggregat av processdata från pixdrifts kundkrets. Modellen tränas kontinuerligt och förbättrar sina rekommendationer allteftersom mer data ackumuleras — med full transparens kring hur rekommendationer genereras och utan att kundspecifik data delas mellan kunder.
+  </p>
+
+  <p>
+    Funktionen lanseras inledningsvis inom Process-modulen och Execution-modulen, med planerad extension till Capability-modulen under Q4 2026. Tillgången inkluderas i Enterprise-planen utan tilläggskostnad, och finns tillgänglig som tillägg för Professional-kunder.
+  </p>
+
+  <div class="quote-block">
+    <p class="quote-text">
+      "Vi har länge sett hur kunder manuellt analyserar sina processdata för att hitta förbättringsmöjligheter. Det är tidskrävande och kräver kompetens de inte alltid har. pixdrift Intelligence gör den analysen åt dem — automatiskt, kontinuerligt och med konkreta nästa steg. Det är AI som faktiskt hjälper, inte AI som imponerar."
+    </p>
+    <p class="quote-attribution">— Erik Svensson, grundare och VD, pixdrift</p>
+  </div>
+
+  <h2>Funktioner i pixdrift Intelligence</h2>
+  <p>
+    Modulen erbjuder tre kärnkapaciteter: Process Mining (automatisk kartläggning av faktiska processmönster baserat på aktivitetsloggar), Anomaly Detection (realtidsvarningar när processer avviker från etablerade mönster) och Optimization Suggestions (AI-genererade förbättringsförslag med uppskattad tidseffekt och implementationsprioritet).
+  </p>
+
+  <div class="factbox">
+    <div class="factbox-title">pixdrift Intelligence — nyckelkoncept</div>
+    <ul>
+      <li>Process Mining: automatisk processkartering från aktivitetsloggar</li>
+      <li>Anomaly Detection: realtidsvarningar för processavvikelser</li>
+      <li>Optimization Suggestions: AI-förslag med kvantifierad effekt</li>
+      <li>Privacy-first: ingen korsdelning av kunddata</li>
+      <li>Inkluderat i Enterprise-plan; tillägg för Professional</li>
+      <li>Tillgängligt i: Process, Execution (Q3); Capability (Q4)</li>
+    </ul>
+  </div>
+
+  <p>
+    pixdrift Intelligence är byggt med ett Privacy-by-Design-perspektiv. All träningsdata anonymiseras och aggregeras på plattformsnivå. Inga kundspecifika processmönster exponeras för andra kunder. Kunder kan när som helst opt-out från dataanvändning till modellträning via inställningar i Admin-appen.
+  </p>
+
+  <div class="boilerplate">
+    <div class="boilerplate-title">Om pixdrift</div>
+    <p>pixdrift AB är ett stockholmsbaserat SaaS-bolag grundat 2026. Bolaget utvecklar och tillhandahåller en molnbaserad OMS-plattform (Operational Management System) för nordiska tillväxtbolag. pixdrift hjälper organisationer att digitalisera sina operativa processer, uppnå regulatorisk efterlevnad och fatta datadrivna beslut — allt i ett enhetligt system. Läs mer på pixdrift.com.</p>
+  </div>
+
+  <div class="contact-block">
+    <div class="boilerplate-title">Mediakontakt</div>
+    <p>
+      Erik Svensson, grundare<br />
+      pixdrift AB<br />
+      E-post: <a href="mailto:press@pixdrift.com">press@pixdrift.com</a><br />
+      Webb: <a href="https://pixdrift.com">pixdrift.com</a>
+    </p>
+  </div>
+
+  <div class="end-mark">###</div>
+</div>
+
+</body>
+</html>

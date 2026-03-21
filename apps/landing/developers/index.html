@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pixdrift Developer Portal</title>
+  <meta name="description" content="Build on pixdrift — the API-first OMS platform. Complete API reference, SDKs, webhooks, and guides." />
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --surface2: #1a1a2e;
+      --border: #2a2a3e;
+      --accent: #6c5ce7;
+      --accent2: #a29bfe;
+      --green: #00b894;
+      --text: #e8e8f0;
+      --muted: #888899;
+      --code-bg: #0d0d17;
+      --radius: 8px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, sans-serif; line-height: 1.6; }
+    a { color: var(--accent2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,10,15,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 32px; height: 60px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; color: var(--text); }
+    .nav-logo span { color: var(--accent2); }
+    .nav-links { display: flex; gap: 24px; font-size: 14px; }
+    .nav-links a { color: var(--muted); transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); text-decoration: none; }
+    .nav-cta {
+      background: var(--accent); color: #fff; padding: 8px 18px; border-radius: 6px;
+      font-size: 14px; font-weight: 500; transition: background 0.2s;
+    }
+    .nav-cta:hover { background: #7d6ff0; text-decoration: none; }
+
+    /* HERO */
+    .hero {
+      max-width: 860px; margin: 0 auto; padding: 100px 32px 80px;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(108,92,231,0.15); border: 1px solid rgba(108,92,231,0.3);
+      color: var(--accent2); padding: 6px 14px; border-radius: 20px;
+      font-size: 13px; font-weight: 500; margin-bottom: 32px;
+    }
+    .hero-badge .dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; }
+    .hero h1 { font-size: 56px; font-weight: 800; line-height: 1.1; margin-bottom: 20px; letter-spacing: -1px; }
+    .hero h1 span { color: var(--accent2); }
+    .hero p { font-size: 20px; color: var(--muted); max-width: 600px; margin: 0 auto 40px; }
+    .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--accent); color: #fff; padding: 14px 28px; border-radius: var(--radius);
+      font-weight: 600; font-size: 16px; transition: all 0.2s;
+    }
+    .btn-primary:hover { background: #7d6ff0; text-decoration: none; transform: translateY(-1px); }
+    .btn-secondary {
+      background: transparent; color: var(--text); padding: 14px 28px; border-radius: var(--radius);
+      font-weight: 600; font-size: 16px; border: 1px solid var(--border); transition: all 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--accent2); text-decoration: none; }
+
+    /* SECTIONS */
+    section { padding: 80px 32px; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-label { color: var(--accent2); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+    .section-title { font-size: 36px; font-weight: 700; margin-bottom: 16px; }
+    .section-sub { color: var(--muted); font-size: 18px; margin-bottom: 48px; }
+
+    /* QUICKSTART */
+    .quickstart { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+    .step {
+      background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 28px; position: relative;
+    }
+    .step-num {
+      width: 36px; height: 36px; background: var(--accent); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 16px; margin-bottom: 16px;
+    }
+    .step h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+    .step p { color: var(--muted); font-size: 14px; margin-bottom: 16px; }
+    .code-inline {
+      display: block; background: var(--code-bg); border: 1px solid var(--border);
+      border-radius: 6px; padding: 12px 16px; font-family: 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 13px; color: var(--accent2); overflow-x: auto;
+    }
+
+    /* CARDS GRID */
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+    .card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 28px; transition: border-color 0.2s, transform 0.2s;
+    }
+    .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .card-icon { font-size: 28px; margin-bottom: 16px; }
+    .card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .card p { color: var(--muted); font-size: 14px; }
+    .card-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; font-size: 14px; font-weight: 500; color: var(--accent2); }
+
+    /* SDK CHIPS */
+    .sdk-chips { display: flex; flex-wrap: wrap; gap: 12px; }
+    .sdk-chip {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 14px 20px; transition: border-color 0.2s;
+    }
+    .sdk-chip:hover { border-color: var(--accent2); }
+    .sdk-chip-icon { font-size: 22px; }
+    .sdk-chip-info { display: flex; flex-direction: column; }
+    .sdk-chip-name { font-weight: 600; font-size: 15px; }
+    .sdk-chip-install { font-family: monospace; font-size: 12px; color: var(--muted); }
+
+    /* CHANGELOG */
+    .changelog-list { display: flex; flex-direction: column; gap: 20px; }
+    .changelog-item { display: flex; gap: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+    .changelog-date { color: var(--muted); font-size: 13px; width: 100px; flex-shrink: 0; padding-top: 4px; font-family: monospace; }
+    .changelog-content h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .changelog-content p { color: var(--muted); font-size: 14px; }
+    .badge {
+      display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+      text-transform: uppercase; margin-right: 8px;
+    }
+    .badge-new { background: rgba(0,184,148,0.15); color: var(--green); }
+    .badge-fix { background: rgba(108,92,231,0.15); color: var(--accent2); }
+    .badge-breaking { background: rgba(255,71,87,0.15); color: #ff4757; }
+
+    /* RATE LIMITS */
+    .rate-table { width: 100%; border-collapse: collapse; margin-top: 24px; }
+    .rate-table th { text-align: left; padding: 12px 16px; background: var(--surface); border-bottom: 2px solid var(--border); font-size: 13px; color: var(--muted); }
+    .rate-table td { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .rate-table tr:hover td { background: rgba(108,92,231,0.05); }
+
+    /* AUTH */
+    .auth-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; }
+    .auth-box pre {
+      background: var(--code-bg); border: 1px solid var(--border); border-radius: 6px;
+      padding: 16px; overflow-x: auto; font-size: 13px; line-height: 1.7; margin-top: 16px;
+    }
+    .auth-box pre .k { color: #fd79a8; }
+    .auth-box pre .s { color: #55efc4; }
+    .auth-box pre .c { color: #636e72; }
+
+    /* FOOTER */
+    footer {
+      background: var(--surface); border-top: 1px solid var(--border);
+      padding: 48px 32px; text-align: center; color: var(--muted); font-size: 14px;
+    }
+    footer a { color: var(--muted); }
+    footer a:hover { color: var(--text); }
+    .footer-links { display: flex; gap: 24px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 36px; }
+      nav { padding: 0 16px; }
+      .nav-links { display: none; }
+      section { padding: 60px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">pix<span>drift</span> <span style="color:var(--muted);font-weight:400;font-size:14px">/ docs</span></div>
+  <div class="nav-links">
+    <a href="api-reference.html">API Reference</a>
+    <a href="authentication.html">Authentication</a>
+    <a href="webhooks.html">Webhooks</a>
+    <a href="sdks.html">SDKs</a>
+    <a href="guides/quickstart.html">Guides</a>
+  </div>
+  <a href="https://app.pixdrift.com" class="nav-cta">Go to App →</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">
+    <span class="dot"></span>
+    API v1.3.0 — Live at api.bc.pixdrift.com
+  </div>
+  <h1>Build on <span>pixdrift</span></h1>
+  <p>The complete API for operations management. CRM, quality, finance, processes — all in one platform, fully programmable.</p>
+  <div class="hero-actions">
+    <a href="guides/quickstart.html" class="btn-primary">5-minute Quickstart</a>
+    <a href="api-reference.html" class="btn-secondary">API Reference →</a>
+  </div>
+</div>
+
+<!-- QUICKSTART -->
+<section class="quickstart">
+  <div class="section-inner">
+    <div class="section-label">Quick Start</div>
+    <div class="section-title">Up and running in 3 steps</div>
+    <div class="section-sub">From zero to your first API call in minutes.</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Get your API key</h3>
+        <p>In the pixdrift app, go to <strong>Admin → Settings → API Keys</strong> and create your first key.</p>
+        <code class="code-inline">pd_live_&lt;your_key_here&gt;</code>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Make your first request</h3>
+        <p>Hit the admin dashboard endpoint to verify everything works.</p>
+        <code class="code-inline">curl -H "Authorization: Bearer pd_live_..." \
+  https://api.bc.pixdrift.com/api/dashboards/admin</code>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Set up a webhook</h3>
+        <p>Register your endpoint to receive real-time events when deals close, tasks complete, and more.</p>
+        <code class="code-inline">POST /api/webhooks
+{ "url": "https://your.app/hook" }</code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- API MODULES -->
+<section>
+  <div class="section-inner">
+    <div class="section-label">API Reference</div>
+    <div class="section-title">Everything your product needs</div>
+    <div class="section-sub">80+ endpoints across 6 modules. Full OpenAPI spec available.</div>
+    <div class="cards">
+      <a href="api-reference.html#execution" class="card" style="text-decoration:none;color:inherit">
+        <div class="card-icon">🏃</div>
+        <h3>Execution</h3>
+        <p>Contacts, companies, leads, deals, tasks, meetings, ledger, payouts, decisions, channels.</p>
+        <span class="card-link">32 endpoints →</span>
+      </a>
+      <a href="api-reference.html#capability" class="card" style="text-decoration:none;color:inherit">
+        <div class="card-icon">🧠</div>
+        <h3>Capability</h3>
+        <p>Skill assessments (L1–L5), feedback loops, development plans, team readiness.</p>
+        <span class="card-link">10 endpoints →</span>
+      </a>
+      <a href="api-reference.html#process" class="card" style="text-decoration:none;color:inherit">
+        <div class="card-icon">⚙️</div>
+        <h3>Process</h3>
+        <p>Process management, non-conformance, improvements, compliance, documents, audits, risks, training.</p>
+        <span class="card-link">24 endpoints →</span>
+      </a>
+      <a href="api-reference.html#currency" class="card" style="text-decoration:none;color:inherit">
+        <div class="card-icon">💱</div>
+        <h3>Currency</h3>
+        <p>Multi-currency support, live exchange rates, FX exposure analysis, multi-currency reports.</p>
+        <span class="card-link">8 endpoints →</span>
+      </a>
+      <a href="api-reference.html#reports" class="card" style="text-decoration:none;color:inherit">
+        <div class="card-icon">📊</div>
+        <h3>Reports</h3>
+        <p>Income statement, balance sheet, VAT, cashflow, SIE4 export. Swedish GAAP / BAS chart of accounts.</p>
+        <span class="card-link">7 endpoints →</span>
+      </a>
+      <a href="api-reference.html#stripe" class="card" style="text-decoration:none;color:inherit">
+        <div class="card-icon">💳</div>
+        <h3>Billing</h3>
+        <p>Subscription plans, Stripe checkout sessions, webhook processing.</p>
+        <span class="card-link">3 endpoints →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- SDKs -->
+<section style="background:var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border)">
+  <div class="section-inner">
+    <div class="section-label">SDKs</div>
+    <div class="section-title">Your language, your way</div>
+    <div class="section-sub">Official SDKs coming soon. The REST API works with any HTTP client today.</div>
+    <div class="sdk-chips">
+      <a href="sdks.html#nodejs" class="sdk-chip" style="text-decoration:none;color:inherit">
+        <span class="sdk-chip-icon">🟢</span>
+        <div class="sdk-chip-info">
+          <span class="sdk-chip-name">Node.js SDK</span>
+          <span class="sdk-chip-install">npm install @pixdrift/sdk</span>
+        </div>
+      </a>
+      <a href="sdks.html#python" class="sdk-chip" style="text-decoration:none;color:inherit">
+        <span class="sdk-chip-icon">🐍</span>
+        <div class="sdk-chip-info">
+          <span class="sdk-chip-name">Python SDK</span>
+          <span class="sdk-chip-install">pip install pixdrift</span>
+        </div>
+      </a>
+      <a href="sdks.html#go" class="sdk-chip" style="text-decoration:none;color:inherit">
+        <span class="sdk-chip-icon">🐹</span>
+        <div class="sdk-chip-info">
+          <span class="sdk-chip-name">Go SDK</span>
+          <span class="sdk-chip-install">go get github.com/pixdrift/go-sdk</span>
+        </div>
+      </a>
+      <a href="sdks.html#openapi" class="sdk-chip" style="text-decoration:none;color:inherit">
+        <span class="sdk-chip-icon">📋</span>
+        <div class="sdk-chip-info">
+          <span class="sdk-chip-name">OpenAPI Spec</span>
+          <span class="sdk-chip-install">Generate your own SDK</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CHANGELOG -->
+<section>
+  <div class="section-inner">
+    <div class="section-label">Changelog</div>
+    <div class="section-title">API Changelog</div>
+    <div class="changelog-list">
+      <div class="changelog-item">
+        <div class="changelog-date">2026-03-21</div>
+        <div class="changelog-content">
+          <h4><span class="badge badge-new">New</span>API Key Authentication</h4>
+          <p>Bearer token API keys (pd_live_*) with per-key scopes, expiry, and rate limiting. Manage keys via /api/admin/api-keys.</p>
+        </div>
+      </div>
+      <div class="changelog-item">
+        <div class="changelog-date">2026-03-21</div>
+        <div class="changelog-content">
+          <h4><span class="badge badge-new">New</span>Developer Portal</h4>
+          <p>Complete developer portal at api.bc.pixdrift.com/developers — interactive API reference, guides, webhook docs, and SDK placeholders.</p>
+        </div>
+      </div>
+      <div class="changelog-item">
+        <div class="changelog-date">2026-03-15</div>
+        <div class="changelog-content">
+          <h4><span class="badge badge-new">New</span>Multi-currency trial balance & deal pipeline</h4>
+          <p>GET /api/ledger/trial-balance/multi and GET /api/deals/pipeline/multi now support reporting currency parameter.</p>
+        </div>
+      </div>
+      <div class="changelog-item">
+        <div class="changelog-date">2026-03-01</div>
+        <div class="changelog-content">
+          <h4><span class="badge badge-new">New</span>Risk matrix endpoint</h4>
+          <p>GET /api/risks/matrix returns a structured 5×5 risk matrix with likelihood × impact categorization.</p>
+        </div>
+      </div>
+      <div class="changelog-item">
+        <div class="changelog-date">2026-02-14</div>
+        <div class="changelog-content">
+          <h4><span class="badge badge-fix">Fix</span>Ledger balance validation</h4>
+          <p>Improved double-entry validation with 0.001 tolerance for floating point rounding.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RATE LIMITS -->
+<section style="background:var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border)">
+  <div class="section-inner">
+    <div class="section-label">Rate Limits</div>
+    <div class="section-title">Fair use policy</div>
+    <p style="color:var(--muted); margin-bottom:24px">Rate limits are per API key, tracked in a sliding 15-minute window. Response headers tell you exactly where you stand.</p>
+    <table class="rate-table">
+      <thead>
+        <tr>
+          <th>Plan</th>
+          <th>Requests / 15 min</th>
+          <th>Requests / day</th>
+          <th>Burst</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Free</td>
+          <td>50</td>
+          <td>500</td>
+          <td>10</td>
+        </tr>
+        <tr>
+          <td>Standard</td>
+          <td>100</td>
+          <td>5,000</td>
+          <td>30</td>
+        </tr>
+        <tr>
+          <td>Growth</td>
+          <td>300</td>
+          <td>20,000</td>
+          <td>100</td>
+        </tr>
+        <tr>
+          <td>Enterprise</td>
+          <td>1,000</td>
+          <td>Unlimited</td>
+          <td>Unlimited</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="margin-top:20px; font-size:14px; color:var(--muted)">
+      Response headers: <code>X-RateLimit-Limit</code> · <code>X-RateLimit-Remaining</code> · <code>X-RateLimit-Reset</code>
+      (Unix timestamp). Status <code>429 Too Many Requests</code> when exceeded.
+    </p>
+  </div>
+</section>
+
+<!-- AUTH -->
+<section>
+  <div class="section-inner">
+    <div class="section-label">Authentication</div>
+    <div class="section-title">Simple Bearer token auth</div>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px">
+      <div class="auth-box">
+        <h3 style="margin-bottom:8px">API Key (recommended)</h3>
+        <p style="color:var(--muted); font-size:14px">Create long-lived API keys with scoped permissions. Best for integrations.</p>
+        <pre><span class="c"># All API requests</span>
+<span class="k">curl</span> https://api.bc.pixdrift.com/api/contacts \
+  <span class="k">-H</span> <span class="s">"Authorization: Bearer pd_live_abc123..."</span></pre>
+      </div>
+      <div class="auth-box">
+        <h3 style="margin-bottom:8px">JWT Token</h3>
+        <p style="color:var(--muted); font-size:14px">For user-facing applications. Obtain via Supabase auth, expires in 1 hour.</p>
+        <pre><span class="c"># User-context requests</span>
+<span class="k">curl</span> https://api.bc.pixdrift.com/api/contacts \
+  <span class="k">-H</span> <span class="s">"Authorization: Bearer eyJhb..."</span></pre>
+      </div>
+    </div>
+    <p style="margin-top:20px; font-size:14px">
+      <a href="authentication.html">Full authentication guide →</a>
+    </p>
+  </div>
+</section>
+
+<!-- COMMUNITY -->
+<section style="background:var(--surface); border-top:1px solid var(--border)">
+  <div class="section-inner" style="text-align:center">
+    <div class="section-label">Community</div>
+    <div class="section-title">Need help?</div>
+    <p style="color:var(--muted); margin-bottom:40px">Join the pixdrift developer community for help, feature requests, and integrations.</p>
+    <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap">
+      <a href="https://github.com/pixdrift/discussions" class="btn-secondary">GitHub Discussions</a>
+      <a href="mailto:api@pixdrift.com" class="btn-secondary">Email API Support</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>© 2026 pixdrift. All rights reserved.</div>
+  <div class="footer-links">
+    <a href="api-reference.html">API Reference</a>
+    <a href="authentication.html">Authentication</a>
+    <a href="webhooks.html">Webhooks</a>
+    <a href="sdks.html">SDKs</a>
+    <a href="guides/quickstart.html">Quickstart</a>
+    <a href="https://pixdrift.com/terms">Terms</a>
+    <a href="https://pixdrift.com/privacy">Privacy</a>
+  </div>
+</footer>
+
+</body>
+</html>

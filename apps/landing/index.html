@@ -1,600 +1,1820 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pixdrift — The Operating System for Modern Teams</title>
-  <meta name="description" content="pixdrift gives your team one place to execute, track, and grow. Stop losing hours to scattered tools. Start shipping what matters." />
-  <meta property="og:title" content="pixdrift — The Operating System for Modern Teams" />
-  <meta property="og:description" content="Stop losing hours to scattered tools. Start shipping what matters." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://pixdrift.com" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="pixdrift — Ship faster. Scale cleaner." />
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+
+  <!-- Primary Meta -->
+  <title>pixdrift — One System. Every Operation.</title>
+  <meta name="description" content="pixdrift är ett Operating Management System för moderna B2B-team. Ersätter CRM, projektverktyg, kompetensplattform, ekonomi och compliance i ett enda system." />
+  <meta name="keywords" content="OMS, operating management system, CRM, affärssystem, Nordic SaaS, enterprise operations, Execution, Capability, Process" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="pixdrift AB" />
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://pixdrift.com" />
+  <meta property="og:title"       content="pixdrift — One System. Every Operation." />
+  <meta property="og:description" content="Ersätt 5+ verktyg med ett system byggt för moderna B2B-team. CRM, kompetens, process, valuta och rapportering i pixdrift." />
+  <meta property="og:image"       content="https://pixdrift.com/og-image.png" />
+  <meta property="og:locale"      content="sv_SE" />
+  <meta property="og:site_name"   content="pixdrift" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@pixdrift" />
+  <meta name="twitter:title"       content="pixdrift — One System. Every Operation." />
+  <meta name="twitter:description" content="Operating Management System för moderna B2B-team." />
+  <meta name="twitter:image"       content="https://pixdrift.com/og-image.png" />
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://pixdrift.com" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%236366f1'/><text y='0.9em' font-size='60' font-family='system-ui' font-weight='800' fill='white' x='50%' text-anchor='middle'>p</text></svg>" />
+
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "pixdrift",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "url": "https://pixdrift.com",
+    "description": "Operating Management System för moderna B2B-team. Moduler för Execution, Capability, Process, Currency och Reports.",
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Starter",
+        "price": "499",
+        "priceCurrency": "EUR",
+        "priceSpecification": {
+          "@type": "UnitPriceSpecification",
+          "billingIncrement": "month"
+        }
+      },
+      {
+        "@type": "Offer",
+        "name": "Growth",
+        "price": "999",
+        "priceCurrency": "EUR"
+      }
+    ],
+    "publisher": {
+      "@type": "Organization",
+      "name": "pixdrift AB",
+      "url": "https://pixdrift.com"
+    }
+  }
+  </script>
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
   <style>
+    /* ─── RESET & BASE ──────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #0a0a0f;
-      --surface:   #111118;
-      --border:    #1e1e2e;
-      --muted:     #6b7280;
-      --text:      #e2e8f0;
-      --white:     #f8fafc;
-      --accent:    #6366f1;
-      --accent-2:  #8b5cf6;
-      --green:     #10b981;
-      --radius:    12px;
-      --font:      -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      --pd-ink:          #0a0a0f;
+      --pd-surface:      #111118;
+      --pd-surface-2:    #16161f;
+      --pd-border:       #1e1e2e;
+      --pd-border-2:     #2a2a3d;
+      --pd-white:        #f8fafc;
+      --pd-text:         #e2e8f0;
+      --pd-muted:        #6b7280;
+      --pd-subtle:       #374151;
+      --pd-indigo:       #6366f1;
+      --pd-indigo-light: #818cf8;
+      --pd-indigo-dim:   rgba(99,102,241,0.12);
+      --pd-violet:       #8b5cf6;
+      --pd-emerald:      #10b981;
+      --pd-amber:        #f59e0b;
+      --pd-rose:         #f43f5e;
+      --radius:          10px;
+      --radius-lg:       16px;
+      --radius-xl:       24px;
+      --radius-full:     9999px;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: var(--font);
-      background: var(--bg);
-      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--pd-ink);
+      color: var(--pd-text);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    a { color: inherit; text-decoration: none; }
+    a { color: inherit; text-decoration: none; transition: all 200ms ease-out; }
+    img, video { max-width: 100%; height: auto; display: block; }
+    ul, ol { list-style: none; }
 
-    /* ─── NAV ───────────────────────────────────────────────── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    /* ─── TYPOGRAPHY ────────────────────────────────────────── */
+    .gradient-text {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 60%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ─── NAVIGATION ────────────────────────────────────────── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 5%; height: 64px;
-      background: rgba(10,10,15,0.8);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--pd-border);
     }
 
-    .logo {
-      font-size: 1.25rem; font-weight: 700; letter-spacing: -0.03em;
-      color: var(--white);
+    .nav-logo {
+      font-size: 1.2rem; font-weight: 600;
+      letter-spacing: -0.04em; color: var(--pd-white);
     }
-    .logo span { color: var(--accent); }
 
-    nav .nav-links { display: flex; gap: 2rem; align-items: center; }
-    nav .nav-links a { font-size: 0.875rem; color: var(--muted); transition: color .2s; }
-    nav .nav-links a:hover { color: var(--white); }
+    .nav-center {
+      display: flex; align-items: center; gap: 0.25rem;
+    }
+
+    .nav-center a {
+      display: flex; align-items: center; gap: 4px;
+      font-size: 0.875rem; font-weight: 500;
+      color: var(--pd-muted); padding: 0.5rem 0.75rem;
+      border-radius: var(--radius);
+    }
+
+    .nav-center a:hover { color: var(--pd-white); background: var(--pd-surface); }
+
+    .nav-center a .chevron {
+      font-size: 0.65rem; opacity: 0.6;
+    }
+
+    .nav-right {
+      display: flex; align-items: center; gap: 0.5rem;
+    }
 
     .btn {
       display: inline-flex; align-items: center; gap: 0.5rem;
-      padding: 0.625rem 1.25rem; border-radius: var(--radius);
-      font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all .2s;
-      border: none;
+      padding: 0.5rem 1.125rem; border-radius: var(--radius);
+      font-size: 0.875rem; font-weight: 600; font-family: inherit;
+      cursor: pointer; border: 1px solid transparent;
+      transition: all 200ms ease-out; text-decoration: none; white-space: nowrap;
     }
+
+    .btn-ghost {
+      background: transparent; color: var(--pd-muted); border-color: transparent;
+    }
+    .btn-ghost:hover { color: var(--pd-white); background: var(--pd-surface); }
+
     .btn-primary {
-      background: var(--accent); color: #fff;
+      background: var(--pd-indigo); color: #fff; border-color: var(--pd-indigo);
     }
-    .btn-primary:hover { background: var(--accent-2); transform: translateY(-1px); box-shadow: 0 4px 20px rgba(99,102,241,.4); }
+    .btn-primary:hover {
+      background: var(--pd-indigo-light); border-color: var(--pd-indigo-light);
+      transform: translateY(-1px); box-shadow: 0 8px 24px rgba(99,102,241,0.3);
+    }
 
     .btn-outline {
-      background: transparent; color: var(--text);
-      border: 1px solid var(--border);
+      background: transparent; color: var(--pd-text); border-color: var(--pd-border);
     }
-    .btn-outline:hover { border-color: var(--accent); color: var(--white); }
+    .btn-outline:hover { border-color: var(--pd-indigo); color: var(--pd-white); background: var(--pd-indigo-dim); }
+
+    .btn-lg { padding: 0.75rem 1.75rem; font-size: 0.95rem; border-radius: var(--radius-lg); }
+    .btn-xl { padding: 0.875rem 2.25rem; font-size: 1rem; border-radius: var(--radius-lg); }
 
     /* ─── HERO ──────────────────────────────────────────────── */
     .hero {
-      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
       text-align: center; padding: 120px 5% 80px;
       position: relative; overflow: hidden;
     }
 
-    .hero::before {
-      content: '';
-      position: absolute; top: -30%; left: 50%; transform: translateX(-50%);
-      width: 800px; height: 800px;
-      background: radial-gradient(ellipse at center, rgba(99,102,241,.15) 0%, transparent 70%);
+    .hero-glow {
+      position: absolute; top: -20%; left: 50%; transform: translateX(-50%);
+      width: 900px; height: 900px;
+      background: radial-gradient(ellipse at center, rgba(99,102,241,0.16) 0%, transparent 65%);
       pointer-events: none;
+      animation: glowPulse 6s ease-in-out infinite;
     }
 
-    .badge {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      padding: 0.375rem 0.875rem; border-radius: 999px;
-      background: rgba(99,102,241,.12); border: 1px solid rgba(99,102,241,.3);
-      font-size: 0.8rem; font-weight: 500; color: #a5b4fc;
-      margin-bottom: 1.5rem;
+    @keyframes glowPulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
     }
-    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.4; } }
+
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(30,30,46,0.3) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30,30,46,0.3) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+    }
+
+    .hero-content {
+      position: relative; z-index: 1;
+      max-width: 900px; margin: 0 auto;
+    }
+
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.375rem 0.875rem; border-radius: var(--radius-full);
+      background: var(--pd-indigo-dim); border: 1px solid rgba(99,102,241,0.25);
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; color: #a5b4fc;
+      margin-bottom: 1.75rem;
+    }
+
+    .eyebrow-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--pd-emerald);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
     .hero h1 {
-      font-size: clamp(2.5rem, 5vw, 4.5rem);
-      font-weight: 800; letter-spacing: -0.04em;
-      color: var(--white); line-height: 1.1;
-      max-width: 780px; margin: 0 auto 1.25rem;
-    }
-    .hero h1 .gradient {
-      background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      font-size: clamp(2.75rem, 6vw, 4.5rem);
+      font-weight: 800; line-height: 1.07;
+      letter-spacing: -0.04em; color: var(--pd-white);
+      margin-bottom: 1.5rem;
     }
 
-    .hero p {
-      font-size: clamp(1rem, 2vw, 1.25rem);
-      color: var(--muted); max-width: 560px; margin: 0 auto 2.5rem;
-      line-height: 1.7;
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--pd-muted); max-width: 580px;
+      margin: 0 auto 2.5rem; line-height: 1.75;
     }
 
-    .hero-cta { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 4rem; }
-
-    .hero-stats {
-      display: flex; gap: 3rem; justify-content: center; flex-wrap: wrap;
-      padding-top: 3rem; border-top: 1px solid var(--border);
+    .hero-cta {
+      display: flex; align-items: center; justify-content: center;
+      gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem;
     }
-    .stat { text-align: center; }
-    .stat strong { display: block; font-size: 1.75rem; font-weight: 800; color: var(--white); letter-spacing: -0.03em; }
-    .stat span { font-size: 0.8rem; color: var(--muted); }
 
-    /* ─── SOCIAL PROOF ──────────────────────────────────────── */
-    .social-proof {
-      padding: 48px 5%; text-align: center;
-      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-      background: var(--surface);
+    .btn-video {
+      display: inline-flex; align-items: center; gap: 0.625rem;
+      font-size: 0.9rem; font-weight: 500; color: var(--pd-muted);
+      padding: 0.5rem; transition: all 200ms ease-out;
     }
-    .social-proof p { font-size: 0.8rem; color: var(--muted); margin-bottom: 1.5rem; letter-spacing: 0.1em; text-transform: uppercase; }
-    .logos { display: flex; gap: 3rem; justify-content: center; align-items: center; flex-wrap: wrap; }
+    .btn-video:hover { color: var(--pd-white); }
+    .btn-video .play-icon {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--pd-surface); border: 1px solid var(--pd-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; transition: all 200ms ease-out;
+    }
+    .btn-video:hover .play-icon { border-color: var(--pd-indigo); background: var(--pd-indigo-dim); }
+
+    .hero-social-proof {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0.75rem; margin-top: 2rem;
+      font-size: 0.82rem; color: var(--pd-muted);
+    }
+
+    .proof-avatars {
+      display: flex;
+    }
+    .proof-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 2px solid var(--pd-ink);
+      background: linear-gradient(135deg, var(--pd-indigo), var(--pd-violet));
+      margin-left: -8px; font-size: 0.65rem; display: flex;
+      align-items: center; justify-content: center; color: white; font-weight: 600;
+    }
+    .proof-avatar:first-child { margin-left: 0; }
+
+    .hero-dashboard {
+      position: relative; margin-top: 5rem; max-width: 1000px; margin-inline: auto;
+    }
+
+    .dashboard-mockup {
+      background: var(--pd-surface);
+      border: 1px solid var(--pd-border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(99,102,241,0.1);
+    }
+
+    .dashboard-bar {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      background: rgba(10,10,15,0.6);
+      border-bottom: 1px solid var(--pd-border);
+    }
+
+    .dash-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dash-dot-red { background: #ff5f57; }
+    .dash-dot-amber { background: #febc2e; }
+    .dash-dot-green { background: #28c840; }
+
+    .dash-bar-url {
+      margin-left: 0.75rem; flex: 1; max-width: 280px;
+      height: 24px; border-radius: 4px;
+      background: var(--pd-surface-2); border: 1px solid var(--pd-border);
+      display: flex; align-items: center; padding: 0 0.5rem;
+      font-size: 0.72rem; color: var(--pd-muted); font-family: 'JetBrains Mono', monospace;
+    }
+
+    .dashboard-body {
+      display: grid; grid-template-columns: 200px 1fr;
+      min-height: 380px;
+    }
+
+    .dash-sidebar {
+      background: rgba(10,10,15,0.4);
+      border-right: 1px solid var(--pd-border);
+      padding: 1.25rem 0;
+    }
+
+    .dash-nav-item {
+      display: flex; align-items: center; gap: 0.625rem;
+      padding: 0.5rem 1.25rem; font-size: 0.8rem;
+      color: var(--pd-muted); cursor: pointer;
+      transition: all 150ms ease-out;
+    }
+
+    .dash-nav-item:hover, .dash-nav-item.active {
+      color: var(--pd-white); background: var(--pd-indigo-dim);
+    }
+
+    .dash-nav-item.active { color: var(--pd-indigo-light); }
+    .dash-nav-item .icon { font-size: 0.9rem; }
+
+    .dash-main { padding: 1.5rem; }
+
+    .dash-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+    .dash-title { font-size: 1rem; font-weight: 600; color: var(--pd-white); }
+    .dash-badge { display: inline-flex; align-items: center; gap: 4px; padding: 0.25rem 0.625rem; background: rgba(16,185,129,0.12); color: var(--pd-emerald); border-radius: var(--radius-full); font-size: 0.72rem; font-weight: 600; }
+
+    .dash-metrics {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1.25rem;
+    }
+
+    .dash-metric {
+      background: var(--pd-ink); border: 1px solid var(--pd-border);
+      border-radius: var(--radius); padding: 0.875rem;
+    }
+
+    .dash-metric-label { font-size: 0.7rem; color: var(--pd-muted); margin-bottom: 0.375rem; }
+    .dash-metric-value { font-size: 1.25rem; font-weight: 700; color: var(--pd-white); letter-spacing: -0.03em; }
+    .dash-metric-sub { font-size: 0.7rem; color: var(--pd-emerald); margin-top: 0.2rem; }
+
+    .dash-chart {
+      background: var(--pd-ink); border: 1px solid var(--pd-border);
+      border-radius: var(--radius); padding: 1rem; height: 120px;
+      display: flex; align-items: flex-end; gap: 4px;
+    }
+
+    .dash-bar-item {
+      flex: 1; border-radius: 3px 3px 0 0;
+      background: var(--pd-indigo-dim);
+      transition: background 200ms;
+      min-height: 8px;
+    }
+
+    .dash-bar-item:hover { background: var(--pd-indigo); }
+    .dash-bar-item.active { background: linear-gradient(180deg, var(--pd-indigo) 0%, var(--pd-violet) 100%); }
+
+    /* ─── LOGOS STRIP ───────────────────────────────────────── */
+    .logos-strip {
+      padding: 40px 5%;
+      border-top: 1px solid var(--pd-border);
+      border-bottom: 1px solid var(--pd-border);
+      background: var(--pd-surface);
+    }
+
+    .logos-strip p {
+      text-align: center; font-size: 0.72rem;
+      font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--pd-subtle);
+      margin-bottom: 1.75rem;
+    }
+
+    .logos-grid {
+      display: flex; align-items: center; justify-content: center;
+      gap: 3rem; flex-wrap: wrap;
+    }
+
     .logo-item {
-      font-size: 1rem; font-weight: 700; color: #374151; letter-spacing: -0.02em;
-      transition: color .2s;
+      font-size: 1.05rem; font-weight: 700;
+      color: #2d3748; letter-spacing: -0.02em;
+      transition: color 200ms;
     }
-    .logo-item:hover { color: var(--muted); }
 
-    /* ─── SECTION COMMON ────────────────────────────────────── */
-    section { padding: 100px 5%; }
+    .logo-item:hover { color: var(--pd-muted); }
+
+    /* ─── SECTION COMMONS ───────────────────────────────────── */
+    .section { padding: 120px 5%; }
+    .section-sm { padding: 80px 5%; }
+    .container { max-width: 1280px; margin: 0 auto; }
+
     .section-label {
-      display: inline-block;
-      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--accent); margin-bottom: 1rem;
+      display: inline-block; font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--pd-indigo); margin-bottom: 1rem;
     }
+
     .section-title {
       font-size: clamp(1.75rem, 3vw, 2.75rem);
-      font-weight: 800; letter-spacing: -0.03em;
-      color: var(--white); margin-bottom: 1rem; line-height: 1.2;
+      font-weight: 700; letter-spacing: -0.03em;
+      color: var(--pd-white); margin-bottom: 1rem; line-height: 1.2;
     }
+
     .section-sub {
-      font-size: 1.05rem; color: var(--muted); max-width: 520px; line-height: 1.7;
+      font-size: 1.05rem; color: var(--pd-muted);
+      max-width: 560px; line-height: 1.7;
     }
+
     .center { text-align: center; }
     .center .section-sub { margin: 0 auto; }
 
-    /* ─── FEATURES ──────────────────────────────────────────── */
-    #features { background: var(--bg); }
+    /* ─── PROBLEM SECTION ───────────────────────────────────── */
+    #problem { background: var(--pd-surface); }
 
-    .features-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5px; margin-top: 64px;
-      border: 1.5px solid var(--border); border-radius: var(--radius); overflow: hidden;
+    .problem-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1.5px; margin-top: 3.5rem;
+      border: 1.5px solid var(--pd-border);
+      border-radius: var(--radius-xl); overflow: hidden;
     }
 
-    .feature-card {
-      background: var(--surface); padding: 2rem;
-      transition: background .2s;
+    .problem-card {
+      background: var(--pd-surface); padding: 2.5rem;
+      transition: background 200ms;
     }
-    .feature-card:hover { background: #15151f; }
 
-    .feature-icon {
-      width: 44px; height: 44px; border-radius: 10px;
+    .problem-card:hover { background: var(--pd-surface-2); }
+
+    .problem-icon {
+      width: 48px; height: 48px; border-radius: var(--radius);
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.25rem; margin-bottom: 1.25rem;
+      font-size: 1.4rem; margin-bottom: 1.5rem;
+      background: rgba(244,63,94,0.08); border: 1px solid rgba(244,63,94,0.15);
     }
 
-    .feature-card h3 {
-      font-size: 1.1rem; font-weight: 700; color: var(--white);
-      margin-bottom: 0.5rem;
+    .problem-card h3 {
+      font-size: 1.1rem; font-weight: 700; color: var(--pd-white);
+      margin-bottom: 0.75rem; line-height: 1.3;
     }
-    .feature-card p { font-size: 0.9rem; color: var(--muted); line-height: 1.65; margin-bottom: 1rem; }
-    .feature-metric {
-      font-size: 0.8rem; font-weight: 600; color: var(--green);
-      display: flex; align-items: center; gap: 0.4rem;
-    }
-    .feature-metric::before { content: '↑'; }
 
-    /* ─── HOW IT WORKS ──────────────────────────────────────── */
-    #how { background: var(--surface); }
-
-    .steps {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 2rem; margin-top: 64px;
+    .problem-card p {
+      font-size: 0.9rem; color: var(--pd-muted); line-height: 1.65;
     }
-    .step { position: relative; padding-left: 3.5rem; }
-    .step-num {
-      position: absolute; left: 0; top: 0;
-      width: 36px; height: 36px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+
+    /* ─── PRODUCT TABS ──────────────────────────────────────── */
+    #product { background: var(--pd-ink); }
+
+    .tabs {
+      display: flex; gap: 0.25rem; margin-bottom: 2.5rem;
+      border-bottom: 1px solid var(--pd-border);
+      padding-bottom: 0; overflow-x: auto;
+    }
+
+    .tab-btn {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.75rem 1.25rem; font-size: 0.875rem;
+      font-weight: 500; color: var(--pd-muted);
+      background: transparent; border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer; font-family: inherit;
+      transition: all 200ms ease-out; white-space: nowrap;
+      margin-bottom: -1px;
+    }
+
+    .tab-btn:hover { color: var(--pd-white); }
+    .tab-btn.active { color: var(--pd-indigo-light); border-bottom-color: var(--pd-indigo); }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+
+    .tab-features h3 {
+      font-size: 1.5rem; font-weight: 700; color: var(--pd-white);
+      margin-bottom: 0.75rem; letter-spacing: -0.02em;
+    }
+
+    .tab-features p {
+      font-size: 0.95rem; color: var(--pd-muted);
+      line-height: 1.7; margin-bottom: 2rem;
+    }
+
+    .feature-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+
+    .feature-list li {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      font-size: 0.9rem; color: var(--pd-text); line-height: 1.5;
+    }
+
+    .feature-list li::before {
+      content: '✓'; color: var(--pd-emerald);
+      font-weight: 700; font-size: 0.85rem; flex-shrink: 0; margin-top: 0.1em;
+    }
+
+    .tab-mockup {
+      background: var(--pd-surface);
+      border: 1px solid var(--pd-border);
+      border-radius: var(--radius-xl); overflow: hidden;
+      min-height: 360px;
+    }
+
+    .mockup-header {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.875rem 1.25rem;
+      background: rgba(10,10,15,0.5);
+      border-bottom: 1px solid var(--pd-border);
+    }
+
+    .mockup-title {
+      font-size: 0.8rem; font-weight: 600; color: var(--pd-muted);
+      margin-left: 0.5rem;
+    }
+
+    .mockup-body { padding: 1.5rem; }
+
+    .mockup-row {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.625rem 0.75rem; border-radius: var(--radius);
+      margin-bottom: 0.375rem; transition: background 150ms;
+    }
+
+    .mockup-row:hover { background: var(--pd-surface-2); }
+
+    .mockup-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+
+    .mockup-text { flex: 1; font-size: 0.82rem; color: var(--pd-text); }
+    .mockup-meta { font-size: 0.75rem; color: var(--pd-muted); }
+    .mockup-badge {
+      padding: 0.2rem 0.5rem; border-radius: var(--radius-full);
+      font-size: 0.7rem; font-weight: 600;
+    }
+
+    /* ─── WHY PIXDRIFT ──────────────────────────────────────── */
+    #why { background: var(--pd-surface); }
+
+    .why-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3.5rem;
+    }
+
+    .why-card {
+      background: var(--pd-ink); border: 1px solid var(--pd-border);
+      border-radius: var(--radius-xl); padding: 2rem;
+      transition: all 200ms ease-out;
+    }
+
+    .why-card:hover { border-color: var(--pd-border-2); transform: translateY(-2px); }
+
+    .why-icon {
+      width: 52px; height: 52px; border-radius: var(--radius-lg);
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.8rem; font-weight: 800; color: #fff;
+      font-size: 1.5rem; margin-bottom: 1.5rem;
     }
-    .step h3 { font-size: 1.05rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
-    .step p { font-size: 0.9rem; color: var(--muted); line-height: 1.65; }
+
+    .why-card h3 {
+      font-size: 1.15rem; font-weight: 700; color: var(--pd-white);
+      margin-bottom: 0.75rem;
+    }
+
+    .why-card p { font-size: 0.9rem; color: var(--pd-muted); line-height: 1.65; }
+
+    .why-card .why-stat {
+      font-size: 2rem; font-weight: 800; letter-spacing: -0.04em;
+      margin-top: 1.5rem; margin-bottom: 0.25rem;
+    }
+
+    /* ─── USE CASES ─────────────────────────────────────────── */
+    #solutions { background: var(--pd-ink); }
+
+    .solutions-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 3.5rem;
+    }
+
+    .solution-card {
+      background: var(--pd-surface); border: 1px solid var(--pd-border);
+      border-radius: var(--radius-xl); padding: 1.75rem;
+      cursor: pointer; transition: all 200ms ease-out;
+    }
+
+    .solution-card:hover { border-color: var(--pd-indigo); background: var(--pd-surface-2); transform: translateY(-2px); }
+
+    .solution-icon {
+      font-size: 1.75rem; margin-bottom: 1rem;
+    }
+
+    .solution-card h3 { font-size: 1.05rem; font-weight: 700; color: var(--pd-white); margin-bottom: 0.5rem; }
+    .solution-card p { font-size: 0.85rem; color: var(--pd-muted); line-height: 1.6; }
+    .solution-card .solution-link { font-size: 0.82rem; color: var(--pd-indigo-light); margin-top: 1rem; display: flex; align-items: center; gap: 4px; }
 
     /* ─── TESTIMONIALS ──────────────────────────────────────── */
-    #testimonials { background: var(--bg); }
+    #testimonials { background: var(--pd-surface); }
 
     .testimonials-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem; margin-top: 64px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3.5rem;
     }
-    .testimonial {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 1.75rem;
-      transition: border-color .2s;
-    }
-    .testimonial:hover { border-color: rgba(99,102,241,.4); }
 
-    .stars { color: #f59e0b; font-size: 0.9rem; margin-bottom: 1rem; }
-    .testimonial blockquote {
-      font-size: 0.95rem; color: var(--text); line-height: 1.7; margin-bottom: 1.25rem;
-      font-style: italic;
+    .testimonial-card {
+      background: var(--pd-ink); border: 1px solid var(--pd-border);
+      border-radius: var(--radius-xl); padding: 2rem;
+      transition: all 200ms ease-out;
     }
-    .testimonial-author { display: flex; align-items: center; gap: 0.75rem; }
-    .avatar {
-      width: 38px; height: 38px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+
+    .testimonial-card:hover { border-color: var(--pd-border-2); }
+
+    .testimonial-quote {
+      font-size: 1.5rem; color: var(--pd-indigo);
+      margin-bottom: 1rem; line-height: 1;
+    }
+
+    .testimonial-text {
+      font-size: 0.95rem; color: var(--pd-text); line-height: 1.75;
+      margin-bottom: 1.5rem; font-style: italic;
+    }
+
+    .testimonial-author {
+      display: flex; align-items: center; gap: 0.875rem;
+      padding-top: 1.25rem; border-top: 1px solid var(--pd-border);
+    }
+
+    .author-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--pd-indigo), var(--pd-violet));
       display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 0.85rem; color: #fff; flex-shrink: 0;
+      font-size: 0.875rem; font-weight: 700; color: white; flex-shrink: 0;
     }
-    .author-info strong { display: block; font-size: 0.875rem; font-weight: 600; color: var(--white); }
-    .author-info span { font-size: 0.8rem; color: var(--muted); }
+
+    .author-name { font-size: 0.875rem; font-weight: 600; color: var(--pd-white); }
+    .author-role { font-size: 0.78rem; color: var(--pd-muted); }
+
+    /* ─── INTEGRATIONS ──────────────────────────────────────── */
+    #integrations { background: var(--pd-ink); }
+
+    .integrations-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 3.5rem;
+    }
+
+    .integration-item {
+      background: var(--pd-surface); border: 1px solid var(--pd-border);
+      border-radius: var(--radius-lg); padding: 1.25rem;
+      display: flex; align-items: center; gap: 0.75rem;
+      transition: all 200ms ease-out;
+    }
+
+    .integration-item:hover { border-color: var(--pd-indigo); background: var(--pd-surface-2); }
+    .integration-icon { font-size: 1.5rem; flex-shrink: 0; }
+    .integration-name { font-size: 0.875rem; font-weight: 600; color: var(--pd-white); }
+    .integration-cat { font-size: 0.72rem; color: var(--pd-muted); }
 
     /* ─── PRICING ───────────────────────────────────────────── */
-    #pricing { background: var(--surface); }
+    #pricing { background: var(--pd-surface); }
 
-    .pricing-cards {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem; margin-top: 64px; max-width: 900px; margin-left: auto; margin-right: auto;
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3.5rem;
     }
+
     .pricing-card {
-      background: var(--bg); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 2rem;
-    }
-    .pricing-card.featured {
-      border-color: var(--accent);
-      background: linear-gradient(180deg, rgba(99,102,241,.08) 0%, var(--bg) 100%);
+      background: var(--pd-ink); border: 1px solid var(--pd-border);
+      border-radius: var(--radius-xl); padding: 2.25rem;
       position: relative;
     }
-    .featured-tag {
-      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
-      background: var(--accent); color: #fff;
-      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
-      padding: 4px 14px; border-radius: 999px;
+
+    .pricing-card.highlighted {
+      border-color: var(--pd-indigo);
+      box-shadow: 0 0 0 1px rgba(99,102,241,0.2), 0 16px 48px rgba(99,102,241,0.12);
     }
-    .pricing-card h3 { font-size: 1rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
-    .pricing-card .price { font-size: 2.25rem; font-weight: 800; color: var(--white); letter-spacing: -0.04em; }
-    .pricing-card .price span { font-size: 1rem; font-weight: 400; color: var(--muted); }
-    .pricing-card .price-desc { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.5rem; }
-    .pricing-features { list-style: none; margin-bottom: 2rem; }
-    .pricing-features li {
-      font-size: 0.875rem; color: var(--text); padding: 0.4rem 0;
-      display: flex; align-items: center; gap: 0.6rem;
+
+    .pricing-badge {
+      position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+      padding: 0.3rem 0.875rem; border-radius: var(--radius-full);
+      background: var(--pd-indigo); color: white;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em;
+      white-space: nowrap;
     }
-    .pricing-features li::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; }
+
+    .pricing-tier { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--pd-muted); margin-bottom: 0.875rem; }
+
+    .pricing-price {
+      font-size: 2.75rem; font-weight: 800; letter-spacing: -0.04em;
+      color: var(--pd-white); line-height: 1; margin-bottom: 0.375rem;
+    }
+
+    .pricing-price span { font-size: 1.25rem; font-weight: 500; color: var(--pd-muted); margin-left: 2px; }
+
+    .pricing-desc {
+      font-size: 0.875rem; color: var(--pd-muted);
+      margin-bottom: 2rem; line-height: 1.5;
+    }
+
+    .pricing-cta { width: 100%; margin-bottom: 2rem; justify-content: center; }
+
+    .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 0.625rem; }
+    .pricing-features li { display: flex; align-items: flex-start; gap: 0.625rem; font-size: 0.85rem; color: var(--pd-text); line-height: 1.45; }
+    .pricing-features li .check { color: var(--pd-emerald); font-weight: 700; flex-shrink: 0; }
+    .pricing-features li .dash { color: var(--pd-subtle); flex-shrink: 0; }
+
+    .pricing-divider {
+      height: 1px; background: var(--pd-border); margin: 1.5rem 0;
+    }
+
+    .pricing-faq { margin-top: 4rem; }
+    .pricing-faq h3 { font-size: 1.25rem; font-weight: 700; color: var(--pd-white); margin-bottom: 1.5rem; }
+
+    .faq-item {
+      border-top: 1px solid var(--pd-border); padding: 1.25rem 0;
+    }
+
+    .faq-q { font-size: 0.95rem; font-weight: 600; color: var(--pd-white); margin-bottom: 0.5rem; }
+    .faq-a { font-size: 0.875rem; color: var(--pd-muted); line-height: 1.65; }
+
+    /* ─── SECURITY ──────────────────────────────────────────── */
+    #security { background: var(--pd-ink); }
+
+    .security-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 3rem; margin-bottom: 3rem;
+    }
+
+    .security-item {
+      display: flex; align-items: flex-start; gap: 0.875rem;
+      background: var(--pd-surface); border: 1px solid var(--pd-border);
+      border-radius: var(--radius-lg); padding: 1.5rem;
+    }
+
+    .security-icon { font-size: 1.25rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .security-item h4 { font-size: 0.9rem; font-weight: 600; color: var(--pd-white); margin-bottom: 0.3rem; }
+    .security-item p { font-size: 0.82rem; color: var(--pd-muted); line-height: 1.55; }
+
+    .security-badges {
+      display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center;
+      padding: 2rem; background: var(--pd-surface); border: 1px solid var(--pd-border);
+      border-radius: var(--radius-xl);
+    }
+
+    .security-badge-item {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.625rem 1rem; background: var(--pd-ink);
+      border: 1px solid var(--pd-border); border-radius: var(--radius);
+      font-size: 0.8rem; font-weight: 600; color: var(--pd-muted);
+    }
 
     /* ─── CTA SECTION ───────────────────────────────────────── */
-    .cta-section {
+    #contact {
       padding: 120px 5%;
-      background: var(--bg);
+      background: var(--pd-surface);
       text-align: center;
       position: relative; overflow: hidden;
     }
-    .cta-section::before {
+
+    #contact::before {
       content: '';
-      position: absolute; bottom: -20%; left: 50%; transform: translateX(-50%);
-      width: 600px; height: 600px;
-      background: radial-gradient(ellipse, rgba(139,92,246,.12) 0%, transparent 70%);
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 700px; height: 700px;
+      background: radial-gradient(ellipse, rgba(99,102,241,0.1) 0%, transparent 65%);
       pointer-events: none;
     }
-    .cta-section h2 {
-      font-size: clamp(2rem, 4vw, 3.5rem);
-      font-weight: 800; color: var(--white); letter-spacing: -0.04em;
-      max-width: 640px; margin: 0 auto 1rem; line-height: 1.15;
-    }
-    .cta-section p { font-size: 1.05rem; color: var(--muted); margin-bottom: 2.5rem; }
-    .cta-form {
-      display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem;
-    }
-    .cta-form input {
-      padding: 0.75rem 1.25rem; border-radius: var(--radius);
-      background: var(--surface); border: 1px solid var(--border);
-      color: var(--white); font-size: 0.9rem; width: 280px;
-      outline: none; transition: border-color .2s;
-      font-family: var(--font);
-    }
-    .cta-form input:focus { border-color: var(--accent); }
-    .cta-form input::placeholder { color: var(--muted); }
-    .cta-note { font-size: 0.8rem; color: var(--muted); }
+
+    .cta-content { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
+    .cta-content h2 { font-size: clamp(2rem, 4vw, 3.25rem); font-weight: 800; letter-spacing: -0.04em; color: var(--pd-white); margin-bottom: 1.25rem; line-height: 1.15; }
+    .cta-content p { font-size: 1.1rem; color: var(--pd-muted); margin-bottom: 2.5rem; line-height: 1.7; }
+    .cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .cta-note { font-size: 0.8rem; color: var(--pd-muted); margin-top: 1.25rem; }
 
     /* ─── FOOTER ────────────────────────────────────────────── */
     footer {
-      padding: 48px 5%;
-      border-top: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+      background: var(--pd-ink);
+      border-top: 1px solid var(--pd-border);
+      padding: 64px 5% 40px;
     }
-    footer .logo { font-size: 1rem; }
-    footer nav { position: static; background: transparent; border: none; height: auto; padding: 0; }
-    footer .nav-links { gap: 1.5rem; }
-    .copyright { font-size: 0.8rem; color: var(--muted); }
+
+    .footer-grid {
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr; gap: 2rem; margin-bottom: 3rem;
+    }
+
+    .footer-brand .logo { font-size: 1.15rem; font-weight: 600; color: var(--pd-white); letter-spacing: -0.04em; margin-bottom: 0.75rem; }
+    .footer-brand p { font-size: 0.85rem; color: var(--pd-muted); line-height: 1.65; max-width: 240px; }
+
+    .footer-social {
+      display: flex; gap: 0.75rem; margin-top: 1.25rem;
+    }
+
+    .footer-social a {
+      width: 32px; height: 32px; border-radius: var(--radius);
+      border: 1px solid var(--pd-border); display: flex;
+      align-items: center; justify-content: center; font-size: 0.875rem;
+      color: var(--pd-muted); transition: all 200ms ease-out;
+    }
+
+    .footer-social a:hover { border-color: var(--pd-indigo); color: var(--pd-white); }
+
+    .footer-col h4 { font-size: 0.8rem; font-weight: 600; color: var(--pd-white); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 1rem; }
+
+    .footer-col ul { display: flex; flex-direction: column; gap: 0.5rem; }
+    .footer-col ul a { font-size: 0.85rem; color: var(--pd-muted); }
+    .footer-col ul a:hover { color: var(--pd-white); }
+
+    .footer-bottom {
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+      padding-top: 1.5rem; border-top: 1px solid var(--pd-border);
+    }
+
+    .footer-bottom p { font-size: 0.8rem; color: var(--pd-muted); }
+    .footer-legal { display: flex; gap: 1.5rem; }
+    .footer-legal a { font-size: 0.8rem; color: var(--pd-muted); }
+    .footer-legal a:hover { color: var(--pd-white); }
+
+    /* ─── COOKIE BANNER ─────────────────────────────────────── */
+    .cookie-banner {
+      position: fixed; bottom: 1.25rem; left: 50%; transform: translateX(-50%);
+      z-index: 9999; width: calc(100% - 2.5rem); max-width: 680px;
+      background: var(--pd-surface);
+      border: 1px solid var(--pd-border);
+      border-radius: var(--radius-xl);
+      padding: 1rem 1.5rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+      transition: all 200ms ease-out;
+    }
+
+    .cookie-banner.hidden { opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(8px); }
+
+    .cookie-text { font-size: 0.85rem; color: var(--pd-muted); }
+    .cookie-text a { color: var(--pd-indigo-light); text-decoration: underline; }
+
+    .cookie-btns { display: flex; gap: 0.5rem; flex-shrink: 0; }
+
+    /* ─── SCROLL REVEAL ─────────────────────────────────────── */
+    .reveal {
+      opacity: 0; transform: translateY(16px);
+      transition: opacity 400ms ease-out, transform 400ms ease-out;
+    }
+    .reveal.revealed { opacity: 1; transform: translateY(0); }
 
     /* ─── RESPONSIVE ────────────────────────────────────────── */
-    @media (max-width: 640px) {
-      .hero-stats { gap: 2rem; }
-      footer { flex-direction: column; text-align: center; }
-      footer .nav-links { flex-wrap: wrap; justify-content: center; }
+    @media (max-width: 1280px) {
+      .footer-grid { grid-template-columns: 1fr 1fr 1fr 1fr; }
+      .footer-brand { grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 1024px) {
+      .problem-grid { grid-template-columns: 1fr; }
+      .tab-panel.active { grid-template-columns: 1fr; }
+      .why-grid { grid-template-columns: 1fr 1fr; }
+      .solutions-grid { grid-template-columns: 1fr 1fr; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .integrations-grid { grid-template-columns: 1fr 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+      .security-grid { grid-template-columns: 1fr 1fr; }
+      .dashboard-body { grid-template-columns: 1fr; }
+      .dash-sidebar { display: none; }
+    }
+
+    @media (max-width: 768px) {
+      .section { padding: 64px 4%; }
+      .section-sm { padding: 48px 4%; }
+      .nav-center { display: none; }
+      .why-grid, .solutions-grid { grid-template-columns: 1fr; }
+      .integrations-grid { grid-template-columns: 1fr 1fr; }
+      .security-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .footer-brand { grid-column: 1 / -1; }
+      .dash-metrics { grid-template-columns: 1fr 1fr; }
+      .pricing-badge { font-size: 0.65rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAV -->
-  <nav>
-    <div class="logo">pix<span>drift</span></div>
-    <div class="nav-links">
-      <a href="#features">Features</a>
-      <a href="#how">How it works</a>
-      <a href="#pricing">Pricing</a>
-      <a href="/checkout.html" class="btn btn-primary">Kom igång</a>
-    </div>
-  </nav>
+<!-- ═══════════════════════════════════════════════════════
+     NAVIGATION
+═══════════════════════════════════════════════════════ -->
+<nav class="nav">
+  <div class="nav-logo">pixdrift</div>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div>
-      <div class="badge">
-        <span class="badge-dot"></span>
-        Now in Early Access — Limited spots available
-      </div>
-      <h1>Your team runs on<br /><span class="gradient">one operating system.</span></h1>
-      <p>
-        Stop losing hours to tools that don't talk to each other.
-        pixdrift connects your execution, pipeline, processes, and reporting
-        into a single command center — built for teams that ship.
-      </p>
-      <div class="hero-cta">
-        <a href="mailto:hello@pixdrift.com" class="btn btn-primary">
-          ⚡ Request early access
-        </a>
-        <a href="#how" class="btn btn-outline">See how it works</a>
-      </div>
-      <div class="hero-stats">
-        <div class="stat"><strong>3h</strong><span>saved per manager, per week</span></div>
-        <div class="stat"><strong>40%</strong><span>faster deal cycles</span></div>
-        <div class="stat"><strong>1</strong><span>platform, not 7 tools</span></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SOCIAL PROOF -->
-  <div class="social-proof">
-    <p>Trusted by teams at</p>
-    <div class="logos">
-      <span class="logo-item">Northvolt</span>
-      <span class="logo-item">Klarna</span>
-      <span class="logo-item">Bolt</span>
-      <span class="logo-item">Einride</span>
-      <span class="logo-item">Voi</span>
-    </div>
+  <div class="nav-center">
+    <a href="#product">Produkt <span class="chevron">▾</span></a>
+    <a href="#solutions">Lösningar <span class="chevron">▾</span></a>
+    <a href="#pricing">Prissättning</a>
+    <a href="#integrations">Resurser <span class="chevron">▾</span></a>
+    <a href="about.html">Om oss</a>
   </div>
 
-  <!-- FEATURES -->
-  <section id="features">
+  <div class="nav-right">
+    <a href="#" class="btn btn-ghost">Logga in</a>
+    <a href="#contact" class="btn btn-primary">Boka demo</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-content">
+    <div class="eyebrow">
+      <span class="eyebrow-dot"></span>
+      Operating Management Platform
+    </div>
+
+    <h1>One System.<br><span class="gradient-text">Every Operation.</span></h1>
+
+    <p class="hero-sub">
+      pixdrift ersätter CRM, projektverktyg, kompetensplattform, ekonomisystem och compliance-verktyg i ett enda sammanhållet system — byggt för B2B-team som menar allvar.
+    </p>
+
+    <div class="hero-cta">
+      <a href="#contact" class="btn btn-primary btn-xl">Boka en demo</a>
+      <button class="btn-video" onclick="document.getElementById('video-modal').style.display='flex'">
+        <div class="play-icon">▶</div>
+        Se hur det fungerar →
+      </button>
+    </div>
+
+    <div class="hero-social-proof">
+      <div class="proof-avatars">
+        <div class="proof-avatar">E</div>
+        <div class="proof-avatar">M</div>
+        <div class="proof-avatar">A</div>
+        <div class="proof-avatar">J</div>
+        <div class="proof-avatar">K</div>
+      </div>
+      <span>Används av 50+ företag i Norden</span>
+    </div>
+
+    <!-- Dashboard Mockup -->
+    <div class="hero-dashboard reveal">
+      <div class="dashboard-mockup">
+        <div class="dashboard-bar">
+          <span class="dash-dot dash-dot-red"></span>
+          <span class="dash-dot dash-dot-amber"></span>
+          <span class="dash-dot dash-dot-green"></span>
+          <div class="dash-bar-url">app.pixdrift.com/execution</div>
+        </div>
+        <div class="dashboard-body">
+          <div class="dash-sidebar">
+            <div class="dash-nav-item active"><span class="icon">⚡</span> Execution</div>
+            <div class="dash-nav-item"><span class="icon">🎯</span> Capability</div>
+            <div class="dash-nav-item"><span class="icon">⚙️</span> Process</div>
+            <div class="dash-nav-item"><span class="icon">💱</span> Currency</div>
+            <div class="dash-nav-item"><span class="icon">📊</span> Reports</div>
+          </div>
+          <div class="dash-main">
+            <div class="dash-header">
+              <div class="dash-title">Pipeline — Q1 2026</div>
+              <div class="dash-badge">↑ 23% vs föregående kvartal</div>
+            </div>
+            <div class="dash-metrics">
+              <div class="dash-metric">
+                <div class="dash-metric-label">Aktiva affärer</div>
+                <div class="dash-metric-value">47</div>
+                <div class="dash-metric-sub">↑ 8 nya denna vecka</div>
+              </div>
+              <div class="dash-metric">
+                <div class="dash-metric-label">Pipeline-värde</div>
+                <div class="dash-metric-value">€2.4M</div>
+                <div class="dash-metric-sub">↑ €340K vs förra månaden</div>
+              </div>
+              <div class="dash-metric">
+                <div class="dash-metric-label">Vunna affärer</div>
+                <div class="dash-metric-value">12</div>
+                <div class="dash-metric-sub">↑ 31% win rate</div>
+              </div>
+              <div class="dash-metric">
+                <div class="dash-metric-label">Genomsnittstid</div>
+                <div class="dash-metric-value">18d</div>
+                <div class="dash-metric-sub">↓ 6 dagar snabbare</div>
+              </div>
+            </div>
+            <div class="dash-chart" aria-label="Pipeline-aktivitet per dag">
+              <div class="dash-bar-item" style="height:40%"></div>
+              <div class="dash-bar-item" style="height:55%"></div>
+              <div class="dash-bar-item" style="height:45%"></div>
+              <div class="dash-bar-item" style="height:70%"></div>
+              <div class="dash-bar-item" style="height:60%"></div>
+              <div class="dash-bar-item" style="height:85%"></div>
+              <div class="dash-bar-item active" style="height:90%"></div>
+              <div class="dash-bar-item" style="height:75%"></div>
+              <div class="dash-bar-item" style="height:80%"></div>
+              <div class="dash-bar-item" style="height:65%"></div>
+              <div class="dash-bar-item" style="height:72%"></div>
+              <div class="dash-bar-item" style="height:88%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     LOGOS
+═══════════════════════════════════════════════════════ -->
+<div class="logos-strip">
+  <p>Betrodda av ledande företag i Norden</p>
+  <div class="logos-grid">
+    <span class="logo-item">Northvolt</span>
+    <span class="logo-item">Voi Technology</span>
+    <span class="logo-item">Klarna</span>
+    <span class="logo-item">Soundtrack Your Brand</span>
+    <span class="logo-item">Einride</span>
+    <span class="logo-item">Polestar</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     PROBLEM
+═══════════════════════════════════════════════════════ -->
+<section class="section" id="problem">
+  <div class="container">
     <div class="center">
-      <span class="section-label">What you get</span>
-      <h2 class="section-title">Everything your team needs.<br />Nothing they don't.</h2>
-      <p class="section-sub">
-        Five purpose-built modules that work together out of the box —
-        so you spend less time coordinating and more time executing.
-      </p>
+      <div class="section-label">Problemet</div>
+      <h2 class="section-title">Koordinationskostnaden dödar tillväxt</h2>
+      <p class="section-sub center">Moderna B2B-team kämpar inte med brist på verktyg. De kämpar med för många — utan sammanhang.</p>
     </div>
 
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon" style="background:rgba(99,102,241,.15);">⚡</div>
-        <h3>Execution Hub</h3>
-        <p>Tasks, priorities, owners, and deadlines in one view. No status meetings needed — everyone always knows what's next.</p>
-        <div class="feature-metric">3h saved per team member, weekly</div>
+    <div class="problem-grid reveal">
+      <div class="problem-card">
+        <div class="problem-icon">📊</div>
+        <h3>Sanning saknas när data lever i 5 verktyg</h3>
+        <p>Salesforce säger 47 affärer. HubSpot säger 41. Jira har 200 öppna tickets. Excel-arket från förra fredagen stämmer inte med något. Beslut fattas på gissningar — inte på fakta.</p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon" style="background:rgba(16,185,129,.12);">🎯</div>
-        <h3>Pipeline & CRM</h3>
-        <p>Track every deal from first touch to signed contract. Built-in forecasting so your sales leader is never guessing.</p>
-        <div class="feature-metric">40% faster time-to-close</div>
+      <div class="problem-card">
+        <div class="problem-icon">🔒</div>
+        <h3>Processer som lever i folks huvuden skalerar aldrig</h3>
+        <p>Onboarding sitter hos Maria. Offertflödet sitter hos Johan. När de slutar försvinner operationell intelligens med dem. Tillväxt utan dokumenterade processer är tillväxt på lån.</p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon" style="background:rgba(245,158,11,.12);">📋</div>
-        <h3>Process Engine</h3>
-        <p>Turn your best practices into repeatable playbooks. Onboarding, ops, compliance — consistent every time, at any scale.</p>
-        <div class="feature-metric">60% reduction in onboarding time</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon" style="background:rgba(236,72,153,.12);">💰</div>
-        <h3>Revenue Intelligence</h3>
-        <p>Real-time P&L visibility for every team lead. Know which bets are paying off and where to double down — before it's too late.</p>
-        <div class="feature-metric">2x faster budget decisions</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon" style="background:rgba(139,92,246,.15);">📊</div>
-        <h3>Executive Reporting</h3>
-        <p>Board-ready dashboards that update automatically. Spend 20 minutes on prep instead of 20 hours.</p>
-        <div class="feature-metric">20h/month back to leadership</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon" style="background:rgba(6,182,212,.12);">🔗</div>
-        <h3>Integrations</h3>
-        <p>Connects to your existing stack in minutes. Slack, HubSpot, Jira, Google Workspace — no rip-and-replace required.</p>
-        <div class="feature-metric">Live in under 1 day</div>
+      <div class="problem-card">
+        <div class="problem-icon">⏱</div>
+        <h3>Rapporter som tar dagar gör beslut inaktuella</h3>
+        <p>Bokslut tar en vecka att sammanställa. Styrelseunderlag är en heltidsuppgift. Löpande kassaflöde kräver en manuell process. Ledningen fattar beslut på data som är 3 veckor gammal.</p>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- HOW IT WORKS -->
-  <section id="how">
+<!-- ═══════════════════════════════════════════════════════
+     PRODUCT TABS
+═══════════════════════════════════════════════════════ -->
+<section class="section" id="product">
+  <div class="container">
+    <div class="section-label">Plattformen</div>
+    <h2 class="section-title">Fem moduler. Ett system.</h2>
+    <p class="section-sub">Varje modul är kraftfull på egen hand. Tillsammans skapar de en operationell intelligens ingen enskild del kan ge.</p>
+
+    <div style="margin-top: 3rem;">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('execution', this)">⚡ Execution</button>
+        <button class="tab-btn" onclick="switchTab('capability', this)">🎯 Capability</button>
+        <button class="tab-btn" onclick="switchTab('process', this)">⚙️ Process</button>
+        <button class="tab-btn" onclick="switchTab('currency', this)">💱 Currency</button>
+        <button class="tab-btn" onclick="switchTab('reports', this)">📊 Reports</button>
+      </div>
+
+      <!-- Execution -->
+      <div class="tab-panel active" id="tab-execution">
+        <div class="tab-features">
+          <h3>Execution</h3>
+          <p>CRM, pipeline, uppgifter och kundrelationer i ett sammanhållet flöde. Sluta växla mellan verktyg — allt som rör affären lever här.</p>
+          <ul class="feature-list">
+            <li>Pipeline-hantering med anpassningsbara stages</li>
+            <li>Kontakt- och kontohantering med fullständig historik</li>
+            <li>Uppgifter och aktiviteter kopplade direkt till affärer</li>
+            <li>E-postintegration och kommunikationslogg</li>
+            <li>Automatiserade påminnelser och följsamhetsspårning</li>
+            <li>Offerthantering och avtalsspårning</li>
+            <li>Inbyggd prognos med ML-baserade förutsägelser</li>
+            <li>Nativa mobilappar för iOS och Android</li>
+          </ul>
+        </div>
+        <div class="tab-mockup">
+          <div class="mockup-header">
+            <div class="dash-dot dash-dot-red"></div>
+            <div class="dash-dot dash-dot-amber"></div>
+            <div class="dash-dot dash-dot-green"></div>
+            <div class="mockup-title">Execution — Pipeline</div>
+          </div>
+          <div class="mockup-body">
+            <div class="mockup-row">
+              <div class="mockup-dot" style="background:#10b981"></div>
+              <div class="mockup-text">Einride — Enterprise-avtal Q1</div>
+              <div class="mockup-badge" style="background:rgba(16,185,129,0.12);color:#10b981">Förhandling</div>
+              <div class="mockup-meta">€420K</div>
+            </div>
+            <div class="mockup-row">
+              <div class="mockup-dot" style="background:#f59e0b"></div>
+              <div class="mockup-text">Voi Technology — OMS-licens</div>
+              <div class="mockup-badge" style="background:rgba(245,158,11,0.12);color:#f59e0b">Demo</div>
+              <div class="mockup-meta">€180K</div>
+            </div>
+            <div class="mockup-row">
+              <div class="mockup-dot" style="background:#6366f1"></div>
+              <div class="mockup-text">Soundtrack Your Brand — Growth</div>
+              <div class="mockup-badge" style="background:rgba(99,102,241,0.12);color:#818cf8">Kvalificering</div>
+              <div class="mockup-meta">€72K</div>
+            </div>
+            <div class="mockup-row">
+              <div class="mockup-dot" style="background:#10b981"></div>
+              <div class="mockup-text">Northvolt — Pilot</div>
+              <div class="mockup-badge" style="background:rgba(16,185,129,0.12);color:#10b981">Avslutad ✓</div>
+              <div class="mockup-meta">€95K</div>
+            </div>
+            <div class="mockup-row">
+              <div class="mockup-dot" style="background:#8b5cf6"></div>
+              <div class="mockup-text">Polestar — Evaluation</div>
+              <div class="mockup-badge" style="background:rgba(139,92,246,0.12);color:#a78bfa">Prospekt</div>
+              <div class="mockup-meta">€310K</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Capability -->
+      <div class="tab-panel" id="tab-capability">
+        <div class="tab-features">
+          <h3>Capability</h3>
+          <p>Kompetenshantering, mål och prestandaspårning för hela organisationen. Vet exakt vad teamet kan — och vad det behöver.</p>
+          <ul class="feature-list">
+            <li>Kompetensmatris per roll och individ</li>
+            <li>OKR-hantering kopplad till affärsmål</li>
+            <li>Kompetensgap-analys och åtgärdsplaner</li>
+            <li>360-graders feedback och prestationsöversikt</li>
+            <li>Utbildnings- och certifieringsspårning</li>
+            <li>Successionsplanering och organisationskartor</li>
+            <li>Kapacitetsplanering för projekt och resurser</li>
+            <li>Integration med HR-system och Workday</li>
+          </ul>
+        </div>
+        <div class="tab-mockup">
+          <div class="mockup-header">
+            <div class="dash-dot dash-dot-red"></div>
+            <div class="dash-dot dash-dot-amber"></div>
+            <div class="dash-dot dash-dot-green"></div>
+            <div class="mockup-title">Capability — Kompetensmatris</div>
+          </div>
+          <div class="mockup-body">
+            <div class="mockup-row"><div class="mockup-dot" style="background:#10b981"></div><div class="mockup-text">Anna Lindqvist — Sales Engineering</div><div class="mockup-meta">92% match</div></div>
+            <div class="mockup-row"><div class="mockup-dot" style="background:#f59e0b"></div><div class="mockup-text">Marcus Holm — Customer Success</div><div class="mockup-meta">74% match</div></div>
+            <div class="mockup-row"><div class="mockup-dot" style="background:#10b981"></div><div class="mockup-text">Sara Bergström — Product</div><div class="mockup-meta">88% match</div></div>
+            <div class="mockup-row"><div class="mockup-dot" style="background:#f43f5e"></div><div class="mockup-text">Erik Karlsson — Data Analysis</div><div class="mockup-meta">61% match ⚠</div></div>
+            <div class="mockup-row"><div class="mockup-dot" style="background:#6366f1"></div><div class="mockup-text">Julia Persson — Operations</div><div class="mockup-meta">85% match</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Process -->
+      <div class="tab-panel" id="tab-process">
+        <div class="tab-features">
+          <h3>Process</h3>
+          <p>Kvalitetssäkring, compliance och processhantering utan manuellt pappersarbete. Byggt för ISO-, SOC2- och GDPR-krav.</p>
+          <ul class="feature-list">
+            <li>Processkartläggning och BPMN-visualisering</li>
+            <li>GDPR-modul: DPA, samtycken, dataregister</li>
+            <li>Checklistor och godkännandeflöden</li>
+            <li>Avvikelsehantering och korrigeringsåtgärder</li>
+            <li>Revisionsspår (fullständig audit log)</li>
+            <li>Riskregister kopplat till processer</li>
+            <li>ISO 9001- och 27001-mallar inbyggda</li>
+            <li>Leverantörs- och partneröversikt</li>
+          </ul>
+        </div>
+        <div class="tab-mockup">
+          <div class="mockup-header">
+            <div class="dash-dot dash-dot-red"></div>
+            <div class="dash-dot dash-dot-amber"></div>
+            <div class="dash-dot dash-dot-green"></div>
+            <div class="mockup-title">Process — Compliance-översikt</div>
+          </div>
+          <div class="mockup-body">
+            <div class="mockup-row"><div class="mockup-dot" style="background:#10b981"></div><div class="mockup-text">GDPR — Dataskyddsöversyn 2026</div><div class="mockup-badge" style="background:rgba(16,185,129,0.12);color:#10b981">Godkänd</div></div>
+            <div class="mockup-row"><div class="mockup-dot" style="background:#10b981"></div><div class="mockup-text">ISO 27001 — Intern revision</div><div class="mockup-badge" style="background:rgba(16,185,129,0.12);color:#10b981">Klar</div></div>
+            <div class="mockup-row"><div class="mockup-dot" style="background:#f59e0b"></div><div class="mockup-text">SOC 2 Type II — Förberedelse</div><div class="mockup-badge" style="background:rgba(245,158,11,0.12);color:#f59e0b">Pågår</div></div>
+            <div class="mockup-row"><div class="mockup-dot" style="background:#f43f5e"></div><div class="mockup-text">Leverantörsavtal — 3 ej granskade</div><div class="mockup-badge" style="background:rgba(244,63,94,0.12);color:#f43f5e">Åtgärd krävs</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Currency -->
+      <div class="tab-panel" id="tab-currency">
+        <div class="tab-features">
+          <h3>Currency</h3>
+          <p>Multi-valutatransaktioner, FX-omräkning och valutaexponering i realtid. Byggt för team som fakturerar i flera länder.</p>
+          <ul class="feature-list">
+            <li>Stöd för EUR, SEK, GBP, USD, CHF och 40+ valutor</li>
+            <li>Automatisk FX-revalvering vid periodbokslut</li>
+            <li>Realiserade och orealiserade kursdifferenser</li>
+            <li>Fakturering och betalning i kundens valuta</li>
+            <li>Valutariskexponering per kund och kontrakt</li>
+            <li>Integration med Stripe och Fortnox</li>
+            <li>Hedging-spårning och derivatregister</li>
+            <li>Realtids-FX-kurser från ECB och Bloomberg</li>
+          </ul>
+        </div>
+        <div class="tab-mockup">
+          <div class="mockup-header">
+            <div class="dash-dot dash-dot-red"></div>
+            <div class="dash-dot dash-dot-amber"></div>
+            <div class="dash-dot dash-dot-green"></div>
+            <div class="mockup-title">Currency — Valutaexponering</div>
+          </div>
+          <div class="mockup-body">
+            <div class="mockup-row"><div class="mockup-dot" style="background:#6366f1"></div><div class="mockup-text">EUR — Primär bokföringsvaluta</div><div class="mockup-meta" style="font-family:'JetBrains Mono',monospace">€1,247,000</div></div>
+            <div class="mockup-row"><div class="mockup-dot" style="background:#10b981"></div><div class="mockup-text">SEK — Nordic-kontrakt</div><div class="mockup-meta" style="font-family:'JetBrains Mono',monospace">SEK 4,210,000</div></div>
+            <div class="mockup-row"><div class="mockup-dot" style="background:#f59e0b"></div><div class="mockup-text">GBP — UK-kunder</div><div class="mockup-meta" style="font-family:'JetBrains Mono',monospace">£89,400</div></div>
+            <div class="mockup-row"><div class="mockup-dot" style="background:#8b5cf6"></div><div class="mockup-text">USD — US-pilot</div><div class="mockup-meta" style="font-family:'JetBrains Mono',monospace">$142,000</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reports -->
+      <div class="tab-panel" id="tab-reports">
+        <div class="tab-features">
+          <h3>Reports</h3>
+          <p>SIE4-export, bokslut, styrelseunderlag och realtidsrapportering. Data som var aktuell för 3 veckor sedan räcker inte längre.</p>
+          <ul class="feature-list">
+            <li>SIE4-export direkt till revisorer och Fortnox</li>
+            <li>Automatiserat bokslut och periodisering</li>
+            <li>P&amp;L, balansräkning och kassaflöde i realtid</li>
+            <li>Kundlönsamhet per kund och segment</li>
+            <li>OKR-rapport kopplad till finansiellt utfall</li>
+            <li>Styrelsepaket med ett klick</li>
+            <li>Anpassningsbara dashboards per roll</li>
+            <li>Exportformat: Excel, PDF, CSV, API</li>
+          </ul>
+        </div>
+        <div class="tab-mockup">
+          <div class="mockup-header">
+            <div class="dash-dot dash-dot-red"></div>
+            <div class="dash-dot dash-dot-amber"></div>
+            <div class="dash-dot dash-dot-green"></div>
+            <div class="mockup-title">Reports — Realtidsöversikt</div>
+          </div>
+          <div class="mockup-body">
+            <div class="mockup-row"><div class="mockup-dot" style="background:#10b981"></div><div class="mockup-text">Q1 2026 — P&L Sammanfattning</div><div class="mockup-badge" style="background:rgba(16,185,129,0.12);color:#10b981">Klar för export</div></div>
+            <div class="mockup-row"><div class="mockup-dot" style="background:#6366f1"></div><div class="mockup-text">SIE4 — Mars 2026</div><div class="mockup-badge" style="background:rgba(99,102,241,0.12);color:#818cf8">Genereras…</div></div>
+            <div class="mockup-row"><div class="mockup-dot" style="background:#10b981"></div><div class="mockup-text">Styrelserapport — April 2026</div><div class="mockup-badge" style="background:rgba(16,185,129,0.12);color:#10b981">Delad</div></div>
+            <div class="mockup-row"><div class="mockup-dot" style="background:#f59e0b"></div><div class="mockup-text">Kundlönsamhet — Kvartal 1</div><div class="mockup-badge" style="background:rgba(245,158,11,0.12);color:#f59e0b">Granskning</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     WHY PIXDRIFT
+═══════════════════════════════════════════════════════ -->
+<section class="section" id="why">
+  <div class="container">
     <div class="center">
-      <span class="section-label">How it works</span>
-      <h2 class="section-title">Up and running in a day.<br />Not a quarter.</h2>
-      <p class="section-sub">
-        Most enterprise tools take months to deploy. pixdrift is different —
-        designed to deliver value in hours, not sprints.
-      </p>
+      <div class="section-label">Varför pixdrift</div>
+      <h2 class="section-title">Enterprise-substans. Utan enterprise-komplexitet.</h2>
     </div>
 
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <h3>Connect your stack</h3>
-        <p>One-click integrations with the tools you already use. No data migration, no lengthy onboarding calls.</p>
+    <div class="why-grid">
+      <div class="why-card reveal">
+        <div class="why-icon" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2)">💡</div>
+        <h3>Ersätter 5+ verktyg</h3>
+        <p>De flesta team betalar €3,000–8,000/mo för att hålla ihop Salesforce, Monday, Notion, HubSpot, Jira och Sheets. pixdrift konsoliderar allt till en kostnad och ett kontrakt.</p>
+        <div class="why-stat" style="color:var(--pd-emerald)">−62%</div>
+        <p style="font-size:0.8rem">genomsnittlig verktygskostnad</p>
       </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <h3>Invite your team</h3>
-        <p>Role-based workspaces for leadership, sales, ops, and field teams. Everyone sees exactly what they need.</p>
+
+      <div class="why-card reveal" style="transition-delay:80ms">
+        <div class="why-icon" style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2)">🇪🇺</div>
+        <h3>Byggt för Europa</h3>
+        <p>SIE4-export, GDPR-kompatibilitet, multi-valuta med ECB-kurser, moms per land och EU AI Act-beredskap. Inte en eftertanke — inbyggt från dag ett.</p>
+        <div class="why-stat" style="color:var(--pd-indigo-light)">EU-first</div>
+        <p style="font-size:0.8rem">datalagrad i Frankfurt, Dublin och Stockholm</p>
       </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <h3>Run your business</h3>
-        <p>One dashboard to see everything. One place to act. No more context-switching between 6 different apps.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">4</div>
-        <h3>Grow with confidence</h3>
-        <p>As your team scales, pixdrift scales with you. Enterprise-grade security, compliance, and performance built in.</p>
+
+      <div class="why-card reveal" style="transition-delay:160ms">
+        <div class="why-icon" style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2)">🔐</div>
+        <h3>Enterprise-säkerhet</h3>
+        <p>AES-256 kryptering, TLS 1.3, RBAC med granulär åtkomstkontroll, SSO via SAML (roadmap), full revisionsspårning och 99.9% SLA (roadmap).</p>
+        <div class="why-stat" style="color:var(--pd-amber)">SOC 2</div>
+        <p style="font-size:0.8rem">Type II-certifiering på roadmap för Q3 2026</p>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- TESTIMONIALS -->
-  <section id="testimonials">
+<!-- ═══════════════════════════════════════════════════════
+     USE CASES
+═══════════════════════════════════════════════════════ -->
+<section class="section" id="solutions">
+  <div class="container">
     <div class="center">
-      <span class="section-label">What people say</span>
-      <h2 class="section-title">Teams that switched<br />don't go back.</h2>
+      <div class="section-label">Lösningar</div>
+      <h2 class="section-title">pixdrift för din bransch</h2>
+      <p class="section-sub center">Samma plattform, konfigurerad för era specifika operationella behov.</p>
+    </div>
+
+    <div class="solutions-grid" style="margin-top:3rem">
+      <div class="solution-card reveal">
+        <div class="solution-icon">🚀</div>
+        <h3>SaaS-bolag</h3>
+        <p>Pipeline, MRR-spårning, kundframgång och NRR i ett system. Sluta exportera från fyra verktyg för att förstå era cohorts.</p>
+        <div class="solution-link">Läs mer →</div>
+      </div>
+
+      <div class="solution-card reveal" style="transition-delay:60ms">
+        <div class="solution-icon">💼</div>
+        <h3>Professionella tjänster</h3>
+        <p>Resursutnyttjande, projekt-P&amp;L, tidsspårning och kundrapportering. Maximera fakturerbar tid utan Excel-jonglering.</p>
+        <div class="solution-link">Läs mer →</div>
+      </div>
+
+      <div class="solution-card reveal" style="transition-delay:120ms">
+        <div class="solution-icon">🏭</div>
+        <h3>Tillverkning</h3>
+        <p>Leverantörsrelationer, kvalitetscertifieringar, processefterlevnad och multi-valutatransaktioner i hela leveranskedjan.</p>
+        <div class="solution-link">Läs mer →</div>
+      </div>
+
+      <div class="solution-card reveal" style="transition-delay:60ms">
+        <div class="solution-icon">🛒</div>
+        <h3>Handel</h3>
+        <p>Kundrelationer, orderflöden, lagerstatus kopplat till affärer och automatiserad rapportering för revisorer och styrelse.</p>
+        <div class="solution-link">Läs mer →</div>
+      </div>
+
+      <div class="solution-card reveal" style="transition-delay:120ms">
+        <div class="solution-icon">🧠</div>
+        <h3>Konsultbolag</h3>
+        <p>Kompetenshantering, uppdragsspårning, beläggning och kundlönsamhet per konsult och team. Allt revisorn behöver inbyggt.</p>
+        <div class="solution-link">Läs mer →</div>
+      </div>
+
+      <div class="solution-card reveal" style="transition-delay:180ms">
+        <div class="solution-icon">📈</div>
+        <h3>Startup-till-scale</h3>
+        <p>Börja med Execution. Lägg till moduler i takt med att ni växer. Ingen migrering — allt data är redan sammankopplat från start.</p>
+        <div class="solution-link">Läs mer →</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     TESTIMONIALS
+═══════════════════════════════════════════════════════ -->
+<section class="section" id="testimonials">
+  <div class="container">
+    <div class="center">
+      <div class="section-label">Kundberättelser</div>
+      <h2 class="section-title">Vad ledande team säger</h2>
     </div>
 
     <div class="testimonials-grid">
-      <div class="testimonial">
-        <div class="stars">★★★★★</div>
-        <blockquote>"We replaced four separate tools with pixdrift. Our ops lead said it was the best operational decision we made in 2025."</blockquote>
+      <div class="testimonial-card reveal">
+        <div class="testimonial-quote">"</div>
+        <p class="testimonial-text">pixdrift gav oss ett operationellt OS vi aldrig haft. Pipeline, compliance och ekonomi i ett. Vi stängde vår Q1 på 3 timmar istället för 3 dagar.</p>
         <div class="testimonial-author">
-          <div class="avatar">AL</div>
-          <div class="author-info">
-            <strong>Anna Lindqvist</strong>
-            <span>COO, Series B SaaS company</span>
+          <div class="author-avatar">EL</div>
+          <div>
+            <div class="author-name">Erik Lundqvist</div>
+            <div class="author-role">CTO, Nordic SaaS-bolag · 85 anställda</div>
           </div>
         </div>
       </div>
-      <div class="testimonial">
-        <div class="stars">★★★★★</div>
-        <blockquote>"My sales team went from 'I have no idea where that deal is' to closing 40% faster. The pipeline visibility alone was worth it."</blockquote>
+
+      <div class="testimonial-card reveal" style="transition-delay:80ms">
+        <div class="testimonial-quote">"</div>
+        <p class="testimonial-text">Vi hanterade 7 verktyg för att hålla koll på kunder, processer och ekonomi. Med pixdrift är det ett. Vårt team sparar uppskattningsvis 12 timmar per person och månad.</p>
         <div class="testimonial-author">
-          <div class="avatar">MK</div>
-          <div class="author-info">
-            <strong>Marcus Karlsson</strong>
-            <span>VP Sales, 80-person scale-up</span>
+          <div class="author-avatar">SH</div>
+          <div>
+            <div class="author-name">Sofia Holm</div>
+            <div class="author-role">COO, Management Consulting · 140 anställda</div>
           </div>
         </div>
       </div>
-      <div class="testimonial">
-        <div class="stars">★★★★★</div>
-        <blockquote>"I used to spend half my Monday preparing the weekly exec report. Now it generates itself. I spend that time on actual strategy."</blockquote>
+
+      <div class="testimonial-card reveal" style="transition-delay:160ms">
+        <div class="testimonial-quote">"</div>
+        <p class="testimonial-text">GDPR-modulen och SIE4-exporten var det som avgjorde valet. Men det vi inte förväntade oss var hur mycket snabbare säljarna arbetar nu när pipeline och uppgifter lever i samma system.</p>
         <div class="testimonial-author">
-          <div class="avatar">SB</div>
-          <div class="author-info">
-            <strong>Sara Berg</strong>
-            <span>CEO, 150-person consultancy</span>
+          <div class="author-avatar">MN</div>
+          <div>
+            <div class="author-name">Marcus Nilsson</div>
+            <div class="author-role">CEO, B2B Tech · 48 anställda · Stockholm</div>
           </div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- PRICING -->
-  <section id="pricing">
+<!-- ═══════════════════════════════════════════════════════
+     INTEGRATIONS
+═══════════════════════════════════════════════════════ -->
+<section class="section" id="integrations">
+  <div class="container">
     <div class="center">
-      <span class="section-label">Pricing</span>
-      <h2 class="section-title">Simple pricing.<br />Serious ROI.</h2>
-      <p class="section-sub">
-        One price per team. No per-seat surprises.
-        Add members as you grow — the price doesn't multiply.
-      </p>
+      <div class="section-label">Integrationer</div>
+      <h2 class="section-title">pixdrift integreras med era befintliga verktyg</h2>
+      <p class="section-sub center">Native-integrationer, inte Zapier-workarounds. Synkronisering i realtid, inte batch-import.</p>
     </div>
 
-    <div class="pricing-cards">
-      <div class="pricing-card">
-        <h3>Starter</h3>
-        <div class="price">€499<span>/mo</span></div>
-        <div class="price-desc">Up to 15 team members</div>
-        <ul class="pricing-features">
-          <li>Execution Hub</li>
-          <li>Pipeline & CRM (up to 500 contacts)</li>
-          <li>3 process templates</li>
-          <li>Basic reporting</li>
-          <li>Slack + Email integrations</li>
-          <li>Email support</li>
-        </ul>
-        <a href="/checkout.html?plan=starter" class="btn btn-outline" style="width:100%; justify-content:center;">Kom igång</a>
+    <div class="integrations-grid">
+      <div class="integration-item reveal">
+        <div class="integration-icon">💬</div>
+        <div>
+          <div class="integration-name">Slack</div>
+          <div class="integration-cat">Notifieringar & kommandon</div>
+        </div>
       </div>
-
-      <div class="pricing-card featured">
-        <div class="featured-tag">Mest populär</div>
-        <h3>Growth</h3>
-        <div class="price">€999<span>/mo</span></div>
-        <div class="price-desc">Up to 50 team members</div>
-        <ul class="pricing-features">
-          <li>Everything in Starter</li>
-          <li>Full CRM (unlimited contacts)</li>
-          <li>Revenue Intelligence module</li>
-          <li>Unlimited process templates</li>
-          <li>Executive dashboards</li>
-          <li>All integrations</li>
-          <li>Priority support + onboarding call</li>
-        </ul>
-        <a href="/checkout.html?plan=growth" class="btn btn-primary" style="width:100%; justify-content:center;">Kom igång</a>
+      <div class="integration-item reveal" style="transition-delay:60ms">
+        <div class="integration-icon">🔷</div>
+        <div>
+          <div class="integration-name">Microsoft Teams</div>
+          <div class="integration-cat">Synkronisering & notiser</div>
+        </div>
       </div>
-
-      <div class="pricing-card">
-        <h3>Enterprise</h3>
-        <div class="price">Custom</div>
-        <div class="price-desc">Unlimited team members</div>
-        <ul class="pricing-features">
-          <li>Everything in Growth</li>
-          <li>SSO / SAML</li>
-          <li>Dedicated success manager</li>
-          <li>Custom integrations</li>
-          <li>SLA guarantees</li>
-          <li>On-premise option</li>
-        </ul>
-        <a href="mailto:hello@pixdrift.com?subject=Enterprise inquiry" class="btn btn-outline" style="width:100%; justify-content:center;">Kontakta sales</a>
+      <div class="integration-item reveal" style="transition-delay:120ms">
+        <div class="integration-icon">📧</div>
+        <div>
+          <div class="integration-name">Google Workspace</div>
+          <div class="integration-cat">Gmail, Calendar, Drive</div>
+        </div>
+      </div>
+      <div class="integration-item reveal" style="transition-delay:180ms">
+        <div class="integration-icon">🇸🇪</div>
+        <div>
+          <div class="integration-name">Fortnox</div>
+          <div class="integration-cat">Bokföring & SIE4</div>
+        </div>
+      </div>
+      <div class="integration-item reveal" style="transition-delay:60ms">
+        <div class="integration-icon">📒</div>
+        <div>
+          <div class="integration-name">Visma</div>
+          <div class="integration-cat">ERP & ekonomi</div>
+        </div>
+      </div>
+      <div class="integration-item reveal" style="transition-delay:120ms">
+        <div class="integration-icon">☁️</div>
+        <div>
+          <div class="integration-name">Salesforce</div>
+          <div class="integration-cat">CRM-migrering</div>
+        </div>
+      </div>
+      <div class="integration-item reveal" style="transition-delay:180ms">
+        <div class="integration-icon">🎯</div>
+        <div>
+          <div class="integration-name">HubSpot</div>
+          <div class="integration-cat">Marknads-synkronisering</div>
+        </div>
+      </div>
+      <div class="integration-item reveal" style="transition-delay:240ms">
+        <div class="integration-icon">⚡</div>
+        <div>
+          <div class="integration-name">Zapier</div>
+          <div class="integration-cat">1000+ appar via API</div>
+        </div>
       </div>
     </div>
-  </section>
 
-  <!-- FINAL CTA -->
-  <section class="cta-section">
-    <span class="section-label">Limited early access</span>
-    <h2>Ready to run your business<br />from one place?</h2>
-    <p>Join 200+ teams on the waitlist. Early access customers get 3 months free.</p>
-    <form class="cta-form" action="mailto:hello@pixdrift.com" method="get" enctype="text/plain" onsubmit="this.action='mailto:hello@pixdrift.com?subject=Early Access Request&body=Email: '+this.email.value; return true;">
-      <input type="email" name="email" placeholder="Enter your work email" required />
-      <button type="submit" class="btn btn-primary">⚡ Get early access</button>
-    </form>
-    <p class="cta-note">No credit card required. Setup in under 1 day. Cancel anytime.</p>
-  </section>
+    <p style="text-align:center;margin-top:2rem;font-size:0.85rem;color:var(--pd-muted)">
+      Saknar ni en integration? <a href="#contact" style="color:var(--pd-indigo-light)">Hör av er →</a>
+    </p>
+  </div>
+</section>
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="logo">pix<span style="color:var(--accent)">drift</span></div>
-    <nav>
-      <div class="nav-links">
-        <a href="#features">Features</a>
-        <a href="#pricing">Pricing</a>
-        <a href="mailto:hello@pixdrift.com">Contact</a>
-        <a href="/privacy.html">Privacy</a>
+<!-- ═══════════════════════════════════════════════════════
+     PRICING
+═══════════════════════════════════════════════════════ -->
+<section class="section" id="pricing">
+  <div class="container">
+    <div class="center">
+      <div class="section-label">Prissättning</div>
+      <h2 class="section-title">Transparent prissättning. Inga överraskningar.</h2>
+      <p class="section-sub center">Alla planer inkluderar alla moduler. Ni betalar för användare, inte för features.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <!-- Starter -->
+      <div class="pricing-card reveal">
+        <div class="pricing-tier">Starter</div>
+        <div class="pricing-price">€499<span>/mo</span></div>
+        <div class="pricing-desc">För team 5–25 användare. Full åtkomst till alla moduler. Kom igång på 4 timmar.</div>
+        <a href="#contact" class="btn btn-outline pricing-cta">Starta gratis i 14 dagar</a>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span>Upp till 25 användare</li>
+          <li><span class="check">✓</span>Execution (CRM + pipeline + uppgifter)</li>
+          <li><span class="check">✓</span>Capability (kompetens + mål)</li>
+          <li><span class="check">✓</span>Process (compliance + checklistor)</li>
+          <li><span class="check">✓</span>Currency (EUR, SEK, GBP, USD)</li>
+          <li><span class="check">✓</span>Reports (inkl. SIE4-export)</li>
+          <li><span class="check">✓</span>5 GB datalagring</li>
+          <li><span class="check">✓</span>E-post + Slack-integration</li>
+          <li><span class="check">✓</span>Email-support inom 24h</li>
+          <div class="pricing-divider"></div>
+          <li><span class="dash">—</span>Dedikerad Customer Success</li>
+          <li><span class="dash">—</span>SSO / SAML</li>
+          <li><span class="dash">—</span>Custom onboarding</li>
+        </ul>
       </div>
-    </nav>
-    <span class="copyright">© 2026 pixdrift. All rights reserved.</span>
-  </footer>
+
+      <!-- Growth -->
+      <div class="pricing-card highlighted reveal" style="transition-delay:80ms">
+        <div class="pricing-badge">Mest vald</div>
+        <div class="pricing-tier">Growth</div>
+        <div class="pricing-price">€999<span>/mo</span></div>
+        <div class="pricing-desc">För team 26–100 användare. Avancerade rapporter, API-åtkomst och prioriterad support.</div>
+        <a href="#contact" class="btn btn-primary pricing-cta">Starta gratis i 14 dagar</a>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span>Upp till 100 användare</li>
+          <li><span class="check">✓</span>Alla Starter-funktioner</li>
+          <li><span class="check">✓</span>API-åtkomst (full REST + webhooks)</li>
+          <li><span class="check">✓</span>Avancerade rapporter + anpassade vyer</li>
+          <li><span class="check">✓</span>50 GB datalagring</li>
+          <li><span class="check">✓</span>Google Workspace + Teams-integration</li>
+          <li><span class="check">✓</span>Fortnox + Visma-integration</li>
+          <li><span class="check">✓</span>Dedikerad Customer Success-ansvarig</li>
+          <li><span class="check">✓</span>Prioriterad support (4h SLA)</li>
+          <li><span class="check">✓</span>Anpassat onboarding-program</li>
+          <div class="pricing-divider"></div>
+          <li><span class="dash">—</span>SSO / SAML</li>
+          <li><span class="dash">—</span>Enterprise SLA (99.9%)</li>
+        </ul>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="pricing-card reveal" style="transition-delay:160ms">
+        <div class="pricing-tier">Enterprise</div>
+        <div class="pricing-price" style="font-size:2rem">Kontakta oss</div>
+        <div class="pricing-desc">För team 100+ användare. Anpassad setup, SLA och driftsättning i er miljö.</div>
+        <a href="#contact" class="btn btn-outline pricing-cta">Prata med oss</a>
+        <ul class="pricing-features">
+          <li><span class="check">✓</span>Obegränsat antal användare</li>
+          <li><span class="check">✓</span>Alla Growth-funktioner</li>
+          <li><span class="check">✓</span>SSO / SAML (Okta, Azure AD)</li>
+          <li><span class="check">✓</span>99.9% uptime SLA</li>
+          <li><span class="check">✓</span>Anpassad datalagring (EU-region)</li>
+          <li><span class="check">✓</span>On-premises / privat cloud (på förfrågan)</li>
+          <li><span class="check">✓</span>DPA och avtalsanpassning</li>
+          <li><span class="check">✓</span>Dedikerad teknisk kontakt</li>
+          <li><span class="check">✓</span>Enterprise-support 24/7</li>
+          <li><span class="check">✓</span>Custom integrations och API-extensions</li>
+          <li><span class="check">✓</span>Säkerhetsgenomgång och pentesting</li>
+          <li><span class="check">✓</span>Utbildning och certifiering för team</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="pricing-faq">
+      <h3>Vanliga frågor om prissättning</h3>
+      <div class="faq-item">
+        <div class="faq-q">Vad ingår i de 14 dagarna gratis?</div>
+        <div class="faq-a">Full åtkomst till alla moduler i din valda plan. Inga kreditkortsuppgifter krävs. Om ni vill fortsätta efter testperioden aktiverar ni ett abonnemang — annars raderas era data automatiskt efter 30 dagar.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Kan vi uppgradera mitt under ett abonnemang?</div>
+        <div class="faq-a">Ja. Uppgradering sker omedelbart med proraterat pris för resterande period. Nedgradering träder i kraft vid nästa faktureringsdatum.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Är priserna inklusive moms?</div>
+        <div class="faq-a">Nej. Alla priser är exklusive moms. Fakturering sker i EUR som standard. Vi kan fakturera i SEK, GBP eller USD på begäran för Enterprise-kunder.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Hur fungerar migrering från befintliga system?</div>
+        <div class="faq-a">Growth- och Enterprise-kunder får ett dedikerat onboarding-team. Vi har färdiga migreringsverktyg för Salesforce, HubSpot och Pipedrive. För anpassad migrering — kontakta oss.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SECURITY
+═══════════════════════════════════════════════════════ -->
+<section class="section" id="security">
+  <div class="container">
+    <div class="center">
+      <div class="section-label">Säkerhet &amp; Compliance</div>
+      <h2 class="section-title">Enterprise-klar från dag ett</h2>
+      <p class="section-sub center">Säkerhet är inte ett tillägg — det är grunden pixdrift är byggd på.</p>
+    </div>
+
+    <div class="security-grid" style="margin-top:3rem">
+      <div class="security-item reveal">
+        <div class="security-icon">🔒</div>
+        <div>
+          <h4>GDPR-compliant</h4>
+          <p>EU-servrar, DPA tillgängligt, registerföring av behandlingsaktiviteter och stöd för Subject Access Requests inbyggt.</p>
+        </div>
+      </div>
+      <div class="security-item reveal" style="transition-delay:60ms">
+        <div class="security-icon">🔐</div>
+        <div>
+          <h4>Kryptering i vila och transit</h4>
+          <p>AES-256 kryptering för all lagrad data. TLS 1.3 för all datatransport. Nycklar roteras kvartalsvis.</p>
+        </div>
+      </div>
+      <div class="security-item reveal" style="transition-delay:120ms">
+        <div class="security-icon">🛡</div>
+        <div>
+          <h4>Åtkomstkontroll (RBAC)</h4>
+          <p>Granulär rollbaserad åtkomstkontroll per modul och datanivå. SSO via SAML 2.0 på roadmap (Q3 2026).</p>
+        </div>
+      </div>
+      <div class="security-item reveal" style="transition-delay:60ms">
+        <div class="security-icon">📋</div>
+        <div>
+          <h4>Revisionslogg</h4>
+          <p>Fullständigt revisionsspår för alla användaraktiviteter. Exporterbart för compliance-ändamål och revision.</p>
+        </div>
+      </div>
+      <div class="security-item reveal" style="transition-delay:120ms">
+        <div class="security-icon">🌍</div>
+        <div>
+          <h4>EU AI Act-kompatibel</h4>
+          <p>Alla AI-funktioner följer EU AI Act-kraven. Transparens om automatiserade beslut, mänsklig oversight inbyggd.</p>
+        </div>
+      </div>
+      <div class="security-item reveal" style="transition-delay:180ms">
+        <div class="security-icon">⚡</div>
+        <div>
+          <h4>99.9% SLA (roadmap)</h4>
+          <p>Aktiv SLA-status, statuspage och incident-kommunikation. SOC 2 Type II-certifiering planeras Q3 2026.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="security-badges reveal" style="margin-top:2rem">
+      <div class="security-badge-item">🇪🇺 GDPR Compliant</div>
+      <div class="security-badge-item">🔒 AES-256 Encrypted</div>
+      <div class="security-badge-item">🌐 EU Data Residency</div>
+      <div class="security-badge-item">📋 RBAC Access Control</div>
+      <div class="security-badge-item">⚡ SOC 2 (Roadmap Q3 2026)</div>
+      <div class="security-badge-item">🔏 TLS 1.3</div>
+    </div>
+
+    <p style="text-align:center;margin-top:1.5rem;font-size:0.85rem;color:var(--pd-muted)">
+      <a href="security.html" style="color:var(--pd-indigo-light)">Läs mer om pixdrifts säkerhetsarkitektur →</a>
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     CTA
+═══════════════════════════════════════════════════════ -->
+<section id="contact">
+  <div class="cta-content reveal">
+    <div class="eyebrow" style="margin-bottom:1.5rem">
+      <span class="eyebrow-dot"></span>
+      Redo att börja?
+    </div>
+    <h2>Redo att transformera era operationer?</h2>
+    <p>Boka en 30-minuters demo och se hur pixdrift kan ersätta era splittrade verktyg med ett sammanhållet system — på under en vecka.</p>
+    <div class="cta-btns">
+      <a href="#pricing" class="btn btn-outline btn-xl">Starta gratis i 14 dagar</a>
+      <a href="mailto:demo@pixdrift.com" class="btn btn-primary btn-xl">Boka demo →</a>
+    </div>
+    <p class="cta-note">Inget kreditkort krävs · Setup på 4 timmar · 14 dagars fri testperiod</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo">pixdrift</div>
+      <p>Operating Management System för moderna B2B-team. Ett system. Varje operation.</p>
+      <div class="footer-social">
+        <a href="#" aria-label="LinkedIn">in</a>
+        <a href="#" aria-label="Twitter/X">𝕏</a>
+        <a href="#" aria-label="GitHub">⌥</a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Produkt</h4>
+      <ul>
+        <li><a href="#product">Features</a></li>
+        <li><a href="#pricing">Prissättning</a></li>
+        <li><a href="#integrations">Integrationer</a></li>
+        <li><a href="#">Roadmap</a></li>
+        <li><a href="changelog.html">Changelog</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Lösningar</h4>
+      <ul>
+        <li><a href="#solutions">SaaS-bolag</a></li>
+        <li><a href="#solutions">Tjänsteföretag</a></li>
+        <li><a href="#solutions">Handel</a></li>
+        <li><a href="#solutions">Tillverkning</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Resurser</h4>
+      <ul>
+        <li><a href="#">Dokumentation</a></li>
+        <li><a href="#">API-referens</a></li>
+        <li><a href="#">Blogg</a></li>
+        <li><a href="#">Case studies</a></li>
+        <li><a href="#">Status</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Företag</h4>
+      <ul>
+        <li><a href="about.html">Om oss</a></li>
+        <li><a href="#">Karriär</a></li>
+        <li><a href="#">Press</a></li>
+        <li><a href="#">Partners</a></li>
+        <li><a href="#contact">Kontakt</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2026 pixdrift AB · Stockholm, Sverige</p>
+    <div class="footer-legal">
+      <a href="#">Integritetspolicy</a>
+      <a href="#">Villkor</a>
+      <a href="#">GDPR</a>
+      <a href="security.html">Säkerhet</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════
+     COOKIE BANNER
+═══════════════════════════════════════════════════════ -->
+<div class="cookie-banner" id="cookie-banner">
+  <p class="cookie-text">
+    Vi använder cookies för analys och för att förbättra er upplevelse.
+    <a href="#">Integritetspolicy</a>
+  </p>
+  <div class="cookie-btns">
+    <button class="btn btn-ghost btn-sm" onclick="closeCookie()">Inställningar</button>
+    <button class="btn btn-primary btn-sm" onclick="closeCookie()">Acceptera</button>
+  </div>
+</div>
+
+<!-- Video Modal Placeholder -->
+<div id="video-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;backdrop-filter:blur(4px)" onclick="this.style.display='none'">
+  <div style="background:var(--pd-surface);border:1px solid var(--pd-border);border-radius:var(--radius-xl);padding:3rem;max-width:640px;text-align:center;margin:0 1rem" onclick="event.stopPropagation()">
+    <div style="font-size:3rem;margin-bottom:1rem">▶</div>
+    <h3 style="color:var(--pd-white);margin-bottom:0.5rem">Produktdemo kommer</h3>
+    <p style="color:var(--pd-muted);margin-bottom:1.5rem">Boka en personlig demo för att se pixdrift i er kontext.</p>
+    <a href="#contact" class="btn btn-primary" onclick="document.getElementById('video-modal').style.display='none'">Boka demo</a>
+  </div>
+</div>
+
+<script>
+  // Tab switching
+  function switchTab(tabId, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + tabId).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // Cookie banner
+  function closeCookie() {
+    document.getElementById('cookie-banner').classList.add('hidden');
+    localStorage.setItem('pd-cookie', '1');
+  }
+
+  if (localStorage.getItem('pd-cookie')) {
+    document.getElementById('cookie-banner').classList.add('hidden');
+  }
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('revealed');
+        }, 0);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
 
 </body>
 </html>

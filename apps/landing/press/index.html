@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pressrum — pixdrift</title>
+  <link rel="stylesheet" href="/pixdrift-design.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--pd-ink);
+      color: var(--pd-text);
+      font-family: var(--pd-font-sans);
+      min-height: 100vh;
+    }
+
+    /* ── Nav ── */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid var(--pd-border);
+      position: sticky; top: 0;
+      background: rgba(10,10,15,0.9);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+    .nav-logo-mark {
+      width: 32px; height: 32px;
+      background: var(--pd-gradient);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.9rem; color: #fff;
+    }
+    .nav-logo-text { font-weight: 700; font-size: 1.1rem; color: var(--pd-white); }
+    .nav-badge {
+      font-size: 0.7rem; font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      border: 1px solid var(--pd-border-2);
+      border-radius: 100px;
+      color: var(--pd-muted);
+      letter-spacing: 0.08em;
+    }
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+    .nav-links a { color: var(--pd-muted); text-decoration: none; font-size: 0.875rem; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--pd-white); }
+
+    /* ── Hero ── */
+    .hero {
+      text-align: center;
+      padding: 5rem 2rem 3rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .hero-eyebrow {
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--pd-indigo-light);
+      margin-bottom: 1rem;
+    }
+    .hero h1 {
+      font-size: 3rem; font-weight: 800; line-height: 1.15;
+      color: var(--pd-white); margin-bottom: 1rem;
+    }
+    .hero p { color: var(--pd-muted); font-size: 1.1rem; line-height: 1.7; }
+
+    /* ── Layout ── */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+    .grid-main {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 3rem;
+      padding-bottom: 5rem;
+    }
+
+    /* ── Sections ── */
+    .section { margin-bottom: 3rem; }
+    .section-title {
+      font-size: 1.1rem; font-weight: 700; color: var(--pd-white);
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--pd-border);
+    }
+
+    /* ── Press Releases ── */
+    .pr-list { display: flex; flex-direction: column; gap: 0; }
+    .pr-item {
+      display: flex; gap: 1.25rem;
+      padding: 1.25rem 0;
+      border-bottom: 1px solid var(--pd-border);
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .pr-item:hover { background: var(--pd-indigo-dim); margin: 0 -1rem; padding-left: 1rem; padding-right: 1rem; border-radius: 8px; border-bottom-color: transparent; }
+    .pr-date {
+      font-size: 0.8rem; color: var(--pd-muted);
+      min-width: 80px; padding-top: 0.2rem;
+      white-space: nowrap;
+    }
+    .pr-content { flex: 1; }
+    .pr-category {
+      display: inline-block;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      margin-bottom: 0.4rem;
+    }
+    .cat-launch { background: var(--pd-indigo-dim); color: var(--pd-indigo-light); }
+    .cat-growth { background: var(--pd-emerald-dim); color: var(--pd-emerald); }
+    .cat-expansion { background: var(--pd-amber-dim); color: var(--pd-amber); }
+    .cat-partnership { background: rgba(139,92,246,0.12); color: #a78bfa; }
+    .cat-product { background: rgba(6,182,212,0.12); color: #22d3ee; }
+    .pr-title {
+      font-size: 1rem; font-weight: 600; color: var(--pd-white);
+      line-height: 1.4; margin-bottom: 0.3rem;
+    }
+    .pr-excerpt { font-size: 0.875rem; color: var(--pd-muted); line-height: 1.6; }
+    .pr-arrow { color: var(--pd-muted); align-self: center; font-size: 1.1rem; }
+
+    /* ── Stats ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    .stat-card {
+      background: var(--pd-surface);
+      border: 1px solid var(--pd-border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 2rem; font-weight: 800;
+      background: var(--pd-gradient);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      line-height: 1;
+    }
+    .stat-label { font-size: 0.8rem; color: var(--pd-muted); margin-top: 0.35rem; }
+
+    /* ── Sidebar Cards ── */
+    .sidebar-card {
+      background: var(--pd-surface);
+      border: 1px solid var(--pd-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .sidebar-card-title {
+      font-size: 0.85rem; font-weight: 700; color: var(--pd-white);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      margin-bottom: 1rem;
+    }
+    .contact-info { display: flex; flex-direction: column; gap: 0.75rem; }
+    .contact-row { display: flex; flex-direction: column; gap: 0.15rem; }
+    .contact-label { font-size: 0.75rem; color: var(--pd-muted); }
+    .contact-value { font-size: 0.9rem; color: var(--pd-white); }
+    .contact-value a { color: var(--pd-indigo-light); text-decoration: none; }
+    .contact-value a:hover { text-decoration: underline; }
+
+    .company-facts { display: flex; flex-direction: column; gap: 0.6rem; }
+    .fact-row {
+      display: flex; justify-content: space-between;
+      font-size: 0.875rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--pd-border);
+    }
+    .fact-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .fact-key { color: var(--pd-muted); }
+    .fact-val { color: var(--pd-white); font-weight: 500; }
+
+    .download-list { display: flex; flex-direction: column; gap: 0.6rem; }
+    .download-item {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: var(--pd-surface-2);
+      border: 1px solid var(--pd-border);
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.875rem; color: var(--pd-text);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .download-item:hover { border-color: var(--pd-indigo); color: var(--pd-white); }
+    .download-icon { font-size: 1.1rem; }
+    .download-meta { margin-left: auto; font-size: 0.75rem; color: var(--pd-muted); }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+    .image-thumb {
+      aspect-ratio: 16/9;
+      background: var(--pd-surface-2);
+      border: 1px solid var(--pd-border);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; color: var(--pd-subtle);
+      text-align: center; padding: 0.5rem;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .image-thumb:hover { border-color: var(--pd-indigo); }
+
+    /* ── Footer ── */
+    .footer {
+      border-top: 1px solid var(--pd-border);
+      padding: 2rem;
+      text-align: center;
+      color: var(--pd-muted);
+      font-size: 0.8rem;
+    }
+    .footer a { color: var(--pd-muted); text-decoration: none; }
+    .footer a:hover { color: var(--pd-white); }
+
+    @media (max-width: 900px) {
+      .grid-main { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="nav">
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-mark">px</div>
+    <span class="nav-logo-text">pixdrift</span>
+  </a>
+  <span class="nav-badge">PRESSRUM</span>
+  <div class="nav-links">
+    <a href="/">Hem</a>
+    <a href="/changelog.html">Changelog</a>
+    <a href="/status.html">Status</a>
+    <a href="/roadmap.html">Roadmap</a>
+    <a href="mailto:press@pixdrift.com">Kontakt</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-eyebrow">Pressrum &amp; Medieresurser</div>
+  <h1>Nyheter från pixdrift</h1>
+  <p>Senaste pressmeddelanden, mediamaterial och bolagsinfo för journalister och analytiker.</p>
+</div>
+
+<!-- Main -->
+<div class="container">
+  <div class="grid-main">
+
+    <!-- Left column -->
+    <main>
+
+      <!-- Senaste pressmeddelanden -->
+      <section class="section">
+        <div class="section-title">Senaste pressmeddelanden</div>
+        <div class="pr-list">
+
+          <a href="/press/releases/pr-005-feature.html" class="pr-item">
+            <div class="pr-date">Q3 2026</div>
+            <div class="pr-content">
+              <span class="pr-category cat-product">Produkt</span>
+              <div class="pr-title">pixdrift lanserar AI-driven processoptimering</div>
+              <div class="pr-excerpt">Maskininlärning möter operativ excellens — pixdrift tar OMS-plattformen in i nästa generation.</div>
+            </div>
+            <span class="pr-arrow">→</span>
+          </a>
+
+          <a href="/press/releases/pr-004-partnership.html" class="pr-item">
+            <div class="pr-date">Q2 2026</div>
+            <div class="pr-content">
+              <span class="pr-category cat-partnership">Partnerskap</span>
+              <div class="pr-title">pixdrift ingår partnerskap med ledande nordiska revisionsbyråer</div>
+              <div class="pr-excerpt">Strategiska partnerskap stärker pixdrifts position som standardplattform för nordiska tillväxtbolag.</div>
+            </div>
+            <span class="pr-arrow">→</span>
+          </a>
+
+          <a href="/press/releases/pr-003-expansion.html" class="pr-item">
+            <div class="pr-date">21 mar 2026</div>
+            <div class="pr-content">
+              <span class="pr-category cat-expansion">Expansion</span>
+              <div class="pr-title">pixdrift expanderar till DACH-marknaden</div>
+              <div class="pr-excerpt">Med 50+ nordiska kunder som grund tar pixdrift nästa steg mot den tysktalande marknaden.</div>
+            </div>
+            <span class="pr-arrow">→</span>
+          </a>
+
+          <a href="/press/releases/pr-002-growth.html" class="pr-item">
+            <div class="pr-date">1 mar 2026</div>
+            <div class="pr-content">
+              <span class="pr-category cat-growth">Tillväxt</span>
+              <div class="pr-title">pixdrift når 50 kunder på 60 dagar</div>
+              <div class="pr-excerpt">Snabbaste kundtillväxten bland nordiska B2B SaaS-bolag 2026 — 50 företag väljer pixdrift på rekordtid.</div>
+            </div>
+            <span class="pr-arrow">→</span>
+          </a>
+
+          <a href="/press/releases/pr-001-launch.html" class="pr-item">
+            <div class="pr-date">10 jan 2026</div>
+            <div class="pr-content">
+              <span class="pr-category cat-launch">Lansering</span>
+              <div class="pr-title">pixdrift lanserar enterprise OMS-plattform för nordiska tillväxtbolag</div>
+              <div class="pr-excerpt">Stockholmsbaserat SaaS-bolag introducerar nästa generations operativa managementsystem för Norden.</div>
+            </div>
+            <span class="pr-arrow">→</span>
+          </a>
+
+        </div>
+      </section>
+
+      <!-- Key stats -->
+      <section class="section">
+        <div class="section-title">pixdrift i siffror</div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value">50+</div>
+            <div class="stat-label">Kunder i Norden</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">60</div>
+            <div class="stat-label">Dagar från 0 till 50 kunder</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">99,97%</div>
+            <div class="stat-label">Uptime senaste 90 dagarna</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">10+</div>
+            <div class="stat-label">Anställda</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bildbank -->
+      <section class="section">
+        <div class="section-title">Godkänd bildbank</div>
+        <div class="image-grid">
+          <div class="image-thumb">Dashboard<br/>screenshot</div>
+          <div class="image-thumb">Workstation<br/>app</div>
+          <div class="image-thumb">OMS<br/>overview</div>
+          <div class="image-thumb">Mobile<br/>app</div>
+          <div class="image-thumb">Grundare<br/>Erik Svensson</div>
+          <div class="image-thumb">Kontor<br/>Stockholm</div>
+        </div>
+        <p style="font-size:0.8rem; color:var(--pd-muted); margin-top:1rem;">
+          Kontakta <a href="mailto:press@pixdrift.com" style="color:var(--pd-indigo-light);">press@pixdrift.com</a> för fullupplösta bilder och pressfoton i original.
+        </p>
+      </section>
+
+    </main>
+
+    <!-- Right sidebar -->
+    <aside>
+
+      <!-- Mediakontakt -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">Mediakontakt</div>
+        <div class="contact-info">
+          <div class="contact-row">
+            <span class="contact-label">E-post</span>
+            <span class="contact-value"><a href="mailto:press@pixdrift.com">press@pixdrift.com</a></span>
+          </div>
+          <div class="contact-row">
+            <span class="contact-label">Svarstid</span>
+            <span class="contact-value">Inom 24 timmar</span>
+          </div>
+          <div class="contact-row">
+            <span class="contact-label">Kontakt</span>
+            <span class="contact-value">Erik Svensson, Grundare</span>
+          </div>
+          <div class="contact-row">
+            <span class="contact-label">Webbplats</span>
+            <span class="contact-value"><a href="https://pixdrift.com">pixdrift.com</a></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bolagsinfo -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">Om bolaget</div>
+        <div class="company-facts">
+          <div class="fact-row">
+            <span class="fact-key">Grundat</span>
+            <span class="fact-val">2026</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact-key">Huvudkontor</span>
+            <span class="fact-val">Stockholm, Sverige</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact-key">Anställda</span>
+            <span class="fact-val">10+</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact-key">Kunder</span>
+            <span class="fact-val">50+ nordiska företag</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact-key">Produkt</span>
+            <span class="fact-val">OMS-plattform (SaaS)</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact-key">Marknad</span>
+            <span class="fact-val">Norden + DACH</span>
+          </div>
+          <div class="fact-row">
+            <span class="fact-key">Webbplats</span>
+            <span class="fact-val"><a href="https://pixdrift.com" style="color:var(--pd-indigo-light);">pixdrift.com</a></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Press kit -->
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">Nedladdningar</div>
+        <div class="download-list">
+          <a href="/press/pixdrift-press-kit.pdf" class="download-item">
+            <span class="download-icon">📄</span>
+            <span>Press Kit (PDF)</span>
+            <span class="download-meta">PDF</span>
+          </a>
+          <a href="/press/pixdrift-logo.svg" class="download-item">
+            <span class="download-icon">🎨</span>
+            <span>Logotyp (SVG)</span>
+            <span class="download-meta">SVG</span>
+          </a>
+          <a href="/press/pixdrift-logo.png" class="download-item">
+            <span class="download-icon">🖼️</span>
+            <span>Logotyp (PNG)</span>
+            <span class="download-meta">PNG</span>
+          </a>
+          <a href="/press/pixdrift-logo-dark.png" class="download-item">
+            <span class="download-icon">🖤</span>
+            <span>Logotyp mörk (PNG)</span>
+            <span class="download-meta">PNG</span>
+          </a>
+          <a href="/press/pixdrift-brand-guidelines.pdf" class="download-item">
+            <span class="download-icon">📐</span>
+            <span>Brand Guidelines</span>
+            <span class="download-meta">PDF</span>
+          </a>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <p>© 2026 pixdrift AB · Stockholm, Sverige ·
+    <a href="mailto:press@pixdrift.com">press@pixdrift.com</a> ·
+    <a href="/privacy.html">Integritetspolicy</a> ·
+    <a href="/terms.html">Villkor</a>
+  </p>
+</footer>
+
+</body>
+</html>

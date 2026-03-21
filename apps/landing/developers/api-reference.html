@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Reference — pixdrift</title>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --surface2: #1a1a2e;
+      --border: #2a2a3e;
+      --accent: #6c5ce7;
+      --accent2: #a29bfe;
+      --green: #00b894;
+      --orange: #e17055;
+      --blue: #74b9ff;
+      --text: #e8e8f0;
+      --muted: #888899;
+      --code-bg: #0d0d17;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, sans-serif; line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; }
+    a { color: var(--accent2); text-decoration: none; }
+
+    /* TOP NAV */
+    .topnav {
+      height: 56px; display: flex; align-items: center; padding: 0 24px; gap: 16px;
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    }
+    .topnav-logo { font-weight: 700; font-size: 16px; color: var(--text); }
+    .topnav-logo span { color: var(--accent2); }
+    .topnav-sep { color: var(--border); }
+    .topnav-title { color: var(--muted); font-size: 14px; }
+    .topnav-links { margin-left: auto; display: flex; gap: 20px; font-size: 13px; }
+    .topnav-links a { color: var(--muted); }
+    .topnav-links a:hover { color: var(--text); }
+
+    /* LAYOUT */
+    .layout { display: flex; margin-top: 56px; height: calc(100vh - 56px); }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 260px; flex-shrink: 0; overflow-y: auto;
+      background: var(--surface); border-right: 1px solid var(--border);
+      padding: 24px 0; position: sticky; top: 56px; height: calc(100vh - 56px);
+    }
+    .sidebar-section { margin-bottom: 8px; }
+    .sidebar-group {
+      padding: 8px 20px; font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--muted); margin-top: 16px;
+    }
+    .sidebar-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 20px; font-size: 13px; color: var(--muted); cursor: pointer;
+      transition: all 0.15s; border-left: 3px solid transparent;
+    }
+    .sidebar-item:hover { color: var(--text); background: rgba(108,92,231,0.08); border-left-color: var(--accent); }
+    .sidebar-item.active { color: var(--text); background: rgba(108,92,231,0.12); border-left-color: var(--accent2); }
+    .method-badge {
+      font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; font-family: monospace;
+    }
+    .get { background: rgba(0,184,148,0.2); color: var(--green); }
+    .post { background: rgba(108,92,231,0.2); color: var(--accent2); }
+    .patch { background: rgba(225,112,85,0.2); color: var(--orange); }
+    .delete { background: rgba(255,71,87,0.2); color: #ff4757; }
+
+    /* CONTENT */
+    .content { flex: 1; overflow-y: auto; }
+    .content-inner { max-width: 820px; margin: 0 auto; padding: 40px 48px 80px; }
+
+    /* ENDPOINT */
+    .module-header { margin-bottom: 48px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+    .module-header h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+    .module-header p { color: var(--muted); font-size: 16px; }
+
+    .endpoint { margin-bottom: 64px; scroll-margin-top: 80px; }
+    .endpoint-header {
+      display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px;
+      padding: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    }
+    .method-pill {
+      font-size: 13px; font-weight: 700; padding: 4px 10px; border-radius: 6px;
+      font-family: monospace; flex-shrink: 0; margin-top: 2px;
+    }
+    .endpoint-path { font-family: monospace; font-size: 18px; font-weight: 600; color: var(--text); }
+    .endpoint-desc { color: var(--muted); font-size: 14px; margin-top: 4px; }
+    .endpoint-divider { height: 1px; background: var(--border); margin: 24px 0; }
+
+    /* PARAMS */
+    .params-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 24px; }
+    .params-table th { text-align: left; padding: 10px 12px; background: var(--surface); color: var(--muted); font-size: 12px; font-weight: 600; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+    .params-table td { padding: 12px; border-bottom: 1px solid rgba(42,42,62,0.5); vertical-align: top; }
+    .params-table td:first-child { font-family: monospace; color: var(--accent2); }
+    .params-table td:last-child { color: var(--muted); font-size: 13px; }
+    .required-badge { font-size: 10px; background: rgba(255,71,87,0.15); color: #ff6b6b; padding: 2px 6px; border-radius: 4px; margin-left: 6px; }
+
+    /* CODE TABS */
+    .code-block { background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
+    .code-tabs { display: flex; border-bottom: 1px solid var(--border); }
+    .code-tab {
+      padding: 10px 16px; font-size: 13px; cursor: pointer; color: var(--muted);
+      border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s;
+    }
+    .code-tab.active { color: var(--text); border-bottom-color: var(--accent2); }
+    .code-tab:hover { color: var(--text); }
+    .code-pane { display: none; }
+    .code-pane.active { display: block; }
+    .code-block pre {
+      padding: 20px; overflow-x: auto; font-size: 13px; line-height: 1.8;
+      font-family: 'Fira Code', 'Cascadia Code', monospace;
+    }
+    .k { color: #fd79a8; }
+    .s { color: #55efc4; }
+    .n { color: var(--accent2); }
+    .c { color: #636e72; font-style: italic; }
+    .num { color: #fab1a0; }
+    .kw { color: #74b9ff; }
+
+    /* TRY IT */
+    .try-it {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+      padding: 24px; margin-top: 20px;
+    }
+    .try-it h4 { font-size: 14px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .try-it h4::before { content: '▶'; color: var(--green); font-size: 12px; }
+    .try-form { display: flex; flex-direction: column; gap: 12px; }
+    .try-form label { font-size: 13px; color: var(--muted); }
+    .try-form input, .try-form textarea, .try-form select {
+      width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+      padding: 10px 14px; color: var(--text); font-size: 14px; font-family: monospace;
+    }
+    .try-form input:focus, .try-form textarea:focus { outline: none; border-color: var(--accent); }
+    .try-btn {
+      background: var(--accent); color: #fff; border: none; border-radius: 6px;
+      padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s;
+      width: fit-content;
+    }
+    .try-btn:hover { background: #7d6ff0; }
+    .try-response {
+      margin-top: 16px; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 6px; padding: 16px; font-family: monospace; font-size: 13px;
+      min-height: 80px; white-space: pre-wrap; color: var(--green); display: none;
+    }
+
+    /* RESPONSE EXAMPLE */
+    .response-label { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 8px; }
+    .response-200 { border-left: 3px solid var(--green); }
+    .response-400 { border-left: 3px solid var(--orange); }
+
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .content-inner { padding: 24px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="topnav-logo">pix<span>drift</span></div>
+  <span class="topnav-sep">/</span>
+  <span class="topnav-title">API Reference</span>
+  <div class="topnav-links">
+    <a href="index.html">Home</a>
+    <a href="authentication.html">Auth</a>
+    <a href="webhooks.html">Webhooks</a>
+    <a href="guides/quickstart.html">Guides</a>
+  </div>
+</div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-group">Overview</div>
+      <div class="sidebar-item active" onclick="scrollTo('overview')">Introduction</div>
+      <div class="sidebar-item" onclick="scrollTo('auth')">Authentication</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-group">Execution</div>
+      <div class="sidebar-item" onclick="scrollTo('contacts')"><span class="method-badge get">GET</span> Contacts</div>
+      <div class="sidebar-item" onclick="scrollTo('companies')"><span class="method-badge get">GET</span> Companies</div>
+      <div class="sidebar-item" onclick="scrollTo('leads')"><span class="method-badge get">GET</span> Leads</div>
+      <div class="sidebar-item" onclick="scrollTo('deals')"><span class="method-badge get">GET</span> Deals</div>
+      <div class="sidebar-item" onclick="scrollTo('tasks')"><span class="method-badge get">GET</span> Tasks</div>
+      <div class="sidebar-item" onclick="scrollTo('meetings')"><span class="method-badge post">POST</span> Meetings</div>
+      <div class="sidebar-item" onclick="scrollTo('ledger')"><span class="method-badge post">POST</span> Ledger</div>
+      <div class="sidebar-item" onclick="scrollTo('payouts')"><span class="method-badge get">GET</span> Payouts</div>
+      <div class="sidebar-item" onclick="scrollTo('decisions')"><span class="method-badge get">GET</span> Decisions</div>
+      <div class="sidebar-item" onclick="scrollTo('channels')"><span class="method-badge get">GET</span> Channels</div>
+      <div class="sidebar-item" onclick="scrollTo('dashboards')"><span class="method-badge get">GET</span> Dashboards</div>
+      <div class="sidebar-item" onclick="scrollTo('audit')"><span class="method-badge get">GET</span> Audit Log</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-group">Capability</div>
+      <div class="sidebar-item" onclick="scrollTo('cap-profile')"><span class="method-badge get">GET</span> Profile</div>
+      <div class="sidebar-item" onclick="scrollTo('cap-team')"><span class="method-badge get">GET</span> Team Heatmap</div>
+      <div class="sidebar-item" onclick="scrollTo('cap-assess')"><span class="method-badge post">POST</span> Assess</div>
+      <div class="sidebar-item" onclick="scrollTo('feedback')"><span class="method-badge post">POST</span> Feedback</div>
+      <div class="sidebar-item" onclick="scrollTo('dev-plan')"><span class="method-badge get">GET</span> Dev Plan</div>
+      <div class="sidebar-item" onclick="scrollTo('goals')"><span class="method-badge get">GET</span> Goals</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-group">Process</div>
+      <div class="sidebar-item" onclick="scrollTo('processes')"><span class="method-badge get">GET</span> Processes</div>
+      <div class="sidebar-item" onclick="scrollTo('nc')"><span class="method-badge get">GET</span> Non-Conformance</div>
+      <div class="sidebar-item" onclick="scrollTo('improvements')"><span class="method-badge get">GET</span> Improvements</div>
+      <div class="sidebar-item" onclick="scrollTo('compliance')"><span class="method-badge get">GET</span> Compliance</div>
+      <div class="sidebar-item" onclick="scrollTo('documents')"><span class="method-badge get">GET</span> Documents</div>
+      <div class="sidebar-item" onclick="scrollTo('audits')"><span class="method-badge get">GET</span> Audits</div>
+      <div class="sidebar-item" onclick="scrollTo('risks')"><span class="method-badge get">GET</span> Risks</div>
+      <div class="sidebar-item" onclick="scrollTo('training')"><span class="method-badge get">GET</span> Training</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-group">Currency</div>
+      <div class="sidebar-item" onclick="scrollTo('currencies')"><span class="method-badge get">GET</span> Currencies</div>
+      <div class="sidebar-item" onclick="scrollTo('exchange-rates')"><span class="method-badge get">GET</span> Exchange Rates</div>
+      <div class="sidebar-item" onclick="scrollTo('convert')"><span class="method-badge get">GET</span> Convert</div>
+      <div class="sidebar-item" onclick="scrollTo('fx')"><span class="method-badge get">GET</span> FX Exposure</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-group">Reports</div>
+      <div class="sidebar-item" onclick="scrollTo('sie4')"><span class="method-badge get">GET</span> SIE4 Export</div>
+      <div class="sidebar-item" onclick="scrollTo('income-statement')"><span class="method-badge get">GET</span> Income Statement</div>
+      <div class="sidebar-item" onclick="scrollTo('balance-sheet')"><span class="method-badge get">GET</span> Balance Sheet</div>
+      <div class="sidebar-item" onclick="scrollTo('vat')"><span class="method-badge get">GET</span> VAT Report</div>
+      <div class="sidebar-item" onclick="scrollTo('cashflow')"><span class="method-badge get">GET</span> Cashflow</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-group">Stripe</div>
+      <div class="sidebar-item" onclick="scrollTo('plans')"><span class="method-badge get">GET</span> Plans</div>
+      <div class="sidebar-item" onclick="scrollTo('checkout')"><span class="method-badge post">POST</span> Checkout</div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="content">
+    <div class="content-inner">
+
+      <!-- OVERVIEW -->
+      <div id="overview" class="module-header">
+        <h1>pixdrift API Reference</h1>
+        <p>Complete reference for all API endpoints. Base URL: <code>https://api.bc.pixdrift.com</code></p>
+        <br>
+        <p style="color:var(--muted)">All endpoints require <code>Authorization: Bearer &lt;token&gt;</code>. See <a href="authentication.html">Authentication</a> for details.</p>
+      </div>
+
+      <!-- ─── CONTACTS ─────────────────────────────────────────────── -->
+      <div id="contacts" class="endpoint">
+        <div class="endpoint-header">
+          <span class="method-pill get">GET</span>
+          <div>
+            <div class="endpoint-path">/api/contacts</div>
+            <div class="endpoint-desc">List all contacts for the authenticated organization, ordered by creation date.</div>
+          </div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-tabs">
+            <div class="code-tab active" onclick="switchTab(this, 'contacts-curl')">curl</div>
+            <div class="code-tab" onclick="switchTab(this, 'contacts-node')">Node.js</div>
+            <div class="code-tab" onclick="switchTab(this, 'contacts-python')">Python</div>
+          </div>
+          <div id="contacts-curl" class="code-pane active"><pre><span class="k">curl</span> -X GET https://api.bc.pixdrift.com/api/contacts \
+  <span class="k">-H</span> <span class="s">"Authorization: Bearer YOUR_API_KEY"</span> \
+  <span class="k">-H</span> <span class="s">"Content-Type: application/json"</span></pre></div>
+          <div id="contacts-node" class="code-pane"><pre><span class="kw">const</span> response = <span class="kw">await</span> fetch(<span class="s">'https://api.bc.pixdrift.com/api/contacts'</span>, {
+  headers: { <span class="s">'Authorization'</span>: <span class="s">'Bearer YOUR_API_KEY'</span> }
+});
+<span class="kw">const</span> contacts = <span class="kw">await</span> response.json();</pre></div>
+          <div id="contacts-python" class="code-pane"><pre><span class="kw">import</span> requests
+response = requests.get(
+  <span class="s">'https://api.bc.pixdrift.com/api/contacts'</span>,
+  headers={<span class="s">'Authorization'</span>: <span class="s">'Bearer YOUR_API_KEY'</span>}
+)
+contacts = response.json()</pre></div>
+        </div>
+
+        <div class="response-label">Response 200</div>
+        <div class="code-block response-200"><pre>[
+  {
+    <span class="n">"id"</span>: <span class="s">"uuid"</span>,
+    <span class="n">"org_id"</span>: <span class="s">"uuid"</span>,
+    <span class="n">"first_name"</span>: <span class="s">"Anna"</span>,
+    <span class="n">"last_name"</span>: <span class="s">"Svensson"</span>,
+    <span class="n">"email"</span>: <span class="s">"anna@example.com"</span>,
+    <span class="n">"phone"</span>: <span class="s">"+46701234567"</span>,
+    <span class="n">"company_id"</span>: <span class="s">"uuid"</span>,
+    <span class="n">"title"</span>: <span class="s">"CTO"</span>,
+    <span class="n">"created_at"</span>: <span class="s">"2026-03-21T10:00:00Z"</span>
+  }
+]</pre></div>
+
+        <div class="try-it">
+          <h4>Try it</h4>
+          <div class="try-form">
+            <label>API Key</label>
+            <input type="text" id="api-key-contacts" placeholder="pd_live_..." />
+            <button class="try-btn" onclick="tryRequest('contacts', 'GET', '/api/contacts')">Send Request</button>
+          </div>
+          <div class="try-response" id="res-contacts"></div>
+        </div>
+      </div>
+
+      <!-- POST CONTACTS -->
+      <div id="post-contacts" class="endpoint">
+        <div class="endpoint-header">
+          <span class="method-pill post">POST</span>
+          <div>
+            <div class="endpoint-path">/api/contacts</div>
+            <div class="endpoint-desc">Create a new contact in your organization.</div>
+          </div>
+        </div>
+        <h4 style="margin-bottom:12px; font-size:14px; color:var(--muted)">Request Body</h4>
+        <table class="params-table">
+          <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>first_name <span class="required-badge">required</span></td><td>string</td><td>Contact's first name</td></tr>
+            <tr><td>last_name <span class="required-badge">required</span></td><td>string</td><td>Contact's last name</td></tr>
+            <tr><td>email</td><td>string</td><td>Email address</td></tr>
+            <tr><td>phone</td><td>string</td><td>Phone number</td></tr>
+            <tr><td>company_id</td><td>uuid</td><td>Associated company</td></tr>
+            <tr><td>title</td><td>string</td><td>Job title</td></tr>
+          </tbody>
+        </table>
+        <div class="code-block">
+          <div class="code-tabs">
+            <div class="code-tab active" onclick="switchTab(this, 'post-contacts-curl')">curl</div>
+            <div class="code-tab" onclick="switchTab(this, 'post-contacts-node')">Node.js</div>
+            <div class="code-tab" onclick="switchTab(this, 'post-contacts-python')">Python</div>
+          </div>
+          <div id="post-contacts-curl" class="code-pane active"><pre><span class="k">curl</span> -X POST https://api.bc.pixdrift.com/api/contacts \
+  <span class="k">-H</span> <span class="s">"Authorization: Bearer YOUR_API_KEY"</span> \
+  <span class="k">-H</span> <span class="s">"Content-Type: application/json"</span> \
+  <span class="k">-d</span> <span class="s">'{"first_name":"Anna","last_name":"Svensson","email":"anna@example.com"}'</span></pre></div>
+          <div id="post-contacts-node" class="code-pane"><pre><span class="kw">const</span> response = <span class="kw">await</span> fetch(<span class="s">'https://api.bc.pixdrift.com/api/contacts'</span>, {
+  method: <span class="s">'POST'</span>,
+  headers: {
+    <span class="s">'Authorization'</span>: <span class="s">'Bearer YOUR_API_KEY'</span>,
+    <span class="s">'Content-Type'</span>: <span class="s">'application/json'</span>
+  },
+  body: JSON.stringify({
+    first_name: <span class="s">'Anna'</span>,
+    last_name: <span class="s">'Svensson'</span>,
+    email: <span class="s">'anna@example.com'</span>
+  })
+});</pre></div>
+          <div id="post-contacts-python" class="code-pane"><pre>response = requests.post(
+  <span class="s">'https://api.bc.pixdrift.com/api/contacts'</span>,
+  headers={<span class="s">'Authorization'</span>: <span class="s">'Bearer YOUR_API_KEY'</span>},
+  json={<span class="s">'first_name'</span>: <span class="s">'Anna'</span>, <span class="s">'last_name'</span>: <span class="s">'Svensson'</span>}
+)</pre></div>
+        </div>
+      </div>
+
+      <!-- ─── DEALS ──────────────────────────────────────────────────── -->
+      <div id="deals" class="endpoint">
+        <div class="endpoint-header">
+          <span class="method-pill get">GET</span>
+          <div>
+            <div class="endpoint-path">/api/deals</div>
+            <div class="endpoint-desc">List all deals in the pipeline, ordered by creation date.</div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <div class="code-tab active" onclick="switchTab(this, 'deals-curl')">curl</div>
+            <div class="code-tab" onclick="switchTab(this, 'deals-node')">Node.js</div>
+            <div class="code-tab" onclick="switchTab(this, 'deals-python')">Python</div>
+          </div>
+          <div id="deals-curl" class="code-pane active"><pre><span class="k">curl</span> https://api.bc.pixdrift.com/api/deals \
+  <span class="k">-H</span> <span class="s">"Authorization: Bearer YOUR_API_KEY"</span></pre></div>
+          <div id="deals-node" class="code-pane"><pre><span class="kw">const</span> deals = <span class="kw">await</span> fetch(<span class="s">'https://api.bc.pixdrift.com/api/deals'</span>, {
+  headers: { <span class="s">'Authorization'</span>: <span class="s">'Bearer YOUR_API_KEY'</span> }
+}).then(r => r.json());</pre></div>
+          <div id="deals-python" class="code-pane"><pre>deals = requests.get(
+  <span class="s">'https://api.bc.pixdrift.com/api/deals'</span>,
+  headers={<span class="s">'Authorization'</span>: <span class="s">'Bearer YOUR_API_KEY'</span>}
+).json()</pre></div>
+        </div>
+
+        <div class="endpoint-header" style="margin-top:24px">
+          <span class="method-pill patch">PATCH</span>
+          <div>
+            <div class="endpoint-path">/api/deals/{id}/status</div>
+            <div class="endpoint-desc">Update deal pipeline stage. Valid values: prospecting, qualification, proposal, negotiation, closed_won, closed_lost</div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <div class="code-tab active" onclick="switchTab(this, 'deal-status-curl')">curl</div>
+            <div class="code-tab" onclick="switchTab(this, 'deal-status-node')">Node.js</div>
+            <div class="code-tab" onclick="switchTab(this, 'deal-status-python')">Python</div>
+          </div>
+          <div id="deal-status-curl" class="code-pane active"><pre><span class="k">curl</span> -X PATCH https://api.bc.pixdrift.com/api/deals/DEAL_ID/status \
+  <span class="k">-H</span> <span class="s">"Authorization: Bearer YOUR_API_KEY"</span> \
+  <span class="k">-H</span> <span class="s">"Content-Type: application/json"</span> \
+  <span class="k">-d</span> <span class="s">'{"status":"closed_won"}'</span></pre></div>
+          <div id="deal-status-node" class="code-pane"><pre><span class="kw">await</span> fetch(<span class="s">`https://api.bc.pixdrift.com/api/deals/${dealId}/status`</span>, {
+  method: <span class="s">'PATCH'</span>,
+  headers: {
+    <span class="s">'Authorization'</span>: <span class="s">'Bearer YOUR_API_KEY'</span>,
+    <span class="s">'Content-Type'</span>: <span class="s">'application/json'</span>
+  },
+  body: JSON.stringify({ status: <span class="s">'closed_won'</span> })
+});</pre></div>
+          <div id="deal-status-python" class="code-pane"><pre>requests.patch(
+  <span class="s">f'https://api.bc.pixdrift.com/api/deals/{deal_id}/status'</span>,
+  headers={<span class="s">'Authorization'</span>: <span class="s">'Bearer YOUR_API_KEY'</span>},
+  json={<span class="s">'status'</span>: <span class="s">'closed_won'</span>}
+)</pre></div>
+        </div>
+      </div>
+
+      <!-- ─── TASKS ──────────────────────────────────────────────────── -->
+      <div id="tasks" class="endpoint">
+        <div class="endpoint-header">
+          <span class="method-pill get">GET</span>
+          <div>
+            <div class="endpoint-path">/api/tasks</div>
+            <div class="endpoint-desc">List all tasks for the organization.</div>
+          </div>
+        </div>
+        <div class="endpoint-header">
+          <span class="method-pill get">GET</span>
+          <div>
+            <div class="endpoint-path">/api/tasks/my</div>
+            <div class="endpoint-desc">List tasks assigned to the authenticated user, ordered by due date.</div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <div class="code-tab active" onclick="switchTab(this, 'tasks-curl')">curl</div>
+            <div class="code-tab" onclick="switchTab(this, 'tasks-node')">Node.js</div>
+            <div class="code-tab" onclick="switchTab(this, 'tasks-python')">Python</div>
+          </div>
+          <div id="tasks-curl" class="code-pane active"><pre><span class="k">curl</span> https://api.bc.pixdrift.com/api/tasks/my \
+  <span class="k">-H</span> <span class="s">"Authorization: Bearer YOUR_API_KEY"</span></pre></div>
+          <div id="tasks-node" class="code-pane"><pre><span class="kw">const</span> myTasks = <span class="kw">await</span> fetch(<span class="s">'https://api.bc.pixdrift.com/api/tasks/my'</span>, {
+  headers: { <span class="s">'Authorization'</span>: <span class="s">'Bearer YOUR_API_KEY'</span> }
+}).then(r => r.json());</pre></div>
+          <div id="tasks-python" class="code-pane"><pre>my_tasks = requests.get(
+  <span class="s">'https://api.bc.pixdrift.com/api/tasks/my'</span>,
+  headers={<span class="s">'Authorization'</span>: <span class="s">'Bearer YOUR_API_KEY'</span>}
+).json()</pre></div>
+        </div>
+      </div>
+
+      <!-- ─── LEDGER ────────────────────────────────────────────────── -->
+      <div id="ledger" class="endpoint">
+        <div class="endpoint-header">
+          <span class="method-pill post">POST</span>
+          <div>
+            <div class="endpoint-path">/api/ledger/entries</div>
+            <div class="endpoint-desc">Create a double-entry ledger transaction. Debits and credits must balance (±0.001 tolerance).</div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <div class="code-tab active" onclick="switchTab(this, 'ledger-curl')">curl</div>
+            <div class="code-tab" onclick="switchTab(this, 'ledger-node')">Node.js</div>
+            <div class="code-tab" onclick="switchTab(this, 'ledger-python')">Python</div>
+          </div>
+          <div id="ledger-curl" class="code-pane active"><pre><span class="k">curl</span> -X POST https://api.bc.pixdrift.com/api/ledger/entries \
+  <span class="k">-H</span> <span class="s">"Authorization: Bearer YOUR_API_KEY"</span> \
+  <span class="k">-H</span> <span class="s">"Content-Type: application/json"</span> \
+  <span class="k">-d</span> <span class="s">'{
+    "description": "Invoice payment",
+    "reference": "INV-2026-001",
+    "lines": [
+      {"account_id": "1510", "debit": 12500, "credit": 0},
+      {"account_id": "3000", "debit": 0, "credit": 12500}
+    ]
+  }'</span></pre></div>
+          <div id="ledger-node" class="code-pane"><pre><span class="kw">await</span> fetch(<span class="s">'https://api.bc.pixdrift.com/api/ledger/entries'</span>, {
+  method: <span class="s">'POST'</span>,
+  headers: {
+    <span class="s">'Authorization'</span>: <span class="s">'Bearer YOUR_API_KEY'</span>,
+    <span class="s">'Content-Type'</span>: <span class="s">'application/json'</span>
+  },
+  body: JSON.stringify({
+    description: <span class="s">'Invoice payment'</span>,
+    reference: <span class="s">'INV-2026-001'</span>,
+    lines: [
+      { account_id: <span class="s">'1510'</span>, debit: <span class="num">12500</span>, credit: <span class="num">0</span> },
+      { account_id: <span class="s">'3000'</span>, debit: <span class="num">0</span>, credit: <span class="num">12500</span> }
+    ]
+  })
+});</pre></div>
+          <div id="ledger-python" class="code-pane"><pre>requests.post(
+  <span class="s">'https://api.bc.pixdrift.com/api/ledger/entries'</span>,
+  headers={<span class="s">'Authorization'</span>: <span class="s">'Bearer YOUR_API_KEY'</span>},
+  json={
+    <span class="s">'description'</span>: <span class="s">'Invoice payment'</span>,
+    <span class="s">'lines'</span>: [
+      {<span class="s">'account_id'</span>: <span class="s">'1510'</span>, <span class="s">'debit'</span>: <span class="num">12500</span>, <span class="s">'credit'</span>: <span class="num">0</span>},
+      {<span class="s">'account_id'</span>: <span class="s">'3000'</span>, <span class="s">'debit'</span>: <span class="num">0</span>, <span class="s">'credit'</span>: <span class="num">12500</span>}
+    ]
+  }
+)</pre></div>
+        </div>
+      </div>
+
+      <!-- ─── DASHBOARDS ──────────────────────────────────────────── -->
+      <div id="dashboards" class="endpoint">
+        <div class="endpoint-header">
+          <span class="method-pill get">GET</span>
+          <div>
+            <div class="endpoint-path">/api/dashboards/admin</div>
+            <div class="endpoint-desc">Admin dashboard with total users, deals, revenue, active processes, and open NCs.</div>
+          </div>
+        </div>
+        <div class="endpoint-header">
+          <span class="method-pill get">GET</span>
+          <div>
+            <div class="endpoint-path">/api/dashboards/sales</div>
+            <div class="endpoint-desc">Sales pipeline value, deals by stage, conversion rate, top deals.</div>
+          </div>
+        </div>
+        <div class="endpoint-header">
+          <span class="method-pill get">GET</span>
+          <div>
+            <div class="endpoint-path">/api/dashboards/finance</div>
+            <div class="endpoint-desc">Month-to-date revenue, expenses, cashflow, outstanding payouts.</div>
+          </div>
+        </div>
+        <div class="try-it">
+          <h4>Try it — Admin Dashboard</h4>
+          <div class="try-form">
+            <label>API Key</label>
+            <input type="text" id="api-key-dash" placeholder="pd_live_..." />
+            <button class="try-btn" onclick="tryRequest('dash', 'GET', '/api/dashboards/admin')">Send Request</button>
+          </div>
+          <div class="try-response" id="res-dash"></div>
+        </div>
+      </div>
+
+      <!-- ─── CAPABILITY ─────────────────────────────────────────── -->
+      <div id="cap-profile" class="endpoint">
+        <div class="endpoint-header">
+          <span class="method-pill get">GET</span>
+          <div>
+            <div class="endpoint-path">/api/capabilities/profile/{userId}</div>
+            <div class="endpoint-desc">Get a user's full capability profile with L1–L5 assessments and gap analysis.</div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <div class="code-tab active" onclick="switchTab(this, 'cap-curl')">curl</div>
+            <div class="code-tab" onclick="switchTab(this, 'cap-node')">Node.js</div>
+            <div class="code-tab" onclick="switchTab(this, 'cap-python')">Python</div>
+          </div>
+          <div id="cap-curl" class="code-pane active"><pre><span class="k">curl</span> https://api.bc.pixdrift.com/api/capabilities/profile/USER_ID \
+  <span class="k">-H</span> <span class="s">"Authorization: Bearer YOUR_API_KEY"</span></pre></div>
+          <div id="cap-node" class="code-pane"><pre><span class="kw">const</span> profile = <span class="kw">await</span> fetch(
+  <span class="s">`https://api.bc.pixdrift.com/api/capabilities/profile/${userId}`</span>,
+  { headers: { <span class="s">'Authorization'</span>: <span class="s">'Bearer YOUR_API_KEY'</span> } }
+).then(r => r.json());</pre></div>
+          <div id="cap-python" class="code-pane"><pre>profile = requests.get(
+  <span class="s">f'https://api.bc.pixdrift.com/api/capabilities/profile/{user_id}'</span>,
+  headers={<span class="s">'Authorization'</span>: <span class="s">'Bearer YOUR_API_KEY'</span>}
+).json()</pre></div>
+        </div>
+        <div class="response-label">Response 200</div>
+        <div class="code-block response-200"><pre>{
+  <span class="n">"user_id"</span>: <span class="s">"uuid"</span>,
+  <span class="n">"assessments"</span>: [{
+    <span class="n">"capability_id"</span>: <span class="s">"uuid"</span>,
+    <span class="n">"level"</span>: <span class="s">"L3"</span>,
+    <span class="n">"level_label"</span>: <span class="s">"Competent"</span>,
+    <span class="n">"target_level"</span>: <span class="s">"L4"</span>,
+    <span class="n">"gap"</span>: <span class="num">1</span>
+  }],
+  <span class="n">"summary"</span>: {
+    <span class="n">"total_capabilities"</span>: <span class="num">8</span>,
+    <span class="n">"average_level"</span>: <span class="s">"3.25"</span>
+  }
+}</pre></div>
+      </div>
+
+      <!-- ─── NC ─────────────────────────────────────────────────── -->
+      <div id="nc" class="endpoint">
+        <div class="endpoint-header">
+          <span class="method-pill get">GET</span>
+          <div>
+            <div class="endpoint-path">/api/nc</div>
+            <div class="endpoint-desc">List non-conformance reports.</div>
+          </div>
+        </div>
+        <div class="endpoint-header">
+          <span class="method-pill post">POST</span>
+          <div>
+            <div class="endpoint-path">/api/nc</div>
+            <div class="endpoint-desc">Create a non-conformance report.</div>
+          </div>
+        </div>
+        <div class="endpoint-header">
+          <span class="method-pill patch">PATCH</span>
+          <div>
+            <div class="endpoint-path">/api/nc/{id}/status</div>
+            <div class="endpoint-desc">Update NC status: open → investigating → resolved → closed</div>
+          </div>
+        </div>
+        <div class="endpoint-header">
+          <span class="method-pill get">GET</span>
+          <div>
+            <div class="endpoint-path">/api/nc/summary</div>
+            <div class="endpoint-desc">NC summary statistics by status, type, and trend.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── RISKS ─────────────────────────────────────────────── -->
+      <div id="risks" class="endpoint">
+        <div class="endpoint-header">
+          <span class="method-pill get">GET</span>
+          <div>
+            <div class="endpoint-path">/api/risks</div>
+            <div class="endpoint-desc">List risks ordered by risk score (likelihood × impact).</div>
+          </div>
+        </div>
+        <div class="endpoint-header">
+          <span class="method-pill get">GET</span>
+          <div>
+            <div class="endpoint-path">/api/risks/matrix</div>
+            <div class="endpoint-desc">5×5 risk matrix with risks categorized by likelihood and impact quadrant.</div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <div class="code-tab active" onclick="switchTab(this, 'risk-curl')">curl</div>
+            <div class="code-tab" onclick="switchTab(this, 'risk-node')">Node.js</div>
+            <div class="code-tab" onclick="switchTab(this, 'risk-python')">Python</div>
+          </div>
+          <div id="risk-curl" class="code-pane active"><pre><span class="k">curl</span> https://api.bc.pixdrift.com/api/risks/matrix \
+  <span class="k">-H</span> <span class="s">"Authorization: Bearer YOUR_API_KEY"</span></pre></div>
+          <div id="risk-node" class="code-pane"><pre><span class="kw">const</span> matrix = <span class="kw">await</span> fetch(<span class="s">'https://api.bc.pixdrift.com/api/risks/matrix'</span>, {
+  headers: { <span class="s">'Authorization'</span>: <span class="s">'Bearer YOUR_API_KEY'</span> }
+}).then(r => r.json());</pre></div>
+          <div id="risk-node" class="code-pane"><pre>matrix = requests.get(
+  <span class="s">'https://api.bc.pixdrift.com/api/risks/matrix'</span>,
+  headers={<span class="s">'Authorization'</span>: <span class="s">'Bearer YOUR_API_KEY'</span>}
+).json()</pre></div>
+        </div>
+      </div>
+
+      <!-- ─── CURRENCY ──────────────────────────────────────────── -->
+      <div id="currencies" class="endpoint">
+        <div class="endpoint-header">
+          <span class="method-pill get">GET</span>
+          <div>
+            <div class="endpoint-path">/api/currencies</div>
+            <div class="endpoint-desc">List all supported ISO 4217 currencies. No authentication required.</div>
+          </div>
+        </div>
+        <div id="convert" class="endpoint-header">
+          <span class="method-pill get">GET</span>
+          <div>
+            <div class="endpoint-path">/api/convert?amount=1000&from=USD&to=SEK</div>
+            <div class="endpoint-desc">Convert an amount between currencies using the latest stored exchange rates.</div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <div class="code-tab active" onclick="switchTab(this, 'convert-curl')">curl</div>
+            <div class="code-tab" onclick="switchTab(this, 'convert-node')">Node.js</div>
+            <div class="code-tab" onclick="switchTab(this, 'convert-python')">Python</div>
+          </div>
+          <div id="convert-curl" class="code-pane active"><pre><span class="k">curl</span> <span class="s">"https://api.bc.pixdrift.com/api/convert?amount=1000&from=USD&to=SEK"</span> \
+  <span class="k">-H</span> <span class="s">"Authorization: Bearer YOUR_API_KEY"</span></pre></div>
+          <div id="convert-node" class="code-pane"><pre><span class="kw">const</span> params = <span class="kw">new</span> URLSearchParams({ amount: <span class="s">'1000'</span>, from: <span class="s">'USD'</span>, to: <span class="s">'SEK'</span> });
+<span class="kw">const</span> result = <span class="kw">await</span> fetch(
+  <span class="s">`https://api.bc.pixdrift.com/api/convert?${params}`</span>,
+  { headers: { <span class="s">'Authorization'</span>: <span class="s">'Bearer YOUR_API_KEY'</span> } }
+).then(r => r.json());
+<span class="c">// { from: 'USD', to: 'SEK', amount: 1000, converted: 10342, rate: 10.342 }</span></pre></div>
+          <div id="convert-python" class="code-pane"><pre>result = requests.get(
+  <span class="s">'https://api.bc.pixdrift.com/api/convert'</span>,
+  params={<span class="s">'amount'</span>: <span class="num">1000</span>, <span class="s">'from'</span>: <span class="s">'USD'</span>, <span class="s">'to'</span>: <span class="s">'SEK'</span>},
+  headers={<span class="s">'Authorization'</span>: <span class="s">'Bearer YOUR_API_KEY'</span>}
+).json()</pre></div>
+        </div>
+      </div>
+
+      <!-- ─── REPORTS ──────────────────────────────────────────── -->
+      <div id="income-statement" class="endpoint">
+        <div class="endpoint-header">
+          <span class="method-pill get">GET</span>
+          <div>
+            <div class="endpoint-path">/api/reports/income-statement?from=2026-01-01&to=2026-03-31</div>
+            <div class="endpoint-desc">Profit & Loss statement. Aggregates revenue and expense accounts from the ledger.</div>
+          </div>
+        </div>
+        <div id="sie4" class="endpoint-header">
+          <span class="method-pill get">GET</span>
+          <div>
+            <div class="endpoint-path">/api/reports/sie4?from=2026-01-01&to=2026-12-31</div>
+            <div class="endpoint-desc">Export SIE4 formatted file for Swedish bookkeeping software (Fortnox, Visma, etc.).</div>
+          </div>
+        </div>
+        <div id="vat" class="endpoint-header">
+          <span class="method-pill get">GET</span>
+          <div>
+            <div class="endpoint-path">/api/reports/vat?from=2026-01-01&to=2026-03-31</div>
+            <div class="endpoint-desc">VAT report with output VAT, input VAT, net amount, and breakdown by rate.</div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <div class="code-tab active" onclick="switchTab(this, 'report-curl')">curl</div>
+            <div class="code-tab" onclick="switchTab(this, 'report-node')">Node.js</div>
+            <div class="code-tab" onclick="switchTab(this, 'report-python')">Python</div>
+          </div>
+          <div id="report-curl" class="code-pane active"><pre><span class="k">curl</span> <span class="s">"https://api.bc.pixdrift.com/api/reports/income-statement?from=2026-01-01&to=2026-03-31"</span> \
+  <span class="k">-H</span> <span class="s">"Authorization: Bearer YOUR_API_KEY"</span></pre></div>
+          <div id="report-node" class="code-pane"><pre><span class="kw">const</span> params = <span class="kw">new</span> URLSearchParams({ from: <span class="s">'2026-01-01'</span>, to: <span class="s">'2026-03-31'</span> });
+<span class="kw">const</span> report = <span class="kw">await</span> fetch(
+  <span class="s">`https://api.bc.pixdrift.com/api/reports/income-statement?${params}`</span>,
+  { headers: { <span class="s">'Authorization'</span>: <span class="s">'Bearer YOUR_API_KEY'</span> } }
+).then(r => r.json());</pre></div>
+          <div id="report-python" class="code-pane"><pre>report = requests.get(
+  <span class="s">'https://api.bc.pixdrift.com/api/reports/income-statement'</span>,
+  params={<span class="s">'from'</span>: <span class="s">'2026-01-01'</span>, <span class="s">'to'</span>: <span class="s">'2026-03-31'</span>},
+  headers={<span class="s">'Authorization'</span>: <span class="s">'Bearer YOUR_API_KEY'</span>}
+).json()</pre></div>
+        </div>
+      </div>
+
+      <!-- ─── STRIPE ────────────────────────────────────────────── -->
+      <div id="plans" class="endpoint">
+        <div class="endpoint-header">
+          <span class="method-pill get">GET</span>
+          <div>
+            <div class="endpoint-path">/api/stripe/plans</div>
+            <div class="endpoint-desc">List available subscription plans with pricing and features. No authentication required.</div>
+          </div>
+        </div>
+        <div id="checkout" class="endpoint-header">
+          <span class="method-pill post">POST</span>
+          <div>
+            <div class="endpoint-path">/api/stripe/create-checkout-session</div>
+            <div class="endpoint-desc">Create a Stripe checkout session. Returns a redirect URL to Stripe hosted checkout.</div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <div class="code-tab active" onclick="switchTab(this, 'stripe-curl')">curl</div>
+            <div class="code-tab" onclick="switchTab(this, 'stripe-node')">Node.js</div>
+            <div class="code-tab" onclick="switchTab(this, 'stripe-python')">Python</div>
+          </div>
+          <div id="stripe-curl" class="code-pane active"><pre><span class="k">curl</span> -X POST https://api.bc.pixdrift.com/api/stripe/create-checkout-session \
+  <span class="k">-H</span> <span class="s">"Authorization: Bearer YOUR_API_KEY"</span> \
+  <span class="k">-H</span> <span class="s">"Content-Type: application/json"</span> \
+  <span class="k">-d</span> <span class="s">'{"plan_id":"growth","success_url":"https://app.pixdrift.com/success","cancel_url":"https://app.pixdrift.com/billing"}'</span></pre></div>
+          <div id="stripe-node" class="code-pane"><pre><span class="kw">const</span> { url } = <span class="kw">await</span> fetch(
+  <span class="s">'https://api.bc.pixdrift.com/api/stripe/create-checkout-session'</span>,
+  {
+    method: <span class="s">'POST'</span>,
+    headers: {
+      <span class="s">'Authorization'</span>: <span class="s">'Bearer YOUR_API_KEY'</span>,
+      <span class="s">'Content-Type'</span>: <span class="s">'application/json'</span>
+    },
+    body: JSON.stringify({
+      plan_id: <span class="s">'growth'</span>,
+      success_url: <span class="s">'https://app.pixdrift.com/success'</span>,
+      cancel_url: <span class="s">'https://app.pixdrift.com/billing'</span>
+    })
+  }
+).then(r => r.json());
+window.location.href = url; <span class="c">// Redirect to Stripe</span></pre></div>
+          <div id="stripe-python" class="code-pane"><pre>session = requests.post(
+  <span class="s">'https://api.bc.pixdrift.com/api/stripe/create-checkout-session'</span>,
+  headers={<span class="s">'Authorization'</span>: <span class="s">'Bearer YOUR_API_KEY'</span>},
+  json={
+    <span class="s">'plan_id'</span>: <span class="s">'growth'</span>,
+    <span class="s">'success_url'</span>: <span class="s">'https://app.pixdrift.com/success'</span>,
+    <span class="s">'cancel_url'</span>: <span class="s">'https://app.pixdrift.com/billing'</span>
+  }
+).json()
+<span class="c"># Redirect to session['url']</span></pre></div>
+        </div>
+      </div>
+
+    </div><!-- /content-inner -->
+  </main>
+</div>
+
+<script>
+function switchTab(el, paneId) {
+  const block = el.closest('.code-block');
+  block.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
+  block.querySelectorAll('.code-pane').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  const pane = document.getElementById(paneId);
+  if (pane) pane.classList.add('active');
+}
+
+function scrollTo(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth' });
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  event.target.closest('.sidebar-item').classList.add('active');
+}
+
+async function tryRequest(key, method, path) {
+  const apiKeyInput = document.getElementById(`api-key-${key}`);
+  const resEl = document.getElementById(`res-${key}`);
+  const apiKey = apiKeyInput?.value?.trim();
+  
+  if (!apiKey) {
+    resEl.style.display = 'block';
+    resEl.textContent = '⚠️ Enter your API key first';
+    resEl.style.color = '#e17055';
+    return;
+  }
+
+  resEl.style.display = 'block';
+  resEl.style.color = '#a29bfe';
+  resEl.textContent = '⏳ Sending request...';
+
+  try {
+    const res = await fetch(`https://api.bc.pixdrift.com${path}`, {
+      method,
+      headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' }
+    });
+    const data = await res.json();
+    resEl.style.color = res.ok ? '#00b894' : '#e17055';
+    resEl.textContent = `HTTP ${res.status}\n\n${JSON.stringify(data, null, 2)}`;
+  } catch (err) {
+    resEl.style.color = '#e17055';
+    resEl.textContent = `Error: ${err.message}`;
+  }
+}
+</script>
+</body>
+</html>
