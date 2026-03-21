@@ -1355,8 +1355,58 @@
 
   <!-- CTAs -->
   <div class="hero-ctas reveal reveal-delay-3">
-    <a href="/checkout.html" class="btn-primary">Start for free</a>
-    <a href="#product" class="btn-secondary">See how it works ↓</a>
+    <a href="https://app.bc.pixdrift.com/demo" class="btn-primary">Book a demo</a>
+    <a href="/checkout.html" class="btn-secondary">Start free — no card needed</a>
+  </div>
+
+  <!-- Email capture — lead generation -->
+  <div class="reveal reveal-delay-3" style="width: 100%; max-width: 480px; margin: 0 auto 32px; position: relative; z-index: 1;">
+    <form id="hero-email-form" onsubmit="handleEmailCapture(event)" style="
+      display: flex; gap: 8px; flex-wrap: wrap;
+      background: rgba(255,255,255,0.06);
+      border: 0.5px solid rgba(255,255,255,0.15);
+      border-radius: 980px;
+      padding: 6px 6px 6px 20px;
+    ">
+      <input
+        type="email"
+        id="hero-email-input"
+        placeholder="your@company.com"
+        required
+        autocomplete="email"
+        style="
+          flex: 1;
+          background: transparent;
+          border: none;
+          outline: none;
+          color: #f5f5f7;
+          font-size: 15px;
+          font-family: inherit;
+          min-width: 200px;
+        "
+      />
+      <button type="submit" style="
+        background: #6366f1;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 980px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        font-family: inherit;
+        white-space: nowrap;
+        transition: background 0.2s;
+      ">
+        Get early access →
+      </button>
+    </form>
+    <div id="hero-email-success" style="display:none; text-align:center; color:#34c759; font-size:14px; padding: 12px;">
+      ✓ Check your inbox — we'll be in touch within 24 hours.
+    </div>
+    <p style="font-size: 12px; color: rgba(245,245,247,0.3); text-align: center; margin-top: 10px;">
+      Free 14-day trial · No credit card · Cancel anytime
+    </p>
   </div>
 
   <!-- Tool graveyard — vad pixdrift ersätter -->
@@ -1372,7 +1422,7 @@
     <span style="padding: 6px 14px; background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 980px; font-size: 13px; color: rgba(245,245,247,0.4); text-decoration: line-through;">HubSpot</span>
     <span style="padding: 6px 14px; background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 980px; font-size: 13px; color: rgba(245,245,247,0.4); text-decoration: line-through;">Salesforce</span>
     <span style="padding: 6px 14px; background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 980px; font-size: 13px; color: rgba(245,245,247,0.4); text-decoration: line-through;">Jira</span>
-    <span style="padding: 6px 14px; background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 980px; font-size: 13px; color: rgba(245,245,247,0.4); text-decoration: line-through;">ISO-pärmar</span>
+    <span style="padding: 6px 14px; background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 980px; font-size: 13px; color: rgba(245,245,247,0.4); text-decoration: line-through;">ISO binders</span>
     <span style="padding: 6px 14px; background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 980px; font-size: 13px; color: rgba(245,245,247,0.4); text-decoration: line-through;">Monday.com</span>
     <span style="padding: 6px 14px; background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 980px; font-size: 13px; color: rgba(245,245,247,0.4); text-decoration: line-through;">Notion</span>
     <span style="padding: 6px 14px; background: rgba(255,255,255,0.04); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 980px; font-size: 13px; color: rgba(245,245,247,0.4); text-decoration: line-through;">Avtalssystem</span>
@@ -1514,20 +1564,20 @@
 <section class="stats-strip">
   <div class="stats-grid">
     <div class="reveal">
-      <div class="stat-number color-indigo" data-count="50" data-suffix="+">50+</div>
-      <div class="stat-label">Teams in 8 countries</div>
+      <div class="stat-number color-indigo">8</div>
+      <div class="stat-label">Modules in one platform</div>
     </div>
     <div class="reveal reveal-delay-1">
-      <div class="stat-number color-white">€2B+</div>
-      <div class="stat-label">Managed annually</div>
+      <div class="stat-number color-white">€499</div>
+      <div class="stat-label">per month, team flat</div>
     </div>
     <div class="reveal reveal-delay-2">
       <div class="stat-number color-white">99.9%</div>
       <div class="stat-label">Uptime SLA</div>
     </div>
     <div class="reveal reveal-delay-3">
-      <div class="stat-number color-white" data-count="5" data-suffix="">5</div>
-      <div class="stat-label">Modules in one</div>
+      <div class="stat-number color-white">14</div>
+      <div class="stat-label">Day free trial</div>
     </div>
   </div>
 </section>
@@ -1987,8 +2037,8 @@
 <section class="testimonials-section">
   <div style="max-width:1000px;margin:0 auto;">
     <div class="section-header reveal">
-      <h2 class="section-h2">What our customers say</h2>
-      <p class="section-sub">Teams already running on pixdrift</p>
+      <h2 class="section-h2">What early customers say</h2>
+      <p class="section-sub">Teams in early access — running on pixdrift</p>
     </div>
 
     <div class="testimonials-grid">
@@ -2374,6 +2424,32 @@
 
     obs.observe(el);
   });
+
+  // ─── EMAIL CAPTURE ──────────────────────────────────
+  function handleEmailCapture(e) {
+    e.preventDefault();
+    const email = document.getElementById('hero-email-input').value;
+    if (!email) return;
+    
+    // Store lead in localStorage as fallback
+    const leads = JSON.parse(localStorage.getItem('pixdrift_leads') || '[]');
+    leads.push({ email, ts: new Date().toISOString(), source: 'hero' });
+    localStorage.setItem('pixdrift_leads', JSON.stringify(leads));
+    
+    // Send to backend if available
+    fetch('https://app.bc.pixdrift.com/api/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, source: 'landing_hero' }),
+    }).catch(() => {}); // Fail silently if API not ready
+
+    // Show success state
+    document.getElementById('hero-email-form').style.display = 'none';
+    document.getElementById('hero-email-success').style.display = 'block';
+    
+    // Track in analytics
+    if (window.gtag) window.gtag('event', 'lead_capture', { email_domain: email.split('@')[1] });
+  }
 
   // ─── SMOOTH SCROLL FOR ANCHOR LINKS ─────────────────
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
