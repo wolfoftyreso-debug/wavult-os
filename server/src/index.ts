@@ -48,6 +48,15 @@ import seoRouter from "./seo";
 import bankingRouter from "./banking";
 
 // ---------------------------------------------------------------------------
+// Tax Compliance imports (SFL + ML + BFL)
+// ---------------------------------------------------------------------------
+import personnelLedgerRouter from "./personnel-ledger";
+import cashRegisterRouter from "./cash-register";
+import vatComplianceRouter from "./vat-compliance";
+import payrollComplianceRouter from "./payroll-compliance";
+import complianceCheckerRouter from "./compliance-checker";
+
+// ---------------------------------------------------------------------------
 // Certified Core imports
 // ---------------------------------------------------------------------------
 import { eventsRouter } from "./events";
@@ -301,6 +310,15 @@ app.use(bankingRouter); // Banking: /api/banking/* + /api/integrations/fortnox/*
 // ---------------------------------------------------------------------------
 app.use('/', seoRouter);       // /sitemap.xml, /robots.txt, /og-image.svg
 app.use('/api/seo', seoRouter); // /api/seo/schema/:page, /api/seo/report, /api/seo/invalidate-cache
+
+// ---------------------------------------------------------------------------
+// Tax Compliance (SFL 2011:1244, ML 2023:200, BFL 1999:1078, SKVFS 2014:9)
+// ---------------------------------------------------------------------------
+app.use('/api/personnel-ledger', personnelLedgerRouter); // Personalliggare (SFL 39 kap.)
+app.use('/api/cash-register',    cashRegisterRouter);    // Kassaregister (SKVFS 2014:9)
+app.use('/api/vat',              vatComplianceRouter);   // Momshantering (ML 2023:200)
+app.use('/api/payroll',          payrollComplianceRouter); // Arbetsgivaravgifter (SAL + IL)
+app.use('/api/compliance',       complianceCheckerRouter); // Compliance-kontroll
 
 // ---------------------------------------------------------------------------
 // Auth helper for inline routes

@@ -347,4 +347,4 @@ router.get('/oss-report', async (req: Request, res: Response) => {
 });
 
 export default router;
-export { calculateVatDueDate, VAT_RATES };
+export { calculateVatDueDate };
