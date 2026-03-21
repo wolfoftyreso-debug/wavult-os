@@ -74,7 +74,7 @@
     "completed": "Fullført",
     "failed": "Mislyktes",
     "open": "Åpen",
-    "closed": "Lukket"
+    "closed": "Stengt"
   },
   "dashboard": {
     "goodMorning": "God morgen",
@@ -90,13 +90,96 @@
     "teamStatus": "Teamstatus",
     "kpiSummary": "KPI-sammendrag"
   },
-  "errors": {
-    "networkError": "Nettverksfeil — sjekk tilkoblingen din",
-    "unauthorized": "Du har ikke tilgang til denne ressursen",
-    "notFound": "Ressursen ble ikke funnet",
-    "serverError": "Serverfeil — prøv igjen om litt",
-    "validationError": "Kontroller skjemaet og prøv igjen",
-    "sessionExpired": "Sesjonen din har utløpt — logg inn på nytt"
+  "deals": {
+    "title": "Avtaler",
+    "new": "Ny avtale",
+    "pipeline": "Pipeline",
+    "value": "Verdi",
+    "probability": "Sannsynlighet",
+    "expectedClose": "Forventet avslutning",
+    "stage": {
+      "new": "Ny",
+      "qualified": "Kvalifisert",
+      "proposal": "Tilbud",
+      "negotiation": "Forhandling",
+      "won": "Vunnet",
+      "lost": "Tapt"
+    },
+    "totalPipeline": "Total pipeline",
+    "wonDeals": "Vunnede avtaler",
+    "lostDeals": "Tapte avtaler",
+    "winRate": "Vinnfrekvens"
+  },
+  "tasks": {
+    "title": "Oppgaver",
+    "new": "Ny oppgave",
+    "overdue": "Forsinket",
+    "dueToday": "Forfaller i dag",
+    "dueSoon": "Forfaller snart",
+    "myTasks": "Mine oppgaver",
+    "allTasks": "Alle oppgaver",
+    "status": {
+      "todo": "Å gjøre",
+      "inProgress": "Pågår",
+      "done": "Ferdig",
+      "cancelled": "Avbrutt"
+    }
+  },
+  "nc": {
+    "title": "Avvik",
+    "new": "Nytt avvik",
+    "severity": {
+      "critical": "Kritisk",
+      "major": "Alvorlig",
+      "minor": "Mindre",
+      "observation": "Observasjon"
+    },
+    "status": {
+      "open": "Åpen",
+      "analyzing": "Analyse",
+      "actionPlanned": "Tiltak planlagt",
+      "implementing": "Gjennomføres",
+      "verifying": "Verifiseres",
+      "closed": "Stengt"
+    }
+  },
+  "reports": {
+    "title": "Rapporter",
+    "incomeStatement": "Resultatregnskap",
+    "balanceSheet": "Balanse",
+    "cashflow": "Kontantstrøm",
+    "generalLedger": "Hovedbok",
+    "vatReport": "MVA-rapport",
+    "sie4Export": "SIE4-eksport",
+    "chartOfAccounts": "Kontoplan",
+    "revenue": "Inntekter",
+    "expenses": "Utgifter",
+    "profit": "Resultat",
+    "assets": "Eiendeler",
+    "liabilities": "Gjeld",
+    "equity": "Egenkapital",
+    "period": "Periode",
+    "generateReport": "Generer rapport",
+    "downloadPdf": "Last ned PDF",
+    "downloadExcel": "Last ned Excel"
+  },
+  "banking": {
+    "title": "Bankintegrasjon",
+    "connectBank": "Koble bank",
+    "connectedAccounts": "Tilkoblede kontoer",
+    "transactions": "Transaksjoner",
+    "payments": "Betalinger",
+    "reconciliation": "Bankavstemming",
+    "sync": "Synkroniser",
+    "lastSync": "Siste synk",
+    "balance": "Saldo",
+    "unmatched": "Ikke matchet",
+    "matched": "Matchet",
+    "match": "Match",
+    "post": "Bokfør",
+    "sepa": "SEPA-betaling",
+    "bankgiro": "Bankgiro",
+    "swish": "Swish"
   },
   "settings": {
     "title": "Innstillinger",
@@ -111,5 +194,98 @@
     "billing": "Fakturering",
     "team": "Team",
     "profile": "Profil"
+  },
+  "errors": {
+    "networkError": "Nettverksfeil — sjekk tilkoblingen din",
+    "unauthorized": "Du har ikke tilgang til denne ressursen",
+    "notFound": "Ressursen ble ikke funnet",
+    "serverError": "Serverfeil — prøv igjen om litt",
+    "validationError": "Sjekk skjemaet og prøv igjen",
+    "sessionExpired": "Sesjonen din har utløpt — logg inn igjen"
+  },
+  "onboarding": {
+    "welcome": "Velkommen til pixdrift",
+    "installTitle": "Du er i ferd med å installere operativsystemet for virksomheten din",
+    "step1": "Velkommen",
+    "step2": "Organisasjon",
+    "step3": "Teamstørrelse",
+    "step4": "Moduler",
+    "step5": "Inviter team",
+    "step6": "Ferdig",
+    "companyName": "Hva heter selskapet ditt?",
+    "industry": "Bransje",
+    "teamSize": "Hvor stort er teamet?",
+    "modules": "Hvilke moduler vil dere aktivere?",
+    "inviteTeam": "Inviter teamet ditt",
+    "installed": "pixdrift er installert",
+    "welcomeToControl": "Velkommen til kontrollen"
+  },
+  "capabilities": {
+    "title": "Kompetanser",
+    "new": "Ny kompetanse",
+    "level": "Nivå",
+    "employee": "Medarbeider",
+    "target": "Målnivå",
+    "current": "Nåværende nivå",
+    "gap": "Kompetansegap",
+    "matrix": "Kompetansematrise"
+  },
+  "risks": {
+    "title": "Risikoer",
+    "new": "Ny risiko",
+    "likelihood": "Sannsynlighet",
+    "impact": "Påvirkning",
+    "score": "Risikopoeng",
+    "owner": "Risikoeier",
+    "mitigation": "Tiltaksplan",
+    "status": {
+      "open": "Åpen",
+      "mitigated": "Mitigert",
+      "accepted": "Akseptert",
+      "closed": "Stengt"
+    },
+    "level": {
+      "low": "Lav",
+      "medium": "Middels",
+      "high": "Høy",
+      "critical": "Kritisk"
+    }
+  },
+  "contacts": {
+    "title": "Kontakter",
+    "new": "Ny kontakt",
+    "firstName": "Fornavn",
+    "lastName": "Etternavn",
+    "email": "E-post",
+    "phone": "Telefon",
+    "company": "Selskap",
+    "role": "Rolle",
+    "lastContact": "Sist kontaktet"
+  },
+  "companies": {
+    "title": "Selskaper",
+    "new": "Nytt selskap",
+    "orgNumber": "Organisasjonsnummer",
+    "industry": "Bransje",
+    "size": "Størrelse",
+    "website": "Nettsted",
+    "contacts": "Kontakter"
+  },
+  "users": {
+    "title": "Brukere",
+    "invite": "Inviter bruker",
+    "role": "Rolle",
+    "lastLogin": "Sist innlogget",
+    "status": "Status",
+    "email": "E-post",
+    "name": "Navn"
+  },
+  "audit": {
+    "title": "Revisjonslogg",
+    "action": "Handling",
+    "user": "Bruker",
+    "timestamp": "Tidsstempel",
+    "resource": "Ressurs",
+    "details": "Detaljer"
   }
 }
