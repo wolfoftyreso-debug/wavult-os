@@ -1365,94 +1365,120 @@
     <div class="hero-tab" onclick="switchHeroTab('reports', this)">Reports</div>
   </div>
 
-  <!-- Dashboard mockup -->
-  <div class="hero-mockup-wrap reveal reveal-delay-4">
+  <!-- Dashboard mockup — tydlig och luftig -->
+  <div class="hero-mockup-wrap reveal reveal-delay-4" style="padding: 0 24px; margin-top: 48px;">
     <div class="hero-mockup-glow"></div>
-    <div class="mockup-frame" style="position:relative;">
+
+    <!-- Hero mockup — clean Apple-style -->
+    <div style="
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      background: #111118;
+      border: 0.5px solid rgba(255,255,255,0.15);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 0 0 0.5px rgba(255,255,255,0.06), 0 40px 100px rgba(0,0,0,0.7);
+    ">
       <!-- Titlebar -->
-      <div class="mockup-titlebar">
-        <div class="tb-dot tb-dot-r"></div>
-        <div class="tb-dot tb-dot-y"></div>
-        <div class="tb-dot tb-dot-g"></div>
-        <div class="tb-title">pixdrift — Execution</div>
+      <div style="height: 38px; background: #1c1c24; border-bottom: 0.5px solid rgba(255,255,255,0.1); display: flex; align-items: center; padding: 0 16px; gap: 8px;">
+        <div style="width: 12px; height: 12px; border-radius: 50%; background: #ff5f57;"></div>
+        <div style="width: 12px; height: 12px; border-radius: 50%; background: #febc2e;"></div>
+        <div style="width: 12px; height: 12px; border-radius: 50%; background: #28c840;"></div>
+        <div style="flex: 1; text-align: center; font-size: 12px; color: rgba(255,255,255,0.35); font-family: -apple-system, sans-serif;">pixdrift</div>
       </div>
 
-      <!-- Body -->
-      <div class="mockup-body">
+      <!-- Module tabs -->
+      <div style="display: flex; gap: 4px; padding: 12px 16px; background: #0f0f16; border-bottom: 0.5px solid rgba(255,255,255,0.08);">
+        <div style="padding: 6px 16px; background: #6366f1; border-radius: 8px; font-size: 13px; font-weight: 600; color: #fff; font-family: -apple-system, sans-serif;">Execution</div>
+        <div style="padding: 6px 16px; font-size: 13px; color: rgba(255,255,255,0.4); font-family: -apple-system, sans-serif; cursor: pointer;">Capability</div>
+        <div style="padding: 6px 16px; font-size: 13px; color: rgba(255,255,255,0.4); font-family: -apple-system, sans-serif; cursor: pointer;">Process</div>
+        <div style="padding: 6px 16px; font-size: 13px; color: rgba(255,255,255,0.4); font-family: -apple-system, sans-serif; cursor: pointer;">Currency</div>
+        <div style="padding: 6px 16px; font-size: 13px; color: rgba(255,255,255,0.4); font-family: -apple-system, sans-serif; cursor: pointer;">Reports</div>
+      </div>
+
+      <!-- Content area -->
+      <div style="display: flex; height: 380px;">
+
         <!-- Sidebar -->
-        <div class="mockup-sidebar">
-          <div class="sidebar-label">WORK</div>
-          <div class="sidebar-item active">📊 Overview</div>
-          <div class="sidebar-item">🤝 Deals</div>
-          <div class="sidebar-item">✓ Tasks</div>
-          <div class="sidebar-item">👥 Contacts</div>
-          <div class="sidebar-label">FINANCE</div>
-          <div class="sidebar-item">📈 Reports</div>
-          <div class="sidebar-item">💱 Currencies</div>
-          <div class="sidebar-label">SYSTEM</div>
-          <div class="sidebar-item">⚙️ Settings</div>
+        <div style="width: 180px; background: #0d0d14; border-right: 0.5px solid rgba(255,255,255,0.07); padding: 16px 12px; flex-shrink: 0;">
+          <div style="font-size: 10px; color: rgba(255,255,255,0.25); letter-spacing: 0.08em; text-transform: uppercase; padding: 0 8px; margin-bottom: 6px;">OVERVIEW</div>
+          <div style="padding: 8px; border-radius: 6px; background: rgba(99,102,241,0.18); color: #818cf8; font-size: 13px; font-family: -apple-system, sans-serif; margin-bottom: 2px; display: flex; align-items: center; gap: 8px;">
+            <span>📊</span> Dashboard
+          </div>
+          <div style="font-size: 10px; color: rgba(255,255,255,0.25); letter-spacing: 0.08em; text-transform: uppercase; padding: 0 8px; margin: 14px 0 6px;">WORK</div>
+          <div style="padding: 8px; border-radius: 6px; color: rgba(255,255,255,0.5); font-size: 13px; font-family: -apple-system, sans-serif; margin-bottom: 2px; display: flex; align-items: center; gap: 8px;">
+            <span>🤝</span> Deals
+          </div>
+          <div style="padding: 8px; border-radius: 6px; color: rgba(255,255,255,0.5); font-size: 13px; font-family: -apple-system, sans-serif; margin-bottom: 2px; display: flex; align-items: center; gap: 8px;">
+            <span>✓</span> Tasks
+          </div>
+          <div style="padding: 8px; border-radius: 6px; color: rgba(255,255,255,0.5); font-size: 13px; font-family: -apple-system, sans-serif; display: flex; align-items: center; gap: 8px;">
+            <span>👥</span> Contacts
+          </div>
         </div>
 
-        <!-- Notification slide-in -->
-        <div id="mock-notification" style="
-          position:absolute; top:50px; right:16px;
-          background:#1c1c1e; border:0.5px solid rgba(255,255,255,0.1);
-          border-left:3px solid #34c759;
-          border-radius:10px; padding:10px 14px;
-          animation:slideInRight 0.4s ease 1.2s both;
-          max-width:220px; z-index:10;
-        ">
-          <div style="font-size:11px; color:#34c759; font-weight:600; margin-bottom:2px;">✓ Deal closed</div>
-          <div style="font-size:12px; color:rgba(245,245,247,0.7);">Novacode AB · €12 000</div>
-        </div>
+        <!-- Main dashboard -->
+        <div style="flex: 1; padding: 20px; overflow: hidden; background: #0a0a0f;">
 
-        <!-- Main -->
-        <div class="mockup-main">
-          <div class="kpi-grid">
-            <div class="kpi-card">
-              <div class="kpi-label">Pipeline</div>
-              <div class="kpi-value color-indigo kpi-value-live">€64k<span class="kpi-live-dot"></span></div>
-              <div class="kpi-change color-green">↑ 12%</div>
+          <!-- KPI grid — 2x2, TYDLIGA siffror -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+
+            <!-- Pipeline -->
+            <div style="background: #16161f; border: 0.5px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 18px 20px;">
+              <div style="font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 10px; font-family: -apple-system, sans-serif;">Pipeline</div>
+              <div style="font-size: 32px; font-weight: 700; color: #818cf8; font-variant-numeric: tabular-nums; font-family: -apple-system, sans-serif; letter-spacing: -0.03em;">€64k</div>
+              <div style="font-size: 12px; color: #34c759; margin-top: 6px; font-family: -apple-system, sans-serif;">↑ 12% this month</div>
             </div>
-            <div class="kpi-card">
-              <div class="kpi-label">Active deals</div>
-              <div class="kpi-value color-white">7</div>
-              <div class="kpi-change color-green">↑ 3 new</div>
+
+            <!-- Active Deals -->
+            <div style="background: #16161f; border: 0.5px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 18px 20px;">
+              <div style="font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 10px; font-family: -apple-system, sans-serif;">Active Deals</div>
+              <div style="font-size: 32px; font-weight: 700; color: #f5f5f7; font-variant-numeric: tabular-nums; font-family: -apple-system, sans-serif; letter-spacing: -0.03em;">7</div>
+              <div style="font-size: 12px; color: #34c759; margin-top: 6px; font-family: -apple-system, sans-serif;">↑ 3 new this week</div>
             </div>
-            <div class="kpi-card">
-              <div class="kpi-label">Tasks</div>
-              <div class="kpi-value color-orange">12</div>
-              <div class="kpi-change color-muted">3 today</div>
+
+            <!-- Tasks -->
+            <div style="background: #16161f; border: 0.5px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 18px 20px;">
+              <div style="font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 10px; font-family: -apple-system, sans-serif;">Open Tasks</div>
+              <div style="font-size: 32px; font-weight: 700; color: #ff9500; font-variant-numeric: tabular-nums; font-family: -apple-system, sans-serif; letter-spacing: -0.03em;">12</div>
+              <div style="font-size: 12px; color: rgba(255,255,255,0.35); margin-top: 6px; font-family: -apple-system, sans-serif;">3 due today</div>
             </div>
-            <div class="kpi-card">
-              <div class="kpi-label">Win rate</div>
-              <div class="kpi-value color-green">68%</div>
-              <div class="kpi-change color-green">↑ 5%</div>
+
+            <!-- Win Rate -->
+            <div style="background: #16161f; border: 0.5px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 18px 20px;">
+              <div style="font-size: 12px; color: rgba(255,255,255,0.4); margin-bottom: 10px; font-family: -apple-system, sans-serif;">Win Rate</div>
+              <div style="font-size: 32px; font-weight: 700; color: #34c759; font-variant-numeric: tabular-nums; font-family: -apple-system, sans-serif; letter-spacing: -0.03em;">68%</div>
+              <div style="font-size: 12px; color: #34c759; margin-top: 6px; font-family: -apple-system, sans-serif;">↑ 5% vs last month</div>
             </div>
           </div>
 
-          <div class="deals-panel">
-            <div class="deals-heading">Active deals</div>
-            <div class="deal-row">
+          <!-- Deal list — tydlig, luftig -->
+          <div style="background: #16161f; border: 0.5px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px 20px;">
+            <div style="font-size: 11px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; font-family: -apple-system, sans-serif;">Active Deals</div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 0.5px solid rgba(255,255,255,0.06);">
               <div>
-                <div class="deal-name">Novacode AB</div>
-                <div class="deal-stage color-muted">PROPOSAL</div>
+                <div style="font-size: 14px; font-weight: 600; color: #f5f5f7; font-family: -apple-system, sans-serif;">Novacode AB</div>
+                <div style="font-size: 11px; color: rgba(99,102,241,0.8); margin-top: 2px; font-weight: 600; font-family: -apple-system, sans-serif;">PROPOSAL</div>
               </div>
-              <div class="deal-amount color-indigo">€12 000</div>
+              <div style="font-size: 16px; font-weight: 700; color: #818cf8; font-variant-numeric: tabular-nums; font-family: -apple-system, sans-serif;">€12,000</div>
             </div>
-            <div class="deal-row">
+
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 0.5px solid rgba(255,255,255,0.06);">
               <div>
-                <div class="deal-name">Nordic Shop AB</div>
-                <div class="deal-stage color-green">WON ✓</div>
+                <div style="font-size: 14px; font-weight: 600; color: #f5f5f7; font-family: -apple-system, sans-serif;">Nordic Shop</div>
+                <div style="font-size: 11px; color: #34c759; margin-top: 2px; font-weight: 600; font-family: -apple-system, sans-serif;">WON ✓</div>
               </div>
-              <div class="deal-amount color-green">€8 500</div>
+              <div style="font-size: 16px; font-weight: 700; color: #34c759; font-variant-numeric: tabular-nums; font-family: -apple-system, sans-serif;">€8,500</div>
             </div>
-            <div class="deal-row">
+
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
               <div>
-                <div class="deal-name">VVS Proffsen</div>
-                <div class="deal-stage color-orange">QUALIFIED</div>
+                <div style="font-size: 14px; font-weight: 600; color: #f5f5f7; font-family: -apple-system, sans-serif;">VVS Proffsen</div>
+                <div style="font-size: 11px; color: #ff9500; margin-top: 2px; font-weight: 600; font-family: -apple-system, sans-serif;">QUALIFIED</div>
               </div>
-              <div class="deal-amount color-white">€5 200</div>
+              <div style="font-size: 16px; font-weight: 700; color: #f5f5f7; font-variant-numeric: tabular-nums; font-family: -apple-system, sans-serif;">€5,200</div>
             </div>
           </div>
         </div>
