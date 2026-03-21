@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./Dashboard";
 import LoginScreen from "./LoginScreen";
+import OnboardingWizard from "./OnboardingWizard";
 import { LanguageProvider } from "@pixdrift/i18n";
 
 const API = "https://api.bc.pixdrift.com";
@@ -77,6 +78,27 @@ function Root() {
 
   if (!token) {
     return <LoginScreen onLogin={handleLogin} />;
+  }
+
+  const [showOnboarding, setShowOnboarding] = useState(
+    !localStorage.getItem("pixdrift_onboarding_complete")
+  );
+
+  if (showOnboarding) {
+    return (
+      <LanguageProvider>
+        <OnboardingWizard
+          onComplete={() => {
+            localStorage.setItem("pixdrift_onboarding_complete", "true");
+            setShowOnboarding(false);
+          }}
+          onSkip={() => {
+            // Don't mark complete on skip — remind next login
+            setShowOnboarding(false);
+          }}
+        />
+      </LanguageProvider>
+    );
   }
 
   return (
