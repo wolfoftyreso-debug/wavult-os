@@ -832,7 +832,7 @@ export default function App() {
       <style>{globalStyles}</style>
       <div style={{
         display: "flex", minHeight: "100vh", background: C.bg,
-        fontFamily: "Inter, -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif",
+        fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', Arial,, 'SF Pro Display', 'Helvetica Neue', sans-serif",
         color: C.text, WebkitFontSmoothing: "antialiased",
       }}>
         {/* Sidebar */}

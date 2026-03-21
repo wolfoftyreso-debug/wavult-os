@@ -26,7 +26,6 @@ const shadow = "0 1px 3px rgba(0,0,0,0.06)";
 
 // ─── Global styles ─────────────────────────────────────────────────────────────
 const globalStyles = `
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   @keyframes shimmer {
@@ -49,12 +48,15 @@ const globalStyles = `
   .card-animate { animation: slideUp 0.2s ease forwards; }
   .fade-in { animation: fadeIn 0.15s ease forwards; }
 
-  .nav-item { transition: background 0.1s ease, color 0.1s ease; }
-  .nav-item:hover { background: ${C.fill} !important; color: ${C.text} !important; }
-  .nav-item.active { background: ${C.blue}14 !important; color: ${C.blue} !important; font-weight: 500 !important; }
-  .nav-item.active svg { stroke: ${C.blue}; }
+  .nav-item {
+    transition: background 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                color 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .nav-item:hover:not(.active) { background: rgba(60,60,67,0.08) !important; }
+  .nav-item.active { background: ${C.blue} !important; color: #FFFFFF !important; font-weight: 600 !important; }
+  .nav-item.active svg { stroke: #FFFFFF; }
 
-  .row-hover:hover { background: ${C.fill}; transition: background 0.08s ease; }
+  .row-hover:hover { background: rgba(60,60,67,0.04); transition: background 0.08s ease; }
   .btn-primary:hover { background: #0066D6 !important; }
   .btn-primary:active { transform: scale(0.98); }
   .btn-secondary:hover { background: ${C.inset} !important; }
@@ -684,17 +686,18 @@ const FALLBACK = {
 
 // ─── Sidebar ──────────────────────────────────────────────────────────────────
 function Sidebar({
-  view, setView, userName
+  view, setView, userName, onLogout
 }: {
   view: string;
   setView: (v: string) => void;
   userName: string;
+  onLogout?: () => void;
 }) {
   return (
     <div style={{
-      width: 256,
-      background: C.surface,
-      borderRight: `0.5px solid ${C.border}`,
+      width: 260,
+      background: "#FFFFFF",
+      borderRight: "0.5px solid rgba(60,60,67,0.29)",
       height: "100vh",
       display: "flex",
       flexDirection: "column",
@@ -702,14 +705,15 @@ function Sidebar({
       position: "fixed",
       top: 0, left: 0, bottom: 0,
       zIndex: 200,
+      overflowY: "auto",
     }}>
-      {/* Logo area — matches TopBar height */}
+      {/* Logo area */}
       <div style={{
         height: 52,
         padding: "0 16px",
         display: "flex",
         alignItems: "center",
-        borderBottom: `0.5px solid ${C.border}`,
+        borderBottom: "0.5px solid rgba(60,60,67,0.29)",
         flexShrink: 0,
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -721,7 +725,12 @@ function Sidebar({
           }}>
             <span style={{ color: "#fff", fontSize: 14, fontWeight: 700 }}>p</span>
           </div>
-          <span style={{ fontSize: 15, fontWeight: 700, letterSpacing: "-0.02em", color: C.text }}>
+          <span style={{
+            fontSize: 17,
+            fontWeight: 700,
+            letterSpacing: "-0.41px",
+            color: "#000000",
+          }}>
             pixdrift
           </span>
         </div>
@@ -731,19 +740,17 @@ function Sidebar({
       <nav style={{
         flex: 1,
         overflowY: "auto",
-        padding: "8px 8px",
+        padding: "8px 0",
       }}>
         {NAV_SECTIONS.map((section, si) => (
-          <div key={si} style={{ marginTop: section.label ? 16 : 4, marginBottom: 4 }}>
+          <div key={si} style={{ marginTop: section.label ? 8 : 4, marginBottom: 4 }}>
             {section.label && (
               <div style={{
-                fontSize: 11,
-                fontWeight: 600,
-                color: C.secondary,
-                letterSpacing: "0.06em",
-                textTransform: "uppercase",
-                padding: "0 8px",
-                marginBottom: 2,
+                fontSize: 13,
+                fontWeight: 400,
+                color: "#8E8E93",
+                padding: "20px 16px 6px 16px",
+                letterSpacing: 0,
               }}>
                 {section.label}
               </div>
@@ -761,20 +768,23 @@ function Sidebar({
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: 8,
-                    width: "100%",
-                    height: 32,
-                    padding: "0 8px",
-                    borderRadius: 6,
+                    gap: 12,
+                    width: "calc(100% - 16px)",
+                    height: 44,
+                    padding: "0 12px",
+                    borderRadius: 10,
                     border: "none",
-                    background: active ? C.blue + "14" : "transparent",
-                    color: active ? C.blue : C.text,
-                    fontSize: 13,
-                    fontWeight: active ? 500 : 400,
+                    background: active ? "#007AFF" : "transparent",
+                    color: active ? "#FFFFFF" : "#000000",
+                    fontSize: 17,
+                    fontWeight: active ? 600 : 400,
+                    letterSpacing: "-0.41px",
                     cursor: "pointer",
                     textAlign: "left",
                     marginBottom: 2,
+                    marginLeft: 8,
                     fontFamily: "inherit",
+                    flexShrink: 0,
                   }}
                 >
                   <span style={{ width: 16, height: 16, flexShrink: 0, display: "flex", alignItems: "center" }}>
@@ -790,25 +800,47 @@ function Sidebar({
 
       {/* User area */}
       <div style={{
-        padding: "12px 8px",
-        borderTop: `0.5px solid ${C.border}`,
+        padding: "12px 16px",
+        borderTop: "0.5px solid rgba(60,60,67,0.29)",
         display: "flex",
         alignItems: "center",
-        gap: 8,
+        gap: 12,
+        flexShrink: 0,
       }}>
         <div style={{
-          width: 32, height: 32, borderRadius: "50%",
+          width: 36, height: 36, borderRadius: "50%",
           background: "linear-gradient(135deg, #007AFF, #5856D6)",
           color: "#fff",
           display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: 13, fontWeight: 700, flexShrink: 0,
+          fontSize: 15, fontWeight: 600, flexShrink: 0,
         }}>
           {userName[0]}
         </div>
         <div>
-          <div style={{ fontSize: 13, fontWeight: 500, color: C.text }}>{userName}</div>
-          <div style={{ fontSize: 11, color: C.secondary }}>Admin</div>
+          <div style={{ fontSize: 17, fontWeight: 400, letterSpacing: "-0.41px", color: "#000000" }}>{userName}</div>
+          <div style={{ fontSize: 13, color: "#8E8E93" }}>Admin</div>
         </div>
+        {onLogout && (
+          <button
+            type="button"
+            onClick={onLogout}
+            title="Logga ut"
+            style={{
+              marginLeft: "auto",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: 4,
+              borderRadius: 6,
+              color: "#8E8E93",
+              fontSize: 16,
+              lineHeight: 1,
+              fontFamily: "inherit",
+            }}
+          >
+            ⏏
+          </button>
+        )}
       </div>
     </div>
   );
@@ -820,11 +852,13 @@ function TopBar({ title, onNew, userName = "Erik" }: { title: string; onNew?: ()
   return (
     <div style={{
       height: 52,
-      background: C.surface,
-      borderBottom: `0.5px solid ${C.border}`,
+      background: "rgba(255,255,255,0.92)",
+      backdropFilter: "blur(20px)",
+      WebkitBackdropFilter: "blur(20px)",
+      borderBottom: "0.5px solid rgba(60,60,67,0.29)",
       display: "flex",
       alignItems: "center",
-      padding: "0 24px",
+      padding: "0 20px",
       gap: 16,
       flexShrink: 0,
       position: "sticky",
@@ -832,7 +866,12 @@ function TopBar({ title, onNew, userName = "Erik" }: { title: string; onNew?: ()
       zIndex: 100,
     }}>
       {/* Page title */}
-      <div style={{ fontSize: 17, fontWeight: 600, color: C.text }}>
+      <div style={{
+        fontSize: 17,
+        fontWeight: 600,
+        color: "#000000",
+        letterSpacing: "-0.41px",
+      }}>
         {title}
       </div>
 
@@ -843,11 +882,11 @@ function TopBar({ title, onNew, userName = "Erik" }: { title: string; onNew?: ()
           type="button"
           aria-label="Notifikationer"
           style={{
-            width: 32, height: 32, borderRadius: 8,
-            background: C.fill, border: `0.5px solid ${C.border}`,
+            width: 44, height: 44, borderRadius: 22,
+            background: "transparent", border: "none",
             cursor: "pointer",
             display: "flex", alignItems: "center", justifyContent: "center",
-            color: C.secondary,
+            color: "#007AFF",
             transition: "background 0.1s",
           }}>
           <Icons.Bell />
@@ -863,146 +902,205 @@ function TopBar({ title, onNew, userName = "Erik" }: { title: string; onNew?: ()
 // ─── Views ─────────────────────────────────────────────────────────────────────
 
 function OverviewView({ D }: { D: typeof FALLBACK }) {
+  const stageColors: Record<string, string> = {
+    NEW: C.tertiary, QUALIFIED: C.blue, DEMO: C.purple, OFFER: C.orange, WON: C.green,
+  };
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-      {/* Greeting */}
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      {/* Large title */}
       <div style={{
-        background: C.surface,
-        borderRadius: 10,
-        border: `0.5px solid ${C.border}`,
-        boxShadow: shadow,
-        padding: "20px 24px",
+        fontSize: 34,
+        fontWeight: 700,
+        letterSpacing: "-0.41px",
+        color: "#000000",
+        padding: "8px 4px 2px",
       }}>
-        <div style={{ fontSize: 22, fontWeight: 700, color: C.text, letterSpacing: "-0.02em" }}>
-          {getGreeting()}, {D.user.full_name}
-        </div>
-        <div style={{ fontSize: 13, color: C.secondary, marginTop: 4 }}>
-          {getSwedishDate()} · {D.tasks.filter(t => t.st !== "DONE").length} öppna uppgifter · {D.ncs.filter(n => n.status !== "CLOSED").length} aktiva avvikelser
-        </div>
+        {getGreeting()}, {D.user.full_name}
+      </div>
+      <div style={{
+        fontSize: 15,
+        color: "#8E8E93",
+        padding: "0 4px 20px",
+        letterSpacing: "-0.24px",
+      }}>
+        {getSwedishDate()} · {D.tasks.filter(t => t.st !== "DONE").length} öppna uppgifter · {D.ncs.filter(n => n.status !== "CLOSED").length} aktiva avvikelser
       </div>
 
-      {/* KPI grid — 4 columns */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
-        {D.kpis.slice(0, 4).map((k, i) => <KPI key={i} k={k} />)}
+      {/* KPI — Inset Grouped List (Aktier-stil) */}
+      <div style={{ fontSize: 13, fontWeight: 400, color: "#8E8E93", padding: "0 4px 8px", letterSpacing: "-0.08px" }}>
+        Nyckeltal
+      </div>
+      <div style={{
+        margin: "0 0 32px 0",
+        background: "#FFFFFF",
+        borderRadius: 10,
+        overflow: "hidden",
+      }}>
+        {D.kpis.map((k, i) => {
+          const trendUp = k.trend === "UP";
+          const trendColor = trendUp ? C.green : k.trend === "DOWN" ? C.red : C.tertiary;
+          const trendArrow = trendUp ? "↑" : k.trend === "DOWN" ? "↓" : "→";
+          const pct = k.target > 0 ? Math.min(100, Math.round((k.val / k.target) * 100)) : 0;
+          const statusCol = k.status === "GREEN" ? C.green : k.status === "YELLOW" ? C.orange : C.red;
+          return (
+            <div
+              key={i}
+              className="row-hover"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                padding: "12px 16px",
+                borderBottom: i < D.kpis.length - 1 ? "0.5px solid rgba(60,60,67,0.29)" : "none",
+                minHeight: 52,
+                cursor: "pointer",
+              }}
+            >
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 17, fontWeight: 400, color: "#000000", letterSpacing: "-0.41px" }}>{k.name}</div>
+                <div style={{ fontSize: 13, color: "#8E8E93" }}>Mål: {k.unit === "EUR" ? formatEur(k.target) : k.target}</div>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{
+                  fontSize: 17, fontWeight: 600, color: statusCol,
+                  letterSpacing: "-0.41px", fontVariantNumeric: "tabular-nums",
+                }}>
+                  {k.unit === "EUR" ? formatEur(k.val) : k.val}
+                  {k.unit === "mån" && <span style={{ fontSize: 13, fontWeight: 400 }}> mån</span>}
+                </div>
+                <div style={{ fontSize: 13, color: trendColor }}>{trendArrow} {pct}%</div>
+              </div>
+              <div style={{ marginLeft: 8, color: "#C7C7CC", fontSize: 18 }}>›</div>
+            </div>
+          );
+        })}
       </div>
 
-      {/* Main + Side layout: 65% + 35% */}
+      {/* Main + Side layout */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 0.54fr", gap: 24, alignItems: "start" }}>
         {/* Main column */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
           {/* Aktiva affärer */}
-          <Card title="Aktiva affärer">
-            {/* Table header */}
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 120px 96px",
-              padding: "0 0 8px 0",
-              borderBottom: `0.5px solid ${C.border}`,
-              marginBottom: 4,
-            }}>
-              <span style={{ fontSize: 11, fontWeight: 600, color: C.secondary }}>STAGE</span>
-              <span style={{ fontSize: 11, fontWeight: 600, color: C.secondary, textAlign: "right" }}>VÄRDE</span>
-              <span style={{ fontSize: 11, fontWeight: 600, color: C.secondary, textAlign: "right" }}>DEALS</span>
-            </div>
+          <div style={{ fontSize: 13, fontWeight: 400, color: "#8E8E93", padding: "0 4px 8px", letterSpacing: "-0.08px" }}>
+            Aktiva affärer
+          </div>
+          <div style={{
+            margin: "0 0 32px 0",
+            background: "#FFFFFF",
+            borderRadius: 10,
+            overflow: "hidden",
+          }}>
             {D.pipeline.map((p, i) => {
-              const stageColors: Record<string, string> = {
-                NEW: C.tertiary, QUALIFIED: C.blue, DEMO: C.purple, OFFER: C.orange, WON: C.green,
-              };
               const col = stageColors[p.st] ?? C.tertiary;
               return (
                 <div
                   key={i}
                   className="row-hover"
                   style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 120px 96px",
-                    padding: "8px 0",
-                    borderBottom: i < D.pipeline.length - 1 ? `0.5px solid ${C.fill}` : "none",
+                    display: "flex",
                     alignItems: "center",
+                    padding: "10px 16px",
+                    borderBottom: i < D.pipeline.length - 1 ? "0.5px solid rgba(60,60,67,0.29)" : "none",
+                    minHeight: 44,
                     cursor: "pointer",
                   }}
                 >
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1 }}>
                     <div style={{ width: 8, height: 8, borderRadius: "50%", background: col, flexShrink: 0 }} />
-                    <span style={{ fontSize: 13, color: C.text }}>{p.st}</span>
+                    <span style={{ fontSize: 17, fontWeight: 400, color: "#000000", letterSpacing: "-0.41px" }}>{p.st}</span>
                   </div>
-                  <span style={{ fontSize: 13, color: C.text, fontVariantNumeric: "tabular-nums", textAlign: "right" }}>
+                  <span style={{ fontSize: 17, fontWeight: 400, color: "#000000", fontVariantNumeric: "tabular-nums", letterSpacing: "-0.41px", marginRight: 16 }}>
                     {formatEur(p.eur)}
                   </span>
-                  <span style={{ fontSize: 13, color: C.secondary, fontVariantNumeric: "tabular-nums", textAlign: "right" }}>
+                  <span style={{ fontSize: 13, color: "#8E8E93", fontVariantNumeric: "tabular-nums", marginRight: 8 }}>
                     {p.deals}
                   </span>
+                  <div style={{ color: "#C7C7CC", fontSize: 18 }}>›</div>
                 </div>
               );
             })}
-            {/* Total */}
+            {/* Total row */}
             <div style={{
-              display: "grid", gridTemplateColumns: "1fr 120px 96px",
-              padding: "12px 0 0 0", marginTop: 4,
-              borderTop: `0.5px solid ${C.border}`,
+              display: "flex",
+              alignItems: "center",
+              padding: "12px 16px",
+              borderTop: "0.5px solid rgba(60,60,67,0.29)",
+              background: "#FAFAFA",
             }}>
-              <span style={{ fontSize: 13, fontWeight: 600, color: C.text }}>Totalt</span>
+              <span style={{ fontSize: 17, fontWeight: 600, color: "#000000", letterSpacing: "-0.41px", flex: 1 }}>Totalt</span>
               <span style={{
-                fontSize: 13, fontWeight: 700, color: C.blue,
-                fontVariantNumeric: "tabular-nums", textAlign: "right",
+                fontSize: 17, fontWeight: 700, color: "#007AFF",
+                fontVariantNumeric: "tabular-nums", letterSpacing: "-0.41px",
               }}>
                 {formatEur(D.pipeline.reduce((s, p) => s + p.eur, 0))}
               </span>
-              <span style={{ fontSize: 13, color: C.secondary, textAlign: "right", fontVariantNumeric: "tabular-nums" }}>
-                {D.pipeline.reduce((s, p) => s + p.deals, 0)}
-              </span>
             </div>
-          </Card>
+          </div>
 
           {/* Senaste avvikelser */}
-          <Card title="Senaste avvikelser">
-            {D.ncs.filter(n => n.status !== "CLOSED").slice(0, 3).map((n, i, arr) => {
-              const severityColor = ncBorderColor[n.severity] ?? C.tertiary;
-              const currentStep = STEPS.indexOf(n.status);
-              return (
-                <div
-                  key={i}
-                  style={{
-                    background: C.surface,
-                    border: `0.5px solid ${C.border}`,
-                    borderLeft: `3px solid ${severityColor}`,
-                    borderRadius: "0 10px 10px 0",
-                    padding: "12px 16px",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 6,
-                    marginBottom: i < arr.length - 1 ? 8 : 0,
-                  }}
-                >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                    <span style={{ fontSize: 13, fontWeight: 500, color: C.text }}>{n.title}</span>
-                    <Badge color={severityColor}>{n.severity}</Badge>
-                  </div>
-                  <div style={{ fontSize: 12, color: C.secondary }}>{n.code} · {n.who} · {n.days}d</div>
-                  <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 4 }}>
-                    {STEPS.map((step, si) => (
-                      <div key={step} style={{
-                        width: 20, height: 3, borderRadius: 2,
-                        background: si <= currentStep ? severityColor : C.fill,
-                      }} />
-                    ))}
-                    <span style={{ fontSize: 11, color: C.secondary, marginLeft: 4 }}>
-                      {ncStatusLabel[n.status] ?? n.status}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
-            {D.ncs.filter(n => n.status !== "CLOSED").length === 0 && (
+          <div style={{ fontSize: 13, fontWeight: 400, color: "#8E8E93", padding: "0 4px 8px", letterSpacing: "-0.08px" }}>
+            Senaste avvikelser
+          </div>
+          <div style={{
+            margin: "0 0 32px 0",
+            background: "#FFFFFF",
+            borderRadius: 10,
+            overflow: "hidden",
+          }}>
+            {D.ncs.filter(n => n.status !== "CLOSED").slice(0, 3).length === 0 ? (
               <EmptyState icon="✓" title="Inga aktiva avvikelser" />
+            ) : (
+              D.ncs.filter(n => n.status !== "CLOSED").slice(0, 3).map((n, i, arr) => {
+                const severityColor = ncBorderColor[n.severity] ?? C.tertiary;
+                return (
+                  <div
+                    key={i}
+                    className="row-hover"
+                    style={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      padding: "12px 16px",
+                      gap: 12,
+                      borderBottom: i < arr.length - 1 ? "0.5px solid rgba(60,60,67,0.29)" : "none",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <div style={{
+                      width: 22, height: 22,
+                      borderRadius: "50%",
+                      background: severityColor,
+                      flexShrink: 0,
+                      marginTop: 1,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                    }}>
+                      <span style={{ color: "#fff", fontSize: 12, fontWeight: 700 }}>!</span>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 17, fontWeight: 400, color: "#000000", letterSpacing: "-0.41px" }}>{n.title}</div>
+                      <div style={{ fontSize: 13, color: "#8E8E93", marginTop: 2 }}>
+                        {n.code} · {n.who} · {n.days}d · {ncStatusLabel[n.status] ?? n.status}
+                      </div>
+                    </div>
+                    <div style={{ color: "#C7C7CC", fontSize: 18, marginTop: 2 }}>›</div>
+                  </div>
+                );
+              })
             )}
-          </Card>
+          </div>
         </div>
 
         {/* Side column */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
           {/* Teamstatus */}
-          <Card title="Teamstatus">
+          <div style={{ fontSize: 13, fontWeight: 400, color: "#8E8E93", padding: "0 4px 8px", letterSpacing: "-0.08px" }}>
+            Teamstatus
+          </div>
+          <div style={{
+            margin: "0 0 32px 0",
+            background: "#FFFFFF",
+            borderRadius: 10,
+            overflow: "hidden",
+          }}>
             {D.team.map((member, i) => {
               const sc = statusColor(member.status);
               return (
@@ -1012,61 +1110,68 @@ function OverviewView({ D }: { D: typeof FALLBACK }) {
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: 8,
-                    padding: "8px 0",
-                    borderBottom: i < D.team.length - 1 ? `0.5px solid ${C.fill}` : "none",
+                    padding: "8px 16px",
+                    gap: 12,
+                    minHeight: 52,
+                    borderBottom: i < D.team.length - 1 ? "0.5px solid rgba(60,60,67,0.29)" : "none",
                     cursor: "pointer",
                   }}
                 >
                   <div style={{
-                    width: 32, height: 32, borderRadius: "50%",
+                    width: 36, height: 36, borderRadius: "50%",
                     background: sc + "22",
-                    border: `2px solid ${sc}`,
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: 12, fontWeight: 600, color: sc, flexShrink: 0,
+                    fontSize: 15, fontWeight: 600, color: sc, flexShrink: 0,
                   }}>
                     {member.name[0]}
                   </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{
-                      fontSize: 13, fontWeight: 500, color: C.text,
-                      whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
-                    }}>
-                      {member.name}
-                    </div>
-                    <div style={{ fontSize: 11, color: C.secondary }}>{member.role}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 17, fontWeight: 400, color: "#000000", letterSpacing: "-0.41px" }}>{member.name}</div>
+                    <div style={{ fontSize: 13, color: "#8E8E93" }}>{member.role} · {member.tasks} uppgifter</div>
                   </div>
-                  <div style={{ fontSize: 12, color: C.secondary, fontVariantNumeric: "tabular-nums", flexShrink: 0 }}>
-                    {member.tasks} uppg.
-                    {member.overdue > 0 && (
-                      <span style={{ color: C.red, marginLeft: 4 }}>⚠</span>
-                    )}
-                  </div>
+                  <div style={{
+                    width: 10, height: 10, borderRadius: "50%",
+                    background: sc, flexShrink: 0,
+                  }} />
                 </div>
               );
             })}
-          </Card>
+          </div>
 
           {/* Beslutlogg */}
-          <Card title="Beslutlogg">
+          <div style={{ fontSize: 13, fontWeight: 400, color: "#8E8E93", padding: "0 4px 8px", letterSpacing: "-0.08px" }}>
+            Beslutlogg
+          </div>
+          <div style={{
+            margin: "0 0 32px 0",
+            background: "#FFFFFF",
+            borderRadius: 10,
+            overflow: "hidden",
+          }}>
             {D.decisions.map((d, i) => (
               <div
                 key={i}
                 className="row-hover"
                 style={{
-                  padding: "8px 0",
-                  borderBottom: i < D.decisions.length - 1 ? `0.5px solid ${C.fill}` : "none",
+                  padding: "12px 16px",
+                  borderBottom: i < D.decisions.length - 1 ? "0.5px solid rgba(60,60,67,0.29)" : "none",
                   cursor: "pointer",
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: 8,
                 }}
               >
-                <div style={{ fontSize: 13, fontWeight: 500, color: C.text }}>{d.title}</div>
-                <div style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>{d.rat}</div>
-                <div style={{ fontSize: 11, color: C.tertiary, marginTop: 4 }}>
-                  {d.by} · {d.date}
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 17, fontWeight: 400, color: "#000000", letterSpacing: "-0.41px" }}>{d.title}</div>
+                  <div style={{ fontSize: 13, color: "#8E8E93", marginTop: 2 }}>{d.rat}</div>
+                  <div style={{ fontSize: 13, color: "#C7C7CC", marginTop: 4 }}>
+                    {d.by} · {d.date}
+                  </div>
                 </div>
+                <div style={{ color: "#C7C7CC", fontSize: 18, marginTop: 2 }}>›</div>
               </div>
             ))}
-          </Card>
+          </div>
         </div>
       </div>
     </div>
@@ -1954,7 +2059,7 @@ function ChatView({ D }: { D: typeof FALLBACK }) {
 }
 
 // ─── Main App ─────────────────────────────────────────────────────────────────
-export default function App() {
+export default function App({ user: propUser, onLogout }: { user?: any; onLogout?: () => void }) {
   const [view, setView] = useState("overview");
 
   const { data: apiNCs } = useApi<{ id: string; title: string; severity: string; status: string; code?: string; who?: string; days?: number }[]>("/api/nc");
@@ -1983,7 +2088,13 @@ export default function App() {
     ? apiPerf.map((p, i) => ({ code: `PROC-${String(i + 1).padStart(3, "0")}`, name: p.process_name, runs30d: p.execution_count, avgMin: Math.round(p.avg_duration_ms / 60000), ncs: p.nc_count, owner: "—" }))
     : FALLBACK.processes;
 
-  const D = { ...FALLBACK, ncs, risks, improvements, compliance, processes };
+  const D = {
+    ...FALLBACK,
+    ncs, risks, improvements, compliance, processes,
+    user: propUser
+      ? { full_name: propUser.full_name ?? propUser.email ?? "Användare", role: propUser.role ?? "ADMIN" }
+      : FALLBACK.user,
+  };
 
   const { t } = useTranslation();
   const viewTitles: Record<string, string> = {
@@ -2010,9 +2121,9 @@ export default function App() {
       <style>{globalStyles}</style>
       <div style={{
         width: "100%", minHeight: "100vh",
-        background: C.bg,
-        fontFamily: "Inter, -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif",
-        color: C.text,
+        background: "#F2F2F7",
+        fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif",
+        color: "#000000",
         WebkitFontSmoothing: "antialiased",
         MozOsxFontSmoothing: "grayscale",
         display: "flex",
@@ -2021,12 +2132,13 @@ export default function App() {
           view={view}
           setView={setView}
           userName={D.user.full_name}
+          onLogout={onLogout}
         />
 
-        <div style={{ marginLeft: 256, flex: 1, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+        <div style={{ marginLeft: 260, flex: 1, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
           <TopBar title={viewTitles[view] ?? view} userName={D.user.full_name} />
 
-          <main role="main" style={{ flex: 1, padding: "32px 32px 64px", maxWidth: 1280, width: "100%" }}>
+          <main role="main" style={{ flex: 1, padding: "24px 24px 64px", maxWidth: 1280, width: "100%" }}>
             {view === "overview" && <OverviewView D={D} />}
             {view === "deals" && <SalesView D={D} />}
             {view === "finance" && <FinanceView D={D} />}

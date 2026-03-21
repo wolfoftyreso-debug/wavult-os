@@ -6,6 +6,7 @@ import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import cookieParser from "cookie-parser";
 import { supabase, checkSupabaseConnectivity, isSupabaseFallback } from "./supabase";
 
 // ---------------------------------------------------------------------------
@@ -48,6 +49,11 @@ import seoRouter from "./seo";
 import bankingRouter from "./banking";
 
 // ---------------------------------------------------------------------------
+// Auth router
+// ---------------------------------------------------------------------------
+import authRouter from "./auth";
+
+// ---------------------------------------------------------------------------
 // DMS — Dealer Management System (pixdrift automotive)
 // ---------------------------------------------------------------------------
 import vehiclesRouter from "./vehicles";
@@ -84,8 +90,9 @@ const PORT = Number(process.env.PORT) || 3001;
 // Middleware
 // ---------------------------------------------------------------------------
 app.use(helmet());
-app.use(cors({ origin: process.env.CORS_ORIGIN || "*" }));
+app.use(cors({ origin: process.env.CORS_ORIGIN || "*", credentials: true }));
 app.use(express.json({ limit: "10mb" }));
+app.use(cookieParser());
 
 // ---------------------------------------------------------------------------
 // i18n / Accept-Language middleware
@@ -170,6 +177,11 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
   });
   next();
 });
+
+// ---------------------------------------------------------------------------
+// Auth routes — public, MUST be before global auth middleware
+// ---------------------------------------------------------------------------
+app.use("/api/auth", authRouter);
 
 // ---------------------------------------------------------------------------
 // Health check — MUST be before auth middleware so it's always public
