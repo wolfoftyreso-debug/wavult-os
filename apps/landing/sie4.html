@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIE4-export direkt från pixdrift | SIE4 Bokföring Software Sverige</title>
+  <meta name="description" content="Exportera bokföringsdata i SIE4-format direkt från pixdrift. Automatisk SIE4-export till alla svenska redovisningsprogram. Inga manuella transaktioner. Från €499/mån." />
+  <meta name="keywords" content="SIE4 export, SIE4 bokföring, SIE4 software Sverige, SIE4 export system, SIE4 bokföring system, SIE format export" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="pixdrift AB" />
+  <link rel="canonical" href="https://pixdrift.com/sie4.html" />
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://pixdrift.com/sie4.html" />
+  <meta property="og:title"       content="SIE4-export direkt från pixdrift" />
+  <meta property="og:description" content="Exportera bokföringsdata i SIE4-format automatiskt från pixdrift. Inga manuella transaktioner. Kompatibelt med alla svenska redovisningsprogram." />
+  <meta property="og:image"       content="https://pixdrift.com/og-image.png" />
+  <meta property="og:locale"      content="sv_SE" />
+  <meta property="og:site_name"   content="pixdrift" />
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:site"        content="@pixdrift" />
+  <meta name="twitter:title"       content="SIE4-export direkt från pixdrift" />
+  <meta name="twitter:description" content="Automatisk SIE4-export till alla svenska redovisningsprogram. Från €499/mån." />
+  <meta name="twitter:image"       content="https://pixdrift.com/og-image.png" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="theme-color" content="#6366f1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "name": "pixdrift",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "url": "https://pixdrift.com",
+        "description": "OMS-system med inbyggd SIE4-export för svenska B2B-företag.",
+        "featureList": [
+          "SIE4-export (nativ)",
+          "Automatisk bokföringsintegration",
+          "Multi-valuta stöd",
+          "Fakturahantering",
+          "ISO 9001 compliance"
+        ],
+        "offers": [
+          {
+            "@type": "Offer",
+            "name": "Starter",
+            "price": "499",
+            "priceCurrency": "EUR",
+            "priceSpecification": {
+              "@type": "UnitPriceSpecification",
+              "price": "499",
+              "priceCurrency": "EUR",
+              "unitText": "MONTH"
+            }
+          }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Vad är SIE4?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "SIE4 är ett standardiserat filformat för att exportera bokföringsdata från affärssystem till redovisningsprogram i Sverige. SIE-formatet (Standard för Import och Export av bokföringsdata) är obligatoriskt för revisorer och används av alla svenska redovisningsbyråer."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Stödjer pixdrift SIE4-export?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Ja, pixdrift stödjer SIE4-export nativt. Du kan exportera komplett bokföringsdata i SIE4-format med ett enda klick, direkt från plattformen. SIE4-exporten är kompatibel med Fortnox, Visma, Björn Lundén och alla andra svenska redovisningsprogram."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Vilka redovisningsprogram är kompatibla med pixdrift SIE4?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "pixdrifts SIE4-export är kompatibel med alla program som stödjer SIE-standarden: Fortnox, Visma eEkonomi, Björn Lundén, PE Accounting, Hogia och alla andra svenska redovisningsprogram."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --pd-ink: #0a0a0f; --pd-surface: #111118; --pd-surface-2: #16161f;
+      --pd-border: #1e1e2e; --pd-white: #f8fafc; --pd-text: #e2e8f0;
+      --pd-muted: #6b7280; --pd-indigo: #6366f1; --pd-indigo-light: #818cf8;
+      --pd-emerald: #10b981; --radius: 10px; --radius-lg: 16px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--pd-ink); color: var(--pd-text); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 5%; height: 64px; background: rgba(10,10,15,0.9); backdrop-filter: blur(16px); border-bottom: 1px solid var(--pd-border); }
+    .nav-logo { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.04em; color: var(--pd-white); }
+    .nav-logo span { color: var(--pd-indigo); }
+    .nav-links { display: flex; align-items: center; gap: 1.5rem; }
+    .nav-links a { font-size: 0.875rem; color: var(--pd-muted); transition: color 200ms; }
+    .nav-links a:hover { color: var(--pd-white); }
+
+    /* Hero */
+    .hero { padding: 140px 5% 80px; text-align: center; max-width: 860px; margin: 0 auto; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(16,185,129,0.1); color: var(--pd-emerald); border: 1px solid rgba(16,185,129,0.25); border-radius: 20px; padding: 0.35rem 1rem; font-size: 0.8rem; font-weight: 600; margin-bottom: 1.5rem; }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700; letter-spacing: -0.03em; color: var(--pd-white); line-height: 1.15; margin-bottom: 1.25rem; }
+    .hero h1 span { color: var(--pd-indigo-light); }
+    .hero-desc { font-size: 1.15rem; color: var(--pd-muted); max-width: 640px; margin: 0 auto 2.5rem; }
+    .hero-ctas { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.875rem 2rem; border-radius: var(--radius); font-size: 1rem; font-weight: 600; background: var(--pd-indigo); color: #fff; transition: all 200ms; }
+    .btn-primary:hover { background: var(--pd-indigo-light); transform: translateY(-1px); }
+    .btn-secondary { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.875rem 2rem; border-radius: var(--radius); font-size: 1rem; font-weight: 600; border: 1px solid var(--pd-border); color: var(--pd-text); transition: all 200ms; }
+    .btn-secondary:hover { border-color: var(--pd-indigo); color: var(--pd-white); }
+
+    /* Content */
+    .section { padding: 80px 5%; max-width: 1100px; margin: 0 auto; }
+    h2 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; color: var(--pd-white); letter-spacing: -0.02em; margin-bottom: 1rem; }
+    h3 { font-size: 1.15rem; font-weight: 600; color: var(--pd-white); margin-bottom: 0.5rem; }
+    p { margin-bottom: 1.25rem; }
+    ul { margin: 1rem 0 1.5rem 1.5rem; }
+    li { margin-bottom: 0.5rem; }
+    strong { color: var(--pd-white); font-weight: 600; }
+
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2.5rem; }
+    .feature-card { background: var(--pd-surface); border: 1px solid var(--pd-border); border-radius: var(--radius-lg); padding: 1.75rem; }
+    .feature-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .feature-card h3 { margin-bottom: 0.5rem; }
+    .feature-card p { color: var(--pd-muted); font-size: 0.9rem; margin: 0; }
+
+    .compatibility-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-top: 2rem; }
+    .compat-item { background: var(--pd-surface); border: 1px solid var(--pd-border); border-radius: var(--radius); padding: 1rem 1.25rem; display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; font-weight: 500; color: var(--pd-white); }
+    .compat-check { color: var(--pd-emerald); font-size: 1.1rem; }
+
+    .process-steps { display: flex; flex-direction: column; gap: 1.5rem; margin-top: 2rem; }
+    .step { display: flex; gap: 1.5rem; align-items: flex-start; }
+    .step-num { flex-shrink: 0; width: 36px; height: 36px; background: var(--pd-indigo); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 0.9rem; }
+    .step-content h3 { margin-bottom: 0.25rem; }
+    .step-content p { color: var(--pd-muted); font-size: 0.9rem; margin: 0; }
+
+    .faq-section { margin-top: 2rem; }
+    .faq-item { border: 1px solid var(--pd-border); border-radius: var(--radius); margin-bottom: 1rem; }
+    .faq-q { padding: 1.25rem; font-weight: 600; color: var(--pd-white); }
+    .faq-a { padding: 0 1.25rem 1.25rem; color: var(--pd-muted); font-size: 0.9rem; }
+
+    .cta-section { background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.08)); border: 1px solid rgba(99,102,241,0.25); border-radius: 20px; padding: 4rem 3rem; text-align: center; margin: 4rem 5%; }
+    .cta-section h2 { margin-bottom: 1rem; }
+    .cta-section p { color: var(--pd-muted); margin-bottom: 2rem; max-width: 540px; margin-left: auto; margin-right: auto; }
+
+    footer { text-align: center; padding: 3rem; border-top: 1px solid var(--pd-border); color: var(--pd-muted); font-size: 0.85rem; }
+    footer a { color: var(--pd-indigo); }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo">pix<span>drift</span></a>
+  <div class="nav-links">
+    <a href="/">Hem</a>
+    <a href="/about.html">Om oss</a>
+    <a href="/security.html">Säkerhet</a>
+    <a href="/blog/">Blogg</a>
+    <a href="/checkout.html" style="background: var(--pd-indigo); color: #fff; padding: 0.4rem 1rem; border-radius: 8px; font-weight: 600;">Kom igång</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-badge">✓ SIE4-kompatibelt</div>
+  <h1>SIE4-export direkt från <span>pixdrift</span></h1>
+  <p class="hero-desc">Exportera komplett bokföringsdata i SIE4-format med ett klick. Automatiskt kompatibelt med Fortnox, Visma, Björn Lundén och alla svenska redovisningsprogram.</p>
+  <div class="hero-ctas">
+    <a href="/checkout.html" class="btn-primary">Testa SIE4-exporten gratis →</a>
+    <a href="/developers/api-reference.html" class="btn-secondary">API-dokumentation</a>
+  </div>
+</section>
+
+<!-- Vad är SIE4 -->
+<section class="section">
+  <h2>Vad är SIE4 och varför behöver du det?</h2>
+  <p><strong>SIE4</strong> (Standard för Import och Export av bokföringsdata, version 4) är ett standardiserat filformat som alla svenska revisorer och redovisningsbyråer kräver. Det är den primära metoden för att överföra verifikationer och kontosaldon mellan affärssystem och redovisningsprogram.</p>
+  <p>Utan SIE4-stöd tvingas ditt team exportera data manuellt, riskera fel och spendera tid på manuella transaktioner. pixdrift eliminerar detta problem helt.</p>
+
+  <h3>Varför SIE4 är viktigt:</h3>
+  <ul>
+    <li>Obligatoriskt format för de flesta svenska revisorer</li>
+    <li>Krävs för deklaration och skattehantering via redovisningsbyrå</li>
+    <li>Standardformat för alla svenska bokföringsprogram</li>
+    <li>Krav vid revision och myndighetskontroller</li>
+  </ul>
+</section>
+
+<!-- Features -->
+<section class="section">
+  <h2>SIE4 i pixdrift — hur det fungerar</h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>Export med ett klick</h3>
+      <p>Generera SIE4-fil direkt från din bokföringsdashboard. Välj period, kontoklass och format — klicka på exportera.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔄</div>
+      <h3>Automatisk synk</h3>
+      <p>Konfigurera automatisk export till din redovisningsbyrå via API eller schemalagd filöverföring. Noll manuellt arbete.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">✅</div>
+      <h3>Valideringsmotor</h3>
+      <p>pixdrift validerar SIE4-filen automatiskt innan export. Du ser eventuella fel innan revisorerna gör det.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🌍</div>
+      <h3>Multi-valuta stöd</h3>
+      <p>Hanterar transaktioner i SEK, EUR, NOK, DKK och USD. Automatisk valutaomräkning med ECB-kurser.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📋</div>
+      <h3>Kontoplanshantering</h3>
+      <p>Stöd för BAS-kontoplanen och anpassade kontoplaner. Mappar automatiskt pixdrifts kategorier mot dina konton.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔐</div>
+      <h3>Revisionsspår</h3>
+      <p>Komplett logg över alla SIE4-exporter med tidsstämpel, användare och versionsnummer. GDPR-kompatibelt.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Kompatibilitet -->
+<section class="section">
+  <h2>Kompatibel med alla svenska redovisningsprogram</h2>
+  <p>pixdrifts SIE4-export följer SIE-standarden fullt ut och är testad mot följande program:</p>
+  <div class="compatibility-list">
+    <div class="compat-item"><span class="compat-check">✓</span> Fortnox</div>
+    <div class="compat-item"><span class="compat-check">✓</span> Visma eEkonomi</div>
+    <div class="compat-item"><span class="compat-check">✓</span> Björn Lundén</div>
+    <div class="compat-item"><span class="compat-check">✓</span> PE Accounting</div>
+    <div class="compat-item"><span class="compat-check">✓</span> Hogia Lön</div>
+    <div class="compat-item"><span class="compat-check">✓</span> Agressoh</div>
+    <div class="compat-item"><span class="compat-check">✓</span> Wolters Kluwer</div>
+    <div class="compat-item"><span class="compat-check">✓</span> Alla SIE-kompatibla</div>
+  </div>
+</section>
+
+<!-- Hur det fungerar -->
+<section class="section">
+  <h2>Så här exporterar du SIE4 från pixdrift</h2>
+  <div class="process-steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h3>Öppna Currency-modulen</h3>
+        <p>Gå till pixdrift → Currency → Bokföring → Exportera SIE4</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h3>Välj period och format</h3>
+        <p>Välj räkenskapsår, kvartal eller valfri period. Välj SIE4 som exportformat. Förhandsgranskning visas direkt.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h3>Validering och export</h3>
+        <p>pixdrift validerar alla konteringar automatiskt. Vid godkänd validering genereras SIE4-filen omedelbart.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <h3>Skicka till redovisningsbyrån</h3>
+        <p>Ladda ner SIE4-filen och skicka till din revisor, eller konfigurera automatisk distribution via API.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section">
+  <h2>Vanliga frågor om SIE4 i pixdrift</h2>
+  <div class="faq-section" itemscope itemtype="https://schema.org/FAQPage">
+
+    <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+      <div class="faq-q" itemprop="name">Vad är SIE4?</div>
+      <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+        <div itemprop="text">SIE4 är ett standardiserat filformat (Standard för Import och Export av bokföringsdata, version 4) för att exportera bokföringsdata från affärssystem till redovisningsprogram i Sverige. Formatet är obligatoriskt för de flesta revisorer och används av alla svenska bokföringsprogram.</div>
+      </div>
+    </div>
+
+    <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+      <div class="faq-q" itemprop="name">Stödjer pixdrift SIE4-export?</div>
+      <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+        <div itemprop="text">Ja, pixdrift stödjer SIE4-export nativt i alla prisplaner. Du kan exportera komplett bokföringsdata med ett klick direkt från Currency-modulen. SIE4-exporten är kompatibel med Fortnox, Visma, Björn Lundén och alla andra svenska redovisningsprogram.</div>
+      </div>
+    </div>
+
+    <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+      <div class="faq-q" itemprop="name">Kan jag automatisera SIE4-exporten?</div>
+      <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+        <div itemprop="text">Ja! Via pixdrift API kan du konfigurera automatisk SIE4-export vid valfri tidpunkt — månadsvis, kvartalsvis eller vid räkenskapsårets slut. Se vår API-dokumentation för detaljer.</div>
+      </div>
+    </div>
+
+    <div class="faq-item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+      <div class="faq-q" itemprop="name">Stödjer pixdrift SIE1, SIE2 och SIE3 också?</div>
+      <div class="faq-a" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+        <div itemprop="text">pixdrift fokuserar primärt på SIE4 som är det vanligaste formatet för fullständig bokföring. SIE1, SIE2 och SIE3 (resultat- och balansrapporter) finns på roadmapen. Kontakta oss för mer information om dina specifika behov.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>Testa SIE4-exporten gratis i 14 dagar</h2>
+  <p>Starta din gratis testperiod idag. Ingen betalinformation krävs. Se hur enkelt SIE4-export kan vara.</p>
+  <a href="/checkout.html" class="btn-primary">Starta gratis testperiod →</a>
+</section>
+
+<footer>
+  <p>© 2026 pixdrift AB · <a href="/">pixdrift.com</a> · <a href="/blog/">Blogg</a> · <a href="/legal/privacy.html">Integritetspolicy</a> · <a href="/security.html">Säkerhet</a></p>
+</footer>
+
+</body>
+</html>

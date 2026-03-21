@@ -1203,6 +1203,143 @@
     .footer-legal a:hover { color: var(--text); }
 
     /* ═══════════════════════════════════════════════════════════
+       APP MOCKUP SYSTEM
+    ═══════════════════════════════════════════════════════════ */
+    .app-mockup {
+      background: #0f0f1a;
+      border-radius: 12px;
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 320px;
+      font-size: 11px;
+      box-shadow: 0 0 0 1px rgba(99,102,241,0.1), 0 20px 60px rgba(0,0,0,0.5);
+      flex: 1;
+    }
+    .mock-titlebar {
+      background: #1a1a2e;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      flex-shrink: 0;
+    }
+    .mock-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .mock-title { color: #6b7280; font-size: 10px; margin-left: 8px; }
+    .mock-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+    .mock-sidebar {
+      width: 100px;
+      background: #111118;
+      padding: 8px;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+    .mock-nav {
+      padding: 6px 8px;
+      border-radius: 6px;
+      color: #6b7280;
+      cursor: default;
+      font-size: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .mock-nav.active { background: rgba(99,102,241,0.15); color: #818cf8; }
+    .mock-content {
+      flex: 1;
+      padding: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .mock-kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .mock-kpi {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+    }
+    .mock-kpi-value { font-size: 16px; font-weight: 700; }
+    .mock-kpi-label { color: #6b7280; font-size: 9px; margin-top: 2px; }
+    .mock-list { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+    .mock-list-header { color: #6b7280; font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+    .mock-list-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      background: rgba(255,255,255,0.02);
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+    .mock-badge { font-size: 8px; padding: 2px 6px; border-radius: 4px; font-weight: 600; white-space: nowrap; }
+    .mock-row-name { flex: 1; color: #e2e8f0; font-size: 10px; }
+    .mock-row-value { color: #10b981; font-weight: 600; font-variant-numeric: tabular-nums; font-size: 10px; }
+
+    /* Capability mockup extras */
+    .mock-skill-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 8px;
+      background: rgba(255,255,255,0.02);
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+    .mock-skill-name { width: 55px; color: #e2e8f0; font-size: 9px; flex-shrink: 0; }
+    .mock-skill-dots { display: flex; gap: 3px; flex: 1; }
+    .mock-skill-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .mock-skill-dot.filled { background: #6366f1; }
+    .mock-skill-dot.empty { background: rgba(255,255,255,0.1); }
+    .mock-progress-bar { height: 4px; background: rgba(255,255,255,0.06); border-radius: 100px; overflow: hidden; }
+    .mock-progress-fill { height: 100%; background: linear-gradient(90deg, #6366f1, #10b981); border-radius: 100px; }
+
+    /* Process mockup extras */
+    .mock-severity { font-size: 8px; padding: 2px 5px; border-radius: 3px; font-weight: 700; white-space: nowrap; }
+    .mock-status { font-size: 8px; color: #6b7280; margin-left: auto; white-space: nowrap; }
+    .mock-status.open { color: #ef4444; }
+    .mock-status.progress { color: #f59e0b; }
+    .mock-status.closed { color: #10b981; }
+
+    /* Currency mockup extras */
+    .mock-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+    .mock-table th { color: #6b7280; font-weight: 600; font-size: 9px; text-transform: uppercase; padding: 4px 6px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .mock-table td { padding: 5px 6px; border-bottom: 1px solid rgba(255,255,255,0.03); color: #e2e8f0; }
+    .mock-trend-up { color: #10b981; }
+    .mock-trend-down { color: #ef4444; }
+    .mock-fx-exposure {
+      background: rgba(99,102,241,0.08);
+      border: 1px solid rgba(99,102,241,0.2);
+      border-radius: 8px;
+      padding: 8px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+    }
+    .mock-fx-label { color: #6b7280; font-size: 9px; }
+    .mock-fx-value { color: #818cf8; font-weight: 700; font-size: 14px; }
+
+    /* Reports mockup extras */
+    .mock-pl-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 8px; border-radius: 6px; }
+    .mock-pl-label { color: #94a3b8; font-size: 10px; }
+    .mock-pl-value { font-size: 10px; font-variant-numeric: tabular-nums; }
+    .mock-pl-value.positive { color: #10b981; }
+    .mock-pl-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 2px 0; }
+    .mock-pl-total .mock-pl-label { color: #e2e8f0; font-weight: 700; }
+
+    /* ═══════════════════════════════════════════════════════════
        DESKTOP BREAKPOINTS
     ═══════════════════════════════════════════════════════════ */
     @media (min-width: 768px) {
@@ -1494,21 +1631,54 @@
             <li>Integrerad tidsloggning per projekt</li>
             <li>OKR-koppling och framstegsspårning</li>
           </ul>
-          <div class="tab-mockup" aria-hidden="true">
-            <div class="mockup-topbar">
-              <div class="mockup-dot"></div>
-              <div class="mockup-dot"></div>
-              <div class="mockup-dot"></div>
+          <div class="app-mockup" aria-hidden="true">
+            <div class="mock-titlebar">
+              <span class="mock-dot" style="background:#ff5f57"></span>
+              <span class="mock-dot" style="background:#febc2e"></span>
+              <span class="mock-dot" style="background:#28c840"></span>
+              <span class="mock-title">pixdrift — Execution</span>
             </div>
-            <div class="mockup-row short"></div>
-            <div class="mockup-row accent-row"></div>
-            <div class="mockup-row medium"></div>
-            <div class="mockup-row short"></div>
-            <div class="mockup-grid">
-              <div class="mockup-cell highlight"></div>
-              <div class="mockup-cell"></div>
-              <div class="mockup-cell"></div>
-              <div class="mockup-cell highlight"></div>
+            <div class="mock-body">
+              <div class="mock-sidebar">
+                <div class="mock-nav active">📊 Översikt</div>
+                <div class="mock-nav">🤝 Deals</div>
+                <div class="mock-nav">✓ Tasks</div>
+                <div class="mock-nav">👥 Kontakter</div>
+              </div>
+              <div class="mock-content">
+                <div class="mock-kpi-row">
+                  <div class="mock-kpi">
+                    <div class="mock-kpi-value" style="color:#6366f1">€64k</div>
+                    <div class="mock-kpi-label">Pipeline</div>
+                  </div>
+                  <div class="mock-kpi">
+                    <div class="mock-kpi-value" style="color:#10b981">7</div>
+                    <div class="mock-kpi-label">Aktiva deals</div>
+                  </div>
+                  <div class="mock-kpi">
+                    <div class="mock-kpi-value" style="color:#f59e0b">3</div>
+                    <div class="mock-kpi-label">Tasks idag</div>
+                  </div>
+                </div>
+                <div class="mock-list">
+                  <div class="mock-list-header">Aktiva deals</div>
+                  <div class="mock-list-row">
+                    <span class="mock-badge" style="background:rgba(99,102,241,0.15);color:#6366f1">PROPOSAL</span>
+                    <span class="mock-row-name">Novacode AB</span>
+                    <span class="mock-row-value">€12 000</span>
+                  </div>
+                  <div class="mock-list-row">
+                    <span class="mock-badge" style="background:rgba(16,185,129,0.15);color:#10b981">WON</span>
+                    <span class="mock-row-name">Nordic Shop</span>
+                    <span class="mock-row-value">€8 500</span>
+                  </div>
+                  <div class="mock-list-row">
+                    <span class="mock-badge" style="background:rgba(245,158,11,0.15);color:#f59e0b">QUALIFIED</span>
+                    <span class="mock-row-name">VVS Proffsen</span>
+                    <span class="mock-row-value">€5 200</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1525,21 +1695,58 @@
             <li>Onboarding-checklistor med progress</li>
             <li>Skills-matching för projektteam</li>
           </ul>
-          <div class="tab-mockup" aria-hidden="true">
-            <div class="mockup-topbar">
-              <div class="mockup-dot"></div>
-              <div class="mockup-dot"></div>
-              <div class="mockup-dot"></div>
+          <div class="app-mockup" aria-hidden="true">
+            <div class="mock-titlebar">
+              <span class="mock-dot" style="background:#ff5f57"></span>
+              <span class="mock-dot" style="background:#febc2e"></span>
+              <span class="mock-dot" style="background:#28c840"></span>
+              <span class="mock-title">pixdrift — Capability</span>
             </div>
-            <div class="mockup-row medium"></div>
-            <div class="mockup-row wide"></div>
-            <div class="mockup-row accent-row"></div>
-            <div class="mockup-row short"></div>
-            <div class="mockup-grid">
-              <div class="mockup-cell"></div>
-              <div class="mockup-cell highlight"></div>
-              <div class="mockup-cell highlight"></div>
-              <div class="mockup-cell"></div>
+            <div class="mock-body">
+              <div class="mock-sidebar">
+                <div class="mock-nav active">🗺 Kompetens</div>
+                <div class="mock-nav">📈 Mål</div>
+                <div class="mock-nav">🎓 Utbildning</div>
+                <div class="mock-nav">👤 Profiler</div>
+              </div>
+              <div class="mock-content">
+                <div class="mock-list-header">Kompetensmatris — Team Alpha</div>
+                <div class="mock-skill-row">
+                  <span class="mock-skill-name">Anna K.</span>
+                  <div class="mock-skill-dots">
+                    <span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot empty"></span>
+                  </div>
+                  <span style="color:#6b7280;font-size:9px">L4</span>
+                </div>
+                <div class="mock-skill-row">
+                  <span class="mock-skill-name">Marcus H.</span>
+                  <div class="mock-skill-dots">
+                    <span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot empty"></span><span class="mock-skill-dot empty"></span>
+                  </div>
+                  <span style="color:#6b7280;font-size:9px">L3</span>
+                </div>
+                <div class="mock-skill-row">
+                  <span class="mock-skill-name">Johan L.</span>
+                  <div class="mock-skill-dots">
+                    <span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span>
+                  </div>
+                  <span style="color:#6b7280;font-size:9px">L5</span>
+                </div>
+                <div class="mock-skill-row">
+                  <span class="mock-skill-name">Sara E.</span>
+                  <div class="mock-skill-dots">
+                    <span class="mock-skill-dot filled"></span><span class="mock-skill-dot filled"></span><span class="mock-skill-dot empty"></span><span class="mock-skill-dot empty"></span><span class="mock-skill-dot empty"></span>
+                  </div>
+                  <span style="color:#6b7280;font-size:9px">L2</span>
+                </div>
+                <div style="margin-top:8px">
+                  <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                    <span style="color:#94a3b8;font-size:9px">Teamets mål — Q2 2026</span>
+                    <span style="color:#818cf8;font-size:9px;font-weight:600">68%</span>
+                  </div>
+                  <div class="mock-progress-bar"><div class="mock-progress-fill" style="width:68%"></div></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1556,21 +1763,50 @@
             <li>Processmätningar och KPI-koppling</li>
             <li>Rollbaserade ansvarsmatriser (RACI)</li>
           </ul>
-          <div class="tab-mockup" aria-hidden="true">
-            <div class="mockup-topbar">
-              <div class="mockup-dot"></div>
-              <div class="mockup-dot"></div>
-              <div class="mockup-dot"></div>
+          <div class="app-mockup" aria-hidden="true">
+            <div class="mock-titlebar">
+              <span class="mock-dot" style="background:#ff5f57"></span>
+              <span class="mock-dot" style="background:#febc2e"></span>
+              <span class="mock-dot" style="background:#28c840"></span>
+              <span class="mock-title">pixdrift — Process</span>
             </div>
-            <div class="mockup-row accent-row"></div>
-            <div class="mockup-row short"></div>
-            <div class="mockup-row wide"></div>
-            <div class="mockup-row medium"></div>
-            <div class="mockup-grid">
-              <div class="mockup-cell highlight"></div>
-              <div class="mockup-cell highlight"></div>
-              <div class="mockup-cell"></div>
-              <div class="mockup-cell"></div>
+            <div class="mock-body">
+              <div class="mock-sidebar">
+                <div class="mock-nav active">⚠ Avvikelser</div>
+                <div class="mock-nav">📋 Processer</div>
+                <div class="mock-nav">✅ Revision</div>
+                <div class="mock-nav">📊 KPI</div>
+              </div>
+              <div class="mock-content">
+                <div class="mock-list">
+                  <div class="mock-list-header">Non-Conformances — öppna</div>
+                  <div class="mock-list-row">
+                    <span class="mock-severity" style="background:rgba(239,68,68,0.15);color:#ef4444">CRITICAL</span>
+                    <span class="mock-row-name">Leverantörsdokument saknas</span>
+                    <span class="mock-status open">OPEN</span>
+                  </div>
+                  <div class="mock-list-row">
+                    <span class="mock-severity" style="background:rgba(245,158,11,0.15);color:#f59e0b">MAJOR</span>
+                    <span class="mock-row-name">Kalibreringsdatum utgånget</span>
+                    <span class="mock-status progress">IN PROGRESS</span>
+                  </div>
+                  <div class="mock-list-row">
+                    <span class="mock-severity" style="background:rgba(245,158,11,0.15);color:#f59e0b">MAJOR</span>
+                    <span class="mock-row-name">Revisionsprotokoll ofullständigt</span>
+                    <span class="mock-status progress">IN PROGRESS</span>
+                  </div>
+                  <div class="mock-list-row">
+                    <span class="mock-severity" style="background:rgba(234,179,8,0.15);color:#ca8a04">MINOR</span>
+                    <span class="mock-row-name">Märkning ej uppdaterad</span>
+                    <span class="mock-status closed">CLOSED</span>
+                  </div>
+                  <div class="mock-list-row">
+                    <span class="mock-severity" style="background:rgba(234,179,8,0.15);color:#ca8a04">MINOR</span>
+                    <span class="mock-row-name">Checklistpunkt utelämnades</span>
+                    <span class="mock-status closed">CLOSED</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1587,17 +1823,67 @@
             <li>Realtids P&amp;L per affärsområde</li>
             <li>Automatisk momshantring och rapportering</li>
           </ul>
-          <div class="tab-mockup" aria-hidden="true">
-            <div class="mockup-topbar">
-              <div class="mockup-dot"></div>
-              <div class="mockup-dot"></div>
-              <div class="mockup-dot"></div>
+          <div class="app-mockup" aria-hidden="true">
+            <div class="mock-titlebar">
+              <span class="mock-dot" style="background:#ff5f57"></span>
+              <span class="mock-dot" style="background:#febc2e"></span>
+              <span class="mock-dot" style="background:#28c840"></span>
+              <span class="mock-title">pixdrift — Currency</span>
             </div>
-            <div class="mockup-row short"></div>
-            <div class="mockup-row accent-row"></div>
-            <div class="mockup-row medium"></div>
-            <div class="mockup-row wide"></div>
-            <div class="mockup-grid">
+            <div class="mock-body">
+              <div class="mock-sidebar">
+                <div class="mock-nav active">💱 Valutor</div>
+                <div class="mock-nav">📄 Fakturor</div>
+                <div class="mock-nav">💰 Budget</div>
+                <div class="mock-nav">📤 SIE4</div>
+              </div>
+              <div class="mock-content">
+                <div class="mock-list-header">Växelkurser — live</div>
+                <table class="mock-table">
+                  <thead>
+                    <tr>
+                      <th>Valuta</th>
+                      <th>Kurs (SEK)</th>
+                      <th>Trend</th>
+                      <th>+/−%</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>EUR</td>
+                      <td>11.48</td>
+                      <td class="mock-trend-up">↑</td>
+                      <td class="mock-trend-up">+0.3%</td>
+                    </tr>
+                    <tr>
+                      <td>USD</td>
+                      <td>10.62</td>
+                      <td class="mock-trend-down">↓</td>
+                      <td class="mock-trend-down">−0.7%</td>
+                    </tr>
+                    <tr>
+                      <td>GBP</td>
+                      <td>13.41</td>
+                      <td class="mock-trend-up">↑</td>
+                      <td class="mock-trend-up">+0.1%</td>
+                    </tr>
+                    <tr>
+                      <td>NOK</td>
+                      <td>0.98</td>
+                      <td class="mock-trend-down">↓</td>
+                      <td class="mock-trend-down">−0.2%</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="mock-fx-exposure">
+                  <span class="mock-fx-label">Total FX-exponering</span>
+                  <span class="mock-fx-value">€142 500</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- dummy markup start: removed old mockup-grid -->
+          <div style="display:none"><div class="mock-dummy-grid-start">
               <div class="mockup-cell"></div>
               <div class="mockup-cell"></div>
               <div class="mockup-cell highlight"></div>
@@ -1618,21 +1904,50 @@
             <li>Trendanalys och prognoser</li>
             <li>Schemalagda rapportutskick via e-post</li>
           </ul>
-          <div class="tab-mockup" aria-hidden="true">
-            <div class="mockup-topbar">
-              <div class="mockup-dot"></div>
-              <div class="mockup-dot"></div>
-              <div class="mockup-dot"></div>
+          <div class="app-mockup" aria-hidden="true">
+            <div class="mock-titlebar">
+              <span class="mock-dot" style="background:#ff5f57"></span>
+              <span class="mock-dot" style="background:#febc2e"></span>
+              <span class="mock-dot" style="background:#28c840"></span>
+              <span class="mock-title">pixdrift — Reports</span>
             </div>
-            <div class="mockup-row wide"></div>
-            <div class="mockup-row accent-row"></div>
-            <div class="mockup-row short"></div>
-            <div class="mockup-row medium"></div>
-            <div class="mockup-grid">
-              <div class="mockup-cell highlight"></div>
-              <div class="mockup-cell"></div>
-              <div class="mockup-cell"></div>
-              <div class="mockup-cell highlight"></div>
+            <div class="mock-body">
+              <div class="mock-sidebar">
+                <div class="mock-nav active">📑 P&amp;L</div>
+                <div class="mock-nav">📊 Dashboard</div>
+                <div class="mock-nav">📤 Export</div>
+                <div class="mock-nav">🗓 Schema</div>
+              </div>
+              <div class="mock-content">
+                <div class="mock-list-header">Resultaträkning — Mars 2026</div>
+                <div class="mock-pl-row">
+                  <span class="mock-pl-label">Nettoomsättning</span>
+                  <span class="mock-pl-value positive">€ 284 000</span>
+                </div>
+                <div class="mock-pl-row">
+                  <span class="mock-pl-label">Kostnad sålda varor</span>
+                  <span class="mock-pl-value" style="color:#ef4444">− € 112 000</span>
+                </div>
+                <div class="mock-pl-divider"></div>
+                <div class="mock-pl-row">
+                  <span class="mock-pl-label">Bruttoresultat</span>
+                  <span class="mock-pl-value positive">€ 172 000</span>
+                </div>
+                <div class="mock-pl-row">
+                  <span class="mock-pl-label">Rörelsekostnader</span>
+                  <span class="mock-pl-value" style="color:#ef4444">− € 98 000</span>
+                </div>
+                <div class="mock-pl-divider"></div>
+                <div class="mock-pl-row">
+                  <span class="mock-pl-label">EBITDA</span>
+                  <span class="mock-pl-value positive">€ 74 000</span>
+                </div>
+                <div class="mock-pl-divider"></div>
+                <div class="mock-pl-row mock-pl-total" style="background:rgba(99,102,241,0.08);border-radius:6px;border:1px solid rgba(99,102,241,0.15)">
+                  <span class="mock-pl-label" style="color:#e2e8f0;font-weight:700">Periodens resultat</span>
+                  <span class="mock-pl-value positive" style="font-weight:700;font-size:13px">€ 61 200</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1653,7 +1968,14 @@
 
       <div class="diff-grid">
         <div class="diff-item fade-in">
-          <div class="diff-icon" aria-hidden="true">💰</div>
+          <div class="diff-icon" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect width="48" height="48" rx="12" fill="rgba(99,102,241,0.15)"/>
+              <rect x="12" y="16" width="24" height="16" rx="3" stroke="#6366f1" stroke-width="2" fill="none"/>
+              <line x1="12" y1="24" x2="36" y2="24" stroke="#6366f1" stroke-width="2"/>
+              <circle cx="24" cy="20" r="2" fill="#6366f1"/>
+            </svg>
+          </div>
           <h3>Ett system. Inte en integration.</h3>
           <p>
             Starter på <strong>€499/mo</strong> ersätter
@@ -1663,7 +1985,13 @@
         </div>
 
         <div class="diff-item fade-in">
-          <div class="diff-icon" aria-hidden="true">🇪🇺</div>
+          <div class="diff-icon" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect width="48" height="48" rx="12" fill="rgba(16,185,129,0.15)"/>
+              <circle cx="24" cy="24" r="10" stroke="#10b981" stroke-width="2" fill="none"/>
+              <path d="M14 24h20M24 14c-3 4-3 12 0 20M24 14c3 4 3 12 0 20" stroke="#10b981" stroke-width="1.5" fill="none"/>
+            </svg>
+          </div>
           <h3>Byggt för europeisk verksamhet.</h3>
           <p>
             <strong>SIE4</strong>, <strong>BAS-plan</strong>, <strong>GDPR</strong>, multi-valuta (SEK/EUR/NOK/DKK).
@@ -1672,7 +2000,13 @@
         </div>
 
         <div class="diff-item fade-in">
-          <div class="diff-icon" aria-hidden="true">🔒</div>
+          <div class="diff-icon" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+              <rect width="48" height="48" rx="12" fill="rgba(245,158,11,0.15)"/>
+              <path d="M24 12L13 17v8c0 6.6 4.7 12.8 11 14 6.3-1.2 11-7.4 11-14v-8L24 12z" stroke="#f59e0b" stroke-width="2" fill="none"/>
+              <path d="M19 24l3 3 7-7" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
           <h3>Alltid live. Alltid uppdaterat.</h3>
           <p>
             <strong>GDPR-compliant</strong> by design. Data stannar i EU.
@@ -1859,19 +2193,19 @@
           <p class="footer-tagline">Your Business, Running on pixdrift.</p>
           <div class="footer-socials">
             <!-- LinkedIn -->
-            <a href="https://linkedin.com/company/pixdrift" class="footer-social" aria-label="LinkedIn">
+            <a href="https://linkedin.com/company/pixdrift" class="footer-social" aria-label="LinkedIn" target="_blank" rel="noopener">
               <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
               </svg>
             </a>
             <!-- Twitter/X -->
-            <a href="https://twitter.com/pixdrift" class="footer-social" aria-label="X (Twitter)">
+            <a href="https://twitter.com/pixdrift" class="footer-social" aria-label="X (Twitter)" target="_blank" rel="noopener">
               <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.741l7.73-8.835L1.254 2.25H8.08l4.26 5.632L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
               </svg>
             </a>
             <!-- GitHub -->
-            <a href="https://github.com/pixdrift" class="footer-social" aria-label="GitHub">
+            <a href="https://github.com/pixdrift" class="footer-social" aria-label="GitHub" target="_blank" rel="noopener">
               <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                 <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
               </svg>
@@ -1882,12 +2216,32 @@
         <div class="footer-col">
           <p class="footer-col-title">Produkt</p>
           <ul>
-            <li><a href="#produkt">Execution</a></li>
-            <li><a href="#produkt">Capability</a></li>
-            <li><a href="#produkt">Process</a></li>
-            <li><a href="#produkt">Currency</a></li>
-            <li><a href="#produkt">Reports</a></li>
+            <li><a href="#product">Features</a></li>
+            <li><a href="#pris">Prissättning</a></li>
+            <li><a href="#integrations">Integrationer</a></li>
+            <li><a href="/roadmap.html">Roadmap</a></li>
             <li><a href="/changelog.html">Changelog</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <p class="footer-col-title">Lösningar</p>
+          <ul>
+            <li><a href="/#solutions">SaaS</a></li>
+            <li><a href="/#solutions">Tjänsteföretag</a></li>
+            <li><a href="/#solutions">Handel</a></li>
+            <li><a href="/#solutions">Tillverkning</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <p class="footer-col-title">Resurser</p>
+          <ul>
+            <li><a href="/developers/">Dokumentation</a></li>
+            <li><a href="/developers/api-reference.html">API</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/press/">Case studies</a></li>
+            <li><a href="/status.html">Status</a></li>
           </ul>
         </div>
 
@@ -1895,21 +2249,10 @@
           <p class="footer-col-title">Företag</p>
           <ul>
             <li><a href="/about.html">Om oss</a></li>
-            <li><a href="/roadmap.html">Roadmap</a></li>
+            <li><a href="mailto:careers@pixdrift.com">Karriär</a></li>
             <li><a href="/press/">Press</a></li>
-            <li><a href="/security.html">Säkerhet</a></li>
-            <li><a href="/status.html">Status</a></li>
+            <li><a href="mailto:partners@pixdrift.com">Partners</a></li>
             <li><a href="mailto:hello@pixdrift.com">Kontakt</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-col">
-          <p class="footer-col-title">Resurser</p>
-          <ul>
-            <li><a href="/developers/">Docs</a></li>
-            <li><a href="#pris">Prissättning</a></li>
-            <li><a href="/checkout.html">Köp</a></li>
-            <li><a href="https://app.pixdrift.com/login">Logga in</a></li>
           </ul>
         </div>
 
@@ -1917,9 +2260,10 @@
 
       <div class="footer-bottom">
         <p class="footer-legal">
-          © 2025 pixdrift AB · Org.nr 559XXX-XXXX · Stockholm, Sverige ·
-          <a href="/privacy.html">Integritetspolicy</a> ·
-          <a href="/terms.html">Användarvillkor</a> ·
+          © 2026 pixdrift AB · Org.nr 559XXX-XXXX · Stockholm, Sverige ·
+          <a href="/legal/privacy.html">Integritetspolicy</a> ·
+          <a href="/legal/terms.html">Villkor</a> ·
+          <a href="/legal/dpa.html">GDPR</a> ·
           <a href="/security.html">Säkerhet</a>
         </p>
       </div>
