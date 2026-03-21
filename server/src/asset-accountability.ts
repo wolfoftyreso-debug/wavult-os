@@ -14,7 +14,9 @@ router.use(requireAuth);
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
 function getOrgId(req: Request): string | null {
-  return (req as any).user?.org_id ?? req.query.org_id as string ?? null;
+  // SECURITY FIX: org_id must come from authenticated user session only.
+  // NEVER trust org_id from query params — that allows cross-tenant data access.
+  return (req as any).user?.org_id ?? null;
 }
 
 function getUserId(req: Request): string {

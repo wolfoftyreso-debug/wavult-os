@@ -331,12 +331,17 @@ router.get("/reports/income-statement", async (req: Request, res: Response) => {
 // ---------------------------------------------------------------------------
 router.get("/reports/balance-sheet", async (req: Request, res: Response) => {
   try {
+    // SECURITY: enforce tenant isolation — user must be authenticated and scoped to their org
+    const user = (req as any).user;
+    if (!user?.org_id) return res.status(401).json({ error: "Unauthorized" });
+
     const asOfDate =
       (req.query.date as string) || new Date().toISOString().slice(0, 10);
 
     const { data: entries, error } = await supabase
       .from("journal_entries")
       .select("account_number, account_name, debit, credit")
+      .eq("org_id", user.org_id)
       .lte("date", asOfDate);
 
     if (error) throw error;

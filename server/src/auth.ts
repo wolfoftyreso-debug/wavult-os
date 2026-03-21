@@ -25,12 +25,18 @@ router.post("/login", async (req: Request, res: Response) => {
     .eq("auth_id", user.id)
     .maybeSingle();
 
+  // SECURITY FIX: do NOT default to "ADMIN" — if no users row exists, reject the login.
+  // A Supabase auth user with no users row should not gain any role.
+  if (!dbUser) {
+    return res.status(403).json({ error: "Account not fully set up. Contact your administrator." });
+  }
+
   const userPayload = {
-    id: dbUser?.id ?? user.id,
+    id: dbUser.id,
     email: user.email,
-    role: dbUser?.role ?? "ADMIN",
-    org_id: dbUser?.org_id ?? null,
-    full_name: dbUser?.full_name ?? null,
+    role: dbUser.role,
+    org_id: dbUser.org_id ?? null,
+    full_name: dbUser.full_name ?? null,
   };
 
   // Sätt HttpOnly-cookie
@@ -99,13 +105,18 @@ router.get("/me", async (req: Request, res: Response) => {
     .eq("auth_id", authUser.id)
     .maybeSingle();
 
+  // SECURITY FIX: do NOT default to "ADMIN" — if no users row exists, treat as unauthorized.
+  if (!dbUser) {
+    return res.status(403).json({ error: "Account not fully set up. Contact your administrator." });
+  }
+
   return res.json({
     user: {
-      id: dbUser?.id ?? authUser.id,
+      id: dbUser.id,
       email: authUser.email,
-      role: dbUser?.role ?? "ADMIN",
-      org_id: dbUser?.org_id ?? null,
-      full_name: dbUser?.full_name ?? null,
+      role: dbUser.role,
+      org_id: dbUser.org_id ?? null,
+      full_name: dbUser.full_name ?? null,
     },
   });
 });
@@ -210,6 +221,9 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
       (req as any).user = { id: data.user.id, email: data.user.email };
     }
     next();
+  }).catch(() => {
+    // SECURITY FIX: unhandled promise rejection would leave request hanging — return 401
+    return res.status(401).json({ error: "Authentication failed" });
   });
 }
 
