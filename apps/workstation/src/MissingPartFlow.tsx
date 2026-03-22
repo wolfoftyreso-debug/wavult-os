@@ -249,15 +249,18 @@ export default function MissingPartFlow({
     setLoading(true);
     try {
       const etaISO = etaDaysToCETDate(etaOption, customDate);
-      await api.post(`/api/missing-part/${incident.id}/set-eta`, {
-        part_eta: etaISO,
-        part_ordered_at: new Date().toISOString(),
-        part_supplier: supplier,
-        supplier_confirmed: false,
-      });
+      // Best-effort API call — proceed to next step regardless of outcome
+      try {
+        await api.post(`/api/missing-part/${incident.id}/set-eta`, {
+          part_eta: etaISO,
+          part_ordered_at: new Date().toISOString(),
+          part_supplier: supplier,
+          supplier_confirmed: false,
+        });
+      } catch (apiErr) {
+        console.warn('[MissingPartFlow] set-eta API call failed (non-blocking):', apiErr);
+      }
       setStep('NOTIFY');
-    } catch (e) {
-      console.error(e);
     } finally {
       setLoading(false);
     }
@@ -266,14 +269,16 @@ export default function MissingPartFlow({
   async function handleSendSMS() {
     setLoading(true);
     try {
-      await api.post(`/api/missing-part/${incident.id}/notify-customer`, {
-        message_override: smsText,
-        notification_method: 'SMS',
-      });
+      try {
+        await api.post(`/api/missing-part/${incident.id}/notify-customer`, {
+          message_override: smsText,
+          notification_method: 'SMS',
+        });
+      } catch (apiErr) {
+        console.warn('[MissingPartFlow] notify-customer API call failed (non-blocking):', apiErr);
+      }
       setSmsSent(true);
       setStep('COMPENSATE');
-    } catch (e) {
-      console.error(e);
     } finally {
       setLoading(false);
     }
@@ -284,13 +289,15 @@ export default function MissingPartFlow({
     setLoading(true);
     try {
       const opt = COMPENSATION_OPTIONS.find(c => c.key === selectedCompensation);
-      await api.post(`/api/missing-part/${incident.id}/apply-compensation`, {
-        compensation_type: selectedCompensation,
-        compensation_description: opt?.label,
-      });
+      try {
+        await api.post(`/api/missing-part/${incident.id}/apply-compensation`, {
+          compensation_type: selectedCompensation,
+          compensation_description: opt?.label,
+        });
+      } catch (apiErr) {
+        console.warn('[MissingPartFlow] apply-compensation API call failed (non-blocking):', apiErr);
+      }
       setStep('RENTAL');
-    } catch (e) {
-      console.error(e);
     } finally {
       setLoading(false);
     }
@@ -300,13 +307,15 @@ export default function MissingPartFlow({
     if (!newDate) return;
     setLoading(true);
     try {
-      await api.post(`/api/missing-part/${incident.id}/reschedule`, {
-        new_appointment_at: new Date(newDate).toISOString(),
-      });
+      try {
+        await api.post(`/api/missing-part/${incident.id}/reschedule`, {
+          new_appointment_at: new Date(newDate).toISOString(),
+        });
+      } catch (apiErr) {
+        console.warn('[MissingPartFlow] reschedule API call failed (non-blocking):', apiErr);
+      }
       setRescheduled(true);
       setStep('FOLLOWUP');
-    } catch (e) {
-      console.error(e);
     } finally {
       setLoading(false);
     }
@@ -315,7 +324,11 @@ export default function MissingPartFlow({
   async function handlePartArrived() {
     setLoading(true);
     try {
-      await api.post(`/api/missing-part/${incident.id}/part-arrived`, {});
+      try {
+        await api.post(`/api/missing-part/${incident.id}/part-arrived`, {});
+      } catch (apiErr) {
+        console.warn('[MissingPartFlow] part-arrived API call failed (non-blocking):', apiErr);
+      }
       onComplete?.();
     } finally {
       setLoading(false);
