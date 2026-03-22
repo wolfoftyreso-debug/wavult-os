@@ -284,9 +284,19 @@ function Step2({
   onBack: () => void;
 }) {
   const options = [
-    { id: "automaster", label: "Importera från Automaster", icon: "📂" },
-    { id: "winbas",     label: "Importera från Winbas",     icon: "📂" },
-    { id: "keyloop",    label: "Importera från Keyloop",    icon: "📂" },
+    // DMS-system
+    { id: "automaster",  label: "Importera från Automaster",   icon: "🔧" },
+    { id: "winbas",      label: "Importera från Winbas",       icon: "🔧" },
+    { id: "winassist",   label: "Importera från Winassist",    icon: "🔧" },
+    { id: "cobra",       label: "Importera från Cobra",        icon: "🔧" },
+    { id: "keyloop",     label: "Importera från Keyloop/CDK",  icon: "🔧" },
+    { id: "kerridge",    label: "Importera från Kerridge",     icon: "🔧" },
+    // Bokföring
+    { id: "fortnox",     label: "Importera från Fortnox",      icon: "📊" },
+    { id: "visma",       label: "Importera från Visma",        icon: "📊" },
+    // CRM/Skadehantering
+    { id: "autofutura",  label: "Importera från AutoFutura",   icon: "🤝" },
+    { id: "cabas",       label: "Importera från Cabas",        icon: "🚗" },
     { id: "scratch",    label: "Starta från scratch",       icon: "✨" },
   ] as const;
 
@@ -321,7 +331,7 @@ function Step2({
             marginBottom: 24,
           }}
         >
-          ✓ Vi importerar all data från {data.sourceSystem === "automaster" ? "Automaster" : data.sourceSystem === "winbas" ? "Winbas" : "Keyloop"}. Tar ca 5 minuter. Kan ångras.
+          ✓ Vi importerar all data från {{ automaster:"Automaster", winbas:"Winbas", winassist:"Winassist", cobra:"Cobra", keyloop:"Keyloop/CDK", kerridge:"Kerridge", fortnox:"Fortnox", visma:"Visma", autofutura:"AutoFutura", cabas:"Cabas" }[data.sourceSystem] || data.sourceSystem}. Tar ca 5 minuter. Kan ångras.
         </div>
       )}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
