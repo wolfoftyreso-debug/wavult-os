@@ -48,8 +48,8 @@ jobs:
       - name: Build, tag, and push Docker image
         id: build
         run: |
-          IMAGE="${{ env.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:${{ steps.meta.outputs.tag }}"
-          LATEST="${{ env.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:latest"
+          IMAGE="${{ env.ECR_REGISTRY }}/hypbit/api:${{ steps.meta.outputs.tag }}"
+          LATEST="${{ env.ECR_REGISTRY }}/hypbit/api:latest"
 
           docker build -f server/Dockerfile -t "$IMAGE" -t "$LATEST" ./server
           docker push "$IMAGE"
