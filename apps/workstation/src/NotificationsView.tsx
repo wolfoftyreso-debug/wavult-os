@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const C = {
   bg: "#F2F2F7", surface: "#FFFFFF", border: "#D1D1D6",
@@ -14,17 +14,18 @@ interface Notification {
   body: string;
   time: string;
   read: boolean;
-  link?: string;
+  navigateTo?: string;  // view id to navigate to
+  entityId?: string;    // specific entity id
 }
 
 const DEMO_NOTIFICATIONS: Notification[] = [
-  { id: '1', type: 'deal', title: 'Deal vunnen', body: 'Novacode AB — €12 000 · Erik S.', time: '5 min sedan', read: false },
-  { id: '2', type: 'checkin', title: 'Kund incheckat', body: 'Volvo XC60 (ABC 123) — kl 08:47', time: '12 min sedan', read: false },
-  { id: '3', type: 'task', title: 'Task försenad', body: 'Offert till Nordic Shop förfaller idag', time: '1h sedan', read: false },
-  { id: '4', type: 'approval', title: 'Tilläggsarbete godkänt', body: 'BMW 320 — byte bromsskiva · €2 400', time: '2h sedan', read: true },
-  { id: '5', type: 'nc', title: 'Ny avvikelse', body: 'NC-001: Bromsar dokumenterade felaktigt', time: '3h sedan', read: true },
-  { id: '6', type: 'culture', title: 'Anders Björk fyller år imorgon 🎂', body: 'Tårta beställd automatiskt', time: 'Idag', read: true },
-  { id: '7', type: 'system', title: 'Systemuppdatering', body: 'Pixdrift v1.3 — nya funktioner tillgängliga', time: 'Igår', read: true },
+  { id: '1', type: 'deal', title: 'Deal vunnen', body: 'Novacode AB — €12 000 · Erik S.', time: '5 min sedan', read: false, navigateTo: 'deals', entityId: 'deal-novacode-001' },
+  { id: '2', type: 'checkin', title: 'Kund incheckat', body: 'Volvo XC60 (ABC 123) — kl 08:47', time: '12 min sedan', read: false, navigateTo: 'work-orders', entityId: 'wo-abc123' },
+  { id: '3', type: 'task', title: 'Task försenad', body: 'Offert till Nordic Shop förfaller idag', time: '1h sedan', read: false, navigateTo: 'tasks', entityId: 'task-nordic-shop' },
+  { id: '4', type: 'approval', title: 'Tilläggsarbete godkänt', body: 'BMW 320 — byte bromsskiva · €2 400', time: '2h sedan', read: true, navigateTo: 'approval', entityId: 'approval-bmw320' },
+  { id: '5', type: 'nc', title: 'Ny avvikelse', body: 'NC-001: Bromsar dokumenterade felaktigt', time: '3h sedan', read: true, navigateTo: 'quality', entityId: 'nc-001' },
+  { id: '6', type: 'culture', title: 'Anders Björk fyller år imorgon 🎂', body: 'Tårta beställd automatiskt', time: 'Idag', read: true, navigateTo: 'culture' },
+  { id: '7', type: 'system', title: 'Systemuppdatering', body: 'Pixdrift v1.3 — nya funktioner tillgängliga', time: 'Igår', read: true, navigateTo: 'devops' },
 ];
 
 const TYPE_ICONS: Record<string, string> = {
@@ -37,10 +38,13 @@ const TYPE_COLORS: Record<string, string> = {
   nc: C.red, culture: '#AF52DE', system: C.secondary,
 };
 
-export default function NotificationsView() {
+interface NotificationsViewProps {
+  onNavigate?: (view: string, entityId?: string) => void;
+}
+
+export default function NotificationsView({ onNavigate }: NotificationsViewProps) {
   const [notifications, setNotifications] = useState(DEMO_NOTIFICATIONS);
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
-  const [loading, setLoading] = useState(false);
 
   const unreadCount = notifications.filter(n => !n.read).length;
   const filtered = filter === 'unread' ? notifications.filter(n => !n.read) : notifications;
@@ -115,12 +119,17 @@ export default function NotificationsView() {
           filtered.map((notif, i) => (
             <div
               key={notif.id}
-              onClick={() => markRead(notif.id)}
+              onClick={() => {
+                markRead(notif.id);
+                if (notif.navigateTo && onNavigate) {
+                  onNavigate(notif.navigateTo, notif.entityId);
+                }
+              }}
               style={{
                 display: 'flex', gap: 14, padding: '14px 20px',
                 borderBottom: i < filtered.length-1 ? `0.5px solid ${C.fill}` : 'none',
                 background: notif.read ? C.surface : '#F0F6FF',
-                cursor: 'pointer',
+                cursor: notif.navigateTo ? 'pointer' : 'default',
                 transition: 'background 0.1s',
               }}
               onMouseEnter={e => (e.currentTarget as HTMLDivElement).style.background = C.fill}
@@ -146,6 +155,11 @@ export default function NotificationsView() {
                 </div>
                 <div style={{ fontSize: 13, color: C.secondary, marginTop: 2 }}>{notif.body}</div>
               </div>
+
+              {/* Navigation arrow */}
+              {notif.navigateTo && (
+                <div style={{ color: C.tertiary, fontSize: 16, flexShrink: 0, alignSelf: 'center' }}>›</div>
+              )}
 
               {/* Unread dot */}
               {!notif.read && (

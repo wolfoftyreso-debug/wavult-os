@@ -493,9 +493,12 @@ import companyComplianceRouter from './company-compliance';
 import vehicleIntakeRouter from './vehicle-intake-api';
 import { missingPartRouter } from './missing-part-api';
 import rentalPartnerRouter from './rental-partner-api';
+import mobilityIncidentRouter from './mobility-incident-api';
 app.use('/api/company',          companyComplianceRouter);   // Company Core — legal entities, compliance calendar, authority filings (ABL/SFL/ÅRL)
 app.use('/api/intake',           vehicleIntakeRouter);       // Vehicle Intake Protocol — 8-angle photos, diagnostic, recalls (mandatory flow)
 app.use('/api/missing-part',     missingPartRouter);         // Missing Part Protocol — airline-style delay response with auto compensation
+app.use(rentalPartnerRouter);                               // Rental Partner Integration — Europcar/Hertz/Avis/Sixt/Enterprise + own fleet, compensation rules
+app.use('/api/mobility',         mobilityIncidentRouter);    // Mobility Incident Flow Engine — towing, responsibility engine, cost allocation, OEM claims
 
 // ---------------------------------------------------------------------------
 // Auth helper for inline routes

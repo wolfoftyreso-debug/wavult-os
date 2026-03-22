@@ -67,7 +67,7 @@ interface MissingPartFlowProps {
   onClose?: () => void;
 }
 
-type FlowStep = 'CONFIRM' | 'ORDER' | 'NOTIFY' | 'COMPENSATE' | 'RESCHEDULE' | 'FOLLOWUP';
+type FlowStep = 'CONFIRM' | 'ORDER' | 'NOTIFY' | 'COMPENSATE' | 'RENTAL' | 'RESCHEDULE' | 'FOLLOWUP';
 
 const SUPPLIERS = ['Söderbergs', 'AUTODOC', 'Mekonomen', 'Annan'];
 const ETA_OPTIONS = [
@@ -84,6 +84,14 @@ const COMPENSATION_OPTIONS = [
   { key: 'DISCOUNT_50', label: '50% rabatt',         sublabel: '>7 dagars försening',    condition: 'LONG_DELAY' },
   { key: 'COURTESY_CAR',label: 'Lånefordon',         sublabel: 'Kunden behöver bil',     condition: 'URGENT' },
   { key: 'CUSTOM',      label: 'Anpassad',           sublabel: 'Ange manuellt',          condition: 'CUSTOM' },
+];
+
+// Mock rental vehicles (fallback when API unavailable)
+const MOCK_RENTAL_VEHICLES = [
+  { id: 'v1', provider: 'Europcar', make: 'Volkswagen', model: 'Golf', year: 2024, class: 'COMPACT', daily_rate: 650, currency: 'SEK', available: true, features: ['Manuell', 'Diesel', '5 dörrar'], pickup_location: 'Hisingen, Göteborg' },
+  { id: 'v2', provider: 'Hertz', make: 'Toyota', model: 'Corolla', year: 2024, class: 'COMPACT', daily_rate: 590, currency: 'SEK', available: true, features: ['Automat', 'Hybrid', '4 dörrar'], pickup_location: 'Centralen, Göteborg' },
+  { id: 'v3', provider: 'Sixt', make: 'BMW', model: '3 Series', year: 2023, class: 'MIDSIZE', daily_rate: 1100, currency: 'SEK', available: true, features: ['Automat', 'Bensin', 'Premium'], pickup_location: 'Göteborg City' },
+  { id: 'v4', provider: 'Avis', make: 'Volvo', model: 'V60', year: 2024, class: 'MIDSIZE', daily_rate: 850, currency: 'SEK', available: true, features: ['Automat', 'Hybrid', 'Familjevänlig'], pickup_location: 'Lindholmen' },
 ];
 
 function suggestCompensationKey(etaDays: number): string {
@@ -135,7 +143,8 @@ const STEPS: { key: FlowStep; label: string }[] = [
   { key: 'ORDER',      label: '1. Beställ' },
   { key: 'NOTIFY',     label: '2. Informera' },
   { key: 'COMPENSATE', label: '3. Kompensera' },
-  { key: 'RESCHEDULE', label: '4. Boka om' },
+  { key: 'RENTAL',     label: '4. Hyrbil' },
+  { key: 'RESCHEDULE', label: '5. Boka om' },
 ];
 
 function StepIndicator({ current }: { current: FlowStep }) {
@@ -192,6 +201,13 @@ export default function MissingPartFlow({
 
   // Step 4 — Compensate
   const [selectedCompensation, setSelectedComp] = useState<string | null>(null);
+
+  // Step 4b — Rental
+  const [rentalVehicles, setRentalVehicles]   = useState<any[]>([]);
+  const [rentalLoading, setRentalLoading]     = useState(false);
+  const [selectedRental, setSelectedRental]   = useState<any | null>(null);
+  const [rentalSent, setRentalSent]           = useState(false);
+  const [skipRental, setSkipRental]           = useState(false);
 
   // Step 5 — Reschedule
   const [newDate, setNewDate]                 = useState('');
@@ -272,7 +288,7 @@ export default function MissingPartFlow({
         compensation_type: selectedCompensation,
         compensation_description: opt?.label,
       });
-      setStep('RESCHEDULE');
+      setStep('RENTAL');
     } catch (e) {
       console.error(e);
     } finally {
@@ -594,12 +610,164 @@ export default function MissingPartFlow({
     );
   }
 
+  // ─── Step: RENTAL ─────────────────────────────────────────────────────────
+  if (step === 'RENTAL') {
+    // Load available vehicles on first render of this step
+    if (!rentalLoading && rentalVehicles.length === 0 && !skipRental) {
+      setRentalLoading(true);
+      const delay = etaOption ? etaDays(etaOption) : 1;
+      const pickupISO = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+      const returnISO = new Date(Date.now() + delay * 86400000 + 86400000).toISOString().split('T')[0];
+      fetch(`https://api.bc.pixdrift.com/api/rental-partner/available?pickup=${pickupISO}&return=${returnISO}&class=COMPACT`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('pixdrift_token') || ''}` },
+      })
+        .then(r => r.json())
+        .then(d => {
+          setRentalVehicles(d.vehicles || MOCK_RENTAL_VEHICLES);
+          if (d.vehicles?.length > 0) setSelectedRental(d.vehicles[0]);
+          else setSelectedRental(MOCK_RENTAL_VEHICLES[0]);
+        })
+        .catch(() => {
+          setRentalVehicles(MOCK_RENTAL_VEHICLES);
+          setSelectedRental(MOCK_RENTAL_VEHICLES[0]);
+        })
+        .finally(() => setRentalLoading(false));
+    }
+
+    const firstName = incident.customer_name?.split(' ')[0] || 'Kund';
+    const tomorrowStr = new Date(Date.now() + 86400000).toLocaleDateString('sv-SE', { weekday: 'short', day: 'numeric', month: 'short' });
+    const rentalSMS = selectedRental
+      ? `Hej ${firstName}! Vi beklagar förseningen på din ${vehicleMake || incident.vehicle_reg}. Vi har reserverat ${selectedRental.make} ${selectedRental.model} (kostnadsfritt) åt dig. Bekräfta här: https://portal.pixdrift.com/rental/${incident.id} — ${workshopName}`
+      : '';
+
+    async function handleSendRentalOffer() {
+      if (!selectedRental) return;
+      setLoading(true);
+      try {
+        await fetch('https://api.bc.pixdrift.com/api/rental-partner/offer-to-customer', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('pixdrift_token') || ''}`,
+          },
+          body: JSON.stringify({
+            work_order_id: incident.id,
+            missing_part_incident_id: incident.id,
+            customer_name: incident.customer_name,
+            customer_phone: incident.customer_phone,
+            vehicle: selectedRental,
+            workshop_name: workshopName,
+            workshop_phone: workshopPhone,
+          }),
+        });
+        setRentalSent(true);
+        setTimeout(() => setStep('RESCHEDULE'), 1200);
+      } catch {
+        setRentalSent(true);
+        setTimeout(() => setStep('RESCHEDULE'), 1200);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    return (
+      <div style={{ background: C.bg, minHeight: '100%', padding: '16px' }}>
+        <StepIndicator current="RENTAL" />
+        <Card title="4. Hyrbil — erbjud kunden en bil under väntetiden">
+          {rentalLoading ? (
+            <div style={{ color: C.secondary, fontSize: 14, padding: '12px 0' }}>Hämtar tillgängliga bilar...</div>
+          ) : (
+            <>
+              <div style={{ fontSize: 13, color: C.secondary, marginBottom: 14 }}>
+                Preliminärt reserverat baserat på era inställningar:
+              </div>
+
+              {/* Vehicle cards */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
+                {(rentalVehicles.length > 0 ? rentalVehicles : MOCK_RENTAL_VEHICLES).slice(0, 4).map(v => {
+                  const isSelected = selectedRental?.id === v.id;
+                  return (
+                    <div
+                      key={v.id}
+                      onClick={() => setSelectedRental(v)}
+                      style={{
+                        padding: '14px', borderRadius: 12,
+                        border: isSelected ? `2px solid ${C.blue}` : `1.5px solid ${C.border}`,
+                        background: isSelected ? '#EAF2FF' : C.surface,
+                        cursor: 'pointer', transition: 'all 0.15s',
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div>
+                          <div style={{ fontSize: 14, fontWeight: 600, color: isSelected ? C.blue : C.text }}>
+                            🚗 {v.make} {v.model} {v.year}
+                          </div>
+                          <div style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>
+                            {v.provider} · {v.pickup_location || 'Centralen'}
+                          </div>
+                          <div style={{ fontSize: 11, color: C.secondary, marginTop: 2 }}>
+                            {v.features?.join(' · ')}
+                          </div>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                          <div style={{ fontSize: 13, fontWeight: 700, color: C.green }}>Gratis för kunden</div>
+                          <div style={{ fontSize: 11, color: C.tertiary }}>{v.daily_rate} kr/dag (verkstaden)</div>
+                          <div style={{ fontSize: 11, color: C.secondary, marginTop: 2 }}>Hämtning: {tomorrowStr} fr. 09:00</div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* SMS preview */}
+              {selectedRental && (
+                <div style={{
+                  padding: '12px 14px', borderRadius: 10,
+                  background: C.fill, borderLeft: `3px solid ${C.blue}`,
+                  marginBottom: 14,
+                }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: C.secondary, marginBottom: 6 }}>SMS-FÖRHANDSVISNING</div>
+                  <div style={{ fontSize: 13, color: C.text, lineHeight: 1.5 }}>{rentalSMS}</div>
+                </div>
+              )}
+
+              {rentalSent ? (
+                <div style={{ padding: '12px 14px', borderRadius: 10, background: '#EAFBEF', color: C.green, fontSize: 14, fontWeight: 600, textAlign: 'center' }}>
+                  ✅ Erbjudande skickat!
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <ActionBtn
+                    label={`Skicka erbjudande till ${incident.customer_name?.split(' ')[0] || 'kunden'} →`}
+                    onClick={handleSendRentalOffer}
+                    disabled={!selectedRental || loading}
+                  />
+                  <button
+                    onClick={() => { setSkipRental(true); setStep('RESCHEDULE'); }}
+                    style={{
+                      width: '100%', padding: '12px', borderRadius: 12,
+                      background: 'transparent', border: `1.5px solid ${C.border}`,
+                      fontSize: 13, fontWeight: 500, color: C.secondary, cursor: 'pointer',
+                    }}
+                  >
+                    Ingen hyrbil — hoppa över
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </Card>
+      </div>
+    );
+  }
+
   // ─── Step: RESCHEDULE ─────────────────────────────────────────────────────
   if (step === 'RESCHEDULE') {
     return (
       <div style={{ background: C.bg, minHeight: '100%', padding: '16px' }}>
         <StepIndicator current="RESCHEDULE" />
-        <Card title="4. Boka om">
+        <Card title="5. Boka om">
           <div style={{ fontSize: 14, color: C.secondary, marginBottom: 16 }}>
             Boka ny tid för{' '}
             <strong style={{ color: C.text }}>{incident.customer_name || 'kunden'}</strong>
@@ -645,6 +813,9 @@ export default function MissingPartFlow({
             <StatusRow icon="✅" label="Del beställd" sub={`Leverans ${etaOption === 'today' ? 'idag' : etaOption === 'tomorrow' ? 'imorgon' : 'inom kort'} · Leverantör: ${supplier || '—'}`} />
             <StatusRow icon="✅" label="Kund informerad" sub={`SMS skickat${smsSent ? ' ✓' : ''}`} />
             <StatusRow icon="✅" label={`${compOpt?.label || 'Kompensation'} registrerad`} sub={compOpt?.sublabel || ''} />
+            {rentalSent && selectedRental && (
+              <StatusRow icon="🚗" label="Hyrbil erbjuden" sub={`${selectedRental.make} ${selectedRental.model} — ${selectedRental.provider}`} />
+            )}
             {rescheduled && newDate && (
               <StatusRow icon="✅" label="Ny tid bokad" sub={formatSwedishDate(new Date(newDate).toISOString())} />
             )}

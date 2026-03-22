@@ -4,6 +4,7 @@ import UnifiedCalendar from "./UnifiedCalendar";
 import LearningModule from "./LearningModule";
 import DMSModule from "./DMSModule";
 import RentalModule from "./RentalModule";
+import MobilityIncidentView from "./MobilityIncidentView";
 import SpaghettiModule from "./SpaghettiModule";
 import SpatialModule from "./SpatialModule";
 import AssetModule from "./AssetModule";
@@ -300,6 +301,14 @@ const Icons = {
   Wrench: () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.77 3.77z"/>
+    </svg>
+  ),
+  Truck: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="1" y="3" width="15" height="13" rx="1"/>
+      <path d="M16 8h4l3 5v4h-7V8z"/>
+      <circle cx="5.5" cy="18.5" r="2.5"/>
+      <circle cx="18.5" cy="18.5" r="2.5"/>
     </svg>
   ),
   Box: () => (
@@ -886,6 +895,12 @@ const NAV_SECTIONS_OPERATIONS_LEAD = [
       { id: "approval",    icon: <Icons.Check />,    label: "Tilläggsarbete"   },
       { id: "dms",         icon: <Icons.Car />,      label: "Fordon & Kunder"  },
       { id: "calendar",    icon: <Icons.Calendar />, label: "Schema"           },
+    ],
+  },
+  {
+    label: "MOBILITY",
+    items: [
+      { id: "mobility", icon: <Icons.Truck />, label: "Mobility & Bärgning" },
     ],
   },
 ];
@@ -2546,6 +2561,7 @@ export default function App({ user: propUser, onLogout }: { user?: any; onLogout
     control:          "Kontrollager",
     "work-orders":    "Alla jobb idag",
     approval:         "Tilläggsarbete",
+    mobility:         "Mobility & Bärgning",
   };
 
   return (
@@ -2619,6 +2635,7 @@ export default function App({ user: propUser, onLogout }: { user?: any; onLogout
             {view === "learning"   && <LearningModule user={D.user as any} />}
             {view === "dms"        && !isServiceAdvisor && <DMSModule />}
             {view === "rental"     && <RentalModule />}
+            {view === "mobility"   && <MobilityIncidentView />}
             {view === "spaghetti" && <SpaghettiModule />}
             {view === "spatial"   && <SpatialModule />}
             {view === "assets"       && <AssetModule user={D.user as any} />}

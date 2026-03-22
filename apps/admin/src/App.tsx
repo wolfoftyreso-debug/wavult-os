@@ -3,6 +3,7 @@ import { useApi } from "./useApi";
 import { useTranslation, LanguageSwitcher } from "@pixdrift/i18n";
 import { IntegrationsHub } from "./IntegrationsHub";
 import BrandSettings from "./BrandSettings";
+import CompensationSettingsView from "./CompensationSettingsView";
 
 // ─── Design tokens ─────────────────────────────────────────────────────────────
 const C = {
@@ -201,6 +202,14 @@ const navItems: NavItem[] = [
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="3"/>
       <path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2M12 20v2M20 12h2M2 12h2M17.66 17.66l-1.41-1.41M6.34 17.66l1.41-1.41"/>
+    </svg>
+  )},
+  { id: "compensation", label: "Kompensation & Hyrbil", icon: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="1" y="3" width="15" height="13" rx="2"/>
+      <path d="M16 8h4l3 5v3h-7V8z"/>
+      <circle cx="5.5" cy="18.5" r="2.5"/>
+      <circle cx="18.5" cy="18.5" r="2.5"/>
     </svg>
   )},
 ];
@@ -861,6 +870,7 @@ export default function App() {
     integrations: <IntegrationsHub />,
     brand: <BrandSettings />,
     settings: <SettingsView />,
+    compensation: <CompensationSettingsView />,
   };
 
   const current = navItems.find(n => n.id === view)!;
