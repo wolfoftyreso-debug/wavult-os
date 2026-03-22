@@ -7,7 +7,7 @@
  */
 
 import React, { useState, useEffect, useCallback } from "react";
-import { useApi } from "./useApi";
+import { apiClient } from "./useApi";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -533,8 +533,6 @@ const QueryBox: React.FC<{ onQuery: (q: string) => void; loading: boolean; resul
 // ─── Main View ────────────────────────────────────────────────────────────────
 
 const IntelligenceView: React.FC = () => {
-  const { get, post } = useApi();
-
   const [technicians, setTechnicians] = useState<TechnicianLoad[]>([]);
   const [parts, setParts] = useState<AtRiskPart[]>([]);
   const [delays, setDelays] = useState<DelayPattern | null>(null);
@@ -553,12 +551,12 @@ const IntelligenceView: React.FC = () => {
     setError(null);
     try {
       const [techRes, partsRes, delayRes, churnRes, revenueRes, slaRes] = await Promise.allSettled([
-        get("/api/intelligence/overloaded-technicians"),
-        get("/api/intelligence/at-risk-parts"),
-        get("/api/intelligence/delay-patterns"),
-        get("/api/intelligence/customer-churn-risk"),
-        get("/api/intelligence/revenue-forecast"),
-        get("/api/intelligence/sla-at-risk"),
+        apiClient.get("/api/intelligence/overloaded-technicians"),
+        apiClient.get("/api/intelligence/at-risk-parts"),
+        apiClient.get("/api/intelligence/delay-patterns"),
+        apiClient.get("/api/intelligence/customer-churn-risk"),
+        apiClient.get("/api/intelligence/revenue-forecast"),
+        apiClient.get("/api/intelligence/sla-at-risk"),
       ]);
 
       if (techRes.status === "fulfilled") setTechnicians((techRes.value as any)?.result ?? []);
@@ -574,7 +572,7 @@ const IntelligenceView: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [get]);
+  }, []);
 
   useEffect(() => {
     load();
@@ -587,7 +585,7 @@ const IntelligenceView: React.FC = () => {
     setQueryLoading(true);
     setQueryResult(null);
     try {
-      const result = await post("/api/intelligence/query", { question });
+      const result = await apiClient.post("/api/intelligence/query", { question });
       setQueryResult(result);
     } catch (err: any) {
       setQueryResult({ answer: `Error: ${err.message}` });

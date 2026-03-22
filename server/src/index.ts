@@ -94,6 +94,12 @@ import rentalRouter from "./rental-engine";
 import oemRouter from "./integrations/oem";
 
 // ---------------------------------------------------------------------------
+// PIX Intelligence + Workflow Engine (Palantir-depth for €499/month)
+// ---------------------------------------------------------------------------
+import intelligenceRouter from "./intelligence-api";
+import workflowEngineRouter from "./workflow-engine";
+
+// ---------------------------------------------------------------------------
 // Tax Compliance imports (SFL + ML + BFL)
 // ---------------------------------------------------------------------------
 import personnelLedgerRouter from "./personnel-ledger";
@@ -450,6 +456,12 @@ app.use(vehicleSalesRouter);   // /api/vehicle-sales/*
 app.use(automotiveCrmRouter);  // /api/automotive-crm/*
 app.use('/api/rental', rentalRouter); // /api/rental/* — PIX-event-sourced rental engine
 app.use(oemRouter);            // /api/oem/*
+
+// ---------------------------------------------------------------------------
+// PIX Intelligence Engine — Palantir-depth analytics for automotive SMBs
+// ---------------------------------------------------------------------------
+app.use(intelligenceRouter);   // /api/intelligence/* — overloaded-technicians, at-risk-parts, etc.
+app.use(workflowEngineRouter); // /api/workflows/* — templates, instances, step completion
 
 // ---------------------------------------------------------------------------
 // SEO — sitemap.xml + robots.txt on root, /api/seo/* for endpoints
