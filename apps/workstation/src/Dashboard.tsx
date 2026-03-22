@@ -370,6 +370,7 @@ const NAV_SECTIONS_BASE = [
     items: [
       { id: "culture", icon: <Icons.Cake />, label: "Kultur & Events" },
       { id: "devops", icon: <Icons.Key />, label: "Dev Infrastructure" },
+      { id: "account-safety", icon: <ShieldCheckIcon />, label: "Kontosäkerhet" },
     ],
   },
 ];
@@ -2262,6 +2263,7 @@ export default function App({ user: propUser, onLogout }: { user?: any; onLogout
     people:      "Team & Trivsel",
     damage:      "Skadeärenden",
     devops:      "Dev Infrastructure",
+    "account-safety": "Kontosäkerhet",
   };
 
   return (
@@ -2313,6 +2315,7 @@ export default function App({ user: propUser, onLogout }: { user?: any; onLogout
             {view === "people"       && <PeopleOSModule D={D as any} />}
             {view === "external-audits" && <ExternalAuditModule orgId={D.user?.id} />}
             {view === "devops" && <DevOpsHub />}
+            {view === "account-safety" && <AccountSafetyModule orgId={D.user?.id} />}
           </main>
         </div>
       </div>

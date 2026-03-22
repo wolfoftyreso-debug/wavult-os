@@ -236,13 +236,18 @@ router.post("/offboarding", async (req: Request, res: Response) => {
     .eq("org_id", orgId);
 
   // Fetch API keys created by this user
-  const { data: apiKeys } = await supabase
-    .from("api_keys")
-    .select("*")
-    .eq("org_id", orgId)
-    .eq("created_by", user_id)
-    .eq("is_active", true)
-    .catch(() => ({ data: [] }));
+  let apiKeys: any[] = [];
+  try {
+    const { data: keyData } = await supabase
+      .from("api_keys")
+      .select("*")
+      .eq("org_id", orgId)
+      .eq("created_by", user_id)
+      .eq("is_active", true);
+    apiKeys = keyData ?? [];
+  } catch {
+    apiKeys = [];
+  }
 
   // Generate checklist items
   const items: OffboardingItem[] = [];
@@ -258,7 +263,7 @@ router.post("/offboarding", async (req: Request, res: Response) => {
   });
 
   // Items from API keys
-  (apiKeys ?? []).forEach((key: any) => {
+  apiKeys.forEach((key: any) => {
     items.push({
       id: `key-${key.id}`,
       service: key.service_name ?? "API-nyckel",
