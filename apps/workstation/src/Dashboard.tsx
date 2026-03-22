@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useApi } from "./useApi";
+import UnifiedCalendar from "./UnifiedCalendar";
 import LearningModule from "./LearningModule";
 import DMSModule from "./DMSModule";
 import SpaghettiModule from "./SpaghettiModule";
@@ -141,6 +142,19 @@ const Icons = {
       <line x1="16" y1="2" x2="16" y2="6"/>
       <line x1="8" y1="2" x2="8" y2="6"/>
       <line x1="3" y1="10" x2="21" y2="10"/>
+    </svg>
+  ),
+  CalendarDays: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="4" width="18" height="18" rx="2"/>
+      <line x1="16" y1="2" x2="16" y2="6"/>
+      <line x1="8" y1="2" x2="8" y2="6"/>
+      <line x1="3" y1="10" x2="21" y2="10"/>
+      <line x1="8" y1="14" x2="8" y2="14.01"/>
+      <line x1="12" y1="14" x2="12" y2="14.01"/>
+      <line x1="16" y1="14" x2="16" y2="14.01"/>
+      <line x1="8" y1="18" x2="8" y2="18.01"/>
+      <line x1="12" y1="18" x2="12" y2="18.01"/>
     </svg>
   ),
   Flow: () => (
@@ -332,6 +346,7 @@ const NAV_SECTIONS_BASE = [
   {
     label: "ARBETE",
     items: [
+      { id: "calendar", icon: <Icons.CalendarDays />, label: "Kalender" },
       { id: "deals", icon: <Icons.Briefcase />, label: "Affärer" },
       { id: "tasks", icon: <Icons.Check />, label: "Uppgifter" },
       { id: "goals", icon: <Icons.Target />, label: "Mål" },
@@ -2245,6 +2260,7 @@ export default function App({ user: propUser, onLogout }: { user?: any; onLogout
 
   const viewTitles: Record<string, string> = {
     overview:    "Översikt",
+    calendar:    "Kalender",
     deals:       "Affärer",
     tasks:       "Uppgifter",
     goals:       "Mål",
@@ -2297,6 +2313,7 @@ export default function App({ user: propUser, onLogout }: { user?: any; onLogout
 
           <main role="main" style={{ flex: 1, padding: "24px 24px 64px", maxWidth: 1280, width: "100%" }}>
             {view === "overview" && <OverviewView D={D} />}
+            {view === "calendar" && <UnifiedCalendar user={D.user} />}
             {view === "deals" && <SalesView D={D} />}
             {view === "finance" && <FinanceView D={D} />}
             {view === "reports" && <ReportsView D={D} />}
