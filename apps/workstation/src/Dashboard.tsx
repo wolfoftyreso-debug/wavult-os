@@ -10,6 +10,7 @@ import ConsumablesModule from "./ConsumablesModule";
 import { useTranslation, LanguageSwitcher, formatCurrency, formatDate } from "@pixdrift/i18n";
 import PeopleOSModule from "./PeopleOSModule";
 import ExternalAuditModule from "./ExternalAuditModule";
+import AccountSafetyModule, { ShieldCheckIcon } from "./AccountSafetyModule";
 import DevOpsHub from "./DevOpsHub";
 
 // ─── Design tokens — Apple HIG precision ──────────────────────────────────────

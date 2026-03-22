@@ -77,6 +77,7 @@ async function api(path: string, opts: RequestInit = {}) {
   const res = await fetch(`${API}${path}`, {
     headers: {
       "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("pixdrift_token") || ""}`,
       "x-org-id": orgId,
       ...((opts.headers as any) || {}),
     },

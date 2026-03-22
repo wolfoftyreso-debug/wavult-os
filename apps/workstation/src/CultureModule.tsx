@@ -82,13 +82,15 @@ function getDayStrip(): { date: Date; label: string; dayNum: number; isToday: bo
 }
 
 // ─── API ──────────────────────────────────────────────────────────────────────
-const API_BASE = "/api/culture";
+const API_BASE = "https://api.bc.pixdrift.com/api/culture";
 
 async function apiFetch(path: string, options?: RequestInit) {
+  const token = localStorage.getItem("pixdrift_token") || "";
   const orgId = localStorage.getItem("orgId") || "";
   const res = await fetch(`${API_BASE}${path}`, {
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
       "x-org-id": orgId,
       ...(options?.headers || {}),
     },
@@ -164,7 +166,7 @@ function UpcomingView({ onSelectEvent }: { onSelectEvent: (id: string) => void }
   const load = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await apiFetch("/events");
+      const data = await apiFetch("/events").catch(() => ({ events: [] }));
       setEvents(data.events || []);
     } catch (e: any) {
       setError(e.message);
