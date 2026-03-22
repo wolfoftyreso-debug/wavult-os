@@ -355,6 +355,8 @@
         <a href="#" class="lang-option" data-lang="de">DE</a>
         <span class="lang-divider">/</span>
         <a href="#" class="lang-option" data-lang="no">NO</a>
+        <span class="lang-divider">/</span>
+        <a href="#" class="lang-option" data-lang="fr">FR</a>
       </div>
       <a href="https://app.bc.pixdrift.com" style="font-size:14px;color:var(--text-2)">Sign in</a>
       <a href="mailto:demo@pixdrift.com?subject=Demo Request" class="btn-nav">Book demo</a>
@@ -657,228 +659,260 @@
 
 
 <script>
-// ─── pixdrift Geo-Aware Content System ──────────────────────────────────
+// ─── pixdrift Global System Reference Database ──────────────────────────
 (function() {
   'use strict';
 
-  // ── System mapping per region ────────────────────────────────────────
-  const SYSTEM_MAP = {
-    sv: {
-      locale_label: 'Sweden',
-      flag: '🇸🇪',
-      currency: 'SEK',
-      accounting: ['Fortnox', 'Visma', 'Björn Lundén'],
-      dms: ['Winassist', 'Automaster', 'Kobra', 'Cabas'],
-      crm: ['AutoFutura', 'Lime CRM'],
-      erp: ['Monitor G5', 'Jeeves', 'Pyramid'],
-      payment: ['Bankgiro', 'Swish', 'Klarna'],
-      competitors_price_range: '€500–2,000/mo',
-      typical_stack_cost: '€1,200/month',
-      stack_items: [
-        { system: 'Winassist / Automaster', category: 'DMS', cost: '€600/mo' },
-        { system: 'Fortnox', category: 'Accounting', cost: '€150/mo' },
-        { system: 'Lime CRM', category: 'CRM', cost: '€200/mo' },
-        { system: 'ISO / Quality tools', category: 'Compliance', cost: '€150/mo' },
-        { system: 'Bokningssystem', category: 'Booking', cost: '€100/mo' },
-      ],
-      region_message: 'Typical Swedish workshop',
-      dms_replace_title: 'Replacing Winassist or Automaster?',
-      hero_proof: 'ISO 9001 · Swedac · Personalliggare · €299/month flat',
+  // ── Complete global system database (10 categories × 5 regions) ──────
+  const GLOBAL_SYSTEMS = {
+    nordics: {
+      accounting:  ['Fortnox', 'Visma', 'Tripletex', 'e-conomic', 'Björn Lundén'],
+      crm:         ['Upsales', 'Lime CRM', 'SuperOffice', 'HubSpot'],
+      dms:         ['Winassist', 'Automaster', 'Kobra', 'Cabas'],
+      erp:         ['Monitor ERP', 'Jeeves', 'IFS', 'Pyramid'],
+      project:     ['Asana', 'Trello', 'Monday.com', 'Jira'],
+      hr:          ['Hogia', 'Visma Lön', 'Flex HRM', 'Aditro'],
+      docs:        ['Notion', 'Confluence', 'SharePoint', 'Google Workspace'],
+      iso:         ['Bizzmine', 'Qnova', 'Stratsys', 'Q-MATIC'],
+      booking:     ['TimeCenter', 'BokaDirekt', 'Bokameratid', 'Calendly'],
+      payments:    ['Swish', 'Bankgiro', 'Plusgiro', 'Klarna', 'Qliro'],
     },
-    no: {
-      locale_label: 'Norway',
-      flag: '🇳🇴',
-      currency: 'NOK',
-      accounting: ['Tripletex', 'Visma', 'Fiken'],
-      dms: ['Automaster', 'CDK', 'Winassist'],
-      crm: ['SuperOffice', 'HubSpot'],
-      erp: ['Visma Business', 'Mamut'],
-      payment: ['Vipps', 'Nets'],
-      competitors_price_range: '€500–2,000/mo',
-      typical_stack_cost: '€1,150/month',
-      stack_items: [
-        { system: 'Automaster / CDK', category: 'DMS', cost: '€600/mo' },
-        { system: 'Tripletex', category: 'Accounting', cost: '€120/mo' },
-        { system: 'SuperOffice', category: 'CRM', cost: '€200/mo' },
-        { system: 'Quality tools', category: 'Compliance', cost: '€150/mo' },
-        { system: 'Booking system', category: 'Booking', cost: '€80/mo' },
-      ],
-      region_message: 'Typical Norwegian workshop',
-      dms_replace_title: 'Replacing Automaster or CDK?',
-      hero_proof: 'ISO 9001 · Compliant · Vipps ready · €299/month flat',
+    us_uk: {
+      accounting:  ['QuickBooks', 'Xero', 'FreshBooks', 'Wave', 'Sage'],
+      crm:         ['Salesforce', 'HubSpot', 'Pipedrive', 'Monday CRM', 'Zoho'],
+      dms:         ['CDK Global', 'Kerridge', 'Reynolds & Reynolds', 'DealerSocket'],
+      erp:         ['NetSuite', 'SAP', 'Oracle', 'Microsoft Dynamics', 'Acumatica'],
+      project:     ['Asana', 'Jira', 'ClickUp', 'Basecamp', 'Monday.com'],
+      hr:          ['Gusto', 'ADP', 'BambooHR', 'Rippling', 'Workday'],
+      docs:        ['Notion', 'Google Workspace', 'Confluence', 'Coda'],
+      iso:         ['Qualio', 'Greenlight Guru', 'MasterControl', 'ETQ'],
+      booking:     ['Calendly', 'Acuity', 'Square Appointments', 'Mindbody'],
+      payments:    ['Stripe', 'PayPal', 'Square', 'Braintree', 'GoCardless'],
     },
-    de: {
-      locale_label: 'Germany',
-      flag: '🇩🇪',
-      currency: 'EUR',
-      accounting: ['DATEV', 'Lexware', 'SAGE 50'],
-      dms: ['Autoline', 'CDK', 'WinValue'],
-      crm: ['HubSpot', 'Pipedrive', 'Salesforce'],
-      erp: ['SAP Business One', 'Sage'],
-      payment: ['SEPA', 'PayPal', 'Klarna'],
-      competitors_price_range: '€600–2,500/mo',
-      typical_stack_cost: '€1,400/month',
-      stack_items: [
-        { system: 'Autoline / CDK', category: 'DMS', cost: '€700/mo' },
-        { system: 'DATEV', category: 'Accounting', cost: '€200/mo' },
-        { system: 'HubSpot', category: 'CRM', cost: '€250/mo' },
-        { system: 'Quality tools', category: 'Compliance', cost: '€150/mo' },
-        { system: 'Booking system', category: 'Booking', cost: '€100/mo' },
-      ],
-      region_message: 'Typical German workshop',
-      dms_replace_title: 'Replacing Autoline or CDK?',
-      hero_proof: 'ISO 9001 · DSGVO · DATEV integration · €299/month',
+    germany: {
+      accounting:  ['DATEV', 'Lexware', 'SAGE 50', 'Sevdesk', 'FastBill'],
+      crm:         ['Pipedrive', 'HubSpot', 'Salesforce', 'CentralStation', 'weclapp'],
+      dms:         ['Autoline', 'CDK', 'WinValue', 'Incadea'],
+      erp:         ['SAP Business One', 'Microsoft Dynamics', 'Sage X3', 'Infor', 'proALPHA'],
+      project:     ['Asana', 'Jira', 'Trello', 'Basecamp', 'Factro'],
+      hr:          ['Personio', 'Rexx', 'SAP SuccessFactors', 'Kenjo'],
+      docs:        ['Confluence', 'SharePoint', 'Notion', 'Zoho Docs'],
+      iso:         ['Babtec', 'ConSense', 'IMS', 'Agilium'],
+      booking:     ['Calendly', 'Bookingkit', 'SimplyBook'],
+      payments:    ['Klarna', 'PayPal', 'Stripe', 'SEPA Direct', 'Paydirekt'],
     },
-    fr: {
-      locale_label: 'France',
-      flag: '🇫🇷',
-      currency: 'EUR',
-      accounting: ['Sage', 'Cegid', 'EBP'],
-      dms: ['CDK', 'Icar'],
-      crm: ['Salesforce', 'HubSpot'],
-      erp: ['Sage X3', 'Cegid'],
-      payment: ['SEPA', 'Stripe'],
-      competitors_price_range: '€500–2,200/mo',
-      typical_stack_cost: '€1,250/month',
-      stack_items: [
-        { system: 'CDK / Icar', category: 'DMS', cost: '€600/mo' },
-        { system: 'Sage / Cegid', category: 'Accounting', cost: '€200/mo' },
-        { system: 'Salesforce', category: 'CRM', cost: '€250/mo' },
-        { system: 'Compliance tools', category: 'Compliance', cost: '€150/mo' },
-        { system: 'Booking system', category: 'Booking', cost: '€50/mo' },
-      ],
-      region_message: 'Typical French workshop',
-      dms_replace_title: 'Replacing CDK?',
-      hero_proof: 'ISO 9001 · RGPD · Stripe · €299/month',
+    france: {
+      accounting:  ['Sage', 'Cegid', 'EBP', 'Quadratus', 'MyUnisoft'],
+      crm:         ['Sellsy', 'HubSpot', 'Salesforce', 'noCRM', 'Pipedrive'],
+      dms:         ['CDK', 'Icar', 'Kerridge', 'Autosoft'],
+      erp:         ['SAP', 'Oracle', 'Sage X3', 'Cegid Business'],
+      project:     ['Asana', 'Jira', 'Monday.com', 'Notion'],
+      hr:          ['PayFit', 'Lucca', 'Silae', 'Kelio'],
+      docs:        ['Notion', 'Confluence', 'Google Workspace'],
+      iso:         ['Blue Kango', 'Qualios', 'Axess'],
+      booking:     ['Calendly', 'SimplyBook', 'Planity'],
+      payments:    ['Stripe', 'PayPal', 'Lyra', 'Mollie'],
     },
-    en: {
-      locale_label: 'Global / UK / US',
-      flag: '🌍',
-      currency: 'EUR',
-      accounting: ['QuickBooks', 'Xero', 'Sage'],
-      dms: ['CDK Global', 'Keyloop', 'Kerridge'],
-      crm: ['Salesforce', 'HubSpot', 'Pipedrive'],
-      erp: ['SAP', 'Oracle', 'Dynamics 365'],
-      payment: ['Stripe', 'GoCardless', 'SEPA'],
-      competitors_price_range: '€500–2,000/mo',
-      typical_stack_cost: '€1,100/month',
-      stack_items: [
-        { system: 'Keyloop / CDK', category: 'DMS', cost: '€600/mo' },
-        { system: 'QuickBooks / Xero', category: 'Accounting', cost: '€150/mo' },
-        { system: 'HubSpot / Salesforce', category: 'CRM', cost: '€200/mo' },
-        { system: 'ISO / Audit tools', category: 'Compliance', cost: '€100/mo' },
-        { system: 'Booking system', category: 'Booking', cost: '€50/mo' },
-      ],
-      region_message: 'Typical workshop',
-      dms_replace_title: 'Replacing Keyloop or CDK?',
-      hero_proof: 'ISO 9001 · GDPR · AWS EU · €299/month flat',
+    global: {
+      accounting:  ['QuickBooks', 'Xero', 'Sage', 'Wave'],
+      crm:         ['Salesforce', 'HubSpot', 'Pipedrive', 'Zoho'],
+      dms:         ['CDK Global', 'Keyloop', 'Reynolds & Reynolds'],
+      erp:         ['SAP', 'Oracle', 'Microsoft Dynamics', 'NetSuite'],
+      project:     ['Asana', 'Jira', 'Monday.com', 'ClickUp'],
+      hr:          ['Workday', 'BambooHR', 'ADP'],
+      docs:        ['Notion', 'Confluence', 'Google Workspace'],
+      iso:         ['ETQ', 'MasterControl', 'Qualio'],
+      booking:     ['Calendly', 'SimplyBook', 'Acuity'],
+      payments:    ['Stripe', 'PayPal', 'GoCardless'],
     },
   };
 
-  // ── Detect locale ────────────────────────────────────────────────────
+  // ── Region → locale mapping ──────────────────────────────────────────
+  const LOCALE_TO_REGION = {
+    sv: 'nordics', no: 'nordics', da: 'nordics', fi: 'nordics',
+    en: 'us_uk',
+    de: 'germany', at: 'germany', ch: 'germany',
+    fr: 'france', be: 'france',
+  };
+
+  // ── Per-locale content (pricing, labels, DMS replace title) ──────────
+  const LOCALE_CONTENT = {
+    sv: {
+      flag: '🇸🇪', region_label: 'Swedish workshop',
+      currency_symbol: '€',
+      typical_stack_cost: '€1,200/month',
+      hero_proof: 'ISO 9001 · Swedac · Personalliggare · €299/month flat',
+      dms_replace_title: 'Replacing Winassist or Automaster?',
+      competitors_price_range: '€500–2,000/mo',
+      stack_items: [
+        { system: 'Winassist / Automaster', category: 'DMS',        cost: '€600/mo' },
+        { system: 'Fortnox',               category: 'Accounting',  cost: '€150/mo' },
+        { system: 'Lime CRM',              category: 'CRM',         cost: '€200/mo' },
+        { system: 'Qnova / Bizzmine',      category: 'ISO/Quality', cost: '€150/mo' },
+        { system: 'BokaDirekt / TimeCenter', category: 'Booking',   cost: '€100/mo' },
+      ],
+    },
+    no: {
+      flag: '🇳🇴', region_label: 'Norwegian workshop',
+      currency_symbol: '€',
+      typical_stack_cost: '€1,150/month',
+      hero_proof: 'ISO 9001 · Compliant · Vipps ready · €299/month flat',
+      dms_replace_title: 'Replacing Automaster or CDK?',
+      competitors_price_range: '€500–2,000/mo',
+      stack_items: [
+        { system: 'Automaster / CDK',  category: 'DMS',        cost: '€600/mo' },
+        { system: 'Tripletex',         category: 'Accounting', cost: '€120/mo' },
+        { system: 'SuperOffice',       category: 'CRM',        cost: '€200/mo' },
+        { system: 'Quality tools',     category: 'ISO/Quality', cost: '€150/mo' },
+        { system: 'Booking system',    category: 'Booking',    cost: '€80/mo'  },
+      ],
+    },
+    de: {
+      flag: '🇩🇪', region_label: 'German workshop',
+      currency_symbol: '€',
+      typical_stack_cost: '€1,400/month',
+      hero_proof: 'ISO 9001 · DSGVO · DATEV-Integration · €299/month',
+      dms_replace_title: 'Replacing Autoline or CDK?',
+      competitors_price_range: '€600–2,500/mo',
+      stack_items: [
+        { system: 'Autoline / CDK',    category: 'DMS',        cost: '€700/mo' },
+        { system: 'DATEV',             category: 'Accounting', cost: '€200/mo' },
+        { system: 'HubSpot',           category: 'CRM',        cost: '€250/mo' },
+        { system: 'Babtec / ConSense', category: 'ISO/Quality', cost: '€150/mo' },
+        { system: 'Bookingkit',        category: 'Booking',    cost: '€100/mo' },
+      ],
+    },
+    fr: {
+      flag: '🇫🇷', region_label: 'French workshop',
+      currency_symbol: '€',
+      typical_stack_cost: '€1,250/month',
+      hero_proof: 'ISO 9001 · RGPD · Stripe · €299/month',
+      dms_replace_title: 'Replacing CDK?',
+      competitors_price_range: '€500–2,200/mo',
+      stack_items: [
+        { system: 'CDK / Icar',    category: 'DMS',        cost: '€600/mo' },
+        { system: 'Sage / Cegid',  category: 'Accounting', cost: '€200/mo' },
+        { system: 'Salesforce',    category: 'CRM',        cost: '€250/mo' },
+        { system: 'Qualios',       category: 'ISO/Quality', cost: '€150/mo' },
+        { system: 'SimplyBook',    category: 'Booking',    cost: '€50/mo'  },
+      ],
+    },
+    en: {
+      flag: '🌍', region_label: 'workshop',
+      currency_symbol: '€',
+      typical_stack_cost: '€1,100/month',
+      hero_proof: 'ISO 9001 · GDPR · AWS EU · €299/month flat',
+      dms_replace_title: 'Replacing Keyloop or CDK?',
+      competitors_price_range: '€500–2,000/mo',
+      stack_items: [
+        { system: 'Keyloop / CDK',           category: 'DMS',        cost: '€600/mo' },
+        { system: 'QuickBooks / Xero',        category: 'Accounting', cost: '€150/mo' },
+        { system: 'HubSpot / Salesforce',     category: 'CRM',        cost: '€200/mo' },
+        { system: 'Qualio / MasterControl',   category: 'ISO/Quality', cost: '€100/mo' },
+        { system: 'Calendly / Acuity',        category: 'Booking',    cost: '€50/mo'  },
+      ],
+    },
+  };
+
+  // ── Detect locale ─────────────────────────────────────────────────────
   function detectLocale() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const urlLang = urlParams.get('lang');
-    if (urlLang && SYSTEM_MAP[urlLang]) return urlLang;
-
+    const urlParam = new URLSearchParams(window.location.search).get('lang');
+    if (urlParam && LOCALE_CONTENT[urlParam]) return urlParam;
     const stored = localStorage.getItem('pxd_locale');
-    if (stored && SYSTEM_MAP[stored]) return stored;
-
-    const browserLang = (navigator.language || navigator.languages?.[0] || 'en').toLowerCase();
-    if (browserLang.startsWith('sv')) return 'sv';
-    if (browserLang.startsWith('no') || browserLang.startsWith('nb') || browserLang.startsWith('nn')) return 'no';
-    if (browserLang.startsWith('de')) return 'de';
-    if (browserLang.startsWith('fr')) return 'fr';
-
+    if (stored && LOCALE_CONTENT[stored]) return stored;
+    const bl = (navigator.language || navigator.languages?.[0] || 'en').toLowerCase().split('-')[0];
+    const knownLocales = ['sv', 'no', 'nb', 'nn', 'da', 'fi', 'de', 'at', 'fr'];
+    if (bl === 'nb' || bl === 'nn') return 'no';
+    if (bl === 'da' || bl === 'fi') return 'sv';
+    if (knownLocales.includes(bl) && LOCALE_CONTENT[bl]) return bl;
     return 'en';
   }
 
-  // ── Apply geo content ─────────────────────────────────────────────────
-  function applyGeoContent(locale) {
-    const data = SYSTEM_MAP[locale] || SYSTEM_MAP.en;
+  // ── Apply content ──────────────────────────────────────────────────────
+  function apply(locale) {
+    const lc = LOCALE_CONTENT[locale] || LOCALE_CONTENT.en;
+    const region = LOCALE_TO_REGION[locale] || 'global';
+    const sys = GLOBAL_SYSTEMS[region] || GLOBAL_SYSTEMS.global;
 
-    document.querySelectorAll('[data-geo-dms]').forEach(el => {
-      el.textContent = data.dms.slice(0, 3).join(' / ');
-    });
-    document.querySelectorAll('[data-geo-accounting]').forEach(el => {
-      el.textContent = data.accounting.slice(0, 2).join(' / ');
-    });
-    document.querySelectorAll('[data-geo-crm]').forEach(el => {
-      el.textContent = data.crm.slice(0, 2).join(' / ');
-    });
-    document.querySelectorAll('[data-geo-erp]').forEach(el => {
-      el.textContent = data.erp.slice(0, 2).join(' / ');
-    });
-    document.querySelectorAll('[data-geo-region]').forEach(el => {
-      el.textContent = data.flag + ' ' + data.region_message;
-    });
-    document.querySelectorAll('[data-geo-stack-cost]').forEach(el => {
-      el.textContent = data.typical_stack_cost;
-    });
-    document.querySelectorAll('[data-geo-hero-proof]').forEach(el => {
-      el.textContent = data.hero_proof;
-    });
-    document.querySelectorAll('[data-geo-dms-replace-title]').forEach(el => {
-      el.textContent = data.dms_replace_title;
-    });
-    document.querySelectorAll('[data-geo-competitors-price]').forEach(el => {
-      el.textContent = data.competitors_price_range;
-    });
+    // Simple text replacements
+    const set = (attr, val) => document.querySelectorAll('[' + attr + ']').forEach(el => el.textContent = val);
+    set('data-geo-dms',               sys.dms.slice(0,3).join(' / '));
+    set('data-geo-accounting',        sys.accounting.slice(0,2).join(' / '));
+    set('data-geo-crm',               sys.crm.slice(0,2).join(' / '));
+    set('data-geo-erp',               sys.erp.slice(0,2).join(' / '));
+    set('data-geo-hr',                sys.hr.slice(0,2).join(' / '));
+    set('data-geo-iso',               sys.iso.slice(0,2).join(' / '));
+    set('data-geo-booking',           sys.booking.slice(0,2).join(' / '));
+    set('data-geo-payments',          sys.payments.slice(0,2).join(' / '));
+    set('data-geo-region',            lc.flag + ' Typical ' + lc.region_label);
+    set('data-geo-stack-cost',        lc.typical_stack_cost);
+    set('data-geo-hero-proof',        lc.hero_proof);
+    set('data-geo-dms-replace-title', lc.dms_replace_title);
+    set('data-geo-competitors-price', lc.competitors_price_range);
 
-    // Render stack items table
-    const stackContainer = document.getElementById('geo-stack-items');
-    if (stackContainer) {
-      stackContainer.innerHTML = data.stack_items.map(item => `
-        <div style="display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:center;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.06);">
+    // Stack items table
+    const container = document.getElementById('geo-stack-items');
+    if (container) {
+      const rows = lc.stack_items.map(item => `
+        <div style="display:grid;grid-template-columns:1fr 100px 90px;gap:12px;align-items:center;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.05);">
           <div>
-            <div style="font-size:15px;font-weight:500;color:#fff;">${item.system}</div>
-            <div style="font-size:12px;color:#52525B;margin-top:2px;">${item.category}</div>
+            <div style="font-size:14px;font-weight:500;color:#fff">${item.system}</div>
+            <div style="font-size:11px;color:#52525B;margin-top:2px;text-transform:uppercase;letter-spacing:.05em">${item.category}</div>
           </div>
-          <div style="font-size:14px;color:#8E8E93;">${item.cost}</div>
-          <div style="font-size:12px;color:#FF3B30;font-weight:500;">per month</div>
-        </div>
-      `).join('') + `
-        <div style="display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:center;padding:20px;background:rgba(99,102,241,0.06);border-top:2px solid rgba(99,102,241,0.3);">
-          <div style="font-size:15px;font-weight:700;color:#fff;">Total current stack</div>
-          <div style="font-size:22px;font-weight:700;color:#FF3B30;">${data.typical_stack_cost}</div>
-          <div style="font-size:13px;color:#8E8E93;">vs pixdrift <strong style="color:#6366F1">€299</strong></div>
-        </div>
-        <div style="padding:12px 20px;background:rgba(255,59,48,0.06);">
-          <span style="font-size:13px;font-weight:600;color:#FF3B30;background:rgba(255,59,48,0.15);padding:4px 10px;border-radius:980px;">3–5× higher cost</span>
-          <span style="font-size:13px;color:#8E8E93;margin-left:12px;">than pixdrift</span>
-        </div>
-      `;
+          <div style="font-size:14px;color:#A1A1AA;text-align:right">${item.cost}</div>
+          <div style="text-align:right"><span style="font-size:11px;color:#FF3B30;background:rgba(255,59,48,.1);padding:2px 8px;border-radius:980px;font-weight:600">per month</span></div>
+        </div>`).join('');
+
+      const total = `
+        <div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:20px;background:rgba(255,59,48,.04);border-top:1px solid rgba(255,59,48,.2);">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:#A1A1AA;text-transform:uppercase;letter-spacing:.06em">Total current stack</div>
+            <div style="margin-top:6px"><span style="font-size:12px;font-weight:600;color:#FF3B30;background:rgba(255,59,48,.12);padding:3px 10px;border-radius:980px">3–5× higher cost than pixdrift</span></div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:28px;font-weight:700;color:#FF3B30;letter-spacing:-1px">${lc.typical_stack_cost}</div>
+            <div style="font-size:13px;color:#52525B;margin-top:2px">vs pixdrift <strong style="color:#6366F1">€299/month</strong></div>
+          </div>
+        </div>`;
+
+      container.innerHTML = rows + total;
     }
 
-    // Update active lang button
-    document.querySelectorAll('.lang-option').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.lang === locale);
+    // Module cards — geo-aware system names per category
+    ['dms','accounting','crm','erp','hr','iso','booking','payments'].forEach(cat => {
+      document.querySelectorAll('[data-geo-module="'+cat+'"]').forEach(el => {
+        el.textContent = (sys[cat] || []).slice(0,3).join(', ');
+      });
+    });
+
+    // Language toggle active state
+    document.querySelectorAll('[data-lang]').forEach(btn => {
+      const isActive = btn.dataset.lang === locale;
+      btn.classList.toggle('active', isActive);
+      btn.style.color = isActive ? '#ffffff' : '#52525B';
+      btn.style.fontWeight = isActive ? '600' : '400';
     });
   }
 
-  // ── Language switcher ─────────────────────────────────────────────────
-  function setupLangSwitcher() {
+  // ── Language switcher ──────────────────────────────────────────────────
+  function setupSwitcher() {
     document.querySelectorAll('[data-lang]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', e => {
         e.preventDefault();
         const lang = btn.dataset.lang;
         localStorage.setItem('pxd_locale', lang);
-        applyGeoContent(lang);
+        apply(lang);
       });
     });
   }
 
-  // ── Init ──────────────────────────────────────────────────────────────
+  // ── Boot ───────────────────────────────────────────────────────────────
   const locale = detectLocale();
-
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      applyGeoContent(locale);
-      setupLangSwitcher();
-    });
+    document.addEventListener('DOMContentLoaded', () => { apply(locale); setupSwitcher(); });
   } else {
-    applyGeoContent(locale);
-    setupLangSwitcher();
+    apply(locale);
+    setupSwitcher();
   }
 
 })();
