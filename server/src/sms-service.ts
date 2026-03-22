@@ -205,3 +205,50 @@ function maskPhone(phone: string): string {
   if (phone.length < 6) return '****';
   return phone.slice(0, 4) + '****' + phone.slice(-2);
 }
+
+// ============================================================
+// GENERIC SMS — for any custom message (missing parts, etc.)
+// ============================================================
+
+export async function sendGenericSMS(
+  phone: string,
+  message: string,
+  workshopName?: string
+): Promise<boolean> {
+  const apiUsername = process.env.ELKS_API_USERNAME;
+  const apiPassword = process.env.ELKS_API_PASSWORD;
+  const senderName = process.env.ELKS_SENDER || workshopName?.slice(0, 11) || 'Pixdrift';
+
+  if (apiUsername && apiPassword) {
+    const credentials = Buffer.from(`${apiUsername}:${apiPassword}`).toString('base64');
+    try {
+      const response = await fetch('https://api.46elks.com/a1/sms', {
+        method: 'POST',
+        headers: {
+          Authorization: `Basic ${credentials}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          from: senderName,
+          to: normalizePhone(phone),
+          message,
+        }).toString(),
+      });
+      const data = await response.json() as any;
+      if (response.ok && data.id) {
+        console.log(`[SMS 46elks Generic] Sent to ${maskPhone(phone)}, id: ${data.id}`);
+        return true;
+      }
+    } catch (err) {
+      console.error('[SMS 46elks Generic] Error:', err);
+    }
+  }
+
+  // Dev stub
+  console.log(`[SMS STUB] ─────────────────────────────`);
+  console.log(`[SMS STUB] To:      ${maskPhone(phone)}`);
+  console.log(`[SMS STUB] From:    ${workshopName || 'Verkstad'}`);
+  console.log(`[SMS STUB] Message: ${message}`);
+  console.log(`[SMS STUB] ─────────────────────────────`);
+  return true; // Always true in dev
+}

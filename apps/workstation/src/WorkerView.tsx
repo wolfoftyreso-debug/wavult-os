@@ -412,6 +412,92 @@ export default function WorkerView({ user }: { user: any }) {
           </div>
         )}
 
+        {/* ── BLOCKED JOBS — missing parts protocol for mechanic ── */}
+        {queue.filter(j => j.missing_parts).map(blockedJob => (
+          <div key={blockedJob.id} style={{ marginBottom: 12 }}>
+            <div style={{
+              background: C.surface,
+              borderRadius: 14,
+              border: `2px solid ${C.red}`,
+              overflow: 'hidden',
+              boxShadow: `0 2px 8px ${C.red}20`,
+            }}>
+              {/* Red stripe at top */}
+              <div style={{ background: C.red, padding: '8px 16px' }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#FFFFFF', letterSpacing: '0.04em' }}>
+                  🔴 STOPP — Del saknas
+                </div>
+              </div>
+
+              <div style={{ padding: '14px 16px' }}>
+                {/* Job title */}
+                <div style={{ fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 4 }}>
+                  {blockedJob.title}
+                </div>
+                <div style={{ fontSize: 13, color: C.secondary, marginBottom: 12 }}>
+                  Bokad: {blockedJob.start_time}
+                  {blockedJob.duration ? ` · ${blockedJob.duration}` : ''}
+                </div>
+
+                {/* Protocol info — what mechanic needs to know */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 14 }}>
+                  <div style={{
+                    background: '#FFF0F0', borderRadius: 10, padding: '10px 14px',
+                    borderLeft: `3px solid ${C.red}`,
+                  }}>
+                    <div style={{ fontSize: 12, color: C.red, fontWeight: 700, marginBottom: 2 }}>DEL SAKNAS</div>
+                    <div style={{ fontSize: 14, color: C.text }}>Se risklistan — del beställd av Ops Lead</div>
+                  </div>
+
+                  {/* ETA from risk info — simplified */}
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                    <div style={{
+                      background: C.fill, borderRadius: 8, padding: '6px 12px',
+                      fontSize: 13, color: C.secondary,
+                    }}>
+                      ⏳ ETA: Bekräftas av Ops Lead
+                    </div>
+                    <div style={{
+                      background: C.fill, borderRadius: 8, padding: '6px 12px',
+                      fontSize: 13, color: C.secondary,
+                    }}>
+                      📲 Kund informeras automatiskt
+                    </div>
+                  </div>
+                </div>
+
+                {/* What to do next */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                  <button
+                    onClick={() => alert('Rapport skickad till Ops Lead')}
+                    style={{
+                      padding: '10px 12px', borderRadius: 10, fontSize: 13, fontWeight: 600,
+                      background: C.fill, color: C.text, border: `1.5px solid ${C.border}`,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    📢 Rapport till Ops Lead
+                  </button>
+                  <button
+                    onClick={() => {
+                      const nextJob = queue.find(j => j.id !== blockedJob.id && !j.missing_parts);
+                      if (nextJob) alert(`Startar nästa jobb: ${nextJob.title}`);
+                      else alert('Inga tillgängliga jobb just nu');
+                    }}
+                    style={{
+                      padding: '10px 12px', borderRadius: 10, fontSize: 13, fontWeight: 600,
+                      background: C.blue, color: '#FFF', border: 'none',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Starta nästa jobb →
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+
         {/* ── ATT TÄNKA PÅ — risks, only shown if any ── */}
         {risks.length > 0 && (
           <div style={{ marginBottom: 12 }}>
@@ -499,6 +585,9 @@ export default function WorkerView({ user }: { user: any }) {
                       fontWeight: 600,
                       color:      job.missing_parts ? C.red : C.orange,
                       flexShrink: 0,
+                      background: job.missing_parts ? '#FFF0F0' : '#FFF7F0',
+                      borderRadius: 6,
+                      padding: '3px 8px',
                     }}>
                       {job.missing_parts ? '❌ Del saknas' : '👤 Väntar'}
                     </div>

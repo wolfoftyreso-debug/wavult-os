@@ -2576,12 +2576,16 @@ export default function App({ user: propUser, onLogout }: { user?: any; onLogout
 
           <main role="main" style={{ flex: 1, padding: "24px 24px 64px", maxWidth: 1280, width: "100%" }}>
             {view === "overview" && isServiceAdvisor
-              ? <ServiceAdvisorView user={propUser} />
+              ? <ServiceAdvisorView user={propUser} activeView="overview" />
               : view === "overview" && isTechnician
               ? <WorkerView user={propUser} />
               : view === "overview"
               ? <OverviewView D={D} onSelectPix={(pix) => { setSelectedPix(pix); setShowTrace(true); }} />
               : null}
+            {view === "work-orders" && isServiceAdvisor && <ServiceAdvisorView user={propUser} activeView="work-orders" />}
+            {view === "approval" && isServiceAdvisor && <ServiceAdvisorView user={propUser} activeView="approval" />}
+            {view === "dms" && isServiceAdvisor && <ServiceAdvisorView user={propUser} activeView="dms" />}
+            {view === "calendar" && isServiceAdvisor && <ServiceAdvisorView user={propUser} activeView="calendar" />}
             {view === "pix-feed" && (
               <div style={{ display: "grid", gridTemplateColumns: showTrace ? "1fr 420px" : "1fr", gap: 20, alignItems: "start" }}>
                 <PixFeed
@@ -2597,7 +2601,7 @@ export default function App({ user: propUser, onLogout }: { user?: any; onLogout
                 )}
               </div>
             )}
-            {view === "calendar" && <UnifiedCalendar user={D.user} />}
+            {view === "calendar" && !isServiceAdvisor && <UnifiedCalendar user={D.user} />}
             {view === "deals" && <SalesView D={D} />}
             {view === "finance" && <FinanceView D={D} />}
             {view === "reports" && <ReportsView D={D} />}
@@ -2613,7 +2617,7 @@ export default function App({ user: propUser, onLogout }: { user?: any; onLogout
             {view === "chat" && <ChatView D={D} />}
             {view === "culture"    && <CultureModule />}
             {view === "learning"   && <LearningModule user={D.user as any} />}
-            {view === "dms"        && <DMSModule />}
+            {view === "dms"        && !isServiceAdvisor && <DMSModule />}
             {view === "rental"     && <RentalModule />}
             {view === "spaghetti" && <SpaghettiModule />}
             {view === "spatial"   && <SpatialModule />}

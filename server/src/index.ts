@@ -491,8 +491,10 @@ app.use('/api/account-safety',   accountSafetyRouter);       // Account Safety &
 
 import companyComplianceRouter from './company-compliance';
 import vehicleIntakeRouter from './vehicle-intake-api';
+import { missingPartRouter } from './missing-part-api';
 app.use('/api/company',          companyComplianceRouter);   // Company Core — legal entities, compliance calendar, authority filings (ABL/SFL/ÅRL)
 app.use('/api/intake',           vehicleIntakeRouter);       // Vehicle Intake Protocol — 8-angle photos, diagnostic, recalls (mandatory flow)
+app.use('/api/missing-part',     missingPartRouter);         // Missing Part Protocol — airline-style delay response with auto compensation
 
 // ---------------------------------------------------------------------------
 // Auth helper for inline routes
