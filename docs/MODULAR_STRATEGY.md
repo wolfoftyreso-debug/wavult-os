@@ -144,3 +144,56 @@ Full Intelligence   €699/mo add-on
 No migrations. No re-platforming. No rebuilding.
 Just continuous expansion — on a structure that already fits.
 
+
+---
+
+## Role Strategy: The Three Operational Roles
+
+### Mekaniker (Technician)
+- Sees: NU / NÄSTA / ATT TÄNKA PÅ / MIN DAG
+- Does NOT see: Pipeline, Finance, CRM, Reports
+- Principle: "Show the work, not the system"
+
+### Servicerådgivare (Service Advisor) — the key insight
+**Old role:** Administrative middleman (booking, reception, paperwork)
+**New role (with Pixdrift):** Operational controller + exception manager
+
+What gets automated:
+- Booking → online self-service
+- Check-in → kiosk / key box / mobile
+- Work order → auto-generated from booking
+- Status updates → real-time, automatic
+
+What the service advisor does instead:
+1. Handle exceptions (overdue, missing parts, waiting customers)
+2. Customer relationship (complex cases, upsell, escalations)  
+3. Flow control (load balancing, priority decisions)
+4. Quality gatekeeping
+
+**How to sell this:**
+> "We don't remove roles. We remove unnecessary work."
+> "Service advisors shouldn't manage bookings. They should manage reality."
+
+### Manager / CEO
+- Full dashboard with PIX Feed, analytics, compliance
+- Control Layer access
+- Financial overview
+
+---
+
+## Self Check-in Integration Layer
+
+Integration surface (we own the logic, not the hardware):
+- Checkvik (SE key boxes)
+- iLOQ (FI/SE digital keys)
+- CustomerLane (kiosks)
+- KeyWatcher (key cabinets)
+- QR / Mobile (built-in)
+- Custom webhook (any system)
+
+PIX events on check-in:
+- vehicle_checked_in
+- job_created
+- key_dropped
+- vehicle_location_updated
+
