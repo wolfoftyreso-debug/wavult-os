@@ -19,6 +19,7 @@ import PixFeed, { DEMO_PIX, PIX_COLORS } from "./PixFeed";
 import type { PIX } from "./PixFeed";
 import TraceView from "./TraceView";
 import ControlLayerModule from "./ControlLayerModule";
+import WorkerView from "./WorkerView";
 
 // ─── Design tokens — Apple HIG precision ──────────────────────────────────────
 const C = {
@@ -833,8 +834,26 @@ const FALLBACK = {
 };
 
 // ─── Sidebar ──────────────────────────────────────────────────────────────────
+// Simplified nav for technicians — "show the work, not the system"
+const NAV_SECTIONS_TECHNICIAN = [
+  {
+    label: null,
+    items: [
+      { id: "overview",    icon: <Icons.Check />,    label: "Mitt arbete" },
+    ],
+  },
+  {
+    label: "VERKSTAD",
+    items: [
+      { id: "dms",      icon: <Icons.Car />,       label: "Alla jobb"      },
+      { id: "spatial",  icon: <Icons.Map />,       label: "Verkstadskarta" },
+      { id: "assets",   icon: <Icons.Wrench />,    label: "Utrustning"     },
+    ],
+  },
+];
+
 function Sidebar({
-  view, setView, userName, onLogout, isAutomotive = false, hasZones = false
+  view, setView, userName, onLogout, isAutomotive = false, hasZones = false, isTechnician = false
 }: {
   view: string;
   setView: (v: string) => void;
@@ -842,8 +861,9 @@ function Sidebar({
   onLogout?: () => void;
   isAutomotive?: boolean;
   hasZones?: boolean;
+  isTechnician?: boolean;
 }) {
-  // Build automotive sections with setup badges when not yet configured
+  // Build nav sections — technicians get a stripped-down set
   const automotiveSections = isAutomotive
     ? NAV_SECTIONS_AUTOMOTIVE.map(section => ({
         ...section,
@@ -856,7 +876,9 @@ function Sidebar({
       }))
     : [];
 
-  const allSections = [...NAV_SECTIONS_BASE, ...automotiveSections];
+  const allSections = isTechnician
+    ? NAV_SECTIONS_TECHNICIAN
+    : [...NAV_SECTIONS_BASE, ...automotiveSections];
 
   return (
     <div style={{
@@ -2389,6 +2411,12 @@ export default function App({ user: propUser, onLogout }: { user?: any; onLogout
     ? localStorage.getItem("pixdrift_has_zones") === "true"
     : false;
 
+  // Technician/Worker role — show simplified WorkerView instead of Overview
+  const isTechnician =
+    propUser?.user_metadata?.role === "TECHNICIAN" ||
+    propUser?.role === "TECHNICIAN" ||
+    (typeof localStorage !== "undefined" && localStorage.getItem("pixdrift_role") === "TECHNICIAN");
+
   const { data: apiNCs } = useApi<{ id: string; title: string; severity: string; status: string; code?: string; who?: string; days?: number }[]>("/api/nc");
   const { data: apiRisks } = useApi<{ id: string; title: string; category: string; probability: number; impact: number; score: number; level: string; mitigation_plan: string; code?: string }[]>("/api/risks");
   const { data: apiPerf } = useApi<{ process_id: string; process_name: string; execution_count: number; avg_duration_ms: number; nc_count: number }[]>("/api/processes/performance");
@@ -2490,13 +2518,16 @@ export default function App({ user: propUser, onLogout }: { user?: any; onLogout
           onLogout={onLogout}
           isAutomotive={isAutomotive}
           hasZones={hasZones}
+          isTechnician={isTechnician}
         />
 
         <div style={{ marginLeft: 260, flex: 1, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
           <TopBar title={viewTitles[view] ?? view} userName={D.user.full_name} />
 
           <main role="main" style={{ flex: 1, padding: "24px 24px 64px", maxWidth: 1280, width: "100%" }}>
-            {view === "overview" && <OverviewView D={D} onSelectPix={(pix) => { setSelectedPix(pix); setShowTrace(true); }} />}
+            {view === "overview" && isTechnician
+              ? <WorkerView user={propUser} />
+              : view === "overview" && <OverviewView D={D} onSelectPix={(pix) => { setSelectedPix(pix); setShowTrace(true); }} />}
             {view === "pix-feed" && (
               <div style={{ display: "grid", gridTemplateColumns: showTrace ? "1fr 420px" : "1fr", gap: 20, alignItems: "start" }}>
                 <PixFeed
