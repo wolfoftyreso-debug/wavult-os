@@ -298,7 +298,7 @@ function computeAlertTier(minutesRemaining: number): 'GREEN' | 'YELLOW' | 'ORANG
 const router = Router();
 
 // POST /api/sla/promise — create a new SLA promise
-router.post('/api/sla/promise', async (req: Request, res: Response) => {
+router.post('/promise', async (req: Request, res: Response) => {
   const {
     org_id, work_order_id, vehicle_reg, customer_name, customer_phone,
     technician_id, technician_name, promised_at, estimated_duration_mins,
@@ -320,7 +320,7 @@ router.post('/api/sla/promise', async (req: Request, res: Response) => {
 });
 
 // GET /api/sla/active — all active promises with time remaining
-router.get('/api/sla/active', async (req: Request, res: Response) => {
+router.get('/active', async (req: Request, res: Response) => {
   const { org_id } = req.query;
 
   let query = supabase
@@ -348,7 +348,7 @@ router.get('/api/sla/active', async (req: Request, res: Response) => {
 });
 
 // GET /api/sla/at-risk — promises with < 60 min remaining
-router.get('/api/sla/at-risk', async (req: Request, res: Response) => {
+router.get('/at-risk', async (req: Request, res: Response) => {
   const { org_id } = req.query;
   const cutoff = new Date(Date.now() + 60 * 60 * 1000).toISOString();
 
@@ -378,14 +378,14 @@ router.get('/api/sla/at-risk', async (req: Request, res: Response) => {
 });
 
 // POST /api/sla/check — manually trigger SLA check (for testing)
-router.post('/api/sla/check', async (req: Request, res: Response) => {
+router.post('/check', async (req: Request, res: Response) => {
   const { org_id } = req.body;
   const result = await checkSLABreaches(org_id);
   res.json({ ok: true, ...result });
 });
 
 // POST /api/sla/:id/met — mark SLA as completed on time
-router.post('/api/sla/:id/met', async (req: Request, res: Response) => {
+router.post('/:id/met', async (req: Request, res: Response) => {
   const { id } = req.params;
   const now = new Date().toISOString();
 
@@ -415,7 +415,7 @@ router.post('/api/sla/:id/met', async (req: Request, res: Response) => {
 });
 
 // GET /api/sla/stats — breach rate, avg delay, by technician
-router.get('/api/sla/stats', async (req: Request, res: Response) => {
+router.get('/stats', async (req: Request, res: Response) => {
   const { org_id } = req.query;
 
   let query = supabase
@@ -459,7 +459,7 @@ router.get('/api/sla/stats', async (req: Request, res: Response) => {
 });
 
 // POST /api/sla/seed-demo — seed 3 SLA promises for testing
-router.post('/api/sla/seed-demo', async (req: Request, res: Response) => {
+router.post('/seed-demo', async (req: Request, res: Response) => {
   const { org_id } = req.body;
   if (!org_id) return res.status(400).json({ error: 'org_id required' });
 

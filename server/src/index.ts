@@ -120,6 +120,7 @@ import { stateMachine } from "./state-machine";
 import { registerSubscribers } from "./subscribers";
 
 import evaBotRouter from './eva-bot';
+import slaEngineRouter, { startSLAChecker } from './sla-engine';
 
 // ---------------------------------------------------------------------------
 // App setup
@@ -509,6 +510,7 @@ app.use('/api/mobility',         mobilityIncidentRouter);    // Mobility Inciden
 import fluidIntegrationRouter from "./fluid-integration-api";
 app.use('/api/fluid', fluidIntegrationRouter);              // /api/fluid/integrations, /api/fluid/webhook/*, /api/fluid/events, /api/fluid/inventory, /api/fluid/report
 app.use(bookingEngineRouter);                               // Booking Engine — capacity+intent allocation, PIX-driven estimates, delay risk
+app.use('/api/sla', slaEngineRouter);                       // SLA Escalation Engine — T-60/T-30/T-0 alerts, customer SMS at breach
 
 // ---------------------------------------------------------------------------
 // Auth helper for inline routes
@@ -907,6 +909,8 @@ app.listen(PORT, () => {
   console.log(`Hypbit OMS API running on http://localhost:${PORT}`);
   // Schedule daily auto-consume job (runs at 06:00)
   scheduleAutoConsume();
+  // Start SLA Escalation Engine — checks every 5 minutes
+  startSLAChecker();
 });
 
 export default app;

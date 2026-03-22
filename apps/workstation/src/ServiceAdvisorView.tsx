@@ -11,6 +11,7 @@
 
 import { useState, useEffect } from 'react';
 import MissingPartFlow from './MissingPartFlow';
+import { SLAPanel, SLAStatusBar, type SLAPromise } from './SLAWidget';
 
 // ─── Color system — same as Dashboard ──────────────────────────────────────────
 const C = {
@@ -2004,7 +2005,7 @@ interface ServiceAdvisorViewProps {
   activeView?: string;
 }
 
-type TabId = 'flow' | 'exceptions' | 'idag' | 'bokningar';
+type TabId = 'flow' | 'exceptions' | 'idag' | 'bokningar' | 'sla';
 
 export default function ServiceAdvisorView({ user, activeView = 'overview' }: ServiceAdvisorViewProps) {
   const [activeTab, setActiveTab] = useState<TabId>('flow');
@@ -2015,11 +2016,34 @@ export default function ServiceAdvisorView({ user, activeView = 'overview' }: Se
   const [suggestions, setSuggestions] = useState<SystemSuggestion[]>(DEMO_SUGGESTIONS);
   const [toast, setToast] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
+  const [slaPromises, setSlaPromises] = useState<SLAPromise[]>([]);
+
+  // Derive org_id from user metadata
+  const orgId = user?.user_metadata?.org_id || '00020002-0000-0000-0000-000000000001';
 
   useEffect(() => {
     const id = setInterval(() => setLastUpdated(new Date()), 60000);
     return () => clearInterval(id);
   }, []);
+
+  // SLA: fetch active promises every 30 seconds
+  useEffect(() => {
+    const fetchSLA = async () => {
+      try {
+        const token = localStorage.getItem('pixdrift_token');
+        const headers: HeadersInit = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        const res = await fetch(`${import.meta.env.VITE_API_URL ?? 'http://localhost:3001'}/api/sla/active?org_id=${orgId}`, { headers });
+        if (res.ok) {
+          const data: SLAPromise[] = await res.json();
+          setSlaPromises(data);
+        }
+      } catch (_) {}
+    };
+    fetchSLA();
+    const slaId = setInterval(fetchSLA, 30_000);
+    return () => clearInterval(slaId);
+  }, [orgId]);
 
   const unresolved = exceptions.filter(e => !e.resolved);
   const highCount = unresolved.filter(e => e.severity === 'HIGH').length;
@@ -2115,10 +2139,12 @@ export default function ServiceAdvisorView({ user, activeView = 'overview' }: Se
 
   // ── Default: overview (Undantag & Kontroll) with tabs ───────────────────────
   // Tab definitions
+  const slaAtRisk = slaPromises.filter(p => ['YELLOW', 'ORANGE', 'RED'].includes(p.alert_tier)).length;
   const tabs: { id: TabId; label: string; badge?: number }[] = [
     { id: 'flow', label: 'Flödeskontroll' },
     { id: 'exceptions', label: 'Undantag', badge: unresolved.length > 0 ? unresolved.length : undefined },
     { id: 'idag', label: 'Idag' },
+    { id: 'sla', label: '⏰ SLA', badge: slaAtRisk > 0 ? slaAtRisk : undefined },
     { id: 'bokningar', label: '📅 Bokningar' },
   ];
 
@@ -2135,6 +2161,13 @@ export default function ServiceAdvisorView({ user, activeView = 'overview' }: Se
           boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
         }}>
           ✅ {toast}
+        </div>
+      )}
+
+      {/* ── SLA Status Bar ──────────────────────────────────────────────── */}
+      {slaPromises.length > 0 && (
+        <div style={{ marginBottom: 12 }}>
+          <SLAStatusBar promises={slaPromises} />
         </div>
       )}
 
@@ -2343,6 +2376,20 @@ export default function ServiceAdvisorView({ user, activeView = 'overview' }: Se
         </div>
       )}
 
+      {/* ── SLA tab ──────────────────────────────────────────────────── */}
+      {activeTab === 'sla' && (
+        <div style={{
+          background: C.surface, borderRadius: 16,
+          padding: '16px 16px 14px', boxShadow: shadow, border: `0.5px solid ${C.border}`,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+            <div style={{ fontSize: 16, fontWeight: 700, color: C.text }}>⏰ SLA-åtaganden</div>
+            <div style={{ fontSize: 11, color: C.secondary }}>Uppdateras automatiskt</div>
+          </div>
+          <SLAPanel orgId={orgId} />
+        </div>
+      )}
+
       {/* ── Bokningar tab ────────────────────────────────────────────── */}
       {activeTab === 'bokningar' && (
         <BookingsPanel orgId={user?.user_metadata?.org_id || '00020002-0000-0000-0000-000000000001'} />
@@ -2354,7 +2401,7 @@ export default function ServiceAdvisorView({ user, activeView = 'overview' }: Se
           marginTop: 16, padding: '8px 12px', background: '#F2F2F7',
           borderRadius: 8, fontSize: 11, color: C.secondary, fontFamily: 'monospace',
         }}>
-          🔧 DEV: role={user?.user_metadata?.role ?? user?.role ?? 'unknown'} | tab={activeTab} | exceptions={exceptions.length} | unresolved={unresolved.length} | suggestions={suggestions.length}
+          🔧 DEV: role={user?.user_metadata?.role ?? user?.role ?? 'unknown'} | tab={activeTab} | exceptions={exceptions.length} | unresolved={unresolved.length} | suggestions={suggestions.length} | sla={slaPromises.length} at-risk={slaAtRisk}
         </div>
       )}
     </div>
