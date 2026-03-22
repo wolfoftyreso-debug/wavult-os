@@ -67,7 +67,114 @@ const C = {
   orange: "#FF9500",
   red: "#FF3B30",
   inset: "rgba(60,60,67,0.06)",
+  // Aliases for extended components
+  surface: "#FFFFFF",
+  yellow: "#FF9500",
+  secondary: "#8E8E93",
+  tertiary: "#AEAEB2",
+  fill: "rgba(60,60,67,0.06)",
 };
+
+// ============================================================
+// FUTURE: Certification Body API Integrations
+// ============================================================
+// Planned integrations for automatic certificate verification:
+//
+// Swedac (Swedish accreditation body):
+//   API: https://www.swedac.se/api/v1/certificates
+//   Method: GET /certificates?number={cert_number}
+//   Returns: validity, scope, suspension status
+//
+// TÜV SÜD:
+//   Portal: https://www.tuvsud.com/en/services/testing/certification-verification
+//   API: Contact TÜV SÜD for B2B API access
+//
+// DEKRA:
+//   API: https://api.dekra.com/certificates (requires partnership agreement)
+//
+// DNV:
+//   API: https://api.veracity.com/dnv/certificates
+//   Auth: OAuth2 via Veracity platform
+//
+// Implementation plan:
+// 1. User enters certificate number
+// 2. System calls body's API to verify
+// 3. Auto-fills: scope, issue date, expiry, suspension status
+// 4. Creates webhook for status changes
+// 5. Automatic alerts if certificate suspended
+// ============================================================
+
+// ---------------------------------------------------------------------------
+// Extended Standards & Certification Bodies
+// ---------------------------------------------------------------------------
+const STANDARDS = [
+  // Kvalitet
+  { value: 'ISO_9001_2015', label: 'ISO 9001:2015 — Kvalitetsledning' },
+  { value: 'ISO_9001_2008', label: 'ISO 9001:2008 — Kvalitetsledning (äldre)' },
+  // Miljö
+  { value: 'ISO_14001_2015', label: 'ISO 14001:2015 — Miljöledning' },
+  // Arbetsmiljö
+  { value: 'ISO_45001_2018', label: 'ISO 45001:2018 — Arbetsmiljöledning' },
+  { value: 'OHSAS_18001', label: 'OHSAS 18001 — Arbetsmiljö (äldre)' },
+  // Informationssäkerhet
+  { value: 'ISO_27001_2022', label: 'ISO 27001:2022 — Informationssäkerhet' },
+  { value: 'ISO_27001_2013', label: 'ISO 27001:2013 — Informationssäkerhet (äldre)' },
+  // Energi
+  { value: 'ISO_50001_2018', label: 'ISO 50001:2018 — Energiledning' },
+  // Fordon
+  { value: 'IATF_16949', label: 'IATF 16949 — Fordonssektor kvalitet' },
+  { value: 'ISO_13485', label: 'ISO 13485 — Medicintekniska produkter' },
+  // Livsmedel
+  { value: 'ISO_22000_2018', label: 'ISO 22000:2018 — Livsmedelssäkerhet' },
+  { value: 'HACCP', label: 'HACCP — Livsmedelshygien' },
+  // Finansiell
+  { value: 'SOC2_TYPE1', label: 'SOC 2 Type 1 — Servicekontroller' },
+  { value: 'SOC2_TYPE2', label: 'SOC 2 Type 2 — Servicekontroller (löpande)' },
+  // Svensk/nordisk
+  { value: 'SWEDAC', label: 'Swedac-ackreditering' },
+  { value: 'TUV_CERT', label: 'TÜV-certifikat' },
+  { value: 'DEKRA_CERT', label: 'DEKRA-certifikat' },
+  { value: 'OTHER', label: 'Annan standard' },
+];
+
+const CERT_BODIES_EXTENDED = [
+  { value: 'DEKRA', label: 'DEKRA', numberFormat: /^DEKRA-\d{4,8}$/, example: 'DEKRA-12345678' },
+  { value: 'TUV_SUD', label: 'TÜV SÜD', numberFormat: /^[A-Z]{2}\d{8,12}$/, example: 'DE12345678' },
+  { value: 'TUV_NORD', label: 'TÜV NORD', numberFormat: /^TN-\d{6,10}$/, example: 'TN-123456' },
+  { value: 'TUV_RHEINLAND', label: 'TÜV Rheinland', numberFormat: /^\d{4,6}[A-Z]{2}\d{4,8}$/, example: '01234AB5678' },
+  { value: 'SGS', label: 'SGS', numberFormat: /^SGS\d{6,10}$/, example: 'SGS12345678' },
+  { value: 'DNV', label: 'DNV', numberFormat: /^[A-Z]{3}-\d{6,8}$/, example: 'DNV-123456' },
+  { value: 'BUREAU_VERITAS', label: 'Bureau Veritas', numberFormat: /^BV\d{6,10}$/, example: 'BV12345678' },
+  { value: 'INTERTEK', label: 'Intertek', numberFormat: /^ITS\d{6,10}$/, example: 'ITS12345678' },
+  { value: 'LRQA', label: 'LRQA', numberFormat: /^LRQ\d{7,10}$/, example: 'LRQ1234567' },
+  { value: 'RISE', label: 'RISE', numberFormat: /^RISE-\d{4,8}$/, example: 'RISE-12345' },
+  { value: 'SWEDAC', label: 'Swedac', numberFormat: /^\d{4,6}$/, example: '1234' },
+  { value: 'INTERNAL', label: 'Intern revision', numberFormat: null, example: 'Valfritt format' },
+];
+
+function validateCertNumber(number: string, bodyValue: string): { valid: boolean; message: string } {
+  const body = CERT_BODIES_EXTENDED.find(b => b.value === bodyValue);
+  if (!body || !body.numberFormat) return { valid: true, message: '' };
+  if (!number) return { valid: false, message: 'Certifikatnummer krävs' };
+  if (!body.numberFormat.test(number)) {
+    return { valid: false, message: `Ogiltigt format. Förväntat: ${body.example}` };
+  }
+  return { valid: true, message: '✓ Korrekt format' };
+}
+
+function addMonths(dateStr: string, months: number): string {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  d.setMonth(d.getMonth() + months);
+  return d.toISOString().split('T')[0];
+}
+
+function addYears(dateStr: string, years: number): string {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  d.setFullYear(d.getFullYear() + years);
+  return d.toISOString().split('T')[0];
+}
 
 const AUDIT_TYPE_LABELS: Record<string, string> = {
   ISO_CERTIFICATION: "ISO Certifiering",
@@ -352,10 +459,24 @@ function CompleteAuditModal({
 }
 
 // ---------------------------------------------------------------------------
-// Register Certificate Modal
+// Register Certificate Modal — expanded enterprise form
 // ---------------------------------------------------------------------------
+function SectionHeader({ title }: { title: string }) {
+  return (
+    <div style={{
+      fontSize: 11, fontWeight: 700, color: C.sub, textTransform: 'uppercase',
+      letterSpacing: '0.08em', marginBottom: 10, marginTop: 20, paddingBottom: 6,
+      borderBottom: `1px solid ${C.border}`,
+    }}>{title}</div>
+  );
+}
+
+function FieldHelp({ text }: { text: string }) {
+  return <div style={{ fontSize: 11, color: C.tertiary, fontStyle: 'italic', marginTop: 3 }}>{text}</div>;
+}
+
 function RegisterCertModal({
-  orgId, bodies, standards, onClose, onSaved,
+  orgId, bodies, onClose, onSaved,
 }: {
   orgId: string;
   bodies: CertificationBody[];
@@ -364,25 +485,92 @@ function RegisterCertModal({
   onSaved: () => void;
 }) {
   const [form, setForm] = useState({
-    standard: "",
-    certification_body: "",
-    certificate_number: "",
-    scope: "",
-    issued_date: "",
-    valid_until: "",
-    surveillance_interval_months: "12",
-    next_surveillance_date: "",
+    // Sektion 1 — Certifikat
+    standard: '',
+    certification_body: '',        // värde från CERT_BODIES_EXTENDED
+    certification_body_label: '',  // visningsnamn
+    certificate_number: '',
+    scope: '',
+    certified_activity: '',
+    // Sektion 2 — Giltighetstider
+    issued_date: '',
+    valid_until: '',
+    surveillance_interval_months: '12',
+    next_surveillance_date: '',
+    next_recertification_date: '',
+    notification_days: '90,60,30',
+    // Sektion 3 — Ansvarig & Dokument
+    responsible_person: '',
+    backup_responsible: '',
+    certificate_document_url: '',
+    linked_audit_id: '',
+    // Sektion 4 — Anteckningar
+    internal_notes: '',
+    public_notes: '',
   });
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
+  const [certValidation, setCertValidation] = useState<{ valid: boolean; message: string }>({ valid: true, message: '' });
+
+  const set = (field: string, value: string) => setForm(f => ({ ...f, [field]: value }));
+
+  // Auto-beräkna nästa övervakningsrevision när utfärdandedatum eller intervall ändras
+  const handleIssuedDateChange = (val: string) => {
+    set('issued_date', val);
+    if (val && form.surveillance_interval_months) {
+      set('next_surveillance_date', addMonths(val, parseInt(form.surveillance_interval_months)));
+      set('next_recertification_date', addYears(val, 3));
+    }
+  };
+
+  const handleIntervalChange = (val: string) => {
+    set('surveillance_interval_months', val);
+    if (form.issued_date && val) {
+      set('next_surveillance_date', addMonths(form.issued_date, parseInt(val)));
+    }
+  };
+
+  const handleBodyChange = (val: string) => {
+    const body = CERT_BODIES_EXTENDED.find(b => b.value === val);
+    set('certification_body', val);
+    set('certification_body_label', body?.label ?? val);
+    if (form.certificate_number) {
+      setCertValidation(validateCertNumber(form.certificate_number, val));
+    }
+  };
+
+  const handleCertNumberChange = (val: string) => {
+    set('certificate_number', val);
+    setCertValidation(validateCertNumber(val, form.certification_body));
+  };
+
+  const selectedBody = CERT_BODIES_EXTENDED.find(b => b.value === form.certification_body);
 
   const save = async () => {
-    if (!form.standard || !form.valid_until) { setError("Standard och giltighetstid krävs"); return; }
+    if (!form.standard) { setError('Standard krävs'); return; }
+    if (!form.valid_until) { setError('Giltigt t.o.m. krävs'); return; }
+    if (!certValidation.valid) { setError('Certifikatnumret har fel format'); return; }
     setSaving(true);
+    setError('');
     try {
       await apiClient.post(`/api/certifications?org_id=${orgId}`, {
-        ...form,
-        surveillance_interval_months: parseInt(form.surveillance_interval_months),
+        standard: form.standard,
+        certification_body: form.certification_body_label || form.certification_body,
+        certificate_number: form.certificate_number || null,
+        scope: form.scope || null,
+        certified_activity: form.certified_activity || null,
+        issued_date: form.issued_date || null,
+        valid_until: form.valid_until,
+        surveillance_interval_months: parseInt(form.surveillance_interval_months) || 12,
+        next_surveillance_date: form.next_surveillance_date || null,
+        next_recertification_date: form.next_recertification_date || null,
+        notification_days: form.notification_days,
+        responsible_person: form.responsible_person || null,
+        backup_responsible: form.backup_responsible || null,
+        certificate_document_url: form.certificate_document_url || null,
+        linked_audit_id: form.linked_audit_id || null,
+        internal_notes: form.internal_notes || null,
+        public_notes: form.public_notes || null,
       });
       onSaved();
       onClose();
@@ -393,48 +581,346 @@ function RegisterCertModal({
     }
   };
 
+  const inputStyle = {
+    width: '100%', padding: '9px 12px', borderRadius: 8, border: `1px solid ${C.border}`,
+    fontSize: 14, color: C.text, background: C.bg, boxSizing: 'border-box' as const,
+  };
+
+  const labelStyle = {
+    display: 'block', fontSize: 12, fontWeight: 600, color: C.sub, marginBottom: 4,
+  } as React.CSSProperties;
+
   return (
     <Modal title="Registrera certifikat" onClose={onClose}>
+
+      {/* ── SEKTION 1: CERTIFIKAT ── */}
+      <SectionHeader title="1. Certifikat" />
+
+      {/* Standard */}
       <div style={{ marginBottom: 14 }}>
-        <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: C.sub, marginBottom: 4 }}>Standard *</label>
-        <select value={form.standard} onChange={e => setForm(f => ({ ...f, standard: e.target.value }))}
-          style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: `1px solid ${C.border}`, fontSize: 14, background: C.bg }}>
+        <label style={labelStyle}>Standard *</label>
+        <select value={form.standard} onChange={e => set('standard', e.target.value)}
+          style={{ ...inputStyle }}>
           <option value="">— välj standard —</option>
-          {standards.map(s => <option key={s} value={s}>{s}</option>)}
+          {STANDARDS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
         </select>
+        <FieldHelp text="Välj den ISO- eller branschstandard som certifikatet avser" />
       </div>
+
+      {/* Certifieringsorgan */}
       <div style={{ marginBottom: 14 }}>
-        <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: C.sub, marginBottom: 4 }}>Certifieringsorgan</label>
-        <select value={form.certification_body} onChange={e => setForm(f => ({ ...f, certification_body: e.target.value }))}
-          style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: `1px solid ${C.border}`, fontSize: 14, background: C.bg }}>
-          <option value="">— välj —</option>
-          {bodies.map(b => <option key={b.id} value={b.name}>{b.logo} {b.name}</option>)}
+        <label style={labelStyle}>Certifieringsorgan</label>
+        <select value={form.certification_body} onChange={e => handleBodyChange(e.target.value)}
+          style={{ ...inputStyle }}>
+          <option value="">— välj certifieringsorgan —</option>
+          {CERT_BODIES_EXTENDED.map(b => <option key={b.value} value={b.value}>{b.label}</option>)}
         </select>
+        {selectedBody && (
+          <FieldHelp text={`Förväntat certifikatnummer-format: ${selectedBody.example}`} />
+        )}
       </div>
-      {[
-        ["Certifikatnummer", "certificate_number", "text"],
-        ["Scope", "scope", "text"],
-        ["Utfärdningsdatum", "issued_date", "date"],
-        ["Giltigt t.o.m. *", "valid_until", "date"],
-        ["Nästa övervakningsrevision", "next_surveillance_date", "date"],
-        ["Övervakningsintervall (månader)", "surveillance_interval_months", "number"],
-      ].map(([label, field, type]) => (
-        <div key={field} style={{ marginBottom: 14 }}>
-          <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: C.sub, marginBottom: 4 }}>{label}</label>
-          <input type={type} value={(form as any)[field]}
-            onChange={e => setForm(f => ({ ...f, [field]: e.target.value }))}
-            style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: `1px solid ${C.border}`, fontSize: 14, background: C.bg, boxSizing: "border-box" }}
+
+      {/* Certifikatnummer med validering */}
+      <div style={{ marginBottom: 14 }}>
+        <label style={labelStyle}>Certifikatnummer</label>
+        <input
+          type="text"
+          value={form.certificate_number}
+          onChange={e => handleCertNumberChange(e.target.value)}
+          placeholder={selectedBody?.example ?? 'T.ex. DEKRA-12345678'}
+          style={{
+            ...inputStyle,
+            border: `1px solid ${
+              form.certificate_number && !certValidation.valid ? C.red :
+              form.certificate_number && certValidation.valid ? C.green :
+              C.border
+            }`,
+          }}
+        />
+        {form.certificate_number && (
+          <div style={{
+            fontSize: 12, marginTop: 3,
+            color: certValidation.valid ? C.green : C.red,
+            fontWeight: certValidation.valid ? 600 : 400,
+          }}>
+            {certValidation.message}
+          </div>
+        )}
+        {!form.certificate_number && selectedBody && (
+          <FieldHelp text={`Format: ${selectedBody.example}`} />
+        )}
+      </div>
+
+      {/* Scope */}
+      <div style={{ marginBottom: 14 }}>
+        <label style={labelStyle}>Scope / Verksamhetsområde</label>
+        <textarea
+          value={form.scope}
+          onChange={e => set('scope', e.target.value.slice(0, 200))}
+          rows={3}
+          maxLength={200}
+          placeholder="T.ex. Design, tillverkning och service av hydrauliksystem"
+          style={{ ...inputStyle, resize: 'vertical' }}
+        />
+        <FieldHelp text={`${form.scope.length}/200 tecken — Beskriver vilket verksamhetsområde som täcks av certifikatet`} />
+      </div>
+
+      {/* Certifierad verksamhet */}
+      <div style={{ marginBottom: 14 }}>
+        <label style={labelStyle}>Certifierad verksamhet</label>
+        <input
+          type="text"
+          value={form.certified_activity}
+          onChange={e => set('certified_activity', e.target.value)}
+          placeholder="T.ex. Produktion av elektriska komponenter vid anläggning i Göteborg"
+          style={inputStyle}
+        />
+        <FieldHelp text="Precisera exakt vad (process, produkt, anläggning) som är certifierat" />
+      </div>
+
+      {/* ── SEKTION 2: GILTIGHETSTIDER ── */}
+      <SectionHeader title="2. Giltighetstider" />
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        {/* Utfärdandedatum */}
+        <div style={{ marginBottom: 14 }}>
+          <label style={labelStyle}>Utfärdandedatum</label>
+          <input
+            type="date"
+            value={form.issued_date}
+            onChange={e => handleIssuedDateChange(e.target.value)}
+            style={inputStyle}
           />
         </div>
-      ))}
-      {error && <p style={{ color: C.red, fontSize: 13 }}>{error}</p>}
+
+        {/* Giltigt t.o.m. */}
+        <div style={{ marginBottom: 14 }}>
+          <label style={labelStyle}>Giltigt t.o.m. *</label>
+          <input
+            type="date"
+            value={form.valid_until}
+            onChange={e => set('valid_until', e.target.value)}
+            style={inputStyle}
+          />
+        </div>
+      </div>
+
+      {/* Övervakningsintervall */}
+      <div style={{ marginBottom: 14 }}>
+        <label style={labelStyle}>Övervakningsintervall (månader)</label>
+        <select value={form.surveillance_interval_months} onChange={e => handleIntervalChange(e.target.value)}
+          style={{ ...inputStyle }}>
+          <option value="6">6 månader</option>
+          <option value="12">12 månader (standard)</option>
+          <option value="18">18 månader</option>
+          <option value="24">24 månader</option>
+        </select>
+        <FieldHelp text="Hur ofta övervakningsrevisor besöker — vanligtvis 12 månader för ISO" />
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        {/* Nästa övervakningsrevision (auto) */}
+        <div style={{ marginBottom: 14 }}>
+          <label style={labelStyle}>Nästa övervakningsrevision</label>
+          <input
+            type="date"
+            value={form.next_surveillance_date}
+            onChange={e => set('next_surveillance_date', e.target.value)}
+            style={{ ...inputStyle, background: form.next_surveillance_date ? `${C.blue}08` : C.bg }}
+          />
+          <FieldHelp text="Auto-beräknas från utfärdandedatum + intervall" />
+        </div>
+
+        {/* Nästa omcertifiering */}
+        <div style={{ marginBottom: 14 }}>
+          <label style={labelStyle}>Nästa omcertifiering</label>
+          <input
+            type="date"
+            value={form.next_recertification_date}
+            onChange={e => set('next_recertification_date', e.target.value)}
+            style={{ ...inputStyle, background: form.next_recertification_date ? `${C.blue}08` : C.bg }}
+          />
+          <FieldHelp text="Auto-satt till 3 år från utfärdandedatum (justerbar)" />
+        </div>
+      </div>
+
+      {/* Autonotifiering */}
+      <div style={{ marginBottom: 14 }}>
+        <label style={labelStyle}>Autonotifiering — påminnelse (dagar innan)</label>
+        <div style={{ display: 'flex', gap: 8 }}>
+          {['30', '60', '90'].map(d => {
+            const active = form.notification_days.split(',').includes(d);
+            return (
+              <button key={d} type="button" onClick={() => {
+                const days = form.notification_days.split(',').filter(Boolean);
+                const next = active ? days.filter(x => x !== d) : [...days, d];
+                set('notification_days', next.sort((a, b) => parseInt(b) - parseInt(a)).join(','));
+              }} style={{
+                padding: '6px 14px', borderRadius: 8, border: `1px solid ${active ? C.blue : C.border}`,
+                background: active ? `${C.blue}15` : C.bg, color: active ? C.blue : C.sub,
+                fontSize: 13, fontWeight: active ? 700 : 400, cursor: 'pointer',
+              }}>
+                {d} dagar
+              </button>
+            );
+          })}
+        </div>
+        <FieldHelp text="Välj när systemet ska skicka påminnelse om kommande förfallodatum" />
+      </div>
+
+      {/* ── SEKTION 3: ANSVARIG & DOKUMENT ── */}
+      <SectionHeader title="3. Ansvarig & Dokument" />
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        <div style={{ marginBottom: 14 }}>
+          <label style={labelStyle}>Ansvarig person</label>
+          <input type="text" value={form.responsible_person}
+            onChange={e => set('responsible_person', e.target.value)}
+            placeholder="Namn eller e-post"
+            style={inputStyle} />
+        </div>
+        <div style={{ marginBottom: 14 }}>
+          <label style={labelStyle}>Backup-ansvarig</label>
+          <input type="text" value={form.backup_responsible}
+            onChange={e => set('backup_responsible', e.target.value)}
+            placeholder="Namn eller e-post"
+            style={inputStyle} />
+        </div>
+      </div>
+
+      <div style={{ marginBottom: 14 }}>
+        <label style={labelStyle}>Certifikatdokument (URL)</label>
+        <input type="url" value={form.certificate_document_url}
+          onChange={e => set('certificate_document_url', e.target.value)}
+          placeholder="https://… eller intern sökväg"
+          style={inputStyle} />
+        <FieldHelp text="Länk till det officiella certifikatdokumentet (PDF, portal, etc.)" />
+      </div>
+
+      <div style={{ marginBottom: 14 }}>
+        <label style={labelStyle}>Tillhörande revision (ID)</label>
+        <input type="text" value={form.linked_audit_id}
+          onChange={e => set('linked_audit_id', e.target.value)}
+          placeholder="Revision-ID att koppla till detta certifikat"
+          style={inputStyle} />
+      </div>
+
+      {/* ── SEKTION 4: ANTECKNINGAR ── */}
+      <SectionHeader title="4. Anteckningar" />
+
+      <div style={{ marginBottom: 14 }}>
+        <label style={labelStyle}>Interna anteckningar</label>
+        <textarea value={form.internal_notes}
+          onChange={e => set('internal_notes', e.target.value)}
+          rows={3}
+          placeholder="Synliga enbart internt — uppföljningspunkter, kontakter, beslut…"
+          style={{ ...inputStyle, resize: 'vertical' }} />
+      </div>
+
+      <div style={{ marginBottom: 20 }}>
+        <label style={labelStyle}>Externt synlig information</label>
+        <textarea value={form.public_notes}
+          onChange={e => set('public_notes', e.target.value)}
+          rows={2}
+          placeholder="Synlig i customer portal och externa rapporter"
+          style={{ ...inputStyle, resize: 'vertical' }} />
+        <FieldHelp text="Visas för kunder i portalen — skriv inget känsligt här" />
+      </div>
+
+      {error && <p style={{ color: C.red, fontSize: 13, marginBottom: 12 }}>{error}</p>}
+
       <button onClick={save} disabled={saving} style={{
-        background: C.blue, color: "#fff", border: "none", borderRadius: 10, padding: "10px 20px",
-        fontSize: 14, fontWeight: 600, cursor: "pointer", width: "100%",
+        background: C.blue, color: '#fff', border: 'none', borderRadius: 10, padding: '11px 20px',
+        fontSize: 14, fontWeight: 700, cursor: 'pointer', width: '100%',
       }}>
-        {saving ? "Sparar…" : "Registrera certifikat"}
+        {saving ? 'Sparar…' : '🏅 Registrera certifikat'}
       </button>
     </Modal>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Certificate Card — rich card view for registry
+// ---------------------------------------------------------------------------
+function CertificateCard({ cert, bodies }: { cert: Certification; bodies: CertificationBody[] }) {
+  const daysLeft = cert.days_until_expiry;
+  const urgency = daysLeft < 30 ? 'critical' : daysLeft < 90 ? 'warning' : 'ok';
+
+  const borderColor = urgency === 'critical' ? C.red : urgency === 'warning' ? C.yellow : C.green;
+  const badgeBg = urgency === 'critical' ? '#FF3B3010' : urgency === 'warning' ? '#FF950010' : '#34C75910';
+  const badgeColor = urgency === 'critical' ? C.red : urgency === 'warning' ? C.yellow : C.green;
+
+  const standardLabel = STANDARDS.find(s => s.value === cert.standard)?.label ?? cert.standard;
+  const bodyLogo = bodies.find(b => b.name === cert.certification_body)?.logo ?? '🏅';
+
+  return (
+    <div style={{
+      background: C.surface,
+      border: `0.5px solid ${borderColor}`,
+      borderLeft: `3px solid ${borderColor}`,
+      borderRadius: '0 10px 10px 0',
+      padding: '16px 20px',
+      marginBottom: 10,
+    }}>
+      {/* Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+        <div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: C.text }}>
+            {bodyLogo} {standardLabel}
+          </div>
+          <div style={{ fontSize: 12, color: C.secondary, marginTop: 2 }}>
+            {cert.certification_body ?? '—'}
+            {cert.certificate_number ? ` · #${cert.certificate_number}` : ''}
+          </div>
+        </div>
+        <div style={{
+          padding: '4px 10px', borderRadius: 6, fontSize: 11, fontWeight: 700,
+          background: badgeBg, color: badgeColor, alignSelf: 'flex-start', whiteSpace: 'nowrap',
+        }}>
+          {urgency === 'critical'
+            ? `${daysLeft}d — KRITISK`
+            : urgency === 'warning'
+            ? `${daysLeft}d — Löper snart`
+            : `Giltig t.o.m. ${new Date(cert.valid_until).toLocaleDateString('sv-SE')}`}
+        </div>
+      </div>
+
+      {/* Scope */}
+      {cert.scope && (
+        <div style={{ fontSize: 12, color: C.secondary, marginBottom: 8 }}>{cert.scope}</div>
+      )}
+
+      {/* Progress bar */}
+      <div style={{ height: 3, background: C.fill, borderRadius: 2, overflow: 'hidden' }}>
+        <div style={{
+          height: '100%',
+          width: `${Math.max(0, Math.min(100, (daysLeft / 365) * 100))}%`,
+          background: borderColor,
+          borderRadius: 2,
+          transition: 'width 0.3s ease',
+        }} />
+      </div>
+
+      {/* Footer */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 10, fontSize: 11, color: C.tertiary }}>
+        <span>
+          Nästa revision:{' '}
+          {cert.next_surveillance_date
+            ? new Date(cert.next_surveillance_date).toLocaleDateString('sv-SE')
+            : '—'}
+        </span>
+        {cert.certificate_document_url && (
+          <a
+            href={cert.certificate_document_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: C.blue, textDecoration: 'none' }}
+          >
+            📄 Certifikatdokument
+          </a>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -835,24 +1321,29 @@ export default function ExternalAuditModule({ orgId }: { orgId?: string }) {
           {/* ─── VY 3: Certifikatsregister ─── */}
           {view === "registry" && (
             <div>
-              {/* Filters */}
-              <div style={{ display: "flex", gap: 12, marginBottom: 18 }}>
+              {/* Filters + Export */}
+              <div style={{ display: "flex", gap: 12, marginBottom: 18, flexWrap: "wrap" }}>
                 <select value={filterStandard} onChange={e => setFilterStandard(e.target.value)}
                   style={{ padding: "8px 12px", borderRadius: 8, border: `1px solid ${C.border}`, fontSize: 13, background: C.card }}>
                   <option value="">Alla standarder</option>
-                  {standards.map(s => <option key={s} value={s}>{s}</option>)}
+                  {STANDARDS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                 </select>
                 <select value={filterBody} onChange={e => setFilterBody(e.target.value)}
                   style={{ padding: "8px 12px", borderRadius: 8, border: `1px solid ${C.border}`, fontSize: 13, background: C.card }}>
                   <option value="">Alla certifieringsorgan</option>
-                  {bodies.map(b => <option key={b.id} value={b.name}>{b.logo} {b.name}</option>)}
+                  {CERT_BODIES_EXTENDED.map(b => <option key={b.value} value={b.label}>{b.label}</option>)}
                 </select>
                 <div style={{ flex: 1 }} />
                 <button onClick={() => {
                   const rows = filteredCerts.map(c =>
-                    [c.standard, c.certification_body, c.certificate_number, c.valid_until, c.status].join("\t")
+                    [
+                      STANDARDS.find(s => s.value === c.standard)?.label ?? c.standard,
+                      c.certification_body, c.certificate_number,
+                      formatDate(c.valid_until), c.status,
+                      c.days_until_expiry + ' dagar kvar',
+                    ].join("\t")
                   );
-                  const text = ["Standard\tOrgan\tCertifikatnummer\tGiltigt t.o.m.\tStatus", ...rows].join("\n");
+                  const text = ["Standard\tOrgan\tCertifikatnummer\tGiltigt t.o.m.\tStatus\tDagar kvar", ...rows].join("\n");
                   navigator.clipboard.writeText(text);
                 }} style={{
                   background: C.inset, border: `1px solid ${C.border}`, borderRadius: 8,
@@ -862,57 +1353,66 @@ export default function ExternalAuditModule({ orgId }: { orgId?: string }) {
                 </button>
               </div>
 
-              {filteredCerts.length === 0 ? (
-                <div style={{ background: C.card, borderRadius: 14, padding: 60, textAlign: "center", color: C.sub }}>
-                  Inga certifikat registrerade
-                </div>
-              ) : (
-                <div style={{ background: C.card, borderRadius: 14, overflow: "hidden", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}>
-                  {/* Header */}
-                  <div style={{
-                    display: "grid", gridTemplateColumns: "2fr 1.5fr 1fr 1fr 1fr",
-                    padding: "10px 20px", borderBottom: `1px solid ${C.border}`,
-                    fontSize: 11, fontWeight: 700, color: C.sub, textTransform: "uppercase", letterSpacing: "0.05em",
-                  }}>
-                    <div>Standard</div>
-                    <div>Certifieringsorgan</div>
-                    <div>Certifikatnr</div>
-                    <div>Giltigt t.o.m.</div>
-                    <div>Status</div>
-                  </div>
-                  {filteredCerts.map((cert, i) => (
-                    <div key={cert.id} style={{
-                      display: "grid", gridTemplateColumns: "2fr 1.5fr 1fr 1fr 1fr",
-                      padding: "14px 20px", alignItems: "center",
-                      borderBottom: i < filteredCerts.length - 1 ? `1px solid ${C.border}` : "none",
+              {/* Summary row */}
+              {filteredCerts.length > 0 && (
+                <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
+                  {[
+                    { label: "Totalt", value: filteredCerts.length, color: C.sub },
+                    { label: "Aktiva", value: filteredCerts.filter(c => c.status === "ACTIVE").length, color: C.green },
+                    { label: "Kritiska (< 30 dagar)", value: filteredCerts.filter(c => c.days_until_expiry < 30).length, color: C.red },
+                    { label: "Varning (< 90 dagar)", value: filteredCerts.filter(c => c.days_until_expiry >= 30 && c.days_until_expiry < 90).length, color: C.orange },
+                  ].map(s => (
+                    <div key={s.label} style={{
+                      background: C.card, borderRadius: 10, padding: "8px 14px",
+                      fontSize: 13, color: C.sub,
                     }}>
-                      <div>
-                        <div style={{ fontWeight: 600, fontSize: 14, color: C.text }}>{cert.standard}</div>
-                        {cert.scope && <div style={{ fontSize: 12, color: C.sub, marginTop: 2 }}>{cert.scope.slice(0, 50)}</div>}
-                      </div>
-                      <div style={{ fontSize: 14, color: C.text }}>
-                        {bodies.find(b => b.name === cert.certification_body)?.logo ?? ""} {cert.certification_body ?? "—"}
-                      </div>
-                      <div style={{ fontSize: 13, color: C.sub, fontFamily: "monospace" }}>
-                        {cert.certificate_number ?? "—"}
-                      </div>
-                      <div>
-                        <div style={{ fontSize: 14, fontWeight: 600, color: urgencyColor(cert.expiry_urgency) }}>
-                          {formatDate(cert.valid_until)}
-                        </div>
-                        <div style={{ fontSize: 12, color: urgencyColor(cert.expiry_urgency) }}>
-                          {urgencyLabel(cert.days_until_expiry)}
-                        </div>
-                      </div>
-                      <div>
-                        <span style={{
-                          background: `${cert.status === "ACTIVE" ? C.green : C.red}20`,
-                          color: cert.status === "ACTIVE" ? C.green : C.red,
-                          borderRadius: 6, padding: "3px 10px", fontSize: 12, fontWeight: 700,
-                        }}>{cert.status}</span>
-                      </div>
+                      <span style={{ fontWeight: 700, color: s.color }}>{s.value}</span> {s.label}
                     </div>
                   ))}
+                </div>
+              )}
+
+              {filteredCerts.length === 0 ? (
+                <div style={{ background: C.card, borderRadius: 14, padding: 60, textAlign: "center", color: C.sub }}>
+                  Inga certifikat registrerade — klicka "+ Certifikat" för att lägga till
+                </div>
+              ) : (
+                <div>
+                  {/* Critical first, then warning, then ok */}
+                  {(['critical', 'warning', 'ok'] as const).map(level => {
+                    const levelCerts = filteredCerts.filter(c => {
+                      const d = c.days_until_expiry;
+                      if (level === 'critical') return d < 30;
+                      if (level === 'warning') return d >= 30 && d < 90;
+                      return d >= 90;
+                    });
+                    if (levelCerts.length === 0) return null;
+                    return (
+                      <div key={level}>
+                        {level !== 'ok' && (
+                          <div style={{
+                            fontSize: 11, fontWeight: 700, color: level === 'critical' ? C.red : C.orange,
+                            textTransform: 'uppercase', letterSpacing: '0.06em',
+                            marginBottom: 8, marginTop: level === 'warning' ? 16 : 0,
+                          }}>
+                            {level === 'critical' ? '🔴 Kritiska certifikat' : '🟡 Löper ut snart'}
+                          </div>
+                        )}
+                        {level === 'ok' && levelCerts.length > 0 && (
+                          <div style={{
+                            fontSize: 11, fontWeight: 700, color: C.green,
+                            textTransform: 'uppercase', letterSpacing: '0.06em',
+                            marginBottom: 8, marginTop: 16,
+                          }}>
+                            🟢 Giltiga certifikat
+                          </div>
+                        )}
+                        {levelCerts.map(cert => (
+                          <CertificateCard key={cert.id} cert={cert} bodies={bodies} />
+                        ))}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -934,7 +1434,7 @@ export default function ExternalAuditModule({ orgId }: { orgId?: string }) {
         <RegisterCertModal
           orgId={oid}
           bodies={bodies}
-          standards={standards}
+          standards={[]}
           onClose={() => setShowRegisterCert(false)}
           onSaved={load}
         />
