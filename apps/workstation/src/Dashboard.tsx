@@ -13,6 +13,7 @@ import { formatCurrency, formatDate } from "@pixdrift/i18n";
 import PeopleOSModule from "./PeopleOSModule";
 import ExternalAuditModule from "./ExternalAuditModule";
 import AccountSafetyModule, { ShieldCheckIcon } from "./AccountSafetyModule";
+import CompanyComplianceModule from "./CompanyComplianceModule";
 import DevOpsHub from "./DevOpsHub";
 import PixFeed, { DEMO_PIX, PIX_COLORS } from "./PixFeed";
 import type { PIX } from "./PixFeed";
@@ -308,6 +309,14 @@ const Icons = {
       <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
     </svg>
   ),
+  Building: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 21h18"/>
+      <path d="M5 21V7l7-4 7 4v14"/>
+      <path d="M9 21v-4h6v4"/>
+      <path d="M9 9h1m4 0h1M9 13h1m4 0h1"/>
+    </svg>
+  ),
   Cake: () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/>
@@ -386,6 +395,12 @@ const NAV_SECTIONS_BASE = [
     items: [
       { id: "finance",  icon: <Icons.Ledger />, label: "Huvudbok",  pixSubtitle: "Finance PIX" },
       { id: "reports",  icon: <Icons.Chart />,  label: "Rapporter", pixSubtitle: "State snapshot" },
+    ],
+  },
+  {
+    label: "LEGAL",
+    items: [
+      { id: "company", icon: <Icons.Building />, label: "Bolagsinfo", pixSubtitle: "Legal PIX" },
     ],
   },
   {
@@ -2507,6 +2522,7 @@ export default function App({ user: propUser, onLogout }: { user?: any; onLogout
             {view === "external-audits" && <ExternalAuditModule orgId={D.user?.id} />}
             {view === "devops" && <DevOpsHub />}
             {view === "account-safety" && <AccountSafetyModule orgId={D.user?.id} />}
+            {view === "company" && <CompanyComplianceModule />}
           </main>
         </div>
       </div>
