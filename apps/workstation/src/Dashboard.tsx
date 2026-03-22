@@ -14,6 +14,7 @@ import PeopleOSModule from "./PeopleOSModule";
 import ExternalAuditModule from "./ExternalAuditModule";
 import AccountSafetyModule, { ShieldCheckIcon } from "./AccountSafetyModule";
 import CompanyComplianceModule from "./CompanyComplianceModule";
+import NotificationsView from './NotificationsView';
 import DevOpsHub from "./DevOpsHub";
 import PixFeed, { DEMO_PIX, PIX_COLORS } from "./PixFeed";
 import type { PIX } from "./PixFeed";
@@ -1115,7 +1116,7 @@ function Sidebar({
 }
 
 // ─── Top bar ──────────────────────────────────────────────────────────────────
-function TopBar({ title, onNew, userName = "Erik" }: { title: string; onNew?: () => void; userName?: string }) {
+function TopBar({ title, onNew, userName = "Erik", onBellClick }: { title: string; onNew?: () => void; userName?: string; onBellClick?: () => void }) {
   const [notificationOpen, setNotificationOpen] = useState(false);
   return (
     <div style={{
@@ -1150,7 +1151,7 @@ function TopBar({ title, onNew, userName = "Erik" }: { title: string; onNew?: ()
         <button
           type="button"
           aria-label="Notifikationer"
-          onClick={() => setNotificationOpen(o => !o)}
+          onClick={() => { if (onBellClick) onBellClick(); }}
           style={{
             width: 44, height: 44, borderRadius: 22,
             background: notificationOpen ? "#007AFF14" : "transparent", border: "none",
@@ -2571,7 +2572,7 @@ export default function App({ user: propUser, onLogout }: { user?: any; onLogout
         />
 
         <div style={{ marginLeft: 260, flex: 1, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-          <TopBar title={viewTitles[view] ?? view} userName={D.user.full_name} />
+          <TopBar title={viewTitles[view] ?? view} userName={D.user.full_name} onBellClick={() => setView("notifications")} />
 
           <main role="main" style={{ flex: 1, padding: "24px 24px 64px", maxWidth: 1280, width: "100%" }}>
             {view === "overview" && isServiceAdvisor
@@ -2620,6 +2621,7 @@ export default function App({ user: propUser, onLogout }: { user?: any; onLogout
             {view === "consumables"  && <ConsumablesModule />}
             {view === "people"       && <PeopleOSModule D={D as any} />}
             {view === "external-audits" && <ExternalAuditModule orgId={D.user?.id} />}
+            {view === "notifications" && <NotificationsView />}
             {view === "devops" && <DevOpsHub />}
             {view === "account-safety" && <AccountSafetyModule orgId={D.user?.id} />}
             {view === "company" && <CompanyComplianceModule />}
