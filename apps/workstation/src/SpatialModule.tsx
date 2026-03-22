@@ -68,6 +68,25 @@ interface UserMovement {
 }
 
 // ---------------------------------------------------------------------------
+// App theme (matches Dashboard.tsx C object — light iOS theme)
+// ---------------------------------------------------------------------------
+const C = {
+  bg:        "#F2F2F7",
+  surface:   "#FFFFFF",
+  border:    "#D1D1D6",
+  text:      "#000000",
+  secondary: "#8E8E93",
+  tertiary:  "#C7C7CC",
+  blue:      "#007AFF",
+  green:     "#34C759",
+  orange:    "#FF9500",
+  red:       "#FF3B30",
+  purple:    "#AF52DE",
+  fill:      "#F2F2F7",
+  inset:     "#E5E5EA",
+};
+
+// ---------------------------------------------------------------------------
 // Colour helpers
 // ---------------------------------------------------------------------------
 const SEVERITY_COLOR: Record<string, string> = {
@@ -94,15 +113,15 @@ function WorkshopMap({ zones }: { zones: Zone[] }) {
       width="100%"
       viewBox="0 0 100 60"
       style={{
-        background: "#0a0a0f",
+        background: C.surface,
         borderRadius: 12,
-        border: "1px solid rgba(255,255,255,0.08)",
+        border: `1px solid ${C.border}`,
       }}
     >
       {/* Grid */}
       <defs>
         <pattern id="spatial-grid" width="5" height="5" patternUnits="userSpaceOnUse">
-          <path d="M 5 0 L 0 0 0 5" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="0.3" />
+          <path d="M 5 0 L 0 0 0 5" fill="none" stroke={C.border} strokeWidth="0.3" />
         </pattern>
       </defs>
       <rect width="100" height="60" fill="url(#spatial-grid)" />
@@ -130,7 +149,7 @@ function WorkshopMap({ zones }: { zones: Zone[] }) {
               textAnchor="middle"
               dominantBaseline="middle"
               fontSize="1.8"
-              fill={zone.color}
+              fill={zone.color ?? C.blue}
               fontWeight="bold"
             >
               {zone.name}
@@ -154,7 +173,7 @@ function WorkshopMap({ zones }: { zones: Zone[] }) {
                 y={zone.y + 2}
                 textAnchor="end"
                 fontSize="1.6"
-                fill="#fff"
+                fill={C.text}
                 opacity={0.7}
               >
                 {users.length}
@@ -177,14 +196,14 @@ function SpaghettiDiagram({ data }: { data: SpaghettiData }) {
       width="100%"
       viewBox="0 0 100 60"
       style={{
-        background: "#0a0a0f",
+        background: C.surface,
         borderRadius: 12,
-        border: "1px solid rgba(255,255,255,0.08)",
+        border: `1px solid ${C.border}`,
       }}
     >
       <defs>
         <pattern id="spatial-grid2" width="5" height="5" patternUnits="userSpaceOnUse">
-          <path d="M 5 0 L 0 0 0 5" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="0.3" />
+          <path d="M 5 0 L 0 0 0 5" fill="none" stroke={C.border} strokeWidth="0.3" />
         </pattern>
       </defs>
       <rect width="100" height="60" fill="url(#spatial-grid2)" />
@@ -226,7 +245,7 @@ function SpaghettiDiagram({ data }: { data: SpaghettiData }) {
             y={node.y + 4.5}
             textAnchor="middle"
             fontSize="1.6"
-            fill={node.color}
+            fill={node.color ?? C.blue}
             fontWeight="bold"
           >
             {node.name}
@@ -251,8 +270,8 @@ function FrictionCard({
   return (
     <div
       style={{
-        background: "rgba(255,255,255,0.04)",
-        border: `1px solid ${color}44`,
+        background: C.surface,
+        border: `1px solid ${color}55`,
         borderRadius: 10,
         padding: "12px 14px",
         marginBottom: 10,
@@ -290,20 +309,20 @@ function FrictionCard({
           </span>
         )}
       </div>
-      <div style={{ color: "#fff", fontWeight: 600, fontSize: 14, marginBottom: 4 }}>
+      <div style={{ color: C.text, fontWeight: 600, fontSize: 14, marginBottom: 4 }}>
         {friction.title}
       </div>
-      <div style={{ color: "rgba(255,255,255,0.55)", fontSize: 12, marginBottom: 6 }}>
+      <div style={{ color: C.secondary, fontSize: 12, marginBottom: 6 }}>
         {friction.description}
       </div>
       {friction.suggestion && (
         <div
           style={{
-            background: "rgba(52,199,89,0.08)",
-            border: "1px solid rgba(52,199,89,0.2)",
+            background: "rgba(52,199,89,0.1)",
+            border: `1px solid ${C.green}44`,
             borderRadius: 6,
             padding: "6px 10px",
-            color: "#34C759",
+            color: C.green,
             fontSize: 12,
             marginBottom: 8,
           }}
@@ -315,9 +334,9 @@ function FrictionCard({
         <button
           onClick={() => onResolve(friction.id, "RESOLVED")}
           style={{
-            background: "rgba(52,199,89,0.15)",
-            color: "#34C759",
-            border: "1px solid rgba(52,199,89,0.3)",
+            background: "rgba(52,199,89,0.12)",
+            color: C.green,
+            border: `1px solid ${C.green}44`,
             borderRadius: 6,
             padding: "4px 12px",
             fontSize: 12,
@@ -329,9 +348,9 @@ function FrictionCard({
         <button
           onClick={() => onResolve(friction.id, "DISMISSED")}
           style={{
-            background: "rgba(255,255,255,0.06)",
-            color: "rgba(255,255,255,0.4)",
-            border: "1px solid rgba(255,255,255,0.12)",
+            background: C.fill,
+            color: C.secondary,
+            border: `1px solid ${C.border}`,
             borderRadius: 6,
             padding: "4px 12px",
             fontSize: 12,
@@ -353,9 +372,9 @@ function MovementTable({ users }: { users: UserMovement[] }) {
     <div style={{ overflowX: "auto" }}>
       <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
         <thead>
-          <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
+          <tr style={{ borderBottom: `1px solid ${C.border}` }}>
             {["Person", "Zonskiften", "Meter gångna", "Friktionspoäng", "Topzon"].map((h) => (
-              <th key={h} style={{ textAlign: "left", padding: "8px 12px", color: "rgba(255,255,255,0.5)", fontWeight: 600, fontSize: 11 }}>
+              <th key={h} style={{ textAlign: "left", padding: "8px 12px", color: C.secondary, fontWeight: 600, fontSize: 11 }}>
                 {h}
               </th>
             ))}
@@ -365,7 +384,7 @@ function MovementTable({ users }: { users: UserMovement[] }) {
           {users.map((u) => {
             const fsColor = u.friction_score >= 7 ? "#FF3B30" : u.friction_score >= 4 ? "#FF9500" : "#34C759";
             return (
-              <tr key={u.user_id} style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+              <tr key={u.user_id} style={{ borderBottom: `1px solid ${C.fill}` }}>
                 <td style={{ padding: "10px 12px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     <div
@@ -373,23 +392,23 @@ function MovementTable({ users }: { users: UserMovement[] }) {
                         width: 28,
                         height: 28,
                         borderRadius: "50%",
-                        background: "#007AFF33",
-                        border: "1px solid #007AFF55",
+                        background: C.blue + "22",
+                        border: `1px solid ${C.blue}55`,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         fontSize: 12,
-                        color: "#007AFF",
+                        color: C.blue,
                         fontWeight: 700,
                       }}
                     >
                       {u.user_id.slice(0, 2).toUpperCase()}
                     </div>
-                    <span style={{ color: "#fff", fontWeight: 500 }}>{u.user_id}</span>
+                    <span style={{ color: C.text, fontWeight: 500 }}>{u.user_id}</span>
                   </div>
                 </td>
-                <td style={{ padding: "10px 12px", color: "#fff" }}>{u.zone_changes}</td>
-                <td style={{ padding: "10px 12px", color: "#fff" }}>{u.estimated_meters}m</td>
+                <td style={{ padding: "10px 12px", color: C.text }}>{u.zone_changes}</td>
+                <td style={{ padding: "10px 12px", color: C.text }}>{u.estimated_meters}m</td>
                 <td style={{ padding: "10px 12px" }}>
                   <span
                     style={{
@@ -405,7 +424,7 @@ function MovementTable({ users }: { users: UserMovement[] }) {
                     {u.friction_score.toFixed(1)}
                   </span>
                 </td>
-                <td style={{ padding: "10px 12px", color: "rgba(255,255,255,0.6)" }}>{u.top_zone}</td>
+                <td style={{ padding: "10px 12px", color: C.secondary }}>{u.top_zone}</td>
               </tr>
             );
           })}
@@ -418,22 +437,15 @@ function MovementTable({ users }: { users: UserMovement[] }) {
 // ---------------------------------------------------------------------------
 // Empty state — workshop map not yet configured
 // ---------------------------------------------------------------------------
-const C_LIGHT = {
-  text:      "#000000",
-  secondary: "#8E8E93",
-  tertiary:  "#C7C7CC",
-  blue:      "#007AFF",
-};
-
 function EmptyWorkshopMap({ onAddZone }: { onAddZone?: () => void }) {
   return (
     <div style={{
       display: "flex", flexDirection: "column", alignItems: "center",
       justifyContent: "center", minHeight: 400, gap: 20, textAlign: "center",
       padding: 48,
-      background: "rgba(255,255,255,0.03)",
+      background: C.surface,
       borderRadius: 12,
-      border: "1px solid rgba(255,255,255,0.08)",
+      border: `1px solid ${C.border}`,
     }}>
       {/* Illustration — enkel SVG verkstadsplan */}
       <svg width="120" height="80" viewBox="0 0 120 80" fill="none">
@@ -446,10 +458,10 @@ function EmptyWorkshopMap({ onAddZone }: { onAddZone?: () => void }) {
       </svg>
 
       <div>
-        <div style={{ fontSize: 20, fontWeight: 700, color: "#fff", marginBottom: 8 }}>
+        <div style={{ fontSize: 20, fontWeight: 700, color: C.text, marginBottom: 8 }}>
           Konfigurera er verkstadskarta
         </div>
-        <div style={{ fontSize: 15, color: "rgba(255,255,255,0.5)", maxWidth: 340, lineHeight: 1.6 }}>
+        <div style={{ fontSize: 15, color: C.secondary, maxWidth: 340, lineHeight: 1.6 }}>
           Lägg till zoner för era arbetsplatser — liftar, verktygsrum, reservdelslager — och pixdrift börjar spåra rörelsemönster automatiskt.
         </div>
       </div>
@@ -457,7 +469,7 @@ function EmptyWorkshopMap({ onAddZone }: { onAddZone?: () => void }) {
       <button
         onClick={onAddZone}
         style={{
-          background: "#007AFF", color: "#fff", border: "none",
+          background: C.blue, color: "#fff", border: "none",
           padding: "12px 24px", borderRadius: 10, fontSize: 15, fontWeight: 600,
           cursor: "pointer", fontFamily: "inherit",
         }}
@@ -465,7 +477,7 @@ function EmptyWorkshopMap({ onAddZone }: { onAddZone?: () => void }) {
         + Lägg till första zonen
       </button>
 
-      <div style={{ fontSize: 13, color: "rgba(255,255,255,0.3)" }}>
+      <div style={{ fontSize: 13, color: C.tertiary }}>
         Verkstadskartan aktiveras automatiskt med DMS-modulen
       </div>
     </div>
@@ -545,12 +557,12 @@ export default function SpatialModule() {
   ];
 
   return (
-    <div style={{ padding: "0 0 40px", color: "#fff", fontFamily: "system-ui, -apple-system, sans-serif" }}>
+    <div style={{ padding: "0 0 40px", color: C.text, fontFamily: "system-ui, -apple-system, sans-serif" }}>
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
         <div>
-          <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700 }}>🏭 Spatial Flow Intelligence</h2>
-          <p style={{ margin: "4px 0 0", color: "rgba(255,255,255,0.45)", fontSize: 13 }}>
+          <h2 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: C.text }}>🏭 Spatial Flow Intelligence</h2>
+          <p style={{ margin: "4px 0 0", color: C.secondary, fontSize: 13 }}>
             Rörelsemönster · Spagettikartor · Friktionsanalys
           </p>
         </div>
@@ -558,8 +570,8 @@ export default function SpatialModule() {
           onClick={handleAnalyze}
           disabled={analyzing}
           style={{
-            background: analyzing ? "rgba(255,255,255,0.06)" : (mapData?.zones && mapData.zones.length > 0 ? "#007AFF" : "rgba(255,255,255,0.06)"),
-            color: analyzing ? "rgba(255,255,255,0.4)" : (mapData?.zones && mapData.zones.length > 0 ? "#fff" : "rgba(255,255,255,0.4)"),
+            background: analyzing ? C.fill : (mapData?.zones && mapData.zones.length > 0 ? C.blue : C.fill),
+            color: analyzing ? C.secondary : (mapData?.zones && mapData.zones.length > 0 ? "#fff" : C.secondary),
             border: mapData?.zones && mapData.zones.length > 0 ? "none" : "1px solid rgba(255,255,255,0.12)",
             borderRadius: 8,
             padding: "8px 16px",
@@ -574,15 +586,15 @@ export default function SpatialModule() {
       </div>
 
       {/* Tab bar */}
-      <div style={{ display: "flex", gap: 4, marginBottom: 20, background: "rgba(255,255,255,0.05)", borderRadius: 10, padding: 4 }}>
+      <div style={{ display: "flex", gap: 4, marginBottom: 20, background: C.fill, borderRadius: 10, padding: 4 }}>
         {TABS.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveView(tab.id)}
             style={{
               flex: 1,
-              background: activeView === tab.id ? "#007AFF" : "transparent",
-              color: activeView === tab.id ? "#fff" : "rgba(255,255,255,0.5)",
+              background: activeView === tab.id ? C.blue : "transparent",
+              color: activeView === tab.id ? "#fff" : C.secondary,
               border: "none",
               borderRadius: 7,
               padding: "8px 4px",
@@ -600,7 +612,7 @@ export default function SpatialModule() {
 
       {/* Loading state */}
       {loading && (
-        <div style={{ textAlign: "center", padding: 40, color: "rgba(255,255,255,0.4)" }}>
+        <div style={{ textAlign: "center", padding: 40, color: C.secondary }}>
           Laddar…
         </div>
       )}
@@ -609,7 +621,7 @@ export default function SpatialModule() {
       {!loading && activeView === "map" && (
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-            <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 12 }}>
+            <span style={{ color: C.secondary, fontSize: 12 }}>
               Realtidskarta — positioner baserade på senaste zonhändelser
             </span>
             <span
@@ -637,19 +649,19 @@ export default function SpatialModule() {
           {/* Legend */}
           <div style={{ display: "flex", gap: 16, marginTop: 12, flexWrap: "wrap" }}>
             {[
-              { color: "#007AFF", label: "Lyft" },
-              { color: "#FF9500", label: "Verktygsrum" },
-              { color: "#34C759", label: "Reservdelslager" },
-              { color: "#AF52DE", label: "Reception" },
-              { color: "#FF3B30", label: "Besiktning" },
+              { color: C.blue, label: "Lyft" },
+              { color: C.orange, label: "Verktygsrum" },
+              { color: C.green, label: "Reservdelslager" },
+              { color: C.purple, label: "Reception" },
+              { color: C.red, label: "Besiktning" },
             ].map((l) => (
-              <div key={l.label} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "rgba(255,255,255,0.5)" }}>
+              <div key={l.label} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: C.secondary }}>
                 <span style={{ width: 10, height: 10, borderRadius: 2, background: l.color + "44", border: `1px solid ${l.color}`, display: "inline-block" }} />
                 {l.label}
               </div>
             ))}
-            <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "rgba(255,255,255,0.5)" }}>
-              <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#007AFF", display: "inline-block" }} />
+            <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: C.secondary }}>
+              <span style={{ width: 10, height: 10, borderRadius: "50%", background: C.blue, display: "inline-block" }} />
               Mekaniker i zon
             </div>
           </div>
@@ -660,7 +672,7 @@ export default function SpatialModule() {
       {!loading && activeView === "spaghetti" && (
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
-            <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 12 }}>
+            <span style={{ color: C.secondary, fontSize: 12 }}>
               Varje linje = en rörelse mellan zoner. Tjockare linje = fler resor. Röda cirklar = korsningar (slöseri).
             </span>
           </div>
@@ -668,21 +680,21 @@ export default function SpatialModule() {
             <>
               <SpaghettiDiagram data={spaghettiData} />
               <div style={{ display: "flex", gap: 20, marginTop: 12 }}>
-                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)" }}>
-                  Rörelser: <strong style={{ color: "#fff" }}>{spaghettiData.edges.length}</strong>
+                <div style={{ fontSize: 12, color: C.secondary }}>
+                  Rörelser: <strong style={{ color: C.text }}>{spaghettiData.edges.length}</strong>
                 </div>
-                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)" }}>
-                  Korsningar: <strong style={{ color: "#FF3B30" }}>{spaghettiData.crossings.length}</strong>
+                <div style={{ fontSize: 12, color: C.secondary }}>
+                  Korsningar: <strong style={{ color: C.red }}>{spaghettiData.crossings.length}</strong>
                 </div>
                 {spaghettiData.demo && (
-                  <div style={{ fontSize: 11, color: "#FF9500", background: "rgba(255,149,0,0.1)", border: "1px solid rgba(255,149,0,0.2)", borderRadius: 6, padding: "2px 8px" }}>
+                  <div style={{ fontSize: 11, color: C.orange, background: C.orange + "18", border: `1px solid ${C.orange}33`, borderRadius: 6, padding: "2px 8px" }}>
                     Demo-data
                   </div>
                 )}
               </div>
             </>
           ) : (
-            <div style={{ textAlign: "center", padding: 40, color: "rgba(255,255,255,0.3)" }}>Ingen data</div>
+            <div style={{ textAlign: "center", padding: 40, color: C.tertiary }}>Ingen data</div>
           )}
         </div>
       )}
@@ -695,8 +707,8 @@ export default function SpatialModule() {
               {/* Efficiency score */}
               <div
                 style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.1)",
+                  background: C.surface,
+                  border: `1px solid ${C.border}`,
                   borderRadius: 12,
                   padding: "20px 24px",
                   marginBottom: 20,
@@ -706,27 +718,27 @@ export default function SpatialModule() {
                 }}
               >
                 <div>
-                  <div style={{ fontSize: 48, fontWeight: 800, color: frictionData.efficiency_pct >= 80 ? "#34C759" : frictionData.efficiency_pct >= 60 ? "#FF9500" : "#FF3B30" }}>
+                  <div style={{ fontSize: 48, fontWeight: 800, color: frictionData.efficiency_pct >= 80 ? C.green : frictionData.efficiency_pct >= 60 ? C.orange : C.red }}>
                     {frictionData.efficiency_pct}%
                   </div>
-                  <div style={{ color: "rgba(255,255,255,0.5)", fontSize: 13 }}>Verkstadseffektivitet</div>
+                  <div style={{ color: C.secondary, fontSize: 13 }}>Verkstadseffektivitet</div>
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ color: "#fff", fontSize: 14, marginBottom: 4 }}>
+                  <div style={{ color: C.text, fontSize: 14, marginBottom: 4 }}>
                     {frictionData.efficiency_pct >= 80
                       ? "Bra flöde! Minimala friktionspunkter."
                       : frictionData.efficiency_pct >= 60
                       ? "Medeleffektivt — se förbättringsförslag nedan."
                       : "Hög friktionsnivå — omedelbar åtgärd rekommenderas."}
                   </div>
-                  <div style={{ color: "rgba(255,255,255,0.4)", fontSize: 12 }}>
+                  <div style={{ color: C.secondary, fontSize: 12 }}>
                     {frictionData.frictions.length} aktiva friktionspunkter identifierade
                   </div>
                 </div>
               </div>
 
               {frictionData.frictions.length === 0 ? (
-                <div style={{ textAlign: "center", padding: 40, color: "rgba(255,255,255,0.3)" }}>
+                <div style={{ textAlign: "center", padding: 40, color: C.secondary }}>
                   Inga aktiva friktionspunkter 🎉
                 </div>
               ) : (
@@ -736,13 +748,13 @@ export default function SpatialModule() {
               )}
 
               {frictionData.demo && (
-                <div style={{ fontSize: 11, color: "#FF9500", background: "rgba(255,149,0,0.1)", border: "1px solid rgba(255,149,0,0.2)", borderRadius: 6, padding: "4px 10px", marginTop: 12, display: "inline-block" }}>
+                <div style={{ fontSize: 11, color: C.orange, background: C.orange + "18", border: `1px solid ${C.orange}33`, borderRadius: 6, padding: "4px 10px", marginTop: 12, display: "inline-block" }}>
                   Demo-data — kör friktionsanalys för att generera riktiga insikter
                 </div>
               )}
             </>
           ) : (
-            <div style={{ textAlign: "center", padding: 40, color: "rgba(255,255,255,0.3)" }}>
+            <div style={{ textAlign: "center", padding: 40, color: C.secondary }}>
               Ingen friktionsdata. Klicka "Kör friktionsanalys" för att analysera.
             </div>
           )}
@@ -755,7 +767,7 @@ export default function SpatialModule() {
           {movementData?.per_user && movementData.per_user.length > 0 ? (
             <>
               <div style={{ marginBottom: 12, display: "flex", alignItems: "center", gap: 10 }}>
-                <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 12 }}>Dagens rörelseöversikt per person</span>
+                <span style={{ color: C.secondary, fontSize: 12 }}>Dagens rörelseöversikt per person</span>
                 {movementData.demo && (
                   <span style={{ fontSize: 11, color: "#FF9500", background: "rgba(255,149,0,0.1)", border: "1px solid rgba(255,149,0,0.2)", borderRadius: 6, padding: "2px 8px" }}>
                     Demo-data
@@ -767,7 +779,7 @@ export default function SpatialModule() {
               </div>
             </>
           ) : (
-            <div style={{ textAlign: "center", padding: 40, color: "rgba(255,255,255,0.3)" }}>
+            <div style={{ textAlign: "center", padding: 40, color: C.secondary }}>
               Ingen rörelsedata tillgänglig
             </div>
           )}
