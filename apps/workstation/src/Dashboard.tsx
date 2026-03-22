@@ -27,6 +27,7 @@ import ServiceAdvisorView from "./ServiceAdvisorView";
 import AuditDashboardView from "./AuditDashboardView";
 import SwedacComplianceModule, { AwardIcon } from "./SwedacComplianceModule";
 import FluidIntegrationModule, { DropIcon } from "./FluidIntegrationModule";
+import PixCopilot from "./PixCopilot";
 
 // ─── Design tokens — Apple HIG precision ──────────────────────────────────────
 const C = {
@@ -2678,6 +2679,7 @@ export default function App({ user: propUser, onLogout }: { user?: any; onLogout
           </main>
         </div>
       </div>
+      <PixCopilot currentView={view} orgId={(D?.user as any)?.org_id} />
     </>
 
   );
