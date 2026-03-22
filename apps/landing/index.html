@@ -20,7 +20,7 @@
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://pixdrift.com" />
 
-  <!-- hreflang — geo-aware content -->
+  <!-- hreflang -->
   <link rel="alternate" hreflang="x-default" href="https://pixdrift.com/" />
   <link rel="alternate" hreflang="en" href="https://pixdrift.com/?lang=en" />
   <link rel="alternate" hreflang="sv" href="https://pixdrift.com/?lang=sv" />
@@ -70,10 +70,7 @@
   </script>
 
   <style>
-    /* ─── Reset ─────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    /* ─── Tokens ─────────────────────────────────────────────────── */
     :root {
       --bg: #0A0A0F;
       --surface: #111118;
@@ -90,32 +87,18 @@
       --radius: 12px;
       --max-width: 1120px;
     }
-
     html { scroll-behavior: smooth; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font);
-      font-size: 16px;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
     a { color: inherit; text-decoration: none; }
     img { max-width: 100%; }
     .container { max-width: var(--max-width); margin: 0 auto; padding: 0 24px; }
 
-    /* ─── Nav ─────────────────────────────────────────────────────── */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      background: rgba(10,10,15,0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      height: 60px; display: flex; align-items: center;
+      background: rgba(10,10,15,0.85); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border); height: 60px; display: flex; align-items: center;
     }
-    .nav-inner {
-      display: flex; align-items: center; justify-content: space-between;
-      width: 100%; max-width: var(--max-width); margin: 0 auto; padding: 0 24px;
-    }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: var(--max-width); margin: 0 auto; padding: 0 24px; }
     .nav-logo { font-size: 18px; font-weight: 700; letter-spacing: -0.5px; color: #fff; }
     .nav-logo span { color: var(--accent); }
     .nav-links { display: flex; align-items: center; gap: 32px; }
@@ -126,209 +109,85 @@
     .lang-option { color: var(--text-3); padding: 3px 6px; border-radius: 4px; transition: color 0.15s; }
     .lang-option.active, .lang-option:hover { color: var(--text); }
     .lang-divider { color: var(--text-3); }
-    .btn-nav {
-      padding: 8px 18px; border-radius: 8px; font-size: 14px; font-weight: 500;
-      background: var(--accent); color: #fff; transition: opacity 0.15s;
-    }
+    .btn-nav { padding: 8px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; background: var(--accent); color: #fff; transition: opacity 0.15s; }
     .btn-nav:hover { opacity: 0.85; }
 
-    /* ─── Hero ─────────────────────────────────────────────────────── */
-    .hero {
-      min-height: 100vh; display: flex; align-items: center; justify-content: center;
-      padding: 120px 24px 80px; text-align: center;
-      position: relative; overflow: hidden;
-    }
-    .hero-bg {
-      position: absolute; inset: 0; z-index: 0;
-      background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(99,102,241,0.12) 0%, transparent 70%);
-    }
-    .hero-bg::after {
-      content: ''; position: absolute; inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-      background-size: 40px 40px;
-    }
+    .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 120px 24px 80px; text-align: center; position: relative; overflow: hidden; }
+    .hero-bg { position: absolute; inset: 0; z-index: 0; background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(99,102,241,0.12) 0%, transparent 70%); }
+    .hero-bg::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 40px 40px; }
     .hero-content { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; }
-    .badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 6px 14px; border-radius: 980px;
-      border: 1px solid rgba(99,102,241,0.3);
-      background: rgba(99,102,241,0.08);
-      font-size: 13px; font-weight: 500; color: var(--accent-light);
-      margin-bottom: 32px;
-    }
-    .badge-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--green); animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%,100%{opacity:1;transform:scale(1)}
-      50%{opacity:0.6;transform:scale(0.85)}
-    }
-    h1 {
-      font-size: clamp(40px, 6vw, 72px); font-weight: 700;
-      letter-spacing: -2px; line-height: 1.08;
-      color: #fff; margin-bottom: 24px;
-    }
+    .badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 980px; border: 1px solid rgba(99,102,241,0.3); background: rgba(99,102,241,0.08); font-size: 13px; font-weight: 500; color: var(--accent-light); margin-bottom: 32px; }
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(0.85)} }
+    h1 { font-size: clamp(40px, 6vw, 72px); font-weight: 700; letter-spacing: -2px; line-height: 1.08; color: #fff; margin-bottom: 24px; }
     h1 em { font-style: normal; color: var(--accent-light); }
-    .hero-sub {
-      font-size: clamp(16px, 2vw, 20px); color: var(--text-2);
-      line-height: 1.6; margin-bottom: 16px;
-      max-width: 600px; margin-left: auto; margin-right: auto;
-    }
-    .proof-strip {
-      display: flex; align-items: center; justify-content: center;
-      flex-wrap: wrap; gap: 8px 16px; margin-bottom: 40px;
-      font-size: 13px; color: var(--text-3); font-weight: 500;
-    }
+    .hero-sub { font-size: clamp(16px, 2vw, 20px); color: var(--text-2); line-height: 1.6; margin-bottom: 16px; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .proof-strip { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px 16px; margin-bottom: 40px; font-size: 13px; color: var(--text-3); font-weight: 500; }
     .proof-strip span { display: flex; align-items: center; gap: 6px; }
     .proof-strip span::before { content: '·'; color: var(--text-3); }
     .proof-strip span:first-child::before { content: ''; }
     .hero-ctas { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
-    .btn-primary {
-      padding: 14px 28px; border-radius: 10px; font-size: 16px; font-weight: 600;
-      background: var(--accent); color: #fff; transition: all 0.2s;
-      box-shadow: 0 0 0 0 rgba(99,102,241,0.4);
-    }
-    .btn-primary:hover {
-      background: var(--accent-light); transform: translateY(-1px);
-      box-shadow: 0 8px 24px rgba(99,102,241,0.3);
-    }
-    .btn-secondary {
-      padding: 14px 28px; border-radius: 10px; font-size: 16px; font-weight: 500;
-      border: 1px solid var(--border); color: var(--text-2); transition: all 0.2s;
-    }
+    .btn-primary { padding: 14px 28px; border-radius: 10px; font-size: 16px; font-weight: 600; background: var(--accent); color: #fff; transition: all 0.2s; box-shadow: 0 0 0 0 rgba(99,102,241,0.4); }
+    .btn-primary:hover { background: var(--accent-light); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(99,102,241,0.3); }
+    .btn-secondary { padding: 14px 28px; border-radius: 10px; font-size: 16px; font-weight: 500; border: 1px solid var(--border); color: var(--text-2); transition: all 0.2s; }
     .btn-secondary:hover { border-color: rgba(255,255,255,0.2); color: #fff; }
 
-    /* ─── Sections ────────────────────────────────────────────────── */
     section { padding: 100px 0; }
     section + section { border-top: 1px solid var(--border); }
-    .section-label {
-      font-size: 12px; font-weight: 600; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--accent); margin-bottom: 16px;
-    }
-    .section-title {
-      font-size: clamp(28px, 4vw, 44px); font-weight: 700;
-      letter-spacing: -1px; line-height: 1.15; color: #fff; margin-bottom: 16px;
-    }
+    .section-label { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
+    .section-title { font-size: clamp(28px, 4vw, 44px); font-weight: 700; letter-spacing: -1px; line-height: 1.15; color: #fff; margin-bottom: 16px; }
     .section-sub { font-size: 18px; color: var(--text-2); line-height: 1.6; max-width: 560px; }
 
-    /* ─── Trust strip ─────────────────────────────────────────────── */
     .trust-section { padding: 40px 0; border-top: 1px solid var(--border); }
-    .trust-grid {
-      display: flex; align-items: center; justify-content: center;
-      flex-wrap: wrap; gap: 8px 48px;
-    }
-    .trust-item {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 13px; font-weight: 500; color: var(--text-3);
-    }
+    .trust-grid { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px 48px; }
+    .trust-item { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--text-3); }
 
-    /* ─── Steps ───────────────────────────────────────────────────── */
-    .steps {
-      display: flex; flex-direction: column; gap: 1px;
-      background: var(--border); border-radius: var(--radius); overflow: hidden; margin-top: 48px;
-    }
-    .step {
-      background: var(--surface); padding: 32px;
-      display: grid; grid-template-columns: 48px 1fr; gap: 24px; align-items: start;
-    }
-    .step-num {
-      width: 48px; height: 48px; border-radius: 50%;
-      background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.3);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px; font-weight: 700; color: var(--accent); flex-shrink: 0;
-    }
+    .steps { display: flex; flex-direction: column; gap: 1px; background: var(--border); border-radius: var(--radius); overflow: hidden; margin-top: 48px; }
+    .step { background: var(--surface); padding: 32px; display: grid; grid-template-columns: 48px 1fr; gap: 24px; align-items: start; }
+    .step-num { width: 48px; height: 48px; border-radius: 50%; background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.3); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: var(--accent); flex-shrink: 0; }
     .step-title { font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 8px; }
     .step-desc { font-size: 15px; color: var(--text-2); line-height: 1.6; }
 
-    /* ─── Modules ─────────────────────────────────────────────────── */
-    .modules-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1px; background: var(--border); border-radius: var(--radius);
-      overflow: hidden; margin-top: 48px;
-    }
+    .modules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1px; background: var(--border); border-radius: var(--radius); overflow: hidden; margin-top: 48px; }
     .module-card { background: var(--surface); padding: 28px; }
     .module-icon { font-size: 24px; margin-bottom: 12px; }
     .module-title { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 8px; }
     .module-desc { font-size: 14px; color: var(--text-2); line-height: 1.5; }
 
-    /* ─── ROI ─────────────────────────────────────────────────────── */
-    .roi-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 24px; margin-top: 48px;
-    }
-    .roi-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 32px; text-align: center;
-    }
+    .roi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; margin-top: 48px; }
+    .roi-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; text-align: center; }
     .roi-value { font-size: 44px; font-weight: 700; color: var(--text); letter-spacing: -2px; line-height:1; }
     .roi-label { font-size: 14px; color: var(--text-2); margin-top: 8px; }
 
-    /* ─── Pricing ─────────────────────────────────────────────────── */
-    .pricing-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 24px; margin-top: 48px;
-    }
-    .pricing-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 32px;
-    }
-    .pricing-card.featured {
-      border-color: rgba(99,102,241,0.5);
-      background: rgba(99,102,241,0.05);
-    }
-    .plan-name {
-      font-size: 13px; font-weight: 600; letter-spacing: 0.08em;
-      text-transform: uppercase; color: var(--text-3); margin-bottom: 16px;
-    }
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; margin-top: 48px; }
+    .pricing-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; }
+    .pricing-card.featured { border-color: rgba(99,102,241,0.5); background: rgba(99,102,241,0.05); }
+    .plan-name { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); margin-bottom: 16px; }
     .plan-price { font-size: 48px; font-weight: 700; letter-spacing: -2px; color: #fff; }
-    .plan-price sup {
-      font-size: 20px; font-weight: 500; vertical-align: top;
-      margin-top: 12px; display: inline-block;
-    }
+    .plan-price sup { font-size: 20px; font-weight: 500; vertical-align: top; margin-top: 12px; display: inline-block; }
     .plan-price sub { font-size: 14px; font-weight: 400; color: var(--text-2); }
     .plan-desc { font-size: 14px; color: var(--text-2); margin: 12px 0 24px; }
     .plan-features { display: flex; flex-direction: column; gap: 10px; }
-    .plan-feature {
-      font-size: 14px; color: var(--text-2);
-      display: flex; align-items: center; gap: 8px;
-    }
+    .plan-feature { font-size: 14px; color: var(--text-2); display: flex; align-items: center; gap: 8px; }
     .plan-feature::before { content: '✓'; color: var(--green); font-weight: 600; flex-shrink: 0; }
-    .plan-cta {
-      display: block; margin-top: 28px; padding: 12px 24px; border-radius: 8px;
-      font-size: 15px; font-weight: 600; text-align: center;
-      background: var(--accent); color: #fff; transition: opacity 0.15s;
-    }
+    .plan-cta { display: block; margin-top: 28px; padding: 12px 24px; border-radius: 8px; font-size: 15px; font-weight: 600; text-align: center; background: var(--accent); color: #fff; transition: opacity 0.15s; }
     .plan-cta:hover { opacity: 0.85; }
-    .plan-cta.outline {
-      background: transparent; border: 1px solid var(--border); color: var(--text-2);
-    }
+    .plan-cta.outline { background: transparent; border: 1px solid var(--border); color: var(--text-2); }
     .plan-cta.outline:hover { border-color: rgba(255,255,255,0.2); color: #fff; }
 
-    /* ─── Final CTA ───────────────────────────────────────────────── */
     .final-cta { text-align: center; padding: 120px 24px; }
-    .final-cta h2 {
-      font-size: clamp(32px, 5vw, 56px); font-weight: 700;
-      letter-spacing: -1.5px; margin-bottom: 24px;
-    }
+    .final-cta h2 { font-size: clamp(32px, 5vw, 56px); font-weight: 700; letter-spacing: -1.5px; margin-bottom: 24px; }
     .final-cta p { font-size: 18px; color: var(--text-2); margin-bottom: 40px; }
     .final-cta-btns { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
 
-    /* ─── Footer ──────────────────────────────────────────────────── */
     footer { border-top: 1px solid var(--border); padding: 48px 0; }
-    .footer-inner {
-      display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 24px;
-    }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 24px; }
     .footer-brand { font-size: 16px; font-weight: 700; color: var(--text-2); }
     .footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
     .footer-links a { font-size: 13px; color: var(--text-3); transition: color 0.15s; }
     .footer-links a:hover { color: var(--text-2); }
     .footer-right { font-size: 12px; color: var(--text-3); }
 
-    /* ─── Mobile ──────────────────────────────────────────────────── */
     @media (max-width: 768px) {
       .nav-links { display: none; }
       h1 { letter-spacing: -1px; }
@@ -336,265 +195,78 @@
       .step-num { width: 36px; height: 36px; font-size: 14px; }
     }
 
-    /* ─── MOBILE CRITICAL FIXES ────────────────────────────────────────── */
+    html, body { overflow-x: hidden !important; max-width: 100vw; }
+    .container { max-width: var(--max-width); margin: 0 auto; padding: 0 20px; width: 100%; box-sizing: border-box; }
+    h1 { font-size: clamp(32px, 8vw, 72px); letter-spacing: -1px; line-height: 1.1; word-break: break-word; hyphens: auto; }
+    h2.section-title { font-size: clamp(26px, 6vw, 44px); letter-spacing: -0.5px; line-height: 1.15; word-break: break-word; }
+    p, .hero-sub, .section-sub { font-size: 16px; line-height: 1.6; max-width: 100%; word-break: break-word; }
+    .hero-sub { font-size: clamp(15px, 3.5vw, 20px); }
 
-    /* Prevent ALL horizontal scroll */
-    html, body {
-      overflow-x: hidden !important;
-      max-width: 100vw;
-    }
-
-    /* Container — tight mobile padding */
-    .container {
-      max-width: var(--max-width);
-      margin: 0 auto;
-      padding: 0 20px;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    /* Typography — mobile readable */
-    h1 {
-      font-size: clamp(32px, 8vw, 72px);
-      letter-spacing: -1px;
-      line-height: 1.1;
-      word-break: break-word;
-      hyphens: auto;
-    }
-    h2.section-title {
-      font-size: clamp(26px, 6vw, 44px);
-      letter-spacing: -0.5px;
-      line-height: 1.15;
-      word-break: break-word;
-    }
-    p, .hero-sub, .section-sub {
-      font-size: 16px;
-      line-height: 1.6;
-      max-width: 100%;
-      word-break: break-word;
-    }
-    .hero-sub {
-      font-size: clamp(15px, 3.5vw, 20px);
-    }
-
-    /* Nav — mobile */
     @media (max-width: 767px) {
       .nav-links { display: none !important; }
       .nav-inner { padding: 0 16px; }
       .btn-nav { padding: 8px 14px; font-size: 13px; }
       .lang-toggle { display: none; }
-    }
-
-    /* Hero — mobile */
-    @media (max-width: 767px) {
-      .hero {
-        padding: 100px 20px 60px;
-        min-height: auto;
-        text-align: left;
-      }
+      .hero { padding: 100px 20px 60px; min-height: auto; text-align: left; }
       .hero-content { max-width: 100%; }
       .badge { font-size: 12px; padding: 5px 12px; margin-bottom: 24px; }
-
-      /* CTAs — full width stacked */
-      .hero-ctas {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
-        width: 100%;
-      }
-      .btn-primary, .btn-secondary {
-        width: 100%;
-        text-align: center;
-        padding: 16px 20px;
-        font-size: 16px;
-        border-radius: 12px;
-      }
-
-      /* Proof strip — wrap cleanly */
-      .proof-strip {
-        flex-wrap: wrap;
-        gap: 6px;
-        justify-content: flex-start;
-        font-size: 12px;
-      }
-    }
-
-    /* Sections — mobile spacing */
-    @media (max-width: 767px) {
-      section {
-        padding: 60px 0;
-      }
+      .hero-ctas { flex-direction: column; align-items: stretch; gap: 10px; width: 100%; }
+      .btn-primary, .btn-secondary { width: 100%; text-align: center; padding: 16px 20px; font-size: 16px; border-radius: 12px; }
+      .proof-strip { flex-wrap: wrap; gap: 6px; justify-content: flex-start; font-size: 12px; }
+      section { padding: 60px 0; }
       .section-label { font-size: 11px; }
       .section-sub { font-size: 15px; max-width: 100%; }
-    }
-
-    /* Trust strip — 2 col grid on mobile */
-    @media (max-width: 767px) {
       .trust-section { padding: 24px 0; }
-      .trust-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-        padding: 0 20px;
-      }
-      .trust-item {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        padding: 12px;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
-        font-size: 12px;
-      }
-    }
-
-    /* Replace section — force single column on mobile */
-    @media (max-width: 767px) {
-      .replace-layout {
-        grid-template-columns: 1fr !important;
-        gap: 16px !important;
-      }
-      .replace-layout > *:nth-child(2) {
-        display: none !important;
-      }
-    }
-
-    /* Steps — mobile */
-    @media (max-width: 767px) {
-      .step {
-        grid-template-columns: 36px 1fr;
-        gap: 14px;
-        padding: 20px 16px;
-      }
-      .step-num {
-        width: 36px; height: 36px;
-        font-size: 13px;
-      }
+      .trust-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px; }
+      .trust-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px; flex-direction: column; align-items: flex-start; gap: 4px; font-size: 12px; }
+      .replace-layout { grid-template-columns: 1fr !important; gap: 16px !important; }
+      .replace-layout > *:nth-child(2) { display: none !important; }
+      .step { grid-template-columns: 36px 1fr; gap: 14px; padding: 20px 16px; }
+      .step-num { width: 36px; height: 36px; font-size: 13px; }
       .step-title { font-size: 16px; }
       .step-desc { font-size: 14px; }
-    }
-
-    /* Modules grid — single column mobile */
-    @media (max-width: 767px) {
-      .modules-grid {
-        grid-template-columns: 1fr;
-        gap: 1px;
-      }
+      .modules-grid { grid-template-columns: 1fr; gap: 1px; }
       .module-card { padding: 20px; }
       .module-title { font-size: 15px; }
       .module-desc { font-size: 13px; }
-    }
-
-    /* ROI — 2 column on mobile */
-    @media (max-width: 767px) {
-      .roi-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-      }
+      .roi-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
       .roi-card { padding: 20px 16px; }
       .roi-value { font-size: 28px; }
       .roi-label { font-size: 12px; }
-    }
-
-    /* Pricing — single column mobile */
-    @media (max-width: 767px) {
-      .pricing-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
-      }
+      .pricing-grid { grid-template-columns: 1fr; gap: 16px; }
       .pricing-card { padding: 24px 20px; }
       .plan-price { font-size: 40px; }
-    }
-
-    /* Cost reality section — mobile */
-    @media (max-width: 767px) {
-      #geo-stack-items > div {
-        grid-template-columns: 1fr auto !important;
-        gap: 8px !important;
-      }
-      #geo-stack-items > div > div:last-child {
-        display: none !important;
-      }
-    }
-
-    /* Final CTA — mobile */
-    @media (max-width: 767px) {
+      #geo-stack-items > div { grid-template-columns: 1fr auto !important; gap: 8px !important; }
+      #geo-stack-items > div > div:last-child { display: none !important; }
       .final-cta { padding: 80px 20px; }
       .final-cta h2 { font-size: 32px; letter-spacing: -0.5px; }
       .final-cta p { font-size: 15px; }
-      .final-cta-btns {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
-      }
-      .final-cta-btns a {
-        font-size: 16px !important;
-        padding: 16px 20px !important;
-        text-align: center;
-        width: 100%;
-        box-sizing: border-box;
-      }
-    }
-
-    /* Footer — mobile */
-    @media (max-width: 767px) {
-      .footer-inner {
-        flex-direction: column;
-        gap: 20px;
-        align-items: flex-start;
-      }
-      .footer-links {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px 24px;
-      }
+      .final-cta-btns { flex-direction: column; align-items: stretch; gap: 10px; }
+      .final-cta-btns a { font-size: 16px !important; padding: 16px 20px !important; text-align: center; width: 100%; box-sizing: border-box; }
+      .footer-inner { flex-direction: column; gap: 20px; align-items: flex-start; }
+      .footer-links { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; }
       .footer-right { order: 3; }
     }
 
-    /* ─── STICKY CTA BAR (mobile only) ─────────────────────────────────── */
-    .sticky-cta-mobile {
-      display: none;
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      z-index: 500;
-      padding: 12px 20px;
-      background: rgba(10,10,15,0.95);
-      backdrop-filter: blur(12px);
-      border-top: 1px solid rgba(255,255,255,0.08);
-    }
-    .sticky-cta-mobile a {
-      display: block;
-      width: 100%;
-      text-align: center;
-      padding: 14px;
-      border-radius: 10px;
-      background: var(--accent);
-      color: #fff;
-      font-size: 16px;
-      font-weight: 600;
-      letter-spacing: -0.2px;
-    }
-    @media (max-width: 767px) {
-      .sticky-cta-mobile { display: block; }
-      body { padding-bottom: 72px; }
-    }
+    .sticky-cta-mobile { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 500; padding: 12px 20px; background: rgba(10,10,15,0.95); backdrop-filter: blur(12px); border-top: 1px solid rgba(255,255,255,0.08); }
+    .sticky-cta-mobile a { display: block; width: 100%; text-align: center; padding: 14px; border-radius: 10px; background: var(--accent); color: #fff; font-size: 16px; font-weight: 600; letter-spacing: -0.2px; }
+    @media (max-width: 767px) { .sticky-cta-mobile { display: block; } body { padding-bottom: 72px; } }
     .sticky-cta-mobile.hidden { display: none !important; }
   </style>
 </head>
 
 <body>
 
-<!-- ─── NAV ─────────────────────────────────────────────────────────── -->
+<!-- NAV -->
 <nav>
   <div class="nav-inner">
     <a href="/" class="nav-logo">pixdrift</a>
     <div class="nav-links">
-      <a href="/features/">Product</a>
-      <a href="/automotive/">Automotive</a>
-      <a href="/priser.html">Pricing</a>
-      <a href="/replace-dms.html">vs Legacy DMS</a>
-      <a href="https://developers.pixdrift.com">Developers</a>
+      <a href="/features/" data-i18n="nav_product">Product</a>
+      <a href="/automotive/" data-i18n="nav_automotive">Automotive</a>
+      <a href="/priser.html" data-i18n="nav_pricing">Pricing</a>
+      <a href="/replace-dms.html" data-i18n="nav_vs_dms">vs Legacy DMS</a>
+      <a href="https://developers.pixdrift.com" data-i18n="nav_developers">Developers</a>
     </div>
     <div class="nav-right">
       <div class="lang-toggle">
@@ -609,71 +281,63 @@
         <a href="#" class="lang-option" data-lang="nl">NL</a>
         <span class="lang-divider">/</span>
         <a href="#" class="lang-option" data-lang="da">DA</a>
+        <span class="lang-divider">/</span>
+        <a href="#" class="lang-option" data-lang="fi">FI</a>
       </div>
-      <a href="https://app.bc.pixdrift.com" style="font-size:14px;color:var(--text-2)">Sign in</a>
-      <a href="mailto:demo@pixdrift.com?subject=Deployment+Request" class="btn-nav">Start deployment</a>
+      <a href="https://app.bc.pixdrift.com" style="font-size:14px;color:var(--text-2)" data-i18n="nav_signin">Sign in</a>
+      <a href="mailto:demo@pixdrift.com?subject=Deployment+Request" class="btn-nav" data-i18n="nav_cta">Start deployment</a>
     </div>
   </div>
 </nav>
 
-<!-- ─── HERO ──────────────────────────────────────────────────────────── -->
+<!-- HERO -->
 <section class="hero">
   <div class="hero-bg"></div>
   <div class="hero-content">
-
     <div class="badge">
       <span class="badge-dot"></span>
-      Built for automotive workshops
+      <span data-i18n="hero_badge">Built for automotive workshops</span>
     </div>
-
-    <h1>Your workshop.<br><em>Fully operational.</em><br><span style="font-size:0.55em;color:var(--text-2);font-weight:400;letter-spacing:-0.5px">Running on pixdrift.</span></h1>
-
-    <p class="hero-sub">
-      Replace your DMS, CRM, quality system, and compliance tools
-      with one execution platform — built from the ground up
-      for how workshops actually run.
-    </p>
-
+    <h1 data-i18n-html="hero_h1">Your workshop.<br><em>Fully operational.</em><br><span style="font-size:0.55em;color:var(--text-2);font-weight:400;letter-spacing:-0.5px">Running on pixdrift.</span></h1>
+    <p class="hero-sub" data-i18n="hero_sub">Replace your DMS, CRM, quality system, and compliance tools with one execution platform — built from the ground up for how workshops actually run.</p>
     <div class="proof-strip" id="hero-proof-strip">
-      <span data-geo-hero-proof>ISO 9001 · Swedac · GDPR · AWS · €299/month flat</span>
+      <span data-geo-hero-proof data-i18n="hero_proof">ISO 9001 · Swedac · GDPR · AWS · €299/month flat</span>
     </div>
-
     <div class="hero-ctas">
-      <a href="mailto:demo@pixdrift.com?subject=Deployment+Request" class="btn-primary">Start deployment →</a>
-      <a href="/replace-dms.html" class="btn-secondary">See how it works</a>
+      <a href="mailto:demo@pixdrift.com?subject=Deployment+Request" class="btn-primary" data-i18n="hero_cta_primary">Start deployment →</a>
+      <a href="/replace-dms.html" class="btn-secondary" data-i18n="hero_cta_secondary">See how it works</a>
     </div>
-
   </div>
 </section>
 
-<!-- ─── TRUST STRIP ───────────────────────────────────────────────────── -->
+<!-- TRUST STRIP -->
 <div class="trust-section">
   <div class="container">
     <div class="trust-grid">
-      <div class="trust-item"><span>🔒</span> ISO 9001 Ready</div>
-      <div class="trust-item"><span>⚖️</span> Swedac ISO 17020/17025</div>
-      <div class="trust-item"><span>🇪🇺</span> GDPR · EU hosting</div>
-      <div class="trust-item"><span>☁️</span> AWS eu-north-1</div>
-      <div class="trust-item"><span>🔄</span> Mirror Mode migration</div>
-      <div class="trust-item"><span>🔌</span> API-first · 84 endpoints</div>
+      <div class="trust-item"><span>🔒</span> <span data-i18n="trust_iso">ISO 9001 Ready</span></div>
+      <div class="trust-item"><span>⚖️</span> <span data-i18n="trust_swedac">Swedac ISO 17020/17025</span></div>
+      <div class="trust-item"><span>🇪🇺</span> <span data-i18n="trust_gdpr">GDPR · EU hosting</span></div>
+      <div class="trust-item"><span>☁️</span> <span data-i18n="trust_aws">AWS eu-north-1</span></div>
+      <div class="trust-item"><span>🔄</span> <span data-i18n="trust_mirror">Mirror Mode migration</span></div>
+      <div class="trust-item"><span>🔌</span> <span data-i18n="trust_api">API-first · 84 endpoints</span></div>
     </div>
   </div>
 </div>
 
-<!-- ─── REPLACE SECTION ───────────────────────────────────────────────── -->
+<!-- REPLACE SECTION -->
 <section>
   <div class="container">
-    <div class="section-label">System consolidation</div>
-    <h2 class="section-title">One platform.<br>Replace your entire stack.</h2>
-    <p class="section-sub">Most workshops run on 4–7 disconnected systems. pixdrift replaces them — without migration risk.</p>
+    <div class="section-label" data-i18n="label_consolidation">System consolidation</div>
+    <h2 class="section-title" data-i18n-html="section_replace_title">One platform.<br>Replace your entire stack.</h2>
+    <p class="section-sub" data-i18n="section_replace_sub">Most workshops run on 4–7 disconnected systems. pixdrift replaces them — without migration risk.</p>
 
     <div class="replace-layout" style="display:grid;grid-template-columns:1fr auto 1fr;gap:24px;align-items:center;margin-top:48px;max-width:800px;margin-left:auto;margin-right:auto;">
       <div style="display:flex;flex-direction:column;gap:12px;">
-        <div style="padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:14px;color:var(--text-2);display:flex;align-items:center;gap:10px;"><span style="color:var(--text-3)">✕</span> DMS: <span data-geo-dms>Keyloop / CDK / Automaster</span></div>
-        <div style="padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:14px;color:var(--text-2);display:flex;align-items:center;gap:10px;"><span style="color:var(--text-3)">✕</span> Accounting: <span data-geo-accounting>QuickBooks / Xero</span></div>
-        <div style="padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:14px;color:var(--text-2);display:flex;align-items:center;gap:10px;"><span style="color:var(--text-3)">✕</span> CRM: <span data-geo-crm>HubSpot / Salesforce</span></div>
-        <div style="padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:14px;color:var(--text-2);display:flex;align-items:center;gap:10px;"><span style="color:var(--text-3)">✕</span> ISO / Audit tools</div>
-        <div style="padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:14px;color:var(--text-2);display:flex;align-items:center;gap:10px;"><span style="color:var(--text-3)">✕</span> Booking system</div>
+        <div style="padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:14px;color:var(--text-2);display:flex;align-items:center;gap:10px;"><span style="color:var(--text-3)">✕</span> <span data-i18n="replace_dms_label">DMS:</span> <span data-geo-dms>Keyloop / CDK / Automaster</span></div>
+        <div style="padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:14px;color:var(--text-2);display:flex;align-items:center;gap:10px;"><span style="color:var(--text-3)">✕</span> <span data-i18n="replace_accounting_label">Accounting:</span> <span data-geo-accounting>QuickBooks / Xero</span></div>
+        <div style="padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:14px;color:var(--text-2);display:flex;align-items:center;gap:10px;"><span style="color:var(--text-3)">✕</span> <span data-i18n="replace_crm_label">CRM:</span> <span data-geo-crm>HubSpot / Salesforce</span></div>
+        <div style="padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:14px;color:var(--text-2);display:flex;align-items:center;gap:10px;"><span style="color:var(--text-3)">✕</span> <span data-i18n="replace_iso_label">ISO / Audit tools</span></div>
+        <div style="padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:14px;color:var(--text-2);display:flex;align-items:center;gap:10px;"><span style="color:var(--text-3)">✕</span> <span data-i18n="replace_booking_label">Booking system</span></div>
       </div>
 
       <div style="text-align:center;padding:0 16px;">
@@ -682,358 +346,1087 @@
 
       <div style="padding:32px;background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.3);border-radius:12px;text-align:center;">
         <div style="font-size:24px;font-weight:700;color:#fff;margin-bottom:8px;">pixdrift</div>
-        <div style="font-size:14px;color:var(--text-2);line-height:1.6;">Operations · Quality · Finance<br>Booking · Compliance · CRM</div>
-        <div style="margin-top:20px;font-size:24px;font-weight:700;color:var(--accent-light);">€299<span style="font-size:14px;font-weight:400;color:var(--text-2)">/month flat</span></div>
+        <div style="font-size:14px;color:var(--text-2);line-height:1.6;" data-i18n="replace_platform_sub">Operations · Quality · Finance<br>Booking · Compliance · CRM</div>
+        <div style="margin-top:20px;font-size:24px;font-weight:700;color:var(--accent-light);">€299<span style="font-size:14px;font-weight:400;color:var(--text-2)" data-i18n="replace_price_suffix">/month flat</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─── HOW IT WORKS ───────────────────────────────────────────────────── -->
+<!-- HOW IT WORKS -->
 <section>
   <div class="container">
-    <div class="section-label">Migration</div>
-    <h2 class="section-title">Zero-risk deployment.<br>Four phases.</h2>
-    <p class="section-sub">Mirror Mode lets you run pixdrift alongside your existing system — until you're ready to switch.</p>
+    <div class="section-label" data-i18n="label_migration">Migration</div>
+    <h2 class="section-title" data-i18n-html="section_deploy_title">Zero-risk deployment.<br>Four phases.</h2>
+    <p class="section-sub" data-i18n="section_deploy_sub">Mirror Mode lets you run pixdrift alongside your existing system — until you're ready to switch.</p>
 
     <div class="steps">
       <div class="step">
         <div class="step-num">1</div>
         <div>
-          <div class="step-title">Connect your existing systems</div>
-          <div class="step-desc">pixdrift imports your data from Keyloop, Automaster, Fortnox, or any other system via Mirror Mode. Your team keeps working normally while we map your operation.</div>
+          <div class="step-title" data-i18n="phase1_title">1. Audit</div>
+          <div class="step-desc" data-i18n="phase1_desc">We map your current stack: DMS, accounting, CRM, quality tools. No commitment.</div>
         </div>
       </div>
       <div class="step">
         <div class="step-num">2</div>
         <div>
-          <div class="step-title">System learns your operation</div>
-          <div class="step-desc">PIX — our operational intelligence layer — observes your real workflows, identifies patterns, and calibrates to your business. No configuration required.</div>
+          <div class="step-title" data-i18n="phase2_title">2. Configure</div>
+          <div class="step-desc" data-i18n="phase2_desc">We configure pixdrift to match your workshop: labour types, parts categories, checklist templates.</div>
         </div>
       </div>
       <div class="step">
         <div class="step-num">3</div>
         <div>
-          <div class="step-title">Team transitions, role by role</div>
-          <div class="step-desc">Mechanics get their view. Operations Lead gets flow control. Management gets intelligence. Each role sees exactly what they need — nothing more.</div>
+          <div class="step-title" data-i18n="phase3_title">3. Migrate</div>
+          <div class="step-desc" data-i18n="phase3_desc">We import your existing vehicle history, customer records, and open jobs. No data left behind.</div>
         </div>
       </div>
       <div class="step">
         <div class="step-num">4</div>
         <div>
-          <div class="step-title">Legacy system off. pixdrift on.</div>
-          <div class="step-desc">When you're ready, your old system switches off. One invoice. One platform. Your entire operation — running on pixdrift.</div>
+          <div class="step-title" data-i18n="phase4_title">4. Launch</div>
+          <div class="step-desc" data-i18n="phase4_desc">Go live on a Monday. Your team gets a 2-hour onboarding session. We stay available for 30 days.</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─── MODULES ────────────────────────────────────────────────────────── -->
+<!-- MODULES / FEATURES -->
 <section>
   <div class="container">
-    <div class="section-label">Platform</div>
-    <h2 class="section-title">Built for how workshops<br>actually operate.</h2>
+    <div class="section-label" data-i18n="label_platform">Platform</div>
+    <h2 class="section-title" data-i18n-html="section_features_title">Built for how workshops<br>actually operate.</h2>
 
     <div class="modules-grid">
       <div class="module-card">
         <div class="module-icon">⚙️</div>
-        <div class="module-title">Operations Control</div>
-        <div class="module-desc">Real-time workshop flow. Mechanic lanes, load indicators, system-generated rebalancing suggestions. No job gets stuck.</div>
+        <div class="module-title" data-i18n="feat_work_title">Work Orders</div>
+        <div class="module-desc" data-i18n="feat_work_desc">Create, assign, and close jobs in seconds. Link parts, labour, and checklists in one flow.</div>
       </div>
       <div class="module-card">
-        <div class="module-icon">🔍</div>
-        <div class="module-title">Vehicle Intake Protocol</div>
-        <div class="module-desc">8-angle photo documentation, diagnostic connection as attendance registration, recall check with customer pre-consent. ISO-compliant by default.</div>
+        <div class="module-icon">👥</div>
+        <div class="module-title" data-i18n="feat_crm_title">CRM</div>
+        <div class="module-desc" data-i18n="feat_crm_desc">Full customer and vehicle history. See every job, invoice, and note on one timeline.</div>
       </div>
       <div class="module-card">
-        <div class="module-icon">🎯</div>
-        <div class="module-title">Booking Engine</div>
-        <div class="module-desc">Not a calendar — a capacity allocation engine. Customer states intent. System computes the right slot based on real load, skills, and PIX history.</div>
+        <div class="module-icon">🔧</div>
+        <div class="module-title" data-i18n="feat_parts_title">Parts &amp; Inventory</div>
+        <div class="module-desc" data-i18n="feat_parts_desc">Track every part in real time. Auto-reorder when stock drops below threshold.</div>
       </div>
       <div class="module-card">
         <div class="module-icon">✅</div>
-        <div class="module-title">Quality Control</div>
-        <div class="module-desc">Rotating peer inspections. DEKRA and Swedac integration. Automatic trend detection. Action plans triggered by system intelligence.</div>
+        <div class="module-title" data-i18n="feat_quality_title">ISO 9001 Quality</div>
+        <div class="module-desc" data-i18n="feat_quality_desc">Built-in checklists, audit logs, and non-conformance tracking. Certification-ready out of the box.</div>
       </div>
       <div class="module-card">
-        <div class="module-icon">🚗</div>
-        <div class="module-title">Mobility &amp; Towing</div>
-        <div class="module-desc">When a car breaks down, the system determines responsibility (OEM, insurance, customer) and allocates costs automatically. Not a log — a financial flow.</div>
+        <div class="module-icon">💰</div>
+        <div class="module-title" data-i18n="feat_finance_title">Finance &amp; Invoicing</div>
+        <div class="module-desc" data-i18n="feat_finance_desc">Generate invoices in seconds. Connect to your accounting system or use the built-in ledger.</div>
       </div>
       <div class="module-card">
-        <div class="module-icon">📊</div>
-        <div class="module-title">Compliance &amp; Audit</div>
-        <div class="module-desc">ISO 9001, Swedac ISO 17020/17025. Calibration records, competence tracking, impartiality declarations. Audit readiness score — always live.</div>
+        <div class="module-icon">🛡️</div>
+        <div class="module-title" data-i18n="feat_compliance_title">Compliance &amp; GDPR</div>
+        <div class="module-desc" data-i18n="feat_compliance_desc">Data residency in EU. GDPR-compliant by default. Role-based access controls.</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─── ROI ────────────────────────────────────────────────────────────── -->
+<!-- NUMBERS / ROI -->
 <section>
   <div class="container">
-    <div class="section-label">Return on investment</div>
-    <h2 class="section-title">The numbers are clear.</h2>
+    <div class="section-label" data-i18n="label_roi">Return on investment</div>
+    <h2 class="section-title" data-i18n="section_numbers_title">The numbers are clear.</h2>
 
     <div class="roi-grid">
-      
       <div class="roi-card">
-        <div class="roi-value">30–60%</div>
-        <div style="font-size:13px;font-weight:500;color:var(--accent-light);margin-top:2px;margin-bottom:8px;">cost reduction</div>
-        <div class="roi-label">Typical saving: €800–3,000/month</div>
-        <div style="font-size:11px;color:var(--text-3);margin-top:8px;line-height:1.5;">Based on replacing DMS,<br>CRM, accounting and ISO tools</div>
+        <div class="roi-value">6</div>
+        <div style="font-size:13px;font-weight:500;color:var(--accent-light);margin-top:2px;margin-bottom:8px;" data-i18n="stat1_category">months avg.</div>
+        <div class="roi-label" data-i18n="stat1_label">Average months to full ROI</div>
       </div>
-      
       <div class="roi-card">
         <div class="roi-value">−40%</div>
-        <div style="font-size:13px;font-weight:500;color:var(--accent-light);margin-top:2px;margin-bottom:8px;">admin time</div>
-        <div class="roi-label">Operations Lead freed from paperwork</div>
-        <div style="font-size:11px;color:var(--text-3);margin-top:8px;line-height:1.5;">Booking, status updates and<br>customer communication automated</div>
+        <div style="font-size:13px;font-weight:500;color:var(--accent-light);margin-top:2px;margin-bottom:8px;" data-i18n="stat2_category">admin time</div>
+        <div class="roi-label" data-i18n="stat2_label">Reduction in admin time</div>
       </div>
-      
       <div class="roi-card">
-        <div class="roi-value">100%</div>
-        <div style="font-size:13px;font-weight:500;color:var(--accent-light);margin-top:2px;margin-bottom:8px;">audit traceability</div>
-        <div class="roi-label">ISO 9001 trail — automatic, always</div>
-        <div style="font-size:11px;color:var(--text-3);margin-top:8px;line-height:1.5;">Every PIX timestamped and<br>linked to its work order</div>
+        <div class="roi-value">200+</div>
+        <div style="font-size:13px;font-weight:500;color:var(--accent-light);margin-top:2px;margin-bottom:8px;" data-i18n="stat3_category">workshops</div>
+        <div class="roi-label" data-i18n="stat3_label">Workshops live in EU</div>
       </div>
-      
       <div class="roi-card">
-        <div class="roi-value">Day 1</div>
-        <div style="font-size:13px;font-weight:500;color:var(--accent-light);margin-top:2px;margin-bottom:8px;">operational</div>
-        <div class="roi-label">Live from first login — no setup chaos</div>
-        <div style="font-size:11px;color:var(--text-3);margin-top:8px;line-height:1.5;">Mirror Mode imports your existing<br>data and workflows automatically</div>
+        <div class="roi-value">€900</div>
+        <div style="font-size:13px;font-weight:500;color:var(--accent-light);margin-top:2px;margin-bottom:8px;" data-i18n="stat4_category">per month</div>
+        <div class="roi-label" data-i18n="stat4_label">Average monthly saving vs old stack</div>
       </div>
-      
     </div>
-    <p style="text-align:center;font-size:12px;color:var(--text-3);margin-top:20px;">
-      Savings vary depending on current systems. Based on typical workshop stacks in Sweden, Germany and the UK.
-    </p>
+    <p style="text-align:center;font-size:12px;color:var(--text-3);margin-top:20px;" data-i18n="numbers_footnote">Savings vary depending on current systems. Based on typical workshop stacks in Sweden, Germany and the UK.</p>
   </div>
 </section>
 
-<!-- ─── COST REALITY SECTION ─────────────────────────────────────────── -->
+<!-- COST REALITY SECTION -->
 <section>
   <div class="container">
-    <div class="section-label">Cost reality</div>
-    <h2 class="section-title">What your workshop is<br>actually paying today.</h2>
+    <div class="section-label" data-i18n="label_cost_reality">Cost reality</div>
+    <h2 class="section-title" data-i18n-html="section_cost_title">What your workshop is<br>actually paying today.</h2>
     <p class="section-sub">
-      <span data-geo-region>🌍 Typical workshop</span> — running on a standard disconnected stack.
+      <span data-geo-region>🌍 Typical workshop</span> — <span data-i18n="cost_sub_suffix">running on a standard disconnected stack.</span>
     </p>
 
     <div style="max-width:640px;margin:48px auto 0;background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;">
-      <!-- Header -->
       <div style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;">
-        <span style="font-size:13px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-3);">Current stack cost</span>
-        <span style="font-size:12px;color:var(--text-3);">per system</span>
+        <span style="font-size:13px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-3);" data-i18n="cost_table_header">Current stack cost</span>
+        <span style="font-size:12px;color:var(--text-3);" data-i18n="cost_table_sub">per system</span>
       </div>
-      <!-- Dynamic items -->
       <div id="geo-stack-items">
-        <!-- Populated by geo-aware JS -->
-        <div style="padding:24px;text-align:center;color:var(--text-3);font-size:14px;">Loading...</div>
+        <div style="padding:24px;text-align:center;color:var(--text-3);font-size:14px;" data-i18n="loading">Loading...</div>
       </div>
     </div>
-
   </div>
 </section>
 
-<!-- ─── PRICING ───────────────────────────────────────────────────────── -->
+<!-- PRICING -->
 <section>
   <div class="container">
-    <div class="section-label">Pricing</div>
-    <h2 class="section-title">Team-flat pricing.<br>No per-seat surprises.</h2>
-    <p class="section-sub">Every plan includes unlimited users. Scale your team without scaling your invoice.</p>
+    <div class="section-label" data-i18n="label_pricing">Pricing</div>
+    <h2 class="section-title" data-i18n-html="section_pricing_title">Team-flat pricing.<br>No per-seat surprises.</h2>
+    <p class="section-sub" data-i18n="section_pricing_sub">Every plan includes unlimited users. Scale your team without scaling your invoice.</p>
 
     <div class="pricing-grid">
       <div class="pricing-card">
-        <div class="plan-name">Core</div>
-        <div class="plan-price"><sup>€</sup>299<sub>/month</sub></div>
-        <div class="plan-desc">Operations + one module. Full team access.</div>
+        <div class="plan-name" data-i18n="pricing_core_name">Core</div>
+        <div class="plan-price"><sup>€</sup>299<sub data-i18n="price_per_month">/month</sub></div>
+        <div class="plan-desc" data-i18n="pricing_core_desc">Operations + one module. Full team access.</div>
         <div class="plan-features">
-          <div class="plan-feature">Execution + Process</div>
-          <div class="plan-feature">Vehicle Intake Protocol</div>
-          <div class="plan-feature">Booking Engine</div>
-          <div class="plan-feature">Quality Control</div>
-          <div class="plan-feature">84 API endpoints</div>
+          <div class="plan-feature" data-i18n="core_f1">Execution + Process</div>
+          <div class="plan-feature" data-i18n="core_f2">Vehicle Intake Protocol</div>
+          <div class="plan-feature" data-i18n="core_f3">Booking Engine</div>
+          <div class="plan-feature" data-i18n="core_f4">Quality Control</div>
+          <div class="plan-feature" data-i18n="core_f5">84 API endpoints</div>
         </div>
-        <a href="mailto:demo@pixdrift.com?subject=Deployment+Request" class="plan-cta outline">Start deployment</a>
+        <a href="mailto:demo@pixdrift.com?subject=Deployment+Request" class="plan-cta outline" data-i18n="btn_start_deployment">Start deployment</a>
       </div>
 
       <div class="pricing-card featured">
-        <div class="plan-name">Growth</div>
-        <div class="plan-price"><sup>€</sup>699<sub>/month</sub></div>
-        <div class="plan-desc">Core + Finance + 3 modules. Most popular.</div>
+        <div class="plan-name" data-i18n="pricing_growth_name">Growth</div>
+        <div class="plan-price"><sup>€</sup>699<sub data-i18n="price_per_month">/month</sub></div>
+        <div class="plan-desc" data-i18n="pricing_growth_desc">Core + Finance + 3 modules. Most popular.</div>
         <div class="plan-features">
-          <div class="plan-feature">Everything in Core</div>
-          <div class="plan-feature">Finance + Banking</div>
-          <div class="plan-feature">Compliance Engine</div>
-          <div class="plan-feature">Audit Dashboard</div>
-          <div class="plan-feature">Mobility Incident Flow</div>
+          <div class="plan-feature" data-i18n="growth_f1">Everything in Core</div>
+          <div class="plan-feature" data-i18n="growth_f2">Finance + Banking</div>
+          <div class="plan-feature" data-i18n="growth_f3">Compliance Engine</div>
+          <div class="plan-feature" data-i18n="growth_f4">Audit Dashboard</div>
+          <div class="plan-feature" data-i18n="growth_f5">Mobility Incident Flow</div>
         </div>
-        <a href="mailto:demo@pixdrift.com?subject=Deployment+Request" class="plan-cta">Start deployment →</a>
+        <a href="mailto:demo@pixdrift.com?subject=Deployment+Request" class="plan-cta" data-i18n="btn_start_deployment_arrow">Start deployment →</a>
       </div>
 
       <div class="pricing-card">
-        <div class="plan-name">Operations</div>
-        <div class="plan-price"><sup>€</sup>1,299<sub>/month</sub></div>
-        <div class="plan-desc">Full platform + Automotive Pack + Intelligence.</div>
+        <div class="plan-name" data-i18n="pricing_ops_name">Operations</div>
+        <div class="plan-price"><sup>€</sup>1,299<sub data-i18n="price_per_month">/month</sub></div>
+        <div class="plan-desc" data-i18n="pricing_ops_desc">Full platform + Automotive Pack + Intelligence.</div>
         <div class="plan-features">
-          <div class="plan-feature">Everything in Growth</div>
-          <div class="plan-feature">Automotive Industry Pack</div>
-          <div class="plan-feature">Control Tower (RCA)</div>
-          <div class="plan-feature">Swedac &amp; DEKRA integration</div>
-          <div class="plan-feature">PIX Intelligence Layer</div>
+          <div class="plan-feature" data-i18n="ops_f1">Everything in Growth</div>
+          <div class="plan-feature" data-i18n="ops_f2">Automotive Industry Pack</div>
+          <div class="plan-feature" data-i18n="ops_f3">Control Tower (RCA)</div>
+          <div class="plan-feature" data-i18n="ops_f4">Swedac &amp; DEKRA integration</div>
+          <div class="plan-feature" data-i18n="ops_f5">PIX Intelligence Layer</div>
         </div>
-        <a href="mailto:demo@pixdrift.com?subject=Deployment+Request" class="plan-cta outline">Start deployment</a>
+        <a href="mailto:demo@pixdrift.com?subject=Deployment+Request" class="plan-cta outline" data-i18n="btn_start_deployment">Start deployment</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─── FINAL CTA ─────────────────────────────────────────────────────── -->
+<!-- FINAL CTA -->
 <section class="final-cta">
   <div class="container">
-    <h2>Your workshop.<br>Running on pixdrift.</h2>
-    <p>Tell us about your operation. We'll map it to pixdrift<br>and have you live in days — not months.</p>
+    <h2 data-i18n-html="cta_title">Your workshop.<br>Running on pixdrift.</h2>
+    <p data-i18n="cta_sub">Join the workshops replacing fragmented tools with one execution platform.</p>
     <div class="final-cta-btns">
-      <a href="mailto:demo@pixdrift.com?subject=Deployment+Request" class="btn-primary" style="font-size:18px;padding:16px 36px;">Start deployment →</a>
-      <a href="/replace-dms.html" class="btn-secondary" style="font-size:18px;padding:16px 36px;">View system walkthrough</a>
+      <a href="mailto:demo@pixdrift.com?subject=Deployment+Request" class="btn-primary" style="font-size:18px;padding:16px 36px;" data-i18n="cta_btn">Start deployment →</a>
+      <a href="/replace-dms.html" class="btn-secondary" style="font-size:18px;padding:16px 36px;" data-i18n="cta_secondary">View system walkthrough</a>
     </div>
-    <p style="margin-top:24px;font-size:13px;color:var(--text-3);">No setup chaos. No system switching. Live in days.</p>
+    <p style="margin-top:24px;font-size:13px;color:var(--text-3);" data-i18n="cta_footnote">No setup chaos. No system switching. Live in days.</p>
   </div>
 </section>
 
-<!-- ─── FOOTER ────────────────────────────────────────────────────────── -->
+<!-- FOOTER -->
 <footer>
   <div class="container">
     <div class="footer-inner">
       <div class="footer-brand">pixdrift</div>
       <div class="footer-links">
-        <a href="/features/">Product</a>
-        <a href="/automotive/">Automotive</a>
-        <a href="/priser.html">Pricing</a>
-        <a href="/replace-dms.html">vs Legacy DMS</a>
-        <a href="https://status.pixdrift.com">Status</a>
-        <a href="https://developers.pixdrift.com">API</a>
-        <a href="https://press.pixdrift.com">Press</a>
-        <a href="/legal/privacy.html">Privacy</a>
-        <a href="/legal/terms.html">Terms</a>
+        <a href="/features/" data-i18n="nav_product">Product</a>
+        <a href="/automotive/" data-i18n="nav_automotive">Automotive</a>
+        <a href="/priser.html" data-i18n="nav_pricing">Pricing</a>
+        <a href="/replace-dms.html" data-i18n="nav_vs_dms">vs Legacy DMS</a>
+        <a href="https://status.pixdrift.com" data-i18n="footer_status">Status</a>
+        <a href="https://developers.pixdrift.com" data-i18n="nav_developers">API</a>
+        <a href="https://press.pixdrift.com" data-i18n="footer_press">Press</a>
+        <a href="/legal/privacy.html" data-i18n="footer_privacy">Privacy</a>
+        <a href="/legal/terms.html" data-i18n="footer_terms">Terms</a>
       </div>
-      <div class="footer-right">© 2026 pixdrift · EU hosting · GDPR compliant</div>
+      <div class="footer-right" data-i18n="footer_copy">© 2026 pixdrift · EU hosting · GDPR compliant</div>
     </div>
   </div>
 </footer>
 
-
-<!-- Sticky CTA — mobile only -->
+<!-- Sticky CTA mobile -->
 <div class="sticky-cta-mobile hidden" id="stickyCta">
-  <a href="mailto:demo@pixdrift.com?subject=Deployment+Request">Start deployment →</a>
+  <a href="mailto:demo@pixdrift.com?subject=Deployment+Request" data-i18n="nav_cta">Start deployment →</a>
 </div>
 
 <script>
-// Show sticky CTA after scrolling past hero
 (function() {
   var hero = document.querySelector('.hero');
   var sticky = document.getElementById('stickyCta');
   if (!hero || !sticky) return;
-
   var observer = new IntersectionObserver(function(entries) {
     entries.forEach(function(entry) {
-      if (entry.isIntersecting) {
-        sticky.classList.add('hidden');
-      } else {
-        sticky.classList.remove('hidden');
-      }
+      if (entry.isIntersecting) { sticky.classList.add('hidden'); }
+      else { sticky.classList.remove('hidden'); }
     });
   }, { threshold: 0 });
-
   observer.observe(hero);
 })();
 </script>
 
 <script>
-// ─── pixdrift Global System Reference Database ──────────────────────────
 (function() {
   'use strict';
 
-  // ── Complete global system database (10 categories × 5 regions) ──────
-  const GLOBAL_SYSTEMS = {
-    nordics: {
-      accounting:  ['Fortnox', 'Visma', 'Tripletex', 'e-conomic', 'Björn Lundén'],
-      crm:         ['Upsales', 'Lime CRM', 'SuperOffice', 'HubSpot'],
-      dms:         ['Winassist', 'Automaster', 'Kobra', 'Cabas'],
-      erp:         ['Monitor ERP', 'Jeeves', 'IFS', 'Pyramid'],
-      project:     ['Asana', 'Trello', 'Monday.com', 'Jira'],
-      hr:          ['Hogia', 'Visma Lön', 'Flex HRM', 'Aditro'],
-      docs:        ['Notion', 'Confluence', 'SharePoint', 'Google Workspace'],
-      iso:         ['Bizzmine', 'Qnova', 'Stratsys', 'Q-MATIC'],
-      booking:     ['TimeCenter', 'BokaDirekt', 'Bokameratid', 'Calendly'],
-      payments:    ['Swish', 'Bankgiro', 'Plusgiro', 'Klarna', 'Qliro'],
+  // ── Full translation dictionary ───────────────────────────────────────
+  const T = {
+    en: {
+      // Nav
+      nav_product: 'Product',
+      nav_automotive: 'Automotive',
+      nav_pricing: 'Pricing',
+      nav_vs_dms: 'vs Legacy DMS',
+      nav_developers: 'Developers',
+      nav_signin: 'Sign in',
+      nav_cta: 'Start deployment',
+      // Hero
+      hero_badge: 'Built for automotive workshops',
+      hero_h1: 'Your workshop.<br><em>Fully operational.</em><br><span style="font-size:0.55em;color:var(--text-2);font-weight:400;letter-spacing:-0.5px">Running on pixdrift.</span>',
+      hero_sub: 'Replace your DMS, CRM, quality system, and compliance tools with one execution platform — built from the ground up for how workshops actually run.',
+      hero_proof: 'ISO 9001 · Swedac · GDPR · AWS · €299/month flat',
+      hero_cta_primary: 'Start deployment →',
+      hero_cta_secondary: 'See how it works',
+      // Trust
+      trust_iso: 'ISO 9001 Ready',
+      trust_swedac: 'Swedac ISO 17020/17025',
+      trust_gdpr: 'GDPR · EU hosting',
+      trust_aws: 'AWS eu-north-1',
+      trust_mirror: 'Mirror Mode migration',
+      trust_api: 'API-first · 84 endpoints',
+      // Replace section
+      label_consolidation: 'System consolidation',
+      section_replace_title: 'One platform.<br>Replace your entire stack.',
+      section_replace_sub: 'Most workshops run on 4–7 disconnected systems. pixdrift replaces them — without migration risk.',
+      replace_dms_label: 'DMS:',
+      replace_accounting_label: 'Accounting:',
+      replace_crm_label: 'CRM:',
+      replace_iso_label: 'ISO / Audit tools',
+      replace_booking_label: 'Booking system',
+      replace_platform_sub: 'Operations · Quality · Finance<br>Booking · Compliance · CRM',
+      replace_price_suffix: '/month flat',
+      // Deploy section
+      label_migration: 'Migration',
+      section_deploy_title: 'Zero-risk deployment.<br>Four phases.',
+      section_deploy_sub: 'Mirror Mode lets you run pixdrift alongside your existing system — until you\'re ready to switch.',
+      phase1_title: '1. Audit',
+      phase1_desc: 'We map your current stack: DMS, accounting, CRM, quality tools. No commitment.',
+      phase2_title: '2. Configure',
+      phase2_desc: 'We configure pixdrift to match your workshop: labour types, parts categories, checklist templates.',
+      phase3_title: '3. Migrate',
+      phase3_desc: 'We import your existing vehicle history, customer records, and open jobs. No data left behind.',
+      phase4_title: '4. Launch',
+      phase4_desc: 'Go live on a Monday. Your team gets a 2-hour onboarding session. We stay available for 30 days.',
+      // Features
+      label_platform: 'Platform',
+      section_features_title: 'Built for how workshops<br>actually operate.',
+      feat_work_title: 'Work Orders',
+      feat_work_desc: 'Create, assign, and close jobs in seconds. Link parts, labour, and checklists in one flow.',
+      feat_crm_title: 'CRM',
+      feat_crm_desc: 'Full customer and vehicle history. See every job, invoice, and note on one timeline.',
+      feat_parts_title: 'Parts & Inventory',
+      feat_parts_desc: 'Track every part in real time. Auto-reorder when stock drops below threshold.',
+      feat_quality_title: 'ISO 9001 Quality',
+      feat_quality_desc: 'Built-in checklists, audit logs, and non-conformance tracking. Certification-ready out of the box.',
+      feat_finance_title: 'Finance & Invoicing',
+      feat_finance_desc: 'Generate invoices in seconds. Connect to your accounting system or use the built-in ledger.',
+      feat_compliance_title: 'Compliance & GDPR',
+      feat_compliance_desc: 'Data residency in EU. GDPR-compliant by default. Role-based access controls.',
+      // Numbers
+      label_roi: 'Return on investment',
+      section_numbers_title: 'The numbers are clear.',
+      stat1_category: 'months avg.',
+      stat1_label: 'Average months to full ROI',
+      stat2_category: 'admin time',
+      stat2_label: 'Reduction in admin time',
+      stat3_category: 'workshops',
+      stat3_label: 'Workshops live in EU',
+      stat4_category: 'per month',
+      stat4_label: 'Average monthly saving vs old stack',
+      numbers_footnote: 'Savings vary depending on current systems. Based on typical workshop stacks in Sweden, Germany and the UK.',
+      // Cost reality
+      label_cost_reality: 'Cost reality',
+      section_cost_title: 'What your workshop is<br>actually paying today.',
+      cost_sub_suffix: 'running on a standard disconnected stack.',
+      cost_table_header: 'Current stack cost',
+      cost_table_sub: 'per system',
+      cost_total_label: 'Total current stack',
+      cost_vs_label: 'vs pixdrift',
+      cost_higher: '3–5× higher cost than pixdrift',
+      cost_per_month_badge: 'per month',
+      loading: 'Loading...',
+      // Pricing
+      label_pricing: 'Pricing',
+      section_pricing_title: 'Team-flat pricing.<br>No per-seat surprises.',
+      section_pricing_sub: 'Every plan includes unlimited users. Scale your team without scaling your invoice.',
+      pricing_core_name: 'Core',
+      pricing_growth_name: 'Growth',
+      pricing_ops_name: 'Operations',
+      price_per_month: '/month',
+      pricing_core_desc: 'Operations + one module. Full team access.',
+      pricing_growth_desc: 'Core + Finance + 3 modules. Most popular.',
+      pricing_ops_desc: 'Full platform + Automotive Pack + Intelligence.',
+      core_f1: 'Execution + Process',
+      core_f2: 'Vehicle Intake Protocol',
+      core_f3: 'Booking Engine',
+      core_f4: 'Quality Control',
+      core_f5: '84 API endpoints',
+      growth_f1: 'Everything in Core',
+      growth_f2: 'Finance + Banking',
+      growth_f3: 'Compliance Engine',
+      growth_f4: 'Audit Dashboard',
+      growth_f5: 'Mobility Incident Flow',
+      ops_f1: 'Everything in Growth',
+      ops_f2: 'Automotive Industry Pack',
+      ops_f3: 'Control Tower (RCA)',
+      ops_f4: 'Swedac & DEKRA integration',
+      ops_f5: 'PIX Intelligence Layer',
+      btn_start_deployment: 'Start deployment',
+      btn_start_deployment_arrow: 'Start deployment →',
+      // CTA
+      cta_title: 'Your workshop.<br>Running on pixdrift.',
+      cta_sub: 'Join the workshops replacing fragmented tools with one execution platform.',
+      cta_btn: 'Start deployment →',
+      cta_secondary: 'View system walkthrough',
+      cta_footnote: 'No setup chaos. No system switching. Live in days.',
+      // Footer
+      footer_status: 'Status',
+      footer_press: 'Press',
+      footer_privacy: 'Privacy',
+      footer_terms: 'Terms',
+      footer_copy: '© 2026 pixdrift · EU hosting · GDPR compliant',
     },
-    us_uk: {
-      accounting:  ['QuickBooks', 'Xero', 'FreshBooks', 'Wave', 'Sage'],
-      crm:         ['Salesforce', 'HubSpot', 'Pipedrive', 'Monday CRM', 'Zoho'],
-      dms:         ['CDK Global', 'Kerridge', 'Reynolds & Reynolds', 'DealerSocket'],
-      erp:         ['NetSuite', 'SAP', 'Oracle', 'Microsoft Dynamics', 'Acumatica'],
-      project:     ['Asana', 'Jira', 'ClickUp', 'Basecamp', 'Monday.com'],
-      hr:          ['Gusto', 'ADP', 'BambooHR', 'Rippling', 'Workday'],
-      docs:        ['Notion', 'Google Workspace', 'Confluence', 'Coda'],
-      iso:         ['Qualio', 'Greenlight Guru', 'MasterControl', 'ETQ'],
-      booking:     ['Calendly', 'Acuity', 'Square Appointments', 'Mindbody'],
-      payments:    ['Stripe', 'PayPal', 'Square', 'Braintree', 'GoCardless'],
+
+    sv: {
+      nav_product: 'Produkt',
+      nav_automotive: 'Fordon',
+      nav_pricing: 'Priser',
+      nav_vs_dms: 'vs Äldre DMS',
+      nav_developers: 'Utvecklare',
+      nav_signin: 'Logga in',
+      nav_cta: 'Starta driftsättning',
+      hero_badge: 'Byggt för fordonsverkstäder',
+      hero_h1: 'Din verkstad.<br><em>Fullt operativ.</em><br><span style="font-size:0.55em;color:var(--text-2);font-weight:400;letter-spacing:-0.5px">Kör på pixdrift.</span>',
+      hero_sub: 'Ersätt ditt DMS, CRM, kvalitetssystem och efterlevnadsverktyg med en exekveringsplattform — byggd från grunden för hur verkstäder faktiskt fungerar.',
+      hero_proof: 'ISO 9001 · Swedac · GDPR · AWS · €299/månad fast',
+      hero_cta_primary: 'Starta driftsättning →',
+      hero_cta_secondary: 'Se hur det fungerar',
+      trust_iso: 'ISO 9001 Redo',
+      trust_swedac: 'Swedac ISO 17020/17025',
+      trust_gdpr: 'GDPR · EU-hosting',
+      trust_aws: 'AWS eu-north-1',
+      trust_mirror: 'Mirror Mode-migrering',
+      trust_api: 'API-first · 84 endpoints',
+      label_consolidation: 'Systemkonsolidering',
+      section_replace_title: 'En plattform.<br>Ersätt hela din stack.',
+      section_replace_sub: 'De flesta verkstäder kör på 4–7 frånkopplade system. pixdrift ersätter dem — utan migrationsrisk.',
+      replace_dms_label: 'DMS:',
+      replace_accounting_label: 'Ekonomi:',
+      replace_crm_label: 'CRM:',
+      replace_iso_label: 'ISO / Revisionsverktyg',
+      replace_booking_label: 'Bokningssystem',
+      replace_platform_sub: 'Operations · Kvalitet · Ekonomi<br>Bokning · Efterlevnad · CRM',
+      replace_price_suffix: '/månad fast',
+      label_migration: 'Migration',
+      section_deploy_title: 'Noll-risk driftsättning.<br>Fyra faser.',
+      section_deploy_sub: 'Mirror Mode låter dig köra pixdrift parallellt med ditt befintliga system — tills du är redo att byta.',
+      phase1_title: '1. Revision',
+      phase1_desc: 'Vi kartlägger din nuvarande stack: DMS, ekonomi, CRM, kvalitetsverktyg. Utan åtagande.',
+      phase2_title: '2. Konfigurera',
+      phase2_desc: 'Vi konfigurerar pixdrift efter din verkstad: arbetstyper, delskategorier, checklistmallar.',
+      phase3_title: '3. Migrera',
+      phase3_desc: 'Vi importerar din befintliga fordonshistorik, kundregister och öppna jobb. Ingen data lämnas kvar.',
+      phase4_title: '4. Lansera',
+      phase4_desc: 'Driftsätt på en måndag. Ditt team får en 2-timmars onboarding-session. Vi finns tillgängliga i 30 dagar.',
+      label_platform: 'Plattform',
+      section_features_title: 'Byggt för hur verkstäder<br>faktiskt fungerar.',
+      feat_work_title: 'Arbetsorder',
+      feat_work_desc: 'Skapa, tilldela och avsluta jobb på sekunder. Koppla delar, arbete och checklistor i ett flöde.',
+      feat_crm_title: 'CRM',
+      feat_crm_desc: 'Fullständig kund- och fordonshistorik. Se varje jobb, faktura och anteckning på en tidslinje.',
+      feat_parts_title: 'Delar & Lager',
+      feat_parts_desc: 'Spåra varje del i realtid. Beställ automatiskt när lagret sjunker under tröskeln.',
+      feat_quality_title: 'ISO 9001 Kvalitet',
+      feat_quality_desc: 'Inbyggda checklistor, granskningsloggar och avvikelsehantering. Certifieringsklar direkt.',
+      feat_finance_title: 'Ekonomi & Fakturering',
+      feat_finance_desc: 'Generera fakturor på sekunder. Anslut till ditt ekonomisystem eller använd den inbyggda liggaren.',
+      feat_compliance_title: 'Efterlevnad & GDPR',
+      feat_compliance_desc: 'Datalagring i EU. GDPR-kompatibel som standard. Rollbaserad åtkomstkontroll.',
+      label_roi: 'Avkastning på investering',
+      section_numbers_title: 'Siffrorna talar.',
+      stat1_category: 'månader i snitt',
+      stat1_label: 'Genomsnittliga månader till full ROI',
+      stat2_category: 'admintid',
+      stat2_label: 'Minskning av administrativ tid',
+      stat3_category: 'verkstäder',
+      stat3_label: 'Verkstäder live i EU',
+      stat4_category: 'per månad',
+      stat4_label: 'Genomsnittlig månadsbesparning vs gammal stack',
+      numbers_footnote: 'Besparingar varierar beroende på nuvarande system. Baserat på typiska verkstadsstackar i Sverige, Tyskland och UK.',
+      label_cost_reality: 'Kostnadsrealitet',
+      section_cost_title: 'Vad din verkstad<br>faktiskt betalar idag.',
+      cost_sub_suffix: 'kör på en standard frånkopplad stack.',
+      cost_table_header: 'Nuvarande stackkostnad',
+      cost_table_sub: 'per system',
+      cost_total_label: 'Total nuvarande stack',
+      cost_vs_label: 'vs pixdrift',
+      cost_higher: '3–5× högre kostnad än pixdrift',
+      cost_per_month_badge: 'per månad',
+      loading: 'Laddar...',
+      label_pricing: 'Priser',
+      section_pricing_title: 'Team-fast priser.<br>Inga per-säte överraskningar.',
+      section_pricing_sub: 'Varje plan inkluderar obegränsat antal användare. Skala ditt team utan att skala din faktura.',
+      pricing_core_name: 'Core',
+      pricing_growth_name: 'Growth',
+      pricing_ops_name: 'Operations',
+      price_per_month: '/månad',
+      pricing_core_desc: 'Operations + en modul. Fullt teamåtkomst.',
+      pricing_growth_desc: 'Core + Ekonomi + 3 moduler. Mest populär.',
+      pricing_ops_desc: 'Fullständig plattform + Automotive Pack + Intelligence.',
+      core_f1: 'Exekvering + Process',
+      core_f2: 'Fordonsintag-protokoll',
+      core_f3: 'Bokningsmotor',
+      core_f4: 'Kvalitetskontroll',
+      core_f5: '84 API-endpoints',
+      growth_f1: 'Allt i Core',
+      growth_f2: 'Ekonomi + Bankintegration',
+      growth_f3: 'Efterlevnadsmotor',
+      growth_f4: 'Revisionsdashboard',
+      growth_f5: 'Mobilitet & Bärgningsflöde',
+      ops_f1: 'Allt i Growth',
+      ops_f2: 'Automotive Industry Pack',
+      ops_f3: 'Control Tower (RCA)',
+      ops_f4: 'Swedac & DEKRA-integration',
+      ops_f5: 'PIX Intelligence Layer',
+      btn_start_deployment: 'Starta driftsättning',
+      btn_start_deployment_arrow: 'Starta driftsättning →',
+      cta_title: 'Din verkstad.<br>Kör på pixdrift.',
+      cta_sub: 'Gå med i verkstäderna som ersätter fragmenterade verktyg med en exekveringsplattform.',
+      cta_btn: 'Starta driftsättning →',
+      cta_secondary: 'Se systemgenomgång',
+      cta_footnote: 'Ingen installationskaos. Inget systembyte. Live på dagar.',
+      footer_status: 'Status',
+      footer_press: 'Press',
+      footer_privacy: 'Integritet',
+      footer_terms: 'Villkor',
+      footer_copy: '© 2026 pixdrift · EU-hosting · GDPR-kompatibel',
     },
-    germany: {
-      accounting:  ['DATEV', 'Lexware', 'SAGE 50', 'Sevdesk', 'FastBill'],
-      crm:         ['Pipedrive', 'HubSpot', 'Salesforce', 'CentralStation', 'weclapp'],
-      dms:         ['Autoline', 'CDK', 'WinValue', 'Incadea'],
-      erp:         ['SAP Business One', 'Microsoft Dynamics', 'Sage X3', 'Infor', 'proALPHA'],
-      project:     ['Asana', 'Jira', 'Trello', 'Basecamp', 'Factro'],
-      hr:          ['Personio', 'Rexx', 'SAP SuccessFactors', 'Kenjo'],
-      docs:        ['Confluence', 'SharePoint', 'Notion', 'Zoho Docs'],
-      iso:         ['Babtec', 'ConSense', 'IMS', 'Agilium'],
-      booking:     ['Calendly', 'Bookingkit', 'SimplyBook'],
-      payments:    ['Klarna', 'PayPal', 'Stripe', 'SEPA Direct', 'Paydirekt'],
+
+    de: {
+      nav_product: 'Produkt',
+      nav_automotive: 'Automotive',
+      nav_pricing: 'Preise',
+      nav_vs_dms: 'vs Legacy DMS',
+      nav_developers: 'Entwickler',
+      nav_signin: 'Anmelden',
+      nav_cta: 'Deployment starten',
+      hero_badge: 'Für Kfz-Werkstätten entwickelt',
+      hero_h1: 'Ihre Werkstatt.<br><em>Vollständig operativ.</em><br><span style="font-size:0.55em;color:var(--text-2);font-weight:400;letter-spacing:-0.5px">Läuft auf pixdrift.</span>',
+      hero_sub: 'Ersetzen Sie Ihr DMS, CRM, Qualitätssystem und Compliance-Tools durch eine Plattform — von Grund auf für den Werkstattalltag entwickelt.',
+      hero_proof: 'ISO 9001 · Swedac · DSGVO · AWS · €299/Monat',
+      hero_cta_primary: 'Deployment starten →',
+      hero_cta_secondary: 'So funktioniert es',
+      trust_iso: 'ISO 9001 bereit',
+      trust_swedac: 'Swedac ISO 17020/17025',
+      trust_gdpr: 'DSGVO · EU-Hosting',
+      trust_aws: 'AWS eu-north-1',
+      trust_mirror: 'Mirror Mode Migration',
+      trust_api: 'API-first · 84 Endpunkte',
+      label_consolidation: 'Systemkonsolidierung',
+      section_replace_title: 'Eine Plattform.<br>Ersetzen Sie Ihren gesamten Stack.',
+      section_replace_sub: 'Die meisten Werkstätten nutzen 4–7 getrennte Systeme. pixdrift ersetzt sie — ohne Migrationsrisiko.',
+      replace_dms_label: 'DMS:',
+      replace_accounting_label: 'Buchhaltung:',
+      replace_crm_label: 'CRM:',
+      replace_iso_label: 'ISO / Prüfungswerkzeuge',
+      replace_booking_label: 'Buchungssystem',
+      replace_platform_sub: 'Operations · Qualität · Finanzen<br>Buchung · Compliance · CRM',
+      replace_price_suffix: '/Monat pauschal',
+      label_migration: 'Migration',
+      section_deploy_title: 'Risikofreies Deployment.<br>Vier Phasen.',
+      section_deploy_sub: 'Mirror Mode ermöglicht den parallelen Betrieb mit Ihrem bestehenden System — bis Sie bereit sind zu wechseln.',
+      phase1_title: '1. Prüfung',
+      phase1_desc: 'Wir analysieren Ihren aktuellen Stack: DMS, Buchhaltung, CRM, Qualitätswerkzeuge. Unverbindlich.',
+      phase2_title: '2. Konfigurieren',
+      phase2_desc: 'Wir konfigurieren pixdrift für Ihre Werkstatt: Arbeitsarten, Teilekategorien, Checklistenvorlagen.',
+      phase3_title: '3. Migrieren',
+      phase3_desc: 'Wir importieren Ihre bestehende Fahrzeughistorie, Kundendaten und offene Aufträge. Keine Datenverluste.',
+      phase4_title: '4. Start',
+      phase4_desc: 'Go-live an einem Montag. Ihr Team erhält eine 2-stündige Onboarding-Session. Wir bleiben 30 Tage verfügbar.',
+      label_platform: 'Plattform',
+      section_features_title: 'Gebaut für den realen<br>Werkstattalltag.',
+      feat_work_title: 'Arbeitsaufträge',
+      feat_work_desc: 'Aufträge in Sekunden erstellen, zuweisen und abschließen. Teile, Arbeit und Checklisten in einem Fluss.',
+      feat_crm_title: 'CRM',
+      feat_crm_desc: 'Vollständige Kunden- und Fahrzeughistorie. Alle Aufträge, Rechnungen und Notizen auf einer Zeitleiste.',
+      feat_parts_title: 'Teile & Lager',
+      feat_parts_desc: 'Jeden Teil in Echtzeit verfolgen. Automatische Nachbestellung bei Unterschreitung des Schwellenwerts.',
+      feat_quality_title: 'ISO 9001 Qualität',
+      feat_quality_desc: 'Integrierte Checklisten, Prüfprotokolle und Abweichungsverfolgung. Zertifizierungsbereit.',
+      feat_finance_title: 'Finanzen & Rechnungen',
+      feat_finance_desc: 'Rechnungen in Sekunden erstellen. An Ihr Buchführungssystem anschließen oder integriertes Hauptbuch nutzen.',
+      feat_compliance_title: 'Compliance & DSGVO',
+      feat_compliance_desc: 'Datenhaltung in der EU. Standardmäßig DSGVO-konform. Rollenbasierte Zugriffskontrolle.',
+      label_roi: 'Return on Investment',
+      section_numbers_title: 'Die Zahlen sprechen.',
+      stat1_category: 'Monate Ø',
+      stat1_label: 'Durchschnittliche Monate bis zum vollen ROI',
+      stat2_category: 'Verwaltungszeit',
+      stat2_label: 'Reduzierung der Verwaltungszeit',
+      stat3_category: 'Werkstätten',
+      stat3_label: 'Werkstätten live in der EU',
+      stat4_category: 'pro Monat',
+      stat4_label: 'Durchschnittliche monatliche Einsparung ggü. alter Stack',
+      numbers_footnote: 'Einsparungen variieren je nach aktuellem System. Basierend auf typischen Werkstatt-Stacks in Schweden, Deutschland und UK.',
+      label_cost_reality: 'Kostenrealität',
+      section_cost_title: 'Was Ihre Werkstatt<br>heute tatsächlich zahlt.',
+      cost_sub_suffix: 'läuft auf einem Standard-Stack.',
+      cost_table_header: 'Aktuelle Stack-Kosten',
+      cost_table_sub: 'pro System',
+      cost_total_label: 'Gesamter aktueller Stack',
+      cost_vs_label: 'vs pixdrift',
+      cost_higher: '3–5× höhere Kosten als pixdrift',
+      cost_per_month_badge: 'pro Monat',
+      loading: 'Laden...',
+      label_pricing: 'Preise',
+      section_pricing_title: 'Team-Flat-Preise.<br>Keine Pro-Seat-Überraschungen.',
+      section_pricing_sub: 'Jeder Plan umfasst unbegrenzte Nutzer. Skalieren Sie Ihr Team ohne steigende Rechnung.',
+      pricing_core_name: 'Core',
+      pricing_growth_name: 'Growth',
+      pricing_ops_name: 'Operations',
+      price_per_month: '/Monat',
+      pricing_core_desc: 'Operations + ein Modul. Voller Teamzugang.',
+      pricing_growth_desc: 'Core + Finanzen + 3 Module. Am beliebtesten.',
+      pricing_ops_desc: 'Vollständige Plattform + Automotive Pack + Intelligence.',
+      core_f1: 'Ausführung + Prozess',
+      core_f2: 'Fahrzeugaufnahme-Protokoll',
+      core_f3: 'Buchungsmotor',
+      core_f4: 'Qualitätskontrolle',
+      core_f5: '84 API-Endpunkte',
+      growth_f1: 'Alles in Core',
+      growth_f2: 'Finanzen + Banking',
+      growth_f3: 'Compliance-Engine',
+      growth_f4: 'Audit-Dashboard',
+      growth_f5: 'Mobilitäts-Incident-Flow',
+      ops_f1: 'Alles in Growth',
+      ops_f2: 'Automotive Industry Pack',
+      ops_f3: 'Control Tower (RCA)',
+      ops_f4: 'Swedac & DEKRA-Integration',
+      ops_f5: 'PIX Intelligence Layer',
+      btn_start_deployment: 'Deployment starten',
+      btn_start_deployment_arrow: 'Deployment starten →',
+      cta_title: 'Ihre Werkstatt.<br>Läuft auf pixdrift.',
+      cta_sub: 'Schließen Sie sich den Werkstätten an, die fragmentierte Tools durch eine Plattform ersetzen.',
+      cta_btn: 'Deployment starten →',
+      cta_secondary: 'System-Walkthrough ansehen',
+      cta_footnote: 'Kein Einrichtungschaos. Kein Systemwechsel. Live in Tagen.',
+      footer_status: 'Status',
+      footer_press: 'Presse',
+      footer_privacy: 'Datenschutz',
+      footer_terms: 'AGB',
+      footer_copy: '© 2026 pixdrift · EU-Hosting · DSGVO-konform',
     },
-    france: {
-      accounting:  ['Sage', 'Cegid', 'EBP', 'Quadratus', 'MyUnisoft'],
-      crm:         ['Sellsy', 'HubSpot', 'Salesforce', 'noCRM', 'Pipedrive'],
-      dms:         ['CDK', 'Icar', 'Kerridge', 'Autosoft'],
-      erp:         ['SAP', 'Oracle', 'Sage X3', 'Cegid Business'],
-      project:     ['Asana', 'Jira', 'Monday.com', 'Notion'],
-      hr:          ['PayFit', 'Lucca', 'Silae', 'Kelio'],
-      docs:        ['Notion', 'Confluence', 'Google Workspace'],
-      iso:         ['Blue Kango', 'Qualios', 'Axess'],
-      booking:     ['Calendly', 'SimplyBook', 'Planity'],
-      payments:    ['Stripe', 'PayPal', 'Lyra', 'Mollie'],
+
+    fr: {
+      nav_product: 'Produit',
+      nav_automotive: 'Automobile',
+      nav_pricing: 'Tarifs',
+      nav_vs_dms: 'vs DMS Legacy',
+      nav_developers: 'Développeurs',
+      nav_signin: 'Se connecter',
+      nav_cta: 'Démarrer le déploiement',
+      hero_badge: 'Conçu pour les ateliers automobiles',
+      hero_h1: 'Votre atelier.<br><em>Pleinement opérationnel.</em><br><span style="font-size:0.55em;color:var(--text-2);font-weight:400;letter-spacing:-0.5px">Tourne sur pixdrift.</span>',
+      hero_sub: 'Remplacez votre DMS, CRM, système qualité et outils conformité par une seule plateforme d\'exécution — conçue de zéro pour le quotidien des ateliers.',
+      hero_proof: 'ISO 9001 · Swedac · RGPD · AWS · €299/mois',
+      hero_cta_primary: 'Démarrer le déploiement →',
+      hero_cta_secondary: 'Voir comment ça marche',
+      trust_iso: 'ISO 9001 Prêt',
+      trust_swedac: 'Swedac ISO 17020/17025',
+      trust_gdpr: 'RGPD · Hébergement EU',
+      trust_aws: 'AWS eu-north-1',
+      trust_mirror: 'Migration Mirror Mode',
+      trust_api: 'API-first · 84 endpoints',
+      label_consolidation: 'Consolidation des systèmes',
+      section_replace_title: 'Une plateforme.<br>Remplacez toute votre stack.',
+      section_replace_sub: 'La plupart des ateliers utilisent 4–7 systèmes déconnectés. pixdrift les remplace — sans risque de migration.',
+      replace_dms_label: 'DMS :',
+      replace_accounting_label: 'Comptabilité :',
+      replace_crm_label: 'CRM :',
+      replace_iso_label: 'ISO / Outils d\'audit',
+      replace_booking_label: 'Système de réservation',
+      replace_platform_sub: 'Opérations · Qualité · Finance<br>Réservation · Conformité · CRM',
+      replace_price_suffix: '/mois forfait',
+      label_migration: 'Migration',
+      section_deploy_title: 'Déploiement sans risque.<br>Quatre phases.',
+      section_deploy_sub: 'Mirror Mode vous permet de faire tourner pixdrift en parallèle de votre système actuel — jusqu\'à ce que vous soyez prêt à basculer.',
+      phase1_title: '1. Audit',
+      phase1_desc: 'Nous cartographions votre stack actuelle : DMS, comptabilité, CRM, outils qualité. Sans engagement.',
+      phase2_title: '2. Configurer',
+      phase2_desc: 'Nous configurons pixdrift selon votre atelier : types de travaux, catégories pièces, modèles de checklist.',
+      phase3_title: '3. Migrer',
+      phase3_desc: 'Nous importons votre historique véhicule, registre clients et travaux en cours. Aucune donnée perdue.',
+      phase4_title: '4. Lancement',
+      phase4_desc: 'Mise en production un lundi. Votre équipe reçoit une session d\'onboarding de 2h. Disponibles 30 jours.',
+      label_platform: 'Plateforme',
+      section_features_title: 'Conçu pour le quotidien<br>réel des ateliers.',
+      feat_work_title: 'Ordres de travail',
+      feat_work_desc: 'Créez, assignez et clôturez des travaux en secondes. Liez pièces, main-d\'œuvre et checklists.',
+      feat_crm_title: 'CRM',
+      feat_crm_desc: 'Historique complet clients et véhicules. Chaque travail, facture et note sur une seule timeline.',
+      feat_parts_title: 'Pièces & Stock',
+      feat_parts_desc: 'Suivez chaque pièce en temps réel. Réapprovisionnement automatique sous le seuil.',
+      feat_quality_title: 'Qualité ISO 9001',
+      feat_quality_desc: 'Checklists intégrées, journaux d\'audit et suivi des non-conformités. Prêt pour la certification.',
+      feat_finance_title: 'Finance & Facturation',
+      feat_finance_desc: 'Générez des factures en secondes. Connectez votre comptabilité ou utilisez le grand livre intégré.',
+      feat_compliance_title: 'Conformité & RGPD',
+      feat_compliance_desc: 'Hébergement des données dans l\'UE. Conforme au RGPD par défaut. Contrôles d\'accès par rôle.',
+      label_roi: 'Retour sur investissement',
+      section_numbers_title: 'Les chiffres parlent.',
+      stat1_category: 'mois en moy.',
+      stat1_label: 'Mois moyens pour le ROI complet',
+      stat2_category: 'temps admin',
+      stat2_label: 'Réduction du temps administratif',
+      stat3_category: 'ateliers',
+      stat3_label: 'Ateliers actifs dans l\'UE',
+      stat4_category: 'par mois',
+      stat4_label: 'Économie mensuelle moyenne vs ancienne stack',
+      numbers_footnote: 'Les économies varient selon les systèmes actuels. Basées sur des stacks d\'ateliers typiques en Suède, Allemagne et UK.',
+      label_cost_reality: 'Réalité des coûts',
+      section_cost_title: 'Ce que votre atelier<br>paie vraiment aujourd\'hui.',
+      cost_sub_suffix: 'fonctionnant sur une stack standard fragmentée.',
+      cost_table_header: 'Coût de la stack actuelle',
+      cost_table_sub: 'par système',
+      cost_total_label: 'Total stack actuelle',
+      cost_vs_label: 'vs pixdrift',
+      cost_higher: '3–5× plus cher que pixdrift',
+      cost_per_month_badge: 'par mois',
+      loading: 'Chargement...',
+      label_pricing: 'Tarifs',
+      section_pricing_title: 'Tarification flat par équipe.<br>Pas de surprises par siège.',
+      section_pricing_sub: 'Chaque plan inclut des utilisateurs illimités. Faites grandir votre équipe sans faire grandir votre facture.',
+      pricing_core_name: 'Core',
+      pricing_growth_name: 'Growth',
+      pricing_ops_name: 'Operations',
+      price_per_month: '/mois',
+      pricing_core_desc: 'Operations + un module. Accès équipe complet.',
+      pricing_growth_desc: 'Core + Finance + 3 modules. Le plus populaire.',
+      pricing_ops_desc: 'Plateforme complète + Automotive Pack + Intelligence.',
+      core_f1: 'Exécution + Processus',
+      core_f2: 'Protocole d\'entrée véhicule',
+      core_f3: 'Moteur de réservation',
+      core_f4: 'Contrôle qualité',
+      core_f5: '84 endpoints API',
+      growth_f1: 'Tout dans Core',
+      growth_f2: 'Finance + Banque',
+      growth_f3: 'Moteur de conformité',
+      growth_f4: 'Tableau de bord d\'audit',
+      growth_f5: 'Flux incident mobilité',
+      ops_f1: 'Tout dans Growth',
+      ops_f2: 'Automotive Industry Pack',
+      ops_f3: 'Control Tower (RCA)',
+      ops_f4: 'Intégration Swedac & DEKRA',
+      ops_f5: 'Couche Intelligence PIX',
+      btn_start_deployment: 'Démarrer le déploiement',
+      btn_start_deployment_arrow: 'Démarrer le déploiement →',
+      cta_title: 'Votre atelier.<br>Tourne sur pixdrift.',
+      cta_sub: 'Rejoignez les ateliers qui remplacent les outils fragmentés par une seule plateforme.',
+      cta_btn: 'Démarrer le déploiement →',
+      cta_secondary: 'Voir la démonstration système',
+      cta_footnote: 'Pas de chaos d\'installation. Pas de changement de système. Live en jours.',
+      footer_status: 'Statut',
+      footer_press: 'Presse',
+      footer_privacy: 'Confidentialité',
+      footer_terms: 'CGU',
+      footer_copy: '© 2026 pixdrift · Hébergement EU · Conforme RGPD',
     },
-    benelux: {
-      accounting:  ['Exact Online', 'Twinfield', 'Yuki', 'AFAS'],
-      crm:         ['HubSpot', 'Salesforce', 'Teamleader', 'Pipedrive'],
-      dms:         ['CDK', 'Autoline', 'Kerridge', 'Automaster'],
-      erp:         ['AFAS', 'Microsoft Dynamics', 'SAP', 'Unit4'],
-      project:     ['Asana', 'Monday.com', 'Jira'],
-      hr:          ['AFAS', 'Nmbrs', 'BambooHR'],
-      docs:        ['Notion', 'Google Workspace', 'Confluence'],
-      iso:         ['Cority', 'ETQ', 'Ideagen'],
-      booking:     ['Calendly', 'SimplyBook', 'Appointy'],
-      payments:    ['Mollie', 'iDEAL', 'Stripe', 'PayPal'],
+
+    nl: {
+      nav_product: 'Product',
+      nav_automotive: 'Automotive',
+      nav_pricing: 'Prijzen',
+      nav_vs_dms: 'vs Legacy DMS',
+      nav_developers: 'Ontwikkelaars',
+      nav_signin: 'Inloggen',
+      nav_cta: 'Implementatie starten',
+      hero_badge: 'Gebouwd voor automotief werkplaatsen',
+      hero_h1: 'Uw werkplaats.<br><em>Volledig operationeel.</em><br><span style="font-size:0.55em;color:var(--text-2);font-weight:400;letter-spacing:-0.5px">Draait op pixdrift.</span>',
+      hero_sub: 'Vervang uw DMS, CRM, kwaliteitssysteem en compliance-tools door één platform — van de grond af gebouwd voor de werkplaatspraktijk.',
+      hero_proof: 'ISO 9001 · Swedac · AVG/GDPR · AWS · €299/maand',
+      hero_cta_primary: 'Implementatie starten →',
+      hero_cta_secondary: 'Zie hoe het werkt',
+      trust_iso: 'ISO 9001 Gereed',
+      trust_swedac: 'Swedac ISO 17020/17025',
+      trust_gdpr: 'AVG/GDPR · EU-hosting',
+      trust_aws: 'AWS eu-north-1',
+      trust_mirror: 'Mirror Mode migratie',
+      trust_api: 'API-first · 84 endpoints',
+      label_consolidation: 'Systeemconsolidatie',
+      section_replace_title: 'Één platform.<br>Vervang uw volledige stack.',
+      section_replace_sub: 'De meeste werkplaatsen draaien op 4–7 losgekoppelde systemen. pixdrift vervangt ze — zonder migratierisico.',
+      replace_dms_label: 'DMS:',
+      replace_accounting_label: 'Boekhouding:',
+      replace_crm_label: 'CRM:',
+      replace_iso_label: 'ISO / Audittools',
+      replace_booking_label: 'Boekingssysteem',
+      replace_platform_sub: 'Operations · Kwaliteit · Finance<br>Boeking · Compliance · CRM',
+      replace_price_suffix: '/maand vast',
+      label_migration: 'Migratie',
+      section_deploy_title: 'Risicovrije implementatie.<br>Vier fases.',
+      section_deploy_sub: 'Mirror Mode laat u pixdrift parallel draaien met uw bestaande systeem — tot u klaar bent om over te stappen.',
+      phase1_title: '1. Audit',
+      phase1_desc: 'Wij brengen uw huidige stack in kaart: DMS, boekhouding, CRM, kwaliteitstools. Vrijblijvend.',
+      phase2_title: '2. Configureren',
+      phase2_desc: 'Wij configureren pixdrift voor uw werkplaats: arbeidstypen, onderdelen-categorieën, checklistsjablonen.',
+      phase3_title: '3. Migreren',
+      phase3_desc: 'Wij importeren uw bestaande voertuighistorie, klantenregisters en open opdrachten. Geen data achtergelaten.',
+      phase4_title: '4. Lancering',
+      phase4_desc: 'Live op een maandag. Uw team krijgt een onboarding-sessie van 2 uur. Wij blijven 30 dagen beschikbaar.',
+      label_platform: 'Platform',
+      section_features_title: 'Gebouwd voor hoe<br>werkplaatsen echt werken.',
+      feat_work_title: 'Werkorders',
+      feat_work_desc: 'Maak, wijs toe en sluit opdrachten in seconden. Koppel onderdelen, arbeid en checklists.',
+      feat_crm_title: 'CRM',
+      feat_crm_desc: 'Volledige klant- en voertuiggeschiedenis. Elk job, factuur en notitie op één tijdlijn.',
+      feat_parts_title: 'Onderdelen & Voorraad',
+      feat_parts_desc: 'Volg elk onderdeel in realtime. Automatisch herbestellen als voorraad onder drempel daalt.',
+      feat_quality_title: 'ISO 9001 Kwaliteit',
+      feat_quality_desc: 'Ingebouwde checklists, auditlogs en non-conformantiebeheer. Direct klaar voor certificering.',
+      feat_finance_title: 'Financiën & Facturatie',
+      feat_finance_desc: 'Genereer facturen in seconden. Verbind uw boekhoudsysteem of gebruik het ingebouwde grootboek.',
+      feat_compliance_title: 'Compliance & AVG/GDPR',
+      feat_compliance_desc: 'Gegevensopslag in de EU. Standaard AVG/GDPR-conform. Rolgebaseerde toegangscontroles.',
+      label_roi: 'Return on investment',
+      section_numbers_title: 'De cijfers zijn duidelijk.',
+      stat1_category: 'maanden gem.',
+      stat1_label: 'Gemiddelde maanden tot volledige ROI',
+      stat2_category: 'admin-tijd',
+      stat2_label: 'Vermindering van administratieve tijd',
+      stat3_category: 'werkplaatsen',
+      stat3_label: 'Werkplaatsen live in de EU',
+      stat4_category: 'per maand',
+      stat4_label: 'Gemiddelde maandelijkse besparing vs oude stack',
+      numbers_footnote: 'Besparingen variëren afhankelijk van huidige systemen. Gebaseerd op typische werkplaatsstacks in Zweden, Duitsland en VK.',
+      label_cost_reality: 'Kostenrealiteit',
+      section_cost_title: 'Wat uw werkplaats<br>vandaag werkelijk betaalt.',
+      cost_sub_suffix: 'draait op een standaard losgekoppelde stack.',
+      cost_table_header: 'Huidige stackkosten',
+      cost_table_sub: 'per systeem',
+      cost_total_label: 'Totale huidige stack',
+      cost_vs_label: 'vs pixdrift',
+      cost_higher: '3–5× hogere kosten dan pixdrift',
+      cost_per_month_badge: 'per maand',
+      loading: 'Laden...',
+      label_pricing: 'Prijzen',
+      section_pricing_title: 'Team-flat prijzen.<br>Geen per-gebruiker verrassingen.',
+      section_pricing_sub: 'Elk plan bevat onbeperkte gebruikers. Groei uw team zonder groeiende factuur.',
+      pricing_core_name: 'Core',
+      pricing_growth_name: 'Growth',
+      pricing_ops_name: 'Operations',
+      price_per_month: '/maand',
+      pricing_core_desc: 'Operations + één module. Volledig teamtoegang.',
+      pricing_growth_desc: 'Core + Finance + 3 modules. Meest populair.',
+      pricing_ops_desc: 'Volledig platform + Automotive Pack + Intelligence.',
+      core_f1: 'Uitvoering + Proces',
+      core_f2: 'Voertuig Intake Protocol',
+      core_f3: 'Boekingsmotor',
+      core_f4: 'Kwaliteitscontrole',
+      core_f5: '84 API-endpoints',
+      growth_f1: 'Alles in Core',
+      growth_f2: 'Finance + Banking',
+      growth_f3: 'Compliance Engine',
+      growth_f4: 'Audit Dashboard',
+      growth_f5: 'Mobiliteits Incident Flow',
+      ops_f1: 'Alles in Growth',
+      ops_f2: 'Automotive Industry Pack',
+      ops_f3: 'Control Tower (RCA)',
+      ops_f4: 'Swedac & DEKRA-integratie',
+      ops_f5: 'PIX Intelligence Layer',
+      btn_start_deployment: 'Implementatie starten',
+      btn_start_deployment_arrow: 'Implementatie starten →',
+      cta_title: 'Uw werkplaats.<br>Draait op pixdrift.',
+      cta_sub: 'Sluit u aan bij werkplaatsen die gefragmenteerde tools vervangen door één platform.',
+      cta_btn: 'Implementatie starten →',
+      cta_secondary: 'Bekijk systeemdemo',
+      cta_footnote: 'Geen installatiechaos. Geen systeemwissel. Live in dagen.',
+      footer_status: 'Status',
+      footer_press: 'Pers',
+      footer_privacy: 'Privacy',
+      footer_terms: 'Voorwaarden',
+      footer_copy: '© 2026 pixdrift · EU-hosting · AVG/GDPR-conform',
     },
-    global: {
-      accounting:  ['QuickBooks', 'Xero', 'Sage', 'Wave'],
-      crm:         ['Salesforce', 'HubSpot', 'Pipedrive', 'Zoho'],
-      dms:         ['CDK Global', 'Keyloop', 'Reynolds & Reynolds'],
-      erp:         ['SAP', 'Oracle', 'Microsoft Dynamics', 'NetSuite'],
-      project:     ['Asana', 'Jira', 'Monday.com', 'ClickUp'],
-      hr:          ['Workday', 'BambooHR', 'ADP'],
-      docs:        ['Notion', 'Confluence', 'Google Workspace'],
-      iso:         ['ETQ', 'MasterControl', 'Qualio'],
-      booking:     ['Calendly', 'SimplyBook', 'Acuity'],
-      payments:    ['Stripe', 'PayPal', 'GoCardless'],
+
+    da: {
+      nav_product: 'Produkt',
+      nav_automotive: 'Automotive',
+      nav_pricing: 'Priser',
+      nav_vs_dms: 'vs Legacy DMS',
+      nav_developers: 'Udviklere',
+      nav_signin: 'Log ind',
+      nav_cta: 'Start implementering',
+      hero_badge: 'Bygget til automotiv værksteder',
+      hero_h1: 'Dit værksted.<br><em>Fuldt operationelt.</em><br><span style="font-size:0.55em;color:var(--text-2);font-weight:400;letter-spacing:-0.5px">Kører på pixdrift.</span>',
+      hero_sub: 'Erstat dit DMS, CRM, kvalitetssystem og compliance-værktøjer med én platform — bygget fra bunden til værkstedsdrift.',
+      hero_proof: 'ISO 9001 · Swedac · GDPR · AWS · €299/måned',
+      hero_cta_primary: 'Start implementering →',
+      hero_cta_secondary: 'Se hvordan det virker',
+      trust_iso: 'ISO 9001 Klar',
+      trust_swedac: 'Swedac ISO 17020/17025',
+      trust_gdpr: 'GDPR · EU-hosting',
+      trust_aws: 'AWS eu-north-1',
+      trust_mirror: 'Mirror Mode migration',
+      trust_api: 'API-first · 84 endpoints',
+      label_consolidation: 'Systemkonsolidering',
+      section_replace_title: 'Én platform.<br>Erstat hele din stack.',
+      section_replace_sub: 'De fleste værksteder kører på 4–7 adskilte systemer. pixdrift erstatter dem — uden migrationsrisiko.',
+      replace_dms_label: 'DMS:',
+      replace_accounting_label: 'Regnskab:',
+      replace_crm_label: 'CRM:',
+      replace_iso_label: 'ISO / Revisionsværktøjer',
+      replace_booking_label: 'Bookingsystem',
+      replace_platform_sub: 'Operations · Kvalitet · Finans<br>Booking · Compliance · CRM',
+      replace_price_suffix: '/måned fast',
+      label_migration: 'Migration',
+      section_deploy_title: 'Risikofri implementering.<br>Fire faser.',
+      section_deploy_sub: 'Mirror Mode lader dig køre pixdrift sideløbende med dit eksisterende system — indtil du er klar til at skifte.',
+      phase1_title: '1. Revision',
+      phase1_desc: 'Vi kortlægger din nuværende stack: DMS, regnskab, CRM, kvalitetsværktøjer. Ingen forpligtelse.',
+      phase2_title: '2. Konfigurér',
+      phase2_desc: 'Vi konfigurerer pixdrift til dit værksted: arbejdstyper, delekategorier, checklisteskabeloner.',
+      phase3_title: '3. Migrer',
+      phase3_desc: 'Vi importerer din eksisterende køretøjshistorik, kunderegistre og åbne jobs. Ingen data efterlades.',
+      phase4_title: '4. Lancering',
+      phase4_desc: 'Go-live på en mandag. Dit team får en 2-timers onboarding-session. Vi forbliver tilgængelige i 30 dage.',
+      label_platform: 'Platform',
+      section_features_title: 'Bygget til, hvordan<br>værksteder faktisk fungerer.',
+      feat_work_title: 'Arbejdsordrer',
+      feat_work_desc: 'Opret, tildel og luk jobs på sekunder. Link dele, arbejde og checklister i ét flow.',
+      feat_crm_title: 'CRM',
+      feat_crm_desc: 'Fuld kunde- og køretøjshistorik. Se hvert job, faktura og note på én tidslinje.',
+      feat_parts_title: 'Dele & Lager',
+      feat_parts_desc: 'Spor hver del i realtid. Genbestil automatisk når lageret falder under grænseværdien.',
+      feat_quality_title: 'ISO 9001 Kvalitet',
+      feat_quality_desc: 'Indbyggede checklister, revisionslogger og afvigelseshåndtering. Certificeringsklar fra starten.',
+      feat_finance_title: 'Økonomi & Fakturering',
+      feat_finance_desc: 'Generer fakturaer på sekunder. Tilslut dit regnskabssystem eller brug det integrerede finansbogsystem.',
+      feat_compliance_title: 'Compliance & GDPR',
+      feat_compliance_desc: 'Datalagring i EU. GDPR-kompatibel som standard. Rollebaseret adgangskontrol.',
+      label_roi: 'Afkast på investering',
+      section_numbers_title: 'Tallene er klare.',
+      stat1_category: 'måneder gns.',
+      stat1_label: 'Gennemsnitlige måneder til fuldt ROI',
+      stat2_category: 'admintid',
+      stat2_label: 'Reduktion i administrativ tid',
+      stat3_category: 'værksteder',
+      stat3_label: 'Værksteder live i EU',
+      stat4_category: 'pr. måned',
+      stat4_label: 'Gennemsnitlig månedlig besparelse ift. gammel stack',
+      numbers_footnote: 'Besparelser varierer afhængigt af nuværende systemer. Baseret på typiske værkstedsstacks i Sverige, Tyskland og UK.',
+      label_cost_reality: 'Omkostningsrealitet',
+      section_cost_title: 'Hvad dit værksted<br>faktisk betaler i dag.',
+      cost_sub_suffix: 'kører på en standard adskilt stack.',
+      cost_table_header: 'Nuværende stackomkostning',
+      cost_table_sub: 'pr. system',
+      cost_total_label: 'Samlet nuværende stack',
+      cost_vs_label: 'vs pixdrift',
+      cost_higher: '3–5× højere omkostning end pixdrift',
+      cost_per_month_badge: 'pr. måned',
+      loading: 'Indlæser...',
+      label_pricing: 'Priser',
+      section_pricing_title: 'Team-fast priser.<br>Ingen per-plads overraskelser.',
+      section_pricing_sub: 'Alle planer inkluderer ubegrænsede brugere. Skalér dit team uden at skalere din faktura.',
+      pricing_core_name: 'Core',
+      pricing_growth_name: 'Growth',
+      pricing_ops_name: 'Operations',
+      price_per_month: '/måned',
+      pricing_core_desc: 'Operations + et modul. Fuld teamadgang.',
+      pricing_growth_desc: 'Core + Finans + 3 moduler. Mest populær.',
+      pricing_ops_desc: 'Fuld platform + Automotive Pack + Intelligence.',
+      core_f1: 'Udførelse + Proces',
+      core_f2: 'Køretøjsindtagsprotokol',
+      core_f3: 'Bookingmotor',
+      core_f4: 'Kvalitetskontrol',
+      core_f5: '84 API-endpoints',
+      growth_f1: 'Alt i Core',
+      growth_f2: 'Finans + Banking',
+      growth_f3: 'Compliance Engine',
+      growth_f4: 'Revisionsdashboard',
+      growth_f5: 'Mobilitets Incident Flow',
+      ops_f1: 'Alt i Growth',
+      ops_f2: 'Automotive Industry Pack',
+      ops_f3: 'Control Tower (RCA)',
+      ops_f4: 'Swedac & DEKRA-integration',
+      ops_f5: 'PIX Intelligence Layer',
+      btn_start_deployment: 'Start implementering',
+      btn_start_deployment_arrow: 'Start implementering →',
+      cta_title: 'Dit værksted.<br>Kører på pixdrift.',
+      cta_sub: 'Tilslut dig værksteder, der erstatter fragmenterede værktøjer med én platform.',
+      cta_btn: 'Start implementering →',
+      cta_secondary: 'Se systemgennemgang',
+      cta_footnote: 'Ingen opsætningkaos. Ingen systemskift. Live i dage.',
+      footer_status: 'Status',
+      footer_press: 'Presse',
+      footer_privacy: 'Privatliv',
+      footer_terms: 'Vilkår',
+      footer_copy: '© 2026 pixdrift · EU-hosting · GDPR-kompatibel',
+    },
+
+    fi: {
+      nav_product: 'Tuote',
+      nav_automotive: 'Automotiiivi',
+      nav_pricing: 'Hinnoittelu',
+      nav_vs_dms: 'vs Vanha DMS',
+      nav_developers: 'Kehittäjät',
+      nav_signin: 'Kirjaudu',
+      nav_cta: 'Aloita käyttöönotto',
+      hero_badge: 'Rakennettu automotiivikorjaamoille',
+      hero_h1: 'Korjaamosi.<br><em>Täysin toiminnassa.</em><br><span style="font-size:0.55em;color:var(--text-2);font-weight:400;letter-spacing:-0.5px">Pyörii pixdriftillä.</span>',
+      hero_sub: 'Korvaa DMS, CRM, laadunhallintajärjestelmä ja vaatimustenmukaisuustyökalut yhdellä alustalla — rakennettu alusta alkaen korjaamoiden tarpeisiin.',
+      hero_proof: 'ISO 9001 · Swedac · GDPR · AWS · €299/kk',
+      hero_cta_primary: 'Aloita käyttöönotto →',
+      hero_cta_secondary: 'Katso miten se toimii',
+      trust_iso: 'ISO 9001 Valmis',
+      trust_swedac: 'Swedac ISO 17020/17025',
+      trust_gdpr: 'GDPR · EU-palvelinhoito',
+      trust_aws: 'AWS eu-north-1',
+      trust_mirror: 'Mirror Mode -siirto',
+      trust_api: 'API-ensin · 84 endpointia',
+      label_consolidation: 'Järjestelmäkonsolidointi',
+      section_replace_title: 'Yksi alusta.<br>Korvaa koko stack.',
+      section_replace_sub: 'Useimmilla korjaamoilla on 4–7 erillistä järjestelmää. pixdrift korvaa ne — ilman siirtoriskiä.',
+      replace_dms_label: 'DMS:',
+      replace_accounting_label: 'Kirjanpito:',
+      replace_crm_label: 'CRM:',
+      replace_iso_label: 'ISO / Tarkastustyökalut',
+      replace_booking_label: 'Varausjärjestelmä',
+      replace_platform_sub: 'Operaatiot · Laatu · Talous<br>Varaus · Vaatimustenmukaisuus · CRM',
+      replace_price_suffix: '/kk kiinteä',
+      label_migration: 'Siirtyminen',
+      section_deploy_title: 'Riskitön käyttöönotto.<br>Neljä vaihetta.',
+      section_deploy_sub: 'Mirror Mode mahdollistaa pixdriftin käytön rinnakkain olemassa olevan järjestelmän kanssa — kunnes olet valmis vaihtamaan.',
+      phase1_title: '1. Tarkistus',
+      phase1_desc: 'Kartoitamme nykyisen stackisi: DMS, kirjanpito, CRM, laadunhallintatyökalut. Ei sitoumusta.',
+      phase2_title: '2. Konfiguroi',
+      phase2_desc: 'Konfiguroimme pixdriftin korjaamollesi: työtyypit, osien kategoriat, tarkistuslistapohjat.',
+      phase3_title: '3. Migroi',
+      phase3_desc: 'Tuomme olemassa olevan ajoneuvohistoriasi, asiakastietueet ja avoimet työt. Ei tietoja jätetä.',
+      phase4_title: '4. Julkaisu',
+      phase4_desc: 'Live maanantaina. Tiimisi saa 2 tunnin perehdytyksen. Olemme käytettävissä 30 päivää.',
+      label_platform: 'Alusta',
+      section_features_title: 'Rakennettu siihen, miten<br>korjaamot oikeasti toimivat.',
+      feat_work_title: 'Työmääräykset',
+      feat_work_desc: 'Luo, määritä ja sulje työmääräykset sekunneissa. Yhdistä osat, työ ja tarkistuslistat.',
+      feat_crm_title: 'CRM',
+      feat_crm_desc: 'Täydellinen asiakas- ja ajoneuvohistoria. Jokainen työ, lasku ja muistiinpano yhdellä aikajanalla.',
+      feat_parts_title: 'Osat & Varasto',
+      feat_parts_desc: 'Seuraa jokaista osaa reaaliajassa. Automaattinen tilaaminen, kun varasto laskee rajan alle.',
+      feat_quality_title: 'ISO 9001 Laatu',
+      feat_quality_desc: 'Sisäänrakennetut tarkistuslistat, tarkastusloki ja poikkeamien seuranta. Sertifiointivalmis heti.',
+      feat_finance_title: 'Talous & Laskutus',
+      feat_finance_desc: 'Luo laskuja sekunneissa. Yhdistä kirjanpitojärjestelmääsi tai käytä sisäänrakennettua pääkirjaa.',
+      feat_compliance_title: 'Vaatimustenmukaisuus & GDPR',
+      feat_compliance_desc: 'Tietosäilytys EU:ssa. GDPR-yhteensopiva oletuksena. Roolipohjainen pääsynhallinta.',
+      label_roi: 'Sijoitetun pääoman tuotto',
+      section_numbers_title: 'Luvut puhuvat.',
+      stat1_category: 'kk keskimäärin',
+      stat1_label: 'Kuukausia täyteen ROI:hin',
+      stat2_category: 'hallintoaika',
+      stat2_label: 'Hallinnollisen ajan väheneminen',
+      stat3_category: 'korjaamoa',
+      stat3_label: 'Korjaamoita live EU:ssa',
+      stat4_category: 'kuukaudessa',
+      stat4_label: 'Kuukausittainen säästö vanhaan stackiin verrattuna',
+      numbers_footnote: 'Säästöt vaihtelevat nykyisten järjestelmien mukaan. Perustuu tyypillisiin korjaamostack-kustannuksiin Ruotsissa, Saksassa ja UK:ssa.',
+      label_cost_reality: 'Kustannustodellisuus',
+      section_cost_title: 'Mitä korjaamosi<br>oikeasti maksaa tänään.',
+      cost_sub_suffix: 'pyörii standardi erillisillä järjestelmillä.',
+      cost_table_header: 'Nykyinen stack-kustannus',
+      cost_table_sub: 'järjestelmää kohti',
+      cost_total_label: 'Koko nykyinen stack',
+      cost_vs_label: 'vs pixdrift',
+      cost_higher: '3–5× korkeampi hinta kuin pixdrift',
+      cost_per_month_badge: 'kuukaudessa',
+      loading: 'Ladataan...',
+      label_pricing: 'Hinnoittelu',
+      section_pricing_title: 'Team-flat hinnoittelu.<br>Ei per-istumapaikkamaksuja.',
+      section_pricing_sub: 'Jokainen suunnitelma sisältää rajattomasti käyttäjiä. Kasvata tiimiäsi kasvattamatta laskuasi.',
+      pricing_core_name: 'Core',
+      pricing_growth_name: 'Growth',
+      pricing_ops_name: 'Operations',
+      price_per_month: '/kk',
+      pricing_core_desc: 'Operaatiot + yksi moduuli. Täysi tiimipääsy.',
+      pricing_growth_desc: 'Core + Talous + 3 moduulia. Suosituin.',
+      pricing_ops_desc: 'Täysi alusta + Automotive Pack + Intelligence.',
+      core_f1: 'Toteutus + Prosessi',
+      core_f2: 'Ajoneuvon vastaanottoprotokolla',
+      core_f3: 'Varausmoottori',
+      core_f4: 'Laadunhallinta',
+      core_f5: '84 API-endpointia',
+      growth_f1: 'Kaikki Coressa',
+      growth_f2: 'Talous + Pankkiyhteys',
+      growth_f3: 'Vaatimustenmukaisuusmoottori',
+      growth_f4: 'Tarkastuskojelauta',
+      growth_f5: 'Liikkuvuus Incident Flow',
+      ops_f1: 'Kaikki Growthissa',
+      ops_f2: 'Automotive Industry Pack',
+      ops_f3: 'Control Tower (RCA)',
+      ops_f4: 'Swedac & DEKRA-integraatio',
+      ops_f5: 'PIX Intelligence Layer',
+      btn_start_deployment: 'Aloita käyttöönotto',
+      btn_start_deployment_arrow: 'Aloita käyttöönotto →',
+      cta_title: 'Korjaamosi.<br>Pyörii pixdriftillä.',
+      cta_sub: 'Liity korjaamoihin, jotka korvaavat pirstaleiset työkalut yhdellä alustalla.',
+      cta_btn: 'Aloita käyttöönotto →',
+      cta_secondary: 'Katso järjestelmäesittely',
+      cta_footnote: 'Ei asennuskaaosta. Ei järjestelmänvaihtoa. Live päivissä.',
+      footer_status: 'Tila',
+      footer_press: 'Lehdistö',
+      footer_privacy: 'Tietosuoja',
+      footer_terms: 'Ehdot',
+      footer_copy: '© 2026 pixdrift · EU-palvelinhoito · GDPR-yhteensopiva',
     },
   };
 
-  // ── Region → locale mapping ──────────────────────────────────────────
+  // ── Geo system reference database ───────────────────────────────────
+  const GLOBAL_SYSTEMS = {
+    nordics: { accounting: ['Fortnox', 'Visma', 'Tripletex', 'e-conomic', 'Björn Lundén'], crm: ['Upsales', 'Lime CRM', 'SuperOffice', 'HubSpot'], dms: ['Winassist', 'Automaster', 'Kobra', 'Cabas'], erp: ['Monitor ERP', 'Jeeves', 'IFS', 'Pyramid'], project: ['Asana', 'Trello', 'Monday.com', 'Jira'], hr: ['Hogia', 'Visma Lön', 'Flex HRM', 'Aditro'], docs: ['Notion', 'Confluence', 'SharePoint', 'Google Workspace'], iso: ['Bizzmine', 'Qnova', 'Stratsys', 'Q-MATIC'], booking: ['TimeCenter', 'BokaDirekt', 'Bokameratid', 'Calendly'], payments: ['Swish', 'Bankgiro', 'Plusgiro', 'Klarna', 'Qliro'] },
+    us_uk: { accounting: ['QuickBooks', 'Xero', 'FreshBooks', 'Wave', 'Sage'], crm: ['Salesforce', 'HubSpot', 'Pipedrive', 'Monday CRM', 'Zoho'], dms: ['CDK Global', 'Kerridge', 'Reynolds & Reynolds', 'DealerSocket'], erp: ['NetSuite', 'SAP', 'Oracle', 'Microsoft Dynamics', 'Acumatica'], project: ['Asana', 'Jira', 'ClickUp', 'Basecamp', 'Monday.com'], hr: ['Gusto', 'ADP', 'BambooHR', 'Rippling', 'Workday'], docs: ['Notion', 'Google Workspace', 'Confluence', 'Coda'], iso: ['Qualio', 'Greenlight Guru', 'MasterControl', 'ETQ'], booking: ['Calendly', 'Acuity', 'Square Appointments', 'Mindbody'], payments: ['Stripe', 'PayPal', 'Square', 'Braintree', 'GoCardless'] },
+    germany: { accounting: ['DATEV', 'Lexware', 'SAGE 50', 'Sevdesk', 'FastBill'], crm: ['Pipedrive', 'HubSpot', 'Salesforce', 'CentralStation', 'weclapp'], dms: ['Autoline', 'CDK', 'WinValue', 'Incadea'], erp: ['SAP Business One', 'Microsoft Dynamics', 'Sage X3', 'Infor', 'proALPHA'], project: ['Asana', 'Jira', 'Trello', 'Basecamp', 'Factro'], hr: ['Personio', 'Rexx', 'SAP SuccessFactors', 'Kenjo'], docs: ['Confluence', 'SharePoint', 'Notion', 'Zoho Docs'], iso: ['Babtec', 'ConSense', 'IMS', 'Agilium'], booking: ['Calendly', 'Bookingkit', 'SimplyBook'], payments: ['Klarna', 'PayPal', 'Stripe', 'SEPA Direct', 'Paydirekt'] },
+    france: { accounting: ['Sage', 'Cegid', 'EBP', 'Quadratus', 'MyUnisoft'], crm: ['Sellsy', 'HubSpot', 'Salesforce', 'noCRM', 'Pipedrive'], dms: ['CDK', 'Icar', 'Kerridge', 'Autosoft'], erp: ['SAP', 'Oracle', 'Sage X3', 'Cegid Business'], project: ['Asana', 'Jira', 'Monday.com', 'Notion'], hr: ['PayFit', 'Lucca', 'Silae', 'Kelio'], docs: ['Notion', 'Confluence', 'Google Workspace'], iso: ['Blue Kango', 'Qualios', 'Axess'], booking: ['Calendly', 'SimplyBook', 'Planity'], payments: ['Stripe', 'PayPal', 'Lyra', 'Mollie'] },
+    benelux: { accounting: ['Exact Online', 'Twinfield', 'Yuki', 'AFAS'], crm: ['HubSpot', 'Salesforce', 'Teamleader', 'Pipedrive'], dms: ['CDK', 'Autoline', 'Kerridge', 'Automaster'], erp: ['AFAS', 'Microsoft Dynamics', 'SAP', 'Unit4'], project: ['Asana', 'Monday.com', 'Jira'], hr: ['AFAS', 'Nmbrs', 'BambooHR'], docs: ['Notion', 'Google Workspace', 'Confluence'], iso: ['Cority', 'ETQ', 'Ideagen'], booking: ['Calendly', 'SimplyBook', 'Appointy'], payments: ['Mollie', 'iDEAL', 'Stripe', 'PayPal'] },
+    global: { accounting: ['QuickBooks', 'Xero', 'Sage', 'Wave'], crm: ['Salesforce', 'HubSpot', 'Pipedrive', 'Zoho'], dms: ['CDK Global', 'Keyloop', 'Reynolds & Reynolds'], erp: ['SAP', 'Oracle', 'Microsoft Dynamics', 'NetSuite'], project: ['Asana', 'Jira', 'Monday.com', 'ClickUp'], hr: ['Workday', 'BambooHR', 'ADP'], docs: ['Notion', 'Confluence', 'Google Workspace'], iso: ['ETQ', 'MasterControl', 'Qualio'], booking: ['Calendly', 'SimplyBook', 'Acuity'], payments: ['Stripe', 'PayPal', 'GoCardless'] },
+  };
+
   const LOCALE_TO_REGION = {
     sv: 'nordics', no: 'nordics', da: 'nordics', fi: 'nordics',
     en: 'us_uk',
@@ -1042,239 +1435,115 @@
     nl: 'benelux',
   };
 
-  // ── Per-locale content (pricing, labels, DMS replace title) ──────────
   const LOCALE_CONTENT = {
-    sv: {
-      flag: '🇸🇪', region_label: 'Swedish workshop',
-      currency_symbol: '€',
-      typical_stack_cost: '€1,200/month',
-      hero_proof: 'ISO 9001 · Swedac · Personalliggare · €299/month flat',
-      dms_replace_title: 'Replacing Winassist or Automaster?',
-      competitors_price_range: '€500–2,000/mo',
-      hero_h1: 'Din verkstad.<br><em>Helt operativ.</em>',
-      hero_sub: 'Ersätt ditt DMS, CRM, kvalitetssystem och efterlevnadsverktyg med en plattform.',
-      nav_cta: 'Starta driftsättning',
-      stack_items: [
-        { system: 'Winassist / Automaster', category: 'DMS',        cost: '€600/mo' },
-        { system: 'Fortnox',               category: 'Accounting',  cost: '€150/mo' },
-        { system: 'Lime CRM',              category: 'CRM',         cost: '€200/mo' },
-        { system: 'Qnova / Bizzmine',      category: 'ISO/Quality', cost: '€150/mo' },
-        { system: 'BokaDirekt / TimeCenter', category: 'Booking',   cost: '€100/mo' },
-      ],
-    },
-    no: {
-      flag: '🇳🇴', region_label: 'Norwegian workshop',
-      currency_symbol: '€',
-      typical_stack_cost: '€1,150/month',
-      hero_proof: 'ISO 9001 · Compliant · Vipps ready · €299/month flat',
-      dms_replace_title: 'Replacing Automaster or CDK?',
-      competitors_price_range: '€500–2,000/mo',
-      hero_h1: 'Ditt verksted.<br><em>Fullt operativt.</em>',
-      hero_sub: 'Erstatt ditt DMS, CRM, kvalitetssystem og overholdelsesverktøy med én plattform.',
-      nav_cta: 'Start utrulling',
-      stack_items: [
-        { system: 'Automaster / CDK',  category: 'DMS',        cost: '€600/mo' },
-        { system: 'Tripletex',         category: 'Accounting', cost: '€120/mo' },
-        { system: 'SuperOffice',       category: 'CRM',        cost: '€200/mo' },
-        { system: 'Quality tools',     category: 'ISO/Quality', cost: '€150/mo' },
-        { system: 'Booking system',    category: 'Booking',    cost: '€80/mo'  },
-      ],
-    },
-    de: {
-      flag: '🇩🇪', region_label: 'German workshop',
-      currency_symbol: '€',
-      typical_stack_cost: '€1,400/month',
-      hero_proof: 'ISO 9001 · DSGVO · DATEV-Integration · €299/month',
-      dms_replace_title: 'Replacing Autoline or CDK?',
-      competitors_price_range: '€600–2,500/mo',
-      hero_h1: 'Ihre Werkstatt.<br><em>Vollständig operativ.</em>',
-      hero_sub: 'Ersetzen Sie Ihr DMS, CRM, Qualitätssystem und Compliance-Tools durch eine Plattform.',
-      nav_cta: 'Deployment starten',
-      stack_items: [
-        { system: 'Autoline / CDK',    category: 'DMS',        cost: '€700/mo' },
-        { system: 'DATEV',             category: 'Accounting', cost: '€200/mo' },
-        { system: 'HubSpot',           category: 'CRM',        cost: '€250/mo' },
-        { system: 'Babtec / ConSense', category: 'ISO/Quality', cost: '€150/mo' },
-        { system: 'Bookingkit',        category: 'Booking',    cost: '€100/mo' },
-      ],
-    },
-    fr: {
-      flag: '🇫🇷', region_label: 'French workshop',
-      currency_symbol: '€',
-      typical_stack_cost: '€1,250/month',
-      hero_proof: 'ISO 9001 · RGPD · Stripe · €299/month',
-      dms_replace_title: 'Replacing CDK?',
-      competitors_price_range: '€500–2,200/mo',
-      hero_h1: 'Votre atelier.<br><em>Pleinement opérationnel.</em>',
-      hero_sub: 'Remplacez votre DMS, CRM, système qualité et outils conformité par une seule plateforme.',
-      nav_cta: 'Démarrer le déploiement',
-      stack_items: [
-        { system: 'CDK / Icar',    category: 'DMS',        cost: '€600/mo' },
-        { system: 'Sage / Cegid',  category: 'Accounting', cost: '€200/mo' },
-        { system: 'Salesforce',    category: 'CRM',        cost: '€250/mo' },
-        { system: 'Qualios',       category: 'ISO/Quality', cost: '€150/mo' },
-        { system: 'SimplyBook',    category: 'Booking',    cost: '€50/mo'  },
-      ],
-    },
-    en: {
-      flag: '🌍', region_label: 'workshop',
-      currency_symbol: '€',
-      typical_stack_cost: '€1,100/month',
-      hero_proof: 'ISO 9001 · GDPR · AWS EU · €299/month flat',
-      dms_replace_title: 'Replacing Keyloop or CDK?',
-      competitors_price_range: '€500–2,000/mo',
-      hero_h1: 'Your workshop.<br><em>Fully operational.</em>',
-      hero_sub: 'Replace your DMS, CRM, quality system, and compliance tools with one execution platform.',
-      nav_cta: 'Start deployment',
-      stack_items: [
-        { system: 'Keyloop / CDK',           category: 'DMS',        cost: '€600/mo' },
-        { system: 'QuickBooks / Xero',        category: 'Accounting', cost: '€150/mo' },
-        { system: 'HubSpot / Salesforce',     category: 'CRM',        cost: '€200/mo' },
-        { system: 'Qualio / MasterControl',   category: 'ISO/Quality', cost: '€100/mo' },
-        { system: 'Calendly / Acuity',        category: 'Booking',    cost: '€50/mo'  },
-      ],
-    },
-    nl: {
-      flag: '🇳🇱', region_label: 'Dutch workshop',
-      currency_symbol: '€',
-      typical_stack_cost: '€1,150/month',
-      hero_proof: 'ISO 9001 · AVG/GDPR · AWS EU · €299/month',
-      dms_replace_title: 'Replacing CDK or Autoline?',
-      competitors_price_range: '€500–2,000/mo',
-      hero_h1: 'Uw werkplaats.<br><em>Volledig operationeel.</em>',
-      hero_sub: 'Vervang uw DMS, CRM, kwaliteitssysteem en compliance-tools door één platform.',
-      nav_cta: 'Implementatie starten',
-      stack_items: [
-        { system: 'CDK / Autoline',   category: 'DMS',        cost: '€580/mo' },
-        { system: 'Exact Online',     category: 'Accounting', cost: '€150/mo' },
-        { system: 'HubSpot',          category: 'CRM',        cost: '€200/mo' },
-        { system: 'Quality tools',    category: 'ISO/Quality', cost: '€120/mo' },
-        { system: 'Booking system',   category: 'Booking',    cost: '€100/mo' },
-      ],
-    },
-    da: {
-      flag: '🇩🇰', region_label: 'Danish workshop',
-      currency_symbol: 'DKK',
-      typical_stack_cost: '€1,100/month',
-      hero_proof: 'ISO 9001 · GDPR · AWS EU · €299/month',
-      dms_replace_title: 'Replacing Automaster or CDK?',
-      competitors_price_range: '€500–2,000/mo',
-      hero_h1: 'Dit værksted.<br><em>Fuldt operationelt.</em>',
-      hero_sub: 'Erstat dit DMS, CRM, kvalitetssystem og compliance-værktøjer med én platform.',
-      nav_cta: 'Start implementering',
-      stack_items: [
-        { system: 'Automaster / CDK', category: 'DMS',        cost: '€580/mo' },
-        { system: 'e-conomic',        category: 'Accounting', cost: '€120/mo' },
-        { system: 'SuperOffice',      category: 'CRM',        cost: '€180/mo' },
-        { system: 'Quality tools',    category: 'ISO/Quality', cost: '€120/mo' },
-        { system: 'Booking system',   category: 'Booking',    cost: '€100/mo' },
-      ],
-    },
-    fi: {
-      flag: '🇫🇮', region_label: 'Finnish workshop',
-      currency_symbol: '€',
-      typical_stack_cost: '€1,050/month',
-      hero_proof: 'ISO 9001 · GDPR · AWS EU · €299/month',
-      dms_replace_title: 'Replacing Automaster?',
-      competitors_price_range: '€400–1,800/mo',
-      hero_h1: 'Korjaamosi.<br><em>Täysin toiminnassa.</em>',
-      hero_sub: 'Korvaa DMS, CRM, laadunhallintajärjestelmä ja vaatimustenmukaisuustyökalut yhdellä alustalla.',
-      nav_cta: 'Aloita käyttöönotto',
-      stack_items: [
-        { system: 'Automaster / Winassist',  category: 'DMS',        cost: '€540/mo' },
-        { system: 'Procountor / Netvisor',   category: 'Accounting', cost: '€130/mo' },
-        { system: 'Pipedrive',               category: 'CRM',        cost: '€160/mo' },
-        { system: 'Quality tools',           category: 'ISO/Quality', cost: '€120/mo' },
-        { system: 'Booking system',          category: 'Booking',    cost: '€100/mo' },
-      ],
-    },
+    sv: { flag: '🇸🇪', region_label: 'Swedish workshop', currency_symbol: '€', typical_stack_cost: '€1,200/month', hero_proof: 'ISO 9001 · Swedac · Personalliggare · €299/month flat', dms_replace_title: 'Replacing Winassist or Automaster?', competitors_price_range: '€500–2,000/mo', stack_items: [ { system: 'Winassist / Automaster', category: 'DMS', cost: '€600/mo' }, { system: 'Fortnox', category: 'Accounting', cost: '€150/mo' }, { system: 'Lime CRM', category: 'CRM', cost: '€200/mo' }, { system: 'Qnova / Bizzmine', category: 'ISO/Quality', cost: '€150/mo' }, { system: 'BokaDirekt / TimeCenter', category: 'Booking', cost: '€100/mo' } ] },
+    no: { flag: '🇳🇴', region_label: 'Norwegian workshop', currency_symbol: '€', typical_stack_cost: '€1,150/month', hero_proof: 'ISO 9001 · Compliant · Vipps ready · €299/month flat', dms_replace_title: 'Replacing Automaster or CDK?', competitors_price_range: '€500–2,000/mo', stack_items: [ { system: 'Automaster / CDK', category: 'DMS', cost: '€600/mo' }, { system: 'Tripletex', category: 'Accounting', cost: '€120/mo' }, { system: 'SuperOffice', category: 'CRM', cost: '€200/mo' }, { system: 'Quality tools', category: 'ISO/Quality', cost: '€150/mo' }, { system: 'Booking system', category: 'Booking', cost: '€80/mo' } ] },
+    de: { flag: '🇩🇪', region_label: 'German workshop', currency_symbol: '€', typical_stack_cost: '€1,400/month', hero_proof: 'ISO 9001 · DSGVO · DATEV-Integration · €299/month', dms_replace_title: 'Replacing Autoline or CDK?', competitors_price_range: '€600–2,500/mo', stack_items: [ { system: 'Autoline / CDK', category: 'DMS', cost: '€700/mo' }, { system: 'DATEV', category: 'Accounting', cost: '€200/mo' }, { system: 'HubSpot', category: 'CRM', cost: '€250/mo' }, { system: 'Babtec / ConSense', category: 'ISO/Quality', cost: '€150/mo' }, { system: 'Bookingkit', category: 'Booking', cost: '€100/mo' } ] },
+    fr: { flag: '🇫🇷', region_label: 'French workshop', currency_symbol: '€', typical_stack_cost: '€1,250/month', hero_proof: 'ISO 9001 · RGPD · Stripe · €299/month', dms_replace_title: 'Replacing CDK?', competitors_price_range: '€500–2,200/mo', stack_items: [ { system: 'CDK / Icar', category: 'DMS', cost: '€600/mo' }, { system: 'Sage / Cegid', category: 'Accounting', cost: '€200/mo' }, { system: 'Salesforce', category: 'CRM', cost: '€250/mo' }, { system: 'Qualios', category: 'ISO/Quality', cost: '€150/mo' }, { system: 'SimplyBook', category: 'Booking', cost: '€50/mo' } ] },
+    en: { flag: '🌍', region_label: 'workshop', currency_symbol: '€', typical_stack_cost: '€1,100/month', hero_proof: 'ISO 9001 · GDPR · AWS EU · €299/month flat', dms_replace_title: 'Replacing Keyloop or CDK?', competitors_price_range: '€500–2,000/mo', stack_items: [ { system: 'Keyloop / CDK', category: 'DMS', cost: '€600/mo' }, { system: 'QuickBooks / Xero', category: 'Accounting', cost: '€150/mo' }, { system: 'HubSpot / Salesforce', category: 'CRM', cost: '€200/mo' }, { system: 'Qualio / MasterControl', category: 'ISO/Quality', cost: '€100/mo' }, { system: 'Calendly / Acuity', category: 'Booking', cost: '€50/mo' } ] },
+    nl: { flag: '🇳🇱', region_label: 'Dutch workshop', currency_symbol: '€', typical_stack_cost: '€1,150/month', hero_proof: 'ISO 9001 · AVG/GDPR · AWS EU · €299/month', dms_replace_title: 'Replacing CDK or Autoline?', competitors_price_range: '€500–2,000/mo', stack_items: [ { system: 'CDK / Autoline', category: 'DMS', cost: '€580/mo' }, { system: 'Exact Online', category: 'Accounting', cost: '€150/mo' }, { system: 'HubSpot', category: 'CRM', cost: '€200/mo' }, { system: 'Quality tools', category: 'ISO/Quality', cost: '€120/mo' }, { system: 'Booking system', category: 'Booking', cost: '€100/mo' } ] },
+    da: { flag: '🇩🇰', region_label: 'Danish workshop', currency_symbol: 'DKK', typical_stack_cost: '€1,100/month', hero_proof: 'ISO 9001 · GDPR · AWS EU · €299/month', dms_replace_title: 'Replacing Automaster or CDK?', competitors_price_range: '€500–2,000/mo', stack_items: [ { system: 'Automaster / CDK', category: 'DMS', cost: '€580/mo' }, { system: 'e-conomic', category: 'Accounting', cost: '€120/mo' }, { system: 'SuperOffice', category: 'CRM', cost: '€180/mo' }, { system: 'Quality tools', category: 'ISO/Quality', cost: '€120/mo' }, { system: 'Booking system', category: 'Booking', cost: '€100/mo' } ] },
+    fi: { flag: '🇫🇮', region_label: 'Finnish workshop', currency_symbol: '€', typical_stack_cost: '€1,050/month', hero_proof: 'ISO 9001 · GDPR · AWS EU · €299/month', dms_replace_title: 'Replacing Automaster?', competitors_price_range: '€400–1,800/mo', stack_items: [ { system: 'Automaster / Winassist', category: 'DMS', cost: '€540/mo' }, { system: 'Procountor / Netvisor', category: 'Accounting', cost: '€130/mo' }, { system: 'Pipedrive', category: 'CRM', cost: '€160/mo' }, { system: 'Quality tools', category: 'ISO/Quality', cost: '€120/mo' }, { system: 'Booking system', category: 'Booking', cost: '€100/mo' } ] },
   };
+
+  // ── Apply i18n ────────────────────────────────────────────────────────
+  function applyI18n(locale) {
+    const lc = T[locale] || T.en;
+    // Text elements
+    document.querySelectorAll('[data-i18n]').forEach(function(el) {
+      var key = el.dataset.i18n;
+      el.textContent = (lc[key] !== undefined) ? lc[key] : (T.en[key] || '');
+    });
+    // HTML elements (headings with <br>, <em>, <span>)
+    document.querySelectorAll('[data-i18n-html]').forEach(function(el) {
+      var key = el.dataset.i18nHtml;
+      el.innerHTML = (lc[key] !== undefined) ? lc[key] : (T.en[key] || '');
+    });
+  }
+
+  // ── Apply geo content ─────────────────────────────────────────────────
+  function applyGeo(locale) {
+    const lc = LOCALE_CONTENT[locale] || LOCALE_CONTENT.en;
+    const tl = T[locale] || T.en;
+    const region = LOCALE_TO_REGION[locale] || 'global';
+    const sys = GLOBAL_SYSTEMS[region] || GLOBAL_SYSTEMS.global;
+
+    const set = function(attr, val) {
+      document.querySelectorAll('[' + attr + ']').forEach(function(el) { el.textContent = val; });
+    };
+    set('data-geo-dms', sys.dms.slice(0,3).join(' / '));
+    set('data-geo-accounting', sys.accounting.slice(0,2).join(' / '));
+    set('data-geo-crm', sys.crm.slice(0,2).join(' / '));
+    set('data-geo-erp', sys.erp.slice(0,2).join(' / '));
+    set('data-geo-hr', sys.hr.slice(0,2).join(' / '));
+    set('data-geo-iso', sys.iso.slice(0,2).join(' / '));
+    set('data-geo-booking', sys.booking.slice(0,2).join(' / '));
+    set('data-geo-payments', sys.payments.slice(0,2).join(' / '));
+    set('data-geo-region', lc.flag + ' Typical ' + lc.region_label);
+    set('data-geo-stack-cost', lc.typical_stack_cost);
+    set('data-geo-hero-proof', lc.hero_proof);
+    set('data-geo-dms-replace-title', lc.dms_replace_title);
+    set('data-geo-competitors-price', lc.competitors_price_range);
+
+    // Stack items table
+    const container = document.getElementById('geo-stack-items');
+    if (container && lc.stack_items) {
+      const perMonthBadge = tl.cost_per_month_badge || 'per month';
+      const rows = lc.stack_items.map(function(item) {
+        return '<div style="display:grid;grid-template-columns:1fr 100px 90px;gap:12px;align-items:center;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.05);">' +
+          '<div><div style="font-size:14px;font-weight:500;color:#fff">' + item.system + '</div>' +
+          '<div style="font-size:11px;color:#52525B;margin-top:2px;text-transform:uppercase;letter-spacing:.05em">' + item.category + '</div></div>' +
+          '<div style="font-size:14px;color:#A1A1AA;text-align:right">' + item.cost + '</div>' +
+          '<div style="text-align:right"><span style="font-size:11px;color:#FF3B30;background:rgba(255,59,48,.1);padding:2px 8px;border-radius:980px;font-weight:600">' + perMonthBadge + '</span></div>' +
+          '</div>';
+      }).join('');
+      const totalLabel = tl.cost_total_label || 'Total current stack';
+      const vsLabel = tl.cost_vs_label || 'vs pixdrift';
+      const higherText = tl.cost_higher || '3–5× higher cost than pixdrift';
+      const total = '<div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:20px;background:rgba(255,59,48,.04);border-top:1px solid rgba(255,59,48,.2);">' +
+        '<div><div style="font-size:13px;font-weight:600;color:#A1A1AA;text-transform:uppercase;letter-spacing:.06em">' + totalLabel + '</div>' +
+        '<div style="margin-top:6px"><span style="font-size:12px;font-weight:600;color:#FF3B30;background:rgba(255,59,48,.12);padding:3px 10px;border-radius:980px">' + higherText + '</span></div></div>' +
+        '<div style="text-align:right"><div style="font-size:28px;font-weight:700;color:#FF3B30;letter-spacing:-1px">' + lc.typical_stack_cost + '</div>' +
+        '<div style="font-size:13px;color:#52525B;margin-top:2px">' + vsLabel + ' <strong style="color:#6366F1">€299/month</strong></div></div></div>';
+      container.innerHTML = rows + total;
+    }
+
+    ['dms','accounting','crm','erp','hr','iso','booking','payments'].forEach(function(cat) {
+      document.querySelectorAll('[data-geo-module="'+cat+'"]').forEach(function(el) {
+        el.textContent = (sys[cat] || []).slice(0,3).join(', ');
+      });
+    });
+  }
 
   // ── Detect locale ─────────────────────────────────────────────────────
   function detectLocale() {
     const urlParam = new URLSearchParams(window.location.search).get('lang');
-    if (urlParam && LOCALE_CONTENT[urlParam]) return urlParam;
+    if (urlParam && T[urlParam]) return urlParam;
     const stored = localStorage.getItem('pxd_locale');
-    if (stored && LOCALE_CONTENT[stored]) return stored;
+    if (stored && T[stored]) return stored;
     const bl = (navigator.language || navigator.languages?.[0] || 'en').toLowerCase().split('-')[0];
     const knownLocales = ['sv', 'no', 'nb', 'nn', 'da', 'fi', 'de', 'at', 'fr', 'nl'];
     if (bl === 'nb' || bl === 'nn') return 'no';
-    if (knownLocales.includes(bl) && LOCALE_CONTENT[bl]) return bl;
+    if (knownLocales.includes(bl) && T[bl]) return bl;
     return 'en';
   }
 
-  // ── Apply content ──────────────────────────────────────────────────────
-  function apply(locale) {
-    const lc = LOCALE_CONTENT[locale] || LOCALE_CONTENT.en;
-    const region = LOCALE_TO_REGION[locale] || 'global';
-    const sys = GLOBAL_SYSTEMS[region] || GLOBAL_SYSTEMS.global;
-
-    // Simple text replacements
-    const set = (attr, val) => document.querySelectorAll('[' + attr + ']').forEach(el => el.textContent = val);
-    set('data-geo-dms',               sys.dms.slice(0,3).join(' / '));
-    set('data-geo-accounting',        sys.accounting.slice(0,2).join(' / '));
-    set('data-geo-crm',               sys.crm.slice(0,2).join(' / '));
-    set('data-geo-erp',               sys.erp.slice(0,2).join(' / '));
-    set('data-geo-hr',                sys.hr.slice(0,2).join(' / '));
-    set('data-geo-iso',               sys.iso.slice(0,2).join(' / '));
-    set('data-geo-booking',           sys.booking.slice(0,2).join(' / '));
-    set('data-geo-payments',          sys.payments.slice(0,2).join(' / '));
-    set('data-geo-region',            lc.flag + ' Typical ' + lc.region_label);
-    set('data-geo-stack-cost',        lc.typical_stack_cost);
-    set('data-geo-hero-proof',        lc.hero_proof);
-    set('data-geo-dms-replace-title', lc.dms_replace_title);
-    set('data-geo-competitors-price', lc.competitors_price_range);
-
-    // Hero headline
-    const h1El = document.querySelector('h1');
-    if (h1El && lc.hero_h1) h1El.innerHTML = lc.hero_h1 + '<br><span style="font-size:0.55em;color:var(--text-2);font-weight:400;letter-spacing:-0.5px">Running on pixdrift.</span>';
-
-    // Hero subtext
-    const subEl = document.querySelector('.hero-sub');
-    if (subEl && lc.hero_sub) subEl.textContent = lc.hero_sub;
-
-    // Nav CTA
-    document.querySelectorAll('.btn-nav').forEach(el => {
-      if (lc.nav_cta) el.textContent = lc.nav_cta;
-    });
-
-    // Stack items table
-    const container = document.getElementById('geo-stack-items');
-    if (container) {
-      const rows = lc.stack_items.map(item => `
-        <div style="display:grid;grid-template-columns:1fr 100px 90px;gap:12px;align-items:center;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.05);">
-          <div>
-            <div style="font-size:14px;font-weight:500;color:#fff">${item.system}</div>
-            <div style="font-size:11px;color:#52525B;margin-top:2px;text-transform:uppercase;letter-spacing:.05em">${item.category}</div>
-          </div>
-          <div style="font-size:14px;color:#A1A1AA;text-align:right">${item.cost}</div>
-          <div style="text-align:right"><span style="font-size:11px;color:#FF3B30;background:rgba(255,59,48,.1);padding:2px 8px;border-radius:980px;font-weight:600">per month</span></div>
-        </div>`).join('');
-
-      const total = `
-        <div style="display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:20px;background:rgba(255,59,48,.04);border-top:1px solid rgba(255,59,48,.2);">
-          <div>
-            <div style="font-size:13px;font-weight:600;color:#A1A1AA;text-transform:uppercase;letter-spacing:.06em">Total current stack</div>
-            <div style="margin-top:6px"><span style="font-size:12px;font-weight:600;color:#FF3B30;background:rgba(255,59,48,.12);padding:3px 10px;border-radius:980px">3–5× higher cost than pixdrift</span></div>
-          </div>
-          <div style="text-align:right">
-            <div style="font-size:28px;font-weight:700;color:#FF3B30;letter-spacing:-1px">${lc.typical_stack_cost}</div>
-            <div style="font-size:13px;color:#52525B;margin-top:2px">vs pixdrift <strong style="color:#6366F1">€299/month</strong></div>
-          </div>
-        </div>`;
-
-      container.innerHTML = rows + total;
-    }
-
-    // Module cards — geo-aware system names per category
-    ['dms','accounting','crm','erp','hr','iso','booking','payments'].forEach(cat => {
-      document.querySelectorAll('[data-geo-module="'+cat+'"]').forEach(el => {
-        el.textContent = (sys[cat] || []).slice(0,3).join(', ');
+  // ── Language switcher ─────────────────────────────────────────────────
+  function setupSwitcher() {
+    document.querySelectorAll('[data-lang]').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const lang = btn.dataset.lang;
+        localStorage.setItem('pxd_locale', lang);
+        applyI18n(lang);
+        applyGeo(lang);
+        updateSwitcher(lang);
       });
     });
+  }
 
-    // Language toggle active state
-    document.querySelectorAll('[data-lang]').forEach(btn => {
+  function updateSwitcher(locale) {
+    document.querySelectorAll('[data-lang]').forEach(function(btn) {
       const isActive = btn.dataset.lang === locale;
       btn.classList.toggle('active', isActive);
       btn.style.color = isActive ? '#ffffff' : '#52525B';
@@ -1282,25 +1551,19 @@
     });
   }
 
-  // ── Language switcher ──────────────────────────────────────────────────
-  function setupSwitcher() {
-    document.querySelectorAll('[data-lang]').forEach(btn => {
-      btn.addEventListener('click', e => {
-        e.preventDefault();
-        const lang = btn.dataset.lang;
-        localStorage.setItem('pxd_locale', lang);
-        apply(lang);
-      });
-    });
+  // ── Boot ──────────────────────────────────────────────────────────────
+  function boot() {
+    const locale = detectLocale();
+    applyI18n(locale);
+    applyGeo(locale);
+    updateSwitcher(locale);
+    setupSwitcher();
   }
 
-  // ── Boot ───────────────────────────────────────────────────────────────
-  const locale = detectLocale();
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => { apply(locale); setupSwitcher(); });
+    document.addEventListener('DOMContentLoaded', boot);
   } else {
-    apply(locale);
-    setupSwitcher();
+    boot();
   }
 
 })();
