@@ -1,6 +1,7 @@
 # =============================================
 # Hypbit OMS — Dockerfile
 # Node 20 Alpine, kör via tsx (TypeScript direct)
+# Uses server/ package with all backend dependencies
 # =============================================
 
 FROM node:20-alpine AS base
@@ -10,16 +11,19 @@ RUN addgroup -g 1001 -S nodejs && adduser -S hypbit -u 1001
 
 WORKDIR /app
 
-# Kopiera package-filer först (layer cache)
-COPY package.json package-lock.json ./
+# Kopiera server/package.json (har express, cors, etc.)
+COPY server/package.json ./package.json
+
+# Skapa package-lock från server om den finns, annars låt npm skapa
+COPY package-lock.json ./
 
 # Installera produktionsberoenden + tsx (behövs i runtime)
-RUN npm ci --include=dev && npm cache clean --force
+RUN npm install --include=dev && npm cache clean --force
 
-# Kopiera källkod
-COPY tsconfig.json ./
-COPY src/ ./src/
-COPY trigger/ ./trigger/
+# Kopiera källkod från server/
+COPY server/tsconfig.json ./tsconfig.json
+COPY server/src/ ./src/
+COPY server/trigger/ ./trigger/
 
 # Äg filerna av rätt användare
 RUN chown -R hypbit:nodejs /app
@@ -35,4 +39,3 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
 
 # Startkommando
 CMD ["npx", "tsx", "src/index.ts"]
-# CORS fix trigger Sun Mar 22 02:46:47 CET 2026

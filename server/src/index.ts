@@ -150,7 +150,7 @@ app.use(
       // Allow requests with no origin (server-to-server, curl, Postman)
       if (!origin) return callback(null, true);
       if (allowedOrigins.includes("*") || allowedOrigins.includes(origin)) {
-        return callback(null, true);
+        return callback(null, origin); // returnera specifik origin, inte true
       }
       callback(new Error(`CORS: Origin '${origin}' not allowed`));
     },
