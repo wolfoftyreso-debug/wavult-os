@@ -2642,7 +2642,7 @@ export default function App({ user: propUser, onLogout }: { user?: any; onLogout
             {view === "consumables"  && <ConsumablesModule />}
             {view === "people"       && <PeopleOSModule D={D as any} />}
             {view === "external-audits" && <ExternalAuditModule orgId={D.user?.id} />}
-            {view === "notifications" && <NotificationsView />}
+            {view === "notifications" && <NotificationsView onNavigate={(v, _entityId) => setView(v)} />}
             {view === "devops" && <DevOpsHub />}
             {view === "account-safety" && <AccountSafetyModule orgId={D.user?.id} />}
             {view === "company" && <CompanyComplianceModule />}
