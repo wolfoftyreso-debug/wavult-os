@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Approval Engine — Video-to-Approval in 60 Seconds | pixdrift</title>
+  <meta name="description" content="Approval Engine lets workshop technicians capture a 30-second video, generate a customer-friendly AI explanation with price estimate, and deliver SMS approval — one tap, no login, work continues without delay." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://pixdrift.com/features/approval-engine" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://pixdrift.com/features/approval-engine" />
+  <meta property="og:title" content="Approval Engine — From finding to approval in under 60 seconds." />
+  <meta property="og:description" content="Video capture → AI translation → SMS delivery → 1-tap approval. No customer login required. Full audit trail for warranty and legal purposes." />
+  <meta property="og:image" content="https://pixdrift.com/pixdrift-og.png" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="theme-color" content="#000000" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "name": "pixdrift Approval Engine",
+        "applicationCategory": "BusinessApplication",
+        "url": "https://pixdrift.com/features/approval-engine",
+        "description": "Workshop approval workflow: video capture, AI translation to plain language, SMS delivery, one-tap customer approval — full audit trail included."
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Does the customer need to create an account to approve?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The customer receives an SMS with a tokenized link. They tap the link, see the video and explanation, and tap Approve, Reject, or Call me. No account, no app, no login. The token expires after 72 hours or when the approval decision is made."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does the AI translation work?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The technician adds a brief technical note alongside the video. Our AI converts this into plain, non-jargon language appropriate for the customer — including a clear price estimate, what happens if they decline, and what happens if they approve. The technician reviews the AI output before it's sent."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is the approval legally binding?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. The approval record includes: the customer's phone number, timestamp of approval, IP address, the exact content approved (video, description, price), and a cryptographic signature of the complete record. This is sufficient evidence in Swedish and EU consumer law for additional work authorization."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can we white-label the approval page for our workshop?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Every workshop gets a customizable approval page with their logo, brand colors, and contact details. The customer sees their workshop's branding — not pixdrift's. This is included on all Growth and Enterprise plans."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What happens to the work order when a customer approves?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "On approval, the work order in DMS advances automatically to the next stage (typically 'Approved — proceed with work'). The technician is notified immediately. The approval is logged as an immutable record linked to the work order, vehicle, and customer."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    img { display: block; max-width: 100%; }
+    a { cursor: pointer; }
+    ul { list-style: none; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0a0a0f;
+      color: #f5f5f7;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+      background: rgba(10,10,15,0.72);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 0.5px solid rgba(255,255,255,0.1);
+    }
+    .nav-logo { color: #f5f5f7; font-size: 18px; font-weight: 700; text-decoration: none; letter-spacing: -0.03em; }
+    .nav-links { display: flex; gap: 28px; align-items: center; }
+    .nav-links a { color: rgba(245,245,247,0.75); font-size: 12px; text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: #f5f5f7; }
+    .nav-actions { display: flex; gap: 16px; align-items: center; }
+    .nav-actions a:first-child { color: rgba(245,245,247,0.75); font-size: 12px; text-decoration: none; transition: color 0.2s; }
+    .nav-cta { background: #fff; color: #1d1d1f !important; padding: 6px 14px; border-radius: 980px; font-size: 12px !important; font-weight: 500; text-decoration: none; transition: opacity 0.2s; }
+    .nav-cta:hover { opacity: 0.88; }
+
+    .breadcrumb { padding: 68px 24px 0; max-width: 860px; margin: 0 auto; }
+    .breadcrumb-inner { display: flex; align-items: center; gap: 8px; font-size: 12px; color: rgba(245,245,247,0.35); }
+    .breadcrumb-inner a { color: rgba(245,245,247,0.35); text-decoration: none; transition: color 0.2s; }
+    .breadcrumb-inner a:hover { color: rgba(245,245,247,0.6); }
+    .breadcrumb-inner .current { color: rgba(245,245,247,0.65); }
+
+    .module-hero { padding: 40px 24px 72px; max-width: 860px; margin: 0 auto; }
+    .module-category-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(52,199,89,0.1);
+      border: 0.5px solid rgba(52,199,89,0.3);
+      border-radius: 980px;
+      padding: 5px 12px;
+      margin-bottom: 20px;
+    }
+    .module-category-label .icon { font-size: 14px; }
+    .module-category-label .label { font-size: 11px; font-weight: 600; color: #34c759; letter-spacing: 0.06em; text-transform: uppercase; }
+    .module-hero h1 {
+      font-size: clamp(32px, 5vw, 60px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      margin-bottom: 16px;
+      background: linear-gradient(180deg, #ffffff 0%, rgba(255,255,255,0.6) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .module-hero .hero-sub { font-size: 18px; color: rgba(245,245,247,0.55); line-height: 1.65; max-width: 680px; margin-bottom: 32px; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-primary { background: #34c759; color: #fff; padding: 10px 22px; border-radius: 980px; font-size: 14px; font-weight: 500; text-decoration: none; transition: background 0.2s; }
+    .btn-primary:hover { background: #28b04d; }
+    .btn-secondary { background: rgba(255,255,255,0.06); color: rgba(245,245,247,0.8); padding: 10px 22px; border-radius: 980px; font-size: 14px; font-weight: 500; text-decoration: none; border: 0.5px solid rgba(255,255,255,0.12); transition: background 0.2s; }
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+    .module-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: rgba(255,255,255,0.08); border-radius: 12px; overflow: hidden; max-width: 860px; margin: 0 auto 72px; }
+    .stat-item { background: rgba(255,255,255,0.02); padding: 20px 24px; }
+    .stat-value { font-size: 28px; font-weight: 700; letter-spacing: -0.04em; color: #f5f5f7; }
+    .stat-label { font-size: 12px; color: rgba(245,245,247,0.4); margin-top: 2px; }
+
+    section { padding: 64px 24px; max-width: 860px; margin: 0 auto; }
+    .section-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #34c759; margin-bottom: 12px; }
+    section h2 { font-size: clamp(24px, 3vw, 36px); font-weight: 700; letter-spacing: -0.03em; margin-bottom: 16px; color: #f5f5f7; }
+    section > p { font-size: 16px; color: rgba(245,245,247,0.6); line-height: 1.7; max-width: 680px; margin-bottom: 16px; }
+    .section-divider { border: none; border-top: 0.5px solid rgba(255,255,255,0.06); max-width: 860px; margin: 0 auto; }
+
+    /* FLOW DIAGRAM */
+    .flow-diagram {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      margin: 32px 0;
+      overflow-x: auto;
+    }
+    .flow-step {
+      flex: 1;
+      min-width: 140px;
+      background: rgba(255,255,255,0.02);
+      border: 0.5px solid rgba(255,255,255,0.07);
+      border-radius: 0;
+      padding: 20px 16px;
+      position: relative;
+      text-align: center;
+    }
+    .flow-step:first-child { border-radius: 12px 0 0 12px; }
+    .flow-step:last-child { border-radius: 0 12px 12px 0; border-right: 0.5px solid rgba(255,255,255,0.07); }
+    .flow-step + .flow-step { border-left: none; }
+    .flow-step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(52,199,89,0.15);
+      border: 0.5px solid rgba(52,199,89,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #34c759;
+      margin: 0 auto 10px;
+    }
+    .flow-step-icon { font-size: 24px; margin-bottom: 8px; }
+    .flow-step-label { font-size: 12px; font-weight: 600; color: #f5f5f7; margin-bottom: 4px; }
+    .flow-step-time { font-size: 10px; color: rgba(245,245,247,0.35); }
+    .flow-arrow {
+      display: flex;
+      align-items: center;
+      color: rgba(245,245,247,0.15);
+      font-size: 20px;
+      padding: 0 4px;
+      flex-shrink: 0;
+    }
+
+    .features-list { display: flex; flex-direction: column; gap: 2px; margin-top: 32px; }
+    .feature-block { background: rgba(255,255,255,0.02); border: 0.5px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 28px; transition: border-color 0.2s; }
+    .feature-block:hover { border-color: rgba(52,199,89,0.25); }
+    .feature-block-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 12px; }
+    .feature-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .feature-block h3 { font-size: 17px; font-weight: 600; letter-spacing: -0.02em; color: #f5f5f7; }
+    .feature-block p { font-size: 14px; color: rgba(245,245,247,0.55); line-height: 1.65; margin-bottom: 12px; }
+    .tech-note { display: flex; align-items: flex-start; gap: 8px; background: rgba(52,199,89,0.06); border: 0.5px solid rgba(52,199,89,0.18); border-radius: 8px; padding: 10px 14px; margin-top: 12px; }
+    .tech-note-label { font-size: 10px; font-weight: 700; color: #34c759; text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; padding-top: 1px; }
+    .tech-note p { font-size: 12px; color: rgba(134,239,172,0.75); margin-bottom: 0; line-height: 1.5; }
+
+    /* APPROVAL MOCKUP */
+    .approval-mockup {
+      background: rgba(255,255,255,0.03);
+      border: 0.5px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 32px;
+      margin: 24px 0;
+      max-width: 360px;
+    }
+    .mockup-workshop { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .mockup-logo { width: 40px; height: 40px; background: rgba(99,102,241,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .mockup-name { font-size: 14px; font-weight: 600; color: #f5f5f7; }
+    .mockup-sub { font-size: 11px; color: rgba(245,245,247,0.4); }
+    .mockup-video {
+      background: #111;
+      border-radius: 12px;
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      margin-bottom: 16px;
+      border: 0.5px solid rgba(255,255,255,0.06);
+    }
+    .mockup-title { font-size: 15px; font-weight: 600; color: #f5f5f7; margin-bottom: 6px; }
+    .mockup-desc { font-size: 13px; color: rgba(245,245,247,0.5); line-height: 1.5; margin-bottom: 16px; }
+    .mockup-price {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255,255,255,0.04);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 20px;
+    }
+    .mockup-price-label { font-size: 12px; color: rgba(245,245,247,0.4); }
+    .mockup-price-value { font-size: 16px; font-weight: 700; color: #f5f5f7; }
+    .mockup-buttons { display: flex; flex-direction: column; gap: 8px; }
+    .mockup-btn-approve { background: #34c759; color: #fff; border: none; border-radius: 10px; padding: 12px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
+    .mockup-btn-reject { background: rgba(255,69,58,0.12); color: #ff453a; border: 0.5px solid rgba(255,69,58,0.25); border-radius: 10px; padding: 12px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
+    .mockup-btn-call { background: rgba(255,255,255,0.06); color: rgba(245,245,247,0.7); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 12px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: inherit; }
+
+    .integrations-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 32px; }
+    .integration-row { display: flex; align-items: center; gap: 16px; background: rgba(255,255,255,0.02); border: 0.5px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 18px 24px; }
+    .integration-from { background: rgba(52,199,89,0.1); border: 0.5px solid rgba(52,199,89,0.25); border-radius: 8px; padding: 6px 12px; font-size: 12px; font-weight: 600; color: #34c759; white-space: nowrap; }
+    .integration-arrow { color: rgba(245,245,247,0.2); font-size: 18px; }
+    .integration-to { background: rgba(255,255,255,0.06); border-radius: 8px; padding: 6px 12px; font-size: 12px; font-weight: 500; color: rgba(245,245,247,0.7); white-space: nowrap; }
+    .integration-desc { font-size: 13px; color: rgba(245,245,247,0.4); flex: 1; }
+
+    .code-block { background: rgba(0,0,0,0.6); border: 0.5px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 20px 24px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; color: rgba(245,245,247,0.7); overflow-x: auto; margin: 12px 0; line-height: 1.7; }
+    .code-block .comment { color: rgba(245,245,247,0.25); }
+    .code-block .key { color: #a5b4fc; }
+    .code-block .string { color: #86efac; }
+    .code-block .number { color: #fdba74; }
+    .code-block .bool { color: #f9a8d4; }
+
+    .api-table { width: 100%; border-collapse: collapse; margin-top: 24px; }
+    .api-table th { text-align: left; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(245,245,247,0.35); padding: 8px 0; border-bottom: 0.5px solid rgba(255,255,255,0.08); }
+    .api-table td { padding: 12px 0; font-size: 13px; border-bottom: 0.5px solid rgba(255,255,255,0.04); vertical-align: top; }
+    .api-table td:first-child { font-family: 'SF Mono', 'Fira Code', monospace; color: #a5b4fc; padding-right: 24px; }
+    .api-table td:nth-child(2) { color: rgba(245,245,247,0.35); padding-right: 24px; font-size: 11px; white-space: nowrap; }
+    .api-table td:last-child { color: rgba(245,245,247,0.55); }
+    .method-tag { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; margin-right: 6px; }
+    .method-get { background: rgba(52,199,89,0.15); color: #34c759; }
+    .method-post { background: rgba(10,132,255,0.15); color: #0a84ff; }
+    .method-patch { background: rgba(255,149,0,0.15); color: #ff9500; }
+
+    .use-cases-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-top: 32px; }
+    .use-case-card { background: rgba(255,255,255,0.02); border: 0.5px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 24px; }
+    .use-case-industry { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(245,245,247,0.35); margin-bottom: 8px; }
+    .use-case-company { font-size: 15px; font-weight: 600; color: #f5f5f7; margin-bottom: 10px; }
+    .use-case-story { font-size: 13px; color: rgba(245,245,247,0.5); line-height: 1.6; }
+    .use-case-metric { margin-top: 16px; padding-top: 16px; border-top: 0.5px solid rgba(255,255,255,0.06); font-size: 13px; color: #34c759; font-weight: 500; }
+
+    .faq-list { margin-top: 32px; display: flex; flex-direction: column; gap: 2px; }
+    .faq-item { border: 0.5px solid rgba(255,255,255,0.07); border-radius: 10px; overflow: hidden; }
+    .faq-question { width: 100%; background: rgba(255,255,255,0.02); border: none; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; text-align: left; color: #f5f5f7; font-size: 15px; font-weight: 500; font-family: inherit; transition: background 0.2s; }
+    .faq-question:hover { background: rgba(255,255,255,0.04); }
+    .faq-chevron { font-size: 12px; color: rgba(245,245,247,0.3); transition: transform 0.3s; }
+    .faq-answer { display: none; padding: 0 24px 18px; font-size: 14px; color: rgba(245,245,247,0.55); line-height: 1.7; background: rgba(255,255,255,0.02); }
+    .faq-item.open .faq-answer { display: block; }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+
+    .cta-section { background: rgba(52,199,89,0.06); border: 0.5px solid rgba(52,199,89,0.18); border-radius: 16px; padding: 48px; text-align: center; max-width: 860px; margin: 0 auto 80px; }
+    .cta-section h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 12px; }
+    .cta-section p { font-size: 16px; color: rgba(245,245,247,0.55); margin-bottom: 28px; }
+    .cta-actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+
+    .feature-nav { display: flex; justify-content: space-between; align-items: center; padding: 24px; max-width: 860px; margin: 0 auto 48px; border-top: 0.5px solid rgba(255,255,255,0.06); }
+    .feature-nav a { font-size: 13px; color: rgba(245,245,247,0.5); text-decoration: none; transition: color 0.2s; }
+    .feature-nav a:hover { color: #f5f5f7; }
+    .feature-nav .center { color: rgba(245,245,247,0.35); font-size: 12px; }
+
+    footer { border-top: 0.5px solid rgba(255,255,255,0.06); padding: 32px 24px; }
+    .footer-inner { max-width: 860px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .footer-copy { font-size: 12px; color: rgba(245,245,247,0.3); }
+    .footer-legal { display: flex; gap: 16px; }
+    .footer-legal a { font-size: 12px; color: rgba(245,245,247,0.3); text-decoration: none; transition: color 0.2s; }
+    .footer-legal a:hover { color: rgba(245,245,247,0.6); }
+
+    /* SECURITY BADGE */
+    .security-badges { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+    .security-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.04);
+      border: 0.5px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: rgba(245,245,247,0.5);
+    }
+    .security-badge .badge-dot {
+      width: 6px;
+      height: 6px;
+      background: #34c759;
+      border-radius: 50%;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .module-stats { grid-template-columns: repeat(2, 1fr); }
+      .use-cases-grid { grid-template-columns: 1fr; }
+      .cta-section { padding: 32px 24px; }
+      .integration-row { flex-wrap: wrap; }
+      .flow-diagram { gap: 4px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">pixdrift</a>
+  <div class="nav-links">
+    <a href="/features/" class="active">Features</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/developers/">Developers</a>
+    <a href="/blog/">Blog</a>
+  </div>
+  <div class="nav-actions">
+    <a href="https://app.bc.pixdrift.com">Sign in</a>
+    <a href="/checkout.html" class="nav-cta">Get started</a>
+  </div>
+</nav>
+
+<div class="breadcrumb">
+  <div class="breadcrumb-inner">
+    <a href="/">pixdrift</a>
+    <span>›</span>
+    <a href="/features/">Features</a>
+    <span>›</span>
+    <span class="current">Approval Engine</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="module-hero">
+  <div class="module-category-label">
+    <span class="icon">✅</span>
+    <span class="label">Industry · Automotive</span>
+  </div>
+  <h1>From finding to approval<br>in under 60 seconds.</h1>
+  <p class="hero-sub">When a technician finds something unexpected, the old way is a phone call the customer might miss. pixdrift's Approval Engine lets the technician capture a 30-second video, generate a customer-friendly explanation with price estimate, and send an SMS link. The customer approves with one tap — no login required. Work continues without delay.</p>
+  <div class="hero-actions">
+    <a href="https://app.bc.pixdrift.com/demo" class="btn-primary">See it in action</a>
+    <a href="/checkout.html" class="btn-secondary">Start free trial</a>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="module-stats">
+  <div class="stat-item">
+    <div class="stat-value">&lt;60s</div>
+    <div class="stat-label">video to approval sent</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">0</div>
+    <div class="stat-label">customer logins required</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">3</div>
+    <div class="stat-label">customer choices only</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">100%</div>
+    <div class="stat-label">legally auditable</div>
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- WHAT IT IS -->
+<section class="what-it-is">
+  <div class="section-eyebrow">The problem it solves</div>
+  <h2>The phone call that stops everything.</h2>
+  <p>A technician is halfway through a service when they find a brake issue that needs customer authorization. Old process: write a note, tell the service advisor, call the customer, wait. Customer doesn't pick up. Leave a voicemail. Wait. The lift is occupied. Other jobs queue up.</p>
+  <p>This happens dozens of times a day across workshops of any size. Each approval delay costs between 30 minutes and 3 hours of productive time. And when the customer eventually calls back, the technician has moved on — someone needs to find the job, find the notes, re-explain everything.</p>
+  <p>Approval Engine eliminates the wait. The technician records a video showing exactly what they found. Adds a technical note. pixdrift's AI converts it to plain customer language. SMS goes out. Customer sees the video, reads the explanation, sees the price, and taps Approve. The work order advances. The technician gets a notification. All in under 60 seconds of the technician's time.</p>
+
+  <!-- FLOW -->
+  <div style="margin-top:32px;">
+    <div style="font-size:12px;color:rgba(245,245,247,0.4);margin-bottom:12px;font-weight:500;letter-spacing:0.04em;">THE FLOW</div>
+    <div class="flow-diagram">
+      <div class="flow-step">
+        <div class="flow-step-num">1</div>
+        <div class="flow-step-icon">📹</div>
+        <div class="flow-step-label">Capture</div>
+        <div class="flow-step-time">~30s</div>
+      </div>
+      <div class="flow-arrow">›</div>
+      <div class="flow-step">
+        <div class="flow-step-num">2</div>
+        <div class="flow-step-icon">🤖</div>
+        <div class="flow-step-label">AI translates</div>
+        <div class="flow-step-time">~10s</div>
+      </div>
+      <div class="flow-arrow">›</div>
+      <div class="flow-step">
+        <div class="flow-step-num">3</div>
+        <div class="flow-step-icon">📱</div>
+        <div class="flow-step-label">SMS sent</div>
+        <div class="flow-step-time">instant</div>
+      </div>
+      <div class="flow-arrow">›</div>
+      <div class="flow-step">
+        <div class="flow-step-num">4</div>
+        <div class="flow-step-icon">👆</div>
+        <div class="flow-step-label">Customer taps</div>
+        <div class="flow-step-time">avg. 4 min</div>
+      </div>
+      <div class="flow-arrow">›</div>
+      <div class="flow-step">
+        <div class="flow-step-num">5</div>
+        <div class="flow-step-icon">⚡</div>
+        <div class="flow-step-label">Work resumes</div>
+        <div class="flow-step-time">auto</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider" />
+
+<!-- CORE FEATURES -->
+<section class="core-features">
+  <div class="section-eyebrow">Core features</div>
+  <h2>What Approval Engine does.</h2>
+
+  <div class="features-list">
+
+    <!-- Video Capture -->
+    <div class="feature-block">
+      <div class="feature-block-header">
+        <div class="feature-icon" style="background:rgba(255,69,58,0.15);">📹</div>
+        <div>
+          <h3>1-Tap Video Capture, Auto-Linked to Work Order</h3>
+        </div>
+      </div>
+      <p>From the work order screen, the technician taps "Request Approval." The camera opens. They record up to 90 seconds showing exactly what they found — the worn brake pad, the cracked belt, the rust on the undercarriage. The video links to the work order automatically. No manual entry, no searching for the right job.</p>
+      <p>The technician adds a brief technical note: "Front brake pads at 2mm, recommended minimum 3mm. Needs replacement before next service." That's all they need to provide.</p>
+      <div class="tech-note">
+        <span class="tech-note-label">Technical</span>
+        <p>Video is captured via the device camera API and uploaded via chunked multipart to object storage. Processing pipeline: transcode to H.264 MP4 (720p, max 10MB) → content-addressed storage → linked to <code>work_order_id</code> via <code>approval_request</code> entity. Capture-to-upload time: &lt;30s on 4G.</p>
+      </div>
+    </div>
+
+    <!-- AI Translation -->
+    <div class="feature-block">
+      <div class="feature-block-header">
+        <div class="feature-icon" style="background:rgba(99,102,241,0.15);">🤖</div>
+        <div>
+          <h3>AI Translation: Technical Language → Plain Customer Language</h3>
+        </div>
+      </div>
+      <p>The technician's note goes through pixdrift's AI translation layer. Out comes something a customer can actually understand: "Your front brake pads are worn below the safe minimum. Replacing them now takes about 45 minutes and prevents brake failure. We recommend this before returning the car to you."</p>
+      <p>The AI also generates a clear explanation of consequences: what happens if approved (work is done today), what happens if declined (car returned with documented risk). This reduces customer anxiety and approval hesitation.</p>
+      <p>The technician reviews the AI output before it's sent. One tap to send if it looks right, or they can edit. Average review time: under 15 seconds.</p>
+      <div class="tech-note">
+        <span class="tech-note-label">Technical</span>
+        <p>Translation uses a fine-tuned language model prompted with: technician note, vehicle context (make, model, year, mileage), workshop's labor rate, and parts pricing from DMS inventory. Output is validated for: readability score, price accuracy against parts cost, and completion of required legal disclosures. Runs in &lt;5 seconds.</p>
+      </div>
+    </div>
+
+    <!-- SMS Delivery -->
+    <div class="feature-block">
+      <div class="feature-block-header">
+        <div class="feature-icon" style="background:rgba(255,214,10,0.15);">📱</div>
+        <div>
+          <h3>SMS with Tokenized Link — No Login for Customer</h3>
+        </div>
+      </div>
+      <p>The customer receives an SMS: "Hi Anna, Lindqvists found something during your service. Watch a short video from the technician and let us know how to proceed: [link]"</p>
+      <p>The link opens a mobile-optimized page. No login, no app, no account. The token in the URL is cryptographically tied to this specific approval request. It expires after 72 hours or immediately on decision.</p>
+
+      <div style="display:flex;justify-content:center;margin:24px 0;">
+        <div class="approval-mockup">
+          <div class="mockup-workshop">
+            <div class="mockup-logo">🔧</div>
+            <div>
+              <div class="mockup-name">Lindqvists Bilverkstad</div>
+              <div class="mockup-sub">Service approval request</div>
+            </div>
+          </div>
+          <div class="mockup-video">▶️</div>
+          <div class="mockup-title">Front brake pads need replacement</div>
+          <div class="mockup-desc">Your brake pads are worn below the safe minimum (2mm, recommended 3mm). Replacing them now takes about 45 minutes and prevents brake failure.</div>
+          <div class="mockup-price">
+            <span class="mockup-price-label">Estimated cost</span>
+            <span class="mockup-price-value">1 850 kr</span>
+          </div>
+          <div class="mockup-buttons">
+            <button class="mockup-btn-approve">✓ Approve — do the work</button>
+            <button class="mockup-btn-reject">✕ No thanks, return the car</button>
+            <button class="mockup-btn-call">📞 Call me to discuss</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tech-note">
+        <span class="tech-note-label">Technical</span>
+        <p>Approval tokens are UUID v4 values HMAC-signed with a per-organization secret. Token expiry is enforced server-side. The approval page URL pattern is <code>/a/{token}</code> and resolves to the workshop's white-label domain if configured. SMS delivery via Twilio with automatic fallback to backup provider on failure.</p>
+      </div>
+    </div>
+
+    <!-- Three Choices -->
+    <div class="feature-block">
+      <div class="feature-block-header">
+        <div class="feature-icon" style="background:rgba(52,199,89,0.15);">☑️</div>
+        <div>
+          <h3>Three Choices. Nothing More.</h3>
+        </div>
+      </div>
+      <p>Approve. Reject. Call me. That's it. Customers aren't asked to navigate a portal, fill a form, or make complex decisions. The simplicity is intentional — fewer options means faster decisions, higher approval rates, and less customer friction.</p>
+      <p>"Call me" logs the request and notifies the service advisor immediately that the customer wants to discuss. It's not a dead end — it's a tracked handoff to a human.</p>
+      <div class="tech-note">
+        <span class="tech-note-label">Technical</span>
+        <p>Each decision is recorded as an <code>approval_response</code> entity with: <code>decision</code> (APPROVED|REJECTED|CALL_REQUESTED), <code>timestamp</code>, <code>customer_ip</code>, <code>user_agent</code>, <code>token_hash</code>, and a SHA-256 hash of the entire approval content shown. This constitutes the legal record of consent.</p>
+      </div>
+    </div>
+
+    <!-- Automatic Work Order Advancement -->
+    <div class="feature-block">
+      <div class="feature-block-header">
+        <div class="feature-icon" style="background:rgba(10,132,255,0.15);">⚡</div>
+        <div>
+          <h3>Automatic Work Order Advancement on Approval</h3>
+        </div>
+      </div>
+      <p>When the customer approves, the work order in DMS advances to the next stage automatically. The technician receives a push notification on their device. If they've moved to another job, they get a clear queue showing the approved job is ready to proceed.</p>
+      <p>No service advisor needs to relay the message. No sticky note on the windshield. The system closes the loop.</p>
+      <div class="tech-note">
+        <span class="tech-note-label">Technical</span>
+        <p>Approval webhook fires a <code>approval.approved</code> event that triggers a work order stage transition via the DMS module API. Stage advancement is configurable per workshop — some advance to "In progress," others to "Awaiting parts." Push notifications delivered via APNs/FCM with fallback to SMS if app not installed.</p>
+      </div>
+    </div>
+
+    <!-- White-label -->
+    <div class="feature-block">
+      <div class="feature-block-header">
+        <div class="feature-icon" style="background:rgba(191,90,242,0.15);">🏷️</div>
+        <div>
+          <h3>White-Label Per Workshop</h3>
+        </div>
+      </div>
+      <p>Every workshop using Approval Engine gets their own branded approval experience. The customer sees the workshop's logo, name, and color scheme. The URL can be the workshop's own domain. pixdrift is invisible to the customer.</p>
+      <p>This matters for trust. A customer who receives a link that looks like their trusted workshop's website is far more likely to engage than one that goes to an unfamiliar third-party service.</p>
+      <div class="tech-note">
+        <span class="tech-note-label">Technical</span>
+        <p>White-label configuration: custom domain (CNAME to pixdrift CDN), logo upload (PNG/SVG, served from CDN), primary color token, workshop name and contact details. All approval pages are rendered server-side with workshop theme applied. Custom domain SSL is provisioned automatically via Let's Encrypt.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="section-divider" />
+
+<!-- INTEGRATIONS -->
+<section class="integrations-map">
+  <div class="section-eyebrow">Module integrations</div>
+  <h2>How Approval Engine connects to everything else.</h2>
+
+  <div class="integrations-grid">
+    <div class="integration-row">
+      <span class="integration-from">Approval: Approved</span>
+      <span class="integration-arrow">→</span>
+      <span class="integration-to">DMS Work Order</span>
+      <span class="integration-desc">Work order advances to next stage automatically. Technician notified. Approved items added to final invoice line items.</span>
+    </div>
+    <div class="integration-row">
+      <span class="integration-from">Approval: Rejected</span>
+      <span class="integration-arrow">→</span>
+      <span class="integration-to">DMS + Process</span>
+      <span class="integration-desc">Rejection logged on work order with customer's decision. If a safety item is rejected, a risk record is created in Process with the customer's signed rejection as evidence.</span>
+    </div>
+    <div class="integration-row">
+      <span class="integration-from">Approval Sent</span>
+      <span class="integration-arrow">→</span>
+      <span class="integration-to">Execution Task</span>
+      <span class="integration-desc">A follow-up task is created for the service advisor if no response received within configured time (default: 2 hours).</span>
+    </div>
+    <div class="integration-row">
+      <span class="integration-from">Work Order Complete</span>
+      <span class="integration-arrow">→</span>
+      <span class="integration-to">Finance Invoice</span>
+      <span class="integration-desc">Completed and approved items roll up to the final invoice automatically. Approval record is attached to the invoice as documentation.</span>
+    </div>
+    <div class="integration-row">
+      <span class="integration-from">Call Requested</span>
+      <span class="integration-arrow">→</span>
+      <span class="integration-to">Execution · Channel</span>
+      <span class="integration-desc">Opens a channel thread on the work order flagged for the service advisor, with the approval request linked and customer contact info visible.</span>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider" />
+
+<!-- TECHNICAL -->
+<section class="technical">
+  <div class="section-eyebrow">API Reference</div>
+  <h2>Build on Approval Engine.</h2>
+
+  <table class="api-table">
+    <thead>
+      <tr>
+        <th>Endpoint</th>
+        <th>Method</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>/v1/approvals</td>
+        <td><span class="method-tag method-post">POST</span></td>
+        <td>Create approval request. Required: <code>work_order_id</code>, <code>video_asset_id</code>, <code>tech_note</code>, <code>price_estimate</code>, <code>customer_phone</code>.</td>
+      </tr>
+      <tr>
+        <td>/v1/approvals/{id}</td>
+        <td><span class="method-tag method-get">GET</span></td>
+        <td>Get approval request status. Returns <code>state</code>: PENDING | APPROVED | REJECTED | CALL_REQUESTED | EXPIRED.</td>
+      </tr>
+      <tr>
+        <td>/v1/approvals/{id}/translate</td>
+        <td><span class="method-tag method-post">POST</span></td>
+        <td>Trigger AI translation of tech note. Returns customer-facing text for review before sending. Optional <code>language</code> param for non-Swedish customers.</td>
+      </tr>
+      <tr>
+        <td>/v1/approvals/{id}/send</td>
+        <td><span class="method-tag method-post">POST</span></td>
+        <td>Send approval SMS. Requires prior <code>/translate</code> call. Emits <code>approval.sent</code> webhook. Idempotent — subsequent calls return existing request.</td>
+      </tr>
+      <tr>
+        <td>/v1/approvals/{id}/audit</td>
+        <td><span class="method-tag method-get">GET</span></td>
+        <td>Full audit record for this approval: content shown, token hash, customer decision, timestamp, IP. Returns signed PDF when <code>format=pdf</code>.</td>
+      </tr>
+      <tr>
+        <td>/v1/assets/upload</td>
+        <td><span class="method-tag method-post">POST</span></td>
+        <td>Upload video for approval request. Multipart. Max 50MB source video — transcoded to 10MB MP4 by pipeline. Returns <code>asset_id</code>.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="code-block"><span class="comment">// Example: Create an approval request</span>
+<span class="key">POST</span> /v1/approvals
+<span class="key">Authorization:</span> <span class="string">Bearer &lt;token&gt;</span>
+
+{
+  <span class="key">"work_order_id"</span>: <span class="string">"wo_5xk2p"</span>,
+  <span class="key">"video_asset_id"</span>: <span class="string">"asset_8mf3x"</span>,
+  <span class="key">"tech_note"</span>: <span class="string">"Front brake pads at 2mm. Minimum recommended 3mm. Replacement required."</span>,
+  <span class="key">"price_estimate"</span>: <span class="number">1850</span>,
+  <span class="key">"price_currency"</span>: <span class="string">"SEK"</span>,
+  <span class="key">"customer_phone"</span>: <span class="string">"+46701234567"</span>,
+  <span class="key">"auto_translate"</span>: <span class="bool">true</span>,
+  <span class="key">"auto_send"</span>: <span class="bool">false</span>  <span class="comment">// technician reviews AI output first</span>
+}
+
+<span class="comment">// Response — 201 Created</span>
+{
+  <span class="key">"id"</span>: <span class="string">"apr_9qr7z"</span>,
+  <span class="key">"state"</span>: <span class="string">"DRAFT"</span>,
+  <span class="key">"customer_facing_text"</span>: <span class="string">"Your front brake pads are worn below the safe minimum..."</span>,
+  <span class="key">"approval_url"</span>: <span class="string">"https://lindqvists.pixdrift.link/a/tok_2x9mf"</span>,
+  <span class="key">"token_expires_at"</span>: <span class="string">"2026-03-25T02:58:00.000Z"</span>
+}</div>
+
+  <div style="margin-top:24px;">
+    <p style="font-size:14px;color:#f5f5f7;font-weight:600;margin-bottom:12px;">Security & legal compliance</p>
+    <div class="security-badges">
+      <div class="security-badge"><span class="badge-dot"></span>Tokens signed HMAC-SHA256</div>
+      <div class="security-badge"><span class="badge-dot"></span>Decision record includes content hash</div>
+      <div class="security-badge"><span class="badge-dot"></span>Legally compliant per Swedish consumer law</div>
+      <div class="security-badge"><span class="badge-dot"></span>GDPR: customer data minimization by design</div>
+      <div class="security-badge"><span class="badge-dot"></span>Audit PDF exportable per work order</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider" />
+
+<!-- USE CASES -->
+<section class="use-cases">
+  <div class="section-eyebrow">Who uses it</div>
+  <h2>Approval Engine in the real world.</h2>
+
+  <div class="use-cases-grid">
+    <div class="use-case-card">
+      <div class="use-case-industry">Automotive Workshop</div>
+      <div class="use-case-company">Lindqvists Bilverkstad</div>
+      <div class="use-case-story">12-bay workshop, 8 technicians. Before pixdrift: average 2.5 hour wait per unapproved job. 3 technicians often idle waiting for callbacks. With Approval Engine: 78% of requests approved within 25 minutes via SMS. Technicians almost never wait. Upsell revenue increased because approvals are now friction-free.</div>
+      <div class="use-case-metric">↑ 31% additional work order revenue</div>
+    </div>
+    <div class="use-case-card">
+      <div class="use-case-industry">Dealer Group</div>
+      <div class="use-case-company">Mellansveriges Bil</div>
+      <div class="use-case-story">6 dealerships, 60+ service bays. Rolled out Approval Engine across all locations. Every brand gets its own white-labeled approval page. Warranty documentation is now automatic — rejected safety items create signed evidence records in Process. No manual warranty disputes.</div>
+      <div class="use-case-metric">↓ 100% manual warranty paperwork</div>
+    </div>
+    <div class="use-case-card">
+      <div class="use-case-industry">Mobile Mechanic</div>
+      <div class="use-case-company">Motorfix On-Site AB</div>
+      <div class="use-case-story">Field mechanics working at customer premises. Can't always speak to the customer on-site. Approval Engine is the entire customer communication workflow — video from under the car, AI description, SMS approval, customer signs off, work continues. All from a phone.</div>
+      <div class="use-case-metric">↑ 2.1× jobs completed per mechanic per day</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider" />
+
+<!-- FAQ -->
+<section class="faq">
+  <div class="section-eyebrow">FAQ</div>
+  <h2>Common questions about Approval Engine.</h2>
+
+  <div class="faq-list">
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Does the customer need to create an account to approve?
+        <span class="faq-chevron">▾</span>
+      </button>
+      <div class="faq-answer">No. The customer receives an SMS with a tokenized link. They tap the link, see the video and explanation, and tap Approve, Reject, or Call me. No account, no app, no login. The token expires after 72 hours or when the approval decision is made. This is the most important design choice — friction kills conversion rates.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        How does the AI translation work?
+        <span class="faq-chevron">▾</span>
+      </button>
+      <div class="faq-answer">The technician adds a brief technical note alongside the video. Our AI converts this into plain, non-jargon language appropriate for the customer — including a clear price estimate, what happens if they decline, and what happens if they approve. The technician reviews the AI output before it's sent. Average review time is under 15 seconds.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Is the approval legally binding?
+        <span class="faq-chevron">▾</span>
+      </button>
+      <div class="faq-answer">Yes. The approval record includes: the customer's phone number, timestamp of approval, IP address, the exact content approved (video, description, price), and a cryptographic signature of the complete record. This constitutes sufficient evidence in Swedish and EU consumer law for additional work authorization. The audit PDF is formatted for use in warranty disputes and legal proceedings.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Can we white-label the approval page for our workshop?
+        <span class="faq-chevron">▾</span>
+      </button>
+      <div class="faq-answer">Yes. Every workshop gets a customizable approval page with their logo, brand colors, and contact details. You can point your own domain at it (CNAME). The customer sees their workshop's branding — not pixdrift's. White-labeling is included on all Growth and Enterprise plans.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        What happens to the work order when a customer approves?
+        <span class="faq-chevron">▾</span>
+      </button>
+      <div class="faq-answer">On approval, the work order in DMS advances automatically to the next stage (typically "Approved — proceed with work"). The technician is notified immediately via push notification or SMS. The approval is logged as an immutable record linked to the work order, vehicle, and customer. No manual action required from workshop staff.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h2>Stop waiting for callbacks. Start getting approvals.</h2>
+  <p>14-day free trial. Approval Engine works from day one — no configuration needed for standard use.</p>
+  <div class="cta-actions">
+    <a href="/checkout.html" class="btn-primary">Start free trial</a>
+    <a href="https://app.bc.pixdrift.com/demo" class="btn-secondary">Book a demo</a>
+  </div>
+</div>
+
+<!-- FEATURE NAVIGATION -->
+<div class="feature-nav">
+  <a href="/features/process.html">← Process</a>
+  <span class="center">Industry · Automotive</span>
+  <a href="/features/index.html">All Features →</a>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-copy">© 2026 pixdrift AB · Stockholm, Sweden</div>
+    <div class="footer-legal">
+      <a href="/legal/privacy.html">Privacy</a>
+      <a href="/legal/terms.html">Terms</a>
+      <a href="/security.html">Security</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    item.classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>

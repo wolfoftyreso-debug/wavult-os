@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Execution — CRM, Deals & Team Operations | pixdrift</title>
+  <meta name="description" content="Execution is the operational core of pixdrift. CRM pipeline, task management with hard enforcement, decision logs, team KPI dashboards — connected to your finances and processes by design." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://pixdrift.com/features/execution" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://pixdrift.com/features/execution" />
+  <meta property="og:title" content="Execution — The operational core of pixdrift" />
+  <meta property="og:description" content="Every deal, task, and decision — in one place. Execution connects your CRM to your finance and process modules automatically." />
+  <meta property="og:image" content="https://pixdrift.com/pixdrift-og.png" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="theme-color" content="#000000" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "name": "pixdrift Execution",
+        "applicationCategory": "BusinessApplication",
+        "url": "https://pixdrift.com/features/execution",
+        "description": "CRM, deal pipeline, task management, decision logs, and team KPI dashboards — the operational core of pixdrift."
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Can I import my existing CRM data into Execution?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. pixdrift supports CSV import from HubSpot, Pipedrive, Salesforce, and any standard CRM export. Contacts, deals, and notes are mapped automatically during import."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is 'hard enforcement' in task management?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Hard enforcement means a task cannot be marked complete until all configured conditions are met — a form filled, a document uploaded, an approval received. The system enforces this, not just reminds about it."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does Execution connect to the Finance module?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "When a deal is marked as Won, Execution automatically triggers invoice creation in the Finance module with deal value, customer data, and line items pre-filled. No manual handoff required."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is the decision log searchable?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Every decision is indexed with timestamp, author, linked deal or process, and full-text content. You can search by date range, team member, linked entity, or keyword."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can we run Execution without the other modules?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Execution runs standalone as a CRM and task management platform. Cross-module integrations activate automatically when you add Finance, Process, or Capability modules."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    img { display: block; max-width: 100%; }
+    a { cursor: pointer; }
+    ul { list-style: none; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0a0a0f;
+      color: #f5f5f7;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+      background: rgba(10,10,15,0.72);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 0.5px solid rgba(255,255,255,0.1);
+    }
+    .nav-logo { color: #f5f5f7; font-size: 18px; font-weight: 700; text-decoration: none; letter-spacing: -0.03em; }
+    .nav-links { display: flex; gap: 28px; align-items: center; }
+    .nav-links a { color: rgba(245,245,247,0.75); font-size: 12px; text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: #f5f5f7; }
+    .nav-actions { display: flex; gap: 16px; align-items: center; }
+    .nav-actions a:first-child { color: rgba(245,245,247,0.75); font-size: 12px; text-decoration: none; transition: color 0.2s; }
+    .nav-cta { background: #fff; color: #1d1d1f !important; padding: 6px 14px; border-radius: 980px; font-size: 12px !important; font-weight: 500; text-decoration: none; transition: opacity 0.2s; }
+    .nav-cta:hover { opacity: 0.88; }
+
+    /* BREADCRUMB */
+    .breadcrumb {
+      padding: 68px 24px 0;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    .breadcrumb-inner {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: rgba(245,245,247,0.35);
+    }
+    .breadcrumb-inner a { color: rgba(245,245,247,0.35); text-decoration: none; transition: color 0.2s; }
+    .breadcrumb-inner a:hover { color: rgba(245,245,247,0.6); }
+    .breadcrumb-inner .current { color: rgba(245,245,247,0.65); }
+
+    /* CONTENT LAYOUT */
+    .content-wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* HERO */
+    .module-hero {
+      padding: 40px 24px 72px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    .module-category-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(99,102,241,0.1);
+      border: 0.5px solid rgba(99,102,241,0.3);
+      border-radius: 980px;
+      padding: 5px 12px;
+      margin-bottom: 20px;
+    }
+    .module-category-label .icon { font-size: 14px; }
+    .module-category-label .label { font-size: 11px; font-weight: 600; color: #a5b4fc; letter-spacing: 0.06em; text-transform: uppercase; }
+    .module-hero h1 {
+      font-size: clamp(32px, 5vw, 60px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      margin-bottom: 16px;
+      background: linear-gradient(180deg, #ffffff 0%, rgba(255,255,255,0.6) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .module-hero .hero-sub {
+      font-size: 18px;
+      color: rgba(245,245,247,0.55);
+      line-height: 1.65;
+      max-width: 680px;
+      margin-bottom: 32px;
+    }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-primary {
+      background: #6366f1;
+      color: #fff;
+      padding: 10px 22px;
+      border-radius: 980px;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover { background: #5254cc; }
+    .btn-secondary {
+      background: rgba(255,255,255,0.06);
+      color: rgba(245,245,247,0.8);
+      padding: 10px 22px;
+      border-radius: 980px;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border: 0.5px solid rgba(255,255,255,0.12);
+      transition: background 0.2s;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+    /* MODULE STATS */
+    .module-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 0 24px 72px;
+      max-width: 860px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .stat-item {
+      background: rgba(255,255,255,0.02);
+      padding: 20px 24px;
+    }
+    .stat-value { font-size: 28px; font-weight: 700; letter-spacing: -0.04em; color: #f5f5f7; }
+    .stat-label { font-size: 12px; color: rgba(245,245,247,0.4); margin-top: 2px; }
+
+    /* SECTIONS */
+    section { padding: 64px 24px; max-width: 860px; margin: 0 auto; }
+    .section-eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #6366f1;
+      margin-bottom: 12px;
+    }
+    section h2 {
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+      color: #f5f5f7;
+    }
+    section > p {
+      font-size: 16px;
+      color: rgba(245,245,247,0.6);
+      line-height: 1.7;
+      max-width: 680px;
+      margin-bottom: 16px;
+    }
+    .section-divider {
+      border: none;
+      border-top: 0.5px solid rgba(255,255,255,0.06);
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    /* FEATURE BLOCKS */
+    .features-list { display: flex; flex-direction: column; gap: 2px; margin-top: 32px; }
+    .feature-block {
+      background: rgba(255,255,255,0.02);
+      border: 0.5px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      padding: 28px;
+      transition: border-color 0.2s;
+    }
+    .feature-block:hover { border-color: rgba(99,102,241,0.3); }
+    .feature-block-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+    .feature-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .feature-block h3 { font-size: 17px; font-weight: 600; letter-spacing: -0.02em; color: #f5f5f7; }
+    .feature-block p { font-size: 14px; color: rgba(245,245,247,0.55); line-height: 1.65; margin-bottom: 12px; }
+    .tech-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      background: rgba(99,102,241,0.08);
+      border: 0.5px solid rgba(99,102,241,0.2);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-top: 12px;
+    }
+    .tech-note-label { font-size: 10px; font-weight: 700; color: #6366f1; text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; padding-top: 1px; }
+    .tech-note p { font-size: 12px; color: rgba(165,180,252,0.8); margin-bottom: 0; line-height: 1.5; }
+
+    /* INTEGRATIONS MAP */
+    .integrations-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 32px; }
+    .integration-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: rgba(255,255,255,0.02);
+      border: 0.5px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      padding: 18px 24px;
+    }
+    .integration-from {
+      background: rgba(99,102,241,0.15);
+      border: 0.5px solid rgba(99,102,241,0.3);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #a5b4fc;
+      white-space: nowrap;
+    }
+    .integration-arrow { color: rgba(245,245,247,0.2); font-size: 18px; }
+    .integration-to {
+      background: rgba(255,255,255,0.06);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(245,245,247,0.7);
+      white-space: nowrap;
+    }
+    .integration-desc { font-size: 13px; color: rgba(245,245,247,0.4); flex: 1; }
+
+    /* TECHNICAL */
+    .code-block {
+      background: rgba(0,0,0,0.6);
+      border: 0.5px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 20px 24px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      color: rgba(245,245,247,0.7);
+      overflow-x: auto;
+      margin: 12px 0;
+      line-height: 1.7;
+    }
+    .code-block .comment { color: rgba(245,245,247,0.25); }
+    .code-block .key { color: #a5b4fc; }
+    .code-block .string { color: #86efac; }
+    .code-block .number { color: #fdba74; }
+
+    .api-table { width: 100%; border-collapse: collapse; margin-top: 24px; }
+    .api-table th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245,245,247,0.35);
+      padding: 8px 0;
+      border-bottom: 0.5px solid rgba(255,255,255,0.08);
+    }
+    .api-table td {
+      padding: 12px 0;
+      font-size: 13px;
+      border-bottom: 0.5px solid rgba(255,255,255,0.04);
+      vertical-align: top;
+    }
+    .api-table td:first-child { font-family: 'SF Mono', 'Fira Code', monospace; color: #a5b4fc; padding-right: 24px; }
+    .api-table td:nth-child(2) { color: rgba(245,245,247,0.35); padding-right: 24px; font-size: 11px; white-space: nowrap; }
+    .api-table td:last-child { color: rgba(245,245,247,0.55); }
+    .method-tag {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      margin-right: 6px;
+    }
+    .method-get { background: rgba(52,199,89,0.15); color: #34c759; }
+    .method-post { background: rgba(10,132,255,0.15); color: #0a84ff; }
+    .method-patch { background: rgba(255,149,0,0.15); color: #ff9500; }
+
+    /* USE CASES */
+    .use-cases-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-top: 32px; }
+    .use-case-card {
+      background: rgba(255,255,255,0.02);
+      border: 0.5px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .use-case-industry { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(245,245,247,0.35); margin-bottom: 8px; }
+    .use-case-company { font-size: 15px; font-weight: 600; color: #f5f5f7; margin-bottom: 10px; }
+    .use-case-story { font-size: 13px; color: rgba(245,245,247,0.5); line-height: 1.6; }
+    .use-case-metric {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 0.5px solid rgba(255,255,255,0.06);
+      font-size: 13px;
+      color: #34c759;
+      font-weight: 500;
+    }
+
+    /* FAQ */
+    .faq-list { margin-top: 32px; display: flex; flex-direction: column; gap: 2px; }
+    .faq-item {
+      border: 0.5px solid rgba(255,255,255,0.07);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .faq-question {
+      width: 100%;
+      background: rgba(255,255,255,0.02);
+      border: none;
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      text-align: left;
+      color: #f5f5f7;
+      font-size: 15px;
+      font-weight: 500;
+      font-family: inherit;
+      transition: background 0.2s;
+    }
+    .faq-question:hover { background: rgba(255,255,255,0.04); }
+    .faq-chevron { font-size: 12px; color: rgba(245,245,247,0.3); transition: transform 0.3s; }
+    .faq-answer {
+      display: none;
+      padding: 0 24px 18px;
+      font-size: 14px;
+      color: rgba(245,245,247,0.55);
+      line-height: 1.7;
+      background: rgba(255,255,255,0.02);
+    }
+    .faq-item.open .faq-answer { display: block; }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+
+    /* CTA */
+    .cta-section {
+      background: rgba(99,102,241,0.08);
+      border: 0.5px solid rgba(99,102,241,0.2);
+      border-radius: 16px;
+      padding: 48px;
+      text-align: center;
+      margin: 0 24px 80px;
+      max-width: 860px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .cta-section h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 12px; }
+    .cta-section p { font-size: 16px; color: rgba(245,245,247,0.55); margin-bottom: 28px; }
+    .cta-actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+
+    /* FEATURE NAV */
+    .feature-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px;
+      max-width: 860px;
+      margin: 0 auto 48px;
+      border-top: 0.5px solid rgba(255,255,255,0.06);
+    }
+    .feature-nav a {
+      font-size: 13px;
+      color: rgba(245,245,247,0.5);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .feature-nav a:hover { color: #f5f5f7; }
+    .feature-nav .center { color: rgba(245,245,247,0.35); font-size: 12px; }
+
+    /* FOOTER */
+    footer { border-top: 0.5px solid rgba(255,255,255,0.06); padding: 32px 24px; }
+    .footer-inner { max-width: 860px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .footer-copy { font-size: 12px; color: rgba(245,245,247,0.3); }
+    .footer-legal { display: flex; gap: 16px; }
+    .footer-legal a { font-size: 12px; color: rgba(245,245,247,0.3); text-decoration: none; transition: color 0.2s; }
+    .footer-legal a:hover { color: rgba(245,245,247,0.6); }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .module-stats { grid-template-columns: repeat(2, 1fr); }
+      .use-cases-grid { grid-template-columns: 1fr; }
+      .cta-section { padding: 32px 24px; }
+      .integration-row { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">pixdrift</a>
+  <div class="nav-links">
+    <a href="/features/" class="active">Features</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/developers/">Developers</a>
+    <a href="/blog/">Blog</a>
+  </div>
+  <div class="nav-actions">
+    <a href="https://app.bc.pixdrift.com">Sign in</a>
+    <a href="/checkout.html" class="nav-cta">Get started</a>
+  </div>
+</nav>
+
+<div class="breadcrumb">
+  <div class="breadcrumb-inner">
+    <a href="/">pixdrift</a>
+    <span>›</span>
+    <a href="/features/">Features</a>
+    <span>›</span>
+    <span class="current">Execution</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="module-hero">
+  <div class="module-category-label">
+    <span class="icon">⚡</span>
+    <span class="label">Operations · Core Module</span>
+  </div>
+  <h1>The operational core.<br>Every deal, task, and decision — in one place.</h1>
+  <p class="hero-sub">Execution tracks all moving parts of your business: deals in your pipeline, tasks across your team, customer conversations, and decisions that need to be remembered. Unlike a standalone CRM or task tool, Execution is connected to your finances, processes, and team capabilities by design.</p>
+  <div class="hero-actions">
+    <a href="https://app.bc.pixdrift.com/demo" class="btn-primary">See it in action</a>
+    <a href="/checkout.html" class="btn-secondary">Start free trial</a>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="module-stats">
+  <div class="stat-item">
+    <div class="stat-value">6</div>
+    <div class="stat-label">core sub-modules</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">24</div>
+    <div class="stat-label">API endpoints</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">4</div>
+    <div class="stat-label">auto-integrations</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">100%</div>
+    <div class="stat-label">audit-trail coverage</div>
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- WHAT IT IS -->
+<section class="what-it-is">
+  <div class="section-eyebrow">What it is</div>
+  <h2>Operations management without the overhead.</h2>
+  <p>Execution is where your business happens. Sales reps track deals. Operations managers assign tasks. Leadership reviews KPIs. And every decision — from pricing exceptions to client escalations — gets logged with a timestamp and a name.</p>
+  <p>Most companies cobble this together: a CRM here, a task tool there, a shared Notion doc for decisions, a Slack thread for customer conversations. Execution replaces all four — and adds something none of them have: a live connection to what's actually happening in your business.</p>
+  <p>When a task goes overdue, it's not just a notification. It creates a non-conformance in the Process module. When a deal closes, Finance already knows — an invoice drafts automatically. That's not an integration. That's a single system that understands context.</p>
+</section>
+
+<hr class="section-divider" />
+
+<!-- CORE FEATURES -->
+<section class="core-features">
+  <div class="section-eyebrow">Core features</div>
+  <h2>What Execution does.</h2>
+
+  <div class="features-list">
+
+    <!-- Deal Pipeline -->
+    <div class="feature-block">
+      <div class="feature-block-header">
+        <div class="feature-icon" style="background:rgba(99,102,241,0.15);">📊</div>
+        <div>
+          <h3>Deal Pipeline with Probability Tracking</h3>
+        </div>
+      </div>
+      <p>Deals move through configurable stages from first contact to closed. Each stage carries a win probability that rolls up to a team forecast. Automated follow-up reminders fire when deals go quiet — configurable per stage, per rep, or per deal value.</p>
+      <p>Every interaction is logged chronologically: calls, emails, meetings, and notes. Filtering by deal source, deal size, or assigned rep takes one click. Pipeline views are configurable per role — a rep sees their own pipeline; a manager sees the full team.</p>
+      <div class="tech-note">
+        <span class="tech-note-label">Technical</span>
+        <p>Deals are modeled as a directed acyclic graph (DAG) of stages. Stage transitions are validated server-side and emit webhook events. Win probabilities are user-defined per stage and aggregate to a weighted pipeline value. All transitions are immutable audit log entries.</p>
+      </div>
+    </div>
+
+    <!-- Task Management -->
+    <div class="feature-block">
+      <div class="feature-block-header">
+        <div class="feature-icon" style="background:rgba(255,149,0,0.15);">✅</div>
+        <div>
+          <h3>Task Management with Hard Enforcement</h3>
+        </div>
+      </div>
+      <p>Tasks in Execution are not suggestions. Each task can have completion conditions — a form that must be filled, a document that must be uploaded, an approval that must be received. Until those conditions are met, the task simply cannot be marked complete. No workarounds.</p>
+      <p>Tasks are assigned to individuals or teams, with deadlines, priority levels, and linked entities (deals, contacts, work orders). Overdue tasks escalate automatically based on configurable rules.</p>
+      <div class="tech-note">
+        <span class="tech-note-label">Technical</span>
+        <p>Task completion uses a state machine: PENDING → IN_PROGRESS → BLOCKED → REVIEW → DONE. Transitions are guarded by completion conditions evaluated server-side. An overdue task (past deadline with status ≠ DONE) automatically emits a <code>task.overdue</code> event that can trigger NC creation in Process module.</p>
+      </div>
+    </div>
+
+    <!-- Decision Log -->
+    <div class="feature-block">
+      <div class="feature-block-header">
+        <div class="feature-icon" style="background:rgba(52,199,89,0.15);">📝</div>
+        <div>
+          <h3>Decision Log with Audit Trail</h3>
+        </div>
+      </div>
+      <p>Every decision that matters gets logged: who made it, when, what the options were, and what was chosen. Decisions are linked to the entities they affect — a deal, a process, a team member, a client. Six months later, when someone asks "why did we do this?", you have the answer.</p>
+      <p>The log is immutable. Entries cannot be edited or deleted — only supplemented with follow-up entries. This creates a legally defensible record of business decisions.</p>
+      <div class="tech-note">
+        <span class="tech-note-label">Technical</span>
+        <p>Decision entries are append-only records stored with SHA-256 content hashes for tamper detection. Each entry carries: <code>author_id</code>, <code>timestamp</code> (UTC, microsecond precision), <code>entity_type</code>, <code>entity_id</code>, <code>decision_body</code>, and an optional <code>rationale</code> field. Full-text indexed via Elasticsearch.</p>
+      </div>
+    </div>
+
+    <!-- KPI Dashboards -->
+    <div class="feature-block">
+      <div class="feature-block-header">
+        <div class="feature-icon" style="background:rgba(10,132,255,0.15);">📈</div>
+        <div>
+          <h3>Team KPI Dashboards per Role</h3>
+        </div>
+      </div>
+      <p>A sales rep's dashboard looks different from a CFO's. Execution ships with role-specific dashboard templates that surface the metrics that matter for each role — and lets you customize from there.</p>
+      <p>Dashboards pull live data from across modules: deal velocity from Execution, budget variance from Finance, open NCs from Process, skill gaps from Capability. One screen, real context.</p>
+      <div class="tech-note">
+        <span class="tech-note-label">Technical</span>
+        <p>Dashboard widgets are reactive components subscribing to a server-sent event (SSE) stream. Data is aggregated via materialized views refreshed on write, not on query — keeping dashboard loads under 100ms regardless of data volume. Custom metrics can be defined via a JSON DSL.</p>
+      </div>
+    </div>
+
+    <!-- Meeting Management -->
+    <div class="feature-block">
+      <div class="feature-block-header">
+        <div class="feature-icon" style="background:rgba(191,90,242,0.15);">🗓️</div>
+        <div>
+          <h3>Meeting Management with Protocols</h3>
+        </div>
+      </div>
+      <p>Meetings in Execution have a before, during, and after. Before: agenda is set. During: notes are taken against agenda points. After: action items are automatically converted to tracked tasks with assignees and deadlines. Meeting protocols are stored, linked to the relevant deal or project, and searchable.</p>
+      <div class="tech-note">
+        <span class="tech-note-label">Technical</span>
+        <p>Action items extracted from meeting notes use a structured markup format (<code>@assign[user]</code>, <code>@due[date]</code>) that the parser converts to Task entities. Meetings link to calendar events via iCal/Google Calendar webhook integration.</p>
+      </div>
+    </div>
+
+    <!-- Channels -->
+    <div class="feature-block">
+      <div class="feature-block-header">
+        <div class="feature-icon" style="background:rgba(255,55,95,0.15);">💬</div>
+        <div>
+          <h3>Channels — Context-Linked Communication</h3>
+        </div>
+      </div>
+      <p>Every deal, project, and task has its own communication channel. Conversations are linked to the work — not buried in a general Slack channel or lost in email threads. When a new team member joins a deal, they get the full context instantly.</p>
+      <p>Channels support file attachments, @mentions, and links to other entities. Notifications are configurable per user and per channel type. No context switching to a separate tool.</p>
+      <div class="tech-note">
+        <span class="tech-note-label">Technical</span>
+        <p>Channels use a fan-out pub/sub architecture. Messages are persisted to PostgreSQL and delivered via WebSocket. Each channel has a <code>context_entity</code> field linking it to a Deal, Task, Process, or any other entity. Read receipts are tracked per user per message.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="section-divider" />
+
+<!-- INTEGRATIONS MAP -->
+<section class="integrations-map">
+  <div class="section-eyebrow">Module integrations</div>
+  <h2>How Execution connects to everything else.</h2>
+  <p>This is what separates pixdrift from a collection of tools. When something happens in Execution, the right thing happens everywhere else — automatically, without configuration for common scenarios.</p>
+
+  <div class="integrations-grid">
+    <div class="integration-row">
+      <span class="integration-from">Deal Won</span>
+      <span class="integration-arrow">→</span>
+      <span class="integration-to">Finance · Invoice</span>
+      <span class="integration-desc">Invoice draft created with deal value, customer data, and line items pre-filled. Accountant reviews and sends.</span>
+    </div>
+    <div class="integration-row">
+      <span class="integration-from">Task Overdue</span>
+      <span class="integration-arrow">→</span>
+      <span class="integration-to">Process · NC</span>
+      <span class="integration-desc">A non-conformance is opened in Process with severity level based on task priority and overdue duration.</span>
+    </div>
+    <div class="integration-row">
+      <span class="integration-from">Deal Note: Skill Gap</span>
+      <span class="integration-arrow">→</span>
+      <span class="integration-to">Capability · Development</span>
+      <span class="integration-desc">When a deal note tags a competence need, Capability module receives a development suggestion for the assigned rep.</span>
+    </div>
+    <div class="integration-row">
+      <span class="integration-from">Payout Approved</span>
+      <span class="integration-arrow">→</span>
+      <span class="integration-to">Banking · Transaction</span>
+      <span class="integration-desc">Approved payout triggers a payment initiation via PSD2 Open Banking connection. Reconciliation is automatic.</span>
+    </div>
+    <div class="integration-row">
+      <span class="integration-from">Meeting Action Item</span>
+      <span class="integration-arrow">→</span>
+      <span class="integration-to">Execution · Task</span>
+      <span class="integration-desc">Action items from meeting protocols become tracked tasks with owners and deadlines — inside the same module.</span>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider" />
+
+<!-- TECHNICAL -->
+<section class="technical">
+  <div class="section-eyebrow">API Reference</div>
+  <h2>Build on Execution.</h2>
+  <p>The Execution API follows REST conventions. All endpoints require Bearer token authentication. Responses are JSON. Webhook events deliver state changes in real time.</p>
+
+  <table class="api-table">
+    <thead>
+      <tr>
+        <th>Endpoint</th>
+        <th>Method</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>/v1/deals</td>
+        <td><span class="method-tag method-get">GET</span></td>
+        <td>List deals with filter, sort, and pagination. Supports <code>stage</code>, <code>assignee_id</code>, <code>probability_min</code> filters.</td>
+      </tr>
+      <tr>
+        <td>/v1/deals</td>
+        <td><span class="method-tag method-post">POST</span></td>
+        <td>Create deal. Required: <code>title</code>, <code>contact_id</code>, <code>stage_id</code>. Returns deal with generated ID and audit log entry.</td>
+      </tr>
+      <tr>
+        <td>/v1/deals/{id}/stage</td>
+        <td><span class="method-tag method-patch">PATCH</span></td>
+        <td>Advance deal stage. Validates allowed transitions. Emits <code>deal.stage_changed</code> webhook on success.</td>
+      </tr>
+      <tr>
+        <td>/v1/tasks</td>
+        <td><span class="method-tag method-get">GET</span></td>
+        <td>List tasks. Supports <code>assignee_id</code>, <code>status</code>, <code>due_before</code>, <code>entity_type</code> filters.</td>
+      </tr>
+      <tr>
+        <td>/v1/tasks/{id}/complete</td>
+        <td><span class="method-tag method-post">POST</span></td>
+        <td>Attempt task completion. Returns 409 if completion conditions not met, with list of unmet conditions.</td>
+      </tr>
+      <tr>
+        <td>/v1/decisions</td>
+        <td><span class="method-tag method-post">POST</span></td>
+        <td>Log decision. Required: <code>body</code>, <code>entity_type</code>, <code>entity_id</code>. Entry is immutable once created.</td>
+      </tr>
+      <tr>
+        <td>/v1/decisions</td>
+        <td><span class="method-tag method-get">GET</span></td>
+        <td>Search decision log. Full-text search via <code>q</code> param. Filterable by <code>entity_id</code>, <code>author_id</code>, date range.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="code-block"><span class="comment">// Example: Create a deal via API</span>
+<span class="key">POST</span> /v1/deals
+<span class="key">Authorization:</span> <span class="string">Bearer &lt;token&gt;</span>
+
+{
+  <span class="key">"title"</span>: <span class="string">"Lindqvists Bilverkstad — Service Avtal 2026"</span>,
+  <span class="key">"contact_id"</span>: <span class="string">"cnt_8xk2p"</span>,
+  <span class="key">"stage_id"</span>: <span class="string">"stage_proposal"</span>,
+  <span class="key">"value"</span>: <span class="number">48000</span>,
+  <span class="key">"currency"</span>: <span class="string">"SEK"</span>,
+  <span class="key">"probability"</span>: <span class="number">0.65</span>,
+  <span class="key">"assignee_id"</span>: <span class="string">"usr_e7q1m"</span>
+}
+
+<span class="comment">// Response — 201 Created</span>
+{
+  <span class="key">"id"</span>: <span class="string">"deal_9mf3x"</span>,
+  <span class="key">"title"</span>: <span class="string">"Lindqvists Bilverkstad — Service Avtal 2026"</span>,
+  <span class="key">"stage"</span>: { <span class="key">"id"</span>: <span class="string">"stage_proposal"</span>, <span class="key">"name"</span>: <span class="string">"Proposal sent"</span> },
+  <span class="key">"weighted_value"</span>: <span class="number">31200</span>,
+  <span class="key">"audit_entry_id"</span>: <span class="string">"aud_k2p9q"</span>,
+  <span class="key">"created_at"</span>: <span class="string">"2026-03-22T02:58:00.000Z"</span>
+}</div>
+
+  <p style="margin-top:20px;"><strong style="color:#f5f5f7;">Webhook events emitted by Execution:</strong></p>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;">
+    <code style="background:rgba(255,255,255,0.06);padding:4px 10px;border-radius:6px;font-size:12px;color:#a5b4fc;">deal.created</code>
+    <code style="background:rgba(255,255,255,0.06);padding:4px 10px;border-radius:6px;font-size:12px;color:#a5b4fc;">deal.stage_changed</code>
+    <code style="background:rgba(255,255,255,0.06);padding:4px 10px;border-radius:6px;font-size:12px;color:#a5b4fc;">deal.won</code>
+    <code style="background:rgba(255,255,255,0.06);padding:4px 10px;border-radius:6px;font-size:12px;color:#a5b4fc;">deal.lost</code>
+    <code style="background:rgba(255,255,255,0.06);padding:4px 10px;border-radius:6px;font-size:12px;color:#a5b4fc;">task.created</code>
+    <code style="background:rgba(255,255,255,0.06);padding:4px 10px;border-radius:6px;font-size:12px;color:#a5b4fc;">task.overdue</code>
+    <code style="background:rgba(255,255,255,0.06);padding:4px 10px;border-radius:6px;font-size:12px;color:#a5b4fc;">task.completed</code>
+    <code style="background:rgba(255,255,255,0.06);padding:4px 10px;border-radius:6px;font-size:12px;color:#a5b4fc;">decision.logged</code>
+    <code style="background:rgba(255,255,255,0.06);padding:4px 10px;border-radius:6px;font-size:12px;color:#a5b4fc;">meeting.completed</code>
+  </div>
+</section>
+
+<hr class="section-divider" />
+
+<!-- USE CASES -->
+<section class="use-cases">
+  <div class="section-eyebrow">Who uses it</div>
+  <h2>Execution in the real world.</h2>
+
+  <div class="use-cases-grid">
+    <div class="use-case-card">
+      <div class="use-case-industry">Automotive Workshop</div>
+      <div class="use-case-company">Lindqvists Bilverkstad</div>
+      <div class="use-case-story">Lindqvists uses Execution as their primary CRM — tracking service agreements, recall campaigns, and annual inspection deals. Every completed service triggers an invoice via Finance and a warranty entry via DMS. Tasks for scheduled services cannot be closed without a signed protocol.</div>
+      <div class="use-case-metric">↑ 34% on-time service completion</div>
+    </div>
+    <div class="use-case-card">
+      <div class="use-case-industry">Software / Tech</div>
+      <div class="use-case-company">Novacode AB</div>
+      <div class="use-case-story">45 people, 3 product lines. Novacode runs all sales, client success, and internal project management in Execution. Deal pipeline connects directly to resource allocation in Capability. KPI dashboards per team are refreshed live — no weekly status report meetings.</div>
+      <div class="use-case-metric">↓ 8 hrs/week in status meetings</div>
+    </div>
+    <div class="use-case-card">
+      <div class="use-case-industry">Restaurant Group</div>
+      <div class="use-case-company">Matlaget Gruppen</div>
+      <div class="use-case-story">Three locations, one Execution. Supplier negotiations tracked as deals, daily ops tasks with hard enforcement (closing checklist cannot be marked done without each item checked), and a decision log for everything from menu changes to pricing adjustments — searchable across all locations.</div>
+      <div class="use-case-metric">↑ 99% closing checklist compliance</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider" />
+
+<!-- FAQ -->
+<section class="faq">
+  <div class="section-eyebrow">FAQ</div>
+  <h2>Common questions about Execution.</h2>
+
+  <div class="faq-list">
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Can I import my existing CRM data into Execution?
+        <span class="faq-chevron">▾</span>
+      </button>
+      <div class="faq-answer">Yes. pixdrift supports CSV import from HubSpot, Pipedrive, Salesforce, and any standard CRM export. Contacts, deals, and notes are mapped automatically during import. Our onboarding team handles migrations for Growth and Enterprise plans.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        What is "hard enforcement" in task management?
+        <span class="faq-chevron">▾</span>
+      </button>
+      <div class="faq-answer">Hard enforcement means a task cannot be marked complete until all configured conditions are met — a form filled, a document uploaded, an approval received. The system enforces this at the API level, not just in the UI. No workarounds, no "I'll do it later." This is what makes compliance actually stick.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        How does Execution connect to the Finance module?
+        <span class="faq-chevron">▾</span>
+      </button>
+      <div class="faq-answer">When a deal is marked as Won, Execution automatically triggers invoice creation in the Finance module with deal value, customer data, and line items pre-filled. The accountant reviews and sends — but all the data is already there. You can also configure the trigger to require human approval before the invoice drafts.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Is the decision log searchable?
+        <span class="faq-chevron">▾</span>
+      </button>
+      <div class="faq-answer">Every decision is indexed with timestamp, author, linked deal or process, and full-text content. You can search by date range, team member, linked entity, or keyword. Results are ranked by relevance and recency. The log is immutable — entries cannot be edited, but can be supplemented.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Can we run Execution without the other modules?
+        <span class="faq-chevron">▾</span>
+      </button>
+      <div class="faq-answer">Yes. Execution runs standalone as a CRM and task management platform from day one. Cross-module integrations (Finance, Process, Capability, Banking) activate automatically when you add those modules. You grow into the platform at your own pace.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h2>Start running your operations on Execution.</h2>
+  <p>14-day free trial. No credit card required. Import from your existing CRM in minutes.</p>
+  <div class="cta-actions">
+    <a href="/checkout.html" class="btn-primary">Start free trial</a>
+    <a href="https://app.bc.pixdrift.com/demo" class="btn-secondary">Book a demo</a>
+  </div>
+</div>
+
+<!-- FEATURE NAVIGATION -->
+<div class="feature-nav">
+  <a href="/features/index.html">← All Features</a>
+  <span class="center">Operations · Core Module</span>
+  <a href="/features/process.html">Process →</a>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-copy">© 2026 pixdrift AB · Stockholm, Sweden</div>
+    <div class="footer-legal">
+      <a href="/legal/privacy.html">Privacy</a>
+      <a href="/legal/terms.html">Terms</a>
+      <a href="/security.html">Security</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    item.classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>

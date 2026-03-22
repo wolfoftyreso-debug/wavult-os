@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Process — ISO Compliance & Non-Conformance Management | pixdrift</title>
+  <meta name="description" content="Process embeds ISO 9001, 14001, and 45001 compliance into everyday work. Non-conformances with state machines, immutable audit trails, risk matrices, and document control — connected to real work orders and deals." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://pixdrift.com/features/process" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://pixdrift.com/features/process" />
+  <meta property="og:title" content="Process — ISO by design. Not by accident." />
+  <meta property="og:description" content="Compliance embedded in everyday work. Every NC, audit, and corrective action linked to actual work orders, deals, and team activity." />
+  <meta property="og:image" content="https://pixdrift.com/pixdrift-og.png" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="theme-color" content="#000000" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "name": "pixdrift Process",
+        "applicationCategory": "BusinessApplication",
+        "url": "https://pixdrift.com/features/process",
+        "description": "ISO 9001/14001/45001 compliance management embedded in daily operations. Non-conformances, audit trails, risk matrices, and document control."
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Which ISO standards does pixdrift Process support?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Process supports ISO 9001 (Quality Management), ISO 14001 (Environmental Management), and ISO 45001 (Occupational Health & Safety). Standards can be active simultaneously — shared NCs and audits link to requirements across all active standards."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What does 'immutable audit trail' mean in practice?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Every action in the Process module — creating an NC, changing its status, adding a corrective action, closing an audit — is recorded with a timestamp, user identity, and content hash. These records cannot be edited or deleted. During an external audit, you can export a signed PDF of the complete trail."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How are non-conformances linked to actual work?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "NCs are linked to source entities: a specific deal, task, work order, or team member. When Execution detects an overdue task, it opens an NC automatically with the task as the source entity. Auditors can trace every NC back to the exact work that triggered it."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can we define custom risk thresholds for escalation?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. The risk matrix uses a probability × impact grid with configurable thresholds per cell. You define which cells trigger automatic escalation, to whom, and with what priority. Default thresholds align with ISO 31000 guidelines."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does Process support automotive inspection protocols?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Process ships with inspection protocol templates for automotive (vehicle handover, pre-delivery inspection, annual service checklist) and industrial environments. Custom protocols can be built using the form builder."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    img { display: block; max-width: 100%; }
+    a { cursor: pointer; }
+    ul { list-style: none; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0a0a0f;
+      color: #f5f5f7;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+      background: rgba(10,10,15,0.72);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 0.5px solid rgba(255,255,255,0.1);
+    }
+    .nav-logo { color: #f5f5f7; font-size: 18px; font-weight: 700; text-decoration: none; letter-spacing: -0.03em; }
+    .nav-links { display: flex; gap: 28px; align-items: center; }
+    .nav-links a { color: rgba(245,245,247,0.75); font-size: 12px; text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: #f5f5f7; }
+    .nav-actions { display: flex; gap: 16px; align-items: center; }
+    .nav-actions a:first-child { color: rgba(245,245,247,0.75); font-size: 12px; text-decoration: none; transition: color 0.2s; }
+    .nav-cta { background: #fff; color: #1d1d1f !important; padding: 6px 14px; border-radius: 980px; font-size: 12px !important; font-weight: 500; text-decoration: none; transition: opacity 0.2s; }
+    .nav-cta:hover { opacity: 0.88; }
+
+    .breadcrumb { padding: 68px 24px 0; max-width: 860px; margin: 0 auto; }
+    .breadcrumb-inner { display: flex; align-items: center; gap: 8px; font-size: 12px; color: rgba(245,245,247,0.35); }
+    .breadcrumb-inner a { color: rgba(245,245,247,0.35); text-decoration: none; transition: color 0.2s; }
+    .breadcrumb-inner a:hover { color: rgba(245,245,247,0.6); }
+    .breadcrumb-inner .current { color: rgba(245,245,247,0.65); }
+
+    .module-hero { padding: 40px 24px 72px; max-width: 860px; margin: 0 auto; }
+    .module-category-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,149,0,0.1);
+      border: 0.5px solid rgba(255,149,0,0.3);
+      border-radius: 980px;
+      padding: 5px 12px;
+      margin-bottom: 20px;
+    }
+    .module-category-label .icon { font-size: 14px; }
+    .module-category-label .label { font-size: 11px; font-weight: 600; color: #ff9500; letter-spacing: 0.06em; text-transform: uppercase; }
+    .module-hero h1 {
+      font-size: clamp(32px, 5vw, 60px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      margin-bottom: 16px;
+      background: linear-gradient(180deg, #ffffff 0%, rgba(255,255,255,0.6) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .module-hero .hero-sub { font-size: 18px; color: rgba(245,245,247,0.55); line-height: 1.65; max-width: 680px; margin-bottom: 32px; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-primary { background: #6366f1; color: #fff; padding: 10px 22px; border-radius: 980px; font-size: 14px; font-weight: 500; text-decoration: none; transition: background 0.2s; }
+    .btn-primary:hover { background: #5254cc; }
+    .btn-secondary { background: rgba(255,255,255,0.06); color: rgba(245,245,247,0.8); padding: 10px 22px; border-radius: 980px; font-size: 14px; font-weight: 500; text-decoration: none; border: 0.5px solid rgba(255,255,255,0.12); transition: background 0.2s; }
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+    .module-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 12px;
+      overflow: hidden;
+      max-width: 860px;
+      margin: 0 auto 72px;
+    }
+    .stat-item { background: rgba(255,255,255,0.02); padding: 20px 24px; }
+    .stat-value { font-size: 28px; font-weight: 700; letter-spacing: -0.04em; color: #f5f5f7; }
+    .stat-label { font-size: 12px; color: rgba(245,245,247,0.4); margin-top: 2px; }
+
+    section { padding: 64px 24px; max-width: 860px; margin: 0 auto; }
+    .section-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #ff9500; margin-bottom: 12px; }
+    section h2 { font-size: clamp(24px, 3vw, 36px); font-weight: 700; letter-spacing: -0.03em; margin-bottom: 16px; color: #f5f5f7; }
+    section > p { font-size: 16px; color: rgba(245,245,247,0.6); line-height: 1.7; max-width: 680px; margin-bottom: 16px; }
+    .section-divider { border: none; border-top: 0.5px solid rgba(255,255,255,0.06); max-width: 860px; margin: 0 auto; }
+
+    .features-list { display: flex; flex-direction: column; gap: 2px; margin-top: 32px; }
+    .feature-block { background: rgba(255,255,255,0.02); border: 0.5px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 28px; transition: border-color 0.2s; }
+    .feature-block:hover { border-color: rgba(255,149,0,0.25); }
+    .feature-block-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 12px; }
+    .feature-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .feature-block h3 { font-size: 17px; font-weight: 600; letter-spacing: -0.02em; color: #f5f5f7; }
+    .feature-block p { font-size: 14px; color: rgba(245,245,247,0.55); line-height: 1.65; margin-bottom: 12px; }
+    .tech-note { display: flex; align-items: flex-start; gap: 8px; background: rgba(255,149,0,0.06); border: 0.5px solid rgba(255,149,0,0.18); border-radius: 8px; padding: 10px 14px; margin-top: 12px; }
+    .tech-note-label { font-size: 10px; font-weight: 700; color: #ff9500; text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; padding-top: 1px; }
+    .tech-note p { font-size: 12px; color: rgba(253,186,116,0.75); margin-bottom: 0; line-height: 1.5; }
+
+    /* STATE MACHINE DIAGRAM */
+    .state-machine {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 20px 0;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .state-node {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .state-open { background: rgba(255,69,58,0.15); color: #ff453a; border: 0.5px solid rgba(255,69,58,0.3); }
+    .state-analyzing { background: rgba(255,159,10,0.15); color: #ff9f0a; border: 0.5px solid rgba(255,159,10,0.3); }
+    .state-action { background: rgba(10,132,255,0.15); color: #0a84ff; border: 0.5px solid rgba(10,132,255,0.3); }
+    .state-closed { background: rgba(52,199,89,0.15); color: #34c759; border: 0.5px solid rgba(52,199,89,0.3); }
+    .state-arrow { color: rgba(245,245,247,0.2); font-size: 16px; padding: 0 4px; }
+
+    /* RISK MATRIX */
+    .risk-matrix {
+      display: grid;
+      grid-template-columns: auto repeat(4, 1fr);
+      gap: 2px;
+      margin: 20px 0;
+      font-size: 11px;
+    }
+    .risk-cell {
+      padding: 10px 8px;
+      border-radius: 4px;
+      text-align: center;
+      font-weight: 600;
+    }
+    .risk-header { background: transparent; color: rgba(245,245,247,0.4); font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase; }
+    .risk-low { background: rgba(52,199,89,0.12); color: #34c759; }
+    .risk-medium { background: rgba(255,214,10,0.12); color: #ffd60a; }
+    .risk-high { background: rgba(255,149,0,0.15); color: #ff9500; }
+    .risk-critical { background: rgba(255,69,58,0.18); color: #ff453a; }
+
+    .integrations-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 32px; }
+    .integration-row { display: flex; align-items: center; gap: 16px; background: rgba(255,255,255,0.02); border: 0.5px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 18px 24px; }
+    .integration-from { background: rgba(255,149,0,0.12); border: 0.5px solid rgba(255,149,0,0.25); border-radius: 8px; padding: 6px 12px; font-size: 12px; font-weight: 600; color: #ff9500; white-space: nowrap; }
+    .integration-arrow { color: rgba(245,245,247,0.2); font-size: 18px; }
+    .integration-to { background: rgba(255,255,255,0.06); border-radius: 8px; padding: 6px 12px; font-size: 12px; font-weight: 500; color: rgba(245,245,247,0.7); white-space: nowrap; }
+    .integration-desc { font-size: 13px; color: rgba(245,245,247,0.4); flex: 1; }
+
+    .code-block { background: rgba(0,0,0,0.6); border: 0.5px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 20px 24px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; color: rgba(245,245,247,0.7); overflow-x: auto; margin: 12px 0; line-height: 1.7; }
+    .code-block .comment { color: rgba(245,245,247,0.25); }
+    .code-block .key { color: #a5b4fc; }
+    .code-block .string { color: #86efac; }
+    .code-block .number { color: #fdba74; }
+
+    .api-table { width: 100%; border-collapse: collapse; margin-top: 24px; }
+    .api-table th { text-align: left; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(245,245,247,0.35); padding: 8px 0; border-bottom: 0.5px solid rgba(255,255,255,0.08); }
+    .api-table td { padding: 12px 0; font-size: 13px; border-bottom: 0.5px solid rgba(255,255,255,0.04); vertical-align: top; }
+    .api-table td:first-child { font-family: 'SF Mono', 'Fira Code', monospace; color: #a5b4fc; padding-right: 24px; }
+    .api-table td:nth-child(2) { color: rgba(245,245,247,0.35); padding-right: 24px; font-size: 11px; white-space: nowrap; }
+    .api-table td:last-child { color: rgba(245,245,247,0.55); }
+    .method-tag { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; margin-right: 6px; }
+    .method-get { background: rgba(52,199,89,0.15); color: #34c759; }
+    .method-post { background: rgba(10,132,255,0.15); color: #0a84ff; }
+    .method-patch { background: rgba(255,149,0,0.15); color: #ff9500; }
+
+    .use-cases-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-top: 32px; }
+    .use-case-card { background: rgba(255,255,255,0.02); border: 0.5px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 24px; }
+    .use-case-industry { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(245,245,247,0.35); margin-bottom: 8px; }
+    .use-case-company { font-size: 15px; font-weight: 600; color: #f5f5f7; margin-bottom: 10px; }
+    .use-case-story { font-size: 13px; color: rgba(245,245,247,0.5); line-height: 1.6; }
+    .use-case-metric { margin-top: 16px; padding-top: 16px; border-top: 0.5px solid rgba(255,255,255,0.06); font-size: 13px; color: #34c759; font-weight: 500; }
+
+    .faq-list { margin-top: 32px; display: flex; flex-direction: column; gap: 2px; }
+    .faq-item { border: 0.5px solid rgba(255,255,255,0.07); border-radius: 10px; overflow: hidden; }
+    .faq-question { width: 100%; background: rgba(255,255,255,0.02); border: none; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; text-align: left; color: #f5f5f7; font-size: 15px; font-weight: 500; font-family: inherit; transition: background 0.2s; }
+    .faq-question:hover { background: rgba(255,255,255,0.04); }
+    .faq-chevron { font-size: 12px; color: rgba(245,245,247,0.3); transition: transform 0.3s; }
+    .faq-answer { display: none; padding: 0 24px 18px; font-size: 14px; color: rgba(245,245,247,0.55); line-height: 1.7; background: rgba(255,255,255,0.02); }
+    .faq-item.open .faq-answer { display: block; }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+
+    .cta-section { background: rgba(255,149,0,0.07); border: 0.5px solid rgba(255,149,0,0.18); border-radius: 16px; padding: 48px; text-align: center; max-width: 860px; margin: 0 auto 80px; }
+    .cta-section h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 12px; }
+    .cta-section p { font-size: 16px; color: rgba(245,245,247,0.55); margin-bottom: 28px; }
+    .cta-actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+
+    .feature-nav { display: flex; justify-content: space-between; align-items: center; padding: 24px; max-width: 860px; margin: 0 auto 48px; border-top: 0.5px solid rgba(255,255,255,0.06); }
+    .feature-nav a { font-size: 13px; color: rgba(245,245,247,0.5); text-decoration: none; transition: color 0.2s; }
+    .feature-nav a:hover { color: #f5f5f7; }
+    .feature-nav .center { color: rgba(245,245,247,0.35); font-size: 12px; }
+
+    footer { border-top: 0.5px solid rgba(255,255,255,0.06); padding: 32px 24px; }
+    .footer-inner { max-width: 860px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .footer-copy { font-size: 12px; color: rgba(245,245,247,0.3); }
+    .footer-legal { display: flex; gap: 16px; }
+    .footer-legal a { font-size: 12px; color: rgba(245,245,247,0.3); text-decoration: none; transition: color 0.2s; }
+    .footer-legal a:hover { color: rgba(245,245,247,0.6); }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .module-stats { grid-template-columns: repeat(2, 1fr); }
+      .use-cases-grid { grid-template-columns: 1fr; }
+      .cta-section { padding: 32px 24px; }
+      .integration-row { flex-wrap: wrap; }
+      .state-machine { gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">pixdrift</a>
+  <div class="nav-links">
+    <a href="/features/" class="active">Features</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/developers/">Developers</a>
+    <a href="/blog/">Blog</a>
+  </div>
+  <div class="nav-actions">
+    <a href="https://app.bc.pixdrift.com">Sign in</a>
+    <a href="/checkout.html" class="nav-cta">Get started</a>
+  </div>
+</nav>
+
+<div class="breadcrumb">
+  <div class="breadcrumb-inner">
+    <a href="/">pixdrift</a>
+    <span>›</span>
+    <a href="/features/">Features</a>
+    <span>›</span>
+    <span class="current">Process</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="module-hero">
+  <div class="module-category-label">
+    <span class="icon">🔄</span>
+    <span class="label">Operations · Compliance</span>
+  </div>
+  <h1>ISO by design.<br>Not by accident.</h1>
+  <p class="hero-sub">Most businesses treat compliance as a separate system — a folder, a spreadsheet, or a consultant. pixdrift embeds process control into everyday work. Every non-conformance, every audit, every corrective action is linked to actual work orders, deals, and team activity.</p>
+  <div class="hero-actions">
+    <a href="https://app.bc.pixdrift.com/demo" class="btn-primary">See it in action</a>
+    <a href="/checkout.html" class="btn-secondary">Start free trial</a>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="module-stats">
+  <div class="stat-item">
+    <div class="stat-value">3</div>
+    <div class="stat-label">ISO standards supported</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">4</div>
+    <div class="stat-label">NC state machine steps</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">100%</div>
+    <div class="stat-label">tamper-proof audit trail</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">18</div>
+    <div class="stat-label">API endpoints</div>
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- WHAT IT IS -->
+<section class="what-it-is">
+  <div class="section-eyebrow">What it is</div>
+  <h2>Compliance that actually works.</h2>
+  <p>ISO certification is won with a consultant, a binder of procedures, and weeks of prep before the external audit. Then everyone goes back to working the way they always have. The binder collects dust. The next audit cycle starts from scratch.</p>
+  <p>Process is different because it's not a separate compliance layer. It's connected to Execution, DMS, and every other module. When a task is overdue, Process knows. When a vehicle handover deviates from the checklist, Process knows. When a document version is superseded, old versions are locked automatically. The compliance record builds itself in real time — not the week before the audit.</p>
+  <p>The result: external auditors have never seen documentation this complete. Internal teams don't experience compliance as overhead — because it happens as a side effect of doing the work.</p>
+</section>
+
+<hr class="section-divider" />
+
+<!-- CORE FEATURES -->
+<section class="core-features">
+  <div class="section-eyebrow">Core features</div>
+  <h2>What Process does.</h2>
+
+  <div class="features-list">
+
+    <!-- NC State Machine -->
+    <div class="feature-block">
+      <div class="feature-block-header">
+        <div class="feature-icon" style="background:rgba(255,69,58,0.15);">⚠️</div>
+        <div>
+          <h3>Non-Conformances with State Machine</h3>
+        </div>
+      </div>
+      <p>Every non-conformance moves through a strict lifecycle. Severity is assigned at creation (Minor, Major, Critical) and determines escalation rules. An NC cannot skip states — you cannot close what hasn't been analyzed and actioned.</p>
+      
+      <div class="state-machine">
+        <div class="state-node state-open">OPEN</div>
+        <span class="state-arrow">→</span>
+        <div class="state-node state-analyzing">ANALYZING</div>
+        <span class="state-arrow">→</span>
+        <div class="state-node state-action">ACTION</div>
+        <span class="state-arrow">→</span>
+        <div class="state-node state-closed">CLOSED</div>
+      </div>
+
+      <p>Each state requires specific fields to advance: ANALYZING requires a root cause entry; ACTION requires at least one corrective action with an owner and deadline; CLOSED requires a verification sign-off. Critical NCs require manager approval to close.</p>
+      <div class="tech-note">
+        <span class="tech-note-label">Technical</span>
+        <p>NC states are enforced server-side via a transition guard system. Each transition validates required fields and permission levels. Transitions emit <code>nc.state_changed</code> webhook events. State history is immutable — every transition is an append-only log entry with timestamp and actor ID.</p>
+      </div>
+    </div>
+
+    <!-- ISO Compliance -->
+    <div class="feature-block">
+      <div class="feature-block-header">
+        <div class="feature-icon" style="background:rgba(255,149,0,0.15);">📋</div>
+        <div>
+          <h3>ISO Standards Compliance Tracking</h3>
+        </div>
+      </div>
+      <p>pixdrift ships with requirement maps for ISO 9001, 14001, and 45001. Each clause maps to specific controls — document types, process steps, and evidence requirements. As you work in the system, requirements are marked as evidenced automatically.</p>
+      <p>Before an audit, the compliance dashboard shows: which clauses are fully evidenced, which need attention, and what evidence exists for each requirement. An export generates a structured evidence package formatted for external auditors.</p>
+      <div class="tech-note">
+        <span class="tech-note-label">Technical</span>
+        <p>ISO requirement sets are versioned data models (<code>iso_standard_version</code> entities). Each <code>requirement</code> has a <code>control_type</code> (document, process, record) and links to <code>evidence_items</code> generated by platform activity. Compliance score = evidenced requirements / total requirements × 100.</p>
+      </div>
+    </div>
+
+    <!-- Document Control -->
+    <div class="feature-block">
+      <div class="feature-block-header">
+        <div class="feature-icon" style="background:rgba(10,132,255,0.15);">📄</div>
+        <div>
+          <h3>Document Control with Version Management</h3>
+        </div>
+      </div>
+      <p>Documents in Process have a formal lifecycle: Draft → Review → Approved → Obsolete. Only the current approved version is accessible by default. Older versions are archived, not deleted — they're accessible to auditors but not surfaced to users.</p>
+      <p>Document access is controlled by role. Approval workflows are configurable: some documents need one approver, others need a chain. Changes require a change reason. Expiry dates trigger review reminders automatically.</p>
+      <div class="tech-note">
+        <span class="tech-note-label">Technical</span>
+        <p>Document versions use semantic versioning (major.minor). Major versions require approval workflow; minor versions require the document owner's acknowledgment. Files are stored in immutable object storage with content-addressed URIs. Metadata is signed on approval using server-side HMAC-SHA256.</p>
+      </div>
+    </div>
+
+    <!-- Risk Matrix -->
+    <div class="feature-block">
+      <div class="feature-block-header">
+        <div class="feature-icon" style="background:rgba(191,90,242,0.15);">📊</div>
+        <div>
+          <h3>Risk Matrix with Automatic Escalation</h3>
+        </div>
+      </div>
+      <p>Risks are assessed on two axes: probability (1–4) and impact (1–4). The resulting cell determines risk rating and escalation path. Risks above a configurable threshold are escalated automatically — to the responsible owner, their manager, or an audit committee.</p>
+
+      <div class="risk-matrix">
+        <div class="risk-cell risk-header"></div>
+        <div class="risk-cell risk-header">Low impact</div>
+        <div class="risk-cell risk-header">Medium</div>
+        <div class="risk-cell risk-header">High</div>
+        <div class="risk-cell risk-header">Critical</div>
+        <div class="risk-cell risk-header">High prob.</div>
+        <div class="risk-cell risk-medium">M</div>
+        <div class="risk-cell risk-high">H</div>
+        <div class="risk-cell risk-critical">C</div>
+        <div class="risk-cell risk-critical">C</div>
+        <div class="risk-cell risk-header">Med. prob.</div>
+        <div class="risk-cell risk-low">L</div>
+        <div class="risk-cell risk-medium">M</div>
+        <div class="risk-cell risk-high">H</div>
+        <div class="risk-cell risk-critical">C</div>
+        <div class="risk-cell risk-header">Low prob.</div>
+        <div class="risk-cell risk-low">L</div>
+        <div class="risk-cell risk-low">L</div>
+        <div class="risk-cell risk-medium">M</div>
+        <div class="risk-cell risk-high">H</div>
+      </div>
+
+      <div class="tech-note">
+        <span class="tech-note-label">Technical</span>
+        <p>Risk thresholds are defined as JSON policy rules attached to the organization's Process configuration. Escalation actions are configurable per threshold: <code>notify</code>, <code>create_task</code>, <code>create_nc</code>, or <code>webhook</code>. Aligns with ISO 31000 risk management principles.</p>
+      </div>
+    </div>
+
+    <!-- Audit Trail -->
+    <div class="feature-block">
+      <div class="feature-block-header">
+        <div class="feature-icon" style="background:rgba(52,199,89,0.15);">🔒</div>
+        <div>
+          <h3>Immutable Audit Trail</h3>
+        </div>
+      </div>
+      <p>Every action across the entire platform is recorded in the audit trail: who did what, when, and what changed. Records are append-only — no updates, no deletes. Content hashes detect any tampering attempt.</p>
+      <p>The audit trail is exportable as a signed PDF or structured JSON for external auditors. ISO external auditors can be granted read-only access directly — no need to prepare documentation packages manually.</p>
+      <div class="tech-note">
+        <span class="tech-note-label">Technical</span>
+        <p>Audit entries are written to an append-only PostgreSQL partition with <code>SECURITY DEFINER</code> functions preventing direct row modification. Each entry includes a SHA-256 hash of its content plus the previous entry's hash, forming a chain. Monthly chain integrity checks run automatically and alert on any break.</p>
+      </div>
+    </div>
+
+    <!-- Inspection Protocols -->
+    <div class="feature-block">
+      <div class="feature-block-header">
+        <div class="feature-icon" style="background:rgba(100,210,255,0.15);">🔍</div>
+        <div>
+          <h3>Inspection Protocols for Automotive & Industry</h3>
+        </div>
+      </div>
+      <p>Pre-built inspection protocol templates for automotive (pre-delivery inspection, annual service, vehicle handover) and industrial environments. Custom protocols are built with the form builder — checkbox lists, measurement inputs, photo capture, and digital signature.</p>
+      <p>Completed protocols are linked to the relevant entity (vehicle, work order, deal) and stored in the immutable record. Failed inspection items automatically generate NCs with the protocol as source evidence.</p>
+      <div class="tech-note">
+        <span class="tech-note-label">Technical</span>
+        <p>Protocols are defined as JSON schema templates with field types: <code>checkbox</code>, <code>measurement</code>, <code>photo</code>, <code>signature</code>, <code>text</code>. Submitted responses are validated against the schema and stored as immutable <code>protocol_response</code> entities. Photo evidence is stored as content-addressed files with SHA-256 integrity hashes.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="section-divider" />
+
+<!-- INTEGRATIONS -->
+<section class="integrations-map">
+  <div class="section-eyebrow">Module integrations</div>
+  <h2>How Process connects to everything else.</h2>
+  <p>Compliance is most powerful when it's automatic — when work itself generates the compliance record, rather than a separate task.</p>
+
+  <div class="integrations-grid">
+    <div class="integration-row">
+      <span class="integration-from">Task Overdue</span>
+      <span class="integration-arrow">→</span>
+      <span class="integration-to">NC Created</span>
+      <span class="integration-desc">An overdue task in Execution opens an NC in Process with severity based on task priority. NC links back to the task as source.</span>
+    </div>
+    <div class="integration-row">
+      <span class="integration-from">Inspection Fail</span>
+      <span class="integration-arrow">→</span>
+      <span class="integration-to">NC + DMS Note</span>
+      <span class="integration-desc">A failed item in a vehicle inspection protocol creates an NC and adds a note to the vehicle's DMS record simultaneously.</span>
+    </div>
+    <div class="integration-row">
+      <span class="integration-from">Document Approved</span>
+      <span class="integration-arrow">→</span>
+      <span class="integration-to">ISO Evidence</span>
+      <span class="integration-desc">Each document approval automatically creates an evidence entry linked to the relevant ISO requirement clauses.</span>
+    </div>
+    <div class="integration-row">
+      <span class="integration-from">NC Closed</span>
+      <span class="integration-arrow">→</span>
+      <span class="integration-to">Capability Feedback</span>
+      <span class="integration-desc">When an NC root cause links to a skill gap, Capability module receives a development recommendation for the involved team member.</span>
+    </div>
+    <div class="integration-row">
+      <span class="integration-from">Risk Escalated</span>
+      <span class="integration-arrow">→</span>
+      <span class="integration-to">Execution Task</span>
+      <span class="integration-desc">Critical risks above threshold automatically create a task in Execution assigned to the risk owner, with deadline and NC if unaddressed.</span>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider" />
+
+<!-- TECHNICAL -->
+<section class="technical">
+  <div class="section-eyebrow">API Reference</div>
+  <h2>Build on Process.</h2>
+  <p>The Process API is fully RESTful. All write operations are atomic and emit webhook events. The audit trail is readable via API but never writable.</p>
+
+  <table class="api-table">
+    <thead>
+      <tr>
+        <th>Endpoint</th>
+        <th>Method</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>/v1/ncs</td>
+        <td><span class="method-tag method-post">POST</span></td>
+        <td>Create non-conformance. Required: <code>title</code>, <code>severity</code>, <code>source_entity_type</code>, <code>source_entity_id</code>.</td>
+      </tr>
+      <tr>
+        <td>/v1/ncs/{id}/transition</td>
+        <td><span class="method-tag method-post">POST</span></td>
+        <td>Transition NC state. Body: <code>{ "to": "ANALYZING", "root_cause": "..." }</code>. Returns 422 if required fields missing.</td>
+      </tr>
+      <tr>
+        <td>/v1/ncs</td>
+        <td><span class="method-tag method-get">GET</span></td>
+        <td>List NCs. Filter by <code>state</code>, <code>severity</code>, <code>source_entity_id</code>, <code>assignee_id</code>. Paginated.</td>
+      </tr>
+      <tr>
+        <td>/v1/documents</td>
+        <td><span class="method-tag method-post">POST</span></td>
+        <td>Create document draft. Upload file via multipart. Returns document with version <code>0.1</code> and status <code>DRAFT</code>.</td>
+      </tr>
+      <tr>
+        <td>/v1/documents/{id}/approve</td>
+        <td><span class="method-tag method-post">POST</span></td>
+        <td>Approve document. Advances to <code>APPROVED</code> if approval workflow satisfied. Emits <code>document.approved</code> event.</td>
+      </tr>
+      <tr>
+        <td>/v1/audit-trail</td>
+        <td><span class="method-tag method-get">GET</span></td>
+        <td>Read audit trail. Filter by <code>entity_type</code>, <code>entity_id</code>, <code>actor_id</code>, date range. Read-only. Cannot be written via API.</td>
+      </tr>
+      <tr>
+        <td>/v1/risks</td>
+        <td><span class="method-tag method-post">POST</span></td>
+        <td>Create risk. Required: <code>title</code>, <code>probability</code> (1–4), <code>impact</code> (1–4), <code>owner_id</code>.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="code-block"><span class="comment">// Example: Create an NC from an overdue task (automated trigger)</span>
+<span class="key">POST</span> /v1/ncs
+<span class="key">Authorization:</span> <span class="string">Bearer &lt;service_token&gt;</span>
+
+{
+  <span class="key">"title"</span>: <span class="string">"Vehicle handover task overdue — Reg. ABC 123"</span>,
+  <span class="key">"severity"</span>: <span class="string">"MAJOR"</span>,
+  <span class="key">"source_entity_type"</span>: <span class="string">"task"</span>,
+  <span class="key">"source_entity_id"</span>: <span class="string">"task_7xk2p"</span>,
+  <span class="key">"assignee_id"</span>: <span class="string">"usr_e7q1m"</span>,
+  <span class="key">"iso_standard"</span>: <span class="string">"ISO9001"</span>,
+  <span class="key">"iso_clause"</span>: <span class="string">"8.5.1"</span>
+}
+
+<span class="comment">// Response — 201 Created</span>
+{
+  <span class="key">"id"</span>: <span class="string">"nc_4qx8r"</span>,
+  <span class="key">"state"</span>: <span class="string">"OPEN"</span>,
+  <span class="key">"severity"</span>: <span class="string">"MAJOR"</span>,
+  <span class="key">"source"</span>: { <span class="key">"type"</span>: <span class="string">"task"</span>, <span class="key">"id"</span>: <span class="string">"task_7xk2p"</span> },
+  <span class="key">"audit_entry_id"</span>: <span class="string">"aud_m3n1w"</span>,
+  <span class="key">"created_at"</span>: <span class="string">"2026-03-22T03:00:00.000Z"</span>
+}</div>
+</section>
+
+<hr class="section-divider" />
+
+<!-- USE CASES -->
+<section class="use-cases">
+  <div class="section-eyebrow">Who uses it</div>
+  <h2>Process in the real world.</h2>
+
+  <div class="use-cases-grid">
+    <div class="use-case-card">
+      <div class="use-case-industry">Automotive Workshop</div>
+      <div class="use-case-company">Gustafssons Verkstad</div>
+      <div class="use-case-story">ISO 9001 certified workshop. Before pixdrift: 3 days of document prep before each external audit, 40+ NCs tracked in a spreadsheet. Now: audit trail is continuous, external auditor gets read-only access the day before. First audit with pixdrift took 4 hours instead of 2 days.</div>
+      <div class="use-case-metric">↓ 80% audit preparation time</div>
+    </div>
+    <div class="use-case-card">
+      <div class="use-case-industry">Manufacturing</div>
+      <div class="use-case-company">Nordisk Industri AB</div>
+      <div class="use-case-story">Runs ISO 9001 + 14001 simultaneously. Process tracks both standards' requirements against the same underlying work. NCs from production floor tasks are linked directly to ISO 9001 clause 8.7 (nonconforming outputs). Root cause analysis mandatory before any NC advances.</div>
+      <div class="use-case-metric">↓ 60% repeated NCs after 6 months</div>
+    </div>
+    <div class="use-case-card">
+      <div class="use-case-industry">Construction / Site</div>
+      <div class="use-case-company">Byggrätt Syd AB</div>
+      <div class="use-case-story">ISO 45001 occupational health. Site inspections done on tablet using Process inspection protocols. Failed items create NCs immediately. Risk matrix flags high-probability safety risks for instant escalation to the site manager — before anyone leaves the site.</div>
+      <div class="use-case-metric">↓ 45% safety incident rate (year 1)</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider" />
+
+<!-- FAQ -->
+<section class="faq">
+  <div class="section-eyebrow">FAQ</div>
+  <h2>Common questions about Process.</h2>
+
+  <div class="faq-list">
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Which ISO standards does pixdrift Process support?
+        <span class="faq-chevron">▾</span>
+      </button>
+      <div class="faq-answer">Process supports ISO 9001 (Quality Management), ISO 14001 (Environmental Management), and ISO 45001 (Occupational Health & Safety). Standards can be active simultaneously — shared NCs and audits link to requirements across all active standards. Additional standards (ISO 27001, IATF 16949) are on the roadmap.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        What does "immutable audit trail" mean in practice?
+        <span class="faq-chevron">▾</span>
+      </button>
+      <div class="faq-answer">Every action in the Process module — creating an NC, changing its status, adding a corrective action, closing an audit — is recorded with a timestamp, user identity, and a content hash. These records cannot be edited or deleted. During an external audit, you can export a signed PDF of the complete trail, or grant auditors read-only access directly.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        How are non-conformances linked to actual work?
+        <span class="faq-chevron">▾</span>
+      </button>
+      <div class="faq-answer">NCs are linked to source entities: a specific deal, task, work order, or team member. When Execution detects an overdue task, it opens an NC automatically with the task as the source entity. Auditors can trace every NC back to the exact work that triggered it — not just a description, but the actual record in the system.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Can we define custom risk thresholds for escalation?
+        <span class="faq-chevron">▾</span>
+      </button>
+      <div class="faq-answer">Yes. The risk matrix uses a probability × impact grid with configurable thresholds per cell. You define which cells trigger automatic escalation, to whom, and with what priority. Default thresholds align with ISO 31000 guidelines. Enterprise plans include custom escalation actions beyond notify/task — including webhook triggers to external systems.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-question" onclick="toggleFaq(this)">
+        Does Process support automotive inspection protocols?
+        <span class="faq-chevron">▾</span>
+      </button>
+      <div class="faq-answer">Yes. Process ships with inspection protocol templates for automotive (vehicle handover, pre-delivery inspection, annual service checklist) and industrial environments. Custom protocols can be built using the form builder with checkbox lists, measurement inputs, photo capture, and digital signature fields.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h2>Make compliance a side effect of doing the work.</h2>
+  <p>14-day free trial. No credit card required. ISO evidence starts building from day one.</p>
+  <div class="cta-actions">
+    <a href="/checkout.html" class="btn-primary">Start free trial</a>
+    <a href="https://app.bc.pixdrift.com/demo" class="btn-secondary">Book a demo</a>
+  </div>
+</div>
+
+<!-- FEATURE NAVIGATION -->
+<div class="feature-nav">
+  <a href="/features/execution.html">← Execution</a>
+  <span class="center">Operations · Compliance</span>
+  <a href="/features/approval-engine.html">Approval Engine →</a>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-copy">© 2026 pixdrift AB · Stockholm, Sweden</div>
+    <div class="footer-legal">
+      <a href="/legal/privacy.html">Privacy</a>
+      <a href="/legal/terms.html">Terms</a>
+      <a href="/security.html">Security</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    item.classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>
