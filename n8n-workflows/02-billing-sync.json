@@ -1,0 +1,59 @@
+{
+  "name": "Wavult — Billing Sync (var 15 min)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{"field": "cronExpression", "expression": "*/15 * * * *"}]
+        }
+      },
+      "name": "Cron: var 15 min",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://api:3001/api/billing/sync-pending",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "Content-Type", "value": "application/json"}]}
+      },
+      "name": "POST Sync Pending Events",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [{"value1": "={{$node['POST Sync Pending Events'].json.data.failed}}", "operation": "largerEqual", "value2": 5}]
+        }
+      },
+      "name": "5+ failed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "dev@hypbit.com",
+        "toEmail": "dev@hypbit.com",
+        "subject": "⚠️ Wavult Billing Sync: {{$node['POST Sync Pending Events'].json.data.failed}} events misslyckades",
+        "text": "Billing sync resultat:\n- Synkade: {{$node['POST Sync Pending Events'].json.data.synced}}\n- Misslyckade: {{$node['POST Sync Pending Events'].json.data.failed}}\n\nKolla Lago-konnektivitet."
+      },
+      "name": "Email: Sync Failure Alert",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [850, 200]
+    }
+  ],
+  "connections": {
+    "Cron: var 15 min": {"main": [[{"node": "POST Sync Pending Events", "type": "main", "index": 0}]]},
+    "POST Sync Pending Events": {"main": [[{"node": "5+ failed?", "type": "main", "index": 0}]]},
+    "5+ failed?": {"main": [[{"node": "Email: Sync Failure Alert", "type": "main", "index": 0}], []]}
+  },
+  "active": false,
+  "settings": {"executionOrder": "v1"},
+  "tags": ["wavult", "billing", "lago"]
+}

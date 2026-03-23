@@ -1,0 +1,75 @@
+{
+  "name": "Wavult — Daily Health Report (07:00)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{"field": "cronExpression", "expression": "0 7 * * *"}]
+        }
+      },
+      "name": "Cron: 07:00 varje dag",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://api:3001/api/governance/health-score",
+        "method": "GET"
+      },
+      "name": "GET Health Score",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://api:3001/api/governance/plan",
+        "method": "GET"
+      },
+      "name": "GET Active Plan",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [450, 450]
+    },
+    {
+      "parameters": {
+        "url": "http://api:3001/api/governance/sweep",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "Content-Type", "value": "application/json"}]}
+      },
+      "name": "POST Full Sweep",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "dev@hypbit.com",
+        "toEmail": "dev@hypbit.com",
+        "subject": "🏦 Wavult Daily Health Report — Score: {{$node['GET Health Score'].json.data.score}}/100",
+        "html": "<h2>Wavult OS — Daily Health Report</h2><p><strong>Health Score: {{$node['GET Health Score'].json.data.score}}/100</strong> {{$node['GET Health Score'].json.data.trend}}</p><h3>Breakdown</h3><ul><li>🔴 Critical issues: {{$node['GET Health Score'].json.data.breakdown.critical_issues}}</li><li>🟠 Errors: {{$node['GET Health Score'].json.data.breakdown.error_issues}}</li><li>🟡 Warnings: {{$node['GET Health Score'].json.data.breakdown.warning_issues}}</li><li>💳 Payment success rate: {{$node['GET Health Score'].json.data.breakdown.payment_success_rate}}%</li><li>📊 Unsynced billing events: {{$node['GET Health Score'].json.data.breakdown.unsynced_billing_events}}</li></ul><h3>Active Improvement Plan</h3><p>{{$node['GET Active Plan'].json.data.summary}}</p><hr><p><em>Wavult Governance Swarm — automatisk rapport</em></p>"
+      },
+      "name": "Email Daily Report",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [850, 300]
+    }
+  ],
+  "connections": {
+    "Cron: 07:00 varje dag": {
+      "main": [
+        [
+          {"node": "GET Health Score", "type": "main", "index": 0},
+          {"node": "GET Active Plan", "type": "main", "index": 0},
+          {"node": "POST Full Sweep", "type": "main", "index": 0}
+        ]
+      ]
+    },
+    "POST Full Sweep": {"main": [[{"node": "Email Daily Report", "type": "main", "index": 0}]]}
+  },
+  "active": false,
+  "settings": {"executionOrder": "v1"},
+  "tags": ["wavult", "governance", "reporting"]
+}

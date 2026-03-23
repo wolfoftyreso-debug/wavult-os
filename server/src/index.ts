@@ -54,6 +54,8 @@ import auditWorkspaceRouter from "./audit-workspace";
 import integrationRouter from "./integrations/integration-api";
 import stripeRouter from "./stripe";
 import notificationsRouter from "./notifications";
+import { billingWebhookRouter } from './billing-webhook';
+import { billingRouter } from './billing-api';
 import checkinRouter from "./checkin-api";
 import learningRouter from "./learning";
 import seoRouter from "./seo";
@@ -472,6 +474,8 @@ app.use(auditWorkspaceRouter);
 app.use(integrationRouter);
 app.use("/api/stripe", stripeRouter);
 app.use("/api/notifications", notificationsRouter);
+app.use('/api/webhooks', billingWebhookRouter);
+app.use('/api/billing', billingRouter);
 app.use(checkinRouter); // Self Check-in API — /api/checkin/*
 app.use("/api/learning", learningRouter);
 app.use("/api/spaghetti", spaghettiRouter); // Lean spaghetti diagram & helikopterperspektiv
@@ -560,12 +564,48 @@ import auditDashboardRouter from './audit-dashboard-api';
 app.use('/api/audit', auditDashboardRouter);               // Audit Dashboard — performance score, certifications, audit log, readiness
 
 // ---------------------------------------------------------------------------
+// quiXzoom Mission Engine — photographer missions, geo-zones, deliverables
+// ---------------------------------------------------------------------------
+import { missionRouter } from './mission-api';
+app.use('/api/missions', missionRouter);                   // GET/POST /api/missions/*, /api/missions/nearby, etc.
+
+// ---------------------------------------------------------------------------
+// quiXzoom Media Pipeline v1 — S3 upload, EXIF extraction, CDN delivery
+// ---------------------------------------------------------------------------
+import { mediaRouter } from './media-api';
+app.use('/api/media', mediaRouter);                        // POST /api/media/request-upload, /confirm/:key, GET /mission/:id, /download/:key, /near
+
+// ---------------------------------------------------------------------------
+// quiXzoom Payout Engine v1 — Fotograf-utbetalningar, escrow, plattformsavgift
+// ---------------------------------------------------------------------------
+import { payoutRouter } from './payout-api';
+app.use('/api/payouts', payoutRouter);                     // POST /api/payouts/mission/:id, GET /api/payouts/photographer/:id, /platform/:orgId
+
+// ---------------------------------------------------------------------------
 // Auth helper for inline routes
 // ---------------------------------------------------------------------------
 const auth = (req: Request, res: Response, next: NextFunction) => {
   if (!(req as any).user) return res.status(401).json({ error: "Unauthorized" });
   next();
 };
+
+// ---------------------------------------------------------------------------
+// Wavult Ledger Core v1 — Double-entry bookkeeping, multi-entity, multi-currency
+// ---------------------------------------------------------------------------
+import { ledgerRouter } from './ledger-api';
+app.use('/api/ledger', auth, ledgerRouter);
+
+// ---------------------------------------------------------------------------
+// Wavult Payment Orchestrator v1 — PaymentIntents, state machine, PSP routing
+// ---------------------------------------------------------------------------
+import { paymentRouter } from './payment-orchestrator-api';
+app.use('/api/payment-intents', auth, paymentRouter);
+
+// ---------------------------------------------------------------------------
+// Wavult Governance Swarm — Ledger Auditor, Payment Auditor, System Health
+// ---------------------------------------------------------------------------
+import { governanceRouter } from './governance-api';
+app.use('/api/governance', auth, governanceRouter);
 
 // ============================================================
 // CERTIFIED OMS: Task Catalog API

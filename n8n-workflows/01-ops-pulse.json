@@ -1,0 +1,74 @@
+{
+  "name": "Wavult — Ops Pulse (var 30 min)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{"field": "cronExpression", "expression": "*/30 * * * *"}]
+        }
+      },
+      "name": "Cron: var 30 min",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://api:3001/api/governance/health-score",
+        "method": "GET",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth"
+      },
+      "name": "GET Health Score",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://api:3001/api/governance/sweep",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "Content-Type", "value": "application/json"}]},
+        "sendBody": true,
+        "bodyParameters": {"parameters": []}
+      },
+      "name": "POST Governance Sweep",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [{"value1": "={{$node['GET Health Score'].json.data.score}}", "operation": "smallerEqual", "value2": 70}]
+        }
+      },
+      "name": "Score < 70?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "dev@hypbit.com",
+        "toEmail": "dev@hypbit.com",
+        "subject": "⚠️ Wavult Health Score: {{$node['GET Health Score'].json.data.score}}/100",
+        "text": "Health Score: {{$node['GET Health Score'].json.data.score}}/100\nTrend: {{$node['GET Health Score'].json.data.trend}}\n\nBreakdown:\n- Critical issues: {{$node['GET Health Score'].json.data.breakdown.critical_issues}}\n- Errors: {{$node['GET Health Score'].json.data.breakdown.error_issues}}\n- Warnings: {{$node['GET Health Score'].json.data.breakdown.warning_issues}}\n- Payment success rate: {{$node['GET Health Score'].json.data.breakdown.payment_success_rate}}%\n\nLogga in på governance dashboard för detaljer."
+      },
+      "name": "Email Alert",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [1050, 200]
+    }
+  ],
+  "connections": {
+    "Cron: var 30 min": {"main": [[{"node": "GET Health Score", "type": "main", "index": 0}]]},
+    "GET Health Score": {"main": [[{"node": "POST Governance Sweep", "type": "main", "index": 0}]]},
+    "POST Governance Sweep": {"main": [[{"node": "Score < 70?", "type": "main", "index": 0}]]},
+    "Score < 70?": {"main": [[{"node": "Email Alert", "type": "main", "index": 0}], []]}
+  },
+  "active": false,
+  "settings": {"executionOrder": "v1"},
+  "tags": ["wavult", "governance", "ops"]
+}
