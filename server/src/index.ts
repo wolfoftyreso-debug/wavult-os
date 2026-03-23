@@ -273,6 +273,45 @@ app.use("/api/auth", authRouter);
 // Health check — MUST be before auth middleware so it's always public
 // Enterprise-grade: checks actual service connectivity
 // ---------------------------------------------------------------------------
+// Status dashboard — public, no auth
+import { getStatusDashboardHTML } from './status-dashboard';
+app.get("/status", (req: Request, res: Response) => {
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.send(getStatusDashboardHTML(req));
+});
+
+// Status probe — checks external URLs for the dashboard
+app.get("/api/status-probe", async (req: Request, res: Response) => {
+  const url = req.query.url as string;
+  if (!url || !url.startsWith('https://')) {
+    return res.status(400).json({ ok: false, error: 'invalid url' });
+  }
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+    const r = await fetch(url, { method: 'GET', signal: controller.signal, redirect: 'follow' });
+    clearTimeout(timeout);
+    res.json({ ok: r.ok, status: r.status });
+  } catch (e: any) {
+    res.json({ ok: false, error: String(e?.message ?? e) });
+  }
+});
+
+// Subscribe endpoint — saves to a simple JSON log
+import fs from 'fs';
+import path from 'path';
+app.post("/api/subscribe", (req: Request, res: Response) => {
+  const { name, email, source } = req.body || {};
+  if (!email) return res.status(400).json({ error: 'email required' });
+  try {
+    const file = path.join('/tmp', 'hypbit-subscribers.json');
+    const existing = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : [];
+    existing.push({ name, email, source, ts: new Date().toISOString() });
+    fs.writeFileSync(file, JSON.stringify(existing, null, 2));
+    res.json({ ok: true });
+  } catch { res.json({ ok: true }); } // fail silently
+});
+
 app.get("/health", async (_req: Request, res: Response) => {
   const start = Date.now();
 
