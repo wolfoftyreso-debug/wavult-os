@@ -547,18 +547,64 @@ export function getStatusDashboardHTML(req: any): string {
 
       <!-- Subscribe -->
       <div class="card">
-        <div class="card-title">📬 Prenumerera på Morning Brief</div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:4px;line-height:1.6">Daglig uppdatering från Erik Svensson kl 08:00 — serverstatus, AI-nyheter och mer.</div>
-        <div id="sub-success-msg" class="sub-success">✅ Du är med! Nästa brief kl 08:00.</div>
+        <div class="card-title">🔔 Prenumerera på serverstatus</div>
+        <div style="font-size:13px;color:#8899cc;margin-bottom:14px;line-height:1.7">
+          Vill du få <strong style="color:#e8e8f0">serverstatusrapporten kl 08:00 och 20:00</strong> — samma rapport som Erik får?<br>
+          Fyll i ditt namn och mail nedan.
+        </div>
+        <div id="sub-success-msg" class="sub-success">✅ Du är med! Nästa statusrapport kl 08:00.</div>
         <form class="sub-form" id="sub-form" onsubmit="handleSub(event)">
           <input class="sub-input" type="text" id="sub-name" placeholder="Ditt namn" required>
           <input class="sub-input" type="email" id="sub-email" placeholder="din@email.com" required>
           <button type="submit" class="sub-btn" id="sub-btn">🔔 Prenumerera</button>
         </form>
-        <div style="font-size:10px;color:#222240;margin-top:8px;" id="sub-count-display">Laddar prenumeranter...</div>
       </div>
     </div>
 
+  </div>
+
+  <!-- ── SUBSCRIBER WALL ── -->
+  <div class="card full" style="margin-top:8px;">
+    <div class="card-title">👥 Prenumeranter på serverstatus</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:20px;">Dessa personer följer driftstatusen live — kl 08:00 och 20:00 varje dag.</div>
+
+    <div id="subscriber-wall" style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:8px;">
+      <!-- Loaded by JS -->
+      <div style="background:#0a0a1e;border:1px solid #1a1a3a;border-radius:10px;padding:10px 16px;display:flex;align-items:center;gap:10px;">
+        <div style="width:32px;height:32px;background:#0d2a1a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;">👨‍💻</div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:#e8e8f0;">Dennis</div>
+          <div style="font-size:10px;color:#4ade80;margin-top:1px;">dennis@hypbit.com · Inviterad av Erik</div>
+        </div>
+      </div>
+      <div style="background:#0a0a1e;border:1px solid #1a1a3a;border-radius:10px;padding:10px 16px;display:flex;align-items:center;gap:10px;">
+        <div style="width:32px;height:32px;background:#0d2a1a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;">👨‍💻</div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:#e8e8f0;">Leon</div>
+          <div style="font-size:10px;color:#4ade80;margin-top:1px;">leon@hypbit.com · Inviterad av Erik</div>
+        </div>
+      </div>
+      <div style="background:#0a0a1e;border:1px solid #1a1a3a;border-radius:10px;padding:10px 16px;display:flex;align-items:center;gap:10px;">
+        <div style="width:32px;height:32px;background:#0d2a1a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;">👨‍💻</div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:#e8e8f0;">Winston</div>
+          <div style="font-size:10px;color:#4ade80;margin-top:1px;">winston@hypbit.com · Inviterad av Erik</div>
+        </div>
+      </div>
+      <div style="background:#0a0a1e;border:1px solid #1a1a3a;border-radius:10px;padding:10px 16px;display:flex;align-items:center;gap:10px;">
+        <div style="width:32px;height:32px;background:#0d2a1a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;">👨‍💻</div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:#e8e8f0;">Johan</div>
+          <div style="font-size:10px;color:#4ade80;margin-top:1px;">johan@hypbit.com · Inviterad av Erik</div>
+        </div>
+      </div>
+      <!-- New subscribers rendered here by JS -->
+      <div id="new-subscriber-cards"></div>
+    </div>
+
+    <div style="font-size:11px;color:#2a2a4a;margin-top:8px;border-top:1px solid #1a1a2a;padding-top:12px;">
+      Totalt <strong id="total-sub-count" style="color:#5566aa;">4</strong> prenumeranter · Prenumerera ovan för att visas här
+    </div>
   </div>
 
 </div>
@@ -674,42 +720,67 @@ async function checkUrls(){
   }
 }
 
-// ── SUBSCRIBE ──────────────────────────────────────────────────────────────
-function loadSubCount(){
+// ── SUBSCRIBER WALL ────────────────────────────────────────────────────────
+function renderSubscriberWall(){
   try {
     const subs = JSON.parse(localStorage.getItem('hypbit_status_subs') || '[]');
-    const base = 4; // Dennis, Leon, Winston, Johan
-    const total = base + subs.length;
-    document.getElementById('sub-count-display').textContent =
-      total + ' prenumeranter · senast: ' + (subs[subs.length-1]?.name || 'teamet');
+    const container = document.getElementById('new-subscriber-cards');
+    if(!container) return;
+    container.innerHTML = '';
+    subs.forEach(s => {
+      const d = new Date(s.ts);
+      const pad = n => String(n).padStart(2,'0');
+      const when = pad(d.getDate())+'/'+pad(d.getMonth()+1)+' '+pad(d.getHours())+':'+pad(d.getMinutes());
+      const initials = (s.name||'?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+      container.innerHTML += \`
+        <div style="background:#0a0a1e;border:1.5px solid #3a1a5a;border-radius:10px;padding:10px 16px;display:flex;align-items:center;gap:10px;">
+          <div style="width:32px;height:32px;background:#1a0a2a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#a855f7;">\${initials}</div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:#e8e8f0;">\${s.name}</div>
+            <div style="font-size:10px;color:#a855f7;margin-top:1px;">Prenumererade \${when}</div>
+          </div>
+        </div>\`;
+    });
+    const total = 4 + subs.length;
+    const countEl = document.getElementById('total-sub-count');
+    if(countEl) countEl.textContent = String(total);
   } catch {}
 }
 
 async function handleSub(e){
   e.preventDefault();
-  const name  = document.getElementById('sub-name').value.trim();
-  const email = document.getElementById('sub-email').value.trim();
-  const btn   = document.getElementById('sub-btn');
+  const name  = (document.getElementById('sub-name') as HTMLInputElement).value.trim();
+  const email = (document.getElementById('sub-email') as HTMLInputElement).value.trim();
+  const btn   = document.getElementById('sub-btn') as HTMLButtonElement;
   btn.textContent = '⏳ Sparar...'; btn.disabled = true;
 
-  // Save locally
+  // Save to localStorage so wall updates immediately
   try {
     const subs = JSON.parse(localStorage.getItem('hypbit_status_subs') || '[]');
-    subs.push({ name, email, ts: new Date().toISOString() });
-    localStorage.setItem('hypbit_status_subs', JSON.stringify(subs));
+    // Prevent duplicates
+    if(!subs.find((s:any) => s.email === email)){
+      subs.push({ name, email, ts: new Date().toISOString() });
+      localStorage.setItem('hypbit_status_subs', JSON.stringify(subs));
+    }
   } catch {}
 
-  // Try server endpoint
-  try { await fetch('/api/subscribe', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({name,email,source:'status-dashboard'}) }); } catch {}
+  // Send to server
+  try {
+    await fetch('/api/subscribe', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ name, email, source:'status-dashboard' })
+    });
+  } catch {}
 
-  document.getElementById('sub-form').style.display = 'none';
-  document.getElementById('sub-success-msg').style.display = 'block';
-  loadSubCount();
+  document.getElementById('sub-form')!.style.display = 'none';
+  document.getElementById('sub-success-msg')!.style.display = 'block';
+  renderSubscriberWall();
 }
 
 // ── INIT ───────────────────────────────────────────────────────────────────
 checkHealth();
-loadSubCount();
+renderSubscriberWall();
 setTimeout(checkUrls, 500);
 setInterval(checkHealth, 30000);
 setInterval(checkUrls, 60000);
