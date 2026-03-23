@@ -31,7 +31,7 @@ EXPOSE 3001
 
 # Healthcheck — kollar /api/health var 30:e sekund
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD wget -qO- http://localhost:3001/api/health || exit 1
+  CMD wget -qO- http://localhost:3001/health || exit 1
 
 # Startkommando
 CMD ["npx", "tsx", "src/index.ts"]
