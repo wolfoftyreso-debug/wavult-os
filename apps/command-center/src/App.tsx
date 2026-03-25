@@ -1,6 +1,11 @@
+// ─── Wavult OS v2 — Application Root ───────────────────────────────────────────
+// Provider hierarchy: Role → EntityScope → Operator → Events → Shell
+
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { RoleProvider, useRole } from './shared/auth/RoleContext'
 import { EntityScopeProvider } from './shared/scope/EntityScopeContext'
+import { OperatorProvider } from './core/operator/OperatorContext'
+import { EventProvider } from './core/events/EventContext'
 import { RoleLogin } from './shared/auth/RoleLogin'
 import { Shell } from './shared/layout/Shell'
 import { RoleDashboard } from './features/dashboard/RoleDashboard'
@@ -25,27 +30,31 @@ function AuthenticatedApp() {
   if (!role) return <RoleLogin />
 
   return (
-    <Shell>
-      <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/dashboard" element={<RoleDashboard />} />
-        <Route path="/projects" element={<ProjectsView />} />
-        <Route path="/tasks" element={<TasksView />} />
-        <Route path="/people" element={<PeopleView />} />
-        <Route path="/transactions" element={<TransactionFeed />} />
-        <Route path="/org" element={<OrgGraph />} />
-        <Route path="/org/context" element={<ContextView />} />
-        <Route path="/org/command" element={<CommandHierarchyView />} />
-        <Route path="/incidents" element={<IncidentCenter />} />
-        <Route path="/entities" element={<EntityView />} />
-        <Route path="/entities/:entityId" element={<EntityView />} />
-        <Route path="/markets" element={<MarketMap />} />
-        <Route path="/campaigns" element={<CampaignOS />} />
-        <Route path="/submissions" element={<SubmissionsView />} />
-        <Route path="/legal" element={<LegalHub />} />
-        <Route path="/company-launch" element={<CompanyLaunchView />} />
-      </Routes>
-    </Shell>
+    <OperatorProvider>
+      <EventProvider>
+        <Shell>
+          <Routes>
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard" element={<RoleDashboard />} />
+            <Route path="/projects" element={<ProjectsView />} />
+            <Route path="/tasks" element={<TasksView />} />
+            <Route path="/people" element={<PeopleView />} />
+            <Route path="/transactions" element={<TransactionFeed />} />
+            <Route path="/org" element={<OrgGraph />} />
+            <Route path="/org/context" element={<ContextView />} />
+            <Route path="/org/command" element={<CommandHierarchyView />} />
+            <Route path="/incidents" element={<IncidentCenter />} />
+            <Route path="/entities" element={<EntityView />} />
+            <Route path="/entities/:entityId" element={<EntityView />} />
+            <Route path="/markets" element={<MarketMap />} />
+            <Route path="/campaigns" element={<CampaignOS />} />
+            <Route path="/submissions" element={<SubmissionsView />} />
+            <Route path="/legal" element={<LegalHub />} />
+            <Route path="/company-launch" element={<CompanyLaunchView />} />
+          </Routes>
+        </Shell>
+      </EventProvider>
+    </OperatorProvider>
   )
 }
 
