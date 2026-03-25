@@ -3,6 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom'
 import { EntitySwitcher } from '../../features/entity-switcher/EntitySwitcher'
 import { useRole, ROLES } from '../auth/RoleContext'
 import { generateIncidents } from '../../features/incidents/incidentEngine'
+import { useEntityScope } from '../scope/EntityScopeContext'
 
 function ContentArea({ children }: { children: React.ReactNode }) {
   const { pathname } = useLocation()
@@ -35,6 +36,7 @@ const navItems = [
 
 export function Shell({ children }: ShellProps) {
   const { role, setRole, isAdmin, viewAs, setViewAs, effectiveRole } = useRole()
+  const { activeEntity: scopeEntity, scopedEntities } = useEntityScope()
   const nonAdminRoles = ROLES.filter(r => r.id !== 'admin')
   const criticalIncidentCount = useMemo(() => {
     try {
@@ -56,6 +58,17 @@ export function Shell({ children }: ShellProps) {
         {/* Entity Switcher */}
         <div className="px-3 py-3 border-b border-surface-border">
           <EntitySwitcher />
+        </div>
+
+        {/* Scope context indicator */}
+        <div className="px-3 py-1.5 border-b border-surface-border">
+          <div className="flex items-center gap-1.5">
+            <span className="h-1.5 w-1.5 rounded-full" style={{ background: scopeEntity.color }} />
+            <span className="text-[9px] text-gray-600 font-mono">
+              {scopeEntity.layer === 0 ? 'Group view' : `${scopeEntity.shortName} view`}
+            </span>
+            <span className="text-[9px] text-gray-700 ml-auto font-mono">{scopedEntities.length}e</span>
+          </div>
         </div>
 
         {/* Nav */}

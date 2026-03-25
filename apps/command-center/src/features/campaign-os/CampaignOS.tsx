@@ -18,6 +18,7 @@ import {
 import { ENTITIES } from '../org-graph/data'
 import { COMMAND_CHAIN } from '../org-graph/commandChain'
 import { MARKET_SITES } from '../market-sites/data'
+import { useEntityScope } from '../../shared/scope/EntityScopeContext'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -474,6 +475,7 @@ export function CampaignOS() {
   const [filterChannel, setFilterChannel] = useState<string>('all')
   const [filterStatus, setFilterStatus] = useState<string>('all')
   const [filterCountry, setFilterCountry] = useState<string>('all')
+  const { isInScope, activeEntity: scopeEntity } = useEntityScope()
 
   const brands = useMemo(() =>
     Array.from(new Set(CAMPAIGN_ACTIVITIES.map(a => a.brand))).sort(),
@@ -494,13 +496,14 @@ export function CampaignOS() {
 
   const filtered = useMemo(() => {
     return CAMPAIGN_ACTIVITIES.filter(a => {
+      if (!isInScope(a.entity_id)) return false
       if (filterBrand !== 'all' && a.brand !== filterBrand) return false
       if (filterChannel !== 'all' && a.channel !== filterChannel) return false
       if (filterStatus !== 'all' && a.status !== filterStatus) return false
       if (filterCountry !== 'all' && a.country !== filterCountry) return false
       return true
     })
-  }, [filterBrand, filterChannel, filterStatus, filterCountry])
+  }, [isInScope, filterBrand, filterChannel, filterStatus, filterCountry])
 
   // Summary counts
   const deployedCount = filtered.filter(a => a.status === 'deployed').length
@@ -583,6 +586,14 @@ export function CampaignOS() {
               <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full"
                 style={{ background: '#EF444420', color: '#EF4444' }}>
                 {failedCount} failed
+              </span>
+            )}
+            {scopeEntity.id !== 'wavult-group' && (
+              <span
+                className="text-[9px] font-mono px-1.5 py-0.5 rounded"
+                style={{ background: scopeEntity.color + '15', color: scopeEntity.color }}
+              >
+                scope: {scopeEntity.shortName}
               </span>
             )}
           </div>

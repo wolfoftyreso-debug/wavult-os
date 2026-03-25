@@ -5,6 +5,7 @@ import {
   MarketSite, SiteStatus, ProductType,
 } from './data'
 import { COMMAND_CHAIN } from '../org-graph/commandChain'
+import { useEntityScope } from '../../shared/scope/EntityScopeContext'
 
 // ─── Flag emoji helper ────────────────────────────────────────────────────────
 
@@ -531,9 +532,11 @@ export function MarketMap() {
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [productFilter, setProductFilter] = useState<string>('all')
   const [search, setSearch] = useState('')
+  const { isInScope, activeEntity: scopeEntity } = useEntityScope()
 
   const filteredSites = useMemo(() => {
     return MARKET_SITES.filter(site => {
+      if (!isInScope(site.entity_id)) return false
       if (regionFilter !== 'all' && site.region !== regionFilter) return false
       if (statusFilter !== 'all' && site.status !== statusFilter) return false
       if (productFilter !== 'all' && site.product_type !== productFilter) return false
@@ -543,7 +546,7 @@ export function MarketMap() {
       }
       return true
     })
-  }, [regionFilter, statusFilter, productFilter, search])
+  }, [isInScope, regionFilter, statusFilter, productFilter, search])
 
   const activeSiteCount = MARKET_SITES.filter(s => s.status === 'active' || s.status === 'scaling').length
 
@@ -605,6 +608,14 @@ export function MarketMap() {
             style={{ background: '#10B98120', color: '#10B981' }}>
             {activeSiteCount} active
           </span>
+          {scopeEntity.id !== 'wavult-group' && (
+            <span
+              className="text-[9px] font-mono px-1.5 py-0.5 rounded"
+              style={{ background: scopeEntity.color + '15', color: scopeEntity.color }}
+            >
+              scope: {scopeEntity.shortName}
+            </span>
+          )}
         </div>
       </div>
 

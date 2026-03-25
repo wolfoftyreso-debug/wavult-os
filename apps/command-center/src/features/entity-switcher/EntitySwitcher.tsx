@@ -1,103 +1,82 @@
 import { useState } from 'react'
+import { ENTITIES } from '../org-graph/data'
+import { useEntityScope } from '../../shared/scope/EntityScopeContext'
 
-interface Entity {
-  id: string
-  name: string
-  shortName: string
-  jurisdiction: string
-  type: 'holding' | 'operating'
-  color: string
-}
-
-const WAVULT_ENTITIES: Entity[] = [
-  {
-    id: 'wavult-holding',
-    name: 'Wavult Group Holding',
-    shortName: 'WGH',
-    jurisdiction: 'AE-DIFC',
-    type: 'holding',
-    color: '#8B5CF6',
-  },
-  {
-    id: 'wavult-tech-llc',
-    name: 'Wavult Technologies LLC',
-    shortName: 'WTL',
-    jurisdiction: 'US-TX',
-    type: 'operating',
-    color: '#3B82F6',
-  },
-  {
-    id: 'wavult-intelligence-uab',
-    name: 'Wavult Intelligence UAB',
-    shortName: 'WIU',
-    jurisdiction: 'LT',
-    type: 'operating',
-    color: '#06B6D4',
-  },
-]
-
-const JURISDICTION_FLAGS: Record<string, string> = {
-  'AE-DIFC': '🇦🇪',
-  'US-TX': '🇺🇸',
-  'LT': '🇱🇹',
+const FLAG_MAP: Record<string, string> = {
+  Dubai: '🇦🇪', 'EU-LT': '🇱🇹', 'US-DE': '🇺🇸', 'US-TX': '🇺🇸', SE: '🇸🇪', Global: '🌐',
 }
 
 export function EntitySwitcher() {
-  const [activeEntity, setActiveEntity] = useState<Entity>(WAVULT_ENTITIES[0])
+  const { activeEntity, setActiveEntity } = useEntityScope()
   const [open, setOpen] = useState(false)
+
+  // Sort entities by layer then name for hierarchy display
+  const sorted = [...ENTITIES].sort((a, b) => a.layer - b.layer || a.name.localeCompare(b.name))
+
+  const statusDot: Record<string, string> = { live: '#10B981', forming: '#F59E0B', planned: '#6B7280' }
 
   return (
     <div className="relative">
+      {/* Trigger button */}
       <button
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg bg-surface-overlay hover:bg-surface-border transition-colors text-left"
+        onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg bg-[#0D0F1A] hover:bg-[#111420] border border-white/[0.06] transition-colors text-left"
       >
         <div
-          className="h-6 w-6 rounded-md flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
+          className="h-6 w-6 rounded-md flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0"
           style={{ backgroundColor: activeEntity.color }}
         >
-          {activeEntity.shortName[0]}
+          {activeEntity.flag}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-semibold text-white truncate">{activeEntity.shortName}</p>
-          <p className="text-xs text-gray-500">{JURISDICTION_FLAGS[activeEntity.jurisdiction]} {activeEntity.jurisdiction}</p>
+          <p className="text-[11px] font-semibold text-white truncate">{activeEntity.shortName}</p>
+          <p className="text-[9px] text-gray-600 font-mono">{activeEntity.jurisdiction} · L{activeEntity.layer}</p>
         </div>
-        <span className="text-gray-500 text-xs">{open ? '▲' : '▼'}</span>
+        <span className="text-gray-600 text-[9px]">{open ? '▲' : '▼'}</span>
       </button>
 
+      {/* Dropdown */}
       {open && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-surface-overlay border border-surface-border rounded-xl shadow-xl z-50 overflow-hidden">
-          <p className="px-3 py-2 text-xs text-gray-500 font-semibold uppercase tracking-wider border-b border-surface-border">
-            Wavult Group
-          </p>
-          {WAVULT_ENTITIES.map((entity) => (
-            <button
-              key={entity.id}
-              onClick={() => { setActiveEntity(entity); setOpen(false) }}
-              className={`w-full flex items-center gap-2.5 px-3 py-2.5 hover:bg-surface-border transition-colors text-left ${
-                entity.id === activeEntity.id ? 'bg-brand-accent/10' : ''
-              }`}
-            >
-              <div
-                className="h-7 w-7 rounded-lg flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
-                style={{ backgroundColor: entity.color }}
-              >
-                {entity.shortName[0]}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold text-white truncate">{entity.name}</p>
-                <p className="text-xs text-gray-500">
-                  {JURISDICTION_FLAGS[entity.jurisdiction]} {entity.jurisdiction} · {entity.type}
-                </p>
-              </div>
-              {entity.id === activeEntity.id && <span className="text-brand-accent text-xs">✓</span>}
-            </button>
-          ))}
-          <div className="border-t border-surface-border px-3 py-2">
-            <button className="text-xs text-gray-500 hover:text-brand-accent transition-colors">
-              + Add entity
-            </button>
+        <div className="absolute top-full left-0 right-0 mt-1 bg-[#09090F] border border-white/[0.08] rounded-xl shadow-2xl z-50 overflow-hidden max-h-80 overflow-y-auto">
+          <div className="px-3 py-2 border-b border-white/[0.05]">
+            <p className="text-[9px] text-gray-700 font-bold uppercase tracking-[0.15em]">Wavult Group Entities</p>
           </div>
+          {sorted.map((entity) => {
+            const isActive = entity.id === activeEntity.id
+            const dot = statusDot[entity.active_status]
+            return (
+              <button
+                key={entity.id}
+                onClick={() => { setActiveEntity(entity); setOpen(false) }}
+                className={`w-full flex items-center gap-2.5 px-3 py-2 hover:bg-white/[0.03] transition-colors text-left ${
+                  isActive ? 'bg-white/[0.04]' : ''
+                }`}
+              >
+                {/* Layer indent as left padding */}
+                {entity.layer > 0 && (
+                  <span
+                    className="text-gray-800 text-[9px] font-mono flex-shrink-0"
+                    style={{ width: entity.layer * 12 }}
+                  >
+                    {'└─'}
+                  </span>
+                )}
+                <span className="text-sm flex-shrink-0">{entity.flag}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <p className="text-[11px] font-semibold text-white truncate">{entity.shortName}</p>
+                    <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: dot }} />
+                  </div>
+                  <p className="text-[9px] text-gray-600 font-mono truncate">
+                    {FLAG_MAP[entity.jurisdiction] ?? ''} {entity.jurisdiction}
+                  </p>
+                </div>
+                {isActive && (
+                  <span className="text-[9px] font-mono flex-shrink-0" style={{ color: entity.color }}>●</span>
+                )}
+              </button>
+            )
+          })}
         </div>
       )}
     </div>

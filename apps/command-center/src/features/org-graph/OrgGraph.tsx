@@ -6,6 +6,7 @@ import {
   Entity, EntityRelationship, RelationshipType,
 } from './data'
 import { useRole } from '../../shared/auth/RoleContext'
+import { useEntityScope } from '../../shared/scope/EntityScopeContext'
 import { ROLE_PERMISSIONS, GraphPermissions } from './permissions'
 import { COMMAND_CHAIN, getDirectReports, getApexRole } from './commandChain'
 import { generateIncidents, computePropagation, getRoleKPIs, getKPIStatus, KPI_STATUS_COLOR } from '../incidents/incidentEngine'
@@ -986,6 +987,7 @@ function CommandChainLayer({
 
 export function OrgGraph() {
   const { effectiveRole } = useRole()
+  const { scopedEntities, activeEntity: scopeEntity } = useEntityScope()
 
   // Resolve permissions from current role
   const perms: GraphPermissions = useMemo(() => {
@@ -994,10 +996,14 @@ export function OrgGraph() {
   }, [effectiveRole])
 
   const positions = useMemo(() => layoutNodes(perms.visibleLayers), [perms.visibleLayers])
-  const visibleEntities = useMemo(() =>
-    ENTITIES.filter(e => perms.visibleLayers.includes(e.layer)),
-    [perms.visibleLayers]
-  )
+  const visibleEntities = useMemo(() => {
+    const scopedIds = new Set(scopedEntities.map(e => e.id))
+    return ENTITIES.filter(e => {
+      if (!scopedIds.has(e.id)) return false
+      if (!perms.visibleLayers.includes(e.layer)) return false
+      return true
+    })
+  }, [scopedEntities, perms.visibleLayers])
   const visibleRels = useMemo(() =>
     RELATIONSHIPS.filter(r =>
       perms.visibleRelTypes.includes(r.type) &&
@@ -1090,6 +1096,14 @@ export function OrgGraph() {
             <span className="text-[10px] text-gray-700 font-mono">
               {visibleEntities.length}e · {visibleRels.length}r
             </span>
+            {scopeEntity.id !== 'wavult-group' && (
+              <span
+                className="text-[9px] font-mono px-1.5 py-0.5 rounded"
+                style={{ background: scopeEntity.color + '15', color: scopeEntity.color }}
+              >
+                scope: {scopeEntity.shortName}
+              </span>
+            )}
           </div>
 
           {/* Right: Viewing Context + 3 overlays */}
