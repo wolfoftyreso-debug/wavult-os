@@ -1006,13 +1006,12 @@ export function OrgGraph() {
 
   const positions = useMemo(() => layoutNodes(perms.visibleLayers), [perms.visibleLayers])
   const visibleEntities = useMemo(() => {
-    const scopedIds = new Set(scopedEntities.map(e => e.id))
-    return ENTITIES.filter(e => {
-      if (!scopedIds.has(e.id)) return false
-      if (!perms.visibleLayers.includes(e.layer)) return false
-      return true
-    })
-  }, [scopedEntities, perms.visibleLayers])
+    // Always show ALL entities in visible layers — scope dims rather than hides
+    return ENTITIES.filter(e => perms.visibleLayers.includes(e.layer))
+  }, [perms.visibleLayers])
+
+  // Entities outside current scope get dimmed (not hidden)
+  const scopedIds = useMemo(() => new Set(scopedEntities.map(e => e.id)), [scopedEntities])
   const visibleRels = useMemo(() =>
     RELATIONSHIPS.filter(r =>
       perms.visibleRelTypes.includes(r.type) &&
@@ -1049,12 +1048,18 @@ export function OrgGraph() {
 
   // Compute which entities should be dimmed
   const dimmedIds = useMemo(() => {
-    if (!perms.dimmedByDefault && !selectedEntity) return new Set<string>()
+    const outOfScope = new Set(visibleEntities.filter(e => !scopedIds.has(e.id)).map(e => e.id))
+
+    if (!perms.dimmedByDefault && !selectedEntity) return outOfScope
+
     if (selectedEntity) {
       const connectedRels = getRelationships(selectedEntity.id).filter(r => perms.visibleRelTypes.includes(r.type))
       const connectedIds = new Set<string>([selectedEntity.id])
       connectedRels.forEach(r => { connectedIds.add(r.from_entity_id); connectedIds.add(r.to_entity_id) })
-      return new Set(visibleEntities.filter(e => !connectedIds.has(e.id)).map(e => e.id))
+      const selectionDimmed = new Set(visibleEntities.filter(e => !connectedIds.has(e.id)).map(e => e.id))
+      // Merge: dim if out-of-scope OR not connected to selection
+      outOfScope.forEach(id => selectionDimmed.add(id))
+      return selectionDimmed
     }
     // dimmedByDefault with no selection: dim non-highlighted rel entities
     if (perms.dimmedByDefault && perms.highlightRelTypes.length > 0) {
@@ -1063,10 +1068,12 @@ export function OrgGraph() {
         highlightedEntityIds.add(r.from_entity_id)
         highlightedEntityIds.add(r.to_entity_id)
       })
-      return new Set(visibleEntities.filter(e => !highlightedEntityIds.has(e.id)).map(e => e.id))
+      const roleDimmed = new Set(visibleEntities.filter(e => !highlightedEntityIds.has(e.id)).map(e => e.id))
+      outOfScope.forEach(id => roleDimmed.add(id))
+      return roleDimmed
     }
-    return new Set<string>()
-  }, [selectedEntity, perms, visibleEntities, visibleRels])
+    return outOfScope
+  }, [selectedEntity, perms, visibleEntities, visibleRels, scopedIds])
 
   // Compute edge opacity
   // Non-ownership edges get very low opacity unless highlighted or showAllEdges mode
