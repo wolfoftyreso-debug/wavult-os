@@ -11,15 +11,18 @@ import {
 } from './entityData'
 import { useRole } from '../../shared/auth/RoleContext'
 import { ROLE_PERMISSIONS } from '../org-graph/permissions'
+import { computeHealthScore } from './healthScore'
+import { HealthScorePanel, HealthBadge, HealthBar, LEVEL_COLOR } from './HealthScoreWidget'
 
 // ─── Tab definitions ──────────────────────────────────────────────────────────
 
-type TabId = 'overview' | 'finance' | 'legal' | 'people' | 'ops' | 'systems' | 'relations'
+type TabId = 'overview' | 'health' | 'finance' | 'legal' | 'people' | 'ops' | 'systems' | 'relations'
 
 interface Tab { id: TabId; label: string; icon: string; requiresScope?: string }
 
 const ALL_TABS: Tab[] = [
   { id: 'overview',   label: 'Overview',       icon: '⬛' },
+  { id: 'health',     label: 'Health',          icon: '❤️' },
   { id: 'finance',    label: 'Finance',         icon: '💰', requiresScope: 'finance' },
   { id: 'legal',      label: 'Legal',           icon: '⚖️', requiresScope: 'legal' },
   { id: 'people',     label: 'People',          icon: '👥' },
@@ -491,11 +494,18 @@ function RelationsTab({ entityId }: { entityId: string }) {
   )
 }
 
+// ─── Health score tab ─────────────────────────────────────────────────────────
+
+function HealthTab({ entityId }: { entityId: string }) {
+  const hs = computeHealthScore(entityId)
+  return <HealthScorePanel hs={hs} />
+}
+
 // ─── Entity selector (left panel) ─────────────────────────────────────────────
 
 function EntitySelector({ currentId, onSelect }: { currentId: string; onSelect: (id: string) => void }) {
   return (
-    <div className="w-52 flex-shrink-0 border-r border-white/[0.06] bg-[#07090F] overflow-y-auto">
+    <div className="w-56 flex-shrink-0 border-r border-white/[0.06] bg-[#07090F] overflow-y-auto">
       <div className="px-3 py-3 border-b border-white/[0.05]">
         <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Entities</p>
       </div>
@@ -503,6 +513,7 @@ function EntitySelector({ currentId, onSelect }: { currentId: string; onSelect: 
         {ENTITIES.map(entity => {
           const active = entity.id === currentId
           const statusColor = { live: '#10B981', forming: '#F59E0B', planned: '#6B7280' }[entity.active_status]
+          const hs = computeHealthScore(entity.id)
           return (
             <button
               key={entity.id}
@@ -515,7 +526,10 @@ function EntitySelector({ currentId, onSelect }: { currentId: string; onSelect: 
                 <div className="text-xs font-semibold truncate" style={{ color: active ? entity.color : '#9CA3AF' }}>
                   {entity.shortName}
                 </div>
-                <div className="text-[10px] text-gray-700 truncate">{entity.jurisdiction}</div>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <HealthBar score={hs.overall} level={hs.level} />
+                  <span className="text-[9px] font-mono" style={{ color: LEVEL_COLOR[hs.level] }}>{hs.overall}</span>
+                </div>
               </div>
               <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: statusColor }} />
             </button>
@@ -538,6 +552,7 @@ export function EntityView() {
 
   const resolvedId = entityId ?? ENTITIES[0].id
   const entity = ENTITIES.find(e => e.id === resolvedId)
+  const hs = useMemo(() => computeHealthScore(resolvedId), [resolvedId])
 
   // Default tab based on role overlay
   const defaultTab: TabId =
@@ -597,6 +612,7 @@ export function EntityView() {
                         style={{ background: entity.color + '15', color: entity.color, border: `1px solid ${entity.color}25` }}>
                         {entity.type}
                       </span>
+                      <HealthBadge score={hs.overall} level={hs.level} />
                     </div>
                     <div className="text-xs text-gray-600 font-mono mt-0.5">
                       {entity.jurisdiction} · Layer {entity.layer} · {entity.shortName}
@@ -638,6 +654,7 @@ export function EntityView() {
         <div className="flex-1 overflow-y-auto px-6 py-5">
           <Suspense fallback={<div className="text-xs text-gray-600 animate-pulse">Loading…</div>}>
             {activeTab === 'overview'  && <OverviewTab  entityId={resolvedId} />}
+            {activeTab === 'health'    && <HealthTab    entityId={resolvedId} />}
             {activeTab === 'finance'   && <FinanceTab   entityId={resolvedId} />}
             {activeTab === 'legal'     && <LegalTab     entityId={resolvedId} />}
             {activeTab === 'people'    && <PeopleTab    entityId={resolvedId} />}

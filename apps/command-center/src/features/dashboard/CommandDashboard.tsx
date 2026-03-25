@@ -3,6 +3,7 @@ import { ThailandCountdown } from '../thailand/ThailandCountdown'
 import { TeamStatusWidget } from '../team/TeamStatusWidget'
 import { ProjectProgressWidget } from '../projects/ProjectProgressWidget'
 import { QuickLinksWidget } from '../quicklinks/QuickLinksWidget'
+import { HealthOverviewWidget } from '../entity/HealthOverviewWidget'
 
 // ─── Mock Data ─────────────────────────────────────────────────────────────────
 
@@ -156,6 +157,9 @@ export function CommandDashboard() {
         <ProjectProgressWidget />
         <QuickLinksWidget />
       </div>
+
+      {/* Entity Health Overview */}
+      <HealthOverviewWidget />
 
       {/* Top KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
