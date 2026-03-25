@@ -3,6 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Favicon — all sizes -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+  <link rel="icon" type="image/png" sizes="128x128" href="/favicon-128.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64.png" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="shortcut icon" href="/favicon.svg" />
+  <meta name="msapplication-TileColor" content="#0A0A0F" />
+  <meta name="theme-color" content="#0A0A0F" />
   <title>API Reference | pixdrift Developer Portal</title>
   <meta name="description" content="Complete pixdrift API reference — endpoints, authentication, request/response examples, rate limits, and code snippets in multiple languages." />
   <meta name="keywords" content="pixdrift API reference, REST API docs, API endpoints, OMS API documentation" />
@@ -18,10 +32,8 @@
   <meta name="twitter:site"        content="@pixdrift" />
   <meta name="twitter:title"       content="API Reference | pixdrift Developer Portal" />
   <meta name="twitter:image"       content="https://pixdrift.com/og-image.png" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
   <link rel="manifest" href="/site.webmanifest" />
-  <meta name="theme-color" content="#6366f1" />
   <link rel="dns-prefetch" href="//api.bc.pixdrift.com" />
   <link rel="preconnect" href="https://api.bc.pixdrift.com" />
   <style>
@@ -257,7 +269,7 @@
       .content-inner { padding: 24px 16px; }
     }
   </style>
-  <meta name="revised" content="2026-03-21">
+  <meta name="revised" content="2026-03-22">
 </head>
 <body>
 
@@ -1584,7 +1596,7 @@ contacts = response.json()</pre></div>
           <div id="stripe-curl" class="code-pane active"><pre><span class="k">curl</span> -X POST https://api.bc.pixdrift.com/api/stripe/create-checkout-session \
   <span class="k">-H</span> <span class="s">"Authorization: Bearer YOUR_API_KEY"</span> \
   <span class="k">-H</span> <span class="s">"Content-Type: application/json"</span> \
-  <span class="k">-d</span> <span class="s">'{"plan_id":"growth","success_url":"https://app.pixdrift.com/success","cancel_url":"https://app.pixdrift.com/billing"}'</span></pre></div>
+  <span class="k">-d</span> <span class="s">'{"plan_id":"growth","success_url":"https://app.bc.pixdrift.com/success","cancel_url":"https://app.bc.pixdrift.com/billing"}'</span></pre></div>
           <div id="stripe-node" class="code-pane"><pre><span class="kw">const</span> { url } = <span class="kw">await</span> fetch(
   <span class="s">'https://api.bc.pixdrift.com/api/stripe/create-checkout-session'</span>,
   {
@@ -1595,8 +1607,8 @@ contacts = response.json()</pre></div>
     },
     body: JSON.stringify({
       plan_id: <span class="s">'growth'</span>,
-      success_url: <span class="s">'https://app.pixdrift.com/success'</span>,
-      cancel_url: <span class="s">'https://app.pixdrift.com/billing'</span>
+      success_url: <span class="s">'https://app.bc.pixdrift.com/success'</span>,
+      cancel_url: <span class="s">'https://app.bc.pixdrift.com/billing'</span>
     })
   }
 ).then(r => r.json());
@@ -1606,8 +1618,8 @@ window.location.href = url; <span class="c">// Redirect to Stripe</span></pre></
   headers={<span class="s">'Authorization'</span>: <span class="s">'Bearer YOUR_API_KEY'</span>},
   json={
     <span class="s">'plan_id'</span>: <span class="s">'growth'</span>,
-    <span class="s">'success_url'</span>: <span class="s">'https://app.pixdrift.com/success'</span>,
-    <span class="s">'cancel_url'</span>: <span class="s">'https://app.pixdrift.com/billing'</span>
+    <span class="s">'success_url'</span>: <span class="s">'https://app.bc.pixdrift.com/success'</span>,
+    <span class="s">'cancel_url'</span>: <span class="s">'https://app.bc.pixdrift.com/billing'</span>
   }
 ).json()
 <span class="c"># Redirect to session['url']</span></pre></div>

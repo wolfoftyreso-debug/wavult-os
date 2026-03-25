@@ -3,6 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <!-- Favicon — all sizes -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+  <link rel="icon" type="image/png" sizes="128x128" href="/favicon-128.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64.png" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="shortcut icon" href="/favicon.svg" />
+  <meta name="msapplication-TileColor" content="#0A0A0F" />
+  <meta name="theme-color" content="#0A0A0F" />
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Mina sidor</title>
@@ -13,13 +27,14 @@
       --brand-primary: #1C3A1A;
       --brand-secondary: #4A7A2A;
       --brand-accent: #C4973A;
-      --brand-font: 'Inter', -apple-system, sans-serif;
+      --brand-font: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
 
       /* iOS system colors */
       --green: #34C759;
       --red: #FF3B30;
       --blue: #007AFF;
       --orange: #FF9500;
+      --purple: #AF52DE;
       --gray-1: #8E8E93;
       --gray-2: #AEAEB2;
       --gray-3: #C7C7CC;
@@ -40,7 +55,7 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding-bottom: env(safe-area-inset-bottom, 20px);
+      padding-bottom: calc(80px + env(safe-area-inset-bottom, 20px));
       -webkit-font-smoothing: antialiased;
     }
 
@@ -58,46 +73,64 @@
     }
 
     .header-logo {
-      width: 40px;
-      height: 40px;
+      width: 40px; height: 40px;
       border-radius: 10px;
       background: rgba(255,255,255,0.15);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; flex-shrink: 0;
     }
-
     .header-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
     .header-logo-fallback { font-size: 20px; }
-
     .header-info { flex: 1; min-width: 0; }
-    .header-name {
-      color: white;
-      font-size: 16px;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+    .header-name { color: white; font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .header-sub { color: rgba(255,255,255,0.65); font-size: 13px; margin-top: 1px; }
 
-    /* ── Scroll container ── */
-    .scroll-container { padding: 0 0 40px; }
+    /* ── Tab bar ── */
+    .tab-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--separator);
+      display: flex;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      z-index: 200;
+    }
+
+    .tab-item {
+      flex: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 8px 4px;
+      cursor: pointer; border: none; background: none;
+      font-family: var(--brand-font);
+      color: var(--gray-2);
+      transition: color 0.15s;
+      gap: 3px;
+    }
+
+    .tab-item.active { color: var(--brand-primary); }
+    .tab-item:active { opacity: 0.7; }
+
+    .tab-icon { font-size: 22px; line-height: 1; }
+    .tab-label { font-size: 10px; font-weight: 500; }
+
+    /* ── Page views ── */
+    .page { display: none; }
+    .page.active { display: block; }
+    .scroll-container { padding: 0 0 20px; }
 
     /* ── Section ── */
     .section { margin: 20px 0 0; }
     .section-title {
-      font-size: 13px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
+      font-size: 13px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.04em;
       color: var(--text-secondary);
       padding: 0 20px 8px;
     }
 
-    /* ── Card ── */
+    /* ── Card (iOS list) ── */
     .card {
       background: var(--card);
       border-radius: 12px;
@@ -106,301 +139,224 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
 
-    /* ── ACTION REQUIRED ── */
-    .action-banner {
-      background: var(--brand-primary);
+    /* iOS list row */
+    .list-row {
+      display: flex; align-items: center;
+      padding: 12px 16px;
+      border-top: 1px solid var(--separator);
+      cursor: pointer;
+      text-decoration: none; color: inherit;
+      background: none; border-left: none; border-right: none; border-bottom: none;
+      width: 100%; text-align: left;
+      font-family: var(--brand-font);
+      transition: background 0.1s;
+    }
+    .list-row:first-child { border-top: none; }
+    .list-row:active { background: var(--gray-6); }
+
+    .list-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0; margin-right: 12px;
+    }
+
+    .list-content { flex: 1; min-width: 0; }
+    .list-title { font-size: 15px; font-weight: 500; }
+    .list-sub { font-size: 13px; color: var(--text-secondary); margin-top: 1px; }
+    .list-meta { display: flex; align-items: center; gap: 6px; flex-shrink: 0; margin-left: 8px; }
+    .list-value { font-size: 15px; color: var(--text-secondary); }
+    .list-badge { font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
+    .badge-green { background: rgba(52,199,89,0.12); color: #1a7a33; }
+    .badge-red { background: rgba(255,59,48,0.12); color: #c0392b; }
+    .badge-gray { background: var(--gray-5); color: var(--gray-1); }
+    .badge-blue { background: rgba(0,122,255,0.12); color: #0051a8; }
+    .disclosure { color: var(--gray-3); font-size: 18px; flex-shrink: 0; }
+
+    /* ── STATUS-page specifics ── */
+    .status-hero {
       margin: 20px 16px 0;
+      background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
       border-radius: 16px;
       padding: 20px;
       color: white;
     }
-
-    .action-label {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      opacity: 0.75;
-      margin-bottom: 6px;
+    .status-hero-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.7; margin-bottom: 4px; }
+    .status-hero-name { font-size: 22px; font-weight: 700; }
+    .status-hero-sub { font-size: 14px; opacity: 0.8; margin-top: 4px; }
+    .status-hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 20px; padding: 4px 12px;
+      font-size: 13px; font-weight: 600;
+      margin-top: 12px;
     }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
 
-    .action-title {
-      font-size: 20px;
-      font-weight: 700;
-      line-height: 1.2;
-      margin-bottom: 4px;
-    }
-
-    .action-sub {
-      font-size: 14px;
-      opacity: 0.8;
-      margin-bottom: 16px;
-    }
-
-    .btn-action {
-      display: block;
-      width: 100%;
-      padding: 14px;
-      background: var(--green);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 600;
-      font-family: var(--brand-font);
-      cursor: pointer;
-      text-align: center;
-      text-decoration: none;
-      transition: opacity 0.15s;
-    }
-
-    .btn-action:active { opacity: 0.85; }
-
-    /* ── Empty state ── */
-    .empty-state {
-      background: var(--card);
+    /* ── Action banner ── */
+    .action-banner {
+      background: var(--brand-primary);
       margin: 20px 16px 0;
-      border-radius: 16px;
-      padding: 32px 20px;
-      text-align: center;
+      border-radius: 16px; padding: 20px; color: white;
     }
-
-    .empty-icon { font-size: 48px; margin-bottom: 12px; }
-    .empty-title { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
-    .empty-sub { font-size: 14px; color: var(--text-secondary); line-height: 1.4; }
+    .action-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.75; margin-bottom: 6px; }
+    .action-title { font-size: 20px; font-weight: 700; line-height: 1.2; margin-bottom: 4px; }
+    .action-sub { font-size: 14px; opacity: 0.8; margin-bottom: 16px; }
+    .btn-action {
+      display: block; width: 100%; padding: 14px;
+      background: var(--green); color: white; border: none;
+      border-radius: 12px; font-size: 16px; font-weight: 600;
+      font-family: var(--brand-font); cursor: pointer;
+      text-align: center; text-decoration: none; transition: opacity 0.15s;
+    }
+    .btn-action:active { opacity: 0.85; }
 
     /* ── Progress bar ── */
     .progress-card { padding: 16px 20px; }
-    .progress-label {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
-      font-size: 14px;
-    }
+    .progress-label { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
     .progress-label-left { font-weight: 600; }
     .progress-label-right { color: var(--text-secondary); }
-
-    .progress-track {
-      height: 6px;
-      background: var(--gray-5);
-      border-radius: 3px;
-      overflow: hidden;
-      margin-bottom: 12px;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: var(--brand-secondary);
-      border-radius: 3px;
-      transition: width 0.5s ease;
-    }
-
-    .progress-steps {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .progress-step {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      flex: 1;
-    }
-
-    .step-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--gray-4);
-      margin-bottom: 4px;
-    }
+    .progress-track { height: 6px; background: var(--gray-5); border-radius: 3px; overflow: hidden; margin-bottom: 12px; }
+    .progress-fill { height: 100%; background: var(--brand-secondary); border-radius: 3px; transition: width 0.5s ease; }
+    .progress-steps { display: flex; justify-content: space-between; }
+    .progress-step { display: flex; flex-direction: column; align-items: center; flex: 1; }
+    .step-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gray-4); margin-bottom: 4px; }
     .step-dot.done { background: var(--brand-secondary); }
     .step-dot.current { background: var(--brand-accent); box-shadow: 0 0 0 3px rgba(196,151,58,0.2); }
-
-    .step-name {
-      font-size: 10px;
-      color: var(--text-secondary);
-      text-align: center;
-    }
+    .step-name { font-size: 10px; color: var(--text-secondary); text-align: center; }
 
     /* ── Timeline ── */
-    .timeline-item {
-      display: flex;
-      gap: 12px;
-      padding: 14px 20px;
-      border-top: 1px solid var(--separator);
-    }
-
+    .timeline-item { display: flex; gap: 12px; padding: 14px 20px; border-top: 1px solid var(--separator); }
     .timeline-item:first-child { border-top: none; }
-
-    .timeline-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--gray-6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 15px;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-
+    .timeline-icon { width: 32px; height: 32px; border-radius: 50%; background: var(--gray-6); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; margin-top: 1px; }
     .timeline-content { flex: 1; min-width: 0; }
     .timeline-title { font-size: 15px; font-weight: 500; margin-bottom: 2px; }
     .timeline-sub { font-size: 13px; color: var(--text-secondary); }
     .timeline-time { font-size: 12px; color: var(--gray-2); margin-top: 2px; }
 
-    /* ── History accordion ── */
-    .history-item {
-      border-top: 1px solid var(--separator);
-      overflow: hidden;
-    }
-
+    /* ── History ── */
+    .history-item { border-top: 1px solid var(--separator); overflow: hidden; }
     .history-item:first-child { border-top: none; }
-
-    .history-header {
-      display: flex;
-      align-items: center;
-      padding: 14px 20px;
-      cursor: pointer;
-      background: none;
-      border: none;
-      width: 100%;
-      text-align: left;
-      font-family: var(--brand-font);
-    }
-
+    .history-header { display: flex; align-items: center; padding: 14px 20px; cursor: pointer; background: none; border: none; width: 100%; text-align: left; font-family: var(--brand-font); }
     .history-header:active { background: var(--gray-6); }
-
-    .history-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: var(--gray-6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      flex-shrink: 0;
-      margin-right: 12px;
-    }
-
+    .history-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--gray-6); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; margin-right: 12px; }
     .history-info { flex: 1; min-width: 0; }
     .history-title { font-size: 15px; font-weight: 500; }
     .history-date { font-size: 13px; color: var(--text-secondary); margin-top: 1px; }
-
-    .history-meta {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
-    }
-
+    .history-meta { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
     .history-amount { font-size: 15px; font-weight: 600; }
-    .history-status { font-size: 18px; }
-
-    .history-body {
-      display: none;
-      padding: 0 20px 14px;
-      font-size: 14px;
-      color: var(--text-secondary);
-      line-height: 1.5;
-    }
-
+    .history-body { display: none; padding: 0 20px 14px; font-size: 14px; color: var(--text-secondary); line-height: 1.5; }
     .history-body.open { display: block; }
-    .history-body-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 4px 0;
-    }
+    .history-body-row { display: flex; justify-content: space-between; padding: 4px 0; }
     .history-body-label { color: var(--text-secondary); }
     .history-body-value { font-weight: 500; color: var(--text); }
 
-    /* ── Upsell card ── */
+    /* ── Invoices ── */
+    .invoice-row { display: flex; align-items: center; padding: 14px 16px; border-top: 1px solid var(--separator); }
+    .invoice-row:first-child { border-top: none; }
+    .invoice-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; margin-right: 12px; }
+    .invoice-info { flex: 1; min-width: 0; }
+    .invoice-title { font-size: 15px; font-weight: 500; }
+    .invoice-sub { font-size: 13px; color: var(--text-secondary); margin-top: 1px; }
+    .invoice-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+    .invoice-amount { font-size: 15px; font-weight: 600; }
+    .invoice-download { font-size: 20px; color: var(--blue); cursor: pointer; padding: 4px; }
+
+    /* ── API-info ── */
+    .code-block {
+      background: #1a1a2e;
+      color: #a8dadc;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      margin: 0 16px;
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .code-tab { display: flex; gap: 0; margin: 0 16px 8px; }
+    .code-tab-btn {
+      padding: 6px 16px;
+      background: var(--gray-5);
+      border: none; cursor: pointer;
+      font-family: var(--brand-font);
+      font-size: 13px; font-weight: 500;
+      color: var(--text-secondary);
+      transition: all 0.15s;
+    }
+    .code-tab-btn:first-child { border-radius: 8px 0 0 8px; }
+    .code-tab-btn:last-child { border-radius: 0 8px 8px 0; }
+    .code-tab-btn.active { background: var(--brand-primary); color: white; }
+
+    .api-key-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; }
+    .api-key-label { font-size: 13px; color: var(--text-secondary); margin-bottom: 4px; }
+    .api-key-value { font-family: 'SF Mono', monospace; font-size: 14px; color: var(--text); }
+    .btn-reveal { padding: 6px 14px; background: var(--gray-5); border: none; border-radius: 8px; font-size: 13px; font-weight: 500; font-family: var(--brand-font); cursor: pointer; color: var(--blue); }
+
+    /* ── Documents ── */
+    .doc-row { display: flex; align-items: center; padding: 14px 16px; border-top: 1px solid var(--separator); }
+    .doc-row:first-child { border-top: none; }
+    .doc-icon { width: 36px; height: 36px; border-radius: 10px; background: rgba(0,122,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; margin-right: 12px; }
+    .doc-info { flex: 1; min-width: 0; }
+    .doc-title { font-size: 15px; font-weight: 500; }
+    .doc-sub { font-size: 13px; color: var(--text-secondary); margin-top: 1px; }
+    .doc-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .doc-signed { font-size: 20px; }
+    .doc-download { font-size: 20px; color: var(--blue); text-decoration: none; }
+
+    /* ── KPI cards ── */
+    .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 0 16px; }
+    .kpi-card { background: var(--card); border-radius: 12px; padding: 16px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+    .kpi-value { font-size: 28px; font-weight: 700; color: var(--brand-primary); }
+    .kpi-label { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+
+    /* ── Settings / GDPR ── */
+    .destructive { color: var(--red) !important; }
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid var(--separator); }
+    .toggle-row:first-child { border-top: none; }
+    .toggle-label { font-size: 15px; font-weight: 500; }
+    .toggle-sub { font-size: 13px; color: var(--text-secondary); margin-top: 1px; }
+    .toggle { width: 51px; height: 31px; border-radius: 15.5px; background: var(--gray-4); cursor: pointer; position: relative; border: none; transition: background 0.2s; flex-shrink: 0; }
+    .toggle.on { background: var(--green); }
+    .toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 25px; height: 25px; border-radius: 50%; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: transform 0.2s; }
+    .toggle.on::after { transform: translateX(20px); }
+
+    /* ── Upsell ── */
     .upsell-card {
       background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
-      margin: 20px 16px 0;
-      border-radius: 16px;
-      padding: 20px;
-      color: white;
-      text-align: center;
+      margin: 20px 16px 0; border-radius: 16px; padding: 20px; color: white; text-align: center;
     }
-
     .upsell-title { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
     .upsell-sub { font-size: 14px; opacity: 0.85; margin-bottom: 16px; line-height: 1.4; }
+    .btn-upsell { display: inline-block; padding: 10px 24px; background: white; color: var(--brand-primary); border-radius: 20px; font-size: 14px; font-weight: 600; text-decoration: none; border: none; font-family: var(--brand-font); cursor: pointer; }
 
-    .btn-upsell {
-      display: inline-block;
-      padding: 10px 24px;
-      background: white;
-      color: var(--brand-primary);
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 600;
-      text-decoration: none;
-      border: none;
-      font-family: var(--brand-font);
-      cursor: pointer;
-    }
+    /* ── Empty state ── */
+    .empty-state { background: var(--card); margin: 20px 16px 0; border-radius: 16px; padding: 32px 20px; text-align: center; }
+    .empty-icon { font-size: 48px; margin-bottom: 12px; }
+    .empty-title { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+    .empty-sub { font-size: 14px; color: var(--text-secondary); line-height: 1.4; }
 
-    /* ── Loading ── */
-    .loading {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 60vh;
-      gap: 16px;
-    }
-
-    .spinner {
-      width: 32px;
-      height: 32px;
-      border: 3px solid var(--gray-4);
-      border-top-color: var(--brand-primary);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-    }
-
+    /* ── Loading / Error ── */
+    .loading { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; gap: 16px; }
+    .spinner { width: 32px; height: 32px; border: 3px solid var(--gray-4); border-top-color: var(--brand-primary); border-radius: 50%; animation: spin 0.7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
     .loading-text { color: var(--text-secondary); font-size: 15px; }
-
-    /* ── Error ── */
-    .error-state {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 60vh;
-      padding: 40px 20px;
-      text-align: center;
-    }
-
+    .error-state { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; padding: 40px 20px; text-align: center; }
     .error-icon { font-size: 56px; margin-bottom: 16px; }
     .error-title { font-size: 19px; font-weight: 700; margin-bottom: 8px; }
     .error-sub { font-size: 15px; color: var(--text-secondary); line-height: 1.5; }
 
-    /* ── Hidden ── */
+    /* ── Utilities ── */
     .hidden { display: none !important; }
+    .text-green { color: var(--green); }
+    .text-red { color: var(--red); }
   </style>
-  <link rel="canonical" href="https://pixdrift.com/portal/index.html">
-  <meta name="revised" content="2026-03-21">
+  <link rel="canonical" href="https://pixdrift.com/portal/">
+  <meta name="revised" content="2026-03-22">
   <meta property="og:image" content="https://pixdrift.com/og-image.svg?title=Business+Operating+System&description=Your+Business%2C+Running+on+pixdrift.">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
-  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
-  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
-  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
-  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
-  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
-  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
-  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
-  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
-  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
-  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
   <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
   <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
   <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
@@ -432,81 +388,354 @@
       <span class="header-logo-fallback">🔧</span>
     </div>
     <div class="header-info">
-      <div class="header-name" id="workshop-name">Verkstad</div>
+      <div class="header-name" id="workshop-name">pixdrift</div>
       <div class="header-sub" id="portal-title">Mina sidor</div>
     </div>
   </div>
 
-  <div class="scroll-container">
+  <!-- ── PAGE: STATUS (tab 0) ── -->
+  <div class="page active" id="page-status">
+    <div class="scroll-container">
 
-    <!-- ACTION REQUIRED (visas bara om pending approvals finns) -->
-    <div id="action-section" class="hidden">
-      <div class="action-banner">
-        <div class="action-label">⚡ Åtgärd krävs</div>
-        <div class="action-title" id="action-title">Du har ett godkännande som väntar</div>
-        <div class="action-sub" id="action-sub">Din verkstad behöver ditt svar för att fortsätta arbetet</div>
-        <a id="action-btn" href="#" class="btn-action">Granska och godkänn →</a>
-      </div>
-    </div>
-
-    <!-- EMPTY STATE (visas om inget händer) -->
-    <div id="empty-section" class="empty-state hidden">
-      <div class="empty-icon">✅</div>
-      <div class="empty-title">Du har inget att göra just nu</div>
-      <div class="empty-sub">Vi hör av oss när vi behöver ditt godkännande eller har en uppdatering åt dig.</div>
-    </div>
-
-    <!-- CURRENT JOB PROGRESS -->
-    <div id="progress-section" class="section hidden">
-      <div class="section-title">Pågående arbete</div>
-      <div class="card">
-        <div class="progress-card">
-          <div class="progress-label">
-            <span class="progress-label-left" id="progress-vehicle">Ditt fordon</span>
-            <span class="progress-label-right" id="progress-status">Pågår</span>
-          </div>
-          <div class="progress-track">
-            <div class="progress-fill" id="progress-fill" style="width:0%"></div>
-          </div>
-          <div class="progress-steps" id="progress-steps"></div>
+      <!-- Status hero -->
+      <div class="status-hero" id="status-hero">
+        <div class="status-hero-label">Mitt konto</div>
+        <div class="status-hero-name" id="status-customer-name">Hej</div>
+        <div class="status-hero-sub" id="status-welcome"></div>
+        <div class="status-hero-badge">
+          <div class="status-dot"></div>
+          <span id="status-badge-text">Aktiv</span>
         </div>
       </div>
-    </div>
 
-    <!-- TIMELINE -->
-    <div id="timeline-section" class="section hidden">
-      <div class="section-title">Senaste aktivitet</div>
-      <div class="card" id="timeline-list"></div>
-    </div>
-
-    <!-- HISTORY -->
-    <div id="history-section" class="section hidden">
-      <div class="section-title">Historik</div>
-      <div class="card" id="history-list"></div>
-    </div>
-
-    <!-- UPSELL: Skapa konto -->
-    <div id="upsell-section" class="hidden">
-      <div class="upsell-card">
-        <div class="upsell-title">📋 Se din fulla historik</div>
-        <div class="upsell-sub">Skapa ett konto och få tillgång till alla dina tidigare besök, kvitton och garantier.</div>
-        <button class="btn-upsell" id="upsell-btn">Skapa konto gratis</button>
+      <!-- Action Required -->
+      <div id="action-section" class="hidden">
+        <div class="action-banner" style="margin-top:16px;">
+          <div class="action-label">⚡ Åtgärd krävs</div>
+          <div class="action-title" id="action-title">Du har ett godkännande som väntar</div>
+          <div class="action-sub" id="action-sub">Din verkstad behöver ditt svar för att fortsätta arbetet</div>
+          <a id="action-btn" href="#" class="btn-action">Granska och godkänn →</a>
+        </div>
       </div>
-    </div>
 
+      <!-- Nästa faktura / konto-info -->
+      <div class="section">
+        <div class="section-title">Kontostatus</div>
+        <div class="card">
+          <div class="list-row" onclick="switchTab(2)">
+            <div class="list-icon" style="background:#e8f5e9;">📄</div>
+            <div class="list-content">
+              <div class="list-title" id="next-invoice-label">Nästa faktura</div>
+              <div class="list-sub" id="next-invoice-date">Laddar…</div>
+            </div>
+            <div class="list-meta">
+              <div class="list-value" id="next-invoice-amount"></div>
+              <div class="disclosure">›</div>
+            </div>
+          </div>
+          <div class="list-row">
+            <div class="list-icon" style="background:#e3f2fd;">📅</div>
+            <div class="list-content">
+              <div class="list-title">Senast inloggad</div>
+              <div class="list-sub" id="last-login">Idag</div>
+            </div>
+            <div class="list-meta">
+              <div class="disclosure">›</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pågående arbete -->
+      <div id="progress-section" class="section hidden">
+        <div class="section-title">Pågående arbete</div>
+        <div class="card">
+          <div class="progress-card">
+            <div class="progress-label">
+              <span class="progress-label-left" id="progress-vehicle">Ditt fordon</span>
+              <span class="progress-label-right" id="progress-status">Pågår</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+            </div>
+            <div class="progress-steps" id="progress-steps"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline -->
+      <div id="timeline-section" class="section hidden">
+        <div class="section-title">Senaste aktivitet</div>
+        <div class="card" id="timeline-list"></div>
+      </div>
+
+      <!-- Historik -->
+      <div id="history-section" class="section hidden">
+        <div class="section-title">Historik</div>
+        <div class="card" id="history-list"></div>
+      </div>
+
+      <!-- Upsell -->
+      <div id="upsell-section" class="hidden">
+        <div class="upsell-card">
+          <div class="upsell-title">📋 Se din fulla historik</div>
+          <div class="upsell-sub">Skapa ett konto och få tillgång till alla dina tidigare besök, kvitton och garantier.</div>
+          <button class="btn-upsell" id="upsell-btn">Skapa konto gratis</button>
+        </div>
+      </div>
+
+      <div style="height:20px;"></div>
+    </div>
   </div>
-</div>
+
+  <!-- ── PAGE: FAKTUROR (tab 2) ── -->
+  <div class="page" id="page-invoices">
+    <div class="scroll-container">
+
+      <!-- Summering -->
+      <div class="section">
+        <div class="kpi-grid" style="margin-top:20px;">
+          <div class="kpi-card">
+            <div class="kpi-value" id="inv-total-paid">–</div>
+            <div class="kpi-label">Totalt betalt</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-value text-red" id="inv-outstanding">–</div>
+            <div class="kpi-label">Obetalt</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Fakturor</div>
+        <div class="card" id="invoices-list">
+          <div style="padding:32px 16px; text-align:center; color:var(--text-secondary);">Laddar fakturor…</div>
+        </div>
+      </div>
+
+      <div style="height:20px;"></div>
+    </div>
+  </div>
+
+  <!-- ── PAGE: API (tab 3) ── -->
+  <div class="page" id="page-api">
+    <div class="scroll-container">
+
+      <div class="section">
+        <div class="section-title">API-uppgifter</div>
+        <div class="card">
+          <div class="list-row">
+            <div class="list-icon" style="background:#e3f2fd;">🌐</div>
+            <div class="list-content">
+              <div class="list-title">API Endpoint</div>
+              <div class="list-sub">https://api.bc.pixdrift.com</div>
+            </div>
+            <div class="list-meta">
+              <button class="btn-reveal" onclick="copyText('https://api.bc.pixdrift.com', this)">Kopiera</button>
+            </div>
+          </div>
+          <div class="list-row">
+            <div class="list-icon" style="background:#f3e5f5;">🔑</div>
+            <div class="list-content">
+              <div class="list-title">API-nyckel</div>
+              <div class="list-sub api-key-masked" id="api-key-display">••••••••••••••••••••</div>
+            </div>
+            <div class="list-meta">
+              <button class="btn-reveal" id="reveal-btn" onclick="toggleApiKey()">Visa</button>
+            </div>
+          </div>
+          <a class="list-row" href="https://docs.pixdrift.com" target="_blank">
+            <div class="list-icon" style="background:#e8f5e9;">📚</div>
+            <div class="list-content">
+              <div class="list-title">Developer Portal</div>
+              <div class="list-sub">docs.pixdrift.com</div>
+            </div>
+            <div class="list-meta">
+              <div class="disclosure">›</div>
+            </div>
+          </a>
+          <div class="list-row">
+            <div class="list-icon" style="background:#fff3e0;">⚡</div>
+            <div class="list-content">
+              <div class="list-title">Rate limit</div>
+              <div class="list-sub" id="rate-limit-text">1 000 requests/timme</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Kodexempel</div>
+        <div class="code-tab">
+          <button class="code-tab-btn active" onclick="switchCodeTab('curl', this)">curl</button>
+          <button class="code-tab-btn" onclick="switchCodeTab('node', this)">Node.js</button>
+          <button class="code-tab-btn" onclick="switchCodeTab('python', this)">Python</button>
+        </div>
+        <div class="code-block" id="code-example">curl -H "Authorization: Bearer YOUR_API_KEY" \
+  https://api.bc.pixdrift.com/api/data</div>
+      </div>
+
+      <div style="height:20px;"></div>
+    </div>
+  </div>
+
+  <!-- ── PAGE: DOKUMENT (tab 4) ── -->
+  <div class="page" id="page-documents">
+    <div class="scroll-container">
+      <div class="section">
+        <div class="section-title">Avtal & Dokument</div>
+        <div class="card" id="documents-list">
+          <div style="padding:32px 16px; text-align:center; color:var(--text-secondary);">Laddar dokument…</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Dina nyckeltal</div>
+        <div id="readonly-views-container">
+          <div class="empty-state">
+            <div class="empty-icon">📊</div>
+            <div class="empty-title">Inga vyer konfigurerade</div>
+            <div class="empty-sub">Kontakta pixdrift för att aktivera dina anpassade nyckeltal-vyer.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:20px;"></div>
+    </div>
+  </div>
+
+  <!-- ── PAGE: INSTÄLLNINGAR (tab 5) ── -->
+  <div class="page" id="page-settings">
+    <div class="scroll-container">
+
+      <div class="section" style="margin-top:20px;">
+        <div class="section-title">Kommunikation</div>
+        <div class="card">
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-label">E-postnotiser</div>
+              <div class="list-sub">Fakturor, uppdateringar och erbjudanden</div>
+            </div>
+            <button class="toggle on" id="toggle-email" onclick="toggleSetting('email', this)"></button>
+          </div>
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-label">SMS-notiser</div>
+              <div class="list-sub">Statusuppdateringar på ditt fordon</div>
+            </div>
+            <button class="toggle on" id="toggle-sms" onclick="toggleSetting('sms', this)"></button>
+          </div>
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-label">Marknadsföring</div>
+              <div class="list-sub">Erbjudanden och nyheter från pixdrift</div>
+            </div>
+            <button class="toggle" id="toggle-marketing" onclick="toggleSetting('marketing', this)"></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Säkerhet</div>
+        <div class="card">
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-label">Tvåfaktorsautentisering</div>
+              <div class="list-sub">Extra skydd för ditt konto</div>
+            </div>
+            <button class="toggle" id="toggle-2fa" onclick="toggleSetting('2fa', this)"></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">GDPR & Dataskydd</div>
+        <div class="card">
+          <button class="list-row" onclick="requestExport()">
+            <div class="list-icon" style="background:#e3f2fd;">📦</div>
+            <div class="list-content">
+              <div class="list-title">Exportera mina data</div>
+              <div class="list-sub">GDPR artikel 20 — Dataportabilitet</div>
+            </div>
+            <div class="list-meta">
+              <div class="disclosure">›</div>
+            </div>
+          </button>
+          <button class="list-row" onclick="showDeleteConfirm()">
+            <div class="list-icon" style="background:rgba(255,59,48,0.1);">🗑️</div>
+            <div class="list-content">
+              <div class="list-title destructive">Radera mitt konto</div>
+              <div class="list-sub">GDPR artikel 17 — Rätten att bli glömd</div>
+            </div>
+            <div class="list-meta">
+              <div class="disclosure destructive">›</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Om</div>
+        <div class="card">
+          <div class="list-row">
+            <div class="list-icon" style="background:var(--gray-6);">ℹ️</div>
+            <div class="list-content">
+              <div class="list-title">pixdrift Business</div>
+              <div class="list-sub">Version 2.0 · 2026</div>
+            </div>
+          </div>
+          <a class="list-row" href="https://pixdrift.com/legal/privacy" target="_blank">
+            <div class="list-icon" style="background:var(--gray-6);">🔒</div>
+            <div class="list-content">
+              <div class="list-title">Integritetspolicy</div>
+            </div>
+            <div class="list-meta"><div class="disclosure">›</div></div>
+          </a>
+        </div>
+      </div>
+
+      <div style="height:20px;"></div>
+    </div>
+  </div>
+
+  <!-- ── Tab bar ── -->
+  <nav class="tab-bar">
+    <button class="tab-item active" onclick="switchTab(0)" id="tab-0">
+      <div class="tab-icon">🏠</div>
+      <div class="tab-label">Start</div>
+    </button>
+    <button class="tab-item" onclick="switchTab(2)" id="tab-2">
+      <div class="tab-icon">🧾</div>
+      <div class="tab-label">Fakturor</div>
+    </button>
+    <button class="tab-item" onclick="switchTab(3)" id="tab-3">
+      <div class="tab-icon">⚙️</div>
+      <div class="tab-label">API</div>
+    </button>
+    <button class="tab-item" onclick="switchTab(4)" id="tab-4">
+      <div class="tab-icon">📄</div>
+      <div class="tab-label">Dokument</div>
+    </button>
+    <button class="tab-item" onclick="switchTab(5)" id="tab-5">
+      <div class="tab-icon">👤</div>
+      <div class="tab-label">Konto</div>
+    </button>
+  </nav>
+
+</div><!-- #app -->
 
 <script>
 const API_BASE = 'https://api.bc.pixdrift.com';
 
 // ── State ──────────────────────────────────────────────────────────────────
 let portalData = null;
-let brand = null;
+let apiInfo = null;
+let invoicesData = null;
+let documentsData = null;
+let apiKeyRevealed = false;
 
 const STEPS = ['CHECKED_IN', 'DIAGNOSING', 'WAITING_APPROVAL', 'IN_PROGRESS', 'QUALITY_CHECK', 'READY', 'DELIVERED'];
 const STEP_LABELS = ['Incheckad', 'Diagnos', 'Godkännande', 'Arbete', 'Kvalitet', 'Klar', 'Levererad'];
-const STEP_ICONS = ['📋', '🔍', '✍️', '🔧', '✅', '🚗', '🎉'];
 
 function getToken() {
   return new URLSearchParams(window.location.search).get('t');
@@ -516,35 +745,37 @@ function el(id) { return document.getElementById(id); }
 function show(id) { el(id)?.classList.remove('hidden'); }
 function hide(id) { el(id)?.classList.add('hidden'); }
 
-// ── Brand loader ───────────────────────────────────────────────────────────
-async function applyBrand(b) {
-  if (!b) return;
-  brand = b;
+// ── Tab navigation ─────────────────────────────────────────────────────────
+const pageMap = { 0: 'status', 2: 'invoices', 3: 'api', 4: 'documents', 5: 'settings' };
 
+function switchTab(idx) {
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  el(`tab-${idx}`)?.classList.add('active');
+  el(`page-${pageMap[idx]}`)?.classList.add('active');
+}
+
+// ── Brand ──────────────────────────────────────────────────────────────────
+function applyBrand(b) {
+  if (!b) return;
   if (b.primary_color) document.documentElement.style.setProperty('--brand-primary', b.primary_color);
   if (b.secondary_color) document.documentElement.style.setProperty('--brand-secondary', b.secondary_color);
   if (b.accent_color) document.documentElement.style.setProperty('--brand-accent', b.accent_color);
-  if (b.font_family) document.documentElement.style.setProperty('--brand-font', `'${b.font_family}', -apple-system, sans-serif`);
-
-  el('workshop-name').textContent = b.name || 'Verkstad';
+  el('workshop-name').textContent = b.name || 'pixdrift';
   el('portal-title').textContent = b.customer_portal_title || 'Mina sidor';
-  document.title = `${b.customer_portal_title || 'Mina sidor'} — ${b.name || 'Verkstad'}`;
-
-  if (b.logo_url) {
-    el('header-logo').innerHTML = `<img src="${b.logo_url}" alt="${b.name}">`;
-  }
+  document.title = `${b.customer_portal_title || 'Mina sidor'} — ${b.name || 'pixdrift'}`;
+  if (b.logo_url) el('header-logo').innerHTML = `<img src="${b.logo_url}" alt="${b.name}">`;
 }
 
 // ── Format helpers ─────────────────────────────────────────────────────────
 function fmtDate(iso) {
   if (!iso) return '';
-  const d = new Date(iso);
-  return d.toLocaleDateString('sv-SE', { day: 'numeric', month: 'short', year: 'numeric' });
+  return new Date(iso).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
-function fmtAmount(amt) {
+function fmtAmount(amt, currency = 'SEK') {
   if (!amt && amt !== 0) return '';
-  return new Intl.NumberFormat('sv-SE', { style: 'currency', currency: 'SEK', minimumFractionDigits: 0 }).format(amt);
+  return new Intl.NumberFormat('sv-SE', { style: 'currency', currency, minimumFractionDigits: 0 }).format(amt);
 }
 
 function timeAgo(iso) {
@@ -557,42 +788,27 @@ function timeAgo(iso) {
   return fmtDate(iso);
 }
 
-// ── Progress bar ───────────────────────────────────────────────────────────
+// ── Progress ───────────────────────────────────────────────────────────────
 function renderProgress(job) {
   if (!job) return;
-
   show('progress-section');
   el('progress-vehicle').textContent = job.vehicle_reg || job.vehicle || 'Ditt fordon';
   el('progress-status').textContent = job.status_label || job.state || 'Pågår';
-
-  const currentIdx = STEPS.indexOf(job.state) >= 0 ? STEPS.indexOf(job.state) : 1;
-  const pct = Math.round((currentIdx / (STEPS.length - 1)) * 100);
-  el('progress-fill').style.width = pct + '%';
-
-  const stepsEl = el('progress-steps');
-  stepsEl.innerHTML = '';
-  STEPS.forEach((step, i) => {
-    const isDone = i < currentIdx;
-    const isCurrent = i === currentIdx;
-    stepsEl.innerHTML += `
-      <div class="progress-step">
-        <div class="step-dot ${isDone ? 'done' : isCurrent ? 'current' : ''}"></div>
-        <div class="step-name">${STEP_LABELS[i]}</div>
-      </div>
-    `;
-  });
+  const idx = Math.max(0, STEPS.indexOf(job.state));
+  el('progress-fill').style.width = Math.round((idx / (STEPS.length - 1)) * 100) + '%';
+  el('progress-steps').innerHTML = STEPS.map((s, i) => `
+    <div class="progress-step">
+      <div class="step-dot ${i < idx ? 'done' : i === idx ? 'current' : ''}"></div>
+      <div class="step-name">${STEP_LABELS[i]}</div>
+    </div>
+  `).join('');
 }
 
-// ── Timeline renderer ──────────────────────────────────────────────────────
+// ── Timeline ───────────────────────────────────────────────────────────────
 function renderTimeline(events) {
   if (!events?.length) return;
   show('timeline-section');
-
-  const icons = {
-    sms: '💬', approval: '✍️', payment: '💳', note: '📝',
-    checkin: '📋', checkout: '🚗', photo: '📷', default: '📌',
-  };
-
+  const icons = { sms: '💬', approval: '✍️', payment: '💳', note: '📝', checkin: '📋', checkout: '🚗', photo: '📷', default: '📌' };
   el('timeline-list').innerHTML = events.slice(0, 6).map(ev => `
     <div class="timeline-item">
       <div class="timeline-icon">${icons[ev.type] || icons.default}</div>
@@ -605,14 +821,12 @@ function renderTimeline(events) {
   `).join('');
 }
 
-// ── History accordion ──────────────────────────────────────────────────────
+// ── History ────────────────────────────────────────────────────────────────
 function renderHistory(jobs) {
   if (!jobs?.length) return;
   show('history-section');
-
-  const historyEl = el('history-list');
-  historyEl.innerHTML = jobs.map((job, i) => {
-    const approved = job.approved === true || job.status === 'DELIVERED' || job.status === 'COMPLETED';
+  el('history-list').innerHTML = jobs.map((job, i) => {
+    const ok = job.approved === true || ['DELIVERED','COMPLETED','CLOSED'].includes(job.status);
     return `
       <div class="history-item">
         <button class="history-header" onclick="toggleHistory(${i})">
@@ -623,93 +837,241 @@ function renderHistory(jobs) {
           </div>
           <div class="history-meta">
             <div class="history-amount">${job.amount ? fmtAmount(job.amount) : ''}</div>
-            <div class="history-status">${approved ? '✅' : '❌'}</div>
+            <span>${ok ? '✅' : '❌'}</span>
           </div>
         </button>
         <div class="history-body" id="history-body-${i}">
           ${job.vehicle ? `<div class="history-body-row"><span class="history-body-label">Fordon</span><span class="history-body-value">${job.vehicle}</span></div>` : ''}
           ${job.amount ? `<div class="history-body-row"><span class="history-body-label">Belopp</span><span class="history-body-value">${fmtAmount(job.amount)}</span></div>` : ''}
-          ${job.payment_method ? `<div class="history-body-row"><span class="history-body-label">Betalning</span><span class="history-body-value">${job.payment_method}</span></div>` : ''}
-          ${job.mechanic ? `<div class="history-body-row"><span class="history-body-label">Mekaniker</span><span class="history-body-value">${job.mechanic}</span></div>` : ''}
-          ${job.notes ? `<div style="margin-top:8px;color:var(--text-secondary);font-size:13px;line-height:1.5">${job.notes}</div>` : ''}
         </div>
-      </div>
-    `;
+      </div>`;
   }).join('');
 }
 
-window.toggleHistory = function(i) {
-  const body = el(`history-body-${i}`);
-  if (body) body.classList.toggle('open');
+window.toggleHistory = function(i) { el(`history-body-${i}`)?.classList.toggle('open'); };
+
+// ── Invoices ───────────────────────────────────────────────────────────────
+async function loadInvoices() {
+  const token = getToken();
+  try {
+    const r = await fetch(`${API_BASE}/api/customer-portal/${token}/invoices`);
+    const data = r.ok ? await r.json() : { invoices: [], total_paid: 0, total_outstanding: 0 };
+    invoicesData = data;
+
+    el('inv-total-paid').textContent = fmtAmount(data.total_paid || 0);
+    el('inv-outstanding').textContent = fmtAmount(data.total_outstanding || 0);
+
+    // Update status tab next invoice
+    const pending = (data.invoices || []).filter(i => i.status === 'pending');
+    if (pending.length) {
+      el('next-invoice-label').textContent = 'Nästa faktura';
+      el('next-invoice-date').textContent = pending[0].due_date ? fmtDate(pending[0].due_date) : 'Förfaller snart';
+      el('next-invoice-amount').textContent = fmtAmount(pending[0].amount, pending[0].currency);
+    } else {
+      el('next-invoice-label').textContent = 'Fakturor';
+      el('next-invoice-date').textContent = 'Allt betalt ✓';
+    }
+
+    if (!data.invoices?.length) {
+      el('invoices-list').innerHTML = `
+        <div style="padding:32px 16px;text-align:center;color:var(--text-secondary);">
+          <div style="font-size:40px;margin-bottom:12px;">📄</div>
+          <div style="font-size:15px;font-weight:600;margin-bottom:6px;">Inga fakturor än</div>
+          <div style="font-size:13px;">Fakturor visas här när de skapas.</div>
+        </div>`;
+      return;
+    }
+
+    el('invoices-list').innerHTML = data.invoices.map(inv => `
+      <div class="invoice-row">
+        <div class="invoice-icon" style="background:${inv.status === 'paid' ? '#e8f5e9' : '#ffebee'};">
+          ${inv.status === 'paid' ? '✅' : '⏳'}
+        </div>
+        <div class="invoice-info">
+          <div class="invoice-title">${inv.description || 'Faktura'}</div>
+          <div class="invoice-sub">${fmtDate(inv.created_at)} · <span class="list-badge ${inv.status === 'paid' ? 'badge-green' : 'badge-red'}">${inv.status_label || inv.status}</span></div>
+        </div>
+        <div class="invoice-right">
+          <div class="invoice-amount">${fmtAmount(inv.amount, inv.currency)}</div>
+          ${inv.download_url ? `<a href="${inv.download_url}" target="_blank" class="invoice-download">⬇️</a>` : ''}
+        </div>
+      </div>`).join('');
+  } catch (e) {
+    el('invoices-list').innerHTML = `<div style="padding:20px;text-align:center;color:var(--text-secondary);">Kunde inte ladda fakturor.</div>`;
+  }
+}
+
+// ── API info ───────────────────────────────────────────────────────────────
+const codeExamples = {
+  curl: `curl -H "Authorization: Bearer YOUR_API_KEY" \\
+  https://api.bc.pixdrift.com/api/data`,
+  node: `const res = await fetch('https://api.bc.pixdrift.com/api/data', {
+  headers: { 'Authorization': 'Bearer YOUR_API_KEY' }
+});
+const data = await res.json();`,
+  python: `import requests
+r = requests.get(
+  'https://api.bc.pixdrift.com/api/data',
+  headers={'Authorization': 'Bearer YOUR_API_KEY'}
+)
+data = r.json()`
 };
+
+async function loadApiInfo() {
+  const token = getToken();
+  try {
+    const r = await fetch(`${API_BASE}/api/customer-portal/${token}/api-info`);
+    if (!r.ok) return;
+    apiInfo = await r.json();
+
+    if (apiInfo.api_key) {
+      el('api-key-display').textContent = apiInfo.api_key.masked;
+      el('rate-limit-text').textContent = `${(apiInfo.api_key.rate_limit || 1000).toLocaleString('sv-SE')} requests/timme`;
+    }
+
+    // Fill in real code examples if api key available
+    if (apiInfo.api_key?.masked) {
+      Object.keys(codeExamples).forEach(lang => {
+        codeExamples[lang] = codeExamples[lang].replace(/YOUR_API_KEY/g, apiInfo.api_key.masked);
+      });
+    }
+    el('code-example').textContent = codeExamples['curl'];
+  } catch (e) { /* Ignore */ }
+}
+
+function toggleApiKey() {
+  if (!apiInfo?.api_key) return;
+  apiKeyRevealed = !apiKeyRevealed;
+  // In real impl this would make a secure request for the full key
+  el('api-key-display').textContent = apiKeyRevealed ? '(Fullständig nyckel visas ej via portal — se Developer Portal)' : apiInfo.api_key.masked;
+  el('reveal-btn').textContent = apiKeyRevealed ? 'Dölj' : 'Visa';
+}
+
+function switchCodeTab(lang, btn) {
+  document.querySelectorAll('.code-tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  el('code-example').textContent = codeExamples[lang];
+}
+
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✓ Kopierat';
+    setTimeout(() => { btn.textContent = orig; }, 1500);
+  });
+}
+
+// ── Documents ──────────────────────────────────────────────────────────────
+async function loadDocuments() {
+  const token = getToken();
+  try {
+    const [docsR, viewsR] = await Promise.all([
+      fetch(`${API_BASE}/api/customer-portal/${token}/documents`),
+      fetch(`${API_BASE}/api/customer-portal/${token}/readonly-views`),
+    ]);
+
+    if (docsR.ok) {
+      const data = await docsR.json();
+      el('documents-list').innerHTML = (data.documents || []).map(doc => `
+        <div class="doc-row">
+          <div class="doc-icon">${doc.icon || '📄'}</div>
+          <div class="doc-info">
+            <div class="doc-title">${doc.title}</div>
+            <div class="doc-sub">${doc.description}${doc.signed_at ? ` · Signerat ${fmtDate(doc.signed_at)}` : ''}</div>
+          </div>
+          <div class="doc-actions">
+            ${doc.signed ? '<span class="doc-signed">✅</span>' : (doc.sign_required !== false ? '<span style="font-size:13px;color:var(--orange);">Ej signerat</span>' : '')}
+            ${doc.download_url ? `<a href="${doc.download_url}" target="_blank" class="doc-download">⬇️</a>` : ''}
+          </div>
+        </div>`).join('');
+    }
+
+    if (viewsR.ok) {
+      const vdata = await viewsR.json();
+      if (vdata.views?.length) {
+        el('readonly-views-container').innerHTML = vdata.views.map(view => `
+          <div class="card" style="margin: 0 16px 12px;">
+            <div style="padding:16px;">
+              <div style="font-size:15px;font-weight:600;margin-bottom:4px;">${view.title}</div>
+              <div style="font-size:13px;color:var(--text-secondary);">${view.description || ''}</div>
+              ${view.data ? `<div class="kpi-grid" style="margin:12px 0 0;">
+                ${view.data.total_visits !== undefined ? `<div class="kpi-card"><div class="kpi-value">${view.data.total_visits}</div><div class="kpi-label">Besök</div></div>` : ''}
+                ${view.data.total_spend !== undefined ? `<div class="kpi-card"><div class="kpi-value">${fmtAmount(view.data.total_spend)}</div><div class="kpi-label">Totalt</div></div>` : ''}
+              </div>` : ''}
+            </div>
+          </div>`).join('');
+      }
+    }
+  } catch (e) { /* Ignore */ }
+}
+
+// ── Settings ───────────────────────────────────────────────────────────────
+function toggleSetting(key, btn) {
+  btn.classList.toggle('on');
+  // TODO: Persist via API
+}
+
+async function requestExport() {
+  const token = getToken();
+  try {
+    const r = await fetch(`${API_BASE}/api/customer-portal/${token}/export-data`, { method: 'POST' });
+    const data = await r.json();
+    alert(data.message || 'Export beställd! Du får ett email inom 24 timmar.');
+  } catch (e) {
+    alert('Kunde inte starta export. Försök igen senare.');
+  }
+}
+
+function showDeleteConfirm() {
+  if (confirm('Är du säker? Denna åtgärd är permanent och kan inte ångras.\n\nKontakta pixdrift på privacy@pixdrift.com för att radera ditt konto.')) {
+    window.location.href = 'mailto:privacy@pixdrift.com?subject=GDPR radering - begäran om radering av konto';
+  }
+}
 
 // ── Main loader ────────────────────────────────────────────────────────────
 async function loadPortal() {
   const token = getToken();
-
-  if (!token) {
-    hide('loading');
-    show('error-screen');
-    return;
-  }
+  if (!token) { hide('loading'); show('error-screen'); return; }
 
   try {
     const res = await fetch(`${API_BASE}/api/customer-portal/${token}`);
-
-    if (!res.ok) {
-      throw new Error('Token invalid');
-    }
+    if (!res.ok) throw new Error('Token invalid');
 
     const data = await res.json();
     portalData = data;
 
-    // Apply brand
-    if (data.brand) await applyBrand(data.brand);
+    if (data.brand) applyBrand(data.brand);
 
-    // Hide loading, show app
     hide('loading');
     show('app');
 
-    // ── Action Required ──────────────────────────────────────────────────
-    const pendingApprovals = data.pending_approvals || [];
-    if (pendingApprovals.length > 0) {
-      const first = pendingApprovals[0];
-      const count = pendingApprovals.length;
+    // Status page
+    const customer = data.customer || {};
+    el('status-customer-name').textContent = customer.first_name ? `Hej, ${customer.first_name}!` : 'Hej!';
+    el('status-welcome').textContent = data.welcome_message || '';
+    el('status-badge-text').textContent = customer.customer_state === 'RETURNING' ? 'Återkommande kund' : 'Aktiv';
+    if (customer.last_visit_at) el('last-login').textContent = timeAgo(customer.last_visit_at);
 
-      el('action-title').textContent = count === 1
-        ? 'Du har ett godkännande som väntar'
-        : `Du har ${count} godkännanden som väntar`;
-
-      el('action-sub').textContent = first.description || 'Din verkstad behöver ditt svar för att fortsätta arbetet';
-      el('action-btn').href = first.approval_url || `${API_BASE}/approve/${first.id}?t=${token}`;
+    // Action required
+    const pending = data.pending_approvals || [];
+    if (pending.length > 0) {
+      el('action-title').textContent = pending.length === 1 ? 'Du har ett godkännande som väntar' : `Du har ${pending.length} godkännanden som väntar`;
+      el('action-sub').textContent = pending[0].description || 'Din verkstad behöver ditt svar';
+      el('action-btn').href = pending[0].approval_url || '#';
       show('action-section');
-    } else {
-      show('empty-section');
     }
 
-    // ── Current job progress ──────────────────────────────────────────────
-    if (data.current_job) {
-      renderProgress(data.current_job);
-    }
+    if (data.current_job) renderProgress(data.current_job);
+    if (data.timeline?.length) renderTimeline(data.timeline);
+    if (data.history?.length) renderHistory(data.history);
 
-    // ── Timeline ──────────────────────────────────────────────────────────
-    if (data.timeline?.length) {
-      renderTimeline(data.timeline);
-    }
-
-    // ── History ───────────────────────────────────────────────────────────
-    if (data.history?.length) {
-      renderHistory(data.history);
-    }
-
-    // ── Upsell: Skapa konto ────────────────────────────────────────────────
-    const customerState = data.customer?.customer_state || 'INVITED';
-    if (!data.customer?.account_created_at && customerState !== 'INVITED') {
+    if (!customer.account_created_at && customer.customer_state !== 'INVITED') {
       show('upsell-section');
-      el('upsell-btn').onclick = () => {
-        window.location.href = `https://app.bc.pixdrift.com/register?t=${token}`;
-      };
+      el('upsell-btn').onclick = () => { window.location.href = `https://app.bc.pixdrift.com/register?t=${token}`; };
     }
+
+    // Load additional data in parallel
+    await Promise.all([loadInvoices(), loadApiInfo(), loadDocuments()]);
 
   } catch (err) {
     console.error('Portal load error:', err);
@@ -718,7 +1080,6 @@ async function loadPortal() {
   }
 }
 
-// ── Start ──────────────────────────────────────────────────────────────────
 loadPortal();
 </script>
 

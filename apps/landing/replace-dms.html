@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Favicon — all sizes -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+  <link rel="icon" type="image/png" sizes="128x128" href="/favicon-128.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64.png" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="shortcut icon" href="/favicon.svg" />
+  <meta name="msapplication-TileColor" content="#0A0A0F" />
+  <meta name="theme-color" content="#0A0A0F" />
+
+  <!-- Primary Meta -->
+  <title>Replace Your DMS — Pixdrift for Automotive Workshops & Dealers</title>
+  <meta name="description" content="Automaster, Winassist, Kobra, CDK — they manage workflows. Pixdrift renders operations. Start in parallel, switch naturally. From €999/month." />
+  <meta name="keywords" content="replace DMS, automotive DMS alternative, Automaster alternative, Winassist alternative, Kobra alternative, CDK alternative, workshop management system, verkstadssystem, dealer management system" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="pixdrift AB" />
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://pixdrift.com/replace-dms.html" />
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://pixdrift.com/replace-dms.html" />
+  <meta property="og:title"       content="Replace Your DMS — Pixdrift" />
+  <meta property="og:description" content="Your DMS manages workflows. Pixdrift renders operations. Start in parallel. Switch naturally." />
+  <meta property="og:image"       content="https://pixdrift.com/pixdrift-og.png" />
+  <meta property="og:locale"      content="en_US" />
+  <meta property="og:site_name"   content="pixdrift" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="Replace Your DMS — Pixdrift" />
+  <meta name="twitter:description" content="Your DMS manages workflows. Pixdrift renders operations." />
+  <meta name="twitter:image"       content="https://pixdrift.com/pixdrift-og.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "pixdrift",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web, iOS, Android",
+    "url": "https://pixdrift.com",
+    "description": "Automotive workshop and dealer management system. Replaces legacy DMS, Fortnox, CRM, and ISO compliance tools in one platform.",
+    "offers": [
+      { "@type": "Offer", "name": "Growth", "price": "999", "priceCurrency": "EUR" }
+    ]
+  }
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── RESET ────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    img { display: block; max-width: 100%; height: auto; }
+    a { cursor: pointer; }
+    ul { list-style: none; }
+
+    /* ─── BASE ─────────────────────────────────────────── */
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+      background: #000;
+      color: #f5f5f7;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    /* ─── SCROLL PROGRESS ──────────────────────────────── */
+    #scroll-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #6366f1, #8b5cf6);
+      z-index: 9999;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 8px rgba(99,102,241,0.6);
+      width: 0;
+    }
+
+    /* ─── NAVIGATION ───────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 0.5px solid rgba(255,255,255,0.12);
+      transition: background 0.3s ease;
+    }
+
+    nav.scrolled {
+      background: rgba(0,0,0,0.88);
+      border-bottom-color: rgba(255,255,255,0.18);
+    }
+
+    .nav-logo {
+      color: #f5f5f7;
+      font-size: 18px;
+      font-weight: 700;
+      text-decoration: none;
+      letter-spacing: -0.03em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: rgba(245,245,247,0.75);
+      font-size: 12px;
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: #f5f5f7; }
+
+    .nav-actions {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .nav-actions a:first-child {
+      color: rgba(245,245,247,0.75);
+      font-size: 12px;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-actions a:first-child:hover { color: #f5f5f7; }
+
+    .nav-cta {
+      background: #fff;
+      color: #1d1d1f !important;
+      padding: 6px 14px;
+      border-radius: 980px;
+      font-size: 12px !important;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background 0.2s, opacity 0.2s !important;
+    }
+
+    .nav-cta:hover { opacity: 0.88; }
+
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      min-height: 44px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-hamburger span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: #f5f5f7;
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+
+    /* ─── REVEAL ────────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ─── EYEBROW ────────────────────────────────────────── */
+    .eyebrow {
+      font-size: 12px;
+      color: #6366f1;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    /* ─── SECTION COMMON ────────────────────────────────── */
+    section {
+      padding: 96px 24px;
+    }
+
+    .section-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ─── HERO ─────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg-gradient {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(99,102,241,0.28) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 72px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      color: #f5f5f7;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 span.dim {
+      color: rgba(245,245,247,0.4);
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px);
+      color: rgba(245,245,247,0.6);
+      max-width: 640px;
+      margin: 0 auto 40px;
+      line-height: 1.65;
+    }
+
+    /* ROI strip */
+    .roi-strip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+      padding: 14px 24px;
+      background: rgba(255,255,255,0.04);
+      border: 0.5px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      font-size: 13px;
+      color: rgba(245,245,247,0.7);
+    }
+
+    .roi-strip span.dot {
+      color: rgba(255,255,255,0.2);
+    }
+
+    .roi-strip strong {
+      color: #f5f5f7;
+      font-weight: 600;
+    }
+
+    /* CTA buttons */
+    .ctas {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: #6366f1;
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 980px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.2s;
+      display: inline-block;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.88;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.08);
+      color: rgba(245,245,247,0.85);
+      padding: 14px 28px;
+      border-radius: 980px;
+      font-size: 15px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background 0.2s;
+      border: 0.5px solid rgba(255,255,255,0.12);
+      display: inline-block;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.12);
+    }
+
+    /* ─── COMPARISON TABLE ──────────────────────────────── */
+    #comparison {
+      background: #000;
+      border-top: 0.5px solid rgba(255,255,255,0.06);
+    }
+
+    #comparison .section-inner {
+      text-align: center;
+    }
+
+    #comparison h2 {
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 48px;
+      color: #f5f5f7;
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .comparison-table th {
+      padding: 16px 20px;
+      background: rgba(255,255,255,0.04);
+      font-size: 14px;
+      font-weight: 600;
+      border-bottom: 0.5px solid rgba(255,255,255,0.1);
+    }
+
+    .comparison-table th:first-child {
+      color: rgba(245,245,247,0.4);
+      border-right: 0.5px solid rgba(255,255,255,0.06);
+    }
+
+    .comparison-table th:last-child {
+      color: #6366f1;
+    }
+
+    .comparison-table th .sub {
+      display: block;
+      font-size: 11px;
+      font-weight: 400;
+      color: rgba(245,245,247,0.3);
+      margin-top: 4px;
+    }
+
+    .comparison-table td {
+      padding: 14px 20px;
+      border-bottom: 0.5px solid rgba(255,255,255,0.06);
+      font-size: 15px;
+      vertical-align: middle;
+    }
+
+    .comparison-table td:first-child {
+      color: rgba(245,245,247,0.45);
+      border-right: 0.5px solid rgba(255,255,255,0.06);
+    }
+
+    .comparison-table td.pixdrift-col {
+      color: rgba(245,245,247,0.85);
+      font-weight: 500;
+    }
+
+    .comparison-table tr:hover td {
+      background: rgba(255,255,255,0.02);
+    }
+
+    /* ─── COST ANALYSIS ─────────────────────────────────── */
+    .cost-analysis {
+      background: #03030a;
+      border-top: 0.5px solid rgba(255,255,255,0.06);
+    }
+
+    .cost-analysis h2 {
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 48px;
+      text-align: center;
+      color: #f5f5f7;
+    }
+
+    .cost-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .cost-column {
+      background: #111118;
+      border-radius: 14px;
+      padding: 28px;
+      border: 0.5px solid rgba(255,255,255,0.08);
+    }
+
+    .cost-column.pixdrift-col {
+      border: 0.5px solid rgba(99,102,241,0.3);
+      box-shadow: 0 0 40px rgba(99,102,241,0.06);
+    }
+
+    .col-header {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(245,245,247,0.5);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 0.5px solid rgba(255,255,255,0.06);
+    }
+
+    .cost-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 12px 0;
+      border-bottom: 0.5px solid rgba(255,255,255,0.04);
+      gap: 16px;
+    }
+
+    .cost-item:last-of-type {
+      border-bottom: none;
+    }
+
+    .item-name {
+      font-size: 14px;
+      color: rgba(245,245,247,0.65);
+      line-height: 1.4;
+    }
+
+    .cost-item.included .item-name {
+      color: rgba(245,245,247,0.8);
+    }
+
+    .item-cost {
+      font-size: 13px;
+      color: rgba(245,245,247,0.4);
+      font-weight: 500;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .cost-total {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 0.5px solid rgba(255,255,255,0.1);
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .cost-total .sub {
+      display: block;
+      font-size: 12px;
+      font-weight: 400;
+      opacity: 0.6;
+      margin-top: 4px;
+    }
+
+    .legacy-total { color: #FF3B30; }
+    .pixdrift-total { color: #34C759; }
+
+    /* ROI Calculator */
+    .roi-calc {
+      background: #111118;
+      border: 0.5px solid rgba(99,102,241,0.2);
+      border-radius: 16px;
+      padding: 36px;
+      text-align: center;
+    }
+
+    .roi-label {
+      font-size: 12px;
+      color: rgba(245,245,247,0.4);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .roi-number {
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 800;
+      color: #34C759;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .roi-sub {
+      font-size: 13px;
+      color: rgba(245,245,247,0.4);
+      margin-bottom: 24px;
+    }
+
+    #mechanic-slider {
+      width: 100%;
+      max-width: 400px;
+      accent-color: #6366f1;
+      cursor: pointer;
+      height: 4px;
+      margin-bottom: 12px;
+    }
+
+    #mechanic-count {
+      font-size: 14px;
+      color: rgba(245,245,247,0.6);
+      font-weight: 500;
+    }
+
+    /* ─── MIRROR MODE ───────────────────────────────────── */
+    .mirror-mode {
+      background: #000;
+      border-top: 0.5px solid rgba(255,255,255,0.06);
+    }
+
+    .mirror-mode h2 {
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+      color: #f5f5f7;
+      text-align: center;
+    }
+
+    .mirror-mode > .section-inner > p {
+      font-size: 17px;
+      color: rgba(245,245,247,0.6);
+      max-width: 600px;
+      margin: 0 auto 12px;
+      text-align: center;
+      line-height: 1.65;
+    }
+
+    .mirror-mode > .section-inner > p:last-of-type {
+      margin-bottom: 48px;
+      font-size: 18px;
+      color: rgba(245,245,247,0.85);
+      font-weight: 500;
+    }
+
+    .mirror-steps {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 48px;
+    }
+
+    .step {
+      background: #111118;
+      border: 0.5px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 28px 24px;
+      transition: border-color 0.2s;
+    }
+
+    .step:hover {
+      border-color: rgba(99,102,241,0.3);
+    }
+
+    .step-num {
+      font-size: 11px;
+      color: #6366f1;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .step-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #f5f5f7;
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    .step-desc {
+      font-size: 14px;
+      color: rgba(245,245,247,0.55);
+      line-height: 1.6;
+    }
+
+    .step-duration {
+      font-size: 12px;
+      color: rgba(245,245,247,0.3);
+      margin-top: 16px;
+      font-weight: 500;
+    }
+
+    .step-arrow {
+      font-size: 24px;
+      color: rgba(255,255,255,0.2);
+      text-align: center;
+    }
+
+    .guarantee {
+      background: rgba(99,102,241,0.08);
+      border: 0.5px solid rgba(99,102,241,0.2);
+      border-radius: 12px;
+      padding: 24px 28px;
+      font-size: 15px;
+      color: rgba(245,245,247,0.75);
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .guarantee strong {
+      color: #f5f5f7;
+    }
+
+    /* ─── OEM SECTION ───────────────────────────────────── */
+    .oem-section {
+      background: #03030a;
+      border-top: 0.5px solid rgba(255,255,255,0.06);
+    }
+
+    .oem-section h2 {
+      font-size: clamp(26px, 4vw, 44px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+      color: #f5f5f7;
+      text-align: center;
+    }
+
+    .oem-section > .section-inner > p {
+      font-size: 17px;
+      color: rgba(245,245,247,0.6);
+      text-align: center;
+      max-width: 560px;
+      margin: 0 auto 40px;
+      line-height: 1.65;
+    }
+
+    .oem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .oem-item {
+      background: #111118;
+      border: 0.5px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 16px 20px;
+      font-size: 14px;
+      color: rgba(245,245,247,0.75);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: border-color 0.15s;
+    }
+
+    .oem-item:hover {
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    .oem-item::before {
+      content: '✓';
+      color: #34C759;
+      font-weight: 700;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .oem-note {
+      font-size: 15px;
+      color: rgba(245,245,247,0.5);
+      text-align: center;
+      max-width: 680px;
+      margin: 0 auto !important;
+      line-height: 1.65;
+    }
+
+    /* ─── FINAL CTA ─────────────────────────────────────── */
+    .final-cta {
+      background: #000;
+      border-top: 0.5px solid rgba(255,255,255,0.06);
+      text-align: center;
+    }
+
+    .final-cta h2 {
+      font-size: clamp(28px, 4vw, 52px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+      color: #f5f5f7;
+    }
+
+    .final-cta > .section-inner > p {
+      font-size: 18px;
+      color: rgba(245,245,247,0.6);
+      max-width: 520px;
+      margin: 0 auto 40px;
+      line-height: 1.65;
+    }
+
+    .final-cta .ctas {
+      margin-top: 0;
+    }
+
+    /* ─── FOOTER ────────────────────────────────────────── */
+    footer {
+      border-top: 0.5px solid rgba(255,255,255,0.08);
+      background: #000;
+      padding: 56px 24px 32px;
+    }
+
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 48px;
+    }
+
+    .footer-brand {
+      font-size: 18px;
+      font-weight: 700;
+      color: #f5f5f7;
+      text-decoration: none;
+      letter-spacing: -0.03em;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .footer-tagline {
+      font-size: 13px;
+      color: rgba(245,245,247,0.4);
+      line-height: 1.5;
+    }
+
+    .footer-col-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(245,245,247,0.3);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: rgba(245,245,247,0.5);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: #f5f5f7; }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 24px;
+      border-top: 0.5px solid rgba(255,255,255,0.06);
+    }
+
+    .footer-copy {
+      font-size: 12px;
+      color: rgba(245,245,247,0.3);
+    }
+
+    .footer-legal {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-legal a {
+      font-size: 12px;
+      color: rgba(245,245,247,0.3);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-legal a:hover { color: rgba(245,245,247,0.6); }
+
+    /* ─── MOBILE ────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      section { padding: 64px 20px; }
+
+      .nav-links, .nav-actions { display: none; }
+      .nav-hamburger { display: flex; }
+
+      .comparison-table { font-size: 13px; }
+      .comparison-table td, .comparison-table th { padding: 10px 12px; }
+
+      .cost-grid { grid-template-columns: 1fr; }
+
+      .mirror-steps {
+        grid-template-columns: 1fr;
+      }
+      .step-arrow { display: none; }
+
+      .oem-grid { grid-template-columns: 1fr; }
+
+      .footer-top {
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+
+      .roi-calc { padding: 24px 20px; }
+    }
+
+    @media (max-width: 480px) {
+      .footer-top { grid-template-columns: 1fr; }
+    }
+  </style>
+  <meta name="revised" content="2026-03-22">
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+
+<!-- ═══════════════════════════ NAVIGATION ═══════════════════════════ -->
+<nav id="main-nav">
+  <a href="/" class="nav-logo">pixdrift</a>
+
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/automotive/" style="color:#6366f1; font-weight:500;">Automotive</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/developers/">Developers</a>
+    <a href="#comparison">See comparison</a>
+  </div>
+
+  <div class="nav-actions">
+    <a href="https://app.bc.pixdrift.com">Log in</a>
+    <a href="https://calendly.com/pixdrift" class="nav-cta">Book a demo</a>
+  </div>
+
+  <div class="nav-hamburger" id="hamburger" role="button" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div id="mobile-menu" style="display:none; position:fixed; inset:0; z-index:99; background:#000; overflow-y:auto; padding:80px 24px 40px;">
+  <button onclick="closeMobileMenu()" style="position:absolute; top:16px; right:20px; background:none; border:none; color:#f5f5f7; font-size:24px; cursor:pointer;">✕</button>
+  <div style="display:flex; flex-direction:column; gap:8px;">
+    <a href="/" style="display:block; padding:14px 0; border-bottom:0.5px solid rgba(255,255,255,0.08); color:rgba(245,245,247,0.75); text-decoration:none; font-size:18px;">Home</a>
+    <a href="/automotive/" style="display:block; padding:14px 0; border-bottom:0.5px solid rgba(255,255,255,0.08); color:#6366f1; text-decoration:none; font-size:18px; font-weight:500;">Automotive</a>
+    <a href="#comparison" style="display:block; padding:14px 0; border-bottom:0.5px solid rgba(255,255,255,0.08); color:rgba(245,245,247,0.75); text-decoration:none; font-size:18px;">See comparison</a>
+    <a href="/#pricing" style="display:block; padding:14px 0; border-bottom:0.5px solid rgba(255,255,255,0.08); color:rgba(245,245,247,0.75); text-decoration:none; font-size:18px;">Pricing</a>
+    <a href="https://calendly.com/pixdrift" style="display:block; margin-top:24px; padding:16px 24px; background:#6366f1; color:#fff; text-decoration:none; border-radius:12px; font-size:16px; font-weight:600; text-align:center;">Book a demo →</a>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ HERO ═══════════════════════════════ -->
+<section class="hero">
+  <div class="hero-bg-gradient"></div>
+  <div class="hero-inner">
+    <div class="eyebrow reveal">For automotive workshops &amp; dealers</div>
+
+    <h1 class="reveal reveal-delay-1">
+      <span class="dim">Your DMS manages workflows.</span><br>
+      Pixdrift renders operations.
+    </h1>
+
+    <p class="hero-sub reveal reveal-delay-2">
+      Automaster, Winassist, Kobra, CDK — they all try to solve the same problem. They centralize data and create workflows. But operations still run on intuition and historical data. Pixdrift changes the paradigm.
+    </p>
+
+    <div class="roi-strip reveal reveal-delay-2">
+      <span>Replaces DMS + Fortnox + CRM + ISO binders</span>
+      <span class="dot">·</span>
+      <span><strong>From €999/month</strong></span>
+      <span class="dot">·</span>
+      <span>Start in parallel. Switch naturally.</span>
+    </div>
+
+    <div class="ctas reveal reveal-delay-3">
+      <a href="https://calendly.com/pixdrift" class="btn-primary">Book a demo →</a>
+      <a href="#comparison" class="btn-secondary">See the comparison</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ COMPARISON TABLE ═══════════════════ -->
+<section id="comparison">
+  <div class="section-inner">
+    <div class="eyebrow reveal">The difference</div>
+    <h2 class="reveal">The paradigm shift</h2>
+
+    <table class="comparison-table reveal">
+      <thead>
+        <tr>
+          <th>
+            Legacy DMS
+            <span class="sub">(Automaster, Winassist, Kobra, CDK)</span>
+          </th>
+          <th>Pixdrift</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Shows data after the fact</td>
+          <td class="pixdrift-col">Shows operations as they happen</td>
+        </tr>
+        <tr>
+          <td>Module-based complexity</td>
+          <td class="pixdrift-col">PIX-level clarity</td>
+        </tr>
+        <tr>
+          <td>Workflows you navigate</td>
+          <td class="pixdrift-col">Reality you see</td>
+        </tr>
+        <tr>
+          <td>Configured for your industry</td>
+          <td class="pixdrift-col">Adapts to how you actually work</td>
+        </tr>
+        <tr>
+          <td>3–6 month implementation, rip and replace</td>
+          <td class="pixdrift-col">Start in parallel. No disruption.</td>
+        </tr>
+        <tr>
+          <td>OEM-dependent workflows</td>
+          <td class="pixdrift-col">OEM-compatible, not OEM-dependent</td>
+        </tr>
+        <tr>
+          <td>Opaque until you run a report</td>
+          <td class="pixdrift-col">Transparent by design</td>
+        </tr>
+        <tr>
+          <td>Separate systems for ISO, banking, CRM</td>
+          <td class="pixdrift-col">One system. Every function.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ COST ANALYSIS ══════════════════════ -->
+<section class="cost-analysis">
+  <div class="section-inner">
+    <h2 class="reveal">What you're actually paying today</h2>
+
+    <div class="cost-grid">
+      <!-- Legacy stack -->
+      <div class="cost-column reveal">
+        <div class="col-header">Typical workshop today</div>
+
+        <div class="cost-item">
+          <div class="item-name">DMS (Automaster / Winassist / Kobra)</div>
+          <div class="item-cost">€800–1,500/mo</div>
+        </div>
+        <div class="cost-item">
+          <div class="item-name">Accounting (Fortnox / Visma)</div>
+          <div class="item-cost">€200–400/mo</div>
+        </div>
+        <div class="cost-item">
+          <div class="item-name">CRM (AutoFutura / custom)</div>
+          <div class="item-cost">€150–300/mo</div>
+        </div>
+        <div class="cost-item">
+          <div class="item-name">ISO compliance consultant</div>
+          <div class="item-cost">€300–800/mo</div>
+        </div>
+        <div class="cost-item">
+          <div class="item-name">Booking system</div>
+          <div class="item-cost">€100–200/mo</div>
+        </div>
+        <div class="cost-item">
+          <div class="item-name">Time coordinating between systems</div>
+          <div class="item-cost">8h/week</div>
+        </div>
+
+        <div class="cost-total legacy-total">
+          Total: €1,550–3,200/month
+          <span class="sub">+ hidden coordination costs</span>
+        </div>
+      </div>
+
+      <!-- Pixdrift -->
+      <div class="cost-column pixdrift-col reveal reveal-delay-1">
+        <div class="col-header">With Pixdrift</div>
+
+        <div class="cost-item included">
+          <div class="item-name">✓ DMS &amp; workshop management</div>
+        </div>
+        <div class="cost-item included">
+          <div class="item-name">✓ Accounting &amp; SIE4 export</div>
+        </div>
+        <div class="cost-item included">
+          <div class="item-name">✓ CRM &amp; customer communication</div>
+        </div>
+        <div class="cost-item included">
+          <div class="item-name">✓ ISO 9001 compliance built-in</div>
+        </div>
+        <div class="cost-item included">
+          <div class="item-name">✓ Service booking</div>
+        </div>
+        <div class="cost-item included">
+          <div class="item-name">✓ One system — no coordination</div>
+        </div>
+
+        <div class="cost-total pixdrift-total">
+          Pixdrift Growth: €999/month
+          <span class="sub">Everything included</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROI Calculator -->
+    <div class="roi-calc reveal">
+      <div class="roi-label">Your estimated savings</div>
+      <div class="roi-number" id="roi-number">€551–2,201/month</div>
+      <div class="roi-sub">Adjust based on number of mechanics ↓</div>
+      <input type="range" min="1" max="20" value="5" id="mechanic-slider"
+             oninput="updateROI(this.value)" />
+      <div id="mechanic-count">5 mechanics</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ MIRROR MODE ════════════════════════ -->
+<section class="mirror-mode">
+  <div class="section-inner">
+    <div class="eyebrow reveal" style="text-align:center;">The switch problem — solved</div>
+    <h2 class="reveal">You don't switch. You add Pixdrift.</h2>
+
+    <p class="reveal reveal-delay-1">The biggest fear when replacing a DMS is disruption. Work orders in two systems. Technicians learning new software. OEM warranty workflows breaking. We've heard it all.</p>
+
+    <p class="reveal reveal-delay-2">We solved it differently.</p>
+
+    <div class="mirror-steps">
+      <div class="step reveal">
+        <div class="step-num">Phase 1</div>
+        <div class="step-title">Start in parallel</div>
+        <div class="step-desc">Pixdrift runs alongside your existing DMS. Your team keeps working exactly as before. We import all your data.</div>
+        <div class="step-duration">Weeks 1–2</div>
+      </div>
+
+      <div class="step-arrow">→</div>
+
+      <div class="step reveal reveal-delay-1">
+        <div class="step-num">Phase 2</div>
+        <div class="step-title">Pixdrift becomes source of truth</div>
+        <div class="step-desc">New work orders start in Pixdrift. Your team begins using it naturally. Old system stays as backup.</div>
+        <div class="step-duration">Weeks 3–4</div>
+      </div>
+
+      <div class="step-arrow">→</div>
+
+      <div class="step reveal reveal-delay-2">
+        <div class="step-num">Phase 3</div>
+        <div class="step-title">The switch happens naturally</div>
+        <div class="step-desc">After 4–8 weeks, no one uses the old system anymore. It didn't feel like a switch. It felt like an upgrade.</div>
+        <div class="step-duration">Month 2–3</div>
+      </div>
+    </div>
+
+    <div class="guarantee reveal">
+      <strong>Our guarantee:</strong> If after 30 days Pixdrift isn't reducing complexity, we'll help you migrate back at no cost. No questions asked.
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ OEM SECTION ════════════════════════ -->
+<section class="oem-section">
+  <div class="section-inner">
+    <h2 class="reveal">OEM-compatible. Not OEM-dependent.</h2>
+
+    <p class="reveal reveal-delay-1">Pixdrift integrates with OEM systems — it doesn't replace them where they're mandated.</p>
+
+    <div class="oem-grid">
+      <div class="oem-item reveal">Volvo VIDA compatible</div>
+      <div class="oem-item reveal reveal-delay-1">VW/Audi SAGA2 data export</div>
+      <div class="oem-item reveal reveal-delay-2">BMW DIS compatible</div>
+      <div class="oem-item reveal">Mercedes-Benz MO360</div>
+      <div class="oem-item reveal reveal-delay-1">Cabas damage calc integration</div>
+      <div class="oem-item reveal reveal-delay-2">Swedac accreditation support</div>
+    </div>
+
+    <p class="oem-note reveal">When OEM systems are mandated, Pixdrift operates alongside them — handling everything else, so your team uses one system for 90% of their work.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ FINAL CTA ══════════════════════════ -->
+<section class="final-cta">
+  <div class="section-inner">
+    <h2 class="reveal">Start in parallel. Switch naturally.</h2>
+
+    <p class="reveal reveal-delay-1">Book a 30-minute demo. We'll show you exactly how Pixdrift would work for your specific operation — and what you'd stop paying for.</p>
+
+    <div class="ctas reveal reveal-delay-2">
+      <a href="https://calendly.com/pixdrift" class="btn-primary">Book a demo →</a>
+      <a href="/automotive/" class="btn-secondary">Learn about Pixdrift for automotive</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ FOOTER ══════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <a href="/" class="footer-brand">pixdrift</a>
+        <p class="footer-tagline">Business Operating System for Modern Teams.</p>
+      </div>
+
+      <div>
+        <div class="footer-col-title">Product</div>
+        <div class="footer-links">
+          <a href="/produkt.html#execution">Execution</a>
+          <a href="/produkt.html#capability">Capability</a>
+          <a href="/produkt.html#process">Process</a>
+          <a href="/produkt.html#currency">Currency</a>
+          <a href="/produkt.html#reports">Reports</a>
+          <a href="/changelog.html">Changelog</a>
+        </div>
+      </div>
+
+      <div>
+        <div class="footer-col-title">Solutions</div>
+        <div class="footer-links">
+          <a href="/automotive/">Automotive</a>
+          <a href="/restaurang/">Restaurants</a>
+          <a href="/replace-dms.html" style="color:#6366f1;">Replace your DMS</a>
+          <a href="/losningar/saas.html">SaaS</a>
+          <a href="/losningar/tjansteforetag.html">Professional Services</a>
+        </div>
+      </div>
+
+      <div>
+        <div class="footer-col-title">Company</div>
+        <div class="footer-links">
+          <a href="/about.html">About</a>
+          <a href="/blog/">Blog</a>
+          <a href="/developers/">Developers</a>
+          <a href="/legal/privacy.html">Privacy Policy</a>
+          <a href="/legal/terms.html">Terms</a>
+          <a href="mailto:hello@pixdrift.com">Contact</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 pixdrift AB · Stockholm, Sweden</div>
+      <div class="footer-legal">
+        <a href="/legal/privacy.html">Privacy</a>
+        <a href="/legal/terms.html">Terms</a>
+        <a href="/security.html">Security</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ─── SCROLL PROGRESS BAR ────────────────────────────
+  const progress = document.getElementById('scroll-progress');
+  window.addEventListener('scroll', () => {
+    const scrolled = window.scrollY;
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = total > 0 ? (scrolled / total) * 100 : 0;
+    progress.style.width = pct + '%';
+  }, { passive: true });
+
+  // ─── NAV SCROLL EFFECT ──────────────────────────────
+  const nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 40) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+  }, { passive: true });
+
+  // ─── HAMBURGER MENU ─────────────────────────────────
+  document.getElementById('hamburger').addEventListener('click', () => {
+    document.getElementById('mobile-menu').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+  });
+
+  function closeMobileMenu() {
+    document.getElementById('mobile-menu').style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('#mobile-menu a').forEach(link => {
+    link.addEventListener('click', () => closeMobileMenu());
+  });
+
+  // ─── REVEAL ON SCROLL ───────────────────────────────
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        revealObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  revealEls.forEach(el => revealObs.observe(el));
+
+  // ─── SMOOTH SCROLL ──────────────────────────────────
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', e => {
+      const target = document.querySelector(anchor.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // ─── ROI CALCULATOR ─────────────────────────────────
+  function updateROI(mechanics) {
+    mechanics = parseInt(mechanics);
+    document.getElementById('mechanic-count').textContent = `${mechanics} mechanic${mechanics === 1 ? '' : 's'}`;
+
+    // €300/mechanic for DMS licenses (Automaster/Winassist average)
+    const dmsCost = mechanics * 300;
+    const accounting = 300;   // Fortnox/Visma
+    const crm = 200;           // AutoFutura/custom
+    const iso = 500;           // ISO consultant
+    const booking = 150;       // Booking system
+
+    const total = dmsCost + accounting + crm + iso + booking;
+    const pixdrift = 999;
+    const savings = total - pixdrift;
+
+    const el = document.getElementById('roi-number');
+    if (savings > 0) {
+      el.textContent = `€${savings.toLocaleString('en')}/month savings`;
+      el.style.color = '#34C759';
+    } else {
+      el.textContent = 'Pixdrift pays for itself';
+      el.style.color = '#6366f1';
+    }
+  }
+
+  // Initialize on page load
+  updateROI(5);
+</script>
+
+</body>
+</html>

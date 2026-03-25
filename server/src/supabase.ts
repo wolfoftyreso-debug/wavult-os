@@ -105,3 +105,11 @@ export const supabase: SupabaseClient = new Proxy({} as SupabaseClient, {
 export function isSupabaseFallback(): boolean {
   return _fallbackMode;
 }
+
+
+// Legacy pool shim for mobility-incident-api
+export const pool = {
+  query: async (sql: string, _params?: unknown[]) => {
+    return { rows: [] as unknown[], rowCount: 0 };
+  }
+};

@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+
+  <!-- Favicon — all sizes -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+  <link rel="icon" type="image/png" sizes="128x128" href="/favicon-128.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64.png" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="shortcut icon" href="/favicon.svg" />
+  <meta name="msapplication-TileColor" content="#0A0A0F" />
+  <meta name="theme-color" content="#0A0A0F" />
+  <title>Incheckning</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <style>
+    :root {
+      --brand-color: #2563eb;
+      --brand-name: "Pixdrift";
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      min-height: 100vh;
+    }
+
+    /* ─── Header ─────────────────────────────── */
+    .header {
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      object-fit: contain;
+    }
+    .header-logo-placeholder {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      background: var(--brand-color);
+      color: white;
+    }
+    .header-name {
+      font-size: 17px;
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .header-badge {
+      margin-left: auto;
+      font-size: 12px;
+      color: #64748b;
+      background: #f1f5f9;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    /* ─── Progress bar ───────────────────────── */
+    .progress-bar {
+      height: 3px;
+      background: #e2e8f0;
+      position: relative;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--brand-color);
+      transition: width 0.4s ease;
+    }
+
+    /* ─── Steps indicator ────────────────────── */
+    .steps-row {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      padding: 20px 20px 8px;
+    }
+    .step-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #e2e8f0;
+      transition: all 0.3s;
+    }
+    .step-dot.active { background: var(--brand-color); transform: scale(1.3); }
+    .step-dot.done { background: #10b981; }
+
+    /* ─── Card ───────────────────────────────── */
+    .card {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 0 16px 40px;
+    }
+
+    .step-card {
+      background: white;
+      border-radius: 16px;
+      padding: 28px 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.08);
+      margin-top: 16px;
+      display: none;
+    }
+    .step-card.active { display: block; }
+
+    .step-icon {
+      font-size: 40px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .step-title {
+      font-size: 22px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .step-desc {
+      font-size: 15px;
+      color: #64748b;
+      text-align: center;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    /* ─── Form elements ──────────────────────── */
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 6px;
+    }
+    input[type="text"],
+    input[type="tel"],
+    input[type="number"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 16px;
+      color: #1e293b;
+      background: #fafafa;
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--brand-color);
+      background: white;
+    }
+    .form-group { margin-bottom: 16px; }
+
+    /* ─── Fuel slider ────────────────────────── */
+    .fuel-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .fuel-icons { font-size: 20px; }
+    input[type="range"] {
+      flex: 1;
+      -webkit-appearance: none;
+      height: 6px;
+      border-radius: 3px;
+      background: linear-gradient(to right, var(--brand-color) 0%, var(--brand-color) var(--fuel-pct, 50%), #e2e8f0 var(--fuel-pct, 50%), #e2e8f0 100%);
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--brand-color);
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+    .fuel-value {
+      font-weight: 700;
+      min-width: 40px;
+      text-align: right;
+      color: var(--brand-color);
+    }
+
+    /* ─── Photo upload ────────────────────────── */
+    .photo-upload-area {
+      border: 2px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 12px;
+    }
+    .photo-upload-area:hover { border-color: var(--brand-color); background: #f0f4ff; }
+    .photo-upload-area input { display: none; }
+    .photo-upload-area span { font-size: 13px; color: #64748b; }
+    .photos-preview {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .photo-thumb {
+      width: 72px; height: 72px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 2px solid #e2e8f0;
+      position: relative;
+    }
+    .photo-remove {
+      position: absolute;
+      top: -6px; right: -6px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 20px; height: 20px;
+      font-size: 11px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ─── Signature canvas ───────────────────── */
+    #signature-canvas {
+      width: 100%;
+      height: 140px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      background: #fafafa;
+      touch-action: none;
+      cursor: crosshair;
+    }
+    .sig-hint { font-size: 12px; color: #94a3b8; text-align: center; margin-top: 6px; }
+    .sig-clear {
+      background: none; border: none;
+      color: #64748b; font-size: 13px;
+      cursor: pointer; padding: 4px 0;
+      text-decoration: underline;
+    }
+
+    /* ─── Checkbox ───────────────────────────── */
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 16px;
+      background: #f8fafc;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    .checkbox-row input[type="checkbox"] {
+      width: 20px; height: 20px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      accent-color: var(--brand-color);
+    }
+    .checkbox-row label {
+      font-size: 14px;
+      color: #374151;
+      line-height: 1.5;
+      margin-bottom: 0;
+      font-weight: 400;
+    }
+    .checkbox-row a { color: var(--brand-color); }
+
+    /* ─── Buttons ────────────────────────────── */
+    .btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-primary {
+      background: var(--brand-color);
+      color: white;
+    }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-secondary {
+      background: #f1f5f9;
+      color: #374151;
+      margin-top: 10px;
+    }
+    .btn-skip {
+      width: 100%;
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 14px;
+      padding: 12px;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    /* ─── Status page ────────────────────────── */
+    .status-card {
+      background: white;
+      border-radius: 16px;
+      padding: 32px 24px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,.08);
+      margin-top: 16px;
+    }
+    .status-icon-big { font-size: 64px; margin-bottom: 20px; }
+    .status-heading { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+    .status-sub { font-size: 15px; color: #64748b; line-height: 1.5; margin-bottom: 28px; }
+    .status-detail {
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 16px;
+      text-align: left;
+      margin-bottom: 12px;
+    }
+    .status-detail-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      padding: 6px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .status-detail-row:last-child { border-bottom: none; }
+    .status-detail-label { color: #64748b; }
+    .status-detail-value { font-weight: 600; }
+
+    /* ─── Loading / error ────────────────────── */
+    #loading-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      gap: 16px;
+    }
+    .spinner {
+      width: 36px; height: 36px;
+      border: 3px solid #e2e8f0;
+      border-top-color: var(--brand-color);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #error-screen {
+      display: none;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    .error-icon { font-size: 48px; margin-bottom: 16px; }
+    .error-msg { font-size: 16px; color: #64748b; }
+
+    /* ─── Toast ──────────────────────────────── */
+    #toast {
+      position: fixed;
+      bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #1e293b;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      max-width: 320px;
+      text-align: center;
+      transition: transform 0.3s ease;
+      z-index: 999;
+      pointer-events: none;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+  </style>
+  <link rel="canonical" href="https://pixdrift.com/checkin/index.html">
+  <meta name="revised" content="2026-03-22">
+  <meta property="og:image" content="https://pixdrift.com/og-image.svg?title=Business+Operating+System&description=Your+Business%2C+Running+on+pixdrift.">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <!-- SEO:schema=home endpoint=/api/seo/schema/home -->
+</head>
+<body>
+
+<!-- Header (brand loads dynamically) -->
+<div class="header" id="header">
+  <div class="header-logo-placeholder" id="logo-placeholder">🔧</div>
+  <div class="header-name" id="brand-name">Incheckning</div>
+  <div class="header-badge" id="vehicle-badge">Laddar...</div>
+</div>
+
+<!-- Progress bar -->
+<div class="progress-bar">
+  <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+</div>
+
+<!-- Steps indicator -->
+<div class="steps-row" id="steps-row"></div>
+
+<!-- Loading screen -->
+<div id="loading-screen">
+  <div class="spinner"></div>
+  <div style="color: #64748b; font-size: 15px;">Hämtar din bokning...</div>
+</div>
+
+<!-- Error screen -->
+<div id="error-screen">
+  <div class="error-icon">😕</div>
+  <h2 style="margin-bottom: 8px">Något gick fel</h2>
+  <p class="error-msg" id="error-msg">Sessionen hittades inte. Kontrollera länken och försök igen.</p>
+</div>
+
+<!-- Main content (hidden until loaded) -->
+<div class="card" id="main-content" style="display: none;">
+
+  <!-- Step 1: Verify identity -->
+  <div class="step-card active" id="step-1">
+    <div class="step-icon">👤</div>
+    <div class="step-title">Bekräfta din identitet</div>
+    <div class="step-desc">Ange ditt telefonnummer för att fortsätta.</div>
+    <div class="form-group">
+      <label for="phone-input">Telefonnummer</label>
+      <input type="tel" id="phone-input" placeholder="+46 70 123 45 67" autocomplete="tel" />
+    </div>
+    <button class="btn btn-primary" onclick="verifyIdentity()">Fortsätt →</button>
+  </div>
+
+  <!-- Step 2: Confirm vehicle -->
+  <div class="step-card" id="step-2">
+    <div class="step-icon">🚗</div>
+    <div class="step-title">Bekräfta fordonet</div>
+    <div class="step-desc">Stämmer denna information?</div>
+    <div class="form-group">
+      <label>Registreringsnummer</label>
+      <input type="text" id="vehicle-reg-input" placeholder="ABC 123" style="text-transform:uppercase; font-weight: 700; font-size: 20px; letter-spacing: 2px;" />
+    </div>
+    <div class="form-group">
+      <label>Mätarställning (mil)</label>
+      <input type="number" id="mileage-input" placeholder="15 430" />
+    </div>
+    <div class="form-group">
+      <label>Bränslenivå</label>
+      <div class="fuel-row">
+        <span class="fuel-icons">⛽</span>
+        <input type="range" id="fuel-slider" min="0" max="100" value="50" oninput="updateFuel(this)" />
+        <span class="fuel-value" id="fuel-display">50%</span>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="saveVehicleInfo()">Bekräfta →</button>
+  </div>
+
+  <!-- Step 3: Photos (optional) -->
+  <div class="step-card" id="step-3">
+    <div class="step-icon">📸</div>
+    <div class="step-title">Foton (valfritt)</div>
+    <div class="step-desc">Dokumentera fordonets skick. Ta bilder av ev. skador.</div>
+    <label class="photo-upload-area" for="photo-file">
+      <input type="file" id="photo-file" accept="image/*" multiple capture="environment" onchange="handlePhotos(this)" />
+      <div style="font-size: 32px; margin-bottom: 8px;">📷</div>
+      <span>Tryck för att ta foto eller välj bilder</span>
+    </label>
+    <div class="photos-preview" id="photos-preview"></div>
+    <button class="btn btn-primary" style="margin-top: 20px;" onclick="goToStep(4)">Fortsätt →</button>
+    <button class="btn-skip" onclick="goToStep(4)">Hoppa över</button>
+  </div>
+
+  <!-- Step 4: Notes -->
+  <div class="step-card" id="step-4">
+    <div class="step-icon">📝</div>
+    <div class="step-title">Meddelande till verkstaden</div>
+    <div class="step-desc">Finns det något vi bör veta om bilen?</div>
+    <div class="form-group">
+      <textarea id="notes-input" rows="4" placeholder="T.ex. konstigt ljud vid bromsning, varningslampan lyser, nytt däck behövs..."></textarea>
+    </div>
+    <button class="btn btn-primary" onclick="saveNotes()">Fortsätt →</button>
+    <button class="btn-skip" onclick="goToStep(5)">Inga anteckningar</button>
+  </div>
+
+  <!-- Step 5: Sign & confirm -->
+  <div class="step-card" id="step-5">
+    <div class="step-icon">✍️</div>
+    <div class="step-title">Signera & lämna nyckeln</div>
+    <div class="step-desc">Ange var du lämnat nyckeln och skriv under.</div>
+
+    <div class="form-group">
+      <label>Var lämnade du nyckeln?</label>
+      <select id="key-location-select" onchange="updateKeyLocation(this)">
+        <option value="">Välj plats...</option>
+        <option value="Nyckelbox">🔑 Nyckelbox vid entrén</option>
+        <option value="Lucka / brevlåda">📬 Brevlåda / lucka</option>
+        <option value="Receptionen">🏢 Receptionen (bemannad)</option>
+        <option value="Insida fordonet">🚗 Kvar inne i bilen</option>
+        <option value="Annat">📍 Annat (ange nedan)</option>
+      </select>
+    </div>
+    <div class="form-group" id="key-other-group" style="display:none;">
+      <label>Beskriv</label>
+      <input type="text" id="key-other-input" placeholder="Var lämnade du nyckeln?" />
+    </div>
+
+    <div class="form-group">
+      <label>Din underskrift</label>
+      <canvas id="signature-canvas"></canvas>
+      <div class="sig-hint">Rita din signatur ovan</div>
+      <button class="sig-clear" onclick="clearSignature()">Rensa signatur</button>
+    </div>
+
+    <div class="checkbox-row">
+      <input type="checkbox" id="terms-check" onchange="checkTerms()" />
+      <label for="terms-check">
+        Jag godkänner <a href="#" onclick="openTerms()">villkoren</a> och bekräftar att informationen är korrekt.
+      </label>
+    </div>
+
+    <button class="btn btn-primary" id="complete-btn" disabled onclick="completeCheckin()">
+      ✅ Checka in fordonet
+    </button>
+  </div>
+
+  <!-- Step 6: Done / Status -->
+  <div class="step-card" id="step-6">
+    <div class="status-card">
+      <div class="status-icon-big">✅</div>
+      <div class="status-heading">Incheckning klar!</div>
+      <div class="status-sub">Tack! Vi tar hand om din bil. Du får ett SMS när bilen är redo.</div>
+
+      <div class="status-detail" id="summary-card">
+        <div class="status-detail-row">
+          <span class="status-detail-label">Fordon</span>
+          <span class="status-detail-value" id="summary-reg">—</span>
+        </div>
+        <div class="status-detail-row">
+          <span class="status-detail-label">Nyckel lämnad</span>
+          <span class="status-detail-value" id="summary-key">—</span>
+        </div>
+        <div class="status-detail-row">
+          <span class="status-detail-label">Tid</span>
+          <span class="status-detail-value" id="summary-time">—</span>
+        </div>
+        <div class="status-detail-row">
+          <span class="status-detail-label">Status</span>
+          <span class="status-detail-value" style="color: #10b981;">Mottagen</span>
+        </div>
+      </div>
+
+      <div style="color: #94a3b8; font-size: 13px; margin-top: 16px;">
+        Arbeitsordernummer skickas till dig via SMS.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+// ─── State ────────────────────────────────────────────────────────────────────
+
+const API_BASE = 'https://api.pixdrift.com';
+const TOTAL_STEPS = 6;
+
+let state = {
+  token: null,
+  session: null,
+  brand: null,
+  currentStep: 1,
+  photos: [],
+  signatureData: null,
+  keyLocation: null,
+};
+
+// Signature canvas
+let sigCanvas, sigCtx, sigDrawing = false;
+
+// ─── Boot ─────────────────────────────────────────────────────────────────────
+
+(async function boot() {
+  const params = new URLSearchParams(window.location.search);
+  state.token = params.get('token');
+
+  if (!state.token) {
+    showError('Ingen session hittades. Kontrollera länken.');
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}/api/checkin/${state.token}`);
+    if (!res.ok) throw new Error('Session not found');
+    const data = await res.json();
+    state.session = data;
+    state.brand = data.brand;
+
+    applyBrand(data.brand);
+    document.getElementById('vehicle-badge').textContent = data.vehicle_reg || '';
+    if (data.vehicle_reg) {
+      document.getElementById('vehicle-reg-input').value = data.vehicle_reg;
+    }
+
+    // If already completed, jump to step 6
+    if (data.status === 'CHECKED_IN' || data.status === 'COMPLETED') {
+      goToStep(6);
+      populateSummary();
+    } else {
+      goToStep(data.step || 1);
+    }
+
+    buildStepDots();
+    document.getElementById('loading-screen').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
+
+  } catch (e) {
+    showError('Sessionen hittades inte eller har gått ut.');
+  }
+})();
+
+// ─── Brand ────────────────────────────────────────────────────────────────────
+
+function applyBrand(brand) {
+  if (!brand) return;
+  if (brand.primary_color) {
+    document.documentElement.style.setProperty('--brand-color', brand.primary_color);
+  }
+  if (brand.display_name) {
+    document.getElementById('brand-name').textContent = brand.display_name;
+    document.title = `Incheckning — ${brand.display_name}`;
+  }
+  if (brand.logo_url) {
+    const img = document.createElement('img');
+    img.src = brand.logo_url;
+    img.className = 'header-logo';
+    img.alt = brand.display_name;
+    const placeholder = document.getElementById('logo-placeholder');
+    placeholder.replaceWith(img);
+  }
+}
+
+// ─── Steps ────────────────────────────────────────────────────────────────────
+
+function buildStepDots() {
+  const row = document.getElementById('steps-row');
+  for (let i = 1; i <= TOTAL_STEPS; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'step-dot';
+    dot.id = `dot-${i}`;
+    row.appendChild(dot);
+  }
+}
+
+function goToStep(n) {
+  document.querySelectorAll('.step-card').forEach(c => c.classList.remove('active'));
+  const card = document.getElementById(`step-${n}`);
+  if (card) card.classList.add('active');
+
+  document.querySelectorAll('.step-dot').forEach((dot, i) => {
+    dot.className = 'step-dot';
+    if (i + 1 < n) dot.classList.add('done');
+    if (i + 1 === n) dot.classList.add('active');
+  });
+
+  const pct = ((n - 1) / (TOTAL_STEPS - 1)) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  state.currentStep = n;
+
+  if (n === 5) initSignatureCanvas();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── Step 1: Verify identity ──────────────────────────────────────────────────
+
+function verifyIdentity() {
+  const phone = document.getElementById('phone-input').value.trim();
+  if (!phone || phone.length < 6) {
+    toast('Ange ett giltigt telefonnummer');
+    return;
+  }
+  // Simple match: store and proceed
+  goToStep(2);
+}
+
+// ─── Step 2: Vehicle info ─────────────────────────────────────────────────────
+
+function updateFuel(el) {
+  const pct = el.value;
+  el.style.setProperty('--fuel-pct', pct + '%');
+  document.getElementById('fuel-display').textContent = pct + '%';
+}
+
+async function saveVehicleInfo() {
+  const reg = document.getElementById('vehicle-reg-input').value.trim().toUpperCase();
+  const mileage = document.getElementById('mileage-input').value;
+  const fuel = document.getElementById('fuel-slider').value;
+
+  if (!reg) { toast('Ange registreringsnummer'); return; }
+
+  try {
+    const res = await fetch(`${API_BASE}/api/checkin/${state.token}/vehicle-info`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        mileage: mileage ? parseInt(mileage) : null,
+        fuel_level: parseInt(fuel),
+        photos: [],
+        customer_notes: null,
+      }),
+    });
+    if (!res.ok) throw new Error();
+    goToStep(3);
+  } catch {
+    toast('Kunde inte spara fordonsinformation. Försök igen.');
+  }
+}
+
+// ─── Step 3: Photos ───────────────────────────────────────────────────────────
+
+function handlePhotos(input) {
+  const files = Array.from(input.files);
+  const preview = document.getElementById('photos-preview');
+
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      state.photos.push(e.target.result);
+      const wrapper = document.createElement('div');
+      wrapper.style.position = 'relative';
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      img.className = 'photo-thumb';
+      const btn = document.createElement('button');
+      btn.className = 'photo-remove';
+      btn.textContent = '×';
+      const idx = state.photos.length - 1;
+      btn.onclick = () => { state.photos.splice(idx, 1); wrapper.remove(); };
+      wrapper.appendChild(img);
+      wrapper.appendChild(btn);
+      preview.appendChild(wrapper);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// ─── Step 4: Notes ────────────────────────────────────────────────────────────
+
+async function saveNotes() {
+  const notes = document.getElementById('notes-input').value.trim();
+  try {
+    await fetch(`${API_BASE}/api/checkin/${state.token}/vehicle-info`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        mileage: null,
+        fuel_level: null,
+        photos: state.photos,
+        customer_notes: notes || null,
+      }),
+    });
+  } catch { /* non-critical */ }
+  goToStep(5);
+}
+
+// ─── Step 5: Signature & complete ─────────────────────────────────────────────
+
+function updateKeyLocation(sel) {
+  const otherGroup = document.getElementById('key-other-group');
+  if (sel.value === 'Annat') {
+    otherGroup.style.display = 'block';
+  } else {
+    otherGroup.style.display = 'none';
+  }
+  state.keyLocation = sel.value;
+}
+
+function checkTerms() {
+  const checked = document.getElementById('terms-check').checked;
+  document.getElementById('complete-btn').disabled = !checked;
+}
+
+function initSignatureCanvas() {
+  sigCanvas = document.getElementById('signature-canvas');
+  sigCtx = sigCanvas.getContext('2d');
+
+  // Retina support
+  const dpr = window.devicePixelRatio || 1;
+  const rect = sigCanvas.getBoundingClientRect();
+  sigCanvas.width = rect.width * dpr;
+  sigCanvas.height = 140 * dpr;
+  sigCtx.scale(dpr, dpr);
+  sigCtx.strokeStyle = '#1e293b';
+  sigCtx.lineWidth = 2;
+  sigCtx.lineCap = 'round';
+
+  sigCanvas.addEventListener('mousedown', startDraw);
+  sigCanvas.addEventListener('mousemove', draw);
+  sigCanvas.addEventListener('mouseup', endDraw);
+  sigCanvas.addEventListener('touchstart', e => { e.preventDefault(); startDraw(e.touches[0]); }, { passive: false });
+  sigCanvas.addEventListener('touchmove', e => { e.preventDefault(); draw(e.touches[0]); }, { passive: false });
+  sigCanvas.addEventListener('touchend', endDraw);
+}
+
+function getPos(e) {
+  const rect = sigCanvas.getBoundingClientRect();
+  return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+}
+function startDraw(e) { sigDrawing = true; const p = getPos(e); sigCtx.beginPath(); sigCtx.moveTo(p.x, p.y); }
+function draw(e) { if (!sigDrawing) return; const p = getPos(e); sigCtx.lineTo(p.x, p.y); sigCtx.stroke(); }
+function endDraw() { sigDrawing = false; state.signatureData = sigCanvas.toDataURL(); }
+function clearSignature() { sigCtx && sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height); state.signatureData = null; }
+
+async function completeCheckin() {
+  const keySelect = document.getElementById('key-location-select').value;
+  const keyOther = document.getElementById('key-other-input').value.trim();
+  const keyLocation = keySelect === 'Annat' ? keyOther : keySelect;
+
+  if (!keyLocation) { toast('Ange var du lämnade nyckeln'); return; }
+
+  const btn = document.getElementById('complete-btn');
+  btn.disabled = true;
+  btn.textContent = 'Skickar...';
+
+  try {
+    const res = await fetch(`${API_BASE}/api/checkin/${state.token}/complete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        key_location: keyLocation,
+        digital_signature: state.signatureData || null,
+        agreed_to_terms: true,
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Check-in failed');
+    }
+
+    state.keyLocation = keyLocation;
+    populateSummary();
+    goToStep(6);
+
+  } catch (e) {
+    toast(e.message || 'Något gick fel. Försök igen.');
+    btn.disabled = false;
+    btn.textContent = '✅ Checka in fordonet';
+  }
+}
+
+function populateSummary() {
+  document.getElementById('summary-reg').textContent =
+    state.session?.vehicle_reg || document.getElementById('vehicle-reg-input')?.value || '—';
+  document.getElementById('summary-key').textContent = state.keyLocation || '—';
+  document.getElementById('summary-time').textContent =
+    new Date().toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' });
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function openTerms() {
+  const org = state.brand?.display_name || 'Verkstaden';
+  alert(`Villkor\n\n${org} ansvarar för ditt fordon under reparationstiden. Du godkänner att verkstaden utför det arbete som avtalats. Eventuella tilläggsarbeten kommuniceras innan de påbörjas.`);
+}
+
+function toast(msg, duration = 3000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+function showError(msg) {
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('error-msg').textContent = msg;
+  document.getElementById('error-screen').style.display = 'block';
+}
+</script>
+</body>
+</html>

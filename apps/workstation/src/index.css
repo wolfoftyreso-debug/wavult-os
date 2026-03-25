@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ─── Google Translate Widget ─────────────────────────────────────────────── */
+.goog-te-banner-frame { display: none !important; }
+body { top: 0 !important; }
+.goog-te-gadget { color: transparent !important; }
+.goog-te-gadget .goog-te-combo {
+  color: #8E8E93 !important;
+  font-size: 13px !important;
+  border: none !important;
+  background: transparent !important;
+  cursor: pointer !important;
+}

@@ -24,7 +24,8 @@
     "settings": "Asetukset",
     "audit": "Tarkastusloki",
     "banking": "Pankkiintegraatio",
-    "learning": "Koulutus"
+    "learning": "Koulutus",
+    "products": "Tuotteet"
   },
   "common": {
     "save": "Tallenna",

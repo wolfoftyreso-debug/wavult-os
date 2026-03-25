@@ -24,7 +24,8 @@
     "settings": "Indstillinger",
     "audit": "Revisionslog",
     "banking": "Bankintegration",
-    "learning": "Uddannelse"
+    "learning": "Uddannelse",
+    "products": "Produkter"
   },
   "common": {
     "save": "Gem",

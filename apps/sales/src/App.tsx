@@ -139,6 +139,7 @@ type NavItem = { id: string; label: string; icon: React.ReactNode };
 const SALES_NAV_ICONS: { id: string; i18nKey: string; icon: React.ReactNode }[] = [
   { id: "overview", i18nKey: "nav.overview", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> },
   { id: "pipeline", i18nKey: "deals.pipeline", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> },
+  { id: "products", i18nKey: "nav.products", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg> },
   { id: "reports", i18nKey: "nav.reports", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> },
   { id: "payouts", i18nKey: "banking.payments", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> },
   { id: "currencies", i18nKey: "nav.currencies", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> },
@@ -152,13 +153,13 @@ function useSalesNavItems(): NavItem[] {
 
 // ─── Fallback data ─────────────────────────────────────────────────────────────
 const FALLBACK_DEALS = [
-  { id: "1", name: "Fastighetsbolaget – OMS", value: 18500, stage: "WON", probability: 100, company: "Fastighetsbolaget AB", owner: "Erik Svensson", close: "2026-03-15" },
-  { id: "2", name: "Kommun X – Systemavtal", value: 35000, stage: "PROPOSAL", probability: 65, company: "Kommun X", owner: "Leon Ritzén", close: "2026-04-30" },
-  { id: "3", name: "Bygg & Co – OMS-licens", value: 42000, stage: "QUALIFIED", probability: 40, company: "Bygg & Co", owner: "Leon Ritzén", close: "2026-05-15" },
-  { id: "4", name: "RealEstate – Inspektionstjänst", value: 22000, stage: "WON", probability: 100, company: "RealEstate Group", owner: "Erik Svensson", close: "2026-03-01" },
-  { id: "5", name: "TechStart – Pilot", value: 5500, stage: "NEW", probability: 20, company: "TechStart AB", owner: "Dennis Lindqvist", close: "2026-06-01" },
-  { id: "6", name: "Enterprise – Sthlm Stad", value: 95000, stage: "PROPOSAL", probability: 55, company: "Stockholms Stad", owner: "Erik Svensson", close: "2026-06-30" },
-  { id: "7", name: "Logistik AB – SaaS", value: 28000, stage: "QUALIFIED", probability: 45, company: "Logistik AB", owner: "Leon Ritzén", close: "2026-05-30" },
+  { id: "1", name: "Fastighetsbolaget – Optic Insights Monitor", value: 18500, stage: "WON", probability: 100, company: "Fastighetsbolaget AB", owner: "Erik Svensson", close: "2026-03-15" },
+  { id: "2", name: "Kommun X – Optic Insights Platform", value: 35000, stage: "PROPOSAL", probability: 65, company: "Kommun X", owner: "Leon Ritzén", close: "2026-04-30" },
+  { id: "3", name: "Bygg & Co – quiXzoom Growth", value: 42000, stage: "QUALIFIED", probability: 40, company: "Bygg & Co", owner: "Leon Ritzén", close: "2026-05-15" },
+  { id: "4", name: "RealEstate – Optic Insights Analyst", value: 22000, stage: "WON", probability: 100, company: "RealEstate Group", owner: "Erik Svensson", close: "2026-03-01" },
+  { id: "5", name: "TechStart – quiXzoom Pilot", value: 5500, stage: "NEW", probability: 20, company: "TechStart AB", owner: "Dennis Lindqvist", close: "2026-06-01" },
+  { id: "6", name: "Stockholms Stad – Optic Insights Enterprise", value: 95000, stage: "PROPOSAL", probability: 55, company: "Stockholms Stad", owner: "Erik Svensson", close: "2026-06-30" },
+  { id: "7", name: "Logistik AB – quiXzoom Enterprise", value: 28000, stage: "QUALIFIED", probability: 45, company: "Logistik AB", owner: "Leon Ritzén", close: "2026-05-30" },
 ];
 
 const FALLBACK_PAYOUTS = [
@@ -983,6 +984,131 @@ function ForecastView() {
   );
 }
 
+// ─── Products View ────────────────────────────────────────────────────────────
+function ProductsView() {
+  const products = [
+    {
+      name: "quiXzoom",
+      tagline: "Crowdsourced Camera Intelligence",
+      icon: "🔭",
+      desc: "The world's first crowdsourced camera intelligence network. Field agents capture geo-tagged visual missions and deliver structured optical data at scale.",
+      color: C.blue,
+      plans: [
+        { name: "Starter", price: "€499/mo", features: ["Up to 500 missions/month", "Standard turnaround (48h)", "CSV + JSON export", "Email support"] },
+        { name: "Growth", price: "€1,499/mo", features: ["Up to 5,000 missions/month", "Priority turnaround (12h)", "API access", "Dedicated CSM"] },
+        { name: "Enterprise", price: "Custom", features: ["Unlimited missions", "Real-time delivery", "Custom integrations", "SLA + dedicated infra"] },
+      ],
+    },
+    {
+      name: "Optic Insights",
+      tagline: "B2B Optical Analytics",
+      icon: "📡",
+      desc: "Event-based visual intelligence for infrastructure owners, municipalities, and property operators. No raw footage — only structured, actionable alerts.",
+      color: C.purple,
+      plans: [
+        { name: "Monitor", price: "€799/mo", features: ["Up to 10 zones", "Event alerts (email/SMS)", "30-day history", "Standard dashboard"] },
+        { name: "Analyst", price: "€2,499/mo", features: ["Up to 100 zones", "Webhook + API delivery", "12-month history", "Custom alert rules"] },
+        { name: "Platform", price: "Custom", features: ["Unlimited zones", "White-label option", "Predictive analytics", "On-premise deployment"] },
+      ],
+    },
+  ];
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
+      {/* Header */}
+      <div style={{ padding: "24px", background: C.surface, borderRadius: 10, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
+        <div style={{ fontSize: 11, fontWeight: 600, color: C.tertiary, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8 }}>
+          Wavult Group Products
+        </div>
+        <div style={{ fontSize: 22, fontWeight: 700, color: C.text, letterSpacing: "-0.02em", marginBottom: 8 }}>
+          quiXzoom · Optic Insights
+        </div>
+        <div style={{ fontSize: 14, color: C.secondary, lineHeight: 1.6 }}>
+          Two products. One optical intelligence layer. Crowdsourced capture meets enterprise analytics.
+        </div>
+      </div>
+
+      {products.map(product => (
+        <div key={product.name} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {/* Product header */}
+          <div style={{
+            background: C.surface, borderRadius: 10, padding: "24px",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+            borderTop: `3px solid ${product.color}`,
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 12 }}>
+              <span style={{ fontSize: 28 }}>{product.icon}</span>
+              <div>
+                <div style={{ fontSize: 20, fontWeight: 700, color: C.text, letterSpacing: "-0.02em" }}>{product.name}</div>
+                <div style={{ fontSize: 12, fontWeight: 600, color: product.color, textTransform: "uppercase", letterSpacing: "0.06em" }}>{product.tagline}</div>
+              </div>
+            </div>
+            <p style={{ fontSize: 14, color: C.secondary, lineHeight: 1.6 }}>{product.desc}</p>
+          </div>
+
+          {/* Pricing grid */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+            {product.plans.map((plan, i) => (
+              <div key={plan.name} className="card-animate" style={{
+                background: C.surface, borderRadius: 10, padding: "20px 22px",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                border: i === 1 ? `1.5px solid ${product.color}40` : `1px solid ${C.border}`,
+                animation: `slideUp 0.2s ease ${i * 0.05}s backwards`,
+                position: "relative",
+              }}>
+                {i === 1 && (
+                  <div style={{
+                    position: "absolute", top: -10, left: "50%", transform: "translateX(-50%)",
+                    background: product.color, color: "#fff", fontSize: 10, fontWeight: 700,
+                    padding: "3px 10px", borderRadius: 980, textTransform: "uppercase", letterSpacing: "0.08em",
+                    whiteSpace: "nowrap",
+                  }}>
+                    Most popular
+                  </div>
+                )}
+                <div style={{ fontSize: 11, fontWeight: 600, color: C.tertiary, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>
+                  {plan.name}
+                </div>
+                <div style={{ fontSize: 24, fontWeight: 700, color: product.color, letterSpacing: "-0.02em", marginBottom: 16, fontVariantNumeric: "tabular-nums" }}>
+                  {plan.price}
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  {plan.features.map((f, fi) => (
+                    <div key={fi} style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: 13, color: C.secondary }}>
+                      <span style={{ color: product.color, fontWeight: 700, flexShrink: 0, marginTop: 1 }}>✓</span>
+                      {f}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+
+      {/* CTA */}
+      <div style={{
+        background: C.surface, borderRadius: 10, padding: "28px 24px",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.06)", textAlign: "center",
+      }}>
+        <div style={{ fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 8 }}>Interested in a demo or partnership?</div>
+        <div style={{ fontSize: 14, color: C.secondary, marginBottom: 16 }}>
+          Reach out to discuss quiXzoom missions, Optic Insights zones, or enterprise contracts.
+        </div>
+        <a
+          href="mailto:erik@hypbit.com?subject=Wavult%20Group%20Product%20Inquiry"
+          style={{
+            display: "inline-block", padding: "10px 24px", borderRadius: 8, background: C.blue,
+            color: "#fff", fontWeight: 600, fontSize: 14, textDecoration: "none",
+          }}
+        >
+          Contact us →
+        </a>
+      </div>
+    </div>
+  );
+}
+
 // ─── App Shell ─────────────────────────────────────────────────────────────────
 export default function App() {
   const { t } = useTranslation();
@@ -992,6 +1118,7 @@ export default function App() {
   const viewComponents: Record<string, React.ReactNode> = {
     overview: <OverviewView />,
     pipeline: <PipelineView />,
+    products: <ProductsView />,
     reports: <ReportsView />,
     payouts: <PayoutsView />,
     currencies: <CurrenciesView />,
@@ -1023,7 +1150,7 @@ export default function App() {
           }}>
             <div style={{
               width: 30, height: 30, borderRadius: 8,
-              background: "linear-gradient(135deg, #34C759, #30B955)",
+              background: "linear-gradient(135deg, #6366F1, #8B5CF6)",
               display: "flex", alignItems: "center", justifyContent: "center",
             }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFF" strokeWidth="2.5" strokeLinecap="round">
@@ -1033,7 +1160,7 @@ export default function App() {
             </div>
             <div>
               <div style={{ fontSize: 14, fontWeight: 700, letterSpacing: "-0.02em", color: C.text }}>Sales</div>
-              <div style={{ fontSize: 11, color: C.tertiary }}>Pixdrift OMS</div>
+              <div style={{ fontSize: 11, color: C.tertiary }}>Wavult Group</div>
             </div>
           </div>
 

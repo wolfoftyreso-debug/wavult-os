@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0B0F1A"/>
+  <!-- Grid lines -->
+  <line x1="0" y1="315" x2="1200" y2="315" stroke="#ffffff" stroke-width="0.5" opacity="0.04"/>
+  <line x1="600" y1="0" x2="600" y2="630" stroke="#ffffff" stroke-width="0.5" opacity="0.04"/>
+  <!-- Logo mark: bar chart -->
+  <rect x="80" y="260" width="32" height="64" rx="4" fill="#3B82F6"/>
+  <rect x="122" y="224" width="32" height="100" rx="4" fill="#8B5CF6"/>
+  <rect x="164" y="188" width="32" height="136" rx="4" fill="#10B981"/>
+  <!-- Wordmark -->
+  <text x="220" y="260" font-family="system-ui,-apple-system,sans-serif" font-size="72" font-weight="700" fill="#F9FAFB" letter-spacing="-3">hypebit</text>
+  <!-- Tagline -->
+  <text x="220" y="310" font-family="system-ui,-apple-system,sans-serif" font-size="24" fill="#9CA3AF" letter-spacing="-0.5">Your digital business. Fully structured.</text>
+  <!-- Features -->
+  <text x="220" y="380" font-family="system-ui,-apple-system,sans-serif" font-size="18" fill="#3B82F6">MRR · ARR · Funnels · Automation · CRM · €299/month</text>
+  <!-- Right geometric -->
+  <rect x="940" y="120" width="180" height="3" rx="2" fill="#3B82F6" opacity="0.5"/>
+  <rect x="980" y="140" width="140" height="3" rx="2" fill="#8B5CF6" opacity="0.4"/>
+  <rect x="960" y="200" width="60" height="60" rx="8" fill="#3B82F6" opacity="0.15"/>
+  <rect x="1040" y="180" width="80" height="80" rx="8" fill="#8B5CF6" opacity="0.1"/>
+  <rect x="1100" y="240" width="40" height="40" rx="4" fill="#10B981" opacity="0.25"/>
+  <!-- Bottom accent -->
+  <rect x="0" y="622" width="1200" height="4" rx="0" fill="#3B82F6"/>
+  <!-- Live dot -->
+  <circle cx="1150" cy="60" r="8" fill="#10B981"/>
+  <circle cx="1150" cy="60" r="16" fill="#10B981" opacity="0.2"/>
+</svg>

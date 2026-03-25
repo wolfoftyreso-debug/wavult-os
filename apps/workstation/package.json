@@ -9,9 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@pixdrift/i18n": "*",
+    "@supabase/supabase-js": "^2.99.3",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "@pixdrift/i18n": "*"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@types/react": "^18.3.5",

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Favicon — all sizes -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+  <link rel="icon" type="image/png" sizes="128x128" href="/favicon-128.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64.png" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="shortcut icon" href="/favicon.svg" />
+  <meta name="msapplication-TileColor" content="#0A0A0F" />
+  <meta name="theme-color" content="#0A0A0F" />
+  <title>The PIX Philosophy | Pixdrift</title>
+  <meta name="description" content="PIX are the smallest units of operational truth. Pixdrift manages them at scale — so you can execute the macro." />
+  <link rel="canonical" href="https://pixdrift.com/philosophy.html" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://pixdrift.com/philosophy.html" />
+  <meta property="og:title" content="The PIX Philosophy | Pixdrift" />
+  <meta property="og:description" content="Every business runs on thousands of PIX. Pixdrift manages them at scale." />
+  <meta property="og:image" content="https://pixdrift.com/pixdrift-og.png" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    a { cursor: pointer; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+      background: #000;
+      color: #f5f5f7;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 0.5px solid rgba(255,255,255,0.12);
+    }
+
+    .nav-logo {
+      color: #f5f5f7;
+      font-size: 18px;
+      font-weight: 700;
+      text-decoration: none;
+      letter-spacing: -0.03em;
+    }
+
+    .nav-back {
+      font-size: 14px;
+      color: rgba(245,245,247,0.55);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s ease;
+    }
+    .nav-back:hover { color: #f5f5f7; }
+
+    /* Main content */
+    .manifesto {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 120px 24px 100px;
+    }
+
+    .eyebrow {
+      font-size: 12px;
+      color: #6366f1;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      font-weight: 600;
+    }
+
+    h1 {
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 700;
+      color: #f5f5f7;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 40px;
+    }
+
+    .lead {
+      font-size: 20px;
+      color: rgba(245,245,247,0.7);
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+
+    .body-faded {
+      font-size: 18px;
+      color: rgba(245,245,247,0.5);
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+
+    .body {
+      font-size: 18px;
+      color: rgba(245,245,247,0.7);
+      line-height: 1.7;
+      margin-bottom: 48px;
+    }
+
+    .pullquote {
+      border-left: 2px solid #6366f1;
+      padding-left: 24px;
+      margin-bottom: 48px;
+    }
+
+    .pullquote p {
+      font-size: 22px;
+      color: #f5f5f7;
+      font-weight: 500;
+      line-height: 1.5;
+      font-style: italic;
+    }
+
+    /* Glossary */
+    .glossary {
+      background: #111118;
+      border: 0.5px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 48px;
+    }
+
+    .glossary-label {
+      font-size: 12px;
+      color: rgba(245,245,247,0.4);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    .glossary-row {
+      border-bottom: 0.5px solid rgba(255,255,255,0.06);
+      padding: 14px 0;
+      display: flex;
+      align-items: baseline;
+      gap: 0;
+    }
+
+    .glossary-row:last-child {
+      border-bottom: none;
+    }
+
+    .glossary-term {
+      font-family: 'SF Mono', 'Fira Code', 'Fira Mono', monospace;
+      color: #6366f1;
+      font-size: 16px;
+      font-weight: 600;
+      min-width: 110px;
+      flex-shrink: 0;
+    }
+
+    .glossary-def {
+      color: rgba(245,245,247,0.5);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* CTA */
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #6366f1;
+      color: #fff;
+      padding: 16px 32px;
+      border-radius: 980px;
+      font-size: 17px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: opacity 0.2s ease, transform 0.15s ease;
+    }
+    .cta-btn:hover {
+      opacity: 0.88;
+      transform: translateY(-1px);
+    }
+    .cta-btn:active {
+      transform: scale(0.97);
+      opacity: 0.85;
+    }
+
+    /* Divider */
+    .divider {
+      width: 48px;
+      height: 1px;
+      background: rgba(255,255,255,0.12);
+      margin-bottom: 48px;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 0.5px solid rgba(255,255,255,0.08);
+      padding: 32px 24px;
+      text-align: center;
+    }
+    .footer-inner {
+      max-width: 680px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-copy {
+      font-size: 13px;
+      color: rgba(245,245,247,0.3);
+    }
+    .footer-links-row {
+      display: flex;
+      gap: 20px;
+    }
+    .footer-links-row a {
+      font-size: 13px;
+      color: rgba(245,245,247,0.35);
+      text-decoration: none;
+    }
+    .footer-links-row a:hover { color: rgba(245,245,247,0.6); }
+
+    @media (max-width: 600px) {
+      .manifesto { padding: 100px 20px 80px; }
+      h1 { font-size: 36px; }
+      .lead { font-size: 18px; }
+      .body, .body-faded { font-size: 16px; }
+      .glossary-row { flex-direction: column; gap: 4px; }
+      .glossary-term { min-width: unset; }
+    }
+  </style>
+  <meta name="revised" content="2026-03-22">
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+  <a href="/" class="nav-logo">pixdrift</a>
+  <a href="/" class="nav-back">← Back to Pixdrift</a>
+</nav>
+
+<!-- Manifesto -->
+<section class="manifesto">
+
+  <div class="eyebrow">The PIX Philosophy</div>
+
+  <h1>Every business runs<br>on thousands of PIX.</h1>
+
+  <p class="lead">
+    A PIX is the smallest unit of operational truth. A deal marked won. A task completed. A payment reconciled. An anomaly detected. A decision logged.
+  </p>
+
+  <p class="body-faded">
+    Most systems show you the result of your PIX. Reports. Dashboards. Summaries. They are looking backwards.
+  </p>
+
+  <p class="body">
+    Pixdrift manages the PIX as they happen — and sequences them into Flows, monitors their State, and responds to every Signal. In real time.
+  </p>
+
+  <div class="divider"></div>
+
+  <div class="pullquote">
+    <p>"Let Pixdrift handle the micro — so you can execute the macro."</p>
+  </div>
+
+  <p class="body-faded">
+    This is not a dashboard. This is not a reporting tool. This is an execution engine — the operational layer that connects, controls, and executes across every system your business runs on.
+  </p>
+
+  <p class="body">
+    Master every PIX. Command the entire operation.
+  </p>
+
+  <!-- PIX Language Glossary -->
+  <div class="glossary">
+    <div class="glossary-label">Operational Language</div>
+
+    <div class="glossary-row">
+      <span class="glossary-term">PIX</span>
+      <span class="glossary-def">The smallest unit of operational truth. A data point, a decision, an action, a status change.</span>
+    </div>
+    <div class="glossary-row">
+      <span class="glossary-term">Flow</span>
+      <span class="glossary-def">A sequence of PIXs — the path from intent to outcome across a process or workflow.</span>
+    </div>
+    <div class="glossary-row">
+      <span class="glossary-term">State</span>
+      <span class="glossary-def">The current condition of a system — the sum of all PIXs that have occurred up to this moment.</span>
+    </div>
+    <div class="glossary-row">
+      <span class="glossary-term">Signal</span>
+      <span class="glossary-def">An event that triggers change — the input that moves a system from one State to another.</span>
+    </div>
+    <div class="glossary-row">
+      <span class="glossary-term">Execution</span>
+      <span class="glossary-def">The transformation of intent into action — when a PIX moves from decision to reality.</span>
+    </div>
+  </div>
+
+  <a href="https://app.bc.pixdrift.com" class="cta-btn">
+    Enter Pixdrift →
+  </a>
+
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-copy">© 2026 pixdrift AB · Stockholm, Sweden</div>
+    <div class="footer-links-row">
+      <a href="/">Home</a>
+      <a href="/features/">Platform</a>
+      <a href="/legal/privacy.html">Privacy</a>
+      <a href="/legal/terms.html">Terms</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

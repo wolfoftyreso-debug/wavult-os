@@ -735,10 +735,649 @@ const WarningsList = ({ warnings, onRefresh }: { warnings: any[]; onRefresh: () 
   );
 };
 
+// ─── Slide-in animation & card hover ──────────────────────────────────────────
+const SLIDE_IN_STYLE = `
+  @keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  .card-hover:hover {
+    box-shadow: 0 4px 16px rgba(0,122,255,0.14);
+    transform: translateY(-1px);
+  }
+`;
+
+// ─── Extra helpers ─────────────────────────────────────────────────────────────
+function memberColor(score: number): string {
+  if (score >= 70) return C.green;
+  if (score >= 50) return C.orange;
+  return C.red;
+}
+
+function riskBorderColor(risk: string): string {
+  switch (risk) {
+    case "CRITICAL": return C.red;
+    case "HIGH":     return C.red;
+    case "MEDIUM":   return C.orange;
+    default:         return C.green;
+  }
+}
+
+function initials(name: string): string {
+  return name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
+}
+
+// ─── Bar component ─────────────────────────────────────────────────────────────
+const Bar = ({ pct, color, height = 6 }: { pct: number; color: string; height?: number }) => (
+  <div style={{ background: C.bg, borderRadius: height, overflow: "hidden", height }}>
+    <div style={{
+      width: `${Math.min(100, Math.max(0, pct))}%`,
+      height: "100%",
+      background: color,
+      borderRadius: height,
+      transition: "width 0.4s ease",
+    }} />
+  </div>
+);
+
+// ─── Btn component ─────────────────────────────────────────────────────────────
+const Btn = ({ children, variant = "primary", size = "md", onClick }: {
+  children: React.ReactNode;
+  variant?: "primary" | "secondary" | "ghost";
+  size?: "sm" | "md";
+  onClick?: () => void;
+}) => {
+  const styles: Record<string, React.CSSProperties> = {
+    primary:   { background: C.blue,    color: "#fff",    border: "none" },
+    secondary: { background: C.bg,      color: C.text,    border: `0.5px solid ${C.border}` },
+    ghost:     { background: "none",    color: C.subtext, border: "none" },
+  };
+  const padding = size === "sm" ? "8px 14px" : "10px 18px";
+  return (
+    <button onClick={onClick} style={{
+      padding, borderRadius: 10, cursor: "pointer", fontSize: 13, fontWeight: 600,
+      fontFamily: "inherit", textAlign: "center", ...styles[variant],
+    }}>{children}</button>
+  );
+};
+
+// ─── Demo team data ────────────────────────────────────────────────────────────
+interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  engagement_score: number;
+  burnout_risk: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+  trend: "IMPROVING" | "STABLE" | "DECLINING";
+  open_tasks: number;
+  overdue_tasks: number;
+  goals_completed: number;
+  has_unread_feedback: boolean;
+  score_history: number[];
+  recent_pulses: { question: string; score: number; mood?: string }[];
+}
+
+const DEMO_TEAM: TeamMember[] = [
+  {
+    id: "gunnar",
+    name: "Gunnar Lindqvist",
+    role: "Säljchef",
+    engagement_score: 78,
+    burnout_risk: "LOW",
+    trend: "IMPROVING",
+    open_tasks: 5,
+    overdue_tasks: 0,
+    goals_completed: 82,
+    has_unread_feedback: false,
+    score_history: [65, 70, 72, 68, 74, 76, 79, 78],
+    recent_pulses: [
+      { question: "Hur mår du?",        score: 4, mood: "😊 Bra" },
+      { question: "Arbetsbelastning?",  score: 3, mood: "😐 Okej" },
+      { question: "Teamkänsla?",        score: 5, mood: "😊 Toppen" },
+    ],
+  },
+  {
+    id: "eva",
+    name: "Eva Karlsson",
+    role: "Produktchef",
+    engagement_score: 85,
+    burnout_risk: "LOW",
+    trend: "STABLE",
+    open_tasks: 8,
+    overdue_tasks: 1,
+    goals_completed: 91,
+    has_unread_feedback: false,
+    score_history: [80, 82, 84, 83, 86, 85, 84, 85],
+    recent_pulses: [
+      { question: "Hur mår du?",        score: 5, mood: "😊 Toppen" },
+      { question: "Arbetsbelastning?",  score: 4, mood: "😊 Bra" },
+      { question: "Teamkänsla?",        score: 5, mood: "😊 Toppen" },
+    ],
+  },
+  {
+    id: "thomas",
+    name: "Thomas Berg",
+    role: "Utvecklare",
+    engagement_score: 61,
+    burnout_risk: "MEDIUM",
+    trend: "DECLINING",
+    open_tasks: 12,
+    overdue_tasks: 3,
+    goals_completed: 55,
+    has_unread_feedback: true,
+    score_history: [72, 70, 68, 65, 64, 62, 61, 61],
+    recent_pulses: [
+      { question: "Hur mår du?",        score: 2, mood: "😕 Inte bra" },
+      { question: "Arbetsbelastning?",  score: 2, mood: "😕 Inte bra" },
+      { question: "Teamkänsla?",        score: 3, mood: "😐 Okej" },
+    ],
+  },
+  {
+    id: "rickard",
+    name: "Rickard Söderström",
+    role: "Kundansvarig",
+    engagement_score: 32,
+    burnout_risk: "CRITICAL",
+    trend: "DECLINING",
+    open_tasks: 18,
+    overdue_tasks: 7,
+    goals_completed: 28,
+    has_unread_feedback: true,
+    score_history: [60, 55, 50, 45, 42, 38, 34, 32],
+    recent_pulses: [
+      { question: "Hur mår du?",        score: 1, mood: "😢 Dåligt" },
+      { question: "Arbetsbelastning?",  score: 1, mood: "😢 Dåligt" },
+      { question: "Teamkänsla?",        score: 2, mood: "😕 Inte bra" },
+    ],
+  },
+];
+
+// ─── Team Member Card ──────────────────────────────────────────────────────────
+const TeamMemberCard = ({ member, onClick }: { member: TeamMember; onClick: (m: TeamMember) => void }) => (
+  <div
+    onClick={() => onClick(member)}
+    className="card-hover"
+    style={{
+      background: C.surface,
+      border: `0.5px solid ${C.border}`,
+      borderRadius: 12,
+      padding: 16,
+      cursor: "pointer",
+      transition: "all 0.15s ease",
+    }}
+  >
+    {/* Avatar row */}
+    <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+      <div style={{
+        width: 44, height: 44, borderRadius: "50%",
+        background: memberColor(member.engagement_score),
+        border: `2px solid ${riskBorderColor(member.burnout_risk)}`,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontSize: 16, fontWeight: 700, color: "#fff", flexShrink: 0,
+      }}>
+        {initials(member.name)}
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 15, fontWeight: 600, color: C.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+          {member.name}
+        </div>
+        <div style={{ fontSize: 12, color: C.subtext }}>{member.role}</div>
+      </div>
+      {(member.burnout_risk === "HIGH" || member.burnout_risk === "CRITICAL") && (
+        <div style={{
+          flexShrink: 0, fontSize: 10, fontWeight: 700, padding: "3px 8px",
+          borderRadius: 4, background: "#FF3B3010", color: C.red,
+        }}>
+          {member.burnout_risk === "CRITICAL" ? "🔴 KRITISK" : "🟠 HÖG RISK"}
+        </div>
+      )}
+    </div>
+
+    {/* Engagement bar */}
+    <div style={{ marginBottom: 10 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+        <span style={{ fontSize: 11, color: C.subtext }}>Engagemang</span>
+        <span style={{ fontSize: 13, fontWeight: 600, color: scoreColor(member.engagement_score) }}>
+          {member.engagement_score}/100
+        </span>
+      </div>
+      <Bar pct={member.engagement_score} color={scoreColor(member.engagement_score)} height={4} />
+    </div>
+
+    {/* Trend */}
+    <div style={{ fontSize: 12, color: C.subtext, marginBottom: 2 }}>
+      {member.trend === "DECLINING" ? "↓ Sjunkande trend"
+        : member.trend === "IMPROVING" ? "↑ Förbättras"
+        : "→ Stabil"}
+    </div>
+
+    {/* KPIs */}
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 10 }}>
+      <div style={{ textAlign: "center", background: C.bg, borderRadius: 8, padding: "6px 4px" }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: C.text }}>{member.open_tasks}</div>
+        <div style={{ fontSize: 10, color: C.subtext }}>Tasks</div>
+      </div>
+      <div style={{ textAlign: "center", background: C.bg, borderRadius: 8, padding: "6px 4px" }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: member.overdue_tasks > 0 ? C.red : C.text }}>
+          {member.overdue_tasks}
+        </div>
+        <div style={{ fontSize: 10, color: C.subtext }}>Försenade</div>
+      </div>
+      <div style={{ textAlign: "center", background: C.bg, borderRadius: 8, padding: "6px 4px" }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: C.text }}>{member.goals_completed}%</div>
+        <div style={{ fontSize: 10, color: C.subtext }}>Mål</div>
+      </div>
+    </div>
+  </div>
+);
+
+// ─── Member Detail Panel ───────────────────────────────────────────────────────
+const MemberDetailPanel = ({ member, onClose }: { member: TeamMember; onClose: () => void }) => (
+  <div style={{
+    position: "fixed", top: 0, right: 0, bottom: 0, width: 420,
+    background: C.surface,
+    boxShadow: "-4px 0 24px rgba(0,0,0,0.12)",
+    zIndex: 200, overflowY: "auto",
+    animation: "slideInRight 0.25s ease",
+  }}>
+    {/* Header */}
+    <div style={{ padding: "20px 24px 16px", borderBottom: `0.5px solid ${C.border}`, display: "flex", alignItems: "center", gap: 12 }}>
+      <div style={{
+        width: 56, height: 56, borderRadius: "50%",
+        background: memberColor(member.engagement_score),
+        border: `3px solid ${riskBorderColor(member.burnout_risk)}`,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontSize: 20, fontWeight: 700, color: "#fff", flexShrink: 0,
+      }}>
+        {initials(member.name)}
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 20, fontWeight: 700, color: C.text }}>{member.name}</div>
+        <div style={{ fontSize: 14, color: C.subtext }}>{member.role}</div>
+        {(member.burnout_risk === "CRITICAL" || member.burnout_risk === "HIGH") && (
+          <div style={{ marginTop: 4, fontSize: 11, fontWeight: 700, color: C.red }}>
+            {member.burnout_risk === "CRITICAL" ? "🔴 KRITISK RISKPROFIL" : "🟠 HÖG RISK"}
+          </div>
+        )}
+      </div>
+      <button onClick={onClose} style={{ border: "none", background: "none", cursor: "pointer", color: C.subtext, fontSize: 24, lineHeight: 1, flexShrink: 0 }}>✕</button>
+    </div>
+
+    {/* Sparkline — 8 weeks */}
+    <div style={{ padding: "16px 24px", borderBottom: `0.5px solid ${C.border}` }}>
+      <div style={{ fontSize: 13, fontWeight: 600, color: C.subtext, marginBottom: 12 }}>ENGAGEMANG — 8 VECKOR</div>
+      <div style={{ display: "flex", alignItems: "flex-end", gap: 4, height: 56, marginBottom: 22 }}>
+        {member.score_history.map((score, i) => {
+          const isLast = i === member.score_history.length - 1;
+          return (
+            <div key={i} style={{
+              flex: 1,
+              background: isLast ? C.blue : C.bg,
+              height: `${score}%`,
+              borderRadius: 3,
+              minHeight: 4,
+              position: "relative",
+              transition: "height 0.3s ease",
+            }}>
+              {isLast && (
+                <div style={{
+                  position: "absolute", bottom: -20, left: "50%",
+                  transform: "translateX(-50%)",
+                  fontSize: 10, fontWeight: 700, color: C.blue, whiteSpace: "nowrap",
+                }}>{score}</div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+
+    {/* System health */}
+    <div style={{ padding: "16px 24px" }}>
+      <div style={{ fontSize: 13, fontWeight: 600, color: C.subtext, marginBottom: 12 }}>SYSTEMHÄLSA</div>
+
+      {/* Tasks */}
+      <div style={{ background: C.bg, borderRadius: 10, padding: 14, marginBottom: 10 }}>
+        <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 8, color: C.text }}>Uppgifter</div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+          <div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: C.text }}>{member.open_tasks}</div>
+            <div style={{ fontSize: 11, color: C.subtext }}>Öppna</div>
+          </div>
+          <div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: member.overdue_tasks > 0 ? C.red : C.green }}>
+              {member.overdue_tasks}
+            </div>
+            <div style={{ fontSize: 11, color: C.subtext }}>Försenade</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Goal progress */}
+      <div style={{ background: C.bg, borderRadius: 10, padding: 14, marginBottom: 10 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+          <div style={{ fontSize: 13, fontWeight: 600, color: C.text }}>Mål & Utveckling</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: C.blue }}>{member.goals_completed}%</div>
+        </div>
+        <Bar pct={member.goals_completed} color={C.blue} />
+      </div>
+
+      {/* Pulse history */}
+      <div style={{ background: C.bg, borderRadius: 10, padding: 14, marginBottom: 10 }}>
+        <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 8, color: C.text }}>Senaste pulssvar</div>
+        {member.recent_pulses.map((p, i) => (
+          <div key={i} style={{
+            display: "flex", justifyContent: "space-between", padding: "6px 0",
+            borderBottom: i < member.recent_pulses.length - 1 ? `0.5px solid ${C.border}` : "none",
+            gap: 8,
+          }}>
+            <div style={{ fontSize: 12, color: C.subtext, flex: 1 }}>{p.question}</div>
+            <div style={{ fontSize: 12, fontWeight: 600, flexShrink: 0,
+              color: p.score >= 4 ? C.green : p.score >= 3 ? C.orange : C.red }}>
+              {p.mood || `${p.score}/5`}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Anonymous feedback alert */}
+      {member.has_unread_feedback && (
+        <div style={{
+          background: "#FFF3E0",
+          border: `1px solid ${C.orange}40`,
+          borderRadius: 10, padding: 14, marginBottom: 10,
+        }}>
+          <div style={{ fontSize: 13, fontWeight: 600, color: C.orange, marginBottom: 4 }}>⚠️ Anonym feedback</div>
+          <div style={{ fontSize: 12, color: C.subtext }}>Denna person har skickat feedback som kräver uppmärksamhet</div>
+          <button style={{ marginTop: 8, fontSize: 12, color: C.blue, border: "none", background: "none", cursor: "pointer", padding: 0, fontFamily: "inherit" }}>
+            Visa feedback →
+          </button>
+        </div>
+      )}
+
+      {/* Actions */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 16 }}>
+        <Btn variant="primary"   size="sm">📅 Boka 1-on-1</Btn>
+        <Btn variant="secondary" size="sm">📋 Tilldela uppgift</Btn>
+        <Btn variant="ghost"     size="sm">✉️ Skicka meddelande</Btn>
+      </div>
+    </div>
+  </div>
+);
+
+// ─── Calendar View ─────────────────────────────────────────────────────────────
+interface CalEvent {
+  date: number;
+  type: "one-on-one" | "culture" | "team";
+  title: string;
+}
+
+const DEMO_EVENTS: CalEvent[] = [
+  { date: 24, type: "one-on-one", title: "1-on-1 med Rickard Söderström" },
+  { date: 25, type: "one-on-one", title: "1-on-1 med Thomas Berg" },
+  { date: 26, type: "culture",    title: "After work — Teamkväll" },
+  { date: 27, type: "team",       title: "Sprint review" },
+  { date: 28, type: "one-on-one", title: "1-on-1 med Gunnar Lindqvist" },
+  { date: 1,  type: "culture",    title: "Teamlunch" },
+  { date: 5,  type: "team",       title: "Kvartalsplanering" },
+];
+
+const EVENT_COLOR: Record<string, string> = {
+  "one-on-one": C.blue,
+  "culture":    C.green,
+  "team":       C.orange,
+};
+
+const EVENT_ICON: Record<string, string> = {
+  "one-on-one": "👤",
+  "culture":    "🎉",
+  "team":       "👥",
+};
+
+const EVENT_LABEL: Record<string, string> = {
+  "one-on-one": "1-on-1",
+  "culture":    "Kultur",
+  "team":       "Team",
+};
+
+const CalendarView = () => {
+  const now   = new Date();
+  const year  = now.getFullYear();
+  const month = now.getMonth();
+  const today = now.getDate();
+
+  const firstDayOfWeek = (new Date(year, month, 1).getDay() + 6) % 7; // Mon=0
+  const daysInMonth    = new Date(year, month + 1, 0).getDate();
+
+  const cells: (number | null)[] = [
+    ...Array(firstDayOfWeek).fill(null),
+    ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
+  ];
+
+  const monthName = now.toLocaleString("sv-SE", { month: "long", year: "numeric" });
+
+  const upcoming = DEMO_EVENTS
+    .filter(e => e.date >= today)
+    .sort((a, b) => a.date - b.date)
+    .slice(0, 5);
+
+  return (
+    <div>
+      <Card style={{ marginBottom: 16 }}>
+        <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 16, textTransform: "capitalize" }}>
+          📅 {monthName}
+        </div>
+
+        {/* Day headers */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 2, marginBottom: 4 }}>
+          {["Mån", "Tis", "Ons", "Tor", "Fre", "Lör", "Sön"].map(d => (
+            <div key={d} style={{ textAlign: "center", fontSize: 11, color: C.subtext, fontWeight: 600, padding: "4px 0" }}>{d}</div>
+          ))}
+        </div>
+
+        {/* Day cells */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 2 }}>
+          {cells.map((day, i) => {
+            const dayEvents = day ? DEMO_EVENTS.filter(e => e.date === day) : [];
+            const isToday   = day === today;
+            return (
+              <div key={i} style={{
+                minHeight: 44, borderRadius: 8, padding: "4px 2px",
+                background: isToday ? `${C.blue}18` : "transparent",
+                textAlign: "center",
+              }}>
+                {day && (
+                  <>
+                    <div style={{ fontSize: 13, fontWeight: isToday ? 700 : 400, color: isToday ? C.blue : C.text, marginBottom: 2 }}>
+                      {day}
+                    </div>
+                    {dayEvents.length > 0 && (
+                      <div style={{ display: "flex", justifyContent: "center", gap: 2, flexWrap: "wrap" }}>
+                        {dayEvents.map((e, ei) => (
+                          <div key={ei} style={{ width: 6, height: 6, borderRadius: "50%", background: EVENT_COLOR[e.type] }} />
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Legend */}
+        <div style={{ display: "flex", gap: 16, marginTop: 12, flexWrap: "wrap" }}>
+          {Object.entries(EVENT_LABEL).map(([type, label]) => (
+            <div key={type} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: C.subtext }}>
+              <div style={{ width: 8, height: 8, borderRadius: "50%", background: EVENT_COLOR[type] }} />
+              {EVENT_ICON[type]} {label}
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* Upcoming list */}
+      <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 10, color: C.text }}>Kommande aktiviteter</div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {upcoming.length === 0 && (
+          <Card><div style={{ color: C.subtext, textAlign: "center", padding: "12px 0" }}>Inga fler händelser denna månad.</div></Card>
+        )}
+        {upcoming.map((e, i) => (
+          <Card key={i} style={{ padding: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <div style={{
+                width: 40, height: 40, borderRadius: 10,
+                background: `${EVENT_COLOR[e.type]}20`,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 18, flexShrink: 0,
+              }}>{EVENT_ICON[e.type]}</div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: C.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {e.title}
+                </div>
+                <div style={{ fontSize: 12, color: C.subtext }}>
+                  {new Date(year, month, e.date).toLocaleDateString("sv-SE", { weekday: "long", day: "numeric", month: "long" })}
+                </div>
+              </div>
+              <Badge label={EVENT_LABEL[e.type]} color={EVENT_COLOR[e.type]} />
+            </div>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ─── Team Overview Dashboard (new, demo-data driven) ──────────────────────────
+const TeamOverviewDashboard = () => {
+  const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
+  const [filter,  setFilter]  = useState<"all" | "attention" | "healthy">("all");
+  const [sortBy,  setSortBy]  = useState<"engagement" | "name">("engagement");
+  const [activeTab, setActiveTab] = useState<"team" | "calendar">("team");
+
+  const members       = DEMO_TEAM;
+  const avgScore      = Math.round(members.reduce((s, m) => s + m.engagement_score, 0) / members.length);
+  const needsAttention= members.filter(m => m.burnout_risk === "HIGH" || m.burnout_risk === "CRITICAL");
+  const respondedCount= 3; // demo: 3 of 4 answered this week
+
+  const filtered = members
+    .filter(m => {
+      if (filter === "attention") return m.burnout_risk === "HIGH" || m.burnout_risk === "CRITICAL";
+      if (filter === "healthy")   return m.burnout_risk === "LOW";
+      return true;
+    })
+    .sort((a, b) => sortBy === "name"
+      ? a.name.localeCompare(b.name, "sv")
+      : b.engagement_score - a.engagement_score
+    );
+
+  const innerTabs = [
+    { id: "team",     label: "👥 Teamöversikt" },
+    { id: "calendar", label: "📅 Kalender" },
+  ];
+
+  return (
+    <div>
+      <style>{SLIDE_IN_STYLE}</style>
+
+      {/* Inner tab bar */}
+      <div style={{ display: "flex", gap: 4, marginBottom: 16, background: C.surface, borderRadius: 10, padding: 4, border: `0.5px solid ${C.border}` }}>
+        {innerTabs.map(t => (
+          <button key={t.id} onClick={() => setActiveTab(t.id as any)} style={{
+            flex: 1, padding: "8px 12px", borderRadius: 8, border: "none", cursor: "pointer",
+            background: activeTab === t.id ? C.blue : "none",
+            color: activeTab === t.id ? "#fff" : C.text,
+            fontWeight: 600, fontSize: 13,
+          }}>{t.label}</button>
+        ))}
+      </div>
+
+      {/* ── Team view ── */}
+      {activeTab === "team" && (
+        <>
+          {/* Header stats */}
+          <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+            <Card style={{ flex: "1 1 130px", textAlign: "center", padding: 16 }}>
+              <div style={{ fontSize: 44, fontWeight: 700, lineHeight: 1, color: scoreColor(avgScore) }}>{avgScore}</div>
+              <div style={{ fontSize: 12, color: C.subtext, marginTop: 4 }}>Teampoäng ↑</div>
+            </Card>
+            <Card style={{ flex: "1 1 130px", textAlign: "center", padding: 16 }}>
+              <div style={{ fontSize: 22, fontWeight: 700, color: C.blue }}>{respondedCount}/{members.length}</div>
+              <div style={{ fontSize: 12, color: C.subtext, marginTop: 4 }}>svarade på veckans puls</div>
+            </Card>
+            <Card style={{
+              flex: "1 1 130px", textAlign: "center", padding: 16,
+              border: needsAttention.length > 0 ? `1px solid ${C.red}40` : `0.5px solid ${C.border}`,
+            }}>
+              <div style={{ fontSize: 26, fontWeight: 700, color: needsAttention.length > 0 ? C.red : C.green }}>
+                {needsAttention.length > 0 ? `⚠️ ${needsAttention.length}` : "✅ 0"}
+              </div>
+              <div style={{ fontSize: 12, color: C.subtext, marginTop: 4 }}>behöver uppmärksamhet</div>
+            </Card>
+          </div>
+
+          {/* Filters + sort */}
+          <div style={{ display: "flex", gap: 6, marginBottom: 14, flexWrap: "wrap", alignItems: "center" }}>
+            {([ { id: "all", label: "Alla" }, { id: "attention", label: "🔴 Behöver uppmärksamhet" }, { id: "healthy", label: "🟢 Mår bra" } ] as const).map(f => (
+              <button key={f.id} onClick={() => setFilter(f.id)} style={{
+                padding: "6px 14px", borderRadius: 20, fontSize: 12, fontWeight: 600,
+                background: filter === f.id ? C.blue : C.bg,
+                color: filter === f.id ? "#fff" : C.text,
+                border: `1px solid ${filter === f.id ? C.blue : C.border}`,
+                cursor: "pointer",
+              }}>{f.label}</button>
+            ))}
+            <div style={{ marginLeft: "auto", display: "flex", gap: 6, alignItems: "center" }}>
+              <span style={{ fontSize: 12, color: C.subtext }}>Sortera:</span>
+              {([ { id: "engagement", label: "Engagemang" }, { id: "name", label: "Namn" } ] as const).map(s => (
+                <button key={s.id} onClick={() => setSortBy(s.id)} style={{
+                  padding: "5px 10px", borderRadius: 8, fontSize: 11, fontWeight: 600,
+                  background: sortBy === s.id ? C.indigo : C.bg,
+                  color: sortBy === s.id ? "#fff" : C.subtext,
+                  border: `1px solid ${sortBy === s.id ? C.indigo : C.border}`,
+                  cursor: "pointer",
+                }}>{s.label}</button>
+              ))}
+            </div>
+          </div>
+
+          {/* Member grid */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
+            {filtered.map(member => (
+              <TeamMemberCard key={member.id} member={member} onClick={setSelectedMember} />
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* ── Calendar view ── */}
+      {activeTab === "calendar" && <CalendarView />}
+
+      {/* ── Slide-in detail panel + backdrop ── */}
+      {selectedMember && (
+        <>
+          <div
+            onClick={() => setSelectedMember(null)}
+            style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.28)", zIndex: 199 }}
+          />
+          <MemberDetailPanel member={selectedMember} onClose={() => setSelectedMember(null)} />
+        </>
+      )}
+    </div>
+  );
+};
+
 // ─── Main Module ──────────────────────────────────────────────────────────────
 export const PeopleOSModule = ({ D }: { D: DashboardData }) => {
   const [refreshKey, setRefreshKey] = useState(0);
+  const [activeMainTab, setActiveMainTab] = useState<"overview" | "checkin" | "manager">("overview");
   const mgr = isManager(D.user);
+
+  const mainTabs = [
+    { id: "overview", label: "👥 Teamöversikt" },
+    { id: "checkin",  label: "💓 Check-in" },
+    ...(mgr ? [{ id: "manager", label: "📊 Manager" }] : []),
+  ];
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -757,23 +1396,35 @@ export const PeopleOSModule = ({ D }: { D: DashboardData }) => {
         )}
       </div>
 
-      {/* Pulse card — always shown first */}
-      <PulseCard user={D.user} onResponded={() => setRefreshKey(k => k + 1)} />
+      {/* Top-level tab bar */}
+      <div style={{ display: "flex", gap: 4, background: C.surface, borderRadius: 10, padding: 4, border: `0.5px solid ${C.border}` }}>
+        {mainTabs.map(t => (
+          <button key={t.id} onClick={() => setActiveMainTab(t.id as any)} style={{
+            flex: 1, padding: "8px 12px", borderRadius: 8, border: "none", cursor: "pointer",
+            background: activeMainTab === t.id ? C.blue : "none",
+            color: activeMainTab === t.id ? "#fff" : C.text,
+            fontWeight: 600, fontSize: 13,
+          }}>{t.label}</button>
+        ))}
+      </div>
 
-      {/* Employee section */}
-      {!mgr && (
+      {/* Team Overview (default) */}
+      {activeMainTab === "overview" && <TeamOverviewDashboard />}
+
+      {/* Check-in */}
+      {activeMainTab === "checkin" && (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <PulseCard user={D.user} onResponded={() => setRefreshKey(k => k + 1)} />
           <MyScoreTrend user={D.user} />
           <FeedbackForm user={D.user} />
         </div>
       )}
 
-      {/* Manager section */}
-      {mgr && (
+      {/* Manager */}
+      {activeMainTab === "manager" && mgr && (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <TeamHealthDashboard user={D.user} />
           <MyScoreTrend user={D.user} />
-          <FeedbackForm user={D.user} />
         </div>
       )}
     </div>

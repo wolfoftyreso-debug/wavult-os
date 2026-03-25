@@ -24,7 +24,8 @@
     "settings": "Settings",
     "audit": "Audit Log",
     "banking": "Banking",
-    "learning": "Learning"
+    "learning": "Learning",
+    "products": "Products"
   },
   "common": {
     "save": "Save",

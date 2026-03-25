@@ -53,10 +53,13 @@ interface ConsumableItem {
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
+// SECURITY FIX (Clawbot): org_id MUST come from authenticated user first.
+// Fallback to x-org-id header is allowed for internal service calls only.
+// Query param org_id is NEVER trusted for tenant isolation.
 function getOrgId(req: Request): string {
   return (
+    (req as any).user?.org_id ||
     (req.headers["x-org-id"] as string) ||
-    (req.query.org_id as string) ||
     "00000000-0000-0000-0000-000000000000"
   );
 }
@@ -562,7 +565,8 @@ router.post("/:id/stock-count", async (req: Request, res: Response) => {
 // POST /api/consumables/run-auto-consume — Cron: daily auto-deductions
 // ---------------------------------------------------------------------------
 router.post("/run-auto-consume", async (req: Request, res: Response) => {
-  const orgId = req.query.org_id as string;
+  // SECURITY FIX (Clawbot): org_id from req.user only — never from query params
+  const orgId = (req as any).user?.org_id as string | undefined;
 
   let query = supabase
     .from("consumable_items")

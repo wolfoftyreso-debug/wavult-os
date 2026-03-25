@@ -24,7 +24,8 @@
     "settings": "Innstillinger",
     "audit": "Revisjonslogg",
     "banking": "Bankintegrasjon",
-    "learning": "Opplæring"
+    "learning": "Opplæring",
+    "products": "Produkter"
   },
   "common": {
     "save": "Lagre",

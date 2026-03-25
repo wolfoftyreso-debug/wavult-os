@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useApi } from "./useApi";
 import { useTranslation, LanguageSwitcher } from "@pixdrift/i18n";
 import { IntegrationsHub } from "./IntegrationsHub";
+import BrandSettings from "./BrandSettings";
+import CompensationSettingsView from "./CompensationSettingsView";
 
 // ─── Design tokens ─────────────────────────────────────────────────────────────
 const C = {
@@ -187,10 +189,27 @@ const navItems: NavItem[] = [
       <path d="M8 12h8"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/>
     </svg>
   )},
+  { id: "brand", label: "Varumärke", icon: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <path d="M12 2a10 10 0 0 1 10 10"/>
+      <path d="M8 12s1.5 2 4 2 4-2 4-2"/>
+      <line x1="9" y1="9" x2="9.01" y2="9"/>
+      <line x1="15" y1="9" x2="15.01" y2="9"/>
+    </svg>
+  )},
   { id: "settings", label: "Inställningar", icon: (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="3"/>
       <path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2M12 20v2M20 12h2M2 12h2M17.66 17.66l-1.41-1.41M6.34 17.66l1.41-1.41"/>
+    </svg>
+  )},
+  { id: "compensation", label: "Kompensation & Hyrbil", icon: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="1" y="3" width="15" height="13" rx="2"/>
+      <path d="M16 8h4l3 5v3h-7V8z"/>
+      <circle cx="5.5" cy="18.5" r="2.5"/>
+      <circle cx="18.5" cy="18.5" r="2.5"/>
     </svg>
   )},
 ];
@@ -849,7 +868,9 @@ export default function App() {
     compliance: <ComplianceView />,
     audit: <AuditView />,
     integrations: <IntegrationsHub />,
+    brand: <BrandSettings />,
     settings: <SettingsView />,
+    compensation: <CompensationSettingsView />,
   };
 
   const current = navItems.find(n => n.id === view)!;

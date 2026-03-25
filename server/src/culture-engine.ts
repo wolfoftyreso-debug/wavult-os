@@ -25,11 +25,10 @@ type OrderStatus = "DRAFT" | "CONFIRMED" | "ORDERED" | "DELIVERED" | "FAILED" | 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function getOrgId(req: Request): string | null {
-  // Try header first, then query param, then body
+  // SECURITY FIX (Clawbot): req.user.org_id is authoritative for tenant isolation
   return (
+    (req as any).user?.org_id ||
     (req.headers["x-org-id"] as string) ||
-    (req.query.org_id as string) ||
-    req.body?.org_id ||
     null
   );
 }

@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Favicon — all sizes -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+  <link rel="icon" type="image/png" sizes="128x128" href="/favicon-128.png" />
+  <link rel="icon" type="image/png" sizes="64x64" href="/favicon-64.png" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="shortcut icon" href="/favicon.svg" />
+  <meta name="msapplication-TileColor" content="#0A0A0F" />
+  <meta name="theme-color" content="#0A0A0F" />
+  <title>Features — Every module in pixdrift | pixdrift</title>
+  <meta name="description" content="Explore every module in pixdrift — from CRM and execution to ISO compliance, multi-currency finance, and automotive workflows. One platform, 15 modules." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://pixdrift.com/features/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://pixdrift.com/features/" />
+  <meta property="og:title" content="Features — Every module in pixdrift" />
+  <meta property="og:description" content="Explore every module in pixdrift — from CRM to ISO compliance, multi-currency finance, and automotive workflows." />
+  <meta property="og:image" content="https://pixdrift.com/pixdrift-og.png" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "pixdrift",
+    "applicationCategory": "BusinessApplication",
+    "url": "https://pixdrift.com",
+    "description": "Business Operating System — 15 integrated modules replacing 10+ separate tools."
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    img { display: block; max-width: 100%; }
+    a { cursor: pointer; }
+    ul { list-style: none; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #000;
+      color: #f5f5f7;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+      background: rgba(0,0,0,0.72);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 0.5px solid rgba(255,255,255,0.12);
+    }
+    .nav-logo {
+      color: #f5f5f7;
+      font-size: 18px;
+      font-weight: 700;
+      text-decoration: none;
+      letter-spacing: -0.03em;
+    }
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      align-items: center;
+    }
+    .nav-links a {
+      color: rgba(245,245,247,0.75);
+      font-size: 12px;
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: #f5f5f7; }
+    .nav-actions { display: flex; gap: 16px; align-items: center; }
+    .nav-actions a:first-child {
+      color: rgba(245,245,247,0.75);
+      font-size: 12px;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-actions a:first-child:hover { color: #f5f5f7; }
+    .nav-cta {
+      background: #fff;
+      color: #1d1d1f !important;
+      padding: 6px 14px;
+      border-radius: 980px;
+      font-size: 12px !important;
+      font-weight: 500;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.88; }
+
+    /* BREADCRUMB */
+    .breadcrumb {
+      padding: 72px 24px 0;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .breadcrumb-inner {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: rgba(245,245,247,0.4);
+    }
+    .breadcrumb-inner a {
+      color: rgba(245,245,247,0.4);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .breadcrumb-inner a:hover { color: rgba(245,245,247,0.7); }
+    .breadcrumb-inner span { color: rgba(245,245,247,0.7); }
+
+    /* HERO */
+    .features-hero {
+      padding: 48px 24px 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .features-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 50% at 50% -10%, rgba(99,102,241,0.22) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .features-hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(99,102,241,0.12);
+      border: 0.5px solid rgba(99,102,241,0.4);
+      border-radius: 980px;
+      padding: 6px 14px;
+      margin-bottom: 24px;
+    }
+    .features-hero-eyebrow span {
+      font-size: 12px;
+      color: #a5b4fc;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+    .features-hero h1 {
+      font-size: clamp(36px, 6vw, 72px);
+      font-weight: 800;
+      line-height: 1.04;
+      letter-spacing: -0.04em;
+      margin-bottom: 20px;
+      background: linear-gradient(180deg, #ffffff 0%, rgba(255,255,255,0.55) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .features-hero p {
+      font-size: 18px;
+      color: rgba(245,245,247,0.6);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* CATEGORY FILTER */
+    .category-filter {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 0 24px 48px;
+    }
+    .cat-btn {
+      padding: 6px 16px;
+      border-radius: 980px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 0.5px solid rgba(255,255,255,0.15);
+      background: transparent;
+      color: rgba(245,245,247,0.6);
+      transition: all 0.2s;
+    }
+    .cat-btn:hover, .cat-btn.active {
+      background: rgba(99,102,241,0.15);
+      border-color: rgba(99,102,241,0.5);
+      color: #a5b4fc;
+    }
+
+    /* MODULE GRID */
+    .modules-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 120px;
+    }
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+    .module-card {
+      background: rgba(255,255,255,0.03);
+      border: 0.5px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 28px;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .module-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+    .module-card:hover {
+      border-color: rgba(99,102,241,0.4);
+      background: rgba(99,102,241,0.06);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(99,102,241,0.12);
+    }
+    .module-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .module-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+    .module-arrow {
+      font-size: 16px;
+      color: rgba(245,245,247,0.2);
+      transition: color 0.2s, transform 0.2s;
+    }
+    .module-card:hover .module-arrow {
+      color: rgba(99,102,241,0.8);
+      transform: translate(2px, -2px);
+    }
+    .module-category {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(245,245,247,0.35);
+      margin-bottom: 6px;
+    }
+    .module-name {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+      color: #f5f5f7;
+    }
+    .module-desc {
+      font-size: 13px;
+      color: rgba(245,245,247,0.5);
+      line-height: 1.5;
+    }
+    .module-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+    .module-tag {
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.05);
+      color: rgba(245,245,247,0.4);
+    }
+
+    /* SECTION DIVIDER */
+    .section-divider {
+      border: none;
+      border-top: 0.5px solid rgba(255,255,255,0.06);
+      margin: 48px 0;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 0.5px solid rgba(255,255,255,0.08);
+      padding: 48px 24px;
+    }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-copy { font-size: 12px; color: rgba(245,245,247,0.3); }
+    .footer-legal { display: flex; gap: 16px; }
+    .footer-legal a {
+      font-size: 12px;
+      color: rgba(245,245,247,0.3);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-legal a:hover { color: rgba(245,245,247,0.6); }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .modules-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <meta name="revised" content="2026-03-22">
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">pixdrift</a>
+  <div class="nav-links">
+    <a href="/features/" class="active">Features</a>
+    <a href="/#pricing">Pricing</a>
+    <a href="/developers/">Developers</a>
+    <a href="/blog/">Blog</a>
+  </div>
+  <div class="nav-actions">
+    <a href="https://app.bc.pixdrift.com">Sign in</a>
+    <a href="/checkout.html" class="nav-cta">Get started</a>
+  </div>
+</nav>
+
+<div class="breadcrumb">
+  <div class="breadcrumb-inner">
+    <a href="/">pixdrift</a>
+    <span>›</span>
+    <span>Features</span>
+  </div>
+</div>
+
+<section class="features-hero">
+  <div class="features-hero-eyebrow">
+    <span>15 MODULES · ONE PLATFORM</span>
+  </div>
+  <h1>Everything your business runs on.</h1>
+  <p>pixdrift replaces 10+ separate tools with deeply integrated modules. Each one works alone. Together, they're something else entirely.</p>
+</section>
+
+<div class="category-filter">
+  <button class="cat-btn active" onclick="filterModules('all')">All modules</button>
+  <button class="cat-btn" onclick="filterModules('operations')">Operations</button>
+  <button class="cat-btn" onclick="filterModules('finance')">Finance</button>
+  <button class="cat-btn" onclick="filterModules('people')">People</button>
+  <button class="cat-btn" onclick="filterModules('industry')">Industry</button>
+</div>
+
+<div style="text-align:center;max-width:640px;margin:0 auto 64px;padding:0 24px;">
+  <p style="font-size:12px;color:#6366f1;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:16px;">Platform</p>
+  <h2 style="font-size:clamp(28px,4vw,48px);font-weight:700;color:#f5f5f7;line-height:1.1;letter-spacing:-0.02em;margin-bottom:16px;">
+    Five modules. Infinite PIX.
+  </h2>
+  <p style="font-size:17px;color:rgba(245,245,247,0.6);line-height:1.6;">
+    Each module manages a specific category of PIX — operational truths that, together, represent the complete State of your business.
+  </p>
+</div>
+
+<div class="modules-section">
+  <div class="modules-grid" id="modulesGrid">
+
+    <!-- Execution -->
+    <a href="/features/execution.html" class="module-card" data-cat="operations">
+      <div class="module-card-top">
+        <div class="module-icon" style="background:rgba(99,102,241,0.15);">⚡</div>
+        <span class="module-arrow">↗</span>
+      </div>
+      <div class="module-category">Operations</div>
+      <div class="module-name">Execution</div>
+      <div class="module-desc">CRM, deal pipeline, task management, decision logs, and team KPIs — the operational core of your business.</div>
+      <div class="module-tags">
+        <span class="module-tag">CRM</span>
+        <span class="module-tag">Tasks</span>
+        <span class="module-tag">Deals</span>
+        <span class="module-tag">KPIs</span>
+      </div>
+    </a>
+
+    <!-- Capability -->
+    <a href="/features/capability.html" class="module-card" data-cat="people">
+      <div class="module-card-top">
+        <div class="module-icon" style="background:rgba(52,199,89,0.12);">🎯</div>
+        <span class="module-arrow">↗</span>
+      </div>
+      <div class="module-category">People</div>
+      <div class="module-name">Capability</div>
+      <div class="module-desc">Competence mapping, goal setting, and employee development linked directly to real work output.</div>
+      <div class="module-tags">
+        <span class="module-tag">Skills</span>
+        <span class="module-tag">Goals</span>
+        <span class="module-tag">Development</span>
+      </div>
+    </a>
+
+    <!-- Process -->
+    <a href="/features/process.html" class="module-card" data-cat="operations">
+      <div class="module-card-top">
+        <div class="module-icon" style="background:rgba(255,149,0,0.12);">🔄</div>
+        <span class="module-arrow">↗</span>
+      </div>
+      <div class="module-category">Operations</div>
+      <div class="module-name">Process</div>
+      <div class="module-desc">ISO 9001/14001/45001 compliance, non-conformances, audit trails — embedded into daily operations, not a separate folder.</div>
+      <div class="module-tags">
+        <span class="module-tag">ISO</span>
+        <span class="module-tag">NC</span>
+        <span class="module-tag">Compliance</span>
+        <span class="module-tag">Audit</span>
+      </div>
+    </a>
+
+    <!-- Currency -->
+    <a href="/features/currency.html" class="module-card" data-cat="finance">
+      <div class="module-card-top">
+        <div class="module-icon" style="background:rgba(255,214,10,0.12);">💱</div>
+        <span class="module-arrow">↗</span>
+      </div>
+      <div class="module-category">Finance</div>
+      <div class="module-name">Currency</div>
+      <div class="module-desc">Multi-currency support with live FX rates, bank reconciliation, and automatic conversion across all financial operations.</div>
+      <div class="module-tags">
+        <span class="module-tag">FX</span>
+        <span class="module-tag">150+ currencies</span>
+        <span class="module-tag">Reconciliation</span>
+      </div>
+    </a>
+
+    <!-- Reports -->
+    <a href="/features/reports.html" class="module-card" data-cat="finance">
+      <div class="module-card-top">
+        <div class="module-icon" style="background:rgba(10,132,255,0.12);">📊</div>
+        <span class="module-arrow">↗</span>
+      </div>
+      <div class="module-category">Finance</div>
+      <div class="module-name">Reports</div>
+      <div class="module-desc">SIE4 export, board-ready financial reports, cash flow forecasting — live data, not end-of-month Excel files.</div>
+      <div class="module-tags">
+        <span class="module-tag">SIE4</span>
+        <span class="module-tag">Cash flow</span>
+        <span class="module-tag">Board reports</span>
+      </div>
+    </a>
+
+    <!-- Banking -->
+    <a href="/features/banking.html" class="module-card" data-cat="finance">
+      <div class="module-card-top">
+        <div class="module-icon" style="background:rgba(48,209,88,0.12);">🏦</div>
+        <span class="module-arrow">↗</span>
+      </div>
+      <div class="module-category">Finance</div>
+      <div class="module-name">Banking</div>
+      <div class="module-desc">PSD2 Open Banking connectivity — initiate payments, reconcile automatically, and see all accounts in one view.</div>
+      <div class="module-tags">
+        <span class="module-tag">PSD2</span>
+        <span class="module-tag">Open Banking</span>
+        <span class="module-tag">Payments</span>
+      </div>
+    </a>
+
+    <!-- DMS -->
+    <a href="/features/dms.html" class="module-card" data-cat="industry">
+      <div class="module-card-top">
+        <div class="module-icon" style="background:rgba(255,69,58,0.12);">🚗</div>
+        <span class="module-arrow">↗</span>
+      </div>
+      <div class="module-category">Industry</div>
+      <div class="module-name">DMS</div>
+      <div class="module-desc">Dealer Management System — vehicle registry, workshop order management, and warranty tracking for automotive businesses.</div>
+      <div class="module-tags">
+        <span class="module-tag">Vehicles</span>
+        <span class="module-tag">Workshop</span>
+        <span class="module-tag">Warranty</span>
+      </div>
+    </a>
+
+    <!-- Learning -->
+    <a href="/features/learning.html" class="module-card" data-cat="people">
+      <div class="module-card-top">
+        <div class="module-icon" style="background:rgba(191,90,242,0.12);">📚</div>
+        <span class="module-arrow">↗</span>
+      </div>
+      <div class="module-category">People</div>
+      <div class="module-name">Learning</div>
+      <div class="module-desc">Playbooks, internal courses, and certifications — structured knowledge that travels with employees across roles and projects.</div>
+      <div class="module-tags">
+        <span class="module-tag">Playbooks</span>
+        <span class="module-tag">Courses</span>
+        <span class="module-tag">Certificates</span>
+      </div>
+    </a>
+
+    <!-- People OS -->
+    <a href="/features/people-os.html" class="module-card" data-cat="people">
+      <div class="module-card-top">
+        <div class="module-icon" style="background:rgba(255,159,10,0.12);">👥</div>
+        <span class="module-arrow">↗</span>
+      </div>
+      <div class="module-category">People</div>
+      <div class="module-name">People OS</div>
+      <div class="module-desc">Pulse surveys, engagement tracking, and employee relation management — HR intelligence embedded in daily operations.</div>
+      <div class="module-tags">
+        <span class="module-tag">Pulse surveys</span>
+        <span class="module-tag">Engagement</span>
+        <span class="module-tag">ERM</span>
+      </div>
+    </a>
+
+    <!-- Assets -->
+    <a href="/features/assets.html" class="module-card" data-cat="operations">
+      <div class="module-card-top">
+        <div class="module-icon" style="background:rgba(100,210,255,0.12);">🔧</div>
+        <span class="module-arrow">↗</span>
+      </div>
+      <div class="module-category">Operations</div>
+      <div class="module-name">Assets</div>
+      <div class="module-desc">Tool responsibility, asset traceability, and inspection scheduling — know where every asset is and who's accountable.</div>
+      <div class="module-tags">
+        <span class="module-tag">Tools</span>
+        <span class="module-tag">Traceability</span>
+        <span class="module-tag">Inspection</span>
+      </div>
+    </a>
+
+    <!-- Consumables -->
+    <a href="/features/consumables.html" class="module-card" data-cat="operations">
+      <div class="module-card-top">
+        <div class="module-icon" style="background:rgba(255,214,10,0.1);">📦</div>
+        <span class="module-arrow">↗</span>
+      </div>
+      <div class="module-category">Operations</div>
+      <div class="module-name">Consumables</div>
+      <div class="module-desc">Consumption tracking and automated reorder triggers — never run out of critical supplies mid-job.</div>
+      <div class="module-tags">
+        <span class="module-tag">Inventory</span>
+        <span class="module-tag">Auto-reorder</span>
+        <span class="module-tag">Control</span>
+      </div>
+    </a>
+
+    <!-- Culture -->
+    <a href="/features/culture.html" class="module-card" data-cat="people">
+      <div class="module-card-top">
+        <div class="module-icon" style="background:rgba(255,55,95,0.12);">🎉</div>
+        <span class="module-arrow">↗</span>
+      </div>
+      <div class="module-category">People</div>
+      <div class="module-name">Culture</div>
+      <div class="module-desc">Event management, birthday automation, and wellbeing tracking — the operational layer behind a great team culture.</div>
+      <div class="module-tags">
+        <span class="module-tag">Events</span>
+        <span class="module-tag">Birthdays</span>
+        <span class="module-tag">Wellbeing</span>
+      </div>
+    </a>
+
+    <!-- Lean/Spatial -->
+    <a href="/features/lean-spatial.html" class="module-card" data-cat="operations">
+      <div class="module-card-top">
+        <div class="module-icon" style="background:rgba(99,102,241,0.12);">🗺️</div>
+        <span class="module-arrow">↗</span>
+      </div>
+      <div class="module-category">Operations</div>
+      <div class="module-name">Lean / Spatial</div>
+      <div class="module-desc">Spaghetti diagrams, friction detection, and waste visualization — Lean methodology built into your actual workflow data.</div>
+      <div class="module-tags">
+        <span class="module-tag">Lean</span>
+        <span class="module-tag">Spaghetti</span>
+        <span class="module-tag">Friction</span>
+      </div>
+    </a>
+
+    <!-- Automotive -->
+    <a href="/features/automotive.html" class="module-card" data-cat="industry">
+      <div class="module-card-top">
+        <div class="module-icon" style="background:rgba(255,149,0,0.12);">🏎️</div>
+        <span class="module-arrow">↗</span>
+      </div>
+      <div class="module-category">Industry</div>
+      <div class="module-name">Automotive</div>
+      <div class="module-desc">Cabas integration, damage management, and insurance claim workflows — the full lifecycle of a vehicle, managed in one place.</div>
+      <div class="module-tags">
+        <span class="module-tag">Cabas</span>
+        <span class="module-tag">Damage</span>
+        <span class="module-tag">Insurance</span>
+      </div>
+    </a>
+
+    <!-- Approval Engine -->
+    <a href="/features/approval-engine.html" class="module-card" data-cat="industry">
+      <div class="module-card-top">
+        <div class="module-icon" style="background:rgba(52,199,89,0.12);">✅</div>
+        <span class="module-arrow">↗</span>
+      </div>
+      <div class="module-category">Industry</div>
+      <div class="module-name">Approval Engine</div>
+      <div class="module-desc">From finding to customer approval in under 60 seconds — video capture, AI translation, SMS delivery, one-tap sign-off.</div>
+      <div class="module-tags">
+        <span class="module-tag">Video</span>
+        <span class="module-tag">SMS</span>
+        <span class="module-tag">1-tap approval</span>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 pixdrift AB · Stockholm, Sweden</div>
+      <div class="footer-legal">
+        <a href="/legal/privacy.html">Privacy</a>
+        <a href="/legal/terms.html">Terms</a>
+        <a href="/security.html">Security</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function filterModules(cat) {
+    const cards = document.querySelectorAll('.module-card');
+    cards.forEach(card => {
+      if (cat === 'all' || card.dataset.cat === cat) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+    document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+  }
+</script>
+
+</body>
+</html>

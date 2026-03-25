@@ -67,7 +67,7 @@ type WorkshopState =
 
 type WorkshopRole =
   | "TECHNICIAN"
-  | "SERVICE_ADVISOR"
+  | "OPERATIONS_LEAD"
   | "QC_INSPECTOR"
   | "RECEPTIONIST"
   | "WORKSHOP_MANAGER"
@@ -174,7 +174,7 @@ const STATE_COLORS: Record<WorkshopState, string> = {
 
 const ROLE_LABELS: Record<WorkshopRole, string> = {
   TECHNICIAN:       "Tekniker",
-  SERVICE_ADVISOR:  "Serviceadvisör",
+  OPERATIONS_LEAD:  "Serviceadvisör",
   QC_INSPECTOR:     "QC-inspektör",
   RECEPTIONIST:     "Receptionist",
   WORKSHOP_MANAGER: "Verkstadschef",
@@ -1220,7 +1220,7 @@ interface WorkshopStateModuleProps {
 }
 
 export default function WorkshopStateModule({
-  userRole = "SERVICE_ADVISOR",
+  userRole = "OPERATIONS_LEAD",
 }: WorkshopStateModuleProps) {
 
   const [workOrders, setWorkOrders] = useState<WorkOrder[]>([]);

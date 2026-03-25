@@ -169,10 +169,11 @@ router.post("/api/org/translations", async (req: Request, res: Response) => {
 // ---------------------------------------------------------------------------
 router.get("/api/org/translations", async (req: Request, res: Response) => {
   try {
-    const org_id = req.query.org_id as string;
+    // SECURITY FIX (Clawbot): org_id from authenticated user only
+    const org_id = (req as any).user?.org_id as string;
 
     if (!org_id) {
-      return res.status(400).json({ error: "org_id query parameter is required" });
+      return res.status(401).json({ error: "Authentication required — org_id from user session" });
     }
 
     const { data, error } = await supabase

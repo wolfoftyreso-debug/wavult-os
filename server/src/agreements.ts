@@ -11,10 +11,14 @@ const router = Router();
 // ===== AGREEMENTS =====
 
 router.get("/api/agreements", async (req: Request, res: Response) => {
+  // SECURITY FIX (Clawbot): require auth + force org_id from user session
+  const user = (req as any).user;
+  if (!user?.id) return res.status(401).json({ error: "Authentication required" });
   try {
-    const { org_id, agreement_type, status, linked_user_id, linked_supplier_id, expiring, search, limit = "50", offset = "0" } = req.query;
+    const { agreement_type, status, linked_user_id, linked_supplier_id, expiring, search, limit = "50", offset = "0" } = req.query;
+    const org_id = user.org_id; // ALWAYS from auth context, never from query
     let q = supabase.from("agreements").select("*, companies!party_external_company_id(name)", { count: "exact" });
-    if (org_id) q = q.eq("org_id", org_id as string);
+    q = q.eq("org_id", org_id);
     if (agreement_type) q = q.eq("agreement_type", agreement_type as string);
     if (status) q = q.eq("status", status as string);
     if (linked_user_id) q = q.eq("linked_user_id", linked_user_id as string);

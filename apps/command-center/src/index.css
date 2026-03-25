@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --brand-primary: #0A0F1E;
+    --brand-accent: #3B82F6;
+    --brand-highlight: #06B6D4;
+  }
+  
+  body {
+    @apply bg-[#0A0F1E] text-gray-100 font-sans antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}

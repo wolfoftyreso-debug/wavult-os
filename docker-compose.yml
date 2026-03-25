@@ -32,7 +32,105 @@ services:
       - ./src:/app/src:ro
       - ./trigger:/app/trigger:ro
 
+  # ── Lago (Usage-Based Billing) ──────────────────────
+  lago-api:
+    image: getlago/api:latest
+    container_name: lago-api
+    ports:
+      - "3000:3000"
+    environment:
+      - LAGO_API_KEY=lago-wavult-dev-key
+      - DATABASE_URL=postgresql://lago:lago_secret@lago-db:5432/lago
+      - REDIS_URL=redis://lago-redis:6379
+      - SECRET_KEY_BASE=lago-secret-key-base-wavult-32chars!!
+      - ENCRYPTION_PRIMARY_KEY=lago-enc-primary-key-32chars!!!!
+      - ENCRYPTION_DETERMINISTIC_KEY=lago-enc-det-key-32chars!!!!!!
+      - ENCRYPTION_KEY_DERIVATION_SALT=lago-salt-32chars!!!!!!!!!!!
+      - LAGO_RSA_PRIVATE_KEY=""
+      - SENTRY_DSN=""
+    depends_on:
+      - lago-db
+      - lago-redis
+    restart: unless-stopped
+
+  lago-front:
+    image: getlago/front:latest
+    container_name: lago-front
+    ports:
+      - "8080:80"
+    environment:
+      - API_URL=http://localhost:3000
+    depends_on:
+      - lago-api
+    restart: unless-stopped
+
+  lago-worker:
+    image: getlago/api:latest
+    container_name: lago-worker
+    command: bundle exec sidekiq
+    environment:
+      - LAGO_API_KEY=lago-wavult-dev-key
+      - DATABASE_URL=postgresql://lago:lago_secret@lago-db:5432/lago
+      - REDIS_URL=redis://lago-redis:6379
+      - SECRET_KEY_BASE=lago-secret-key-base-wavult-32chars!!
+      - ENCRYPTION_PRIMARY_KEY=lago-enc-primary-key-32chars!!!!
+      - ENCRYPTION_DETERMINISTIC_KEY=lago-enc-det-key-32chars!!!!!!
+      - ENCRYPTION_KEY_DERIVATION_SALT=lago-salt-32chars!!!!!!!!!!!
+    depends_on:
+      - lago-db
+      - lago-redis
+    restart: unless-stopped
+
+  lago-db:
+    image: postgres:15
+    container_name: lago-db
+    environment:
+      POSTGRES_USER: lago
+      POSTGRES_PASSWORD: lago_secret
+      POSTGRES_DB: lago
+    volumes:
+      - lago_db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  lago-redis:
+    image: redis:7-alpine
+    container_name: lago-redis
+    restart: unless-stopped
+
+  # ── n8n (Automation & Self-Improving Cycles) ────────
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: wavult-n8n
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=wavult-n8n-2026
+      - WEBHOOK_URL=http://localhost:5678
+      - N8N_ENCRYPTION_KEY=wavult-n8n-enc-key-32chars-2026!
+      - N8N_LOG_LEVEL=info
+      - EXECUTIONS_DATA_SAVE_ON_ERROR=all
+      - EXECUTIONS_DATA_SAVE_ON_SUCCESS=none
+      - EXECUTIONS_DATA_SAVE_MANUAL_EXECUTIONS=true
+      - N8N_EMAIL_MODE=smtp
+      - N8N_SMTP_HOST=email-smtp.eu-north-1.amazonaws.com
+      - N8N_SMTP_PORT=587
+      - N8N_SMTP_USER=${SES_SMTP_USER}
+      - N8N_SMTP_PASS=${SES_SMTP_PASS}
+      - N8N_SMTP_SENDER=dev@hypbit.com
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./n8n-workflows:/home/node/workflows:ro
+    restart: unless-stopped
+    networks:
+      - default
+
 # Nätverk (isolerat)
 networks:
   default:
     name: hypbit-network
+
+volumes:
+  lago_db_data:
+  n8n_data:

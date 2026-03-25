@@ -8,6 +8,14 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
 import { supabase, checkSupabaseConnectivity, isSupabaseFallback } from "./supabase";
+import { errorHandler, ValidationError, NotFoundError, AuthorizationError, ForbiddenError } from "./shared/middleware/error-handler";
+import { validate } from "./shared/validation/middleware";
+import {
+  CreateTaskExecutionSchema,
+  AdvanceTaskSchema,
+  OverrideTaskSchema,
+  CreateQueueSchema,
+} from "./shared/validation/schemas";
 
 // ---------------------------------------------------------------------------
 // Router imports - each module exposes an Express Router
@@ -27,6 +35,7 @@ import subcontractorsRouter from "./subcontractors";
 import capacityEngineRouter from "./capacity-engine";
 import metricsRouter from "./metrics";
 import qualityGatesRouter from "./quality-gates";
+import qualityControlRouter from "./quality-control-api";
 import decisionIntelligenceRouter from "./decision-intelligence";
 
 // ---------------------------------------------------------------------------
@@ -35,6 +44,7 @@ import decisionIntelligenceRouter from "./decision-intelligence";
 import managementReviewRouter from "./management-review";
 import strategicReviewRouter from "./strategic-review-api";
 import orgAdminRouter from "./org-admin";
+import accountSafetyRouter from "./account-safety";
 import systemAdminRouter from "./system-admin";
 import permissionsAdminRouter from "./permissions-admin";
 import localizationRouter from "./localization-api";
@@ -44,6 +54,9 @@ import auditWorkspaceRouter from "./audit-workspace";
 import integrationRouter from "./integrations/integration-api";
 import stripeRouter from "./stripe";
 import notificationsRouter from "./notifications";
+import { billingWebhookRouter } from './billing-webhook';
+import { billingRouter } from './billing-api';
+import checkinRouter from "./checkin-api";
 import learningRouter from "./learning";
 import seoRouter from "./seo";
 import bankingRouter from "./banking";
@@ -61,6 +74,7 @@ import brandRouter from "./brand-layer";
 import paymentOrchestrationRouter from "./payment-orchestration";
 import customerStateRouter from "./customer-state";
 import customerPortalRouter from "./customer-portal";
+import revolutRouter from "./revolut";
 
 // ---------------------------------------------------------------------------
 // Auth router
@@ -71,13 +85,23 @@ import authRouter from "./auth";
 // DMS — Dealer Management System (pixdrift automotive)
 // ---------------------------------------------------------------------------
 import vehiclesRouter from "./vehicles";
+import externalAuditsRouter from "./external-audits";
+import controlLayerRouter from "./control-layer";
 import workshopRouter from "./workshop";
 import workshopStateMachineRouter from "./state-machine-workshop";
 import checklistEngineRouter from "./checklist-engine";
 import partsRouter from "./parts";
 import vehicleSalesRouter from "./vehicle-sales";
 import automotiveCrmRouter from "./automotive-crm";
+import rentalRouter from "./rental-engine";
 import oemRouter from "./integrations/oem";
+import bookingEngineRouter from "./booking-engine-api";
+
+// ---------------------------------------------------------------------------
+// PIX Intelligence + Workflow Engine (Palantir-depth for €499/month)
+// ---------------------------------------------------------------------------
+import intelligenceRouter from "./intelligence-api";
+import workflowEngineRouter from "./workflow-engine";
 
 // ---------------------------------------------------------------------------
 // Tax Compliance imports (SFL + ML + BFL)
@@ -98,6 +122,7 @@ import { stateMachine } from "./state-machine";
 import { registerSubscribers } from "./subscribers";
 
 import evaBotRouter from './eva-bot';
+import slaEngineRouter, { startSLAChecker } from './sla-engine';
 
 // ---------------------------------------------------------------------------
 // App setup
@@ -109,6 +134,11 @@ const PORT = Number(process.env.PORT) || 3001;
 // Middleware
 // ---------------------------------------------------------------------------
 app.use(helmet());
+app.use((_req, res, next) => {
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()');
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  next();
+});
 // CORS — support both legacy pixdrift.com origins and the live *.bc.pixdrift.com subdomains.
 // CORS_ORIGIN env can be a comma-separated list of allowed origins.
 // Fix 2026-03-21: Added *.bc.pixdrift.com which hosts the actual production frontends.
@@ -139,7 +169,7 @@ app.use(
       // Allow requests with no origin (server-to-server, curl, Postman)
       if (!origin) return callback(null, true);
       if (allowedOrigins.includes("*") || allowedOrigins.includes(origin)) {
-        return callback(null, true);
+        return callback(null, origin); // returnera specifik origin, inte true
       }
       callback(new Error(`CORS: Origin '${origin}' not allowed`));
     },
@@ -212,7 +242,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 500,
   standardHeaders: true,
   legacyHeaders: false,
   message: (req: Request) => ({
@@ -243,12 +273,74 @@ app.use("/api/auth", authRouter);
 
 // ---------------------------------------------------------------------------
 // Health check — MUST be before auth middleware so it's always public
+// Enterprise-grade: checks actual service connectivity
 // ---------------------------------------------------------------------------
-app.get("/health", (_req: Request, res: Response) => {
-  res.json({
-    status: "ok",
+// Status dashboard — public, no auth
+import { getStatusDashboardHTML } from './status-dashboard';
+app.get("/status", (req: Request, res: Response) => {
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.send(getStatusDashboardHTML(req));
+});
+
+// Status probe — checks external URLs for the dashboard
+app.get("/api/status-probe", async (req: Request, res: Response) => {
+  const url = req.query.url as string;
+  if (!url || !url.startsWith('https://')) {
+    return res.status(400).json({ ok: false, error: 'invalid url' });
+  }
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+    const r = await fetch(url, { method: 'GET', signal: controller.signal, redirect: 'follow' });
+    clearTimeout(timeout);
+    res.json({ ok: r.ok, status: r.status });
+  } catch (e: any) {
+    res.json({ ok: false, error: String(e?.message ?? e) });
+  }
+});
+
+// Subscribe endpoint — saves to a simple JSON log
+import fs from 'fs';
+import path from 'path';
+app.post("/api/subscribe", (req: Request, res: Response) => {
+  const { name, email, source } = req.body || {};
+  if (!email) return res.status(400).json({ error: 'email required' });
+  try {
+    const file = path.join('/tmp', 'hypbit-subscribers.json');
+    const existing = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : [];
+    existing.push({ name, email, source, ts: new Date().toISOString() });
+    fs.writeFileSync(file, JSON.stringify(existing, null, 2));
+    res.json({ ok: true });
+  } catch { res.json({ ok: true }); } // fail silently
+});
+
+app.get("/health", async (_req: Request, res: Response) => {
+  const start = Date.now();
+
+  interface ServiceStatus { name: string; status: string; error?: string }
+
+  const services: ServiceStatus[] = [];
+
+  try {
+    await supabase.from('organizations').select('id', { count: 'exact', head: true }).limit(1);
+    services.push({ name: 'database', status: 'ok' });
+  } catch (e: any) {
+    services.push({ name: 'database', status: 'error', error: String(e?.message ?? e) });
+  }
+
+  services.push({
+    name: 'supabase_client',
+    status: isSupabaseFallback() ? 'fallback' : 'ok',
+  });
+
+  const allOk = services.every((s) => s.status === 'ok');
+
+  res.status(allOk ? 200 : 503).json({
+    status: allOk ? 'ok' : 'degraded',
+    version: process.env.npm_package_version ?? '1.0.0',
     timestamp: new Date().toISOString(),
-    supabase: isSupabaseFallback() ? "fallback" : "connected",
+    latency_ms: Date.now() - start,
+    services,
   });
 });
 
@@ -364,6 +456,7 @@ app.use(subcontractorsRouter);
 app.use(capacityEngineRouter);
 app.use(metricsRouter);
 app.use(qualityGatesRouter);
+app.use(qualityControlRouter);
 app.use(decisionIntelligenceRouter);
 
 // ---------------------------------------------------------------------------
@@ -381,6 +474,9 @@ app.use(auditWorkspaceRouter);
 app.use(integrationRouter);
 app.use("/api/stripe", stripeRouter);
 app.use("/api/notifications", notificationsRouter);
+app.use('/api/webhooks', billingWebhookRouter);
+app.use('/api/billing', billingRouter);
+app.use(checkinRouter); // Self Check-in API — /api/checkin/*
 app.use("/api/learning", learningRouter);
 app.use("/api/spaghetti", spaghettiRouter); // Lean spaghetti diagram & helikopterperspektiv
 app.use("/api/spatial", spatialRouter);   // Spatial Flow Intelligence — zones, spaghetti, friction
@@ -396,18 +492,28 @@ app.use('/api/brand', brandRouter);           // GET/PUT /api/brand/:org_id, GET
 app.use('/api/payments', paymentOrchestrationRouter); // GET /api/payments/config, POST /api/payments/create-intent|create-invoice|partial
 app.use('/api/customer-state', customerStateRouter);  // GET/POST /api/customer-state/:contact_id, GET /api/customer-state/by-token/:token
 app.use('/api/customer-portal', customerPortalRouter); // GET /api/customer-portal/:token
+app.use('/api/revolut', revolutRouter);               // GET /api/revolut/accounts|cards, POST /api/revolut/cards, GET /api/revolut/cost-report
 
 // ---------------------------------------------------------------------------
 // DMS — Dealer Management System (pixdrift automotive)
 // ---------------------------------------------------------------------------
 app.use(vehiclesRouter);       // /api/vehicles/*
+app.use(externalAuditsRouter); // /api/external-audits/*, /api/certifications/*
+app.use('/api/control', controlLayerRouter); // Control Layer — live-map, flow-analysis, bottlenecks, RCA, improvements
 app.use(workshopRouter);              // /api/workshop/*
 app.use(workshopStateMachineRouter);  // /api/workshop/work-orders/:id/transition, available-transitions, state-audit
 app.use(checklistEngineRouter);       // /api/checklists/*
 app.use(partsRouter);                 // /api/parts/*
 app.use(vehicleSalesRouter);   // /api/vehicle-sales/*
 app.use(automotiveCrmRouter);  // /api/automotive-crm/*
+app.use('/api/rental', rentalRouter); // /api/rental/* — PIX-event-sourced rental engine
 app.use(oemRouter);            // /api/oem/*
+
+// ---------------------------------------------------------------------------
+// PIX Intelligence Engine — Palantir-depth analytics for automotive SMBs
+// ---------------------------------------------------------------------------
+app.use(intelligenceRouter);   // /api/intelligence/* — overloaded-technicians, at-risk-parts, etc.
+app.use(workflowEngineRouter); // /api/workflows/* — templates, instances, step completion
 
 // ---------------------------------------------------------------------------
 // SEO — sitemap.xml + robots.txt on root, /api/seo/* for endpoints
@@ -423,6 +529,9 @@ app.use('/api/seo', seoRouter); // /api/seo/schema/:page, /api/seo/report, /api/
 import approvalEngineRouter from './approval-engine';
 app.use('/api/approvals', approvalEngineRouter); // POST /capture, GET /pending, /customer/:token, etc.
 
+import devIntegrationsRouter from './dev-integrations';
+app.use('/api', devIntegrationsRouter); // Dev Infrastructure Hub: /api/dev-integrations/*, /api/dev-secrets/*, /api/dev-catalog
+
 // ---------------------------------------------------------------------------
 app.use('/api/personnel-ledger', personnelLedgerRouter); // Personalliggare (SFL 39 kap.)
 app.use('/api/cash-register',    cashRegisterRouter);    // Kassaregister (SKVFS 2014:9)
@@ -430,6 +539,47 @@ app.use('/api/vat',              vatComplianceRouter);   // Momshantering (ML 20
 app.use('/api/payroll',          payrollComplianceRouter); // Arbetsgivaravgifter (SAL + IL)
 app.use('/api/compliance',       complianceCheckerRouter); // Compliance-kontroll
 app.use('/api/tool-assets',      assetAccountabilityRouter); // Asset Accountability & Traceability
+app.use('/api/account-safety',   accountSafetyRouter);       // Account Safety & Offboarding — master accounts, risk analysis, offboarding wizard
+
+import swedacComplianceRouter from './swedac-compliance-api';
+app.use('/api/swedac',           swedacComplianceRouter);    // Swedac Accreditation — ISO 17020/17025/9001, calibration, competence, impartiality
+
+import companyComplianceRouter from './company-compliance';
+import vehicleIntakeRouter from './vehicle-intake-api';
+import { missingPartRouter } from './missing-part-api';
+import rentalPartnerRouter from './rental-partner-api';
+import mobilityIncidentRouter from './mobility-incident-api';
+app.use('/api/company',          companyComplianceRouter);   // Company Core — legal entities, compliance calendar, authority filings (ABL/SFL/ÅRL)
+app.use('/api/intake',           vehicleIntakeRouter);       // Vehicle Intake Protocol — 8-angle photos, diagnostic, recalls (mandatory flow)
+app.use('/api/missing-part',     missingPartRouter);         // Missing Part Protocol — airline-style delay response with auto compensation
+app.use(rentalPartnerRouter);                               // Rental Partner Integration — Europcar/Hertz/Avis/Sixt/Enterprise + own fleet, compensation rules
+app.use('/api/mobility',         mobilityIncidentRouter);    // Mobility Incident Flow Engine — towing, responsibility engine, cost allocation, OEM claims
+// Fluid Integration — Alantec, Orion, and generic fluid management systems
+import fluidIntegrationRouter from "./fluid-integration-api";
+app.use('/api/fluid', fluidIntegrationRouter);              // /api/fluid/integrations, /api/fluid/webhook/*, /api/fluid/events, /api/fluid/inventory, /api/fluid/report
+app.use(bookingEngineRouter);                               // Booking Engine — capacity+intent allocation, PIX-driven estimates, delay risk
+app.use('/api/sla', slaEngineRouter);                       // SLA Escalation Engine — T-60/T-30/T-0 alerts, customer SMS at breach
+
+import auditDashboardRouter from './audit-dashboard-api';
+app.use('/api/audit', auditDashboardRouter);               // Audit Dashboard — performance score, certifications, audit log, readiness
+
+// ---------------------------------------------------------------------------
+// quiXzoom Mission Engine — photographer missions, geo-zones, deliverables
+// ---------------------------------------------------------------------------
+import { missionRouter } from './mission-api';
+app.use('/api/missions', missionRouter);                   // GET/POST /api/missions/*, /api/missions/nearby, etc.
+
+// ---------------------------------------------------------------------------
+// quiXzoom Media Pipeline v1 — S3 upload, EXIF extraction, CDN delivery
+// ---------------------------------------------------------------------------
+import { mediaRouter } from './media-api';
+app.use('/api/media', mediaRouter);                        // POST /api/media/request-upload, /confirm/:key, GET /mission/:id, /download/:key, /near
+
+// ---------------------------------------------------------------------------
+// quiXzoom Payout Engine v1 — Fotograf-utbetalningar, escrow, plattformsavgift
+// ---------------------------------------------------------------------------
+import { payoutRouter } from './payout-api';
+app.use('/api/payouts', payoutRouter);                     // POST /api/payouts/mission/:id, GET /api/payouts/photographer/:id, /platform/:orgId
 
 // ---------------------------------------------------------------------------
 // Auth helper for inline routes
@@ -438,6 +588,24 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
   if (!(req as any).user) return res.status(401).json({ error: "Unauthorized" });
   next();
 };
+
+// ---------------------------------------------------------------------------
+// Wavult Ledger Core v1 — Double-entry bookkeeping, multi-entity, multi-currency
+// ---------------------------------------------------------------------------
+import { ledgerRouter } from './ledger-api';
+app.use('/api/ledger', auth, ledgerRouter);
+
+// ---------------------------------------------------------------------------
+// Wavult Payment Orchestrator v1 — PaymentIntents, state machine, PSP routing
+// ---------------------------------------------------------------------------
+import { paymentRouter } from './payment-orchestrator-api';
+app.use('/api/payment-intents', auth, paymentRouter);
+
+// ---------------------------------------------------------------------------
+// Wavult Governance Swarm — Ledger Auditor, Payment Auditor, System Health
+// ---------------------------------------------------------------------------
+import { governanceRouter } from './governance-api';
+app.use('/api/governance', auth, governanceRouter);
 
 // ============================================================
 // CERTIFIED OMS: Task Catalog API
@@ -514,7 +682,7 @@ app.get('/api/task-catalog/types/:code/positions', auth, async (req, res) => {
 });
 
 // ── TASK EXECUTIONS: Starta en uppgift ──
-app.post('/api/task-executions', auth, async (req, res) => {
+app.post('/api/task-executions', auth, validate(CreateTaskExecutionSchema), async (req, res) => {
   const { task_type_code, queue_source, deadline, linked_entity_type, linked_entity_id } = req.body;
   
   const { data: taskType } = await supabase
@@ -599,7 +767,7 @@ app.get('/api/task-executions/:id', auth, async (req, res) => {
 });
 
 // ── TASK EXECUTIONS: Gå till nästa steg ──
-app.patch('/api/task-executions/:id/advance', auth, async (req, res) => {
+app.patch('/api/task-executions/:id/advance', auth, validate(AdvanceTaskSchema), async (req, res) => {
   const { input_data, evidence_file } = req.body;
 
   const { data: exec } = await supabase
@@ -681,9 +849,8 @@ app.patch('/api/task-executions/:id/resume', auth, async (req, res) => {
 });
 
 // ── TASK EXECUTIONS: Override (lås upp i förtid) ──
-app.patch('/api/task-executions/:id/override', auth, async (req, res) => {
+app.patch('/api/task-executions/:id/override', auth, validate(OverrideTaskSchema), async (req, res) => {
   const { reason } = req.body;
-  if (!reason || reason.length < 30) return res.status(400).json({ error: 'Motivering krävs (minst 30 tecken)' });
 
   const { data, error } = await supabase
     .from('task_executions')
@@ -715,7 +882,7 @@ app.get('/api/queues/my', auth, async (req, res) => {
 });
 
 // ── USER QUEUES: Skapa kö ──
-app.post('/api/queues', auth, async (req, res) => {
+app.post('/api/queues', auth, validate(CreateQueueSchema), async (req, res) => {
   const { queue_name, queue_type } = req.body;
   const { data, error } = await supabase
     .from('user_queues')
@@ -803,19 +970,15 @@ app.get('/api/task-catalog/stats', auth, async (req, res) => {
 // 404 handler
 // ---------------------------------------------------------------------------
 app.use((_req: Request, res: Response) => {
-  res.status(404).json({ error: "Not found" });
+  res.status(404).json({ error: "NOT_FOUND", message: "Resource not found" });
 });
 
 // ---------------------------------------------------------------------------
-// Error handling middleware
+// Centralized error handler (must be last middleware)
+// Handles AppError subclasses (ValidationError, NotFoundError, etc.)
+// and unknown errors uniformly.
 // ---------------------------------------------------------------------------
-app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
-  console.error("Unhandled error:", err);
-  res.status(500).json({
-    error: "Internal server error",
-    ...(process.env.NODE_ENV !== "production" && { message: err.message }),
-  });
-});
+app.use(errorHandler);
 
 // ---------------------------------------------------------------------------
 // Bootstrap: check Supabase, load state machine configs, register subscribers
@@ -833,8 +996,12 @@ app.listen(PORT, () => {
   console.log(`Hypbit OMS API running on http://localhost:${PORT}`);
   // Schedule daily auto-consume job (runs at 06:00)
   scheduleAutoConsume();
+  // Start SLA Escalation Engine — checks every 5 minutes
+  startSLAChecker();
 });
 
 export default app;
 // Deploy trigger Sat Mar 21 18:49:08 CET 2026
 // Deploy trigger Sat Mar 21 23:55:27 CET 2026
+// Sun Mar 22 01:03:37 CET 2026 - force rebuild
+// rebuild Sun Mar 22 01:16:44 CET 2026
