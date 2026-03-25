@@ -1025,7 +1025,7 @@ export function OrgGraph() {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
   const [showCommandChain, setShowCommandChain] = useState(true)
   const [showFlow, setShowFlow]               = useState(true)
-  const [showStress, setShowStress]           = useState(true)
+  const showStress = true // always on — stress propagation visible via incident data
   const [selectedCmdId, setSelectedCmdId]     = useState<string | null>(null)
   const [showAllEdges, setShowAllEdges]       = useState(false)
 
