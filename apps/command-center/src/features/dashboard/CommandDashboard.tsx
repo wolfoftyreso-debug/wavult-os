@@ -8,8 +8,8 @@ import { QuickLinksWidget } from '../quicklinks/QuickLinksWidget'
 
 const SYSTEM_STATUS = [
   { name: 'hypbit-api', service: 'ECS', env: 'eu-north-1', status: 'healthy', uptime: 99.8, latency: 42, lastCheck: '30s ago' },
-  { name: 'evasvensson.se', service: 'Vercel', env: 'Edge', status: 'healthy', uptime: 100, latency: 18, lastCheck: '1m ago' },
-  { name: 'landing', service: 'Vercel', env: 'Edge', status: 'healthy', uptime: 99.9, latency: 22, lastCheck: '1m ago' },
+  { name: 'quixzoom-frontend', service: 'CloudFront', env: 'Global', status: 'healthy', uptime: 100, latency: 18, lastCheck: '1m ago' },
+  { name: 'optical-insight-eu', service: 'CF Pages', env: 'Edge', status: 'degraded', uptime: 0, latency: 0, lastCheck: 'pending deploy' },
   { name: 'hypbit-db', service: 'Supabase', env: 'eu-north-1', status: 'healthy', uptime: 99.7, latency: 11, lastCheck: '45s ago' },
   { name: 'cf-workers', service: 'Cloudflare', env: 'Global', status: 'degraded', uptime: 97.2, latency: 89, lastCheck: '2m ago' },
 ]
@@ -26,7 +26,7 @@ const QUICK_LINKS = [
   { name: 'AWS Console', url: 'https://console.aws.amazon.com', icon: '☁️', color: '#FF9900', sub: 'eu-north-1 · ECS' },
   { name: 'Supabase', url: 'https://supabase.com/dashboard', icon: '🗄️', color: '#3ECF8E', sub: 'hypbit project' },
   { name: 'GitHub', url: 'https://github.com/wolfoftyreso-debug', icon: '🐙', color: '#888', sub: 'wolfoftyreso-debug' },
-  { name: 'Vercel', url: 'https://vercel.com/dashboard', icon: '▲', color: '#fff', sub: 'evasvensson + pixdrift' },
+  { name: 'Stripe', url: 'https://dashboard.stripe.com', icon: '💳', color: '#635BFF', sub: 'Payments' },
   { name: 'Cloudflare', url: 'https://dash.cloudflare.com', icon: '🔥', color: '#F6821F', sub: '2 zones active' },
   { name: 'Loopia Mail', url: 'https://webmail.loopia.se', icon: '✉️', color: '#007AFF', sub: 'erik@hypbit.com' },
 ]
@@ -35,7 +35,7 @@ const GITHUB_RUNS = [
   { repo: 'hypbit', workflow: 'Deploy API to ECS', status: 'success', branch: 'main', actor: 'winston', time: '14 min ago', duration: '3m 22s' },
   { repo: 'hypbit', workflow: 'TypeScript Check', status: 'success', branch: 'feat/crm-views', actor: 'johan', time: '1h ago', duration: '1m 8s' },
   { repo: 'hypbit', workflow: 'Deploy API to ECS', status: 'failure', branch: 'main', actor: 'erik', time: '3h ago', duration: '2m 51s' },
-  { repo: 'evasvensson-site', workflow: 'Vercel Production', status: 'success', branch: 'main', actor: 'winston', time: '5h ago', duration: '1m 34s' },
+  { repo: 'quixzoom-landing', workflow: 'CF Pages Deploy', status: 'success', branch: 'main', actor: 'johan', time: '5h ago', duration: '52s' },
   { repo: 'hypbit', workflow: 'Lint + Test', status: 'success', branch: 'feat/sales-dash', actor: 'johan', time: '6h ago', duration: '48s' },
 ]
 

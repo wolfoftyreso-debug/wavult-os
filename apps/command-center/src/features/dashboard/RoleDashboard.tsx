@@ -146,7 +146,7 @@ function CfoDashboard() {
             { text: 'S3: 4 buckets (EU + US primär + backup)', status: 'active' },
             { text: 'Supabase West EU — quixzoom-v2 + hypbit projekt', status: 'active' },
             { text: 'Cloudflare — 2 zoner, CF Pages (10/10 slots)', status: 'active' },
-            { text: 'Vercel — evasvensson.se (separat projekt)', status: 'active' },
+            { text: 'CF Pages — quiXzoom landing, Wavult, OI portals', status: 'active' },
           ]}
         </Section>
       </div>
@@ -203,7 +203,7 @@ function CtoDashboard() {
         {[
           { text: 'TypeScript · Node.js/Express · React/Next.js', status: 'active' },
           { text: 'Supabase (PostgreSQL) · Docker · AWS ECS', status: 'active' },
-          { text: 'Cloudflare · GitHub Actions · Vercel · Stripe · Revolut', status: 'active' },
+          { text: 'Cloudflare · GitHub Actions · CF Pages · Stripe · Revolut', status: 'active' },
           { text: 'Trigger.dev · ECR: 155407238699.dkr.ecr.eu-north-1', status: 'active' },
         ]}
       </Section>

@@ -1,10 +1,10 @@
 const LINKS = [
-  { label: 'quiXzoom App', url: 'https://quixzoom-v2.vercel.app', icon: '📍' },
-  { label: 'Supabase', url: 'https://supabase.com/dashboard/project/lpeipzdmnnlbcoxlfhoe', icon: '🗄️' },
-  { label: 'AWS ECS', url: 'https://eu-north-1.console.aws.amazon.com/ecs/v2/clusters/hypbit', icon: '☁️' },
-  { label: 'GitHub', url: 'https://github.com/wolfoftyreso-debug', icon: '🐙' },
-  { label: 'Cloudflare', url: 'https://dash.cloudflare.com', icon: '🔥' },
-  { label: 'Vercel', url: 'https://vercel.com/dashboard', icon: '▲' },
+  { label: 'quiXzoom App', url: 'https://dewrtqzc20flx.cloudfront.net', icon: '📍', sub: 'CloudFront · quiXzoom' },
+  { label: 'Supabase', url: 'https://supabase.com/dashboard/project/lpeipzdmnnlbcoxlfhoe', icon: '🗄️', sub: 'hypbit project' },
+  { label: 'AWS Console', url: 'https://eu-north-1.console.aws.amazon.com/ecs/v2/clusters/hypbit', icon: '☁️', sub: 'eu-north-1 · ECS' },
+  { label: 'GitHub', url: 'https://github.com/wolfoftyreso-debug', icon: '🐙', sub: 'wolfoftyreso-debug' },
+  { label: 'Cloudflare', url: 'https://dash.cloudflare.com', icon: '🔥', sub: 'Pages · DNS · Workers' },
+  { label: 'Stripe', url: 'https://dashboard.stripe.com', icon: '💳', sub: 'Payments' },
 ]
 
 export function QuickLinksWidget() {
@@ -24,6 +24,7 @@ export function QuickLinksWidget() {
           >
             <span className="text-xl">{link.icon}</span>
             <span className="text-xs text-white/50 text-center leading-tight">{link.label}</span>
+            {'sub' in link && <span className="text-[10px] text-white/25 text-center leading-tight">{(link as { sub: string }).sub}</span>}
           </a>
         ))}
       </div>
