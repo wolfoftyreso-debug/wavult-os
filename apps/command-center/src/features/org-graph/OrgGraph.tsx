@@ -61,13 +61,17 @@ function layoutNodes(visibleLayers: number[]): Map<string, { x: number; y: numbe
 // Stress level per entity (from incident propagation)
 const FLOW_CONFIG: Record<RelationshipType, {
   stroke: string; dash: string; label: string;
-  particleColor: string; particleSize: number; speed: number; // speed in seconds per cycle
+  particleColor: string; particleSize: number; speed: number;
+  baseWidth: number;       // normal line thickness
+  highlightWidth: number;  // when highlighted
+  glowColor: string;       // SVG drop-shadow color
+  symbol?: string;         // optional text symbol on particle (€/$)
 }> = {
-  ownership:      { stroke: '#8B5CF6', dash: 'none', label: 'Ownership',      particleColor: '#A78BFA', particleSize: 4, speed: 3.5 },
-  financial_flow: { stroke: '#10B981', dash: 'none', label: 'Financial Flow',  particleColor: '#34D399', particleSize: 5, speed: 2.5 },
-  licensing:      { stroke: '#F59E0B', dash: '6 4',  label: 'IP License',     particleColor: '#FCD34D', particleSize: 3, speed: 4.5 },
-  service:        { stroke: '#0EA5E9', dash: '4 3',  label: 'Service',         particleColor: '#38BDF8', particleSize: 3, speed: 3.0 },
-  control:        { stroke: '#EF4444', dash: 'none', label: 'Control',         particleColor: '#F87171', particleSize: 4, speed: 2.0 },
+  ownership:      { stroke: '#8B5CF6', dash: 'none', label: 'Ownership',     particleColor: '#A78BFA', particleSize: 4,   speed: 3.5, baseWidth: 1.8, highlightWidth: 3,   glowColor: '#8B5CF688' },
+  financial_flow: { stroke: '#10B981', dash: 'none', label: 'Financial Flow', particleColor: '#34D399', particleSize: 5.5, speed: 2.2, baseWidth: 2.2, highlightWidth: 3.5, glowColor: '#10B98188', symbol: '€' },
+  licensing:      { stroke: '#F59E0B', dash: '6 4',  label: 'IP License',    particleColor: '#FCD34D', particleSize: 3,   speed: 4.5, baseWidth: 1.5, highlightWidth: 2.5, glowColor: '#F59E0B66' },
+  service:        { stroke: '#0EA5E9', dash: '4 3',  label: 'Service',        particleColor: '#38BDF8', particleSize: 3,   speed: 3.2, baseWidth: 1.5, highlightWidth: 2.5, glowColor: '#0EA5E966' },
+  control:        { stroke: '#EF4444', dash: 'none', label: 'Control',        particleColor: '#F87171', particleSize: 4.5, speed: 1.8, baseWidth: 2.5, highlightWidth: 4,   glowColor: '#EF444488' },
 }
 // Keep REL_STYLE alias for Legend compatibility
 const REL_STYLE = Object.fromEntries(
@@ -108,24 +112,31 @@ function Edge({
   const markerId   = `arr-${rel.id}`
   const animId     = `anim-${rel.id}`
 
-  // Stress: thicker + red tint + faster particle
+  // Stress: thicker + red tint + faster particles
   const strokeColor  = stressed ? '#EF4444' : cfg.stroke
-  const strokeW      = stressed ? 2.5 : highlighted ? 2 : 1.2
-  const particleSpd  = stressed ? cfg.speed * 0.4 : cfg.speed
+  const strokeW      = stressed ? cfg.highlightWidth + 1 : highlighted ? cfg.highlightWidth : cfg.baseWidth
+  const particleSpd  = stressed ? cfg.speed * 0.35 : cfg.speed
   const glowFilter   = stressed
-    ? `drop-shadow(0 0 6px #EF444488)`
-    : highlighted ? `drop-shadow(0 0 4px ${cfg.stroke}66)` : 'none'
+    ? `drop-shadow(0 0 8px #EF444499)`
+    : highlighted ? `drop-shadow(0 0 5px ${cfg.glowColor})` : `drop-shadow(0 0 2px ${cfg.glowColor}44)`
 
   return (
     <g style={{ opacity, transition: 'opacity 0.3s' }}>
       <defs>
-        <marker id={markerId} markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
-          <path d="M0,0 L0,6 L7,3 z" fill={strokeColor} opacity={0.8} />
+        <marker id={markerId} markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto">
+          <path d="M0,0 L0,7 L8,3.5 z" fill={strokeColor} opacity={0.9} />
         </marker>
       </defs>
 
       {/* Invisible wide hit area */}
-      <path id={pathId} d={d} fill="none" stroke="transparent" strokeWidth={14} />
+      <path id={pathId} d={d} fill="none" stroke="transparent" strokeWidth={16} />
+
+      {/* Ownership: soft pulse on the line itself */}
+      {rel.type === 'ownership' && !stressed && (
+        <path d={d} fill="none" stroke={cfg.stroke} strokeWidth={cfg.baseWidth + 2} opacity={0}>
+          <animate attributeName="opacity" values="0;0.2;0" dur="3s" repeatCount="indefinite" />
+        </path>
+      )}
 
       {/* Main line */}
       <path
@@ -138,39 +149,55 @@ function Edge({
         style={{ filter: glowFilter, transition: 'all 0.3s' }}
       />
 
-      {/* Animated particle — slides along the path */}
-      {opacity > 0.3 && (
-        <circle r={cfg.particleSize * (stressed ? 1.4 : 1)} fill={stressed ? '#EF4444' : cfg.particleColor} opacity={0.9}>
-          <animateMotion
-            id={animId}
-            dur={`${particleSpd}s`}
-            repeatCount="indefinite"
-            path={d}
-          />
+      {/* ── Primary particle ── */}
+      {opacity > 0.3 && !cfg.symbol && (
+        <circle r={cfg.particleSize * (stressed ? 1.5 : 1)} fill={stressed ? '#EF4444' : cfg.particleColor} opacity={0.92}>
+          <animateMotion id={animId} dur={`${particleSpd}s`} repeatCount="indefinite" path={d} />
         </circle>
       )}
 
-      {/* Second trailing particle for financial_flow — double-dot = money */}
-      {opacity > 0.3 && rel.type === 'financial_flow' && !stressed && (
-        <circle r={3} fill={cfg.particleColor} opacity={0.45}>
-          <animateMotion
-            dur={`${particleSpd}s`}
-            begin={`${particleSpd * 0.5}s`}
-            repeatCount="indefinite"
-            path={d}
-          />
+      {/* Financial flow: € symbol particle instead of plain circle */}
+      {opacity > 0.3 && cfg.symbol && !stressed && (
+        <>
+          <text fontSize={9} fontWeight="700" fill={cfg.particleColor} opacity={0.95} textAnchor="middle">
+            {cfg.symbol}
+            <animateMotion dur={`${particleSpd}s`} repeatCount="indefinite" path={d} />
+          </text>
+          {/* Trailing dot */}
+          <circle r={3.5} fill={cfg.particleColor} opacity={0.4}>
+            <animateMotion dur={`${particleSpd}s`} begin={`${particleSpd * 0.45}s`} repeatCount="indefinite" path={d} />
+          </circle>
+          {/* Third faint dot */}
+          <circle r={2.5} fill={cfg.particleColor} opacity={0.25}>
+            <animateMotion dur={`${particleSpd}s`} begin={`${particleSpd * 0.78}s`} repeatCount="indefinite" path={d} />
+          </circle>
+        </>
+      )}
+
+      {/* Financial stressed — dollar sign flickering + rapid dots */}
+      {opacity > 0.3 && cfg.symbol && stressed && (
+        <>
+          <text fontSize={9} fontWeight="700" fill="#EF4444" opacity={0.95} textAnchor="middle">
+            ⚠
+            <animateMotion dur={`${particleSpd}s`} repeatCount="indefinite" path={d} />
+          </text>
+          <circle r={4} fill="#EF4444" opacity={0.7}>
+            <animateMotion dur={`${particleSpd * 0.6}s`} begin={`${particleSpd * 0.3}s`} repeatCount="indefinite" path={d} />
+          </circle>
+        </>
+      )}
+
+      {/* Stress: second rapid particle (non-financial) */}
+      {stressed && !cfg.symbol && (
+        <circle r={3} fill="#FF4444" opacity={0.6}>
+          <animateMotion dur={`${particleSpd * 0.65}s`} begin={`${particleSpd * 0.3}s`} repeatCount="indefinite" path={d} />
         </circle>
       )}
 
-      {/* Stress pulse — second rapid particle showing "blocked" flow */}
-      {stressed && (
-        <circle r={3} fill="#FF6B6B" opacity={0.6}>
-          <animateMotion
-            dur={`${particleSpd * 0.7}s`}
-            begin={`${particleSpd * 0.3}s`}
-            repeatCount="indefinite"
-            path={d}
-          />
+      {/* Control: second always-on particle for dominance */}
+      {rel.type === 'control' && !stressed && opacity > 0.3 && (
+        <circle r={2.5} fill={cfg.particleColor} opacity={0.5}>
+          <animateMotion dur={`${particleSpd}s`} begin={`${particleSpd * 0.6}s`} repeatCount="indefinite" path={d} />
         </circle>
       )}
     </g>
@@ -255,6 +282,36 @@ function NodeCard({
       {/* Top accent bar — red when stressed */}
       <rect width={CARD_W} height={3} rx={1.5} fill={stressed ? '#EF4444' : cascadeStressed ? '#F59E0B' : entity.color} opacity={0.9} />
 
+      {/* ── MICRO-ANIMATION: breathing glow behind card (live entities only) ── */}
+      {entity.active_status === 'live' && !stressed && (
+        <rect
+          x={-1} y={-1}
+          width={CARD_W + 2} height={CARD_H + 2}
+          rx={11}
+          fill="none"
+          stroke={entity.color}
+          strokeWidth={1}
+          opacity={0}
+        >
+          <animate attributeName="opacity" values="0;0.35;0" dur="3s" repeatCount="indefinite" />
+        </rect>
+      )}
+
+      {/* ── MICRO-ANIMATION: financial flicker — small $ pulse on left edge ── */}
+      {entity.active_status === 'live' && (
+        <text
+          x={CARD_W - 8} y={CARD_H - 8}
+          fontSize={7}
+          fill="#10B981"
+          textAnchor="middle"
+          fontFamily="monospace"
+          fontWeight="700"
+        >
+          €
+          <animate attributeName="opacity" values="0;0.7;0;0.5;0" dur="4.5s" repeatCount="indefinite" begin="1s" />
+        </text>
+      )}
+
       {/* Flag + shortname */}
       <text x={13} y={26} fontSize={12.5} fill={entity.color} fontWeight="700" fontFamily="monospace">
         {typeof entity.flag === 'string' && entity.flag.length <= 2 ? entity.flag : ''} {entity.shortName}
@@ -270,8 +327,39 @@ function NodeCard({
         {entity.jurisdiction} · {entity.type.toUpperCase()}
       </text>
 
-      {/* Status indicator */}
+      {/* Status indicator — pulses when live */}
       <circle cx={CARD_W - 14} cy={16} r={4.5} fill={statusColor} />
+      {entity.active_status === 'live' && (
+        <circle cx={CARD_W - 14} cy={16} r={4.5} fill="none" stroke={statusColor} strokeWidth={1.5}>
+          <animate attributeName="r" values="4.5;8;4.5" dur="2.5s" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.7;0;0.7" dur="2.5s" repeatCount="indefinite" />
+        </circle>
+      )}
+
+      {/* ── MICRO-ANIMATION: rotating gear ⚙ for active/live entities ── */}
+      {entity.active_status === 'live' && (
+        <g transform={`translate(${CARD_W - 30}, ${CARD_H - 22})`} opacity={0.4}>
+          <text fontSize={11} fill={entity.color} textAnchor="middle" x={0} y={9}>
+            ⚙
+            <animateTransform
+              attributeName="transform"
+              type="rotate"
+              from="0 0 4.5"
+              to="360 0 4.5"
+              dur="8s"
+              repeatCount="indefinite"
+            />
+          </text>
+        </g>
+      )}
+
+      {/* Forming indicator — slow pulse */}
+      {entity.active_status === 'forming' && (
+        <g transform={`translate(${CARD_W - 30}, ${CARD_H - 22})`} opacity={0}>
+          <text fontSize={9} fill="#F59E0B" textAnchor="middle" x={0} y={9}>◐</text>
+          <animate attributeName="opacity" values="0;0.5;0" dur="2s" repeatCount="indefinite" />
+        </g>
+      )}
 
       {/* Role avatars */}
       {roles.slice(0, 5).map((rm, i) => (
