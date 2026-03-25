@@ -124,3 +124,13 @@ export {
   qualityWeeklyReport,
   costOfQualityCalc,
 } from "./quality";
+
+export {
+  commMailboxSync,
+  commBotProcessor,
+  commInvoiceVerifier,
+  commNotificationDispatcher,
+  commDailyDigest,
+  commStaleCleanup,
+  commBotAccuracyReport,
+} from "./communication-hub";
