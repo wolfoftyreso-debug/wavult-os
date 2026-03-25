@@ -8,6 +8,7 @@ import {
 import { useRole } from '../../shared/auth/RoleContext'
 import { ROLE_PERMISSIONS, OVERLAY_LABELS, GraphPermissions, OverlayMode } from './permissions'
 import { COMMAND_CHAIN, STATUS_COLOR, getDirectReports, getApexRole } from './commandChain'
+import { generateIncidents, computePropagation, getRoleKPIs, getKPIStatus, KPI_STATUS_COLOR } from '../incidents/incidentEngine'
 
 // ─── Layout constants ──────────────────────────────────────────────────────────
 
@@ -526,40 +527,58 @@ function OverlayBadge({ mode }: { mode: OverlayMode }) {
 // Straight vertical lines — no curves. Always on.
 
 function CommandChainNode({
-  role, x, y, selected, onClick,
+  role, x, y, selected, isPrimary, isCascade, onClick,
 }: {
   role: typeof COMMAND_CHAIN[0]
   x: number
   y: number
   selected: boolean
+  isPrimary: boolean    // has red KPIs — node pulses
+  isCascade: boolean    // affected by upstream failure
   onClick: () => void
 }) {
-  const sc = STATUS_COLOR[role.status]
-  const reports = COMMAND_CHAIN.find(r => r.id === role.reports_to)
+  const kpis      = getRoleKPIs(role.id)
+  const reports   = COMMAND_CHAIN.find(r => r.id === role.reports_to)
+
+  // Incident status drives node appearance
+  const incidentColor = isPrimary ? '#EF4444' : isCascade ? '#F59E0B' : role.color
+  const glowFilter    = isPrimary
+    ? `drop-shadow(0 0 12px #EF444480)`
+    : selected ? `drop-shadow(0 0 10px ${role.color}80)` : 'none'
 
   return (
-    <g transform={`translate(${x}, ${y})`} onClick={onClick} className="cursor-pointer" style={{ filter: selected ? `drop-shadow(0 0 10px ${role.color}80)` : 'none', transition: 'all 0.2s' }}>
+    <g transform={`translate(${x}, ${y})`} onClick={onClick} className="cursor-pointer"
+      style={{ filter: glowFilter, transition: 'all 0.3s' }}>
+
       {/* Card bg */}
       <rect width={CMD_NODE_W} height={CMD_NODE_H} rx={9}
-        fill={selected ? role.color : '#0C0E1A'}
-        fillOpacity={selected ? 0.14 : 1}
-        stroke={role.color}
-        strokeOpacity={selected ? 0.7 : 0.28}
-        strokeWidth={selected ? 1.5 : 1}
+        fill={isPrimary ? '#1A0808' : isCascade ? '#130F05' : selected ? role.color : '#0C0E1A'}
+        fillOpacity={selected && !isPrimary ? 0.14 : 1}
+        stroke={incidentColor}
+        strokeOpacity={isPrimary ? 0.8 : selected ? 0.7 : 0.28}
+        strokeWidth={isPrimary ? 2 : selected ? 1.5 : 1}
       />
-      {/* Status bar top */}
-      <rect x={0} y={0} width={CMD_NODE_W} height={3} rx={9} fill={sc} />
+
+      {/* Status bar top — incident color overrides role color */}
+      <rect x={0} y={0} width={CMD_NODE_W} height={3} rx={9} fill={incidentColor} />
+
+      {/* Incident indicator */}
+      {isPrimary && (
+        <text x={CMD_NODE_W - 8} y={14} textAnchor="end" fontSize={10}>🔴</text>
+      )}
+      {!isPrimary && isCascade && (
+        <text x={CMD_NODE_W - 8} y={14} textAnchor="end" fontSize={10}>⚠️</text>
+      )}
 
       {/* Avatar */}
       <rect x={10} y={14} width={32} height={32} rx={8} fill={role.color} fillOpacity={0.18} />
       <text x={26} y={35} textAnchor="middle" fontSize={11} fontWeight="700" fill={role.color}>{role.initials}</text>
 
-      {/* Name */}
+      {/* Name + title */}
       <text x={50} y={26} fontSize={10} fontWeight="700" fill="#FFFFFF">{role.person}</text>
-      {/* Title */}
-      <text x={50} y={38} fontSize={8.5} fill={role.color}>{role.title}</text>
+      <text x={50} y={38} fontSize={8.5} fill={isPrimary ? '#EF9494' : role.color}>{role.title}</text>
 
-      {/* reports_to badge */}
+      {/* reports_to */}
       {reports && (
         <text x={50} y={52} fontSize={7.5} fill="#4B5563">
           <tspan fill="#374151" fontFamily="monospace">reports_to</tspan>
@@ -570,43 +589,35 @@ function CommandChainNode({
         <text x={50} y={52} fontSize={7.5} fill="#4B5563" fontFamily="monospace">◆ Apex</text>
       )}
 
-      {/* KPI row */}
-      {role.kpis[0] && (() => {
-        const kpi = role.kpis[0]
-        const kColor = kpi.good ? '#10B981' : '#EF4444'
+      {/* KPI status bar — live from incidentEngine */}
+      {kpis.slice(0, 2).map((kpi, i) => {
+        const kStatus = getKPIStatus(kpi)
+        const kColor  = KPI_STATUS_COLOR[kStatus]
+        const barW    = (kpi.current_value / kpi.target_value) * (CMD_NODE_W - 22)
+        const y_pos   = 68 + i * 14
         return (
-          <>
-            <text x={10} y={72} fontSize={7.5} fill="#4B5563">{kpi.label}</text>
-            <text x={CMD_NODE_W - 10} y={72} textAnchor="end" fontSize={7.5} fontWeight="700" fill={kColor}>
-              {kpi.value} {kpi.trend === 'up' ? '↑' : kpi.trend === 'down' ? '↓' : '–'}
+          <g key={kpi.id}>
+            <text x={10} y={y_pos} fontSize={7} fill="#374151">{kpi.name}</text>
+            <rect x={10} y={y_pos + 2} width={CMD_NODE_W - 22} height={3} rx={2} fill="#ffffff08" />
+            <rect x={10} y={y_pos + 2} width={Math.min(barW, CMD_NODE_W - 22)} height={3} rx={2} fill={kColor} />
+            <text x={CMD_NODE_W - 10} y={y_pos} textAnchor="end" fontSize={7} fontWeight="700" fill={kColor}>
+              {kpi.current}
             </text>
-          </>
+          </g>
         )
-      })()}
-
-      {/* KPI 2 */}
-      {role.kpis[1] && (() => {
-        const kpi = role.kpis[1]
-        const kColor = kpi.good ? '#10B981' : '#6B7280'
-        return (
-          <>
-            <text x={10} y={83} fontSize={7.5} fill="#374151">{kpi.label}</text>
-            <text x={CMD_NODE_W - 10} y={83} textAnchor="end" fontSize={7.5} fontWeight="600" fill={kColor}>
-              {kpi.value}
-            </text>
-          </>
-        )
-      })()}
+      })}
     </g>
   )
 }
 
 function CommandChainLayer({
-  visible, selectedCmdId, onSelectCmd,
+  visible, selectedCmdId, onSelectCmd, primaryFailures, cascadeFailures,
 }: {
   visible: boolean
   selectedCmdId: string | null
   onSelectCmd: (id: string | null) => void
+  primaryFailures: string[]
+  cascadeFailures: string[]
 }) {
   if (!visible) return null
 
@@ -641,6 +652,8 @@ function CommandChainLayer({
         x={CMD_X_START}
         y={CMD_APEX_Y}
         selected={selectedCmdId === apex.id}
+        isPrimary={primaryFailures.includes(apex.id)}
+        isCascade={cascadeFailures.includes(apex.id)}
         onClick={() => onSelectCmd(selectedCmdId === apex.id ? null : apex.id)}
       />
 
@@ -679,6 +692,8 @@ function CommandChainLayer({
               x={CMD_X_START}
               y={ry}
               selected={selectedCmdId === r.id}
+              isPrimary={primaryFailures.includes(r.id)}
+              isCascade={cascadeFailures.includes(r.id)}
               onClick={() => onSelectCmd(selectedCmdId === r.id ? null : r.id)}
             />
           </g>
@@ -717,6 +732,10 @@ export function OrgGraph() {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
   const [showCommandChain, setShowCommandChain] = useState(true)
   const [selectedCmdId, setSelectedCmdId] = useState<string | null>(null)
+
+  // Live incident propagation — drives visual "bleeding" in the graph
+  const incidents = useMemo(() => generateIncidents(), [])
+  const propagation = useMemo(() => computePropagation(incidents), [incidents])
 
   const handleNodeClick = useCallback((entity: Entity) => {
     setSelectedEntity(prev => prev?.id === entity.id ? null : entity)
@@ -880,6 +899,8 @@ export function OrgGraph() {
               visible={showCommandChain}
               selectedCmdId={selectedCmdId}
               onSelectCmd={setSelectedCmdId}
+              primaryFailures={propagation.primary_failures}
+              cascadeFailures={propagation.cascade_failures}
             />
 
             {/* Separator line between entity graph and command column */}

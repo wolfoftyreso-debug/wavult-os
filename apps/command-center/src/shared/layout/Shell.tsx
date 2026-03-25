@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { EntitySwitcher } from '../../features/entity-switcher/EntitySwitcher'
 import { useRole, ROLES } from '../auth/RoleContext'
+import { generateIncidents } from '../../features/incidents/incidentEngine'
 
 function ContentArea({ children }: { children: React.ReactNode }) {
   const { pathname } = useLocation()
@@ -20,6 +21,7 @@ interface ShellProps {
 const navItems = [
   { to: '/dashboard', label: 'Dashboard', icon: '⬛' },
   { to: '/entities', label: 'Entities', icon: '🏢' },
+  { to: '/incidents', label: 'Incident Center', icon: '🚨' },
   { to: '/org/command', label: 'Command Chain', icon: '⬆' },
   { to: '/org/context', label: 'My Position', icon: '🎯' },
   { to: '/org', label: 'Corporate Graph', icon: '🏗' },
@@ -32,6 +34,12 @@ const navItems = [
 export function Shell({ children }: ShellProps) {
   const { role, setRole, isAdmin, viewAs, setViewAs, effectiveRole } = useRole()
   const nonAdminRoles = ROLES.filter(r => r.id !== 'admin')
+  const criticalIncidentCount = useMemo(() => {
+    try {
+      const incs = generateIncidents()
+      return incs.filter(i => i.severity === 'critical' || i.escalated).length
+    } catch { return 0 }
+  }, [])
 
   return (
     <div className="flex h-screen bg-surface-base overflow-hidden">
@@ -63,7 +71,12 @@ export function Shell({ children }: ShellProps) {
               }
             >
               <span className="text-base leading-none">{item.icon}</span>
-              {item.label}
+              <span className="flex-1">{item.label}</span>
+              {item.to === '/incidents' && criticalIncidentCount > 0 && (
+                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-red-500 text-white flex-shrink-0">
+                  {criticalIncidentCount}
+                </span>
+              )}
             </NavLink>
           ))}
         </nav>

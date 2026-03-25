@@ -11,6 +11,7 @@ import { OrgGraph } from './features/org-graph/OrgGraph'
 import { ContextView } from './features/org-graph/ContextView'
 import { CommandHierarchyView } from './features/org-graph/CommandHierarchyView'
 import { EntityView } from './features/entity/EntityView'
+import { IncidentCenter } from './features/incidents/IncidentCenter'
 
 function AuthenticatedApp() {
   const { role } = useRole()
@@ -29,6 +30,7 @@ function AuthenticatedApp() {
         <Route path="/org" element={<OrgGraph />} />
         <Route path="/org/context" element={<ContextView />} />
         <Route path="/org/command" element={<CommandHierarchyView />} />
+        <Route path="/incidents" element={<IncidentCenter />} />
         <Route path="/entities" element={<EntityView />} />
         <Route path="/entities/:entityId" element={<EntityView />} />
       </Routes>
