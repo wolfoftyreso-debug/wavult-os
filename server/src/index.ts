@@ -124,6 +124,7 @@ import { registerSubscribers } from "./subscribers";
 import evaBotRouter from './eva-bot';
 import slaEngineRouter, { startSLAChecker } from './sla-engine';
 import duixProxyRouter from './duix-proxy';
+import pciRouter from './pci/router';
 
 // ---------------------------------------------------------------------------
 // App setup
@@ -276,6 +277,11 @@ app.use("/api/auth", authRouter);
 // Duix proxy — public (token is server-side only)
 // ---------------------------------------------------------------------------
 app.use("/api/duix", duixProxyRouter);
+
+// ---------------------------------------------------------------------------
+// PCI — Personal Cognitive Interface
+// ---------------------------------------------------------------------------
+app.use("/api/pci", pciRouter);
 
 // ---------------------------------------------------------------------------
 // Health check — MUST be before auth middleware so it's always public

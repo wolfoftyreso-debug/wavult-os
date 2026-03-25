@@ -13,6 +13,7 @@ import { DashboardView } from './views/DashboardView'
 import { EventsView } from './views/EventsView'
 import { NotificationsView } from './views/NotificationsView'
 import { ProfileView } from './views/ProfileView'
+import { BriefingView } from './views/BriefingView'
 import { TabBar } from './components/TabBar'
 import { AvatarCreator } from './components/AvatarCreator'
 import { DigitalHuman } from './components/DigitalHuman'
@@ -26,7 +27,8 @@ function AuthenticatedApp() {
       <div className="min-h-screen bg-w-bg">
         <div className="max-w-lg mx-auto">
           <Routes>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/" element={<Navigate to="/briefing" replace />} />
+            <Route path="/briefing" element={<BriefingView />} />
             <Route path="/dashboard" element={<DashboardView />} />
             <Route path="/events" element={<EventsView />} />
             <Route path="/notifications" element={<NotificationsView />} />

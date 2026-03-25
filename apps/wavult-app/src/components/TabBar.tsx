@@ -5,12 +5,12 @@ import { NavLink } from 'react-router-dom'
 
 const TABS = [
   {
-    to: '/dashboard',
-    label: 'Home',
+    to: '/briefing',
+    label: 'Briefing',
     icon: (active: boolean) => (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={active ? '#C4961A' : '#3D4452'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-        <polyline points="9 22 9 12 15 12 15 22" />
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 6 12 12 16 14" />
       </svg>
     ),
   },
