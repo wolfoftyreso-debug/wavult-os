@@ -2,6 +2,8 @@
   "name": "@wavult/command-center",
   "version": "2.0.0",
   "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
   "scripts": {
     "dev": "vite --port 5175",
     "build": "tsc && vite build",

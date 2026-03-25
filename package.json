@@ -1,6 +1,7 @@
 {
   "name": "hypbit",
   "private": true,
+  "license": "UNLICENSED",
   "workspaces": [
     "apps/*",
     "packages/*",
@@ -22,7 +23,7 @@
   "packageManager": "npm@10.9.4",
   "devDependencies": {
     "turbo": "latest",
-    "typescript": "^5.5.0",
+    "typescript": "^5.7.2",
     "vitest": "^4.1.0"
   },
   "dependencies": {
