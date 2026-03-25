@@ -53,62 +53,126 @@ function layoutNodes(visibleLayers: number[]): Map<string, { x: number; y: numbe
   return positions
 }
 
-// ─── Relationship styles ───────────────────────────────────────────────────────
+// ─── Animated Flow Edge ───────────────────────────────────────────────────────
+// Each relationship type has a particle flowing along it.
+// KPI stress = faster particles + thicker stroke + vibration on line.
+// Flow direction is always from → to (ownership down, financial_flow down, etc.)
 
-const REL_STYLE: Record<RelationshipType, { stroke: string; dash: string; label: string }> = {
-  ownership:      { stroke: '#8B5CF6', dash: 'none', label: 'Ownership' },
-  financial_flow: { stroke: '#10B981', dash: 'none', label: 'Financial flow' },
-  licensing:      { stroke: '#F59E0B', dash: '6 4',  label: 'IP License' },
-  service:        { stroke: '#0EA5E9', dash: '4 3',  label: 'Service' },
-  control:        { stroke: '#EF4444', dash: 'none', label: 'Control' },
+// Stress level per entity (from incident propagation)
+const FLOW_CONFIG: Record<RelationshipType, {
+  stroke: string; dash: string; label: string;
+  particleColor: string; particleSize: number; speed: number; // speed in seconds per cycle
+}> = {
+  ownership:      { stroke: '#8B5CF6', dash: 'none', label: 'Ownership',      particleColor: '#A78BFA', particleSize: 4, speed: 3.5 },
+  financial_flow: { stroke: '#10B981', dash: 'none', label: 'Financial Flow',  particleColor: '#34D399', particleSize: 5, speed: 2.5 },
+  licensing:      { stroke: '#F59E0B', dash: '6 4',  label: 'IP License',     particleColor: '#FCD34D', particleSize: 3, speed: 4.5 },
+  service:        { stroke: '#0EA5E9', dash: '4 3',  label: 'Service',         particleColor: '#38BDF8', particleSize: 3, speed: 3.0 },
+  control:        { stroke: '#EF4444', dash: 'none', label: 'Control',         particleColor: '#F87171', particleSize: 4, speed: 2.0 },
+}
+// Keep REL_STYLE alias for Legend compatibility
+const REL_STYLE = Object.fromEntries(
+  Object.entries(FLOW_CONFIG).map(([k, v]) => [k, { stroke: v.stroke, dash: v.dash, label: v.label }])
+) as Record<RelationshipType, { stroke: string; dash: string; label: string }>
+
+function buildEdgePath(
+  fx: number, fy: number, tx: number, ty: number
+): string {
+  const midY = (fy + ty) / 2
+  const isSameLayer = Math.abs(fy - ty) < 10
+  return isSameLayer
+    ? `M ${fx} ${fy} Q ${(fx + tx) / 2} ${fy - 40} ${tx} ${ty}`
+    : `M ${fx} ${fy} C ${fx} ${midY}, ${tx} ${midY}, ${tx} ${ty}`
 }
 
-// ─── Edge component ───────────────────────────────────────────────────────────
-
 function Edge({
-  rel, positions, opacity, highlighted,
+  rel, positions, opacity, highlighted, stressed,
 }: {
   rel: EntityRelationship
   positions: Map<string, { x: number; y: number }>
   opacity: number
   highlighted: boolean
+  stressed: boolean   // KPI failure on from-entity — triggers stress animation
 }) {
   const from = positions.get(rel.from_entity_id)
-  const to = positions.get(rel.to_entity_id)
+  const to   = positions.get(rel.to_entity_id)
   if (!from || !to) return null
 
-  const style = REL_STYLE[rel.type]
-  const fx = from.x + CARD_W / 2
-  const fy = from.y + CARD_H
-  const tx = to.x + CARD_W / 2
-  const ty = to.y
-  const midY = (fy + ty) / 2
+  const cfg = FLOW_CONFIG[rel.type]
+  const fx  = from.x + CARD_W / 2
+  const fy  = from.y + CARD_H
+  const tx  = to.x + CARD_W / 2
+  const ty  = to.y
+  const d   = buildEdgePath(fx, fy, tx, ty)
 
-  // Skip self-layer edges (same Y) with horizontal curves instead
-  const isSameLayer = Math.abs(fy - ty) < 10
-  const d = isSameLayer
-    ? `M ${fx} ${fy} Q ${(fx + tx) / 2} ${fy - 40} ${tx} ${ty}`
-    : `M ${fx} ${fy} C ${fx} ${midY}, ${tx} ${midY}, ${tx} ${ty}`
+  const pathId     = `path-${rel.id}`
+  const markerId   = `arr-${rel.id}`
+  const animId     = `anim-${rel.id}`
 
-  const markerId = `arr-${rel.id}`
+  // Stress: thicker + red tint + faster particle
+  const strokeColor  = stressed ? '#EF4444' : cfg.stroke
+  const strokeW      = stressed ? 2.5 : highlighted ? 2 : 1.2
+  const particleSpd  = stressed ? cfg.speed * 0.4 : cfg.speed
+  const glowFilter   = stressed
+    ? `drop-shadow(0 0 6px #EF444488)`
+    : highlighted ? `drop-shadow(0 0 4px ${cfg.stroke}66)` : 'none'
 
   return (
-    <g style={{ opacity, transition: 'opacity 0.2s' }}>
+    <g style={{ opacity, transition: 'opacity 0.3s' }}>
       <defs>
         <marker id={markerId} markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
-          <path d="M0,0 L0,6 L7,3 z" fill={style.stroke} opacity={opacity} />
+          <path d="M0,0 L0,6 L7,3 z" fill={strokeColor} opacity={0.8} />
         </marker>
       </defs>
-      <path d={d} fill="none" stroke="transparent" strokeWidth={12} />
+
+      {/* Invisible wide hit area */}
+      <path id={pathId} d={d} fill="none" stroke="transparent" strokeWidth={14} />
+
+      {/* Main line */}
       <path
         d={d}
         fill="none"
-        stroke={style.stroke}
-        strokeWidth={highlighted ? 2.5 : 1.2}
-        strokeDasharray={style.dash === 'none' ? undefined : style.dash}
+        stroke={strokeColor}
+        strokeWidth={strokeW}
+        strokeDasharray={cfg.dash === 'none' ? undefined : cfg.dash}
         markerEnd={`url(#${markerId})`}
-        style={{ filter: highlighted ? `drop-shadow(0 0 5px ${style.stroke})` : 'none', transition: 'all 0.2s' }}
+        style={{ filter: glowFilter, transition: 'all 0.3s' }}
       />
+
+      {/* Animated particle — slides along the path */}
+      {opacity > 0.3 && (
+        <circle r={cfg.particleSize * (stressed ? 1.4 : 1)} fill={stressed ? '#EF4444' : cfg.particleColor} opacity={0.9}>
+          <animateMotion
+            id={animId}
+            dur={`${particleSpd}s`}
+            repeatCount="indefinite"
+            path={d}
+          />
+        </circle>
+      )}
+
+      {/* Second trailing particle for financial_flow — double-dot = money */}
+      {opacity > 0.3 && rel.type === 'financial_flow' && !stressed && (
+        <circle r={3} fill={cfg.particleColor} opacity={0.45}>
+          <animateMotion
+            dur={`${particleSpd}s`}
+            begin={`${particleSpd * 0.5}s`}
+            repeatCount="indefinite"
+            path={d}
+          />
+        </circle>
+      )}
+
+      {/* Stress pulse — second rapid particle showing "blocked" flow */}
+      {stressed && (
+        <circle r={3} fill="#FF6B6B" opacity={0.6}>
+          <animateMotion
+            dur={`${particleSpd * 0.7}s`}
+            begin={`${particleSpd * 0.3}s`}
+            repeatCount="indefinite"
+            path={d}
+          />
+        </circle>
+      )}
     </g>
   )
 }
@@ -116,18 +180,26 @@ function Edge({
 // ─── Node card ────────────────────────────────────────────────────────────────
 
 function NodeCard({
-  entity, position, selected, dimmed, expanded, onClick,
+  entity, position, selected, dimmed, expanded, stressed, cascadeStressed, onClick,
 }: {
   entity: Entity
   position: { x: number; y: number }
   selected: boolean
   dimmed: boolean
   expanded: boolean
+  stressed: boolean
+  cascadeStressed: boolean
   onClick: () => void
 }) {
   const statusColor = { live: '#10B981', forming: '#F59E0B', planned: '#6B7280' }[entity.active_status]
   const roles = getRoleMappings(entity.id)
   const childCount = getChildren(entity.id).length
+
+  const nodeFilter = stressed
+    ? `drop-shadow(0 0 16px #EF444488)`
+    : cascadeStressed
+      ? `drop-shadow(0 0 10px #F59E0B55)`
+      : selected ? `drop-shadow(0 0 12px ${entity.color})` : 'none'
 
   return (
     <g
@@ -136,25 +208,52 @@ function NodeCard({
       className="cursor-pointer"
       style={{
         opacity: dimmed ? 0.25 : 1,
-        filter: selected ? `drop-shadow(0 0 12px ${entity.color})` : 'none',
-        transition: 'all 0.2s',
+        filter: nodeFilter,
+        transition: 'all 0.3s',
       }}
     >
+      {/* Stress pulse ring — animated outer glow */}
+      {stressed && (
+        <rect
+          x={-3} y={-3}
+          width={CARD_W + 6} height={CARD_H + 6}
+          rx={13}
+          fill="none"
+          stroke="#EF4444"
+          strokeWidth={1.5}
+        >
+          <animate attributeName="opacity" values="0.8;0.2;0.8" dur="1.4s" repeatCount="indefinite" />
+          <animate attributeName="stroke-width" values="1.5;3;1.5" dur="1.4s" repeatCount="indefinite" />
+        </rect>
+      )}
+      {cascadeStressed && !stressed && (
+        <rect
+          x={-2} y={-2}
+          width={CARD_W + 4} height={CARD_H + 4}
+          rx={12}
+          fill="none"
+          stroke="#F59E0B"
+          strokeWidth={1}
+        >
+          <animate attributeName="opacity" values="0.5;0.1;0.5" dur="2.2s" repeatCount="indefinite" />
+        </rect>
+      )}
+
       {/* Shadow */}
-      <rect width={CARD_W} height={CARD_H} rx={10} fill={entity.color} opacity={selected ? 0.12 : 0.04} />
+      <rect width={CARD_W} height={CARD_H} rx={10} fill={stressed ? '#EF4444' : entity.color} opacity={selected ? 0.12 : stressed ? 0.08 : 0.04} />
 
       {/* Card */}
       <rect
         width={CARD_W}
         height={CARD_H}
         rx={10}
-        fill="#0C0E16"
-        stroke={selected ? entity.color : entity.color + '45'}
-        strokeWidth={selected ? 2 : 1}
+        fill={stressed ? '#110808' : cascadeStressed ? '#0F0D06' : '#0C0E16'}
+        stroke={stressed ? '#EF4444' : cascadeStressed ? '#F59E0B55' : selected ? entity.color : entity.color + '45'}
+        strokeWidth={stressed ? 2 : selected ? 2 : 1}
       />
 
-      {/* Top accent bar */}
-      <rect width={CARD_W} height={3} rx={1.5} fill={entity.color} opacity={0.9} />
+      {/* Top accent bar — red when stressed */}
+      <rect width={CARD_W} height={3} rx={1.5} fill={stressed ? '#EF4444' : cascadeStressed ? '#F59E0B' : entity.color} opacity={0.9} />
 
       {/* Flag + shortname */}
       <text x={13} y={26} fontSize={12.5} fill={entity.color} fontWeight="700" fontFamily="monospace">
@@ -874,6 +973,7 @@ export function OrgGraph() {
                 positions={positions}
                 opacity={edgeOpacity(rel)}
                 highlighted={edgeHighlighted(rel)}
+                stressed={propagation.primary_failures.includes(rel.from_entity_id) || propagation.cascade_failures.includes(rel.from_entity_id)}
               />
             ))}
 
@@ -889,6 +989,8 @@ export function OrgGraph() {
                   selected={selectedEntity?.id === entity.id}
                   dimmed={dimmedIds.has(entity.id)}
                   expanded={expandedIds.has(entity.id)}
+                  stressed={propagation.primary_failures.includes(entity.id)}
+                  cascadeStressed={propagation.cascade_failures.includes(entity.id)}
                   onClick={() => handleNodeClick(entity)}
                 />
               )

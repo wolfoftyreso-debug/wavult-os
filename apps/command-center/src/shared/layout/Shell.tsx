@@ -6,7 +6,7 @@ import { generateIncidents } from '../../features/incidents/incidentEngine'
 
 function ContentArea({ children }: { children: React.ReactNode }) {
   const { pathname } = useLocation()
-  const fullBleed = pathname.startsWith('/org') || pathname.startsWith('/entities') || pathname.startsWith('/org/command')
+  const fullBleed = pathname.startsWith('/org') || pathname.startsWith('/entities') || pathname.startsWith('/org/command') || pathname.startsWith('/incidents')
   return (
     <div className={`h-full ${fullBleed ? '' : 'overflow-auto p-6'}`}>
       {children}
