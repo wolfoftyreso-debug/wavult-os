@@ -7,6 +7,7 @@ import {
 } from './data'
 import { useRole } from '../../shared/auth/RoleContext'
 import { ROLE_PERMISSIONS, OVERLAY_LABELS, GraphPermissions, OverlayMode } from './permissions'
+import { COMMAND_CHAIN, STATUS_COLOR } from './commandChain'
 
 // ─── Layout constants ──────────────────────────────────────────────────────────
 
@@ -369,7 +370,10 @@ function DrillPanel({
         {tab === 'roles' && (
           <div className="space-y-2">
             {roles.length === 0 && <p className="text-xs text-gray-600">No roles mapped to this entity.</p>}
-            {roles.map(r => (
+            {roles.map(r => {
+              const cmdRole = COMMAND_CHAIN.find(c => c.person === r.person)
+              const superior = cmdRole?.reports_to ? COMMAND_CHAIN.find(c => c.id === cmdRole.reports_to) : null
+              return (
               <div key={r.person}
                 className="rounded-xl border px-4 py-3"
                 style={{ background: r.color + '08', borderColor: r.color + '25' }}>
@@ -382,17 +386,37 @@ function DrillPanel({
                     <div className="text-sm font-semibold text-white">{r.person}</div>
                     <div className="text-xs text-gray-500">{r.role_type}</div>
                   </div>
-                  <div className="text-xs px-2 py-0.5 rounded-full" style={{ background: r.color + '18', color: r.color }}>
-                    {r.scope}
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    {cmdRole && (
+                      <span className="h-2 w-2 rounded-full"
+                        style={{ background: STATUS_COLOR[cmdRole.status], boxShadow: `0 0 4px ${STATUS_COLOR[cmdRole.status]}` }}
+                        title={`Status: ${cmdRole.status}`}
+                      />
+                    )}
+                    <div className="text-xs px-2 py-0.5 rounded-full" style={{ background: r.color + '18', color: r.color }}>
+                      {r.scope}
+                    </div>
                   </div>
                 </div>
-                <div className="flex flex-wrap gap-1.5 mt-3 pl-12">
+                {/* reports_to chain */}
+                {superior && (
+                  <div className="flex items-center gap-1.5 mt-2 pl-12 text-[10px]">
+                    <span className="text-gray-700 font-mono">reports_to</span>
+                    <span className="text-gray-600">→</span>
+                    <span style={{ color: superior.color }}>{superior.person}</span>
+                  </div>
+                )}
+                {!superior && cmdRole && (
+                  <div className="mt-2 pl-12 text-[10px] text-gray-700 font-mono">◆ Apex — no superior</div>
+                )}
+                <div className="flex flex-wrap gap-1.5 mt-2 pl-12">
                   {r.permissions.map(p => (
                     <span key={p} className="text-xs px-2 py-0.5 rounded bg-white/[0.04] text-gray-400 font-mono">{p}</span>
                   ))}
                 </div>
               </div>
-            ))}
+              )
+            })}
           </div>
         )}
 
