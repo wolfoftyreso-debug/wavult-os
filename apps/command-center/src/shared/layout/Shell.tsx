@@ -33,6 +33,7 @@ const navItems = [
   { to: '/tasks', label: 'Task Board', icon: '📋' },
   { to: '/people', label: 'Team', icon: '👤' },
   { to: '/transactions', label: 'Transactions', icon: '↕' },
+  { to: '/submissions', label: 'Submissions', icon: '📥' },
   { to: '/legal', label: 'Legal Hub', icon: null },
 ]
 
