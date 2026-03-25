@@ -1,6 +1,7 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { EntitySwitcher } from '../../features/entity-switcher/EntitySwitcher'
+import { useRole } from '../auth/RoleContext'
 
 interface ShellProps {
   children: React.ReactNode
@@ -16,6 +17,8 @@ const navItems = [
 ]
 
 export function Shell({ children }: ShellProps) {
+  const { role, setRole } = useRole()
+
   return (
     <div className="flex h-screen bg-surface-base overflow-hidden">
       {/* Sidebar */}
@@ -66,8 +69,20 @@ export function Shell({ children }: ShellProps) {
             <span className="text-xs text-gray-400">All systems operational</span>
           </div>
           <div className="flex items-center gap-3 text-sm text-gray-400">
-            <span>Erik Svensson</span>
-            <div className="h-7 w-7 rounded-full bg-brand-accent/20 border border-brand-accent/40 flex items-center justify-center text-xs text-brand-accent font-bold">E</div>
+            {role && (
+              <>
+                <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: role.color + '18', color: role.color, border: `1px solid ${role.color}30` }}>
+                  {role.emoji} {role.title}
+                </span>
+                <span className="text-gray-500">{role.name}</span>
+                <button
+                  onClick={() => setRole(null)}
+                  className="text-xs text-gray-600 hover:text-gray-300 transition-colors px-2 py-1 rounded border border-surface-border hover:border-gray-500"
+                >
+                  Byt roll
+                </button>
+              </>
+            )}
           </div>
         </header>
 
