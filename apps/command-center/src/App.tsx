@@ -17,6 +17,7 @@ import { MarketMap } from './features/market-sites'
 import { CampaignOS } from './features/campaign-os'
 import { LegalHub } from './features/legal/LegalHub'
 import { SubmissionsView } from './features/submissions/SubmissionsView'
+import { CompanyLaunchView } from './features/company-launch/CompanyLaunchView'
 
 function AuthenticatedApp() {
   const { role } = useRole()
@@ -42,6 +43,7 @@ function AuthenticatedApp() {
         <Route path="/campaigns" element={<CampaignOS />} />
         <Route path="/submissions" element={<SubmissionsView />} />
         <Route path="/legal" element={<LegalHub />} />
+        <Route path="/company-launch" element={<CompanyLaunchView />} />
       </Routes>
     </Shell>
   )

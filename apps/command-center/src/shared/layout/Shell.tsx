@@ -8,7 +8,7 @@ import { LEGAL_DOCUMENTS } from '../../features/legal/data'
 
 function ContentArea({ children }: { children: React.ReactNode }) {
   const { pathname } = useLocation()
-  const fullBleed = pathname.startsWith('/org') || pathname.startsWith('/entities') || pathname.startsWith('/org/command') || pathname.startsWith('/incidents') || pathname.startsWith('/markets') || pathname.startsWith('/campaigns')
+  const fullBleed = pathname.startsWith('/org') || pathname.startsWith('/entities') || pathname.startsWith('/org/command') || pathname.startsWith('/incidents') || pathname.startsWith('/markets') || pathname.startsWith('/campaigns') || pathname.startsWith('/company-launch')
   return (
     <div className={`h-full ${fullBleed ? '' : 'overflow-auto p-6'}`}>
       {children}
@@ -35,6 +35,7 @@ const navItems = [
   { to: '/transactions', label: 'Transactions', icon: '↕' },
   { to: '/submissions', label: 'Submissions', icon: '📥' },
   { to: '/legal', label: 'Legal Hub', icon: null },
+  { to: '/company-launch', label: 'Company Launch', icon: '🏢' },
 ]
 
 export function Shell({ children }: ShellProps) {
