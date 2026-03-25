@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { LEGAL_DOCUMENTS, SIGNING_LEVEL_LABELS, SIGN_METHOD_LABELS, type LegalDocument, type DocStatus } from './data'
 import { ENTITIES } from '../org-graph/data'
+import { useEntityScope } from '../../shared/scope/EntityScopeContext'
 
 const STATUS_CONFIG: Record<DocStatus, { label: string; color: string; bg: string }> = {
   proposed:          { label: 'Föreslagen',         color: '#F59E0B', bg: '#F59E0B15' },
@@ -183,12 +184,20 @@ export function LegalHub() {
   const [filter, setFilter] = useState<DocStatus | 'all'>('all')
   const [sendDoc, setSendDoc] = useState<LegalDocument | null>(null)
   const [showTriggers, setShowTriggers] = useState(false)
+  const { activeEntity, scopedEntities } = useEntityScope()
 
-  const proposed = LEGAL_DOCUMENTS.filter(d => d.status === 'proposed')
-  const signed   = LEGAL_DOCUMENTS.filter(d => d.status === 'signed')
-  const pending  = LEGAL_DOCUMENTS.filter(d => d.status === 'pending_signature')
+  // Scope: root entity (wavult-group, layer 0) → visa alla. Annars filtrera på party_a/party_b.
+  const scopedIds = new Set(scopedEntities.map(e => e.id))
+  const isRoot = activeEntity.layer === 0
+  const scopedDocs = isRoot
+    ? LEGAL_DOCUMENTS
+    : LEGAL_DOCUMENTS.filter(d => scopedIds.has(d.party_a) || scopedIds.has(d.party_b))
 
-  const filtered = filter === 'all' ? LEGAL_DOCUMENTS : LEGAL_DOCUMENTS.filter(d => d.status === filter)
+  const proposed = scopedDocs.filter(d => d.status === 'proposed')
+  const signed   = scopedDocs.filter(d => d.status === 'signed')
+  const pending  = scopedDocs.filter(d => d.status === 'pending_signature')
+
+  const filtered = filter === 'all' ? scopedDocs : scopedDocs.filter(d => d.status === filter)
 
   return (
     <div className="flex flex-col h-full bg-[#070709] text-white">
@@ -197,7 +206,7 @@ export function LegalHub() {
         <div className="flex items-center gap-3 mb-4">
           <IconScale size={20} className="text-purple-400" />
           <h1 className="text-[16px] font-bold text-white">Legal Hub</h1>
-          <span className="text-[9px] font-mono text-gray-700 ml-2">Wavult Group</span>
+          <span className="text-[9px] font-mono ml-2" style={{ color: activeEntity.color }}>{activeEntity.name}</span>
         </div>
         {/* Stats */}
         <div className="flex gap-4">
