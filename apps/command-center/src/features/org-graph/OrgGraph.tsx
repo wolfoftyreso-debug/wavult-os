@@ -1165,18 +1165,6 @@ export function OrgGraph() {
               Flow
             </button>
 
-            {/* 4. Overlay toggle: Stress */}
-            <button
-              onClick={() => setShowStress(p => !p)}
-              className="text-[10px] px-3 py-1.5 rounded-lg border font-medium transition-all"
-              style={showStress
-                ? { background: '#EF444415', color: '#F87171', borderColor: '#EF444430' }
-                : { background: 'transparent', color: '#4B5563', borderColor: '#ffffff0a' }
-              }
-            >
-              Stress
-            </button>
-
             {/* 5. Show all relationships toggle */}
             <button
               onClick={() => setShowAllEdges(s => !s)}
