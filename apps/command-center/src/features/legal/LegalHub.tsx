@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Scale, FileText, Shield, AlertTriangle, CheckCircle, Send, ChevronDown, ChevronUp } from 'lucide-react'
 import { LEGAL_DOCUMENTS, SIGNING_LEVEL_LABELS, SIGN_METHOD_LABELS, type LegalDocument, type DocStatus } from './data'
 import { ENTITIES } from '../org-graph/data'
 
@@ -18,12 +17,78 @@ function entityName(id: string): string {
   return ENTITIES.find(e => e.id === id)?.shortName ?? id
 }
 
+// Inline SVG icon components — no external dependency
+function IconScale({ size = 16, className = '' }: { size?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M12 3v18M3 9h18M5 9l3-6 3 6M13 9l3-6 3 6M5 9c0 2.21 1.34 4 3 4s3-1.79 3-4M13 9c0 2.21 1.34 4 3 4s3-1.79 3-4M5 21h14" />
+    </svg>
+  )
+}
+
+function IconFile({ size = 14, className = '' }: { size?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" />
+    </svg>
+  )
+}
+
+function IconShield({ size = 12, className = '' }: { size?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    </svg>
+  )
+}
+
+function IconWarning({ size = 16, className = '' }: { size?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+      <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
+  )
+}
+
+function IconCheck({ size = 16, className = '' }: { size?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
+    </svg>
+  )
+}
+
+function IconSend({ size = 10, className = '' }: { size?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
+    </svg>
+  )
+}
+
+function IconChevronDown({ size = 12, className = '' }: { size?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  )
+}
+
+function IconChevronUp({ size = 12, className = '' }: { size?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <polyline points="18 15 12 9 6 15" />
+    </svg>
+  )
+}
+
 function DocRow({ doc, onSend }: { doc: LegalDocument; onSend: (doc: LegalDocument) => void }) {
   const status = STATUS_CONFIG[doc.status]
   const levelColor = LEVEL_COLOR[doc.signing_level]
   return (
     <div className="flex items-center gap-3 px-4 py-3 border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
-      <FileText size={14} className="text-gray-600 flex-shrink-0" />
+      <IconFile size={14} className="text-gray-600 flex-shrink-0" />
       <div className="flex-1 min-w-0">
         <p className="text-[12px] font-semibold text-white truncate">{doc.title}</p>
         <p className="text-[10px] text-gray-500 mt-0.5">{doc.description}</p>
@@ -46,7 +111,7 @@ function DocRow({ doc, onSend }: { doc: LegalDocument; onSend: (doc: LegalDocume
             onClick={() => onSend(doc)}
             className="flex items-center gap-1 px-2 py-1 rounded text-[9px] font-semibold bg-white/[0.06] hover:bg-white/[0.10] text-white transition-colors"
           >
-            <Send size={10} /> Skicka
+            <IconSend size={10} /> Skicka
           </button>
         )}
       </div>
@@ -68,7 +133,7 @@ function SendModal({ doc, onClose }: { doc: LegalDocument; onClose: () => void }
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
       <div className="bg-[#0D0F1A] border border-white/[0.08] rounded-2xl p-6 w-[480px] max-w-full shadow-2xl">
         <div className="flex items-center gap-3 mb-4">
-          <Scale size={18} className="text-purple-400" />
+          <IconScale size={18} className="text-purple-400" />
           <h2 className="text-[14px] font-bold text-white">Skicka för signering</h2>
         </div>
         <p className="text-[12px] text-white font-semibold mb-1">{doc.title}</p>
@@ -97,12 +162,12 @@ function SendModal({ doc, onClose }: { doc: LegalDocument; onClose: () => void }
         )}
         {sent ? (
           <div className="flex items-center gap-2 text-emerald-400 text-[12px] font-semibold">
-            <CheckCircle size={16} /> Skickat!
+            <IconCheck size={16} /> Skickat!
           </div>
         ) : (
           <div className="flex gap-2">
             <button onClick={handle} className="flex-1 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-[12px] font-semibold transition-colors flex items-center justify-center gap-2">
-              <Send size={13} /> Skicka för signering
+              <IconSend size={13} /> Skicka för signering
             </button>
             <button onClick={onClose} className="px-4 py-2 rounded-lg border border-white/[0.08] text-gray-500 text-[12px] hover:text-white transition-colors">
               Avbryt
@@ -130,7 +195,7 @@ export function LegalHub() {
       {/* Header */}
       <div className="px-6 py-4 border-b border-white/[0.06]">
         <div className="flex items-center gap-3 mb-4">
-          <Scale size={20} className="text-purple-400" />
+          <IconScale size={20} className="text-purple-400" />
           <h1 className="text-[16px] font-bold text-white">Legal Hub</h1>
           <span className="text-[9px] font-mono text-gray-700 ml-2">Wavult Group</span>
         </div>
@@ -153,7 +218,7 @@ export function LegalHub() {
       {/* Proposed alert banner */}
       {proposed.length > 0 && (
         <div className="mx-4 mt-3 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-3">
-          <AlertTriangle size={16} className="text-amber-400 flex-shrink-0" />
+          <IconWarning size={16} className="text-amber-400 flex-shrink-0" />
           <div className="flex-1">
             <p className="text-[12px] font-semibold text-amber-300">{proposed.length} dokument föreslagna av systemet</p>
             <p className="text-[10px] text-amber-600 mt-0.5">Systemet har identifierat juridiska behov baserat på bolagsstrukturen. Granska och skicka för signering.</p>
@@ -180,7 +245,7 @@ export function LegalHub() {
           {filtered.length === 0 ? (
             <div className="flex items-center justify-center py-12 text-gray-700">
               <div className="text-center">
-                <CheckCircle size={32} className="mx-auto mb-2 opacity-30" />
+                <IconCheck size={32} className="mx-auto mb-2 opacity-30" />
                 <p className="text-[12px]">Inga dokument i denna kategori</p>
               </div>
             </div>
@@ -195,8 +260,8 @@ export function LegalHub() {
             onClick={() => setShowTriggers(s => !s)}
             className="flex items-center gap-2 text-[10px] text-gray-600 hover:text-gray-400 transition-colors"
           >
-            {showTriggers ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
-            <Shield size={11} />
+            {showTriggers ? <IconChevronUp size={12} /> : <IconChevronDown size={12} />}
+            <IconShield size={11} />
             Automatiska juridiktriggers
           </button>
           {showTriggers && (
