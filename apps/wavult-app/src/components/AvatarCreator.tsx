@@ -1,75 +1,185 @@
-// ─── Wavult App — Avatar Creator ────────────────────────────────────────────────
-// Full-screen modal with Ready Player Me iframe. User creates their 3D avatar
-// from a selfie or manually. When done, RPM posts the .glb URL via postMessage.
+// ─── Wavult App — Avatar Uploader ───────────────────────────────────────────────
+// Full-screen modal for photo upload. Supports camera capture on mobile,
+// file picker on desktop, drag-and-drop. Preview before confirming.
 
-import { useEffect, useRef } from 'react'
-import { useAvatar, RPM_IFRAME_URL } from '../lib/AvatarContext'
+import { useState, useRef, useCallback } from 'react'
+import { useAvatar } from '../lib/AvatarContext'
 
 export function AvatarCreator() {
-  const { isCreatorOpen, closeCreator, saveAvatar, saving } = useAvatar()
-  const iframeRef = useRef<HTMLIFrameElement>(null)
+  const { isUploaderOpen, closeUploader, uploadAvatar, saving } = useAvatar()
+  const [preview, setPreview] = useState<string | null>(null)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [dragOver, setDragOver] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const cameraInputRef = useRef<HTMLInputElement>(null)
 
-  // Listen for messages from RPM iframe
-  useEffect(() => {
-    if (!isCreatorOpen) return
+  const handleFile = useCallback((file: File) => {
+    setError(null)
+    setSelectedFile(file)
+    const reader = new FileReader()
+    reader.onload = (e) => setPreview(e.target?.result as string)
+    reader.readAsDataURL(file)
+  }, [])
 
-    const handleMessage = (event: MessageEvent) => {
-      // RPM sends JSON messages
-      try {
-        const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) handleFile(file)
+  }
 
-        // Avatar export complete — RPM sends the .glb URL
-        if (data.source === 'readyplayerme' && data.eventName === 'v1.avatar.exported') {
-          const glbUrl = data.data?.url
-          if (glbUrl && typeof glbUrl === 'string') {
-            saveAvatar(glbUrl)
-          }
-        }
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    setDragOver(false)
+    const file = e.dataTransfer.files?.[0]
+    if (file) handleFile(file)
+  }
 
-        // User closed the RPM editor
-        if (data.source === 'readyplayerme' && data.eventName === 'v1.frame.close') {
-          closeCreator()
-        }
-      } catch {
-        // Not a JSON message — ignore
-      }
+  const handleConfirm = async () => {
+    if (!selectedFile) return
+    const result = await uploadAvatar(selectedFile)
+    if (result.error) {
+      setError(result.error)
+    } else {
+      reset()
     }
+  }
 
-    window.addEventListener('message', handleMessage)
-    return () => window.removeEventListener('message', handleMessage)
-  }, [isCreatorOpen, saveAvatar, closeCreator])
+  const reset = () => {
+    setPreview(null)
+    setSelectedFile(null)
+    setError(null)
+    setDragOver(false)
+  }
 
-  if (!isCreatorOpen) return null
+  const handleClose = () => {
+    reset()
+    closeUploader()
+  }
+
+  if (!isUploaderOpen) return null
 
   return (
-    <div className="fixed inset-0 z-[100] bg-w-bg flex flex-col animate-fade-in">
+    <div className="fixed inset-0 z-[100] bg-w-bg/95 backdrop-blur-xl flex flex-col animate-fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-3 border-b border-w-border bg-w-surface flex-shrink-0">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-w-border flex-shrink-0">
         <div>
-          <h2 className="text-sm font-bold text-tx-primary">Create Your Avatar</h2>
-          <p className="text-label text-tx-tertiary font-mono">READY PLAYER ME</p>
+          <h2 className="text-sm font-bold text-tx-primary">Upload Photo</h2>
+          <p className="text-label text-tx-tertiary font-mono mt-0.5">JPEG, PNG or WebP — max 5 MB</p>
         </div>
         <button
-          onClick={closeCreator}
+          onClick={handleClose}
           disabled={saving}
-          className="text-tx-tertiary hover:text-tx-primary transition-colors text-lg px-2"
+          className="text-tx-tertiary hover:text-tx-primary transition-colors text-lg px-2 disabled:opacity-50"
         >
-          {saving ? (
-            <span className="text-xs font-mono text-signal-amber animate-pulse">SAVING...</span>
-          ) : (
-            '✕'
-          )}
+          ✕
         </button>
       </div>
 
-      {/* RPM iframe */}
-      <div className="flex-1 relative">
-        <iframe
-          ref={iframeRef}
-          src={RPM_IFRAME_URL}
-          className="absolute inset-0 w-full h-full border-0"
-          allow="camera *; microphone *; clipboard-write"
-          title="Ready Player Me Avatar Creator"
+      {/* Content */}
+      <div className="flex-1 flex flex-col items-center justify-center px-5 py-8">
+        {preview ? (
+          /* ─── Preview ─── */
+          <div className="text-center animate-fade-in">
+            <div className="relative inline-block mb-6">
+              <img
+                src={preview}
+                alt="Preview"
+                className="h-40 w-40 rounded-2xl object-cover border-2 border-w-border"
+              />
+              {/* Accent ring preview */}
+              <div
+                className="absolute inset-0 rounded-2xl pointer-events-none"
+                style={{ boxShadow: '0 0 0 3px rgba(196, 150, 26, 0.3)' }}
+              />
+            </div>
+
+            {error && (
+              <div className="mb-4 px-3 py-2 rounded-lg bg-signal-red/10 border border-signal-red/20 text-xs text-signal-red max-w-xs mx-auto">
+                {error}
+              </div>
+            )}
+
+            <div className="flex gap-3 justify-center">
+              <button
+                onClick={handleConfirm}
+                disabled={saving}
+                className="app-btn app-btn--primary max-w-[160px] disabled:opacity-50"
+              >
+                {saving ? 'Uploading...' : 'Confirm'}
+              </button>
+              <button
+                onClick={reset}
+                disabled={saving}
+                className="app-btn app-btn--ghost max-w-[160px] disabled:opacity-50"
+              >
+                Choose Another
+              </button>
+            </div>
+          </div>
+        ) : (
+          /* ─── Upload zone ─── */
+          <div
+            onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={handleDrop}
+            className={`
+              w-full max-w-sm border-2 border-dashed rounded-2xl p-10 text-center
+              transition-all cursor-pointer
+              ${dragOver
+                ? 'border-signal-amber bg-signal-amber/5'
+                : 'border-w-border hover:border-w-border-light'
+              }
+            `}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            {/* Camera icon */}
+            <div className="mx-auto mb-4 h-16 w-16 rounded-2xl bg-w-card border border-w-border flex items-center justify-center">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#5A6170" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" />
+                <circle cx="12" cy="13" r="4" />
+              </svg>
+            </div>
+
+            <p className="text-sm text-tx-secondary font-medium mb-1">
+              Drop a photo here
+            </p>
+            <p className="text-xs text-tx-muted">
+              or tap to choose from gallery
+            </p>
+
+            {error && (
+              <div className="mt-4 px-3 py-2 rounded-lg bg-signal-red/10 border border-signal-red/20 text-xs text-signal-red">
+                {error}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Camera capture button (mobile) */}
+        {!preview && (
+          <button
+            onClick={() => cameraInputRef.current?.click()}
+            className="mt-4 text-xs px-4 py-2 rounded-pill font-medium text-signal-amber bg-signal-amber/10 border border-signal-amber/20 active:scale-95 transition-transform"
+          >
+            Take a Selfie
+          </button>
+        )}
+
+        {/* Hidden file inputs */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          onChange={handleFileChange}
+          className="hidden"
+        />
+        <input
+          ref={cameraInputRef}
+          type="file"
+          accept="image/*"
+          capture="user"
+          onChange={handleFileChange}
+          className="hidden"
         />
       </div>
     </div>

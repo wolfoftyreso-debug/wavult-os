@@ -47,7 +47,7 @@ const PULSE_COLOR = {
 
 function GreetingHeader() {
   const { user } = useAuth()
-  const { openCreator } = useAvatar()
+  const { openUploader } = useAvatar()
   const name = user?.user_metadata?.full_name || 'Operator'
   const firstName = name.split(' ')[0]
   const initials = name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()
@@ -61,7 +61,7 @@ function GreetingHeader() {
         color="#8B5CF6"
         size="lg"
         ring
-        onClick={openCreator}
+        onClick={openUploader}
       />
       <div className="flex-1 min-w-0">
         <p className="text-label text-tx-tertiary font-mono uppercase">{greeting}</p>

@@ -1,83 +1,27 @@
-// ─── Wavult App — Avatar Context ────────────────────────────────────────────────
-// Ready Player Me integration. Stores avatar URL in Supabase user_metadata.
-// Renders 2D portraits from the 3D avatar via RPM render API.
-//
-// Ready Player Me render API:
-//   https://models.readyplayer.me/{avatarId}.png
-//   ?scene=fullbody-portrait-v1
-//   &size=256
-//   &background=0,0,0,0  (transparent)
-//
-// The avatarId is extracted from the full .glb URL that RPM returns.
+// ─── Wavult App — Avatar Context ────────────────────────────────────────────
+// Photo upload avatar system. Stores images in Supabase Storage (bucket: avatars).
+// Saves the public URL in user_metadata.avatar_url.
+// No third-party dependency — your photo, your infrastructure.
 
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { useAuth } from './AuthContext'
 import { supabase } from './supabase'
 
-// ─── RPM Configuration ──────────────────────────────────────────────────────
-// Uses 'demo' subdomain by default (works without registration).
-// Set VITE_RPM_SUBDOMAIN to your own subdomain after registering at studio.readyplayer.me
+// ─── Configuration ───────────────────────────────────────────────────────────
 
-const RPM_SUBDOMAIN = import.meta.env.VITE_RPM_SUBDOMAIN || 'demo'
-const RPM_IFRAME_URL = `https://${RPM_SUBDOMAIN}.readyplayer.me/avatar?frameApi`
-
-// Render API base — works with any avatarId
-const RPM_RENDER_BASE = 'https://models.readyplayer.me'
-
-export type AvatarSize = 128 | 256 | 512 | 1024
-
-export interface AvatarRenderOptions {
-  scene?: 'fullbody-portrait-v1' | 'halfbody-portrait-v1' | 'fullbody-posture-v1'
-  size?: AvatarSize
-  transparent?: boolean
-}
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-/** Extract avatar ID from RPM .glb URL */
-function extractAvatarId(glbUrl: string): string | null {
-  // URL format: https://models.readyplayer.me/64f1234abcdef.glb
-  const match = glbUrl.match(/models\.readyplayer\.me\/([a-f0-9]+)\.glb/i)
-  if (match) return match[1]
-  // Also try just a hex string (if stored as ID only)
-  if (/^[a-f0-9]{24}$/i.test(glbUrl)) return glbUrl
-  return null
-}
-
-/** Build render URL for 2D portrait from avatar ID */
-export function getAvatarRenderUrl(
-  avatarIdOrUrl: string,
-  options: AvatarRenderOptions = {}
-): string {
-  const id = extractAvatarId(avatarIdOrUrl) || avatarIdOrUrl
-  const {
-    scene = 'halfbody-portrait-v1',
-    size = 256,
-    transparent = true,
-  } = options
-
-  const bg = transparent ? '0,0,0,0' : '20,24,30,255'
-  return `${RPM_RENDER_BASE}/${id}.png?scene=${scene}&size=${size}&background=${bg}`
-}
+const AVATAR_BUCKET = 'avatars'
+const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5 MB
+const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 
 // ─── Context ─────────────────────────────────────────────────────────────────
 
 interface AvatarContextValue {
-  /** Full .glb URL or avatar ID stored in user metadata */
   avatarUrl: string | null
-  /** 2D rendered portrait URL (ready to use in <img>) */
-  portraitUrl: string | null
-  /** Whether the avatar creation modal is open */
-  isCreatorOpen: boolean
-  /** Open the RPM avatar creator */
-  openCreator: () => void
-  /** Close the creator */
-  closeCreator: () => void
-  /** Save a new avatar URL (called by the creator iframe) */
-  saveAvatar: (glbUrl: string) => Promise<void>
-  /** Remove avatar */
+  isUploaderOpen: boolean
+  openUploader: () => void
+  closeUploader: () => void
+  uploadAvatar: (file: File) => Promise<{ error: string | null }>
   removeAvatar: () => Promise<void>
-  /** Loading state */
   saving: boolean
 }
 
@@ -86,54 +30,85 @@ const AvatarContext = createContext<AvatarContextValue | null>(null)
 export function AvatarProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth()
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
-  const [isCreatorOpen, setIsCreatorOpen] = useState(false)
+  const [isUploaderOpen, setIsUploaderOpen] = useState(false)
   const [saving, setSaving] = useState(false)
 
-  // Load avatar from user metadata on mount
+  // Load avatar from user metadata
   useEffect(() => {
-    if (user?.user_metadata?.avatar_url) {
-      setAvatarUrl(user.user_metadata.avatar_url)
-    } else {
-      setAvatarUrl(null)
+    const url = user?.user_metadata?.avatar_url
+    setAvatarUrl(typeof url === 'string' ? url : null)
+  }, [user])
+
+  const openUploader = useCallback(() => setIsUploaderOpen(true), [])
+  const closeUploader = useCallback(() => setIsUploaderOpen(false), [])
+
+  const uploadAvatar = useCallback(async (file: File): Promise<{ error: string | null }> => {
+    if (!user) return { error: 'Not authenticated' }
+
+    // Validate
+    if (!ACCEPTED_TYPES.includes(file.type)) {
+      return { error: 'Only JPEG, PNG, and WebP are supported' }
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      return { error: 'File too large (max 5 MB)' }
+    }
+
+    setSaving(true)
+    try {
+      // Upload to Supabase Storage: avatars/{userId}.{ext}
+      const ext = file.name.split('.').pop() || 'jpg'
+      const path = `${user.id}.${ext}`
+
+      const { error: uploadError } = await supabase.storage
+        .from(AVATAR_BUCKET)
+        .upload(path, file, { upsert: true, contentType: file.type })
+
+      if (uploadError) return { error: uploadError.message }
+
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from(AVATAR_BUCKET)
+        .getPublicUrl(path)
+
+      // Append cache-busting timestamp
+      const publicUrl = `${urlData.publicUrl}?t=${Date.now()}`
+
+      // Save to user metadata
+      const { error: updateError } = await supabase.auth.updateUser({
+        data: { avatar_url: publicUrl },
+      })
+
+      if (updateError) return { error: updateError.message }
+
+      setAvatarUrl(publicUrl)
+      setIsUploaderOpen(false)
+      return { error: null }
+    } finally {
+      setSaving(false)
     }
   }, [user])
 
-  const portraitUrl = avatarUrl ? getAvatarRenderUrl(avatarUrl) : null
-
-  const openCreator = useCallback(() => setIsCreatorOpen(true), [])
-  const closeCreator = useCallback(() => setIsCreatorOpen(false), [])
-
-  const saveAvatar = useCallback(async (glbUrl: string) => {
-    setSaving(true)
-    try {
-      const { error } = await supabase.auth.updateUser({
-        data: { avatar_url: glbUrl },
-      })
-      if (error) throw error
-      setAvatarUrl(glbUrl)
-      setIsCreatorOpen(false)
-    } finally {
-      setSaving(false)
-    }
-  }, [])
-
   const removeAvatar = useCallback(async () => {
+    if (!user) return
     setSaving(true)
     try {
-      const { error } = await supabase.auth.updateUser({
-        data: { avatar_url: null },
-      })
-      if (error) throw error
+      // Remove from storage (try common extensions)
+      for (const ext of ['jpg', 'jpeg', 'png', 'webp']) {
+        await supabase.storage.from(AVATAR_BUCKET).remove([`${user.id}.${ext}`])
+      }
+
+      // Clear from user metadata
+      await supabase.auth.updateUser({ data: { avatar_url: null } })
       setAvatarUrl(null)
     } finally {
       setSaving(false)
     }
-  }, [])
+  }, [user])
 
   return (
     <AvatarContext.Provider value={{
-      avatarUrl, portraitUrl, isCreatorOpen,
-      openCreator, closeCreator, saveAvatar, removeAvatar, saving,
+      avatarUrl, isUploaderOpen,
+      openUploader, closeUploader, uploadAvatar, removeAvatar, saving,
     }}>
       {children}
     </AvatarContext.Provider>
@@ -145,5 +120,3 @@ export function useAvatar() {
   if (!ctx) throw new Error('useAvatar must be used inside AvatarProvider')
   return ctx
 }
-
-export { RPM_IFRAME_URL }

@@ -20,7 +20,7 @@ const OPERATOR = {
 
 export function ProfileView() {
   const { user, signOut } = useAuth()
-  const { avatarUrl, openCreator, removeAvatar, saving } = useAvatar()
+  const { avatarUrl, openUploader, removeAvatar, saving } = useAvatar()
   const name = user?.user_metadata?.full_name || user?.email || 'Operator'
   const email = user?.email || ''
   const initials = name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()
@@ -36,7 +36,7 @@ export function ProfileView() {
             color={OPERATOR.accentColor}
             size="xl"
             ring
-            onClick={openCreator}
+            onClick={openUploader}
           />
           {/* Edit badge */}
           <div className="absolute -bottom-1 -right-1 h-7 w-7 rounded-full bg-w-surface border-2 border-w-bg flex items-center justify-center">
@@ -53,7 +53,7 @@ export function ProfileView() {
         {/* Avatar actions */}
         <div className="flex items-center justify-center gap-3 mt-3">
           <button
-            onClick={openCreator}
+            onClick={openUploader}
             disabled={saving}
             className="text-xs px-3 py-1.5 rounded-pill font-medium transition-all bg-signal-amber/15 text-signal-amber border border-signal-amber/30 active:scale-95 disabled:opacity-50"
           >
