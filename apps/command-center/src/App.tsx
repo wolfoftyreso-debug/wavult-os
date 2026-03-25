@@ -12,6 +12,7 @@ import { ContextView } from './features/org-graph/ContextView'
 import { CommandHierarchyView } from './features/org-graph/CommandHierarchyView'
 import { EntityView } from './features/entity/EntityView'
 import { IncidentCenter } from './features/incidents/IncidentCenter'
+import { MarketMap } from './features/market-sites'
 
 function AuthenticatedApp() {
   const { role } = useRole()
@@ -33,6 +34,7 @@ function AuthenticatedApp() {
         <Route path="/incidents" element={<IncidentCenter />} />
         <Route path="/entities" element={<EntityView />} />
         <Route path="/entities/:entityId" element={<EntityView />} />
+        <Route path="/markets" element={<MarketMap />} />
       </Routes>
     </Shell>
   )

@@ -9,6 +9,7 @@ import { useRole } from '../../shared/auth/RoleContext'
 import { ROLE_PERMISSIONS, GraphPermissions } from './permissions'
 import { COMMAND_CHAIN, getDirectReports, getApexRole } from './commandChain'
 import { generateIncidents, computePropagation, getRoleKPIs, getKPIStatus, KPI_STATUS_COLOR } from '../incidents/incidentEngine'
+import { MARKET_SITES, SITE_STATUS_COLOR } from '../market-sites/data'
 
 // ─── Layout constants ──────────────────────────────────────────────────────────
 
@@ -706,6 +707,31 @@ function DrillPanel({
             </div>
           </PanelSection>
         )}
+
+        {/* Markets linked to this entity */}
+        {(() => {
+          const linkedSites = MARKET_SITES.filter(s => s.entity_id === entity.id)
+          if (linkedSites.length === 0) return null
+          return (
+            <PanelSection label={`Markets (${linkedSites.length})`}>
+              <div className="space-y-1">
+                {linkedSites.map(site => {
+                  const sc = SITE_STATUS_COLOR[site.status]
+                  return (
+                    <div key={site.id}
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-white/[0.04] cursor-pointer hover:border-white/[0.1] transition-colors"
+                      onClick={() => navigate('/markets')}
+                    >
+                      <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: sc }} />
+                      <span className="text-[11px] font-semibold text-white flex-1">{site.name}</span>
+                      <span className="text-[9px] font-mono" style={{ color: sc }}>{site.status}</span>
+                    </div>
+                  )
+                })}
+              </div>
+            </PanelSection>
+          )
+        })()}
       </div>
     </div>
   )
