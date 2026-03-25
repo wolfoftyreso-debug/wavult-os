@@ -21,8 +21,8 @@ const LAYER_LABEL: Record<number, string> = {
   2: 'PRODUCT ENTITIES',
   3: 'SYSTEMS',
 }
-const CARD_W = 176
-const CARD_H = 96
+const CARD_W = 190
+const CARD_H = 100
 const SVG_W = 1120
 
 // ─── Command chain layout (right-side column) ─────────────────────────────────
@@ -69,11 +69,13 @@ const FLOW_CONFIG: Record<RelationshipType, {
   glowColor: string;       // SVG drop-shadow color
   symbol?: string;         // optional text symbol on particle (€/$)
 }> = {
-  ownership:      { stroke: '#8B5CF6', dash: 'none', label: 'Ownership',     particleColor: '#A78BFA', particleSize: 4,   speed: 3.5, baseWidth: 1.8, highlightWidth: 3,   glowColor: '#8B5CF688' },
-  financial_flow: { stroke: '#10B981', dash: 'none', label: 'Financial Flow', particleColor: '#34D399', particleSize: 5.5, speed: 2.2, baseWidth: 2.2, highlightWidth: 3.5, glowColor: '#10B98188', symbol: '€' },
-  licensing:      { stroke: '#F59E0B', dash: '6 4',  label: 'IP License',    particleColor: '#FCD34D', particleSize: 3,   speed: 4.5, baseWidth: 1.5, highlightWidth: 2.5, glowColor: '#F59E0B66' },
-  service:        { stroke: '#0EA5E9', dash: '4 3',  label: 'Service',        particleColor: '#38BDF8', particleSize: 3,   speed: 3.2, baseWidth: 1.5, highlightWidth: 2.5, glowColor: '#0EA5E966' },
-  control:        { stroke: '#EF4444', dash: 'none', label: 'Control',        particleColor: '#F87171', particleSize: 4.5, speed: 1.8, baseWidth: 2.5, highlightWidth: 4,   glowColor: '#EF444488' },
+  // Default: only ownership is visible. Others shown on hover/filter only.
+  // VISUAL HIERARCHY: ownership=thick white, everything else=very faint
+  ownership:      { stroke: '#FFFFFF', dash: 'none', label: 'Ägarskap',     particleColor: '#FFFFFF', particleSize: 3,   speed: 2,   baseWidth: 2.5, highlightWidth: 4,   glowColor: '#ffffff33' },
+  financial_flow: { stroke: '#10B981', dash: 'none', label: 'Kapitalflöde', particleColor: '#34D399', particleSize: 2,   speed: 2,   baseWidth: 1.2, highlightWidth: 2,   glowColor: '#10B98133', symbol: '€' },
+  licensing:      { stroke: '#F59E0B', dash: '6 4',  label: 'IP-licens',    particleColor: '#FCD34D', particleSize: 2,   speed: 3,   baseWidth: 1,   highlightWidth: 2,   glowColor: '#F59E0B33' },
+  service:        { stroke: '#0EA5E9', dash: '4 3',  label: 'Tjänst',       particleColor: '#38BDF8', particleSize: 2,   speed: 3,   baseWidth: 1,   highlightWidth: 2,   glowColor: '#0EA5E933' },
+  control:        { stroke: '#EF4444', dash: 'none', label: 'Kontroll',      particleColor: '#F87171', particleSize: 3,   speed: 2,   baseWidth: 1.5, highlightWidth: 3,   glowColor: '#EF444433' },
 }
 // Keep REL_STYLE alias for Legend compatibility
 const REL_STYLE = Object.fromEntries(
@@ -91,14 +93,15 @@ function buildEdgePath(
 }
 
 function Edge({
-  rel, positions, opacity, highlighted, stressed, muted,
+  rel, positions, opacity, highlighted, stressed, muted, showAllEdges,
 }: {
   rel: EntityRelationship
   positions: Map<string, { x: number; y: number }>
   opacity: number
   highlighted: boolean
-  stressed: boolean   // KPI failure on from-entity — triggers stress animation
-  muted: boolean      // Flow overlay off — show lines only, no particles
+  stressed: boolean      // KPI failure on from-entity — triggers stress animation
+  muted: boolean         // Flow overlay off — show lines only, no particles
+  showAllEdges: boolean  // Show all relationship types with particles
 }) {
   const from = positions.get(rel.from_entity_id)
   const to   = positions.get(rel.to_entity_id)
@@ -152,15 +155,15 @@ function Edge({
         style={{ filter: glowFilter, transition: 'all 0.3s' }}
       />
 
-      {/* ── Primary particle ── */}
-      {opacity > 0.3 && !muted && !cfg.symbol && (
+      {/* ── Primary particle — only show non-ownership particles when showAllEdges === true ── */}
+      {opacity > 0.3 && !muted && !cfg.symbol && (rel.type === 'ownership' || showAllEdges) && (
         <circle r={cfg.particleSize * (stressed ? 1.5 : 1)} fill={stressed ? '#EF4444' : cfg.particleColor} opacity={0.92}>
           <animateMotion id={animId} dur={`${particleSpd}s`} repeatCount="indefinite" path={d} />
         </circle>
       )}
 
       {/* Financial flow: € symbol particle instead of plain circle */}
-      {opacity > 0.3 && !muted && cfg.symbol && !stressed && (
+      {opacity > 0.3 && !muted && cfg.symbol && !stressed && showAllEdges && (
         <>
           <text fontSize={9} fontWeight="700" fill={cfg.particleColor} opacity={0.95} textAnchor="middle">
             {cfg.symbol}
@@ -178,7 +181,7 @@ function Edge({
       )}
 
       {/* Financial stressed — dollar sign flickering + rapid dots */}
-      {opacity > 0.3 && !muted && cfg.symbol && stressed && (
+      {opacity > 0.3 && !muted && cfg.symbol && stressed && showAllEdges && (
         <>
           <text fontSize={9} fontWeight="700" fill="#EF4444" opacity={0.95} textAnchor="middle">
             ⚠
@@ -198,7 +201,7 @@ function Edge({
       )}
 
       {/* Control: second always-on particle for dominance */}
-      {rel.type === 'control' && !stressed && opacity > 0.3 && !muted && (
+      {rel.type === 'control' && !stressed && opacity > 0.3 && !muted && showAllEdges && (
         <circle r={2.5} fill={cfg.particleColor} opacity={0.5}>
           <animateMotion dur={`${particleSpd}s`} begin={`${particleSpd * 0.6}s`} repeatCount="indefinite" path={d} />
         </circle>
@@ -316,17 +319,17 @@ function NodeCard({
       )}
 
       {/* Flag + shortname */}
-      <text x={13} y={26} fontSize={12.5} fill={entity.color} fontWeight="700" fontFamily="monospace">
+      <text x={13} y={28} fontSize={13} fill={entity.color} fontWeight="700" fontFamily="monospace">
         {typeof entity.flag === 'string' && entity.flag.length <= 2 ? entity.flag : ''} {entity.shortName}
       </text>
 
       {/* Full name — truncate if long */}
-      <text x={13} y={42} fontSize={9} fill="#9CA3AF" fontFamily="sans-serif">
+      <text x={13} y={44} fontSize={10} fill="#9CA3AF" fontFamily="sans-serif">
         {entity.name.length > 22 ? entity.name.slice(0, 21) + '…' : entity.name}
       </text>
 
       {/* Jurisdiction + type */}
-      <text x={13} y={57} fontSize={8.5} fill="#4B5563">
+      <text x={13} y={59} fontSize={10} fill="#6B7280">
         {entity.jurisdiction} · {entity.type.toUpperCase()}
       </text>
 
@@ -601,7 +604,7 @@ function DrillPanel({
                     {(() => {
                       const cmdR = COMMAND_CHAIN.find(c => c.person === r.person)
                       const photoUrl = cmdR?.avatar
-                        ?? `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(r.person)}&backgroundColor=transparent`
+                        ?? `/avatars/${r.person.split(' ')[0].toLowerCase()}.png`
                       return (
                         <div className="h-7 w-7 rounded-lg overflow-hidden flex-shrink-0 border"
                           style={{ borderColor: r.color + '40' }}>
@@ -829,17 +832,15 @@ function CommandChainNode({
     <g transform={`translate(${x}, ${y})`} onClick={onClick} className="cursor-pointer"
       style={{ filter: glowFilter, transition: 'all 0.3s' }}>
 
-      {/* Card bg */}
+      {/* Card bg — clean dark background, neutral border */}
       <rect width={CMD_NODE_W} height={CMD_NODE_H} rx={9}
-        fill={isPrimary ? '#1A0808' : isCascade ? '#130F05' : selected ? role.color : '#0C0E1A'}
-        fillOpacity={selected && !isPrimary ? 0.14 : 1}
-        stroke={incidentColor}
-        strokeOpacity={isPrimary ? 0.8 : selected ? 0.7 : 0.28}
-        strokeWidth={isPrimary ? 2 : selected ? 1.5 : 1}
+        fill="#0D0F1A"
+        stroke="#ffffff0f"
+        strokeWidth={1}
       />
 
-      {/* Status bar top — incident color overrides role color */}
-      <rect x={0} y={0} width={CMD_NODE_W} height={3} rx={9} fill={incidentColor} />
+      {/* Left status border — 3px colored bar on the left edge */}
+      <rect x={0} y={0} width={3} height={CMD_NODE_H} rx={1.5} fill={incidentColor} opacity={0.9} />
 
       {/* Incident indicator */}
       {isPrimary && (
@@ -856,25 +857,25 @@ function CommandChainNode({
         <circle cx={26} cy={26} r={18} />
       </clipPath>
       <image
-        href={role.avatar ?? `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(role.person)}&backgroundColor=transparent`}
+        href={role.avatar ?? `/avatars/${role.person.split(' ')[0].toLowerCase()}.png`}
         x={8} y={8} width={36} height={36}
         clipPath={`url(#clip-cmd-${role.id})`}
         preserveAspectRatio="xMidYMid slice"
       />
 
       {/* Name + title */}
-      <text x={50} y={26} fontSize={10} fontWeight="700" fill="#FFFFFF">{role.person}</text>
-      <text x={50} y={38} fontSize={8.5} fill={isPrimary ? '#EF9494' : role.color}>{role.title}</text>
+      <text x={52} y={27} fontSize={12} fontWeight="700" fill="#FFFFFF">{role.person}</text>
+      <text x={52} y={40} fontSize={10} fill={isPrimary ? '#EF9494' : '#9CA3AF'}>{role.title}</text>
 
       {/* reports_to */}
       {reports && (
-        <text x={50} y={52} fontSize={7.5} fill="#4B5563">
+        <text x={52} y={53} fontSize={8} fill="#4B5563">
           <tspan fill="#374151" fontFamily="monospace">reports_to</tspan>
           {` → ${reports.person}`}
         </text>
       )}
       {!reports && (
-        <text x={50} y={52} fontSize={7.5} fill="#4B5563" fontFamily="monospace">◆ Apex</text>
+        <text x={52} y={53} fontSize={8} fill="#4B5563" fontFamily="monospace">◆ Apex</text>
       )}
 
       {/* KPI status bar — live from incidentEngine */}
@@ -1027,6 +1028,7 @@ export function OrgGraph() {
   const [showFlow, setShowFlow]               = useState(true)
   const [showStress, setShowStress]           = useState(true)
   const [selectedCmdId, setSelectedCmdId]     = useState<string | null>(null)
+  const [showAllEdges, setShowAllEdges]       = useState(false)
 
   // Live incident propagation — drives visual "bleeding" in the graph
   const incidents = useMemo(() => generateIncidents(), [])
@@ -1067,16 +1069,19 @@ export function OrgGraph() {
   }, [selectedEntity, perms, visibleEntities, visibleRels])
 
   // Compute edge opacity
+  // Non-ownership edges get very low opacity unless highlighted or showAllEdges mode
   const edgeOpacity = useCallback((rel: EntityRelationship) => {
+    const isOwnership = rel.type === 'ownership'
     const isHighlightType = perms.highlightRelTypes.includes(rel.type)
     if (selectedEntity) {
       const rels = getRelationships(selectedEntity.id)
       const isConnected = rels.some(r => r.id === rel.id)
-      return isConnected ? 1 : 0.12
+      if (!isConnected) return 0.08
+      return isOwnership ? 0.9 : showAllEdges ? 0.6 : 0.5
     }
-    if (perms.dimmedByDefault) return isHighlightType ? 1 : 0.18
-    return 1
-  }, [selectedEntity, perms])
+    if (perms.dimmedByDefault) return isHighlightType ? (isOwnership ? 0.9 : showAllEdges ? 0.6 : 0.08) : 0.08
+    return isOwnership ? 0.9 : (showAllEdges ? 0.6 : 0.08)
+  }, [selectedEntity, perms, showAllEdges])
 
   const edgeHighlighted = useCallback((rel: EntityRelationship) => {
     if (selectedEntity) {
@@ -1165,6 +1170,14 @@ export function OrgGraph() {
               Stress
             </button>
 
+            {/* 5. Show all relationships toggle */}
+            <button
+              onClick={() => setShowAllEdges(s => !s)}
+              className={`px-2 py-1 text-[10px] rounded font-mono border transition-colors ${showAllEdges ? 'bg-white/10 border-white/30 text-white' : 'border-white/10 text-gray-600 hover:text-gray-400'}`}
+            >
+              {showAllEdges ? '← Enkel vy' : '+ Visa alla relationer'}
+            </button>
+
             {/* Clear — only when entity selected */}
             {selectedEntity && (
               <>
@@ -1202,7 +1215,7 @@ export function OrgGraph() {
                   width={SVG_W} height={CARD_H + 40}
                   fill={ly % 2 === 0 ? '#ffffff02' : '#ffffff01'}
                 />
-                <text x={14} y={LAYER_Y[ly] - 5} fontSize={8} fill="#283040" fontWeight="700" letterSpacing="2.5">
+                <text x={14} y={LAYER_Y[ly] - 5} fontSize={11} fill="#9CA3AF" fontWeight="600" letterSpacing="1.9">
                   {LAYER_LABEL[ly]}
                 </text>
               </g>
@@ -1218,6 +1231,7 @@ export function OrgGraph() {
                 highlighted={edgeHighlighted(rel)}
                 stressed={showStress && (propagation.primary_failures.includes(rel.from_entity_id) || propagation.cascade_failures.includes(rel.from_entity_id))}
                 muted={!showFlow}
+                showAllEdges={showAllEdges}
               />
             ))}
 
