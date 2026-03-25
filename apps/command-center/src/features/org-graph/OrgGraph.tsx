@@ -6,8 +6,8 @@ import {
   Entity, EntityRelationship, RelationshipType,
 } from './data'
 import { useRole } from '../../shared/auth/RoleContext'
-import { ROLE_PERMISSIONS, OVERLAY_LABELS, GraphPermissions, OverlayMode } from './permissions'
-import { COMMAND_CHAIN, STATUS_COLOR, getDirectReports, getApexRole } from './commandChain'
+import { ROLE_PERMISSIONS, GraphPermissions } from './permissions'
+import { COMMAND_CHAIN, getDirectReports, getApexRole } from './commandChain'
 import { generateIncidents, computePropagation, getRoleKPIs, getKPIStatus, KPI_STATUS_COLOR } from '../incidents/incidentEngine'
 
 // ─── Layout constants ──────────────────────────────────────────────────────────
@@ -89,13 +89,14 @@ function buildEdgePath(
 }
 
 function Edge({
-  rel, positions, opacity, highlighted, stressed,
+  rel, positions, opacity, highlighted, stressed, muted,
 }: {
   rel: EntityRelationship
   positions: Map<string, { x: number; y: number }>
   opacity: number
   highlighted: boolean
   stressed: boolean   // KPI failure on from-entity — triggers stress animation
+  muted: boolean      // Flow overlay off — show lines only, no particles
 }) {
   const from = positions.get(rel.from_entity_id)
   const to   = positions.get(rel.to_entity_id)
@@ -150,14 +151,14 @@ function Edge({
       />
 
       {/* ── Primary particle ── */}
-      {opacity > 0.3 && !cfg.symbol && (
+      {opacity > 0.3 && !muted && !cfg.symbol && (
         <circle r={cfg.particleSize * (stressed ? 1.5 : 1)} fill={stressed ? '#EF4444' : cfg.particleColor} opacity={0.92}>
           <animateMotion id={animId} dur={`${particleSpd}s`} repeatCount="indefinite" path={d} />
         </circle>
       )}
 
       {/* Financial flow: € symbol particle instead of plain circle */}
-      {opacity > 0.3 && cfg.symbol && !stressed && (
+      {opacity > 0.3 && !muted && cfg.symbol && !stressed && (
         <>
           <text fontSize={9} fontWeight="700" fill={cfg.particleColor} opacity={0.95} textAnchor="middle">
             {cfg.symbol}
@@ -175,7 +176,7 @@ function Edge({
       )}
 
       {/* Financial stressed — dollar sign flickering + rapid dots */}
-      {opacity > 0.3 && cfg.symbol && stressed && (
+      {opacity > 0.3 && !muted && cfg.symbol && stressed && (
         <>
           <text fontSize={9} fontWeight="700" fill="#EF4444" opacity={0.95} textAnchor="middle">
             ⚠
@@ -195,7 +196,7 @@ function Edge({
       )}
 
       {/* Control: second always-on particle for dominance */}
-      {rel.type === 'control' && !stressed && opacity > 0.3 && (
+      {rel.type === 'control' && !stressed && opacity > 0.3 && !muted && (
         <circle r={2.5} fill={cfg.particleColor} opacity={0.5}>
           <animateMotion dur={`${particleSpd}s`} begin={`${particleSpd * 0.6}s`} repeatCount="indefinite" path={d} />
         </circle>
@@ -384,7 +385,34 @@ function NodeCard({
   )
 }
 
-// ─── Drill-down panel (right side) ────────────────────────────────────────────
+// ─── Entity Panel — Precision Control Interface ───────────────────────────────
+// Answers: What is this? Why does it exist? Who owns it? Is it healthy? What next?
+
+// Reusable section block
+function PanelSection({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <div className="text-[9px] font-bold text-gray-700 uppercase tracking-[0.15em] mb-2 px-1">{label}</div>
+      {children}
+    </div>
+  )
+}
+
+// "Next action" logic — computed from health + incidents
+function computeNextAction(entity: Entity, incidents: ReturnType<typeof generateIncidents>): { text: string; urgency: 'critical' | 'warn' | 'ok' } {
+  const entityIncidents = incidents.filter(i =>
+    i.rca.affected_entities.includes(entity.id) || i.role_id === entity.id
+  )
+  const critical = entityIncidents.find(i => i.severity === 'critical')
+  if (critical) return { text: critical.rca.dependency_chain[0] ?? 'Resolve critical KPI failure', urgency: 'critical' }
+
+  const statusMap: Record<string, string> = {
+    forming: `Complete incorporation — ${entity.jurisdiction} legal filing required`,
+    planned: 'Initiate formation process',
+    live: 'Operational — monitor KPIs',
+  }
+  return { text: statusMap[entity.active_status] ?? 'No action required', urgency: entity.active_status === 'live' ? 'ok' : 'warn' }
+}
 
 function DrillPanel({
   entity, perms, onClose,
@@ -393,18 +421,19 @@ function DrillPanel({
   perms: GraphPermissions
   onClose: () => void
 }) {
-  const navigate = useNavigate()
-  const [tab, setTab] = useState<'overview' | 'relations' | 'roles' | 'children'>('overview')
+  const navigate  = useNavigate()
+  const incidents = useMemo(() => generateIncidents(), [])
 
-  const rels = getRelationships(entity.id)
-  const roles = getRoleMappings(entity.id)
+  const rels     = getRelationships(entity.id)
+  const roles    = getRoleMappings(entity.id)
   const children = getChildren(entity.id)
   const outgoing = rels.filter(r => r.from_entity_id === entity.id && perms.visibleRelTypes.includes(r.type))
   const incoming = rels.filter(r => r.to_entity_id === entity.id && perms.visibleRelTypes.includes(r.type))
+  const nextAction = computeNextAction(entity, incidents)
 
   const statusColor = { live: '#10B981', forming: '#F59E0B', planned: '#6B7280' }[entity.active_status]
 
-  // Filter metadata by permissions
+  // Metadata filtered by permissions — only surface visible fields
   const metaEntries = Object.entries(entity.metadata).filter(([k]) => {
     if (!perms.canSeeFinancialMeta && /revenue|fee|royalty|tax|bank|billing/i.test(k)) return false
     if (!perms.canSeeLegalMeta && /legal|jurisdic|form|compliance/i.test(k)) return false
@@ -412,237 +441,270 @@ function DrillPanel({
     return true
   })
 
-  const tabs = [
-    { id: 'overview' as const, label: 'Overview' },
-    { id: 'relations' as const, label: `Relations (${outgoing.length + incoming.length})` },
-    { id: 'roles' as const, label: `Roles (${roles.length})` },
-    ...(children.length > 0 ? [{ id: 'children' as const, label: `Children (${children.length})` }] : []),
-  ]
+  const urgencyStyle = {
+    critical: { bg: '#EF444412', border: '#EF444430', text: '#F87171', dot: '#EF4444' },
+    warn:     { bg: '#F59E0B10', border: '#F59E0B28', text: '#FCD34D', dot: '#F59E0B' },
+    ok:       { bg: '#10B98110', border: '#10B98128', text: '#6EE7B7', dot: '#10B981' },
+  }[nextAction.urgency]
 
   return (
-    <div className="h-full flex flex-col bg-[#0A0C14] border-l border-white/[0.07] overflow-hidden">
-      {/* Header */}
-      <div className="flex-shrink-0 p-5 border-b border-white/[0.06]">
-        <div className="flex items-start justify-between">
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xl">{entity.flag}</span>
-              <span className="font-bold text-white text-base">{entity.shortName}</span>
-              <span
-                className="text-xs px-2 py-0.5 rounded-full font-mono"
-                style={{ background: statusColor + '18', color: statusColor, border: `1px solid ${statusColor}30` }}
-              >
-                {entity.active_status}
-              </span>
-              <span
-                className="text-xs px-2 py-0.5 rounded-full"
-                style={{ background: entity.color + '15', color: entity.color, border: `1px solid ${entity.color}25` }}
-              >
-                {entity.type}
-              </span>
+    <div className="h-full flex flex-col bg-[#09090F] border-l border-white/[0.06] overflow-hidden" style={{ width: 340 }}>
+
+      {/* ── SNAPSHOT ─────────────────────────────────────────────── */}
+      <div className="flex-shrink-0 px-5 pt-5 pb-4 border-b border-white/[0.05]">
+        {/* Identity row */}
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <span className="text-2xl flex-shrink-0">{entity.flag}</span>
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-bold text-white text-[15px] leading-tight">{entity.shortName}</span>
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded"
+                  style={{ background: statusColor + '18', color: statusColor }}>
+                  {entity.active_status.toUpperCase()}
+                </span>
+              </div>
+              <div className="text-xs text-gray-500 mt-0.5 truncate">{entity.name}</div>
             </div>
-            <div className="text-sm text-gray-200 font-medium mt-1 truncate">{entity.name}</div>
-            <div className="text-xs text-gray-500 mt-0.5 font-mono">{entity.jurisdiction}</div>
           </div>
-          <div className="flex items-center gap-2 ml-3 flex-shrink-0">
-              <button
-                onClick={() => navigate(`/entities/${entity.id}`)}
-                className="text-xs px-2.5 py-1.5 rounded-lg font-semibold transition-colors"
-                style={{ background: entity.color + '20', color: entity.color, border: `1px solid ${entity.color}35` }}
-                title="Open Entity Control Center"
-              >
-                Enter →
-              </button>
-              <button onClick={onClose} className="text-gray-600 hover:text-gray-300 transition-colors text-lg leading-none">✕</button>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <button
+              onClick={() => navigate(`/entities/${entity.id}`)}
+              className="text-[10px] px-2.5 py-1.5 rounded-lg font-bold tracking-wide transition-all hover:opacity-80"
+              style={{ background: entity.color + '22', color: entity.color, border: `1px solid ${entity.color}38` }}
+            >
+              OPEN
+            </button>
+            <button onClick={onClose}
+              className="text-gray-600 hover:text-gray-300 transition-colors w-6 h-6 flex items-center justify-center rounded hover:bg-white/[0.05]">
+              ✕
+            </button>
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="flex gap-0 mt-4 border-b border-white/[0.06] -mx-5 px-5">
-          {tabs.map(t => (
-            <button
-              key={t.id}
-              onClick={() => setTab(t.id)}
-              className="text-xs pb-2 mr-4 transition-colors border-b-2 -mb-px"
-              style={{
-                color: tab === t.id ? entity.color : '#6B7280',
-                borderColor: tab === t.id ? entity.color : 'transparent',
-              }}
-            >
-              {t.label}
-            </button>
-          ))}
+        {/* Impact strip: type · jurisdiction · layer */}
+        <div className="flex items-center gap-2 mt-3 flex-wrap">
+          <span className="text-[10px] text-gray-600 font-mono uppercase">{entity.type}</span>
+          <span className="text-gray-800">·</span>
+          <span className="text-[10px] text-gray-600">{entity.jurisdiction}</span>
+          <span className="text-gray-800">·</span>
+          <span className="text-[10px] font-mono" style={{ color: entity.color }}>Layer {entity.layer}</span>
+          {children.length > 0 && (
+            <>
+              <span className="text-gray-800">·</span>
+              <span className="text-[10px] text-gray-600">{children.length} subsidiaries</span>
+            </>
+          )}
+        </div>
+
+        {/* Next action — always visible */}
+        <div className="mt-3 px-3 py-2 rounded-xl flex items-start gap-2.5"
+          style={{ background: urgencyStyle.bg, border: `1px solid ${urgencyStyle.border}` }}>
+          <span className="h-1.5 w-1.5 rounded-full flex-shrink-0 mt-1.5"
+            style={{ background: urgencyStyle.dot }} />
+          <div className="min-w-0">
+            <div className="text-[9px] font-bold uppercase tracking-wide mb-0.5"
+              style={{ color: urgencyStyle.text }}>
+              {nextAction.urgency === 'critical' ? 'CRITICAL — ACTION REQUIRED' : nextAction.urgency === 'warn' ? 'NEXT STEP' : 'STATUS'}
+            </div>
+            <p className="text-[11px] text-gray-300 leading-snug">{nextAction.text}</p>
+          </div>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto p-5 space-y-5">
-        {/* ── Overview ── */}
-        {tab === 'overview' && (
-          <>
-            <p className="text-sm text-gray-400 leading-relaxed">{entity.description}</p>
+      {/* ── SCROLLABLE SECTIONS ───────────────────────────────────── */}
+      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
 
-            {metaEntries.length > 0 && (
-              <div>
-                <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3">Key Facts</h3>
-                <div className="space-y-2.5">
-                  {metaEntries.map(([k, v]) => (
-                    <div key={k} className="flex gap-3 items-start">
-                      <span className="text-xs text-gray-600 w-28 flex-shrink-0 pt-0.5 font-mono">{k}</span>
-                      <span className="text-xs text-gray-300 leading-relaxed flex-1">{v}</span>
-                    </div>
-                  ))}
+        {/* 2. PURPOSE */}
+        <PanelSection label="Purpose — why it exists">
+          <p className="text-[12px] text-gray-400 leading-relaxed px-1">{entity.description}</p>
+        </PanelSection>
+
+        {/* 3. HOW IT WORKS — key facts */}
+        {metaEntries.length > 0 && (
+          <PanelSection label="How it works">
+            <div className="rounded-xl border border-white/[0.05] overflow-hidden">
+              {metaEntries.map(([k, v], i) => (
+                <div key={k}
+                  className={`flex gap-3 px-3 py-2 ${i < metaEntries.length - 1 ? 'border-b border-white/[0.04]' : ''}`}>
+                  <span className="text-[10px] text-gray-600 font-mono w-24 flex-shrink-0 pt-0.5 leading-relaxed">{k}</span>
+                  <span className="text-[11px] text-gray-300 leading-relaxed flex-1">{v}</span>
                 </div>
-              </div>
-            )}
-
-            {/* Permission watermark for restricted fields */}
-            {(!perms.canSeeFinancialMeta || !perms.canSeeLegalMeta || !perms.canSeeTechMeta) && (
-              <div className="text-xs text-gray-700 border border-white/[0.04] rounded-lg p-3 bg-white/[0.01]">
-                ⚠ Some metadata hidden based on your role permissions.
-              </div>
-            )}
-          </>
+              ))}
+            </div>
+          </PanelSection>
         )}
 
-        {/* ── Relations ── */}
-        {tab === 'relations' && (
-          <>
-            {outgoing.length > 0 && (
-              <div>
-                <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3">Outgoing</h3>
-                <div className="space-y-2">
-                  {outgoing.map(r => {
-                    const s = REL_STYLE[r.type]
-                    const target = ENTITIES.find(e => e.id === r.to_entity_id)
-                    return (
-                      <div key={r.id}
-                        className="flex items-center gap-3 rounded-lg px-3 py-2.5 border"
-                        style={{ background: s.stroke + '08', borderColor: s.stroke + '20' }}>
-                        <span className="h-2 w-2 rounded-full flex-shrink-0" style={{ background: s.stroke }} />
-                        <div className="flex-1 min-w-0">
-                          <div className="text-xs text-gray-300">
-                            <span style={{ color: s.stroke }}>{s.label}</span>
-                            <span className="text-gray-600 mx-1.5">→</span>
-                            <span className="font-semibold" style={{ color: target?.color }}>{target?.shortName}</span>
-                          </div>
-                          <div className="text-xs text-gray-600 mt-0.5">{r.label}</div>
+        {/* 4. PERFORMANCE — live KPIs from incidentEngine */}
+        {(() => {
+          const entityRoles = roles.map(r => COMMAND_CHAIN.find(c => c.person === r.person)).filter(Boolean)
+          const allKPIs = entityRoles.flatMap(c => getRoleKPIs(c!.id))
+          if (allKPIs.length === 0) return null
+          return (
+            <PanelSection label="Performance">
+              <div className="space-y-1.5">
+                {allKPIs.map(kpi => {
+                  const st = getKPIStatus(kpi)
+                  const c  = KPI_STATUS_COLOR[st]
+                  const pct = Math.min(100, Math.round((kpi.current_value / kpi.target_value) * 100))
+                  return (
+                    <div key={kpi.id} className="rounded-lg px-3 py-2 border border-white/[0.04] bg-white/[0.01]">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-[11px] text-gray-300">{kpi.name}</span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[10px] font-bold font-mono" style={{ color: c }}>{kpi.current}</span>
+                          <span className="text-[9px] px-1 py-px rounded font-mono"
+                            style={{ background: c + '18', color: c }}>{st.toUpperCase()}</span>
                         </div>
                       </div>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
-
-            {incoming.length > 0 && (
-              <div>
-                <h3 className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3">Incoming</h3>
-                <div className="space-y-2">
-                  {incoming.map(r => {
-                    const s = REL_STYLE[r.type]
-                    const source = ENTITIES.find(e => e.id === r.from_entity_id)
-                    return (
-                      <div key={r.id}
-                        className="flex items-center gap-3 rounded-lg px-3 py-2.5 border"
-                        style={{ background: s.stroke + '08', borderColor: s.stroke + '20' }}>
-                        <span className="h-2 w-2 rounded-full flex-shrink-0" style={{ background: s.stroke }} />
-                        <div className="flex-1 min-w-0">
-                          <div className="text-xs text-gray-300">
-                            <span className="font-semibold" style={{ color: source?.color }}>{source?.shortName}</span>
-                            <span className="text-gray-600 mx-1.5">→</span>
-                            <span style={{ color: s.stroke }}>{s.label}</span>
-                          </div>
-                          <div className="text-xs text-gray-600 mt-0.5">{r.label}</div>
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 h-1 rounded-full bg-white/[0.06]">
+                          <div className="h-1 rounded-full transition-all" style={{ width: `${pct}%`, background: c }} />
                         </div>
+                        <span className="text-[9px] text-gray-700 font-mono w-12 text-right">→ {kpi.target}</span>
                       </div>
-                    )
-                  })}
-                </div>
+                    </div>
+                  )
+                })}
               </div>
-            )}
-          </>
-        )}
+            </PanelSection>
+          )
+        })()}
 
-        {/* ── Roles ── */}
-        {tab === 'roles' && (
-          <div className="space-y-2">
-            {roles.length === 0 && <p className="text-xs text-gray-600">No roles mapped to this entity.</p>}
-            {roles.map(r => {
-              const cmdRole = COMMAND_CHAIN.find(c => c.person === r.person)
-              const superior = cmdRole?.reports_to ? COMMAND_CHAIN.find(c => c.id === cmdRole.reports_to) : null
-              return (
-              <div key={r.person}
-                className="rounded-xl border px-4 py-3"
-                style={{ background: r.color + '08', borderColor: r.color + '25' }}>
-                <div className="flex items-center gap-3">
-                  <div className="h-9 w-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
-                    style={{ background: r.color + '22', color: r.color }}>
-                    {r.initials}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-semibold text-white">{r.person}</div>
-                    <div className="text-xs text-gray-500">{r.role_type}</div>
-                  </div>
-                  <div className="flex items-center gap-1.5 flex-shrink-0">
-                    {cmdRole && (
-                      <span className="h-2 w-2 rounded-full"
-                        style={{ background: STATUS_COLOR[cmdRole.status], boxShadow: `0 0 4px ${STATUS_COLOR[cmdRole.status]}` }}
-                        title={`Status: ${cmdRole.status}`}
-                      />
-                    )}
-                    <div className="text-xs px-2 py-0.5 rounded-full" style={{ background: r.color + '18', color: r.color }}>
-                      {r.scope}
+        {/* 5. RESPONSIBILITY TREE */}
+        {roles.length > 0 && (
+          <PanelSection label="Responsibility">
+            <div className="space-y-1.5">
+              {roles.map(r => {
+                const cmdRole  = COMMAND_CHAIN.find(c => c.person === r.person)
+                const superior = cmdRole?.reports_to ? COMMAND_CHAIN.find(c => c.id === cmdRole.reports_to) : null
+                const kpiStatus = cmdRole ? getRoleKPIs(cmdRole.id).some(k => getKPIStatus(k) === 'red')
+                  ? 'red' : getRoleKPIs(cmdRole.id).some(k => getKPIStatus(k) === 'yellow') ? 'yellow' : 'green'
+                  : null
+                return (
+                  <div key={r.person} className="flex items-center gap-3 px-3 py-2 rounded-lg border border-white/[0.04]"
+                    style={{ background: r.color + '06' }}>
+                    <div className="h-7 w-7 rounded-lg flex items-center justify-center text-[10px] font-bold flex-shrink-0"
+                      style={{ background: r.color + '20', color: r.color }}>
+                      {r.initials}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[11px] font-semibold text-white">{r.person}</div>
+                      <div className="text-[10px] text-gray-600">{r.role_type}</div>
+                    </div>
+                    <div className="flex items-center gap-1.5 flex-shrink-0">
+                      {kpiStatus && (
+                        <span className="h-1.5 w-1.5 rounded-full"
+                          style={{ background: KPI_STATUS_COLOR[kpiStatus as 'red' | 'yellow' | 'green'] }} />
+                      )}
+                      {superior && (
+                        <span className="text-[9px] text-gray-700 font-mono">↑ {superior.person}</span>
+                      )}
                     </div>
                   </div>
-                </div>
-                {/* reports_to chain */}
-                {superior && (
-                  <div className="flex items-center gap-1.5 mt-2 pl-12 text-[10px]">
-                    <span className="text-gray-700 font-mono">reports_to</span>
-                    <span className="text-gray-600">→</span>
-                    <span style={{ color: superior.color }}>{superior.person}</span>
-                  </div>
-                )}
-                {!superior && cmdRole && (
-                  <div className="mt-2 pl-12 text-[10px] text-gray-700 font-mono">◆ Apex — no superior</div>
-                )}
-                <div className="flex flex-wrap gap-1.5 mt-2 pl-12">
-                  {r.permissions.map(p => (
-                    <span key={p} className="text-xs px-2 py-0.5 rounded bg-white/[0.04] text-gray-400 font-mono">{p}</span>
-                  ))}
-                </div>
-              </div>
-              )
-            })}
-          </div>
+                )
+              })}
+            </div>
+          </PanelSection>
         )}
 
-        {/* ── Children ── */}
-        {tab === 'children' && (
-          <div className="space-y-2">
-            {children.map(c => (
-              <div key={c.id}
-                className="flex items-center gap-3 rounded-xl border px-4 py-3"
-                style={{ background: c.color + '08', borderColor: c.color + '25' }}>
-                <span className="text-lg">{c.flag}</span>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold" style={{ color: c.color }}>{c.shortName}</div>
-                  <div className="text-xs text-gray-400 truncate">{c.name}</div>
-                  <div className="text-xs text-gray-600 font-mono mt-0.5">{c.jurisdiction} · {c.type}</div>
-                </div>
-                <span
-                  className="text-xs px-1.5 py-0.5 rounded"
-                  style={{
-                    background: { live: '#10B981', forming: '#F59E0B', planned: '#6B7280' }[c.active_status] + '20',
-                    color: { live: '#10B981', forming: '#F59E0B', planned: '#6B7280' }[c.active_status],
-                  }}
-                >
-                  {c.active_status}
-                </span>
+        {/* 6. DEPENDENCIES */}
+        {(outgoing.length > 0 || incoming.length > 0) && (
+          <PanelSection label="Dependencies">
+            <div className="space-y-1">
+              {outgoing.map(r => {
+                const s = REL_STYLE[r.type]
+                const target = ENTITIES.find(e => e.id === r.to_entity_id)
+                return (
+                  <div key={r.id} className="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-white/[0.04]">
+                    <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: s.stroke }} />
+                    <span className="text-[10px] text-gray-600 w-20 flex-shrink-0">{s.label}</span>
+                    <span className="text-[10px] text-gray-600">→</span>
+                    <span className="text-[11px] font-semibold flex-1" style={{ color: target?.color ?? '#fff' }}>
+                      {target?.shortName}
+                    </span>
+                    <span className="text-[9px] text-gray-700 truncate max-w-[80px]">{r.label}</span>
+                  </div>
+                )
+              })}
+              {incoming.map(r => {
+                const s = REL_STYLE[r.type]
+                const source = ENTITIES.find(e => e.id === r.from_entity_id)
+                return (
+                  <div key={r.id} className="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-white/[0.04] bg-white/[0.005]">
+                    <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: s.stroke }} />
+                    <span className="text-[11px] font-semibold" style={{ color: source?.color ?? '#fff' }}>
+                      {source?.shortName}
+                    </span>
+                    <span className="text-[10px] text-gray-600">→</span>
+                    <span className="text-[10px] text-gray-600 flex-1">{s.label}</span>
+                  </div>
+                )
+              })}
+            </div>
+          </PanelSection>
+        )}
+
+        {/* 7. HISTORY — formation timeline */}
+        <PanelSection label="History">
+          <div className="space-y-1">
+            {[
+              { date: entity.metadata['incorporated'] ?? '—', label: 'Incorporated', done: entity.active_status !== 'planned' },
+              { date: entity.metadata['first_revenue'] ?? '—', label: 'First revenue', done: false },
+              { date: entity.metadata['operational_since'] ?? '—', label: 'Operational', done: entity.active_status === 'live' },
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-2.5 px-3 py-1.5">
+                <span className="h-1.5 w-1.5 rounded-full flex-shrink-0"
+                  style={{ background: item.done ? '#10B981' : '#374151' }} />
+                <span className="text-[10px] text-gray-600 w-28 flex-shrink-0">{item.label}</span>
+                <span className="text-[10px] font-mono text-gray-500">{item.date}</span>
               </div>
             ))}
           </div>
+        </PanelSection>
+
+        {/* 8. TARGET STATE */}
+        <PanelSection label="Target state">
+          <div className="rounded-xl border border-white/[0.06] px-3 py-3">
+            <div className="space-y-2">
+              {[
+                entity.active_status === 'planned'  && { label: 'Incorporated', status: 'pending' },
+                entity.active_status !== 'live'     && { label: 'Operational', status: 'pending' },
+                                                       { label: 'Revenue generating', status: 'target' },
+                                                       { label: 'Intercompany agreements signed', status: 'target' },
+              ].filter(Boolean).map((item: any, i: number) => (
+                <div key={i} className="flex items-center gap-2">
+                  <span className="text-[9px] font-mono px-1.5 py-0.5 rounded"
+                    style={{
+                      background: item.status === 'pending' ? '#F59E0B15' : '#8B5CF615',
+                      color: item.status === 'pending' ? '#F59E0B' : '#8B5CF6',
+                    }}>
+                    {item.status === 'pending' ? 'PENDING' : 'TARGET'}
+                  </span>
+                  <span className="text-[11px] text-gray-400">{item.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </PanelSection>
+
+        {/* Subsidiary list if any */}
+        {children.length > 0 && (
+          <PanelSection label={`Subsidiaries (${children.length})`}>
+            <div className="space-y-1">
+              {children.map(c => {
+                const cs = { live: '#10B981', forming: '#F59E0B', planned: '#6B7280' }[c.active_status]
+                return (
+                  <div key={c.id} className="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-white/[0.04]">
+                    <span className="text-sm">{c.flag}</span>
+                    <span className="text-[11px] font-semibold flex-1" style={{ color: c.color }}>{c.shortName}</span>
+                    <span className="text-[9px] font-mono text-gray-600">{c.jurisdiction}</span>
+                    <span className="h-1.5 w-1.5 rounded-full" style={{ background: cs }} />
+                  </div>
+                )
+              })}
+            </div>
+          </PanelSection>
         )}
       </div>
     </div>
@@ -689,22 +751,6 @@ function Legend({ visibleTypes }: { visibleTypes: RelationshipType[] }) {
         <span className="h-2 w-2 rounded-full bg-[#EF4444] ml-1" />
         <span>Action needed</span>
       </div>
-    </div>
-  )
-}
-
-// ─── Overlay badge ─────────────────────────────────────────────────────────────
-
-function OverlayBadge({ mode }: { mode: OverlayMode }) {
-  const info = OVERLAY_LABELS[mode]
-  if (mode === 'full') return null
-  return (
-    <div
-      className="flex items-center gap-2 text-xs px-3 py-1.5 rounded-full border"
-      style={{ background: info.color + '12', color: info.color, borderColor: info.color + '30' }}
-    >
-      <span>{info.icon}</span>
-      <span className="font-medium">{info.label} active</span>
     </div>
   )
 }
@@ -918,7 +964,9 @@ export function OrgGraph() {
   const [selectedEntity, setSelectedEntity] = useState<Entity | null>(null)
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
   const [showCommandChain, setShowCommandChain] = useState(true)
-  const [selectedCmdId, setSelectedCmdId] = useState<string | null>(null)
+  const [showFlow, setShowFlow]               = useState(true)
+  const [showStress, setShowStress]           = useState(true)
+  const [selectedCmdId, setSelectedCmdId]     = useState<string | null>(null)
 
   // Live incident propagation — drives visual "bleeding" in the graph
   const incidents = useMemo(() => generateIncidents(), [])
@@ -988,39 +1036,78 @@ export function OrgGraph() {
     <div className="flex h-full overflow-hidden">
       {/* ── Graph area ── */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Toolbar */}
-        <div className="flex-shrink-0 flex items-center justify-between gap-4 px-5 py-3 border-b border-white/[0.06] bg-[#080A12]">
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-sm font-bold text-white">Corporate Graph</h1>
-              <span className="text-xs text-gray-600 font-mono">
-                {visibleEntities.length} entities · {visibleRels.length} relations
-              </span>
-            </div>
-            <p className="text-xs text-gray-600 mt-0.5">Wavult Ecosystem — navigational structure map</p>
+        {/* ── Toolbar — precision control bar ── */}
+        <div className="flex-shrink-0 flex items-center justify-between gap-4 px-5 py-2.5 border-b border-white/[0.06] bg-[#07080F]">
+          {/* Left: title + count */}
+          <div className="flex items-center gap-3 min-w-0">
+            <h1 className="text-sm font-bold text-white tracking-tight">Corporate Graph</h1>
+            <span className="text-[10px] text-gray-700 font-mono">
+              {visibleEntities.length}e · {visibleRels.length}r
+            </span>
           </div>
 
-          <div className="flex items-center gap-3 flex-wrap">
-            <OverlayBadge mode={perms.overlayMode} />
-            {/* Command chain toggle */}
+          {/* Right: Viewing Context + 3 overlays */}
+          <div className="flex items-center gap-2">
+            {/* 1. Viewing Context — single dropdown */}
+            <select
+              value={perms.overlayMode}
+              disabled
+              className="text-[10px] bg-[#0D0F1A] border border-white/[0.08] text-gray-400 rounded-lg px-2.5 py-1.5 font-mono cursor-default focus:outline-none appearance-none"
+              title="Viewing context — determined by your role"
+            >
+              <option>👁 {perms.overlayMode === 'full' ? 'Full view' : perms.overlayMode === 'financial' ? 'Financial view' : perms.overlayMode === 'legal' ? 'Legal view' : 'Technical view'}</option>
+            </select>
+
+            {/* Divider */}
+            <div className="w-px h-5 bg-white/[0.06]" />
+
+            {/* 2. Overlay toggle: Command Chain */}
             <button
               onClick={() => setShowCommandChain(p => !p)}
-              className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition-colors"
+              className="text-[10px] px-3 py-1.5 rounded-lg border font-medium transition-all"
               style={showCommandChain
-                ? { background: '#8B5CF618', color: '#8B5CF6', borderColor: '#8B5CF640' }
-                : { background: 'transparent', color: '#6B7280', borderColor: '#ffffff12' }
+                ? { background: '#8B5CF618', color: '#A78BFA', borderColor: '#8B5CF635' }
+                : { background: 'transparent', color: '#4B5563', borderColor: '#ffffff0a' }
               }
             >
-              <span>⬆</span>
-              <span className="font-medium">Command Chain</span>
+              Chain
             </button>
+
+            {/* 3. Overlay toggle: Flow (always-on but can mute) */}
+            <button
+              onClick={() => setShowFlow(p => !p)}
+              className="text-[10px] px-3 py-1.5 rounded-lg border font-medium transition-all"
+              style={showFlow
+                ? { background: '#10B98115', color: '#34D399', borderColor: '#10B98130' }
+                : { background: 'transparent', color: '#4B5563', borderColor: '#ffffff0a' }
+              }
+            >
+              Flow
+            </button>
+
+            {/* 4. Overlay toggle: Stress */}
+            <button
+              onClick={() => setShowStress(p => !p)}
+              className="text-[10px] px-3 py-1.5 rounded-lg border font-medium transition-all"
+              style={showStress
+                ? { background: '#EF444415', color: '#F87171', borderColor: '#EF444430' }
+                : { background: 'transparent', color: '#4B5563', borderColor: '#ffffff0a' }
+              }
+            >
+              Stress
+            </button>
+
+            {/* Clear — only when entity selected */}
             {selectedEntity && (
-              <button
-                onClick={() => setSelectedEntity(null)}
-                className="text-xs text-gray-600 hover:text-gray-300 px-2 py-1 rounded border border-white/[0.06] transition-colors"
-              >
-                Clear selection
-              </button>
+              <>
+                <div className="w-px h-5 bg-white/[0.06]" />
+                <button
+                  onClick={() => setSelectedEntity(null)}
+                  className="text-[10px] text-gray-600 hover:text-gray-400 px-2 py-1.5 transition-colors font-mono"
+                >
+                  ✕ clear
+                </button>
+              </>
             )}
           </div>
         </div>
@@ -1061,7 +1148,8 @@ export function OrgGraph() {
                 positions={positions}
                 opacity={edgeOpacity(rel)}
                 highlighted={edgeHighlighted(rel)}
-                stressed={propagation.primary_failures.includes(rel.from_entity_id) || propagation.cascade_failures.includes(rel.from_entity_id)}
+                stressed={showStress && (propagation.primary_failures.includes(rel.from_entity_id) || propagation.cascade_failures.includes(rel.from_entity_id))}
+                muted={!showFlow}
               />
             ))}
 
@@ -1077,8 +1165,8 @@ export function OrgGraph() {
                   selected={selectedEntity?.id === entity.id}
                   dimmed={dimmedIds.has(entity.id)}
                   expanded={expandedIds.has(entity.id)}
-                  stressed={propagation.primary_failures.includes(entity.id)}
-                  cascadeStressed={propagation.cascade_failures.includes(entity.id)}
+                  stressed={showStress && propagation.primary_failures.includes(entity.id)}
+                  cascadeStressed={showStress && propagation.cascade_failures.includes(entity.id)}
                   onClick={() => handleNodeClick(entity)}
                 />
               )

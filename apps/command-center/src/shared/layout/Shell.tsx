@@ -89,56 +89,46 @@ export function Shell({ children }: ShellProps) {
 
       {/* Main */}
       <main className="flex-1 flex flex-col overflow-hidden">
-        {/* Top bar */}
-        <header className="h-14 flex-shrink-0 border-b border-surface-border flex items-center justify-between px-6 bg-surface-raised">
+        {/* Top bar — single, clean, no duplication */}
+        <header className="h-11 flex-shrink-0 border-b border-surface-border flex items-center justify-between px-6 bg-[#07080F]">
+          {/* System status */}
           <div className="flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full bg-brand-success animate-pulse" />
-            <span className="text-xs text-gray-400">All systems operational</span>
+            <div className="h-1.5 w-1.5 rounded-full bg-brand-success" />
+            <span className="text-[10px] text-gray-700 font-mono">OPERATIONAL</span>
           </div>
-          <div className="flex items-center gap-3 text-sm text-gray-400">
-            {role && (
-              <>
-                {/* Admin: visa vilken roll man tittar som */}
-                {isAdmin && viewAs && (
-                  <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-orange-500/10 text-orange-400 border border-orange-500/20">
-                    👁 Visar: {viewAs.title}
-                  </span>
-                )}
 
-                {/* Admin: rolldropdown */}
-                {isAdmin && (
+          {/* Right: context selector + logout */}
+          <div className="flex items-center gap-2">
+            {role && effectiveRole && (
+              <>
+                {/* Viewing context — admin gets dropdown, others see static badge */}
+                {isAdmin ? (
                   <select
                     value={viewAs?.id ?? ''}
                     onChange={e => {
                       const found = nonAdminRoles.find(r => r.id === e.target.value) ?? null
                       setViewAs(found)
                     }}
-                    className="text-xs bg-surface-overlay border border-surface-border text-gray-300 rounded-lg px-2 py-1 cursor-pointer focus:outline-none focus:border-orange-500/50"
+                    className="text-[10px] bg-[#0D0F1A] border border-white/[0.08] rounded-lg px-2.5 py-1 font-mono cursor-pointer focus:outline-none appearance-none"
+                    style={{ color: viewAs ? viewAs.color : '#6B7280' }}
                   >
-                    <option value="">🔐 Admin — Alla roller</option>
+                    <option value="">🔐 System Admin</option>
                     {nonAdminRoles.map(r => (
-                      <option key={r.id} value={r.id}>
-                        {r.emoji} {r.title}
-                      </option>
+                      <option key={r.id} value={r.id}>{r.emoji} {r.title}</option>
                     ))}
                   </select>
-                )}
-
-                {/* Aktuell roll-badge */}
-                {effectiveRole && (
-                  <span
-                    className="text-xs px-2 py-0.5 rounded-full font-medium"
-                    style={{ background: effectiveRole.color + '18', color: effectiveRole.color, border: `1px solid ${effectiveRole.color}30` }}
-                  >
-                    {effectiveRole.emoji} {isAdmin && !viewAs ? 'System Administrator' : effectiveRole.title}
+                ) : (
+                  <span className="text-[10px] font-mono px-2 py-1 rounded"
+                    style={{ background: effectiveRole.color + '15', color: effectiveRole.color }}>
+                    {effectiveRole.emoji} {effectiveRole.title}
                   </span>
                 )}
 
                 <button
                   onClick={() => { setRole(null); setViewAs(null) }}
-                  className="text-xs text-gray-600 hover:text-gray-300 transition-colors px-2 py-1 rounded border border-surface-border hover:border-gray-500"
+                  className="text-[10px] text-gray-700 hover:text-gray-400 transition-colors font-mono"
                 >
-                  Logga ut
+                  exit
                 </button>
               </>
             )}
