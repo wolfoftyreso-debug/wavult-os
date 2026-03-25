@@ -364,19 +364,23 @@ function NodeCard({
         </g>
       )}
 
-      {/* Role avatars — DiceBear illustrated portraits */}
+      {/* Role avatars — real team photos */}
       {roles.slice(0, 5).map((rm, i) => {
-        const avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(rm.person)}&backgroundColor=transparent`
+        const cmdRole = COMMAND_CHAIN.find(c => c.person === rm.person)
+        const photoUrl = cmdRole?.avatar
+          ?? `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(rm.person)}&backgroundColor=transparent`
+        const clipId = `clip-node-${rm.person.replace(/[\s.]/g, '-')}-${i}`
         return (
           <g key={rm.person} transform={`translate(${13 + i * 22}, 66)`}>
             <circle r={10} fill={rm.color + '22'} stroke={rm.color + '70'} strokeWidth={1.5} />
-            <clipPath id={`clip-node-${rm.person.replace(/\s/g,'-')}`}>
+            <clipPath id={clipId}>
               <circle r={9} />
             </clipPath>
             <image
-              href={avatarUrl}
+              href={photoUrl}
               x={-9} y={-9} width={18} height={18}
-              clipPath={`url(#clip-node-${rm.person.replace(/\s/g,'-')})`}
+              clipPath={`url(#${clipId})`}
+              preserveAspectRatio="xMidYMid slice"
             />
           </g>
         )
@@ -594,14 +598,17 @@ function DrillPanel({
                 return (
                   <div key={r.person} className="flex items-center gap-3 px-3 py-2 rounded-lg border border-white/[0.04]"
                     style={{ background: r.color + '06' }}>
-                    <div className="h-7 w-7 rounded-lg overflow-hidden flex-shrink-0 border"
-                      style={{ borderColor: r.color + '40' }}>
-                      <img
-                        src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(r.person)}&backgroundColor=transparent`}
-                        alt={r.person}
-                        className="w-full h-full"
-                      />
-                    </div>
+                    {(() => {
+                      const cmdR = COMMAND_CHAIN.find(c => c.person === r.person)
+                      const photoUrl = cmdR?.avatar
+                        ?? `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(r.person)}&backgroundColor=transparent`
+                      return (
+                        <div className="h-7 w-7 rounded-lg overflow-hidden flex-shrink-0 border"
+                          style={{ borderColor: r.color + '40' }}>
+                          <img src={photoUrl} alt={r.person} className="w-full h-full object-cover" />
+                        </div>
+                      )
+                    })()}
                     <div className="flex-1 min-w-0">
                       <div className="text-[11px] font-semibold text-white">{r.person}</div>
                       <div className="text-[10px] text-gray-600">{r.role_type}</div>
@@ -844,14 +851,15 @@ function CommandChainNode({
 
       {/* Avatar */}
       <rect x={10} y={14} width={32} height={32} rx={8} fill={role.color} fillOpacity={0.18} />
-      {/* DiceBear avatar in command chain node */}
+      {/* Real team photo in command chain node */}
       <clipPath id={`clip-cmd-${role.id}`}>
         <circle cx={26} cy={26} r={18} />
       </clipPath>
       <image
-        href={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(role.person)}&backgroundColor=transparent`}
+        href={role.avatar ?? `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(role.person)}&backgroundColor=transparent`}
         x={8} y={8} width={36} height={36}
         clipPath={`url(#clip-cmd-${role.id})`}
+        preserveAspectRatio="xMidYMid slice"
       />
 
       {/* Name + title */}

@@ -17,6 +17,7 @@ export interface CommandRole {
   status: CommandStatus
   scope: 'group' | 'operations' | 'function'
   entity_ids: string[]            // entities this role operates across
+  avatar?: string                 // path to photo, relative to /avatars/
 }
 
 export interface CommandKPI {
@@ -34,6 +35,7 @@ export const COMMAND_CHAIN: CommandRole[] = [
   {
     id: 'group-ceo',
     person: 'Erik Svensson',
+    avatar: '/avatars/erik.png',
     initials: 'ES',
     color: '#8B5CF6',
     title: 'Chairman & Group CEO',
@@ -83,6 +85,7 @@ export const COMMAND_CHAIN: CommandRole[] = [
   {
     id: 'cfo',
     person: 'Winston Bjarnemark',
+    avatar: '/avatars/winston.png',
     initials: 'WB',
     color: '#3B82F6',
     title: 'CFO',
@@ -107,6 +110,7 @@ export const COMMAND_CHAIN: CommandRole[] = [
   {
     id: 'cto',
     person: 'Johan Berglund',
+    avatar: '/avatars/johan.png',
     initials: 'JB',
     color: '#06B6D4',
     title: 'Group CTO',
@@ -131,6 +135,7 @@ export const COMMAND_CHAIN: CommandRole[] = [
   {
     id: 'clo',
     person: 'Dennis Bjarnemark',
+    avatar: '/avatars/dennis.png',
     initials: 'DB',
     color: '#F59E0B',
     title: 'Board / Chief Legal',
