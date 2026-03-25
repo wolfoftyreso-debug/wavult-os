@@ -5,6 +5,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './lib/AuthContext'
 import { AvatarProvider } from './lib/AvatarContext'
 import { IdentityProvider } from './core/identity/IdentityContext'
+import { StateProvider } from './core/state/StateContext'
 import { LoginView } from './views/LoginView'
 import { DashboardView } from './views/DashboardView'
 import { EventsView } from './views/EventsView'
@@ -17,6 +18,7 @@ function AuthenticatedApp() {
   return (
     <AvatarProvider>
       <IdentityProvider>
+      <StateProvider>
       <div className="min-h-screen bg-w-bg">
         <div className="max-w-lg mx-auto">
           <Routes>
@@ -30,6 +32,7 @@ function AuthenticatedApp() {
         <TabBar eventCount={6} />
         <AvatarCreator />
       </div>
+      </StateProvider>
       </IdentityProvider>
     </AvatarProvider>
   )
