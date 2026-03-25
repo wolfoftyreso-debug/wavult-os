@@ -25,6 +25,7 @@ const SQL_FILES = [
   '12_iso_roles.sql',         // ISO system roles
   '13_iso_compliance.sql',    // ISO 9001 + ISO 27001 compliance seed
   '31_communication_hub.sql', // Communication hub tables
+  '32_sampling_impartiality.sql', // Sampling plans, impartiality, COI
 ];
 
 async function main() {

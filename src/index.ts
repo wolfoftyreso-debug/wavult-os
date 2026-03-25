@@ -42,6 +42,7 @@ import personnelRouter from "./personnel-api";
 import auditWorkspaceRouter from "./audit-workspace";
 import integrationRouter from "./integrations/integration-api";
 import communicationHubRouter from "./communication-hub";
+import samplingImpartialityRouter from "./sampling-impartiality";
 
 // ---------------------------------------------------------------------------
 // Certified Core imports
@@ -229,6 +230,11 @@ app.use(integrationRouter);
 // Communication Hub — Multi-channel email, Slack, WhatsApp, Telegram, etc.
 // ---------------------------------------------------------------------------
 app.use(communicationHubRouter);
+
+// ---------------------------------------------------------------------------
+// Sampling & Impartiality — Stickprover, opartiskhet, ISO 17020/17025
+// ---------------------------------------------------------------------------
+app.use(samplingImpartialityRouter);
 
 // ---------------------------------------------------------------------------
 // Auth helper for inline routes
