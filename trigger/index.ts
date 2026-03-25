@@ -134,3 +134,11 @@ export {
   commStaleCleanup,
   commBotAccuracyReport,
 } from "./communication-hub";
+
+export {
+  impartialityExpiryCheck,
+  inspectorRotationCheck,
+  coiReviewReminder,
+  samplingSeverityReport,
+  committeeMeetingReminder,
+} from "./sampling-impartiality";
