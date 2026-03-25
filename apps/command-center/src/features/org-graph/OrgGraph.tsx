@@ -7,7 +7,7 @@ import {
 } from './data'
 import { useRole } from '../../shared/auth/RoleContext'
 import { ROLE_PERMISSIONS, OVERLAY_LABELS, GraphPermissions, OverlayMode } from './permissions'
-import { COMMAND_CHAIN, STATUS_COLOR } from './commandChain'
+import { COMMAND_CHAIN, STATUS_COLOR, getDirectReports, getApexRole } from './commandChain'
 
 // ─── Layout constants ──────────────────────────────────────────────────────────
 
@@ -21,6 +21,16 @@ const LAYER_LABEL: Record<number, string> = {
 const CARD_W = 176
 const CARD_H = 96
 const SVG_W = 1120
+
+// ─── Command chain layout (right-side column) ─────────────────────────────────
+// Apex sits at layer 0 y-level, direct reports at layer 1 y-level.
+// Always rendered in a fixed right column — never overlaps entities.
+const CMD_X_START = SVG_W + 40       // starts just past the main graph
+const CMD_NODE_W  = 200
+const CMD_NODE_H  = 90
+const CMD_GAP     = 28               // vertical gap between apex and reports
+const CMD_APEX_Y  = LAYER_Y[0]       // same y as holding layer
+const TOTAL_W     = CMD_X_START + CMD_NODE_W + 32  // full svg width with command column
 
 // ─── Layout engine ─────────────────────────────────────────────────────────────
 
@@ -478,6 +488,19 @@ function Legend({ visibleTypes }: { visibleTypes: RelationshipType[] }) {
         <span className="h-2 w-2 rounded-full bg-[#6B7280] ml-2" />
         <span>Planned</span>
       </div>
+      <div className="flex items-center gap-1.5 ml-4 pl-4 border-l border-white/[0.06]">
+        <svg width={20} height={10}>
+          <line x1={0} y1={5} x2={14} y2={5} stroke="#8B5CF6" strokeWidth={2.5} />
+          <polygon points="12,2 17,5 12,8" fill="#8B5CF6" />
+        </svg>
+        <span style={{ color: '#8B5CF6' }}>reports_to</span>
+        <span className="h-2 w-2 rounded-full bg-[#10B981] ml-2" />
+        <span>On track</span>
+        <span className="h-2 w-2 rounded-full bg-[#F59E0B] ml-1" />
+        <span>Watch</span>
+        <span className="h-2 w-2 rounded-full bg-[#EF4444] ml-1" />
+        <span>Action needed</span>
+      </div>
     </div>
   )
 }
@@ -495,6 +518,173 @@ function OverlayBadge({ mode }: { mode: OverlayMode }) {
       <span>{info.icon}</span>
       <span className="font-medium">{info.label} active</span>
     </div>
+  )
+}
+
+// ─── Command Chain SVG overlay ────────────────────────────────────────────────
+// Rendered as a permanent column to the right of entity nodes.
+// Straight vertical lines — no curves. Always on.
+
+function CommandChainNode({
+  role, x, y, selected, onClick,
+}: {
+  role: typeof COMMAND_CHAIN[0]
+  x: number
+  y: number
+  selected: boolean
+  onClick: () => void
+}) {
+  const sc = STATUS_COLOR[role.status]
+  const reports = COMMAND_CHAIN.find(r => r.id === role.reports_to)
+
+  return (
+    <g transform={`translate(${x}, ${y})`} onClick={onClick} className="cursor-pointer" style={{ filter: selected ? `drop-shadow(0 0 10px ${role.color}80)` : 'none', transition: 'all 0.2s' }}>
+      {/* Card bg */}
+      <rect width={CMD_NODE_W} height={CMD_NODE_H} rx={9}
+        fill={selected ? role.color : '#0C0E1A'}
+        fillOpacity={selected ? 0.14 : 1}
+        stroke={role.color}
+        strokeOpacity={selected ? 0.7 : 0.28}
+        strokeWidth={selected ? 1.5 : 1}
+      />
+      {/* Status bar top */}
+      <rect x={0} y={0} width={CMD_NODE_W} height={3} rx={9} fill={sc} />
+
+      {/* Avatar */}
+      <rect x={10} y={14} width={32} height={32} rx={8} fill={role.color} fillOpacity={0.18} />
+      <text x={26} y={35} textAnchor="middle" fontSize={11} fontWeight="700" fill={role.color}>{role.initials}</text>
+
+      {/* Name */}
+      <text x={50} y={26} fontSize={10} fontWeight="700" fill="#FFFFFF">{role.person}</text>
+      {/* Title */}
+      <text x={50} y={38} fontSize={8.5} fill={role.color}>{role.title}</text>
+
+      {/* reports_to badge */}
+      {reports && (
+        <text x={50} y={52} fontSize={7.5} fill="#4B5563">
+          <tspan fill="#374151" fontFamily="monospace">reports_to</tspan>
+          {` → ${reports.person}`}
+        </text>
+      )}
+      {!reports && (
+        <text x={50} y={52} fontSize={7.5} fill="#4B5563" fontFamily="monospace">◆ Apex</text>
+      )}
+
+      {/* KPI row */}
+      {role.kpis[0] && (() => {
+        const kpi = role.kpis[0]
+        const kColor = kpi.good ? '#10B981' : '#EF4444'
+        return (
+          <>
+            <text x={10} y={72} fontSize={7.5} fill="#4B5563">{kpi.label}</text>
+            <text x={CMD_NODE_W - 10} y={72} textAnchor="end" fontSize={7.5} fontWeight="700" fill={kColor}>
+              {kpi.value} {kpi.trend === 'up' ? '↑' : kpi.trend === 'down' ? '↓' : '–'}
+            </text>
+          </>
+        )
+      })()}
+
+      {/* KPI 2 */}
+      {role.kpis[1] && (() => {
+        const kpi = role.kpis[1]
+        const kColor = kpi.good ? '#10B981' : '#6B7280'
+        return (
+          <>
+            <text x={10} y={83} fontSize={7.5} fill="#374151">{kpi.label}</text>
+            <text x={CMD_NODE_W - 10} y={83} textAnchor="end" fontSize={7.5} fontWeight="600" fill={kColor}>
+              {kpi.value}
+            </text>
+          </>
+        )
+      })()}
+    </g>
+  )
+}
+
+function CommandChainLayer({
+  visible, selectedCmdId, onSelectCmd,
+}: {
+  visible: boolean
+  selectedCmdId: string | null
+  onSelectCmd: (id: string | null) => void
+}) {
+  if (!visible) return null
+
+  const apex    = getApexRole()
+  const reports = getDirectReports(apex.id)
+
+  // Apex: top position (layer 0 y)
+  // Reports: stacked vertically below apex, single column
+  const reportTotalH = reports.length * (CMD_NODE_H + 16)
+
+  return (
+    <g>
+      {/* Column background */}
+      <rect
+        x={CMD_X_START - 16}
+        y={CMD_APEX_Y - 24}
+        width={CMD_NODE_W + 32}
+        height={CMD_APEX_Y + CMD_NODE_H + CMD_GAP + reportTotalH + 48}
+        rx={14}
+        fill="#0A0C18"
+        stroke="#ffffff06"
+        strokeWidth={1}
+      />
+      {/* Column label */}
+      <text x={CMD_X_START} y={CMD_APEX_Y - 10} fontSize={8} fill="#283040" fontWeight="700" letterSpacing="2">
+        COMMAND CHAIN
+      </text>
+
+      {/* Apex */}
+      <CommandChainNode
+        role={apex}
+        x={CMD_X_START}
+        y={CMD_APEX_Y}
+        selected={selectedCmdId === apex.id}
+        onClick={() => onSelectCmd(selectedCmdId === apex.id ? null : apex.id)}
+      />
+
+      {/* Trunk + connectors */}
+      {(() => {
+        const apexCx  = CMD_X_START + CMD_NODE_W / 2
+        const apexBot = CMD_APEX_Y + CMD_NODE_H
+        const busY    = apexBot + CMD_GAP / 2
+        const firstRepY = CMD_APEX_Y + CMD_NODE_H + CMD_GAP
+
+        return (
+          <g>
+            <line x1={apexCx} y1={apexBot} x2={apexCx} y2={busY} stroke="#8B5CF680" strokeWidth={3} />
+            <text x={apexCx + 6} y={busY - 3} fontSize={7} fill="#374151" fontFamily="monospace">reports_to</text>
+            {/* Vertical line down the whole stack */}
+            <line
+              x1={apexCx} y1={busY}
+              x2={apexCx} y2={firstRepY + reportTotalH - 16}
+              stroke="#ffffff10" strokeWidth={1.5}
+            />
+          </g>
+        )
+      })()}
+
+      {/* Direct reports — stacked vertically */}
+      {reports.map((r, i) => {
+        const ry = CMD_APEX_Y + CMD_NODE_H + CMD_GAP + i * (CMD_NODE_H + 16)
+        const cx = CMD_X_START + CMD_NODE_W / 2
+        return (
+          <g key={r.id}>
+            {/* Tick from spine */}
+            <line x1={cx} y1={ry + CMD_NODE_H / 2} x2={CMD_X_START} y2={ry + CMD_NODE_H / 2}
+              stroke="#ffffff10" strokeWidth={1} strokeDasharray="3 3" />
+            <CommandChainNode
+              role={r}
+              x={CMD_X_START}
+              y={ry}
+              selected={selectedCmdId === r.id}
+              onClick={() => onSelectCmd(selectedCmdId === r.id ? null : r.id)}
+            />
+          </g>
+        )
+      })}
+    </g>
   )
 }
 
@@ -525,6 +715,8 @@ export function OrgGraph() {
 
   const [selectedEntity, setSelectedEntity] = useState<Entity | null>(null)
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
+  const [showCommandChain, setShowCommandChain] = useState(true)
+  const [selectedCmdId, setSelectedCmdId] = useState<string | null>(null)
 
   const handleNodeClick = useCallback((entity: Entity) => {
     setSelectedEntity(prev => prev?.id === entity.id ? null : entity)
@@ -579,9 +771,12 @@ export function OrgGraph() {
     return perms.highlightRelTypes.includes(rel.type)
   }, [selectedEntity, perms])
 
-  // SVG height based on visible layers
+  // SVG height — must accommodate command chain column when shown
   const maxLayer = Math.max(...perms.visibleLayers)
-  const svgHeight = LAYER_Y[maxLayer] + CARD_H + 60
+  const reports = getDirectReports(getApexRole().id)
+  const cmdColHeight = CMD_APEX_Y + CMD_NODE_H + CMD_GAP + reports.length * (CMD_NODE_H + 16) + 60
+  const svgHeight = Math.max(LAYER_Y[maxLayer] + CARD_H + 60, showCommandChain ? cmdColHeight : 0)
+  const svgW = showCommandChain ? TOTAL_W : SVG_W
 
   return (
     <div className="flex h-full overflow-hidden">
@@ -601,6 +796,18 @@ export function OrgGraph() {
 
           <div className="flex items-center gap-3 flex-wrap">
             <OverlayBadge mode={perms.overlayMode} />
+            {/* Command chain toggle */}
+            <button
+              onClick={() => setShowCommandChain(p => !p)}
+              className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition-colors"
+              style={showCommandChain
+                ? { background: '#8B5CF618', color: '#8B5CF6', borderColor: '#8B5CF640' }
+                : { background: 'transparent', color: '#6B7280', borderColor: '#ffffff12' }
+              }
+            >
+              <span>⬆</span>
+              <span className="font-medium">Command Chain</span>
+            </button>
             {selectedEntity && (
               <button
                 onClick={() => setSelectedEntity(null)}
@@ -615,8 +822,8 @@ export function OrgGraph() {
         {/* SVG canvas */}
         <div className="flex-1 overflow-auto bg-[#060810]">
           <svg
-            viewBox={`0 0 ${SVG_W} ${svgHeight}`}
-            style={{ minWidth: 700, width: '100%', minHeight: svgHeight }}
+            viewBox={`0 0 ${svgW} ${svgHeight}`}
+            style={{ minWidth: showCommandChain ? TOTAL_W : 700, width: '100%', minHeight: svgHeight }}
           >
             {/* Background grid */}
             <defs>
@@ -624,7 +831,7 @@ export function OrgGraph() {
                 <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff05" strokeWidth="0.5" />
               </pattern>
             </defs>
-            <rect width={SVG_W} height={svgHeight} fill="url(#grid)" />
+            <rect width={svgW} height={svgHeight} fill="url(#grid)" />
 
             {/* Layer bands */}
             {perms.visibleLayers.map(ly => (
@@ -667,6 +874,22 @@ export function OrgGraph() {
                 />
               )
             })}
+
+            {/* ── Command Chain Layer (always right, togglable) ── */}
+            <CommandChainLayer
+              visible={showCommandChain}
+              selectedCmdId={selectedCmdId}
+              onSelectCmd={setSelectedCmdId}
+            />
+
+            {/* Separator line between entity graph and command column */}
+            {showCommandChain && (
+              <line
+                x1={CMD_X_START - 20} y1={20}
+                x2={CMD_X_START - 20} y2={svgHeight - 20}
+                stroke="#ffffff06" strokeWidth={1}
+              />
+            )}
           </svg>
         </div>
 
