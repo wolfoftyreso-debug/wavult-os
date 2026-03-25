@@ -21,7 +21,6 @@ jobs:
   build-and-deploy:
     name: Build & Deploy Frontends
     runs-on: ubuntu-latest
-    environment: production
 
     steps:
       - name: Checkout
@@ -30,17 +29,14 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'npm'
+          node-version: 22
+          cache: npm
 
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
       - name: Build all frontends
         run: npx turbo build
-        env:
-          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -51,99 +47,88 @@ jobs:
 
       - name: Ensure S3 buckets exist
         run: |
+          set +e
           for BUCKET in pixdrift-landing-prod pixdrift-bc-workstation-prod pixdrift-bc-admin-prod pixdrift-bc-crm-prod pixdrift-bc-sales-prod; do
-            if aws s3api head-bucket --bucket "$BUCKET" 2>/dev/null; then
-              echo "OK $BUCKET"
-            else
+            echo "Checking $BUCKET..."
+            aws s3api head-bucket --bucket "$BUCKET" 2>&1
+            if [ $? -ne 0 ]; then
               echo "Creating $BUCKET..."
-              aws s3 mb "s3://$BUCKET" --region eu-north-1
-              if [ "$BUCKET" = "pixdrift-landing-prod" ]; then
-                aws s3 website "s3://$BUCKET" --index-document index.html --error-document index.html
-                aws s3api put-public-access-block --bucket "$BUCKET" \
-                  --public-access-block-configuration BlockPublicAcls=false,IgnorePublicAcls=false,BlockPublicPolicy=false,RestrictPublicBuckets=false
-                aws s3api put-bucket-policy --bucket "$BUCKET" --policy '{"Version":"2012-10-17","Statement":[{"Sid":"PublicRead","Effect":"Allow","Principal":"*","Action":"s3:GetObject","Resource":"arn:aws:s3:::pixdrift-landing-prod/*"}]}'
-              fi
-              echo "Created $BUCKET"
+              aws s3 mb "s3://$BUCKET" --region eu-north-1 2>&1
             fi
           done
+          set -e
+          echo "S3 check complete"
 
-      - name: Deploy landing to S3
+      - name: Deploy landing
         run: |
-          aws s3 sync apps/landing/ s3://pixdrift-landing-prod/ \
-            --delete \
-            --region ${{ env.AWS_REGION }} \
-            --exclude "*.tsx" \
-            --exclude "*.ts" \
-            --exclude "node_modules/*" \
-            --exclude "package.json" \
-            --exclude "package-lock.json" \
-            --exclude "tsconfig.json" \
-            --exclude "vite.config.*" \
-            --cache-control "public,max-age=3600"
-          aws s3 cp apps/landing/index.html s3://pixdrift-landing-prod/index.html \
-            --region ${{ env.AWS_REGION }} \
-            --cache-control "no-cache,no-store,must-revalidate" || true
+          if [ -f "apps/landing/index.html" ]; then
+            aws s3 sync apps/landing/ s3://pixdrift-landing-prod/ \
+              --delete --region ${{ env.AWS_REGION }} \
+              --exclude "*.tsx" --exclude "*.ts" \
+              --exclude "node_modules/*" --exclude "package*.json" \
+              --exclude "tsconfig.json" --exclude "vite.config.*" \
+              --cache-control "public,max-age=3600" 2>&1
+          else
+            echo "No landing index.html found"
+          fi
 
-      - name: Deploy workstation to S3
+      - name: Deploy workstation
         run: |
           if [ -d "apps/workstation/dist" ]; then
             aws s3 sync apps/workstation/dist/ s3://pixdrift-bc-workstation-prod/ \
               --delete --region ${{ env.AWS_REGION }} \
               --cache-control "public,max-age=31536000,immutable" \
-              --exclude "index.html"
+              --exclude "index.html" 2>&1
             aws s3 cp apps/workstation/dist/index.html s3://pixdrift-bc-workstation-prod/index.html \
-              --region ${{ env.AWS_REGION }} \
-              --cache-control "no-cache,no-store,must-revalidate"
+              --region ${{ env.AWS_REGION }} --cache-control "no-cache" 2>&1
           else
-            echo "No dist/ for workstation, skipping"
+            echo "No workstation dist"
           fi
 
-      - name: Deploy admin to S3
+      - name: Deploy admin
         run: |
           if [ -d "apps/admin/dist" ]; then
             aws s3 sync apps/admin/dist/ s3://pixdrift-bc-admin-prod/ \
               --delete --region ${{ env.AWS_REGION }} \
               --cache-control "public,max-age=31536000,immutable" \
-              --exclude "index.html"
+              --exclude "index.html" 2>&1
             aws s3 cp apps/admin/dist/index.html s3://pixdrift-bc-admin-prod/index.html \
-              --region ${{ env.AWS_REGION }} \
-              --cache-control "no-cache,no-store,must-revalidate"
+              --region ${{ env.AWS_REGION }} --cache-control "no-cache" 2>&1
           else
-            echo "No dist/ for admin, skipping"
+            echo "No admin dist"
           fi
 
-      - name: Deploy CRM to S3
+      - name: Deploy CRM
         run: |
           if [ -d "apps/crm/dist" ]; then
             aws s3 sync apps/crm/dist/ s3://pixdrift-bc-crm-prod/ \
               --delete --region ${{ env.AWS_REGION }} \
               --cache-control "public,max-age=31536000,immutable" \
-              --exclude "index.html"
+              --exclude "index.html" 2>&1
             aws s3 cp apps/crm/dist/index.html s3://pixdrift-bc-crm-prod/index.html \
-              --region ${{ env.AWS_REGION }} \
-              --cache-control "no-cache,no-store,must-revalidate"
+              --region ${{ env.AWS_REGION }} --cache-control "no-cache" 2>&1
           else
-            echo "No dist/ for crm, skipping"
+            echo "No crm dist"
           fi
 
-      - name: Deploy sales to S3
+      - name: Deploy sales
         run: |
           if [ -d "apps/sales/dist" ]; then
             aws s3 sync apps/sales/dist/ s3://pixdrift-bc-sales-prod/ \
               --delete --region ${{ env.AWS_REGION }} \
               --cache-control "public,max-age=31536000,immutable" \
-              --exclude "index.html"
+              --exclude "index.html" 2>&1
             aws s3 cp apps/sales/dist/index.html s3://pixdrift-bc-sales-prod/index.html \
-              --region ${{ env.AWS_REGION }} \
-              --cache-control "no-cache,no-store,must-revalidate"
+              --region ${{ env.AWS_REGION }} --cache-control "no-cache" 2>&1
           else
-            echo "No dist/ for sales, skipping"
+            echo "No sales dist"
           fi
 
-      - name: Deploy summary
+      - name: Summary
+        if: always()
         run: |
           echo "=== Frontend Deploy Summary ==="
           for BUCKET in pixdrift-landing-prod pixdrift-bc-workstation-prod pixdrift-bc-admin-prod pixdrift-bc-crm-prod pixdrift-bc-sales-prod; do
-            COUNT=$(aws s3 ls "s3://$BUCKET/" --recursive --region eu-north-1 2>/dev/null | wc -l || echo 0)
+            COUNT=$(aws s3 ls "s3://$BUCKET/" --recursive 2>/dev/null | wc -l || echo 0)
             echo "$BUCKET: $COUNT files"
           done

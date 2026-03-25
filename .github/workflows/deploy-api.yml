@@ -42,49 +42,46 @@ jobs:
         run: |
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
           echo "id=$ACCOUNT_ID" >> $GITHUB_OUTPUT
-          echo "ECR_REGISTRY=${ACCOUNT_ID}.dkr.ecr.eu-north-1.amazonaws.com" >> $GITHUB_OUTPUT
+          ECR="${ACCOUNT_ID}.dkr.ecr.eu-north-1.amazonaws.com"
+          echo "ecr=$ECR" >> $GITHUB_OUTPUT
           echo "AWS Account: $ACCOUNT_ID"
+          echo "ECR Registry: $ECR"
 
       - name: Ensure ECR repository exists
         run: |
           aws ecr describe-repositories --repository-names hypbit/api --region ${{ env.AWS_REGION }} 2>/dev/null || \
             aws ecr create-repository --repository-name hypbit/api --region ${{ env.AWS_REGION }} --image-scanning-configuration scanOnPush=true
-          echo "ECR repository ready"
 
       - name: Login to Amazon ECR
-        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build, tag, and push Docker image
+      - name: Build and push Docker image
         id: build
         run: |
-          ECR="${{ steps.account.outputs.ECR_REGISTRY }}"
+          ECR="${{ steps.account.outputs.ecr }}"
           TAG="${{ github.sha }}"
           IMAGE="${ECR}/hypbit/api:${TAG}"
           LATEST="${ECR}/hypbit/api:latest"
-
           docker build -f Dockerfile -t "$IMAGE" -t "$LATEST" .
           docker push "$IMAGE"
           docker push "$LATEST"
-
           echo "image=$IMAGE" >> $GITHUB_OUTPUT
-          echo "Pushed: $IMAGE"
 
-      - name: Check if ECS cluster exists
-        id: ecs-check
+      - name: Check ECS cluster
+        id: ecs
         run: |
-          if aws ecs describe-clusters --clusters ${{ env.ECS_CLUSTER }} --region ${{ env.AWS_REGION }} --query 'clusters[0].status' --output text 2>/dev/null | grep -q ACTIVE; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-            echo "ECS cluster exists"
+          STATUS=$(aws ecs describe-clusters --clusters ${{ env.ECS_CLUSTER }} --region ${{ env.AWS_REGION }} --query "clusters[0].status" --output text 2>/dev/null || echo "MISSING")
+          if [ "$STATUS" = "ACTIVE" ]; then
+            echo "active=true" >> $GITHUB_OUTPUT
           else
-            echo "exists=false" >> $GITHUB_OUTPUT
-            echo "ECS cluster does not exist yet — image pushed to ECR, run infra-setup workflow to create ECS"
+            echo "active=false" >> $GITHUB_OUTPUT
+            echo "ECS cluster not found. Run infra-setup workflow first."
           fi
 
       - name: Update ECS service
-        if: steps.ecs-check.outputs.exists == 'true'
+        if: steps.ecs.outputs.active == 'true'
         run: |
-          ECR="${{ steps.account.outputs.ECR_REGISTRY }}"
+          ECR="${{ steps.account.outputs.ecr }}"
           TAG="${{ github.sha }}"
           NEW_IMAGE="${ECR}/hypbit/api:${TAG}"
 
@@ -92,41 +89,37 @@ jobs:
             --cluster ${{ env.ECS_CLUSTER }} \
             --services ${{ env.ECS_SERVICE }} \
             --region ${{ env.AWS_REGION }} \
-            --query 'services[0].taskDefinition' \
+            --query "services[0].taskDefinition" \
             --output text)
 
-          NEW_TASK_DEF=$(aws ecs describe-task-definition \
+          aws ecs describe-task-definition \
             --task-definition "$TASK_DEF" \
             --region ${{ env.AWS_REGION }} \
-            --query 'taskDefinition' \
-            --output json | \
-            python3 -c "
-import sys, json
-td = json.load(sys.stdin)
-for c in td.get('containerDefinitions', []):
-    c['image'] = '$NEW_IMAGE'
-for k in ['taskDefinitionArn','revision','status','requiresAttributes','compatibilities','registeredAt','registeredBy']:
-    td.pop(k, None)
-print(json.dumps(td))
-")
+            --query "taskDefinition" \
+            --output json > /tmp/taskdef.json
 
-          NEW_TASK_DEF_ARN=$(aws ecs register-task-definition \
+          jq --arg img "$NEW_IMAGE" \
+            '.containerDefinitions[0].image = $img | del(.taskDefinitionArn, .revision, .status, .requiresAttributes, .compatibilities, .registeredAt, .registeredBy)' \
+            /tmp/taskdef.json > /tmp/newtaskdef.json
+
+          NEW_ARN=$(aws ecs register-task-definition \
             --region ${{ env.AWS_REGION }} \
-            --cli-input-json "$NEW_TASK_DEF" \
-            --query 'taskDefinition.taskDefinitionArn' \
+            --cli-input-json file:///tmp/newtaskdef.json \
+            --query "taskDefinition.taskDefinitionArn" \
             --output text)
 
           aws ecs update-service \
             --cluster ${{ env.ECS_CLUSTER }} \
             --service ${{ env.ECS_SERVICE }} \
-            --task-definition "$NEW_TASK_DEF_ARN" \
+            --task-definition "$NEW_ARN" \
             --region ${{ env.AWS_REGION }}
 
-          echo "ECS service updated"
+          echo "Updated ECS service with $NEW_ARN"
 
-      - name: Deploy summary
+      - name: Summary
+        if: always()
         run: |
           echo "=== Deploy Summary ==="
           echo "Image: ${{ steps.build.outputs.image }}"
-          echo "ECS Cluster exists: ${{ steps.ecs-check.outputs.exists }}"
+          echo "ECS active: ${{ steps.ecs.outputs.active }}"
           echo "SHA: ${{ github.sha }}"
