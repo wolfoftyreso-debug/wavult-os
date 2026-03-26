@@ -1,74 +1,15 @@
-// ─── Finance — Cash Flow, Revenue, Costs, Forecast, Transactions ────────────
-// The financial nerve center. Every number is real or clearly marked projected.
-// No badges, no drama. Just money in, money out, and what to do about it.
+// ─── Finance — Cash, Revenue, Costs, Forecast ──────────────────────────────
+// Apple Settings style. Sections and rows. No charts unless opened.
 
 import { useState } from 'react'
 
-// ─── Data (will connect to Fortnox/bank feeds) ─────────────────────────────
-
-const CASH_POSITION = {
-  accounts: [
-    { name: 'SEB Företagskonto', entity: 'LandveX AB', currency: 'SEK', balance: 184_320, trend: '+12%' },
-    { name: 'Stripe Balance', entity: 'LandveX AB', currency: 'SEK', balance: 23_450, trend: '+8%' },
-    { name: 'Tax Reserve', entity: 'LandveX AB', currency: 'SEK', balance: 45_000, trend: '0%' },
-  ],
-  totalSEK: 252_770,
-}
-
-const REVENUE = {
-  mtd: 67_400,
-  lastMonth: 58_200,
-  runRate: 808_800,
-  growth: '+15.8%',
-  sources: [
-    { name: 'SaaS subscriptions', amount: 42_000, pct: 62 },
-    { name: 'API usage', amount: 15_400, pct: 23 },
-    { name: 'Professional services', amount: 10_000, pct: 15 },
-  ],
-}
-
-const COSTS = {
-  mtd: 52_100,
-  fixed: [
-    { name: 'Salaries + social', amount: 28_000 },
-    { name: 'AWS infrastructure', amount: 8_200 },
-    { name: 'Software licenses', amount: 3_400 },
-    { name: 'Office / coworking', amount: 4_500 },
-  ],
-  variable: [
-    { name: 'Stripe fees (2.9%)', amount: 1_950 },
-    { name: 'Consulting', amount: 4_000 },
-    { name: 'Marketing', amount: 2_050 },
-  ],
-}
-
-const FORECAST = {
-  burnRate: 52_100,
-  netCashflow: 67_400 - 52_100,
-  runway30: Math.round(252_770 / 52_100),
-  runway60: Math.round(252_770 / (52_100 * 0.95)),
-  runway90: Math.round(252_770 / (52_100 * 0.90)),
-  breakeven: 'Jun 2026',
-}
-
-const TRANSACTIONS = [
-  { date: '2026-03-25', desc: 'Stripe payout', amount: 12_400, type: 'in' as const },
-  { date: '2026-03-24', desc: 'AWS invoice', amount: -8_200, type: 'out' as const },
-  { date: '2026-03-23', desc: 'Client: Municipality X', amount: 25_000, type: 'in' as const },
-  { date: '2026-03-22', desc: 'Salary payments', amount: -28_000, type: 'out' as const },
-  { date: '2026-03-21', desc: 'API revenue', amount: 5_200, type: 'in' as const },
-  { date: '2026-03-20', desc: 'Fortnox license', amount: -1_200, type: 'out' as const },
-  { date: '2026-03-19', desc: 'Client: FastighetsAB', amount: 15_000, type: 'in' as const },
-  { date: '2026-03-18', desc: 'Coworking rent', amount: -4_500, type: 'out' as const },
-]
-
-type TabId = 'overview' | 'revenue' | 'costs' | 'forecast' | 'transactions'
+type Tab = 'cashflow' | 'revenue' | 'costs' | 'forecast' | 'transactions'
 
 export function FinanceView() {
-  const [tab, setTab] = useState<TabId>('overview')
+  const [tab, setTab] = useState<Tab>('cashflow')
 
-  const tabs: { id: TabId; label: string }[] = [
-    { id: 'overview', label: 'Cash Flow' },
+  const tabs: { id: Tab; label: string }[] = [
+    { id: 'cashflow', label: 'Cash Flow' },
     { id: 'revenue', label: 'Revenue' },
     { id: 'costs', label: 'Costs' },
     { id: 'forecast', label: 'Forecast' },
@@ -76,200 +17,126 @@ export function FinanceView() {
   ]
 
   return (
-    <div className="h-full overflow-y-auto">
-      {/* Header */}
-      <div className="border-b border-[#1A1C24] px-6 pt-5 pb-0 bg-[#0C0D12]">
-        <h1 className="text-[15px] font-semibold text-[#E0E1E4]">Finance</h1>
-        <p className="text-[12px] text-[#4A4F5C] mt-0.5 mb-4">Cash position, revenue, costs, forecast</p>
-        <div className="flex gap-0 -mb-px">
-          {tabs.map(t => (
-            <button key={t.id} onClick={() => setTab(t.id)}
-              className="text-[12px] pb-2.5 mr-5 border-b-2 transition-colors"
-              style={{ color: tab === t.id ? '#E0E1E4' : '#4A4F5C', borderColor: tab === t.id ? '#4A7A9B' : 'transparent', fontWeight: tab === t.id ? 600 : 400 }}>
-              {t.label}
-            </button>
-          ))}
-        </div>
-      </div>
+    <div className="max-w-2xl mx-auto py-6 px-4">
+      <h1 className="text-[28px] font-bold text-[#1C1C1E] mb-2">Finance</h1>
 
-      {/* Content */}
-      <div className="p-6 max-w-5xl">
-        {tab === 'overview' && <CashFlowTab />}
-        {tab === 'revenue' && <RevenueTab />}
-        {tab === 'costs' && <CostsTab />}
-        {tab === 'forecast' && <ForecastTab />}
-        {tab === 'transactions' && <TransactionsTab />}
-      </div>
-    </div>
-  )
-}
-
-function CashFlowTab() {
-  return (
-    <div className="space-y-6">
-      {/* Total cash */}
-      <div className="rounded-lg border border-[#1A1C24] bg-[#0E0F14] px-5 py-4">
-        <div className="text-[12px] text-[#4A4F5C]">Total cash position</div>
-        <div className="text-[28px] font-semibold text-[#E0E1E4] font-mono mt-1">
-          {CASH_POSITION.totalSEK.toLocaleString('sv-SE')} <span className="text-[14px] text-[#4A4F5C]">SEK</span>
-        </div>
-        <div className="text-[12px] text-[#4A4F5C] mt-1">
-          Net this month: <span className={FORECAST.netCashflow >= 0 ? 'text-[#4A7A5B]' : 'text-[#B04040]'}>{FORECAST.netCashflow >= 0 ? '+' : ''}{FORECAST.netCashflow.toLocaleString('sv-SE')} SEK</span>
-        </div>
-      </div>
-
-      {/* Accounts */}
-      <div>
-        <h2 className="text-[12px] text-[#4A4F5C] font-medium mb-2">Accounts</h2>
-        <div className="space-y-1.5">
-          {CASH_POSITION.accounts.map(acc => (
-            <div key={acc.name} className="flex items-center justify-between rounded-lg border border-[#1A1C24] bg-[#0E0F14] px-4 py-3">
-              <div>
-                <div className="text-[13px] text-[#E0E1E4]">{acc.name}</div>
-                <div className="text-[11px] text-[#3D4452]">{acc.entity}</div>
-              </div>
-              <div className="text-right">
-                <div className="text-[14px] font-mono text-[#E0E1E4]">{acc.balance.toLocaleString('sv-SE')}</div>
-                <div className="text-[11px] text-[#4A4F5C]">{acc.currency}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function RevenueTab() {
-  return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-3 gap-3">
-        <div className="rounded-lg border border-[#1A1C24] bg-[#0E0F14] px-4 py-3">
-          <div className="text-[11px] text-[#4A4F5C]">MTD Revenue</div>
-          <div className="text-[20px] font-semibold text-[#E0E1E4] font-mono">{REVENUE.mtd.toLocaleString('sv-SE')}</div>
-          <div className="text-[11px] text-[#4A7A5B]">{REVENUE.growth} vs last month</div>
-        </div>
-        <div className="rounded-lg border border-[#1A1C24] bg-[#0E0F14] px-4 py-3">
-          <div className="text-[11px] text-[#4A4F5C]">Last Month</div>
-          <div className="text-[20px] font-semibold text-[#E0E1E4] font-mono">{REVENUE.lastMonth.toLocaleString('sv-SE')}</div>
-        </div>
-        <div className="rounded-lg border border-[#1A1C24] bg-[#0E0F14] px-4 py-3">
-          <div className="text-[11px] text-[#4A4F5C]">Annual Run Rate</div>
-          <div className="text-[20px] font-semibold text-[#E0E1E4] font-mono">{REVENUE.runRate.toLocaleString('sv-SE')}</div>
-        </div>
-      </div>
-
-      <div>
-        <h2 className="text-[12px] text-[#4A4F5C] font-medium mb-2">Revenue sources</h2>
-        <div className="space-y-1.5">
-          {REVENUE.sources.map(s => (
-            <div key={s.name} className="rounded-lg border border-[#1A1C24] bg-[#0E0F14] px-4 py-3">
-              <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[13px] text-[#E0E1E4]">{s.name}</span>
-                <span className="text-[13px] font-mono text-[#E0E1E4]">{s.amount.toLocaleString('sv-SE')} SEK</span>
-              </div>
-              <div className="h-1.5 rounded-full bg-[#1A1C24] overflow-hidden">
-                <div className="h-full rounded-full bg-[#4A7A9B]" style={{ width: `${s.pct}%` }} />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function CostsTab() {
-  return (
-    <div className="space-y-6">
-      <div className="rounded-lg border border-[#1A1C24] bg-[#0E0F14] px-5 py-4">
-        <div className="text-[12px] text-[#4A4F5C]">Total costs MTD</div>
-        <div className="text-[24px] font-semibold text-[#E0E1E4] font-mono">{COSTS.mtd.toLocaleString('sv-SE')} SEK</div>
-      </div>
-
-      <div>
-        <h2 className="text-[12px] text-[#4A4F5C] font-medium mb-2">Fixed costs</h2>
-        <div className="space-y-1">
-          {COSTS.fixed.map(c => (
-            <div key={c.name} className="flex items-center justify-between rounded-lg border border-[#1A1C24] bg-[#0E0F14] px-4 py-2.5">
-              <span className="text-[13px] text-[#9CA3AF]">{c.name}</span>
-              <span className="text-[13px] font-mono text-[#E0E1E4]">{c.amount.toLocaleString('sv-SE')}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <h2 className="text-[12px] text-[#4A4F5C] font-medium mb-2">Variable costs</h2>
-        <div className="space-y-1">
-          {COSTS.variable.map(c => (
-            <div key={c.name} className="flex items-center justify-between rounded-lg border border-[#1A1C24] bg-[#0E0F14] px-4 py-2.5">
-              <span className="text-[13px] text-[#9CA3AF]">{c.name}</span>
-              <span className="text-[13px] font-mono text-[#E0E1E4]">{c.amount.toLocaleString('sv-SE')}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function ForecastTab() {
-  return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-3 gap-3">
-        <div className="rounded-lg border border-[#1A1C24] bg-[#0E0F14] px-4 py-3">
-          <div className="text-[11px] text-[#4A4F5C]">Monthly burn</div>
-          <div className="text-[20px] font-semibold text-[#E0E1E4] font-mono">{FORECAST.burnRate.toLocaleString('sv-SE')}</div>
-        </div>
-        <div className="rounded-lg border border-[#1A1C24] bg-[#0E0F14] px-4 py-3">
-          <div className="text-[11px] text-[#4A4F5C]">Net cashflow / mo</div>
-          <div className="text-[20px] font-semibold font-mono" style={{ color: FORECAST.netCashflow >= 0 ? '#4A7A5B' : '#B04040' }}>
-            {FORECAST.netCashflow >= 0 ? '+' : ''}{FORECAST.netCashflow.toLocaleString('sv-SE')}
-          </div>
-        </div>
-        <div className="rounded-lg border border-[#1A1C24] bg-[#0E0F14] px-4 py-3">
-          <div className="text-[11px] text-[#4A4F5C]">Breakeven est.</div>
-          <div className="text-[20px] font-semibold text-[#E0E1E4]">{FORECAST.breakeven}</div>
-        </div>
-      </div>
-
-      <div>
-        <h2 className="text-[12px] text-[#4A4F5C] font-medium mb-2">Runway</h2>
-        <div className="grid grid-cols-3 gap-3">
-          {[
-            { label: '30 days', months: FORECAST.runway30 },
-            { label: '60 days', months: FORECAST.runway60 },
-            { label: '90 days', months: FORECAST.runway90 },
-          ].map(r => (
-            <div key={r.label} className="rounded-lg border border-[#1A1C24] bg-[#0E0F14] px-4 py-3">
-              <div className="text-[11px] text-[#4A4F5C]">Runway ({r.label} avg)</div>
-              <div className="text-[24px] font-semibold text-[#E0E1E4] font-mono">{r.months}</div>
-              <div className="text-[11px] text-[#4A4F5C]">months</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function TransactionsTab() {
-  return (
-    <div>
-      <div className="space-y-1">
-        {TRANSACTIONS.map((tx, i) => (
-          <div key={i} className="flex items-center justify-between rounded-lg border border-[#1A1C24] bg-[#0E0F14] px-4 py-2.5">
-            <div className="flex items-center gap-3">
-              <span className="text-[11px] text-[#3D4452] font-mono w-20">{tx.date}</span>
-              <span className="text-[13px] text-[#9CA3AF]">{tx.desc}</span>
-            </div>
-            <span className="text-[13px] font-mono" style={{ color: tx.type === 'in' ? '#4A7A5B' : '#9CA3AF' }}>
-              {tx.type === 'in' ? '+' : ''}{tx.amount.toLocaleString('sv-SE')}
-            </span>
-          </div>
+      {/* Tab selector */}
+      <div className="flex bg-[#E5E5EA] rounded-lg p-0.5 mb-6">
+        {tabs.map(t => (
+          <button key={t.id} onClick={() => setTab(t.id)}
+            className="flex-1 text-[13px] py-1.5 rounded-md transition-all"
+            style={{
+              background: tab === t.id ? '#FFFFFF' : 'transparent',
+              color: tab === t.id ? '#1C1C1E' : '#8E8E93',
+              fontWeight: tab === t.id ? 600 : 400,
+              boxShadow: tab === t.id ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+            }}>
+            {t.label}
+          </button>
         ))}
       </div>
+
+      {tab === 'cashflow' && (
+        <>
+          <Section title="Cash position">
+            <Row label="Total" value="252 770 SEK" bold />
+            <Row label="SEB Foretagskonto" value="184 320 SEK" detail="LandveX AB" />
+            <Row label="Stripe balance" value="23 450 SEK" detail="Pending payout" />
+            <Row label="Tax reserve" value="45 000 SEK" detail="Set aside" />
+          </Section>
+          <Section title="This month">
+            <Row label="Revenue" value="+67 400 SEK" valueColor="#34C759" />
+            <Row label="Costs" value="-52 100 SEK" valueColor="#FF3B30" />
+            <Row label="Net" value="+15 300 SEK" valueColor="#34C759" bold />
+          </Section>
+        </>
+      )}
+
+      {tab === 'revenue' && (
+        <>
+          <Section title="Month to date">
+            <Row label="Total revenue" value="67 400 SEK" bold />
+            <Row label="Last month" value="58 200 SEK" />
+            <Row label="Growth" value="+15.8%" valueColor="#34C759" />
+            <Row label="Annual run rate" value="808 800 SEK" />
+          </Section>
+          <Section title="Revenue sources">
+            <Row label="SaaS subscriptions" value="42 000 SEK" detail="62%" />
+            <Row label="API usage" value="15 400 SEK" detail="23%" />
+            <Row label="Professional services" value="10 000 SEK" detail="15%" />
+          </Section>
+        </>
+      )}
+
+      {tab === 'costs' && (
+        <>
+          <Section title="Total">
+            <Row label="Monthly costs" value="52 100 SEK" bold />
+          </Section>
+          <Section title="Fixed costs">
+            <Row label="Salaries + social" value="28 000 SEK" />
+            <Row label="AWS infrastructure" value="8 200 SEK" />
+            <Row label="Office / coworking" value="4 500 SEK" />
+            <Row label="Software licenses" value="3 400 SEK" />
+          </Section>
+          <Section title="Variable costs">
+            <Row label="Consulting" value="4 000 SEK" />
+            <Row label="Marketing" value="2 050 SEK" />
+            <Row label="Stripe fees" value="1 950 SEK" detail="2.9% of volume" />
+          </Section>
+        </>
+      )}
+
+      {tab === 'forecast' && (
+        <>
+          <Section title="Cash forecast">
+            <Row label="Monthly burn" value="52 100 SEK" />
+            <Row label="Net cashflow" value="+15 300 SEK/mo" valueColor="#34C759" />
+            <Row label="Breakeven estimate" value="Jun 2026" />
+          </Section>
+          <Section title="Runway">
+            <Row label="At current burn" value="4.9 months" />
+            <Row label="If burn drops 10%" value="5.5 months" />
+            <Row label="If revenue grows 20%" value="7.2 months" />
+          </Section>
+        </>
+      )}
+
+      {tab === 'transactions' && (
+        <Section title="Recent">
+          <Row label="Stripe payout" value="+12 400 SEK" valueColor="#34C759" detail="Mar 25" />
+          <Row label="AWS invoice" value="-8 200 SEK" detail="Mar 24" />
+          <Row label="Client: Municipality X" value="+25 000 SEK" valueColor="#34C759" detail="Mar 23" />
+          <Row label="Salary payments" value="-28 000 SEK" detail="Mar 22" />
+          <Row label="API revenue" value="+5 200 SEK" valueColor="#34C759" detail="Mar 21" />
+          <Row label="Fortnox license" value="-1 200 SEK" detail="Mar 20" />
+          <Row label="Client: FastighetsAB" value="+15 000 SEK" valueColor="#34C759" detail="Mar 19" />
+          <Row label="Coworking rent" value="-4 500 SEK" detail="Mar 18" />
+        </Section>
+      )}
     </div>
+  )
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="mb-6">
+      <div className="px-4 mb-1"><span className="text-[13px] text-[#8E8E93] uppercase">{title}</span></div>
+      <div className="bg-white rounded-xl overflow-hidden">{children}</div>
+    </div>
+  )
+}
+
+function Row({ label, value, detail, valueColor, bold, onClick }: {
+  label: string; value: string; detail?: string; valueColor?: string; bold?: boolean; onClick?: () => void
+}) {
+  return (
+    <button onClick={onClick} className="w-full flex items-center px-4 py-[11px] border-b border-[#E5E5EA] last:border-b-0 text-left hover:bg-[#F2F2F7] transition-colors">
+      <div className="flex-1 min-w-0">
+        <div className="text-[15px] text-[#1C1C1E]" style={{ fontWeight: bold ? 600 : 400 }}>{label}</div>
+        {detail && <div className="text-[13px] text-[#8E8E93] mt-0.5">{detail}</div>}
+      </div>
+      <span className="text-[15px] flex-shrink-0 ml-3" style={{ color: valueColor ?? '#8E8E93', fontWeight: bold ? 600 : 400 }}>{value}</span>
+    </button>
   )
 }

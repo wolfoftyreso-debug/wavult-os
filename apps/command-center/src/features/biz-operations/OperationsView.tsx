@@ -1,166 +1,140 @@
-// ─── Operations — Active Work, Issues, Capacity ────────────────────────────
-// Replaces: Incident Center, Tasks, Command Chain.
-// Every item answers: what, who, when, and what's it worth in SEK.
+// ─── Operations — Work, Problems, Capacity ──────────────────────────────────
+// Apple Settings style. Tap row to see detail.
 
 import { useState } from 'react'
 
-// ─── Data ───────────────────────────────────────────────────────────────────
+type Tab = 'work' | 'problems' | 'capacity'
 
-type WorkStatus = 'active' | 'blocked' | 'queued' | 'done'
-type IssuePriority = 'high' | 'medium' | 'low'
+interface WorkItem { title: string; owner: string; status: string; deadline: string; detail: string }
+interface Problem { problem: string; impact: string; impactSEK: string; owner: string; next: string; deadline: string }
+interface Person { name: string; role: string; utilization: number; items: number }
 
-interface WorkItem {
-  id: string
-  title: string
-  owner: string
-  status: WorkStatus
-  deadline: string
-  impact: string
-}
-
-interface Issue {
-  id: string
-  problem: string
-  impact: string
-  impactSEK: number | null
-  owner: string
-  nextAction: string
-  deadline: string
-  priority: IssuePriority
-}
-
-interface CapacityPerson {
-  name: string
-  role: string
-  utilization: number
-  activeItems: number
-}
-
-const WORK_ITEMS: WorkItem[] = [
-  { id: 'w1', title: 'LandveX beta launch — SE market', owner: 'Erik', status: 'active', deadline: '2026-04-15', impact: 'First paying customers' },
-  { id: 'w2', title: 'Stripe US entity setup', owner: 'Winston', status: 'blocked', deadline: '2026-04-30', impact: 'US revenue blocked until EIN' },
-  { id: 'w3', title: 'QuiXzoom MVP — image capture pipeline', owner: 'Johan', status: 'active', deadline: '2026-05-01', impact: 'Core product for task engine' },
-  { id: 'w4', title: 'Dubai FZCO registration', owner: 'Dennis', status: 'active', deadline: '2026-06-01', impact: 'Holding structure' },
-  { id: 'w5', title: 'Fortnox integration (accounting sync)', owner: 'Johan', status: 'queued', deadline: '2026-05-15', impact: 'Live finance data' },
-  { id: 'w6', title: 'Customer onboarding flow', owner: 'Leon', status: 'queued', deadline: '2026-04-30', impact: 'Conversion rate' },
+const WORK: WorkItem[] = [
+  { title: 'LandveX beta launch', owner: 'Erik', status: 'Active', deadline: 'Apr 15', detail: 'First paying customers' },
+  { title: 'QuiXzoom MVP', owner: 'Johan', status: 'Active', deadline: 'May 1', detail: 'Image capture pipeline' },
+  { title: 'Dubai FZCO registration', owner: 'Dennis', status: 'Active', deadline: 'Jun 1', detail: 'Holding structure' },
+  { title: 'Stripe US entity setup', owner: 'Winston', status: 'Blocked', deadline: 'Apr 30', detail: 'Needs EIN first' },
+  { title: 'Fortnox integration', owner: 'Johan', status: 'Queued', deadline: 'May 15', detail: 'Live finance data' },
+  { title: 'Customer onboarding flow', owner: 'Leon', status: 'Queued', deadline: 'Apr 30', detail: 'Conversion rate' },
 ]
 
-const ISSUES: Issue[] = [
-  { id: 'i1', problem: 'No revenue from US market', impact: '0 SEK inflow from US', impactSEK: 0, owner: 'Erik', nextAction: 'Complete EIN + bank setup', deadline: '2026-04-30', priority: 'high' },
-  { id: 'i2', problem: 'No GTM launched for LandveX', impact: 'Zero paying customers', impactSEK: null, owner: 'Erik', nextAction: 'Launch beta to 3 municipalities', deadline: '2026-04-15', priority: 'high' },
-  { id: 'i3', problem: 'Transfer pricing docs missing', impact: 'Royalty structure at risk', impactSEK: null, owner: 'Dennis', nextAction: 'Engage TP advisor', deadline: '2026-Q3', priority: 'medium' },
+const PROBLEMS: Problem[] = [
+  { problem: 'No revenue from US market', impact: '0 SEK inflow from US', impactSEK: '570 000 SEK at risk', owner: 'Erik', next: 'Complete EIN + bank setup', deadline: 'Apr 30' },
+  { problem: 'No paying customers', impact: 'All revenue is projected', impactSEK: '180 000 SEK first deal', owner: 'Erik', next: 'Launch beta to 3 municipalities', deadline: 'Apr 15' },
+  { problem: 'Transfer pricing docs missing', impact: 'Royalty structure at legal risk', impactSEK: 'Holding structure at risk', owner: 'Dennis', next: 'Engage TP advisory firm', deadline: 'Q3' },
 ]
 
-const CAPACITY: CapacityPerson[] = [
-  { name: 'Erik Svensson', role: 'CEO', utilization: 95, activeItems: 4 },
-  { name: 'Leon Russo De Cerame', role: 'COO', utilization: 70, activeItems: 2 },
-  { name: 'Winston Bjarnemark', role: 'CFO', utilization: 60, activeItems: 2 },
-  { name: 'Dennis Bjarnemark', role: 'Legal', utilization: 50, activeItems: 2 },
-  { name: 'Johan Berglund', role: 'CTO', utilization: 85, activeItems: 3 },
+const CAPACITY: Person[] = [
+  { name: 'Erik Svensson', role: 'CEO', utilization: 95, items: 4 },
+  { name: 'Johan Berglund', role: 'CTO', utilization: 85, items: 3 },
+  { name: 'Leon Russo De Cerame', role: 'COO', utilization: 70, items: 2 },
+  { name: 'Winston Bjarnemark', role: 'CFO', utilization: 60, items: 2 },
+  { name: 'Dennis Bjarnemark', role: 'Legal', utilization: 50, items: 2 },
 ]
-
-const STATUS_STYLE: Record<WorkStatus, { bg: string; text: string }> = {
-  active: { bg: '#1A2A1E', text: '#4A7A5B' },
-  blocked: { bg: '#2A1A1A', text: '#B04040' },
-  queued: { bg: '#1A1C24', text: '#6B7280' },
-  done: { bg: '#1A1C24', text: '#3D4452' },
-}
-
-const PRIORITY_STYLE: Record<IssuePriority, { bg: string; text: string }> = {
-  high: { bg: '#2A1A1A', text: '#B04040' },
-  medium: { bg: '#2A2418', text: '#9A7A30' },
-  low: { bg: '#1A1C24', text: '#6B7280' },
-}
-
-type TabId = 'work' | 'issues' | 'capacity'
 
 export function OperationsView() {
-  const [tab, setTab] = useState<TabId>('work')
+  const [tab, setTab] = useState<Tab>('work')
+  const [expandedIdx, setExpandedIdx] = useState<number | null>(null)
 
-  const tabs: { id: TabId; label: string; count?: number }[] = [
-    { id: 'work', label: 'Active Work', count: WORK_ITEMS.filter(w => w.status !== 'done').length },
-    { id: 'issues', label: 'Issues', count: ISSUES.length },
-    { id: 'capacity', label: 'Capacity' },
+  const tabs: { id: Tab; label: string; count: number }[] = [
+    { id: 'work', label: 'Active Work', count: WORK.filter(w => w.status !== 'Done').length },
+    { id: 'problems', label: 'Problems', count: PROBLEMS.length },
+    { id: 'capacity', label: 'Capacity', count: CAPACITY.length },
   ]
 
   return (
-    <div className="h-full overflow-y-auto">
-      <div className="border-b border-[#1A1C24] px-6 pt-5 pb-0 bg-[#0C0D12]">
-        <h1 className="text-[15px] font-semibold text-[#E0E1E4]">Operations</h1>
-        <p className="text-[12px] text-[#4A4F5C] mt-0.5 mb-4">Active work, issues, team capacity</p>
-        <div className="flex gap-0 -mb-px">
-          {tabs.map(t => (
-            <button key={t.id} onClick={() => setTab(t.id)}
-              className="text-[12px] pb-2.5 mr-5 border-b-2 transition-colors flex items-center gap-1.5"
-              style={{ color: tab === t.id ? '#E0E1E4' : '#4A4F5C', borderColor: tab === t.id ? '#4A7A9B' : 'transparent', fontWeight: tab === t.id ? 600 : 400 }}>
-              {t.label}
-              {t.count !== undefined && <span className="text-[10px] text-[#4A4F5C] font-mono">{t.count}</span>}
-            </button>
+    <div className="max-w-2xl mx-auto py-6 px-4">
+      <h1 className="text-[28px] font-bold text-[#1C1C1E] mb-2">Operations</h1>
+
+      <div className="flex bg-[#E5E5EA] rounded-lg p-0.5 mb-6">
+        {tabs.map(t => (
+          <button key={t.id} onClick={() => { setTab(t.id); setExpandedIdx(null) }}
+            className="flex-1 text-[13px] py-1.5 rounded-md transition-all"
+            style={{
+              background: tab === t.id ? '#FFFFFF' : 'transparent',
+              color: tab === t.id ? '#1C1C1E' : '#8E8E93',
+              fontWeight: tab === t.id ? 600 : 400,
+              boxShadow: tab === t.id ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+            }}>
+            {t.label} ({t.count})
+          </button>
+        ))}
+      </div>
+
+      {tab === 'work' && (
+        <div className="bg-white rounded-xl overflow-hidden">
+          {WORK.map((w, i) => {
+            const isBlocked = w.status === 'Blocked'
+            return (
+              <button key={i} onClick={() => setExpandedIdx(expandedIdx === i ? null : i)}
+                className="w-full text-left px-4 py-[11px] border-b border-[#E5E5EA] last:border-b-0 hover:bg-[#F2F2F7] transition-colors">
+                <div className="flex items-center">
+                  <div className="flex-1">
+                    <div className="text-[15px] text-[#1C1C1E]">{w.title}</div>
+                    <div className="text-[13px] text-[#8E8E93] mt-0.5">{w.detail}</div>
+                  </div>
+                  <div className="text-right ml-3 flex-shrink-0">
+                    <div className="text-[14px]" style={{ color: isBlocked ? '#FF3B30' : '#8E8E93' }}>{w.status}</div>
+                    <div className="text-[12px] text-[#C7C7CC]">{w.owner} — {w.deadline}</div>
+                  </div>
+                </div>
+                {expandedIdx === i && (
+                  <div className="mt-3 pt-3 border-t border-[#E5E5EA] text-[13px] text-[#3C3C43]">
+                    <div><span className="text-[#8E8E93]">Owner:</span> {w.owner}</div>
+                    <div><span className="text-[#8E8E93]">Deadline:</span> {w.deadline}</div>
+                    <div><span className="text-[#8E8E93]">Impact:</span> {w.detail}</div>
+                  </div>
+                )}
+              </button>
+            )
+          })}
+        </div>
+      )}
+
+      {tab === 'problems' && (
+        <div className="space-y-3">
+          {PROBLEMS.map((p, i) => (
+            <div key={i} className="bg-white rounded-xl overflow-hidden">
+              <button onClick={() => setExpandedIdx(expandedIdx === i ? null : i)}
+                className="w-full text-left px-4 py-[11px] hover:bg-[#F2F2F7] transition-colors">
+                <div className="flex items-center">
+                  <div className="flex-1">
+                    <div className="text-[15px] text-[#1C1C1E]">{p.problem}</div>
+                    <div className="text-[13px] text-[#8E8E93] mt-0.5">{p.impact}</div>
+                  </div>
+                  <span className="text-[14px] text-[#C7C7CC] ml-3">&#8250;</span>
+                </div>
+              </button>
+              {expandedIdx === i && (
+                <div className="px-4 pb-3 pt-1 border-t border-[#E5E5EA]">
+                  <div className="space-y-2 text-[14px]">
+                    <div className="flex justify-between"><span className="text-[#8E8E93]">Impact</span><span className="text-[#FF3B30]">{p.impactSEK}</span></div>
+                    <div className="flex justify-between"><span className="text-[#8E8E93]">Owner</span><span className="text-[#1C1C1E]">{p.owner}</span></div>
+                    <div className="flex justify-between"><span className="text-[#8E8E93]">Next action</span><span className="text-[#1C1C1E]">{p.next}</span></div>
+                    <div className="flex justify-between"><span className="text-[#8E8E93]">Deadline</span><span className="text-[#1C1C1E]">{p.deadline}</span></div>
+                  </div>
+                </div>
+              )}
+            </div>
           ))}
         </div>
-      </div>
+      )}
 
-      <div className="p-6 max-w-5xl">
-        {tab === 'work' && (
-          <div className="space-y-1.5">
-            {WORK_ITEMS.map(w => {
-              const s = STATUS_STYLE[w.status]
-              return (
-                <div key={w.id} className="flex items-center gap-3 rounded-lg border border-[#1A1C24] px-4 py-3" style={{ background: '#0E0F14' }}>
-                  <span className="text-[11px] px-2 py-0.5 rounded font-mono" style={{ background: s.bg, color: s.text }}>{w.status}</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-[13px] text-[#E0E1E4]">{w.title}</div>
-                    <div className="text-[11px] text-[#3D4452] mt-0.5">{w.impact}</div>
-                  </div>
-                  <span className="text-[12px] text-[#6B7280]">{w.owner}</span>
-                  <span className="text-[11px] text-[#3D4452] font-mono">{w.deadline}</span>
-                </div>
-              )
-            })}
-          </div>
-        )}
-
-        {tab === 'issues' && (
-          <div className="space-y-2">
-            {ISSUES.map(issue => {
-              const p = PRIORITY_STYLE[issue.priority]
-              return (
-                <div key={issue.id} className="rounded-lg border border-[#1A1C24] bg-[#0E0F14] px-4 py-3">
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-[11px] px-2 py-0.5 rounded font-mono" style={{ background: p.bg, color: p.text }}>{issue.priority}</span>
-                    <span className="text-[13px] font-medium text-[#E0E1E4]">{issue.problem}</span>
-                  </div>
-                  <div className="grid grid-cols-4 gap-3 text-[12px]">
-                    <div><span className="text-[#3D4452]">Impact:</span> <span className="text-[#9CA3AF]">{issue.impact}</span></div>
-                    <div><span className="text-[#3D4452]">Owner:</span> <span className="text-[#9CA3AF]">{issue.owner}</span></div>
-                    <div><span className="text-[#3D4452]">Next:</span> <span className="text-[#9CA3AF]">{issue.nextAction}</span></div>
-                    <div><span className="text-[#3D4452]">Deadline:</span> <span className="text-[#9CA3AF] font-mono">{issue.deadline}</span></div>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        )}
-
-        {tab === 'capacity' && (
-          <div className="space-y-1.5">
-            {CAPACITY.map(p => (
-              <div key={p.name} className="flex items-center gap-3 rounded-lg border border-[#1A1C24] bg-[#0E0F14] px-4 py-3">
-                <div className="flex-1">
-                  <div className="text-[13px] text-[#E0E1E4]">{p.name}</div>
-                  <div className="text-[11px] text-[#3D4452]">{p.role} — {p.activeItems} active items</div>
-                </div>
-                <div className="w-32">
-                  <div className="h-1.5 rounded-full bg-[#1A1C24] overflow-hidden">
-                    <div className="h-full rounded-full" style={{ width: `${p.utilization}%`, background: p.utilization > 85 ? '#B04040' : p.utilization > 60 ? '#9A7A30' : '#4A7A5B' }} />
-                  </div>
-                  <div className="text-[10px] text-[#4A4F5C] font-mono mt-0.5 text-right">{p.utilization}%</div>
-                </div>
+      {tab === 'capacity' && (
+        <div className="bg-white rounded-xl overflow-hidden">
+          {CAPACITY.map((p, i) => (
+            <div key={i} className="flex items-center px-4 py-[11px] border-b border-[#E5E5EA] last:border-b-0">
+              <div className="flex-1">
+                <div className="text-[15px] text-[#1C1C1E]">{p.name}</div>
+                <div className="text-[13px] text-[#8E8E93]">{p.role} — {p.items} active items</div>
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+              <span className="text-[15px]" style={{ color: p.utilization > 85 ? '#FF3B30' : p.utilization > 60 ? '#FF9500' : '#34C759' }}>
+                {p.utilization}%
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

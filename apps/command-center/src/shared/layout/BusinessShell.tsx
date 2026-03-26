@@ -1,6 +1,6 @@
-// ─── Business OS Shell ──────────────────────────────────────────────────────
-// Clean, operational layout. No drama, no neon.
-// Left: navigation (5 core + secondary). Center: content. Top: minimal bar.
+// ─── Business Shell — Apple Native Clarity ──────────────────────────────────
+// Light theme. SF Pro / Inter. List-based navigation.
+// If you can't understand a screen in 2 seconds, it's wrong.
 
 import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -8,179 +8,105 @@ import { useRole, ROLES } from '../../shared/auth/RoleContext'
 
 // ─── Navigation ─────────────────────────────────────────────────────────────
 
-interface NavItem {
-  path: string
-  label: string
-  section: 'core' | 'secondary' | 'system'
-}
+interface NavItem { path: string; label: string; section: 'core' | 'modules' }
 
-const NAV_ITEMS: NavItem[] = [
-  // Core — always visible
+const NAV: NavItem[] = [
   { path: '/dashboard', label: 'Dashboard', section: 'core' },
   { path: '/operations', label: 'Operations', section: 'core' },
   { path: '/sales', label: 'Sales', section: 'core' },
   { path: '/finance', label: 'Finance', section: 'core' },
   { path: '/people', label: 'People', section: 'core' },
-
-  // Secondary — collapsed, accessible
-  { path: '/entities', label: 'Entities', section: 'secondary' },
-  { path: '/corporate', label: 'Structure', section: 'secondary' },
-  { path: '/payment-os', label: 'Payment OS', section: 'secondary' },
-  { path: '/wallet-os', label: 'Wallet OS', section: 'secondary' },
-  { path: '/legal', label: 'Legal', section: 'secondary' },
-
-  // System
-  { path: '/org', label: 'Org Graph', section: 'system' },
+  { path: '/entities', label: 'Companies', section: 'modules' },
+  { path: '/corporate', label: 'Structure', section: 'modules' },
+  { path: '/payment-os', label: 'Payments', section: 'modules' },
+  { path: '/wallet-os', label: 'Wallet', section: 'modules' },
+  { path: '/org', label: 'Organization', section: 'modules' },
 ]
 
 function Sidebar() {
   const { pathname } = useLocation()
   const navigate = useNavigate()
 
-  const core = NAV_ITEMS.filter(n => n.section === 'core')
-  const secondary = NAV_ITEMS.filter(n => n.section === 'secondary')
-  const system = NAV_ITEMS.filter(n => n.section === 'system')
+  const core = NAV.filter(n => n.section === 'core')
+  const modules = NAV.filter(n => n.section === 'modules')
 
-  function isActive(path: string) {
+  function active(path: string) {
     if (path === '/dashboard') return pathname === '/' || pathname === '/dashboard'
     return pathname.startsWith(path)
   }
 
   return (
-    <aside className="w-48 flex-shrink-0 bg-[#0C0D12] border-r border-[#1A1C24] flex flex-col h-full overflow-hidden">
-      {/* Logo */}
-      <div className="h-12 flex items-center px-4 border-b border-[#1A1C24] flex-shrink-0">
-        <span className="text-[13px] font-semibold text-[#E0E1E4] tracking-wide">Wavult</span>
+    <aside className="w-52 flex-shrink-0 bg-[#F2F2F7] border-r border-[#D1D1D6] flex flex-col h-full overflow-hidden">
+      <div className="h-12 flex items-center px-4 flex-shrink-0">
+        <span className="text-[15px] font-semibold text-[#1C1C1E]">Wavult</span>
       </div>
 
-      {/* Core nav */}
-      <nav className="flex-1 overflow-y-auto py-2">
-        <div className="px-2">
-          {core.map(item => {
-            const active = isActive(item.path)
-            return (
-              <button
-                key={item.path}
-                onClick={() => navigate(item.path)}
-                className="w-full text-left px-3 py-2 rounded-md text-[13px] transition-colors mb-0.5"
-                style={{
-                  background: active ? '#1A1C24' : 'transparent',
-                  color: active ? '#E0E1E4' : '#6B7280',
-                  fontWeight: active ? 600 : 400,
-                }}
-              >
-                {item.label}
-              </button>
-            )
-          })}
-        </div>
+      <nav className="flex-1 overflow-y-auto px-2 py-1">
+        {core.map(item => (
+          <button key={item.path} onClick={() => navigate(item.path)}
+            className="w-full text-left px-3 py-[7px] rounded-lg text-[14px] transition-colors mb-px"
+            style={{
+              background: active(item.path) ? '#007AFF' : 'transparent',
+              color: active(item.path) ? '#FFFFFF' : '#1C1C1E',
+              fontWeight: active(item.path) ? 600 : 400,
+            }}>
+            {item.label}
+          </button>
+        ))}
 
-        {/* Secondary */}
-        <div className="px-2 mt-4 pt-3 border-t border-[#1A1C24]">
-          <div className="px-3 mb-1.5">
-            <span className="text-[10px] text-[#3D4452] font-medium uppercase tracking-wider">Modules</span>
+        <div className="mt-4 pt-3 border-t border-[#D1D1D6]">
+          <div className="px-3 mb-1">
+            <span className="text-[11px] text-[#8E8E93] font-medium uppercase">Modules</span>
           </div>
-          {secondary.map(item => {
-            const active = isActive(item.path)
-            return (
-              <button
-                key={item.path}
-                onClick={() => navigate(item.path)}
-                className="w-full text-left px-3 py-1.5 rounded-md text-[12px] transition-colors mb-0.5"
-                style={{
-                  background: active ? '#1A1C24' : 'transparent',
-                  color: active ? '#E0E1E4' : '#4A4F5C',
-                  fontWeight: active ? 500 : 400,
-                }}
-              >
-                {item.label}
-              </button>
-            )
-          })}
-        </div>
-
-        {/* System */}
-        <div className="px-2 mt-3 pt-3 border-t border-[#1A1C24]">
-          <div className="px-3 mb-1.5">
-            <span className="text-[10px] text-[#3D4452] font-medium uppercase tracking-wider">System</span>
-          </div>
-          {system.map(item => {
-            const active = isActive(item.path)
-            return (
-              <button
-                key={item.path}
-                onClick={() => navigate(item.path)}
-                className="w-full text-left px-3 py-1.5 rounded-md text-[12px] transition-colors mb-0.5"
-                style={{
-                  background: active ? '#1A1C24' : 'transparent',
-                  color: active ? '#E0E1E4' : '#3D4452',
-                }}
-              >
-                {item.label}
-              </button>
-            )
-          })}
+          {modules.map(item => (
+            <button key={item.path} onClick={() => navigate(item.path)}
+              className="w-full text-left px-3 py-[6px] rounded-lg text-[13px] transition-colors mb-px"
+              style={{
+                background: active(item.path) ? '#007AFF' : 'transparent',
+                color: active(item.path) ? '#FFFFFF' : '#3C3C43',
+              }}>
+              {item.label}
+            </button>
+          ))}
         </div>
       </nav>
     </aside>
   )
 }
 
-// ─── Top bar (minimal) ──────────────────────────────────────────────────────
-
 function TopBar() {
-  const { setRole, isAdmin, viewAs, setViewAs, effectiveRole } = useRole()
+  const { setRole, effectiveRole, isAdmin, viewAs, setViewAs } = useRole()
   const nonAdminRoles = ROLES.filter(r => r.id !== 'admin')
 
   return (
-    <header className="h-10 flex-shrink-0 border-b border-[#1A1C24] flex items-center justify-between px-5 bg-[#0C0D12]">
-      <div />
-      <div className="flex items-center gap-3">
-        {effectiveRole && (
-          <div className="flex items-center gap-2">
-            {isAdmin ? (
-              <select
-                value={viewAs?.id ?? ''}
-                onChange={e => {
-                  const found = nonAdminRoles.find(r => r.id === e.target.value) ?? null
-                  setViewAs(found)
-                }}
-                className="text-[11px] bg-[#0C0D12] border border-[#1A1C24] rounded px-2 py-1 text-[#6B7280] font-mono cursor-pointer focus:outline-none appearance-none"
-              >
-                <option value="">Admin</option>
-                {nonAdminRoles.map(r => (
-                  <option key={r.id} value={r.id}>{r.initials} {r.title}</option>
-                ))}
-              </select>
-            ) : (
-              <span className="text-[11px] text-[#6B7280] font-mono">{effectiveRole.initials} {effectiveRole.title}</span>
-            )}
-            <button
-              onClick={() => { setRole(null); setViewAs(null) }}
-              className="text-[10px] text-[#3D4452] hover:text-[#6B7280] transition-colors font-mono"
-            >
-              Exit
-            </button>
-          </div>
-        )}
-      </div>
+    <header className="h-10 flex-shrink-0 border-b border-[#D1D1D6] flex items-center justify-end px-4 bg-[#FFFFFF]">
+      {effectiveRole && (
+        <div className="flex items-center gap-2">
+          {isAdmin ? (
+            <select value={viewAs?.id ?? ''} onChange={e => setViewAs(nonAdminRoles.find(r => r.id === e.target.value) ?? null)}
+              className="text-[12px] bg-white border border-[#D1D1D6] rounded-md px-2 py-1 text-[#3C3C43] focus:outline-none appearance-none">
+              <option value="">Admin</option>
+              {nonAdminRoles.map(r => <option key={r.id} value={r.id}>{r.initials} {r.title}</option>)}
+            </select>
+          ) : (
+            <span className="text-[12px] text-[#8E8E93]">{effectiveRole.title}</span>
+          )}
+          <button onClick={() => { setRole(null); setViewAs(null) }} className="text-[11px] text-[#007AFF]">
+            Sign out
+          </button>
+        </div>
+      )}
     </header>
   )
 }
 
-// ─── Shell ──────────────────────────────────────────────────────────────────
-
-interface ShellProps {
-  children: React.ReactNode
-}
-
-export function BusinessShell({ children }: ShellProps) {
+export function BusinessShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen bg-[#0A0B10] overflow-hidden">
+    <div className="flex h-screen bg-[#F2F2F7] overflow-hidden">
       <Sidebar />
       <main className="flex-1 flex flex-col overflow-hidden min-w-0">
         <TopBar />
-        <div className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-auto bg-[#F2F2F7]">
           {children}
         </div>
       </main>

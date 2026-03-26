@@ -1,140 +1,137 @@
-// ─── Sales — Pipeline, Customers, Conversion ───────────────────────────────
-// Real pipeline with real SEK values. No gamification.
+// ─── Sales — Pipeline, Deals, Customers ─────────────────────────────────────
+// Apple Settings style. List of deals with status and value.
 
 import { useState } from 'react'
 
-type DealStage = 'lead' | 'qualified' | 'proposal' | 'negotiation' | 'closed-won' | 'closed-lost'
+type Tab = 'pipeline' | 'customers'
 
 interface Deal {
-  id: string
-  company: string
-  contact: string
-  value: number
-  stage: DealStage
-  product: string
-  nextAction: string
-  closeDate: string
+  company: string; contact: string; value: number; stage: string;
+  product: string; next: string; closeDate: string
 }
 
 const DEALS: Deal[] = [
-  { id: 'd1', company: 'Stockholms kommun', contact: 'Anna Lindberg', value: 180_000, stage: 'proposal', product: 'LandveX', nextAction: 'Demo scheduled Apr 2', closeDate: '2026-05' },
-  { id: 'd2', company: 'Göteborgs Hamn AB', contact: 'Karl Pettersson', value: 250_000, stage: 'qualified', product: 'LandveX', nextAction: 'Send proposal', closeDate: '2026-06' },
-  { id: 'd3', company: 'Fasadgruppen Nordic', contact: 'Maria Ek', value: 45_000, stage: 'negotiation', product: 'QuiXzoom IR', nextAction: 'Pricing discussion', closeDate: '2026-04' },
-  { id: 'd4', company: 'CleanWindow AB', contact: 'Jonas Holm', value: 12_000, stage: 'lead', product: 'QuiXzoom IR', nextAction: 'Initial meeting', closeDate: '2026-05' },
-  { id: 'd5', company: 'SBB Norden AB', contact: 'Sofia Strand', value: 320_000, stage: 'lead', product: 'LandveX', nextAction: 'Intro call', closeDate: '2026-Q3' },
-  { id: 'd6', company: 'Riksbyggen', contact: 'Per Nilsson', value: 95_000, stage: 'closed-won', product: 'LandveX', nextAction: '-', closeDate: '2026-03' },
+  { company: 'Stockholms kommun', contact: 'Anna Lindberg', value: 180_000, stage: 'Proposal', product: 'LandveX', next: 'Demo Apr 2', closeDate: 'May' },
+  { company: 'Goteborgs Hamn AB', contact: 'Karl Pettersson', value: 250_000, stage: 'Qualified', product: 'LandveX', next: 'Send proposal', closeDate: 'Jun' },
+  { company: 'Fasadgruppen Nordic', contact: 'Maria Ek', value: 45_000, stage: 'Negotiation', product: 'QuiXzoom IR', next: 'Pricing discussion', closeDate: 'Apr' },
+  { company: 'CleanWindow AB', contact: 'Jonas Holm', value: 12_000, stage: 'Lead', product: 'QuiXzoom IR', next: 'Initial meeting', closeDate: 'May' },
+  { company: 'SBB Norden AB', contact: 'Sofia Strand', value: 320_000, stage: 'Lead', product: 'LandveX', next: 'Intro call', closeDate: 'Q3' },
+  { company: 'Riksbyggen', contact: 'Per Nilsson', value: 95_000, stage: 'Won', product: 'LandveX', next: '-', closeDate: 'Mar' },
 ]
 
-const STAGE_ORDER: DealStage[] = ['lead', 'qualified', 'proposal', 'negotiation', 'closed-won', 'closed-lost']
-const STAGE_LABEL: Record<DealStage, string> = { lead: 'Lead', qualified: 'Qualified', proposal: 'Proposal', negotiation: 'Negotiation', 'closed-won': 'Won', 'closed-lost': 'Lost' }
-const STAGE_COLOR: Record<DealStage, string> = { lead: '#6B7280', qualified: '#4A7A9B', proposal: '#9A7A30', negotiation: '#8B5CF6', 'closed-won': '#4A7A5B', 'closed-lost': '#B04040' }
-
-type TabId = 'pipeline' | 'customers'
+const STAGE_COLOR: Record<string, string> = {
+  Lead: '#8E8E93', Qualified: '#007AFF', Proposal: '#FF9500',
+  Negotiation: '#AF52DE', Won: '#34C759', Lost: '#FF3B30',
+}
 
 export function SalesView() {
-  const [tab, setTab] = useState<TabId>('pipeline')
+  const [tab, setTab] = useState<Tab>('pipeline')
+  const [expandedIdx, setExpandedIdx] = useState<number | null>(null)
 
-  const pipeline = DEALS.filter(d => d.stage !== 'closed-won' && d.stage !== 'closed-lost')
+  const pipeline = DEALS.filter(d => d.stage !== 'Won' && d.stage !== 'Lost')
+  const customers = DEALS.filter(d => d.stage === 'Won')
   const pipelineValue = pipeline.reduce((s, d) => s + d.value, 0)
-  const wonValue = DEALS.filter(d => d.stage === 'closed-won').reduce((s, d) => s + d.value, 0)
+  const wonValue = customers.reduce((s, d) => s + d.value, 0)
 
   return (
-    <div className="h-full overflow-y-auto">
-      <div className="border-b border-[#1A1C24] px-6 pt-5 pb-0 bg-[#0C0D12]">
-        <h1 className="text-[15px] font-semibold text-[#E0E1E4]">Sales</h1>
-        <p className="text-[12px] text-[#4A4F5C] mt-0.5 mb-4">Pipeline, customers, conversion</p>
-        <div className="flex gap-0 -mb-px">
-          {[{ id: 'pipeline' as const, label: 'Pipeline' }, { id: 'customers' as const, label: 'Customers' }].map(t => (
-            <button key={t.id} onClick={() => setTab(t.id)}
-              className="text-[12px] pb-2.5 mr-5 border-b-2 transition-colors"
-              style={{ color: tab === t.id ? '#E0E1E4' : '#4A4F5C', borderColor: tab === t.id ? '#4A7A9B' : 'transparent', fontWeight: tab === t.id ? 600 : 400 }}>
-              {t.label}
-            </button>
-          ))}
-        </div>
+    <div className="max-w-2xl mx-auto py-6 px-4">
+      <h1 className="text-[28px] font-bold text-[#1C1C1E] mb-2">Sales</h1>
+
+      <div className="flex bg-[#E5E5EA] rounded-lg p-0.5 mb-6">
+        {[
+          { id: 'pipeline' as const, label: 'Pipeline' },
+          { id: 'customers' as const, label: 'Customers' },
+        ].map(t => (
+          <button key={t.id} onClick={() => { setTab(t.id); setExpandedIdx(null) }}
+            className="flex-1 text-[13px] py-1.5 rounded-md transition-all"
+            style={{
+              background: tab === t.id ? '#FFFFFF' : 'transparent',
+              color: tab === t.id ? '#1C1C1E' : '#8E8E93',
+              fontWeight: tab === t.id ? 600 : 400,
+              boxShadow: tab === t.id ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+            }}>
+            {t.label}
+          </button>
+        ))}
       </div>
 
-      <div className="p-6 max-w-5xl">
-        {tab === 'pipeline' && (
-          <div className="space-y-6">
-            {/* Summary */}
-            <div className="grid grid-cols-3 gap-3">
-              <div className="rounded-lg border border-[#1A1C24] bg-[#0E0F14] px-4 py-3">
-                <div className="text-[11px] text-[#4A4F5C]">Pipeline value</div>
-                <div className="text-[20px] font-semibold text-[#E0E1E4] font-mono">{pipelineValue.toLocaleString('sv-SE')}</div>
-                <div className="text-[11px] text-[#4A4F5C]">{pipeline.length} deals</div>
-              </div>
-              <div className="rounded-lg border border-[#1A1C24] bg-[#0E0F14] px-4 py-3">
-                <div className="text-[11px] text-[#4A4F5C]">Closed (MTD)</div>
-                <div className="text-[20px] font-semibold text-[#4A7A5B] font-mono">{wonValue.toLocaleString('sv-SE')}</div>
-              </div>
-              <div className="rounded-lg border border-[#1A1C24] bg-[#0E0F14] px-4 py-3">
-                <div className="text-[11px] text-[#4A4F5C]">Win rate</div>
-                <div className="text-[20px] font-semibold text-[#E0E1E4]">
-                  {DEALS.length > 0 ? Math.round(DEALS.filter(d => d.stage === 'closed-won').length / DEALS.length * 100) : 0}%
-                </div>
-              </div>
-            </div>
+      {tab === 'pipeline' && (
+        <>
+          {/* Summary */}
+          <Section title="Summary">
+            <Row label="Pipeline value" value={`${pipelineValue.toLocaleString('sv-SE')} SEK`} bold />
+            <Row label="Active deals" value={String(pipeline.length)} />
+            <Row label="Closed this month" value={`${wonValue.toLocaleString('sv-SE')} SEK`} valueColor="#34C759" />
+          </Section>
 
-            {/* Stage funnel */}
-            <div>
-              <h2 className="text-[12px] text-[#4A4F5C] font-medium mb-2">Funnel</h2>
-              <div className="flex gap-2">
-                {STAGE_ORDER.filter(s => s !== 'closed-lost').map(stage => {
-                  const deals = DEALS.filter(d => d.stage === stage)
-                  const value = deals.reduce((s, d) => s + d.value, 0)
-                  return (
-                    <div key={stage} className="flex-1 rounded-lg border border-[#1A1C24] bg-[#0E0F14] px-3 py-2 text-center">
-                      <div className="text-[10px] font-medium" style={{ color: STAGE_COLOR[stage] }}>{STAGE_LABEL[stage]}</div>
-                      <div className="text-[16px] font-semibold text-[#E0E1E4] font-mono">{deals.length}</div>
-                      <div className="text-[10px] text-[#3D4452] font-mono">{value > 0 ? `${(value / 1000).toFixed(0)}k` : '-'}</div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-
-            {/* Deal list */}
-            <div>
-              <h2 className="text-[12px] text-[#4A4F5C] font-medium mb-2">All deals</h2>
-              <div className="space-y-1.5">
-                {DEALS.map(deal => (
-                  <div key={deal.id} className="flex items-center gap-3 rounded-lg border border-[#1A1C24] bg-[#0E0F14] px-4 py-3">
-                    <span className="text-[10px] px-2 py-0.5 rounded font-mono" style={{ background: STAGE_COLOR[deal.stage] + '20', color: STAGE_COLOR[deal.stage] }}>
-                      {STAGE_LABEL[deal.stage]}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-[13px] text-[#E0E1E4]">{deal.company}</div>
-                      <div className="text-[11px] text-[#3D4452]">{deal.product} — {deal.nextAction}</div>
-                    </div>
-                    <span className="text-[13px] font-mono text-[#E0E1E4]">{deal.value.toLocaleString('sv-SE')}</span>
-                    <span className="text-[11px] text-[#3D4452] font-mono">{deal.closeDate}</span>
+          {/* Deals */}
+          <Section title="Deals">
+            {pipeline.map((deal, i) => (
+              <button key={i} onClick={() => setExpandedIdx(expandedIdx === i ? null : i)}
+                className="w-full text-left px-4 py-[11px] border-b border-[#E5E5EA] last:border-b-0 hover:bg-[#F2F2F7] transition-colors">
+                <div className="flex items-center">
+                  <div className="flex-1">
+                    <div className="text-[15px] text-[#1C1C1E]">{deal.company}</div>
+                    <div className="text-[13px] text-[#8E8E93] mt-0.5">{deal.product} — {deal.next}</div>
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {tab === 'customers' && (
-          <div className="space-y-1.5">
-            {DEALS.filter(d => d.stage === 'closed-won').map(deal => (
-              <div key={deal.id} className="rounded-lg border border-[#1A1C24] bg-[#0E0F14] px-4 py-3">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-[13px] text-[#E0E1E4]">{deal.company}</div>
-                    <div className="text-[11px] text-[#3D4452]">{deal.contact} — {deal.product}</div>
+                  <div className="text-right ml-3 flex-shrink-0">
+                    <div className="text-[14px] text-[#1C1C1E]">{deal.value.toLocaleString('sv-SE')} SEK</div>
+                    <div className="text-[12px]" style={{ color: STAGE_COLOR[deal.stage] ?? '#8E8E93' }}>{deal.stage}</div>
                   </div>
-                  <div className="text-[14px] font-mono text-[#4A7A5B]">{deal.value.toLocaleString('sv-SE')} SEK</div>
                 </div>
-              </div>
+                {expandedIdx === i && (
+                  <div className="mt-3 pt-3 border-t border-[#E5E5EA] space-y-1 text-[14px]">
+                    <div className="flex justify-between"><span className="text-[#8E8E93]">Contact</span><span className="text-[#1C1C1E]">{deal.contact}</span></div>
+                    <div className="flex justify-between"><span className="text-[#8E8E93]">Expected close</span><span className="text-[#1C1C1E]">{deal.closeDate}</span></div>
+                    <div className="flex justify-between"><span className="text-[#8E8E93]">Next action</span><span className="text-[#1C1C1E]">{deal.next}</span></div>
+                  </div>
+                )}
+              </button>
             ))}
-            {DEALS.filter(d => d.stage === 'closed-won').length === 0 && (
-              <div className="text-[13px] text-[#3D4452] py-8 text-center">No customers yet. Close your first deal.</div>
-            )}
-          </div>
-        )}
+          </Section>
+        </>
+      )}
+
+      {tab === 'customers' && (
+        <Section title="Paying customers">
+          {customers.length === 0 ? (
+            <div className="px-4 py-8 text-center text-[15px] text-[#8E8E93]">No customers yet. Close your first deal.</div>
+          ) : (
+            customers.map((deal, i) => (
+              <div key={i} className="flex items-center px-4 py-[11px] border-b border-[#E5E5EA] last:border-b-0">
+                <div className="flex-1">
+                  <div className="text-[15px] text-[#1C1C1E]">{deal.company}</div>
+                  <div className="text-[13px] text-[#8E8E93]">{deal.contact} — {deal.product}</div>
+                </div>
+                <span className="text-[15px] text-[#34C759]">{deal.value.toLocaleString('sv-SE')} SEK</span>
+              </div>
+            ))
+          )}
+        </Section>
+      )}
+    </div>
+  )
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="mb-6">
+      <div className="px-4 mb-1"><span className="text-[13px] text-[#8E8E93] uppercase">{title}</span></div>
+      <div className="bg-white rounded-xl overflow-hidden">{children}</div>
+    </div>
+  )
+}
+
+function Row({ label, value, detail, valueColor, bold }: {
+  label: string; value: string; detail?: string; valueColor?: string; bold?: boolean
+}) {
+  return (
+    <div className="flex items-center px-4 py-[11px] border-b border-[#E5E5EA] last:border-b-0">
+      <div className="flex-1">
+        <div className="text-[15px] text-[#1C1C1E]" style={{ fontWeight: bold ? 600 : 400 }}>{label}</div>
+        {detail && <div className="text-[13px] text-[#8E8E93] mt-0.5">{detail}</div>}
       </div>
+      <span className="text-[15px]" style={{ color: valueColor ?? '#8E8E93', fontWeight: bold ? 600 : 400 }}>{value}</span>
     </div>
   )
 }
