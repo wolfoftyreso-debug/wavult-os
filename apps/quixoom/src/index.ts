@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import { router } from './api/routes.js';
+import { qzRouter } from './api/quixzoom-routes.js';
 
 dotenv.config();
 
@@ -23,12 +24,17 @@ app.use(
   }),
 );
 
-// Routes
+// Routes — Financial Core
 app.use('/api/qx', router);
+
+// Routes — QuixZoom Platform
+app.use('/api/qz', qzRouter);
 
 // Start
 app.listen(port, () => {
-  console.log(`[quixoom] running on port ${port}`);
+  console.log(`[quixzoom] running on port ${port}`);
+  console.log(`  Financial API: /api/qx`);
+  console.log(`  Platform API:  /api/qz`);
 });
 
 export default app;

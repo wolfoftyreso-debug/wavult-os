@@ -102,9 +102,11 @@ export type Payment = z.infer<typeof PaymentSchema>;
 // Domain Events
 // ============================================================================
 export const EventType = z.enum([
+  // Financial
   'PaymentCreated',
   'PaymentAuthorized',
   'PaymentFailed',
+  'PaymentTriggered',
   'SplitExecuted',
   'LedgerCommitted',
   'ComplianceFlagged',
@@ -112,6 +114,16 @@ export const EventType = z.enum([
   'PayoutExecuted',
   'Reconciled',
   'IntercompanySettled',
+  // QuixZoom
+  'ImageCaptured',
+  'ImageValidated',
+  'TaskCompleted',
+  'WalletUpdated',
+  'IRCreated',
+  'IRPurchased',
+  'StreakUpdated',
+  'LevelUpgraded',
+  'DemandProcessed',
 ]);
 export type EventType = z.infer<typeof EventType>;
 
@@ -175,3 +187,88 @@ export const CreateAccountInput = z.object({
   label: z.string().optional(),
 });
 export type CreateAccountInput = z.infer<typeof CreateAccountInput>;
+
+// ============================================================================
+// QuixZoom — Creator
+// ============================================================================
+export const CreatorMode = z.enum(['beginner', 'hobby', 'creative', 'professional', 'elite']);
+export type CreatorMode = z.infer<typeof CreatorMode>;
+
+export const CreateUserInput = z.object({
+  email: z.string().email(),
+  display_name: z.string().min(1),
+  phone: z.string().optional(),
+  location: z.object({
+    lat: z.number(),
+    lng: z.number(),
+    city: z.string().optional(),
+    country: z.string().optional(),
+  }).optional(),
+});
+export type CreateUserInput = z.infer<typeof CreateUserInput>;
+
+// ============================================================================
+// QuixZoom — Task
+// ============================================================================
+export const TaskCategory = z.enum([
+  'storefront', 'facade', 'signage', 'interior',
+  'landscape', 'infrastructure', 'vehicle', 'event', 'custom',
+]);
+export type TaskCategory = z.infer<typeof TaskCategory>;
+
+export const CreateTaskInput = z.object({
+  title: z.string().min(1),
+  description: z.string().optional(),
+  category: TaskCategory,
+  required_images: z.number().int().positive().default(1),
+  payout_amount: z.number().positive(),
+  currency: z.string().length(3).default('SEK'),
+  tier: z.number().int().min(1).max(6).default(1),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
+  radius_meters: z.number().int().positive().default(200),
+  address: z.string().optional(),
+  area_name: z.string().optional(),
+  city: z.string().optional(),
+  country: z.string().default('SE'),
+  priority: z.number().int().default(0),
+  expires_at: z.string().datetime().optional(),
+});
+export type CreateTaskApiInput = z.infer<typeof CreateTaskInput>;
+
+// ============================================================================
+// QuixZoom — IR
+// ============================================================================
+export const CreateIRInput = z.object({
+  title: z.string().min(1),
+  description: z.string().optional(),
+  category: z.string().min(1),
+  tags: z.array(z.string()).optional(),
+  area_name: z.string().optional(),
+  city: z.string().optional(),
+  country: z.string().optional(),
+  price_type: z.enum(['free', 'one_time', 'subscription', 'custom']).default('one_time'),
+  price: z.number().min(0).default(0),
+  subscription_monthly: z.number().optional(),
+});
+export type CreateIRApiInput = z.infer<typeof CreateIRInput>;
+
+// ============================================================================
+// QuixZoom — Demand
+// ============================================================================
+export const DemandQueryInput = z.object({
+  query_text: z.string().min(1),
+  requester_id: z.string().uuid().optional(),
+});
+export type DemandQueryInput = z.infer<typeof DemandQueryInput>;
+
+// ============================================================================
+// QuixZoom — Withdrawal
+// ============================================================================
+export const WithdrawInput = z.object({
+  amount: z.number().positive(),
+  currency: z.string().length(3).default('SEK'),
+  method: z.enum(['instant', 'batch', 'bank_transfer']),
+  destination: z.record(z.unknown()),
+});
+export type WithdrawInput = z.infer<typeof WithdrawInput>;

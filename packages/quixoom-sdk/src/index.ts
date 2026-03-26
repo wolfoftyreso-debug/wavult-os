@@ -1,16 +1,43 @@
 /**
- * Quixoom SDK — Typed client for the enterprise financial control API.
+ * QuixZoom SDK — Typed client for the enterprise platform.
  *
- * Usage:
- *   const qx = createClient({ baseUrl: 'https://api.example.com/api/qx' });
- *   const payment = await qx.createPayment({ entity_id: '...', amount: '100', currency: 'USD', direction: 'inbound' });
+ * Two clients:
+ *   const qx = createFinancialClient({ baseUrl: '/api/qx' });  // ledger, payments, compliance
+ *   const qz = createPlatformClient({ baseUrl: '/api/qz' });   // users, tasks, wallet, IR, AI
  */
 
-export interface QxConfig {
+// ============================================================================
+// Config
+// ============================================================================
+
+export interface SdkConfig {
   baseUrl: string;
   actor?: string;
   headers?: Record<string, string>;
 }
+
+async function request(config: SdkConfig, method: string, path: string, body?: unknown) {
+  const res = await fetch(`${config.baseUrl}${path}`, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      'x-actor': config.actor ?? 'sdk',
+      ...config.headers,
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: res.statusText }));
+    throw new Error(`QuixZoom ${method} ${path}: ${err.error ?? res.statusText}`);
+  }
+
+  return res.json();
+}
+
+// ============================================================================
+// Financial API Types (Quixoom Core — /api/qx)
+// ============================================================================
 
 export interface CreateEntityParams {
   name: string;
@@ -64,26 +91,121 @@ export interface IntercompanyUpdateParams {
   amount: string;
 }
 
-async function request(config: QxConfig, method: string, path: string, body?: unknown) {
-  const res = await fetch(`${config.baseUrl}${path}`, {
-    method,
-    headers: {
-      'Content-Type': 'application/json',
-      'x-actor': config.actor ?? 'sdk',
-      ...config.headers,
-    },
-    body: body ? JSON.stringify(body) : undefined,
-  });
+// ============================================================================
+// Platform API Types (QuixZoom — /api/qz)
+// ============================================================================
 
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ error: res.statusText }));
-    throw new Error(`QxSDK ${method} ${path}: ${err.error ?? res.statusText}`);
-  }
-
-  return res.json();
+export interface CreateUserParams {
+  email: string;
+  display_name: string;
+  phone?: string;
+  location?: { lat: number; lng: number; city?: string; country?: string };
 }
 
-export function createClient(config: QxConfig) {
+export interface CreateTaskParams {
+  title: string;
+  description?: string;
+  category: string;
+  required_images?: number;
+  payout_amount: number;
+  currency?: string;
+  tier?: number;
+  latitude?: number;
+  longitude?: number;
+  radius_meters?: number;
+  address?: string;
+  area_name?: string;
+  city?: string;
+  priority?: number;
+  expires_at?: string;
+}
+
+export interface NearbyQuery {
+  lat: number;
+  lng: number;
+  radius?: number;
+  category?: string;
+  tier?: number;
+}
+
+export interface WithdrawParams {
+  amount: number;
+  currency?: string;
+  method: 'instant' | 'batch' | 'bank_transfer';
+  destination: Record<string, unknown>;
+}
+
+export interface CreateIRParams {
+  title: string;
+  description?: string;
+  category: string;
+  tags?: string[];
+  area_name?: string;
+  city?: string;
+  country?: string;
+  price_type?: 'free' | 'one_time' | 'subscription' | 'custom';
+  price?: number;
+  subscription_monthly?: number;
+}
+
+export interface AddIRItemParams {
+  image_id?: string;
+  title?: string;
+  latitude?: number;
+  longitude?: number;
+  address?: string;
+  captured_at?: string;
+  ai_category?: string;
+  ai_condition?: string;
+  ai_score?: number;
+  lead_score?: number;
+  properties?: Record<string, unknown>;
+}
+
+export interface PurchaseIRParams {
+  buyer_id?: string;
+  buyer_email?: string;
+  buyer_company?: string;
+}
+
+export interface DemandQueryParams {
+  query_text: string;
+  requester_id?: string;
+}
+
+export interface LeadScoreParams {
+  ai_condition: string;
+  ai_category: string;
+  ai_score: number;
+  location: { lat: number; lng: number };
+  business_density?: number;
+  last_service_date?: string;
+}
+
+export interface RouteParams {
+  current_location: { lat: number; lng: number };
+  tasks: Array<{ id: string; lat: number; lng: number; payout: number; priority: number }>;
+  max_duration_mins?: number;
+}
+
+export interface CaptureImageParams {
+  assignment_id: string;
+  user_id: string;
+  task_id: string;
+  storage_key: string;
+  storage_bucket: string;
+  latitude?: number;
+  longitude?: number;
+  altitude?: number;
+  accuracy_meters?: number;
+  heading?: number;
+}
+
+// ============================================================================
+// Financial Client (Quixoom Core)
+// ============================================================================
+
+export function createFinancialClient(config: SdkConfig) {
   return {
     // Entities
     createEntity: (params: CreateEntityParams) =>
@@ -96,7 +218,7 @@ export function createClient(config: QxConfig) {
       request(config, 'POST', '/accounts', params),
     listAccounts: (entityId: string) =>
       request(config, 'GET', `/accounts/${entityId}`),
-    getBalance: (accountId: string) =>
+    getAccountBalance: (accountId: string) =>
       request(config, 'GET', `/accounts/${accountId}/balance`),
 
     // Payments
@@ -128,5 +250,125 @@ export function createClient(config: QxConfig) {
     // Compliance
     getComplianceFlags: (status?: string) =>
       request(config, 'GET', `/compliance/flags?status=${status ?? 'open'}`),
+  };
+}
+
+// ============================================================================
+// Platform Client (QuixZoom)
+// ============================================================================
+
+export function createPlatformClient(config: SdkConfig) {
+  return {
+    // Users
+    createUser: (params: CreateUserParams) =>
+      request(config, 'POST', '/users', params),
+    getUser: (userId: string) =>
+      request(config, 'GET', `/users/${userId}`),
+    setMode: (userId: string, mode: string) =>
+      request(config, 'PATCH', `/users/${userId}/mode`, { mode }),
+
+    // Wallet
+    getWallet: (userId: string) =>
+      request(config, 'GET', `/wallet/${userId}`),
+    getWalletTransactions: (userId: string, limit?: number) =>
+      request(config, 'GET', `/wallet/${userId}/transactions?limit=${limit ?? 50}`),
+    withdraw: (userId: string, params: WithdrawParams) =>
+      request(config, 'POST', `/wallet/${userId}/withdraw`, params),
+
+    // Levels & Streaks
+    getLevels: () =>
+      request(config, 'GET', '/levels'),
+    getStreak: (userId: string) =>
+      request(config, 'GET', `/streak/${userId}`),
+
+    // Tasks
+    createTask: (params: CreateTaskParams) =>
+      request(config, 'POST', '/tasks', params),
+    findNearbyTasks: (query: NearbyQuery) => {
+      const qs = new URLSearchParams({
+        lat: query.lat.toString(),
+        lng: query.lng.toString(),
+        ...(query.radius && { radius: query.radius.toString() }),
+        ...(query.category && { category: query.category }),
+        ...(query.tier && { tier: query.tier.toString() }),
+      });
+      return request(config, 'GET', `/tasks/nearby?${qs}`);
+    },
+    assignTask: (taskId: string, userId: string) =>
+      request(config, 'POST', `/tasks/${taskId}/assign`, { user_id: userId }),
+    submitAssignment: (assignmentId: string) =>
+      request(config, 'POST', `/tasks/assignments/${assignmentId}/submit`),
+    approveAssignment: (assignmentId: string) =>
+      request(config, 'POST', `/tasks/assignments/${assignmentId}/approve`),
+    rejectAssignment: (assignmentId: string, reason: string) =>
+      request(config, 'POST', `/tasks/assignments/${assignmentId}/reject`, { reason }),
+
+    // Images
+    captureImage: (params: CaptureImageParams) =>
+      request(config, 'POST', '/images', params),
+    analyzeImage: (imageId: string) =>
+      request(config, 'POST', `/images/${imageId}/analyze`),
+
+    // Intelligence Repos
+    createIR: (params: CreateIRParams) =>
+      request(config, 'POST', '/ir', params),
+    getIR: (repoId: string) =>
+      request(config, 'GET', `/ir/${repoId}`),
+    addIRItem: (repoId: string, params: AddIRItemParams) =>
+      request(config, 'POST', `/ir/${repoId}/items`, params),
+    publishIR: (repoId: string) =>
+      request(config, 'POST', `/ir/${repoId}/publish`),
+    purchaseIR: (repoId: string, params: PurchaseIRParams) =>
+      request(config, 'POST', `/ir/${repoId}/purchase`, params),
+    searchIR: (query?: string, category?: string, city?: string) => {
+      const qs = new URLSearchParams({
+        ...(query && { q: query }),
+        ...(category && { category }),
+        ...(city && { city }),
+      });
+      return request(config, 'GET', `/ir/search?${qs}`);
+    },
+
+    // Demand Engine
+    submitDemand: (params: DemandQueryParams) =>
+      request(config, 'POST', '/demand', params),
+    parseDemand: (queryText: string) =>
+      request(config, 'GET', `/demand/parse?q=${encodeURIComponent(queryText)}`),
+
+    // AI
+    getLeadScore: (params: LeadScoreParams) =>
+      request(config, 'POST', '/ai/lead-score', params),
+    getOptimalRoute: (params: RouteParams) =>
+      request(config, 'POST', '/ai/route', params),
+
+    // Geo
+    getCoverage: (points: Array<{ lat: number; lng: number }>, boundingBox: unknown, gridSize?: number) =>
+      request(config, 'POST', '/geo/coverage', { points, bounding_box: boundingBox, grid_size_meters: gridSize }),
+    getGapZones: (existingPoints: Array<{ lat: number; lng: number }>, boundingBox: unknown, gridSize?: number) =>
+      request(config, 'POST', '/geo/gaps', { existing_points: existingPoints, bounding_box: boundingBox, grid_size_meters: gridSize }),
+  };
+}
+
+// ============================================================================
+// Convenience: combined client
+// ============================================================================
+
+export function createQuixZoomClient(config: {
+  financialBaseUrl: string;
+  platformBaseUrl: string;
+  actor?: string;
+  headers?: Record<string, string>;
+}) {
+  return {
+    financial: createFinancialClient({
+      baseUrl: config.financialBaseUrl,
+      actor: config.actor,
+      headers: config.headers,
+    }),
+    platform: createPlatformClient({
+      baseUrl: config.platformBaseUrl,
+      actor: config.actor,
+      headers: config.headers,
+    }),
   };
 }
