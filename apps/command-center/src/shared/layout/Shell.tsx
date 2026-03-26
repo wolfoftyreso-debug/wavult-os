@@ -40,6 +40,7 @@ const navItems = [
   { to: '/company-launch', label: 'Company Launch', icon: '🏢' },
   { to: '/finance', label: 'Finance', icon: '💰' },
   { to: '/procurement', label: 'Inköp', icon: '🛒' },
+  { to: '/milestones', label: 'Milestones', icon: '🚀' },
   { to: '/settings', label: 'Inställningar', icon: '⚙️' },
 ]
 
