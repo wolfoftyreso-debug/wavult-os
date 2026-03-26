@@ -8,7 +8,7 @@ import { LEGAL_DOCUMENTS } from '../../features/legal/data'
 
 function ContentArea({ children }: { children: React.ReactNode }) {
   const { pathname } = useLocation()
-  const fullBleed = pathname.startsWith('/org') || pathname.startsWith('/entities') || pathname.startsWith('/org/command') || pathname.startsWith('/incidents') || pathname.startsWith('/markets') || pathname.startsWith('/campaigns') || pathname.startsWith('/company-launch') || pathname.startsWith('/finance') || pathname.startsWith('/procurement') || pathname.startsWith('/communications')
+  const fullBleed = pathname.startsWith('/org') || pathname.startsWith('/entities') || pathname.startsWith('/org/command') || pathname.startsWith('/incidents') || pathname.startsWith('/markets') || pathname.startsWith('/campaigns') || pathname.startsWith('/company-launch') || pathname.startsWith('/finance') || pathname.startsWith('/procurement') || pathname.startsWith('/communications') || pathname.startsWith('/reports')
   return (
     <div className={`h-full ${fullBleed ? '' : 'overflow-auto p-6'}`}>
       {children}
@@ -70,6 +70,12 @@ const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
+    label: 'ANALYTICS',
+    items: [
+      { to: '/reports', label: 'Rapporter', icon: '📊' },
+    ],
+  },
+  {
     label: 'SYSTEM',
     items: [
       { to: '/communications', label: 'Kommunikation', icon: '📡' },
@@ -104,6 +110,7 @@ const ROUTE_LABELS: Record<string, string> = {
   '/settings': 'Inställningar',
   '/corporate': 'Bolagsadmin',
   '/communications': 'Kommunikation',
+  '/reports': 'Rapporter',
 }
 
 function getBreadcrumb(pathname: string): string {

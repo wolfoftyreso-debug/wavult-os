@@ -26,6 +26,7 @@ import { MilestonesHub } from './features/milestones'
 import { SettingsHub } from './features/settings/SettingsHub'
 import { ProcurementHub } from './features/procurement/ProcurementHub'
 import { CommHub } from './features/communications/CommHub'
+import { ReportsHub } from './features/reports/ReportsHub'
 
 function AuthenticatedApp() {
   const { role } = useRole()
@@ -59,6 +60,7 @@ function AuthenticatedApp() {
         <Route path="/milestones" element={<MilestonesHub />} />
         <Route path="/settings" element={<SettingsHub />} />
         <Route path="/corporate" element={<CorporateHub />} />
+        <Route path="/reports" element={<ReportsHub />} />
         <Route path="/communications" element={<CommHub />} />
       </Routes>
     </Shell>
