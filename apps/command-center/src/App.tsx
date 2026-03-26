@@ -18,6 +18,7 @@ import { CampaignOS } from './features/campaign-os'
 import { LegalHub } from './features/legal/LegalHub'
 import { SubmissionsView } from './features/submissions/SubmissionsView'
 import { CompanyLaunchView } from './features/company-launch/CompanyLaunchView'
+import { PayrollHub } from './features/payroll'
 import { CRMHub } from './features/crm'
 import { FinanceHub } from './features/finance'
 
@@ -48,6 +49,7 @@ function AuthenticatedApp() {
         <Route path="/company-launch" element={<CompanyLaunchView />} />
         <Route path="/finance" element={<FinanceHub />} />
         <Route path="/crm" element={<CRMHub />} />
+        <Route path="/payroll" element={<PayrollHub />} />
       </Routes>
     </Shell>
   )
