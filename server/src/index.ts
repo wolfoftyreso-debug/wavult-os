@@ -29,7 +29,7 @@ import assetManagementRouter from "./asset-management";
 import customerQualityRouter from "./customer-quality";
 import deputiesRouter from "./deputies";
 import supplierManagementRouter from "./supplier-management";
-import calibrationImportRouter from "./calibration-import";
+// [ARCHIVED 2026-03-26] import calibrationImportRouter from "./calibration-import";
 import agreementsRouter from "./agreements";
 import subcontractorsRouter from "./subcontractors";
 import capacityEngineRouter from "./capacity-engine";
@@ -60,7 +60,7 @@ import checkinRouter from "./checkin-api";
 import learningRouter from "./learning";
 import seoRouter from "./seo";
 import bankingRouter from "./banking";
-import spaghettiRouter from "./spaghetti";
+// [ARCHIVED 2026-03-26] import spaghettiRouter from "./spaghetti";
 import spatialRouter from "./spatial-flow";
 import consumablesRouter from "./consumables";
 import { scheduleAutoConsume } from "./jobs/consumables-auto-consume";
@@ -83,19 +83,21 @@ import authRouter from "./auth";
 
 // ---------------------------------------------------------------------------
 // DMS — Dealer Management System (pixdrift automotive)
+// [ARCHIVED 2026-03-26] — Bilverkstads-vertikal skrotad (beslut 2026-03-23)
+// Alla filer nedan är flyttade till archive/server-routes/
 // ---------------------------------------------------------------------------
-import vehiclesRouter from "./vehicles";
-import externalAuditsRouter from "./external-audits";
-import controlLayerRouter from "./control-layer";
-import workshopRouter from "./workshop";
-import workshopStateMachineRouter from "./state-machine-workshop";
-import checklistEngineRouter from "./checklist-engine";
-import partsRouter from "./parts";
-import vehicleSalesRouter from "./vehicle-sales";
-import automotiveCrmRouter from "./automotive-crm";
-import rentalRouter from "./rental-engine";
-import oemRouter from "./integrations/oem";
-import bookingEngineRouter from "./booking-engine-api";
+// import vehiclesRouter from "./vehicles";
+// import externalAuditsRouter from "./external-audits";
+// import controlLayerRouter from "./control-layer";
+// import workshopRouter from "./workshop";
+// import workshopStateMachineRouter from "./state-machine-workshop";
+// import checklistEngineRouter from "./checklist-engine";
+// import partsRouter from "./parts";
+// import vehicleSalesRouter from "./vehicle-sales";
+// import automotiveCrmRouter from "./automotive-crm";
+// import rentalRouter from "./rental-engine";
+// import oemRouter from "./integrations/oem";
+// import bookingEngineRouter from "./booking-engine-api";
 
 // ---------------------------------------------------------------------------
 // PIX Intelligence + Workflow Engine (Palantir-depth for €499/month)
@@ -450,7 +452,7 @@ app.use(assetManagementRouter);
 app.use(customerQualityRouter);
 app.use(deputiesRouter);
 app.use(supplierManagementRouter);
-app.use(calibrationImportRouter);
+// app.use(calibrationImportRouter); // [ARCHIVED 2026-03-26]
 app.use(agreementsRouter);
 app.use(subcontractorsRouter);
 app.use(capacityEngineRouter);
@@ -478,7 +480,7 @@ app.use('/api/webhooks', billingWebhookRouter);
 app.use('/api/billing', billingRouter);
 app.use(checkinRouter); // Self Check-in API — /api/checkin/*
 app.use("/api/learning", learningRouter);
-app.use("/api/spaghetti", spaghettiRouter); // Lean spaghetti diagram & helikopterperspektiv
+// app.use("/api/spaghetti", spaghettiRouter); // [ARCHIVED 2026-03-26] Lean spaghetti diagram
 app.use("/api/spatial", spatialRouter);   // Spatial Flow Intelligence — zones, spaghetti, friction
 app.use("/api/consumables", consumablesRouter); // Consumables Management — operational cost control
 app.use("/api/culture", cultureRouter);       // Culture & Event Automation — birthdays, breakfast, events
@@ -496,18 +498,20 @@ app.use('/api/revolut', revolutRouter);               // GET /api/revolut/accoun
 
 // ---------------------------------------------------------------------------
 // DMS — Dealer Management System (pixdrift automotive)
+// [ARCHIVED 2026-03-26] — Bilverkstads-vertikal skrotad (beslut 2026-03-23)
+// Alla routes nedan är kommenterade ut. Filer finns i archive/server-routes/
 // ---------------------------------------------------------------------------
-app.use(vehiclesRouter);       // /api/vehicles/*
-app.use(externalAuditsRouter); // /api/external-audits/*, /api/certifications/*
-app.use('/api/control', controlLayerRouter); // Control Layer — live-map, flow-analysis, bottlenecks, RCA, improvements
-app.use(workshopRouter);              // /api/workshop/*
-app.use(workshopStateMachineRouter);  // /api/workshop/work-orders/:id/transition, available-transitions, state-audit
-app.use(checklistEngineRouter);       // /api/checklists/*
-app.use(partsRouter);                 // /api/parts/*
-app.use(vehicleSalesRouter);   // /api/vehicle-sales/*
-app.use(automotiveCrmRouter);  // /api/automotive-crm/*
-app.use('/api/rental', rentalRouter); // /api/rental/* — PIX-event-sourced rental engine
-app.use(oemRouter);            // /api/oem/*
+// app.use(vehiclesRouter);       // /api/vehicles/*
+// app.use(externalAuditsRouter); // /api/external-audits/*, /api/certifications/*
+// app.use('/api/control', controlLayerRouter); // Control Layer
+// app.use(workshopRouter);              // /api/workshop/*
+// app.use(workshopStateMachineRouter);  // /api/workshop/work-orders/:id/transition
+// app.use(checklistEngineRouter);       // /api/checklists/*
+// app.use(partsRouter);                 // /api/parts/*
+// app.use(vehicleSalesRouter);   // /api/vehicle-sales/*
+// app.use(automotiveCrmRouter);  // [ARCHIVED 2026-03-26] /api/automotive-crm/*
+// app.use('/api/rental', rentalRouter); // [ARCHIVED 2026-03-26] /api/rental/*
+// app.use(oemRouter);            // [ARCHIVED 2026-03-26] /api/oem/*
 
 // ---------------------------------------------------------------------------
 // PIX Intelligence Engine — Palantir-depth analytics for automotive SMBs
@@ -541,23 +545,23 @@ app.use('/api/compliance',       complianceCheckerRouter); // Compliance-kontrol
 app.use('/api/tool-assets',      assetAccountabilityRouter); // Asset Accountability & Traceability
 app.use('/api/account-safety',   accountSafetyRouter);       // Account Safety & Offboarding — master accounts, risk analysis, offboarding wizard
 
-import swedacComplianceRouter from './swedac-compliance-api';
-app.use('/api/swedac',           swedacComplianceRouter);    // Swedac Accreditation — ISO 17020/17025/9001, calibration, competence, impartiality
+// [ARCHIVED 2026-03-26] import swedacComplianceRouter from './swedac-compliance-api';
+// app.use('/api/swedac', swedacComplianceRouter); // [ARCHIVED] Swedac Accreditation
 
 import companyComplianceRouter from './company-compliance';
-import vehicleIntakeRouter from './vehicle-intake-api';
-import { missingPartRouter } from './missing-part-api';
-import rentalPartnerRouter from './rental-partner-api';
-import mobilityIncidentRouter from './mobility-incident-api';
+// [ARCHIVED 2026-03-26] import vehicleIntakeRouter from './vehicle-intake-api';
+// [ARCHIVED 2026-03-26] import { missingPartRouter } from './missing-part-api';
+// [ARCHIVED 2026-03-26] import rentalPartnerRouter from './rental-partner-api';
+// [ARCHIVED 2026-03-26] import mobilityIncidentRouter from './mobility-incident-api';
 app.use('/api/company',          companyComplianceRouter);   // Company Core — legal entities, compliance calendar, authority filings (ABL/SFL/ÅRL)
-app.use('/api/intake',           vehicleIntakeRouter);       // Vehicle Intake Protocol — 8-angle photos, diagnostic, recalls (mandatory flow)
-app.use('/api/missing-part',     missingPartRouter);         // Missing Part Protocol — airline-style delay response with auto compensation
-app.use(rentalPartnerRouter);                               // Rental Partner Integration — Europcar/Hertz/Avis/Sixt/Enterprise + own fleet, compensation rules
-app.use('/api/mobility',         mobilityIncidentRouter);    // Mobility Incident Flow Engine — towing, responsibility engine, cost allocation, OEM claims
-// Fluid Integration — Alantec, Orion, and generic fluid management systems
-import fluidIntegrationRouter from "./fluid-integration-api";
-app.use('/api/fluid', fluidIntegrationRouter);              // /api/fluid/integrations, /api/fluid/webhook/*, /api/fluid/events, /api/fluid/inventory, /api/fluid/report
-app.use(bookingEngineRouter);                               // Booking Engine — capacity+intent allocation, PIX-driven estimates, delay risk
+// app.use('/api/intake', vehicleIntakeRouter);       // [ARCHIVED 2026-03-26] Vehicle Intake Protocol
+// app.use('/api/missing-part', missingPartRouter);   // [ARCHIVED 2026-03-26] Missing Part Protocol
+// app.use(rentalPartnerRouter);                      // [ARCHIVED 2026-03-26] Rental Partner Integration
+// app.use('/api/mobility', mobilityIncidentRouter);  // [ARCHIVED 2026-03-26] Mobility Incident Flow Engine
+// [ARCHIVED 2026-03-26] Fluid Integration — moved to archive/server-routes/
+// import fluidIntegrationRouter from "./fluid-integration-api";
+// app.use('/api/fluid', fluidIntegrationRouter);
+// app.use(bookingEngineRouter); // [ARCHIVED 2026-03-26] Booking Engine
 app.use('/api/sla', slaEngineRouter);                       // SLA Escalation Engine — T-60/T-30/T-0 alerts, customer SMS at breach
 
 import auditDashboardRouter from './audit-dashboard-api';
