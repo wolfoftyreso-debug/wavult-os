@@ -23,3 +23,7 @@ export * as valueEngine from './value-engine.js';
 export * as creativeEngine from './creative-engine.js';
 export * as pricingEngine from './pricing-engine.js';
 export * as marketplace from './marketplace.js';
+
+// Workflow Engine
+export * as workflowEngine from './workflow-engine.js';
+export * as workflows from './workflows.js';
