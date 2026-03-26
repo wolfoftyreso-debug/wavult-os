@@ -134,9 +134,8 @@ function ActivityCard({ activity, selected, onClick }: {
   return (
     <div
       onClick={onClick}
-      className="relative flex-shrink-0 cursor-pointer rounded-lg border px-3 py-2 transition-all"
+      className="relative cursor-pointer rounded-lg border px-3 py-2 transition-all w-full"
       style={{
-        width: '180px',
         background: selected ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.02)',
         borderColor: selected ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.06)',
       }}
@@ -509,7 +508,7 @@ export function CampaignOS() {
   const deployedCount = filtered.filter(a => a.status === 'deployed').length
   const failedCount = filtered.filter(a => a.status === 'failed').length
 
-  // Group by month → day
+  // Group by month → day (for all filtered activities)
   const grouped = useMemo(() => {
     const byMonth = new Map<string, Map<string, CampaignActivity[]>>()
     const sorted = [...filtered].sort((a, b) => a.date.localeCompare(b.date))
@@ -526,8 +525,13 @@ export function CampaignOS() {
     return byMonth
   }, [filtered])
 
-  // All calendar days in Q2 2026 (Apr 1 – Jun 30), only those with activities
-  // We show months as headers with days that have activities
+  // Active brand lanes — brands that have activities after filtering
+  const activeBrands = useMemo(() => {
+    const brandSet = new Set(filtered.map(a => a.brand))
+    // Sort in consistent order
+    const order: CampaignActivity['brand'][] = ['quixzoom', 'quixom-ads', 'landvex', 'hypbit', 'wavult']
+    return order.filter(b => brandSet.has(b))
+  }, [filtered])
   const selectedActivity = selectedId
     ? CAMPAIGN_ACTIVITIES.find(a => a.id === selectedId) ?? null
     : null
@@ -603,49 +607,87 @@ export function CampaignOS() {
       {/* ── BODY ────────────────────────────────────────────────────────────── */}
       <div className="flex flex-1 overflow-hidden">
 
-        {/* ── TIMELINE (left) ─────────────────────────────────────────────── */}
-        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-6">
+        {/* ── MULTI-LANE TIMELINE (left) ─────────────────────────────────── */}
+        <div className="flex-1 overflow-auto py-4 px-3">
           {grouped.size === 0 ? (
             <div className="flex items-center justify-center h-40">
               <p className="text-[11px] text-gray-700">No activities match current filters</p>
             </div>
           ) : (
-            Array.from(grouped.entries()).map(([mk, byDay]) => {
-              const monthActivities = Array.from(byDay.values()).flat()
-              const monthColor = mk === '2026-04' ? '#8B5CF6' : mk === '2026-05' ? '#0EA5E9' : '#10B981'
-
-              return (
-                <div key={mk}>
-                  {/* Month header */}
-                  <div className="flex items-center gap-3 mb-3">
-                    <span
-                      className="text-[11px] font-bold uppercase tracking-[0.15em]"
-                      style={{ color: monthColor }}
-                    >
-                      {monthLabel(mk)}
-                    </span>
-                    <span className="text-[9px] font-mono text-gray-700">
-                      {monthActivities.length} activit{monthActivities.length === 1 ? 'y' : 'ies'}
-                    </span>
-                    <div className="flex-1 h-px" style={{ background: monthColor + '20' }} />
+            <div className="min-w-0">
+              {/* ── BRAND LANE HEADERS (sticky) ─────────────────────────────── */}
+              <div className="sticky top-0 z-10 flex border-b" style={{ background: '#07080F', borderColor: 'rgba(255,255,255,0.06)' }}>
+                {/* Date column header */}
+                <div className="flex-shrink-0 px-2 py-2" style={{ width: '88px' }}>
+                  <span className="text-[8px] font-mono text-gray-700 uppercase tracking-widest">Date</span>
+                </div>
+                {/* Brand lane headers */}
+                {activeBrands.map(brand => (
+                  <div
+                    key={brand}
+                    className="flex-1 min-w-[160px] px-2 py-2 border-l"
+                    style={{ borderColor: 'rgba(255,255,255,0.04)' }}
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <span
+                        className="text-[9px] font-bold font-mono"
+                        style={{ color: BRAND_COLOR[brand] }}
+                      >
+                        {BRAND_ABBR[brand]}
+                      </span>
+                      <span className="text-[9px] font-semibold text-gray-500 capitalize truncate">
+                        {brand.replace('-', ' ')}
+                      </span>
+                      <span className="text-[8px] font-mono text-gray-700 ml-auto">
+                        {filtered.filter(a => a.brand === brand).length}
+                      </span>
+                    </div>
+                    {/* Brand lane underline */}
+                    <div className="h-0.5 rounded-full mt-1.5" style={{ background: BRAND_COLOR[brand] + '40' }} />
                   </div>
+                ))}
+              </div>
 
-                  {/* Days */}
-                  <div className="space-y-1">
-                    {Array.from(byDay.entries()).map(([dk, activities]) => {
+              {/* ── MONTH GROUPS ─────────────────────────────────────────────── */}
+              {Array.from(grouped.entries()).map(([mk, byDay]) => {
+                const monthActivities = Array.from(byDay.values()).flat()
+                const monthColor = mk === '2026-04' ? '#8B5CF6' : mk === '2026-05' ? '#0EA5E9' : '#10B981'
+
+                return (
+                  <div key={mk} className="mt-4">
+                    {/* Month header row (spans all columns) */}
+                    <div className="flex items-center gap-3 mb-2 px-2">
+                      <span
+                        className="text-[11px] font-bold uppercase tracking-[0.15em]"
+                        style={{ color: monthColor }}
+                      >
+                        {monthLabel(mk)}
+                      </span>
+                      <span className="text-[9px] font-mono text-gray-700">
+                        {monthActivities.length} activit{monthActivities.length === 1 ? 'y' : 'ies'}
+                      </span>
+                      <div className="flex-1 h-px" style={{ background: monthColor + '20' }} />
+                    </div>
+
+                    {/* Day rows with brand lanes */}
+                    {Array.from(byDay.entries()).map(([dk, _activities]) => {
                       const isToday = dk === TODAY
                       const weekLabel_ = weekLabel(dk)
 
                       return (
-                        <div key={dk} className="flex items-start gap-3">
-                          {/* Date label */}
-                          <div
-                            className="flex-shrink-0 pt-1"
-                            style={{ width: '96px' }}
-                          >
+                        <div
+                          key={dk}
+                          className="flex border-b"
+                          style={{
+                            borderColor: isToday ? '#F59E0B30' : 'rgba(255,255,255,0.03)',
+                            background: isToday ? 'rgba(245,158,11,0.03)' : 'transparent',
+                          }}
+                        >
+                          {/* Date column */}
+                          <div className="flex-shrink-0 px-2 py-2" style={{ width: '88px' }}>
                             <div className="flex flex-col">
                               <span
-                                className="text-[9px] font-mono"
+                                className="text-[8px] font-mono"
                                 style={{ color: isToday ? '#F59E0B' : '#374151' }}
                               >
                                 {weekLabel_}
@@ -655,35 +697,51 @@ export function CampaignOS() {
                                 style={{ color: isToday ? '#F59E0B' : '#4B5563' }}
                               >
                                 {dayLabel(dk)}
-                                {isToday && <span className="ml-1 text-[8px]">← today</span>}
                               </span>
+                              {isToday && (
+                                <span className="text-[7px] font-bold mt-0.5" style={{ color: '#F59E0B' }}>TODAY</span>
+                              )}
                             </div>
                           </div>
 
-                          {/* Activity cards */}
-                          <div className="flex flex-wrap gap-2 flex-1">
-                            {activities.length === 0 ? (
-                              <span className="text-[9px] text-gray-800 pt-1">–</span>
-                            ) : (
-                              activities.map(activity => (
-                                <ActivityCard
-                                  key={activity.id}
-                                  activity={activity}
-                                  selected={selectedId === activity.id}
-                                  onClick={() => setSelectedId(
-                                    selectedId === activity.id ? null : activity.id
-                                  )}
-                                />
-                              ))
-                            )}
-                          </div>
+                          {/* Brand lane cells */}
+                          {activeBrands.map(brand => {
+                            const brandActivities = filtered.filter(
+                              a => a.brand === brand && a.date === dk
+                            )
+
+                            return (
+                              <div
+                                key={brand}
+                                className="flex-1 min-w-[160px] px-1.5 py-1.5 border-l"
+                                style={{ borderColor: 'rgba(255,255,255,0.04)' }}
+                              >
+                                {brandActivities.length > 0 ? (
+                                  <div className="space-y-1.5">
+                                    {brandActivities.map(activity => (
+                                      <ActivityCard
+                                        key={activity.id}
+                                        activity={activity}
+                                        selected={selectedId === activity.id}
+                                        onClick={() => setSelectedId(
+                                          selectedId === activity.id ? null : activity.id
+                                        )}
+                                      />
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <div className="h-full min-h-[36px]" />
+                                )}
+                              </div>
+                            )
+                          })}
                         </div>
                       )
                     })}
                   </div>
-                </div>
-              )
-            })
+                )
+              })}
+            </div>
           )}
         </div>
 
