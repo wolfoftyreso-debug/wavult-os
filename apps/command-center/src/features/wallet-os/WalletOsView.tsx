@@ -8,9 +8,10 @@ import { TaskEngineView } from './TaskEngineView'
 import { IRMarketplace } from './IRMarketplace'
 import { LevelSystemView } from './LevelSystemView'
 import { DemandEngineView } from './DemandEngineView'
+import { EconomyEngineView } from './EconomyEngineView'
 import { MOCK_USER, getLevelDef } from './walletOsData'
 
-type TabId = 'wallet' | 'tasks' | 'ir' | 'levels' | 'demand'
+type TabId = 'wallet' | 'tasks' | 'ir' | 'levels' | 'demand' | 'economy'
 
 export function WalletOsView() {
   const [activeTab, setActiveTab] = useState<TabId>('wallet')
@@ -22,6 +23,7 @@ export function WalletOsView() {
     { id: 'ir', label: 'Intelligence Repos', icon: '◉' },
     { id: 'levels', label: 'Levels & Streaks', icon: '★' },
     { id: 'demand', label: 'Demand Engine', icon: '▣' },
+    { id: 'economy', label: 'Economy Engine', icon: '◈' },
   ]
 
   return (
@@ -88,6 +90,7 @@ export function WalletOsView() {
         {activeTab === 'ir' && <IRMarketplace />}
         {activeTab === 'levels' && <LevelSystemView />}
         {activeTab === 'demand' && <DemandEngineView />}
+        {activeTab === 'economy' && <EconomyEngineView />}
       </div>
     </div>
   )
