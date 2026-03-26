@@ -350,25 +350,153 @@ export function createPlatformClient(config: SdkConfig) {
 }
 
 // ============================================================================
+// CIS Types (Creative Intelligence System — /api/cis)
+// ============================================================================
+
+export interface ValueAssessParams {
+  latitude: number;
+  longitude: number;
+  area_name?: string;
+  city?: string;
+  area_type?: 'residential' | 'commercial' | 'industrial' | 'mixed';
+  category: string;
+}
+
+export interface GeneratePackagesParams {
+  latitude: number;
+  longitude: number;
+  max_packages?: number;
+  max_radius_km?: number;
+  preferred_categories?: string[];
+}
+
+export interface CreateListingParams {
+  ir_id: string;
+  title: string;
+  headline?: string;
+  description?: string;
+  cover_image_key?: string;
+  price_type: 'free' | 'one_time' | 'subscription' | 'lead_based';
+  price?: number;
+  subscription_monthly?: number;
+  price_per_lead?: number;
+}
+
+export interface MarketplaceSearchParams {
+  q?: string;
+  category?: string;
+  city?: string;
+  area_name?: string;
+  buyer_segment?: string;
+  price_max?: number;
+  min_rating?: number;
+  sort?: 'relevance' | 'price_low' | 'price_high' | 'newest' | 'popular';
+  limit?: number;
+  offset?: number;
+}
+
+export interface MarketplacePurchaseParams {
+  buyer_id: string;
+  listing_id: string;
+  payment_type: 'one_time' | 'subscription' | 'lead';
+  leads_requested?: number;
+}
+
+export interface PayoutCalcParams {
+  base_payout_per_image: number;
+  image_count: number;
+  value_score: number;
+  streak_multiplier: number;
+  level_revenue_share_pct: number;
+  completion_time_mins?: number;
+  deadline_mins?: number;
+  avg_ai_quality_score?: number;
+}
+
+// ============================================================================
+// CIS Client (Creative Intelligence System)
+// ============================================================================
+
+export function createCISClient(config: SdkConfig) {
+  return {
+    // Value Discovery Engine
+    assessValue: (params: ValueAssessParams) =>
+      request(config, 'POST', '/value/assess', params),
+    batchAssessValue: (areas: ValueAssessParams[]) =>
+      request(config, 'POST', '/value/batch', { areas }),
+    recordDemandSignal: (params: { category: string; area_name?: string; city?: string; signal_type: string; latitude?: number; longitude?: number }) =>
+      request(config, 'POST', '/value/signal', params),
+
+    // Photo Packages (Creative Engine)
+    generatePackages: (params: GeneratePackagesParams) =>
+      request(config, 'POST', '/packages/generate', params),
+    getNearbyPackages: (lat: number, lng: number, radius?: number, tier?: number) => {
+      const qs = new URLSearchParams({
+        lat: lat.toString(), lng: lng.toString(),
+        ...(radius && { radius: radius.toString() }),
+        ...(tier && { tier: tier.toString() }),
+      });
+      return request(config, 'GET', `/packages/nearby?${qs}`);
+    },
+    claimPackage: (packageId: string) =>
+      request(config, 'POST', `/packages/${packageId}/claim`),
+    completePackage: (packageId: string) =>
+      request(config, 'POST', `/packages/${packageId}/complete`),
+    getTemplates: () =>
+      request(config, 'GET', '/templates'),
+
+    // Pricing Engine
+    calculatePayout: (params: PayoutCalcParams) =>
+      request(config, 'POST', '/pricing/payout', params),
+    getIRPriceSuggestion: (repoId: string) =>
+      request(config, 'GET', `/pricing/ir/${repoId}`),
+    getLeadPricing: (listingId: string) =>
+      request(config, 'GET', `/pricing/leads/${listingId}`),
+
+    // Marketplace
+    createListing: (params: CreateListingParams) =>
+      request(config, 'POST', '/marketplace/listings', params),
+    getListing: (listingId: string) =>
+      request(config, 'GET', `/marketplace/listings/${listingId}`),
+    extractLeads: (listingId: string) =>
+      request(config, 'POST', `/marketplace/listings/${listingId}/extract-leads`),
+    searchMarketplace: (params: MarketplaceSearchParams) => {
+      const qs = new URLSearchParams();
+      if (params.q) qs.set('q', params.q);
+      if (params.category) qs.set('category', params.category);
+      if (params.city) qs.set('city', params.city);
+      if (params.area_name) qs.set('area_name', params.area_name);
+      if (params.buyer_segment) qs.set('buyer_segment', params.buyer_segment);
+      if (params.price_max) qs.set('price_max', params.price_max.toString());
+      if (params.sort) qs.set('sort', params.sort);
+      if (params.limit) qs.set('limit', params.limit.toString());
+      if (params.offset) qs.set('offset', params.offset.toString());
+      return request(config, 'GET', `/marketplace/search?${qs}`);
+    },
+    purchaseFromMarketplace: (params: MarketplacePurchaseParams) =>
+      request(config, 'POST', '/marketplace/purchase', params),
+
+    // Demand Intelligence
+    getTopDemandAreas: (limit?: number) =>
+      request(config, 'GET', `/demand/top?limit=${limit ?? 20}`),
+  };
+}
+
+// ============================================================================
 // Convenience: combined client
 // ============================================================================
 
 export function createQuixZoomClient(config: {
   financialBaseUrl: string;
   platformBaseUrl: string;
+  cisBaseUrl: string;
   actor?: string;
   headers?: Record<string, string>;
 }) {
+  const common = { actor: config.actor, headers: config.headers };
   return {
-    financial: createFinancialClient({
-      baseUrl: config.financialBaseUrl,
-      actor: config.actor,
-      headers: config.headers,
-    }),
-    platform: createPlatformClient({
-      baseUrl: config.platformBaseUrl,
-      actor: config.actor,
-      headers: config.headers,
-    }),
+    financial: createFinancialClient({ baseUrl: config.financialBaseUrl, ...common }),
+    platform: createPlatformClient({ baseUrl: config.platformBaseUrl, ...common }),
+    cis: createCISClient({ baseUrl: config.cisBaseUrl, ...common }),
   };
 }

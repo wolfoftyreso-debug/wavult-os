@@ -5,6 +5,7 @@ import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import { router } from './api/routes.js';
 import { qzRouter } from './api/quixzoom-routes.js';
+import { cisRouter } from './api/cis-routes.js';
 
 dotenv.config();
 
@@ -30,11 +31,15 @@ app.use('/api/qx', router);
 // Routes — QuixZoom Platform
 app.use('/api/qz', qzRouter);
 
+// Routes — Creative Intelligence System
+app.use('/api/cis', cisRouter);
+
 // Start
 app.listen(port, () => {
   console.log(`[quixzoom] running on port ${port}`);
-  console.log(`  Financial API: /api/qx`);
-  console.log(`  Platform API:  /api/qz`);
+  console.log(`  Financial API:   /api/qx`);
+  console.log(`  Platform API:    /api/qz`);
+  console.log(`  Intelligence API: /api/cis`);
 });
 
 export default app;

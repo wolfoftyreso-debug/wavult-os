@@ -17,3 +17,9 @@ export * as ir from './ir.js';
 export * as ai from './ai.js';
 export * as demand from './demand.js';
 export * as geo from './geo.js';
+
+// Creative Intelligence System (CIS)
+export * as valueEngine from './value-engine.js';
+export * as creativeEngine from './creative-engine.js';
+export * as pricingEngine from './pricing-engine.js';
+export * as marketplace from './marketplace.js';
