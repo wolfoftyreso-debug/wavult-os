@@ -73,8 +73,8 @@ export function CRMHub() {
       <div className="px-6 pt-6 pb-0 flex flex-col gap-4 flex-shrink-0">
         <div className="flex items-start justify-between flex-wrap gap-3">
           <div>
-            <h1 className="text-2xl font-bold text-white">CRM</h1>
-            <p className="text-gray-400 mt-0.5 text-sm">
+            <h1 className="text-sm font-semibold text-white">CRM</h1>
+            <p className="text-sm text-gray-300 mt-0.5">
               Wavult Sales — quiXzoom · LandveX · Hypbit
             </p>
           </div>

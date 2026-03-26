@@ -24,43 +24,56 @@ export function ThailandCountdown() {
 
   if (time.done) {
     return (
-      <div className="bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-2xl p-6 text-center">
-        <div className="text-4xl mb-2">🇹🇭</div>
-        <p className="text-white font-bold text-xl">Vi är i Thailand!</p>
-        <p className="text-white/60 text-sm">Workcamp pågår</p>
+      <div
+        className="rounded-xl border border-yellow-500/30 p-6 text-center"
+        style={{ background: 'linear-gradient(135deg, #1a0a2e 0%, #0D0F1A 100%)' }}
+      >
+        <div className="text-5xl mb-3">🇹🇭</div>
+        <p className="text-white font-bold text-2xl">Vi är i Thailand!</p>
+        <p className="text-white/50 text-sm mt-1">Workcamp pågår</p>
       </div>
     )
   }
 
-  const units = [
-    { label: 'Dagar', value: time.days },
-    { label: 'Timmar', value: time.hours },
-    { label: 'Minuter', value: time.minutes },
-    { label: 'Sekunder', value: time.seconds },
-  ]
-
   return (
-    <div className="bg-gradient-to-br from-orange-500/10 to-yellow-500/10 border border-orange-500/20 rounded-2xl p-6">
-      <div className="flex items-center gap-2 mb-4">
-        <span className="text-2xl">🇹🇭</span>
+    <div
+      className="rounded-xl border border-purple-500/20 overflow-hidden"
+      style={{ background: 'linear-gradient(135deg, #1a0a2e 0%, #0D0F1A 100%)' }}
+    >
+      {/* Header */}
+      <div className="px-5 pt-5 pb-4 border-b border-white/[0.06] flex items-center gap-3">
+        <span className="text-3xl">🇹🇭</span>
         <div>
-          <p className="text-white font-semibold">Thailand Workcamp</p>
-          <p className="text-white/50 text-xs">11 april 2026 — hela teamet</p>
+          <h3 className="text-sm font-semibold text-white">Thailand Workcamp</h3>
+          <p className="text-xs text-gray-500 mt-0.5">11 April 2026 — Projektstart</p>
         </div>
       </div>
-      <div className="grid grid-cols-4 gap-2">
-        {units.map(({ label, value }) => (
-          <div key={label} className="bg-black/20 rounded-xl p-3 text-center">
-            <p className="text-2xl font-bold text-orange-400 tabular-nums">
+
+      {/* Countdown grid */}
+      <div className="grid grid-cols-4 gap-3 px-5 py-5">
+        {[
+          { label: 'DAGAR', value: time.days },
+          { label: 'TIMMAR', value: time.hours },
+          { label: 'MINUTER', value: time.minutes },
+          { label: 'SEKUNDER', value: time.seconds },
+        ].map(({ label, value }) => (
+          <div
+            key={label}
+            className="rounded-xl p-3 text-center"
+            style={{ background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.15)' }}
+          >
+            <p className="text-5xl font-bold tabular-nums leading-none" style={{ color: '#a78bfa' }}>
               {String(value).padStart(2, '0')}
             </p>
-            <p className="text-white/40 text-xs mt-1">{label}</p>
+            <p className="text-[9px] text-gray-600 uppercase tracking-wider mt-2">{label}</p>
           </div>
         ))}
       </div>
-      <p className="text-white/30 text-xs text-center mt-3">
-        Projekten sätts upp och rullar ut 🚀
-      </p>
+
+      {/* Footer */}
+      <div className="px-5 pb-4 text-center">
+        <p className="text-xs text-gray-600">Hela teamet samlas — projekten rullas ut 🚀</p>
+      </div>
     </div>
   )
 }

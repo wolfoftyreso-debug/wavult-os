@@ -142,8 +142,8 @@ export function CommandDashboard() {
     <div className="space-y-8 animate-fade-in max-w-6xl">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">Command Center</h1>
-        <p className="text-gray-400 mt-1">Wavult Group — Operationellt kontrollcenter</p>
+        <h1 className="text-sm font-semibold text-white">Command Center</h1>
+        <p className="text-sm text-gray-300 mt-1">Wavult Group — Operationellt kontrollcenter</p>
       </div>
 
       {/* Thailand Workcamp Countdown */}

@@ -7,7 +7,7 @@ function CeoDashboard() {
   return (
     <div className="space-y-8 max-w-6xl">
       <div>
-        <h1 className="text-2xl font-bold text-white">Group CEO</h1>
+        <h1 className="text-sm font-semibold text-white">Group CEO</h1>
         <p className="text-gray-400 mt-1">Strategisk överblick — Wavult Ecosystem</p>
       </div>
 
@@ -49,7 +49,7 @@ function CeoDashboard() {
       <Section title="Beslutslogg (senaste)">
         {[
           { text: 'Hypbit-bilverkstad skrotad — fokus internt system', status: 'done' },
-          { text: 'LandveX AB (Sverige) — konverterad från Sommarliden Holding', status: 'done' },
+          { text: 'LandveX AB (Sverige) — registrerat och aktivt', status: 'done' },
           { text: 'S3 multi-region bildlagring — EU + US live', status: 'done' },
           { text: 'OI Regional Architecture — EU/US separata instanser', status: 'done' },
           { text: 'Rollstruktur fastställd — 6 C-suite roller definierade', status: 'done' },
@@ -64,7 +64,7 @@ function Opsdashboard() {
   return (
     <div className="space-y-8 max-w-6xl">
       <div>
-        <h1 className="text-2xl font-bold text-white">CEO Operations</h1>
+        <h1 className="text-sm font-semibold text-white">CEO Operations</h1>
         <p className="text-gray-400 mt-1">Daglig drift & execution — Wavult Operations</p>
       </div>
 
@@ -112,7 +112,7 @@ function CfoDashboard() {
   return (
     <div className="space-y-8 max-w-6xl">
       <div>
-        <h1 className="text-2xl font-bold text-white">CFO</h1>
+        <h1 className="text-sm font-semibold text-white">CFO</h1>
         <p className="text-gray-400 mt-1">Finansiell kontroll — Wavult Ecosystem</p>
       </div>
 
@@ -160,7 +160,7 @@ function CtoDashboard() {
   return (
     <div className="space-y-8 max-w-6xl">
       <div>
-        <h1 className="text-2xl font-bold text-white">Group CTO</h1>
+        <h1 className="text-sm font-semibold text-white">Group CTO</h1>
         <p className="text-gray-400 mt-1">Teknisk arkitektur & infrastruktur — Wavult Ecosystem</p>
       </div>
 
@@ -217,7 +217,7 @@ function CloDashboard() {
   return (
     <div className="space-y-8 max-w-6xl">
       <div>
-        <h1 className="text-2xl font-bold text-white">Chief Legal & Compliance</h1>
+        <h1 className="text-sm font-semibold text-white">Chief Legal & Compliance</h1>
         <p className="text-gray-400 mt-1">Bolagsstruktur, avtal & risk — Wavult Ecosystem</p>
       </div>
 
@@ -244,7 +244,7 @@ function CloDashboard() {
             { text: 'QuiXzoom UAB (Litauen) — planerat', status: 'planned' },
             { text: 'QuiXzoom Inc (Delaware) — planerat', status: 'planned' },
             { text: 'LandveX Inc (Texas/Houston) — under bildning', status: 'in-progress' },
-            { text: 'LandveX AB (Sverige, ex Sommarliden) — live', status: 'active' },
+            { text: 'LandveX AB (Sverige) — live', status: 'active' },
           ]}
         </Section>
         <Section title="Juridiska prioriteringar">

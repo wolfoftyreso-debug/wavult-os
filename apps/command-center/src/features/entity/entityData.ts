@@ -133,7 +133,7 @@ export const ENTITY_FINANCE: EntityFinance[] = [
     cashflow_status: 'ok',
     intercompany_in: [],
     intercompany_out: ['wavult-group', 'wavult-operations'],
-    billing_notes: 'LandveX AB är befintligt bolag (ex Sommarliden AB). Sverige-marknad. Pilot Q3 2026.',
+    billing_notes: 'LandveX AB är befintligt bolag. Sverige-marknad. Pilot Q3 2026.',
     open_items: [
       { label: 'Bolags-konvertering till LandveX-varumärke', status: 'watch' },
       { label: 'Trafikverket / kommunpipeline', status: 'watch' },
@@ -237,11 +237,11 @@ export const ENTITY_LEGAL: EntityLegal[] = [
   {
     entity_id: 'landvex-ab',
     legal_form: 'Aktiebolag (AB)',
-    jurisdiction_detail: 'Sverige — ex Sommarliden AB, konverteras',
+    jurisdiction_detail: 'Sverige — registrerat som LandveX AB',
     incorporation_status: 'complete',
     compliance_status: 'ok',
     contracts: [
-      { name: 'Bolagskonvertering / namnbyte', status: 'watch', note: 'Sommarliden → LandveX AB.' },
+      { name: 'Varumärkesregistrering LandveX AB', status: 'watch', note: 'Pågår.' },
       { name: 'Kommunavtal — pilotmall', status: 'watch', note: 'Ej klar.' },
       { name: 'Royalty Agreement (WGH ← LVX-SE)', status: 'watch', note: 'Ingår i IC-paketet.' },
     ],
@@ -445,7 +445,7 @@ export const ENTITY_OPS: EntityOps[] = [
     entity_id: 'landvex-ab',
     active_work: [
       { label: 'Optical Insight EU portal', owner: 'Erik', status: 'active' },
-      { label: 'LandveX brand rollout (ex Sommarliden)', owner: 'Dennis', status: 'active' },
+      { label: 'LandveX brand rollout', owner: 'Dennis', status: 'active' },
       { label: 'Kommunpipeline — pilot Q3 2026', owner: 'Leon', status: 'planned' },
     ],
     deliverables: [

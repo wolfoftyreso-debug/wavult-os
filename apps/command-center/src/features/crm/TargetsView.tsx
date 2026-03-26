@@ -151,7 +151,7 @@ export function TargetsView() {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-2xl">🏖️</span>
-            <h2 className="text-xl font-bold text-white">Thailand Workcamp</h2>
+            <h2 className="text-sm font-semibold text-white">Thailand Workcamp</h2>
           </div>
           <p className="text-sm text-gray-400">
             11 april 2026 — Teambuilding + projektlansering. Säljmålen ska vara uppfyllda.

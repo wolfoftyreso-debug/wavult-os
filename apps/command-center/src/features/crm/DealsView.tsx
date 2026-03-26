@@ -32,7 +32,7 @@ export function DealsView() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h2 className="text-xl font-bold text-white">Avtal</h2>
+          <h2 className="text-sm font-semibold text-white">Avtal</h2>
           <p className="text-sm text-gray-400 mt-0.5">
             Signerat: <span className="text-green-400 font-semibold">{formatSEK(totalValue)}</span>
             <span className="mx-2 text-gray-700">·</span>

@@ -24,8 +24,8 @@ export function PayrollHub() {
     <div className="h-full flex flex-col overflow-hidden">
       {/* Page header */}
       <div className="px-6 pt-6 pb-0 flex-shrink-0">
-        <h1 className="text-2xl font-bold text-white">Lön & Personal</h1>
-        <p className="text-gray-400 text-sm mt-1">Wavult Group — 5 anställda · Skattetabell 33 · Arbetsgivaravgift 31.42%</p>
+        <h1 className="text-sm font-semibold text-white">Lön & Personal</h1>
+        <p className="text-sm text-gray-300 mt-1">Wavult Group — 5 anställda · Skattetabell 33 · Arbetsgivaravgift 31.42%</p>
 
         {/* Tab bar */}
         <div className="flex gap-1 mt-4 border-b border-surface-border overflow-x-auto">

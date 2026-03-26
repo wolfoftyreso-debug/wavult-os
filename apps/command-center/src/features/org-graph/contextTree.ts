@@ -175,7 +175,7 @@ const ROLE_SUBORDINATES: Partial<Record<RoleId, SubNode[]>> = {
       children: [
         { id: 'sub-clo-s1', type: 'entity', label: 'Wavult Group Dubai', sublabel: 'Holding · IP owner · Forming', color: '#8B5CF6', flag: '🇦🇪', status: 'forming', expandable: false, entityId: 'wavult-group' },
         { id: 'sub-clo-s2', type: 'entity', label: 'Wavult Operations Dubai', sublabel: 'Operations hub · Forming', color: '#0EA5E9', flag: '🇦🇪', status: 'forming', expandable: false, entityId: 'wavult-operations' },
-        { id: 'sub-clo-s3', type: 'entity', label: 'LandveX AB', sublabel: 'Sweden · Live (ex Sommarliden)', color: '#EC4899', flag: '🇸🇪', status: 'live', expandable: false, entityId: 'landvex-ab' },
+        { id: 'sub-clo-s3', type: 'entity', label: 'LandveX AB', sublabel: 'Sweden · Live', color: '#EC4899', flag: '🇸🇪', status: 'live', expandable: false, entityId: 'landvex-ab' },
         { id: 'sub-clo-s4', type: 'entity', label: 'LandveX Inc', sublabel: 'Texas · Forming', color: '#F59E0B', flag: '🇺🇸', status: 'forming', expandable: false, entityId: 'landvex-inc' },
         { id: 'sub-clo-s5', type: 'entity', label: 'QuiXzoom UAB', sublabel: 'Litauen · Planned', color: '#10B981', flag: '🇱🇹', status: 'planned', expandable: false, entityId: 'quixzoom-uab' },
         { id: 'sub-clo-s6', type: 'entity', label: 'QuiXzoom Inc', sublabel: 'Delaware · Planned', color: '#22D3EE', flag: '🇺🇸', status: 'planned', expandable: false, entityId: 'quixzoom-inc' },

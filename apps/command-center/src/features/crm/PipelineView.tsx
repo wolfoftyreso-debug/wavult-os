@@ -127,7 +127,7 @@ export function PipelineView() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h2 className="text-xl font-bold text-white">Pipeline</h2>
+          <h2 className="text-sm font-semibold text-white">Pipeline</h2>
           <p className="text-sm text-gray-400 mt-0.5">
             Pipeline-värde: <span className="text-white font-semibold">{formatSEK(totalPipelineValue)}</span>
             <span className="ml-3">Vunnet: <span className="text-green-400 font-semibold">{formatSEK(wonValue)}</span></span>

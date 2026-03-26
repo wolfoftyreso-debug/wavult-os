@@ -38,7 +38,7 @@ export const COMPANY_LAUNCHES: CompanyLaunch[] = [
     steps: [
       {
         id: 'lvx-se-01',
-        title: 'Namnbyte: Sommarliden Holding AB → LandveX AB',
+        title: 'LandveX AB — Registrering & Varumärke',
         description: 'Byta firma via Bolagsverkets e-tjänst. Org.nr 559141-7042 behålls.',
         owner: 'dennis',
         category: 'registration',
