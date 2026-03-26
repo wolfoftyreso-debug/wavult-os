@@ -66,6 +66,7 @@ import consumablesRouter from "./consumables";
 import { scheduleAutoConsume } from "./jobs/consumables-auto-consume";
 import treasuryRouter from "./treasury-api";
 import paymentOsRouter from "./payment-os-api";
+import walletOsRouter from "./wallet-os-api";
 import cultureRouter from "./culture-engine";
 import peopleOSRouter from "./people-os";
 
@@ -509,6 +510,7 @@ app.use('/api/customer-portal', customerPortalRouter); // GET /api/customer-port
 app.use('/api/revolut', revolutRouter);               // GET /api/revolut/accounts|cards, POST /api/revolut/cards, GET /api/revolut/cost-report
 app.use('/api/treasury', treasuryRouter);             // Treasury API — accounts, flows, routing, payouts, compliance gates
 app.use('/api/payment-os', paymentOsRouter);         // Payment OS — split engine, ledger, compliance checks, event trail
+app.use('/api/wallet-os', walletOsRouter);           // Wallet OS — wallets, tasks, IR marketplace, gamification, demand engine
 
 // ---------------------------------------------------------------------------
 // DMS — Dealer Management System (pixdrift automotive)

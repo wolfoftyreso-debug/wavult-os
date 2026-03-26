@@ -25,6 +25,7 @@ import { SubmissionsView } from './features/submissions/SubmissionsView'
 import { CompanyLaunchView } from './features/company-launch/CompanyLaunchView'
 import { CorporateStructureView } from './features/corporate-structure'
 import { PaymentOsView } from './features/payment-os'
+import { WalletOsView } from './features/wallet-os'
 
 function AuthenticatedApp() {
   const { role } = useRole()
@@ -55,6 +56,7 @@ function AuthenticatedApp() {
             <Route path="/company-launch" element={<CompanyLaunchView />} />
             <Route path="/corporate" element={<CorporateStructureView />} />
             <Route path="/payment-os" element={<PaymentOsView />} />
+            <Route path="/wallet-os" element={<WalletOsView />} />
           </Routes>
         </Shell>
       </EventProvider>

@@ -147,6 +147,7 @@ function NavigationGrid() {
     { label: 'Legal Hub', route: '/legal', desc: 'Contracts & compliance' },
     { label: 'Corporate Structure', route: '/corporate', desc: 'Holding & treasury' },
     { label: 'Payment OS', route: '/payment-os', desc: 'Payment infrastructure' },
+    { label: 'Wallet OS', route: '/wallet-os', desc: 'Payouts & IR marketplace' },
   ]
 
   return (

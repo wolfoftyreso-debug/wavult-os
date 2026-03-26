@@ -17,7 +17,7 @@ import { useEvents } from '../../core/events/EventContext'
 const EVENT_DRIVEN_ROUTES = ['/', '/dashboard']
 
 // Routes that need full bleed (no padding)
-const FULL_BLEED_ROUTES = ['/org', '/entities', '/incidents', '/markets', '/campaigns', '/corporate', '/payment-os']
+const FULL_BLEED_ROUTES = ['/org', '/entities', '/incidents', '/markets', '/campaigns', '/corporate', '/payment-os', '/wallet-os']
 
 function isFullBleed(pathname: string) {
   return FULL_BLEED_ROUTES.some(r => pathname.startsWith(r))
