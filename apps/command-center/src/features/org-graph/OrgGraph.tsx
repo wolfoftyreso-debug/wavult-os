@@ -2,7 +2,6 @@
 // Apple Settings style. Clean list with drill-down.
 
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { ENTITIES, RELATIONSHIPS, ROLE_MAPPINGS, type Entity } from './data'
 
 const LAYERS = [
@@ -76,7 +75,6 @@ export function OrgGraph() {
 }
 
 function EntityDetail({ entity, onBack }: { entity: Entity; onBack: () => void }) {
-  const navigate = useNavigate()
   const parent = entity.parent_entity_id ? ENTITIES.find(e => e.id === entity.parent_entity_id) : null
   const children = ENTITIES.filter(e => e.parent_entity_id === entity.id)
   const people = ROLE_MAPPINGS.filter(r => r.entity_ids.includes(entity.id))
