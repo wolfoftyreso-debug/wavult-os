@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useEntityScope } from '../../shared/scope/EntityScopeContext'
+import { ModuleHeader } from '../../shared/maturity/ModuleHeader'
 import { FinanceOverview } from './FinanceOverview'
 import { ChartOfAccounts } from './ChartOfAccounts'
 import { LedgerView } from './LedgerView'
@@ -28,6 +29,7 @@ export function FinanceHub() {
 
   return (
     <div className="flex flex-col h-full bg-[#07080F] text-white">
+      <ModuleHeader moduleId="finance" />
       {/* Header */}
       <div className="px-6 py-4 border-b border-white/[0.06] flex-shrink-0">
         <div className="flex items-center gap-3">

@@ -251,7 +251,7 @@ router.get('/ku-report', async (req: Request, res: Response) => {
       return res.status(403).json({ error: 'KU-rapport kräver ADMIN-behörighet' });
     }
 
-    const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_KEY!);
+    const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
     // TODO: Hämta löneutbetalningar per anställd för året
     // Kräver integration med lönesystem
@@ -308,7 +308,7 @@ router.get('/hours-from-ledger', async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'employee_id, from_date, to_date och workplace_id krävs' });
     }
 
-    const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_KEY!);
+    const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
     const { data: checkins } = await supabase
       .from('personnel_checkins')

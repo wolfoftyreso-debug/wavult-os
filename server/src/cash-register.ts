@@ -196,7 +196,7 @@ function paymentMethodLabel(method: string): string {
 }
 
 function getSupabase() {
-  return createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_KEY!);
+  return createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 }
 
 // ─── POST /api/cash-register/sale ───────────────────────────────────────────

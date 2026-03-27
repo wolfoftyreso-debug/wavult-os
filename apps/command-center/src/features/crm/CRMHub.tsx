@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { ModuleHeader } from '../../shared/maturity/ModuleHeader'
 import { PipelineView } from './PipelineView'
 import { ProspectList } from './ProspectList'
 import { ContactsView } from './ContactsView'
@@ -69,6 +70,7 @@ export function CRMHub() {
 
   return (
     <div className="flex flex-col h-full">
+      <ModuleHeader moduleId="crm" />
       {/* Header */}
       <div className="px-6 pt-6 pb-0 flex flex-col gap-4 flex-shrink-0">
         <div className="flex items-start justify-between flex-wrap gap-3">

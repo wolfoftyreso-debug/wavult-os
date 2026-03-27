@@ -64,7 +64,7 @@ router.post('/check', async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'org_id krävs' });
     }
 
-    const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_KEY!);
+    const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
     const checks: ComplianceCheck[] = [];
 
     // ── 1. PERSONALLIGGARE (SFL 39:9-12) ───────────────────────────────────

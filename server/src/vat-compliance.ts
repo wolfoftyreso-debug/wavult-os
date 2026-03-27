@@ -140,7 +140,7 @@ router.get('/declaration', async (req: Request, res: Response) => {
       toDate   = `${yearNum}-${String(month).padStart(2, '0')}-${endDay}`;
     }
 
-    const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_KEY!);
+    const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
     // Utgående moms (från kassatransaktioner)
     const { data: sales } = await supabase
