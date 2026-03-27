@@ -1,23 +1,28 @@
 import { View, TextInput, TouchableOpacity, StyleSheet, Platform } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { theme } from '../../constants/theme'
+import { VoiceButton } from './VoiceButton'
 
 type Props = {
   value: string
   onChangeText: (text: string) => void
   onSend: () => void
-  onMic?: () => void
+  onVoiceTranscribed?: (text: string) => void
   disabled?: boolean
 }
 
-export function InputBar({ value, onChangeText, onSend, onMic, disabled }: Props) {
+export function InputBar({ value, onChangeText, onSend, onVoiceTranscribed, disabled }: Props) {
   const canSend = value.trim().length > 0 && !disabled
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.micBtn} onPress={onMic} disabled={disabled}>
-        <Ionicons name="mic-outline" size={22} color={disabled ? theme.colors.textMuted : theme.colors.textSecondary} />
-      </TouchableOpacity>
+      <VoiceButton
+        onTranscribed={(text) => {
+          onChangeText(text)
+          onVoiceTranscribed?.(text)
+        }}
+        disabled={disabled}
+      />
       <TextInput
         style={styles.input}
         value={value}

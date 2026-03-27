@@ -15,6 +15,7 @@ import { InputBar } from '../../components/chat/InputBar'
 import { useStore } from '../../lib/store'
 import { api } from '../../lib/api'
 import { MOCK_CONTAINERS, MOCK_AI_RESPONSES } from '../../lib/mockData'
+import { sendToBernt, pingBernt } from '../../lib/bernt'
 import { theme } from '../../constants/theme'
 import type { ChatMessage } from '../../lib/store'
 import type { Container } from '../../lib/mockData'
@@ -22,42 +23,14 @@ import type { Container } from '../../lib/mockData'
 let msgIdCounter = 0
 function genId() { return `msg_${Date.now()}_${++msgIdCounter}` }
 
-// Keyword matching → rätt svar
-function getResponseKey(input: string): string {
+// Fallback mock (används om Bernt ej svarar)
+function getMockResponse(input: string): string {
   const lc = input.toLowerCase()
-  if (lc.includes('task') || lc.includes('container') || lc.includes('idag') || lc.includes('visa')) {
-    return 'tasks'
-  }
-  if (lc.includes('finans') || lc.includes('ekonomi') || lc.includes('kassa') || lc.includes('lön')) {
-    return 'finance'
-  }
-  if (lc.includes('team') || lc.includes('vem') || lc.includes('status') || lc.includes('personal')) {
-    return 'team'
-  }
-  if (lc.includes('legal') || lc.includes('avtal') || lc.includes('signera') || lc.includes('juridik')) {
-    return 'legal'
-  }
-  if (lc.includes('thailand') || lc.includes('april') || lc.includes('workcamp')) {
-    return 'thailand'
-  }
-  if (lc.includes('pipeline') || lc.includes('deal') || lc.includes('sälj') || lc.includes('salj')) {
-    return 'pipeline'
-  }
-  return 'default'
-}
-
-function getMockResponse(input: string): { text: string; containers?: Container[] } {
-  const key = getResponseKey(input)
-  const text = MOCK_AI_RESPONSES[key] || MOCK_AI_RESPONSES.default
-  // Om task/container-svar — bifoga de 3 mest kritiska containers
-  if (key === 'tasks') {
-    const todayContainers = MOCK_CONTAINERS
-      .filter(c => c.timeStart.startsWith('2026-03-27'))
-      .sort((a, b) => b.priorityScore - a.priorityScore)
-      .slice(0, 3)
-    return { text, containers: todayContainers }
-  }
-  return { text }
+  if (lc.includes('task') || lc.includes('idag') || lc.includes('visa')) return MOCK_AI_RESPONSES.tasks
+  if (lc.includes('finans') || lc.includes('ekonomi')) return MOCK_AI_RESPONSES.finance
+  if (lc.includes('team')) return MOCK_AI_RESPONSES.team
+  if (lc.includes('thailand')) return MOCK_AI_RESPONSES.thailand
+  return MOCK_AI_RESPONSES.default
 }
 
 // Quick action-knappar
@@ -87,21 +60,9 @@ export default function AICommandCenter() {
   const hasInit = useRef(false)
   const berntQueryHandled = useRef(false)
 
-  // Check if API is live
+  // Check if Bernt är live
   useEffect(() => {
-    async function checkLiveStatus() {
-      try {
-        const tasks = await api.get('/api/tasks/active')
-        setIsLive(true)
-        // If we got real tasks, use them
-        if ((tasks as any)?.data?.length > 0) {
-          // Live data available
-        }
-      } catch {
-        setIsLive(false)
-      }
-    }
-    checkLiveStatus()
+    pingBernt().then(setIsLive)
   }, [])
 
   // Init: ladda containers + visa välkomstmeddelande med fade-in
@@ -167,23 +128,35 @@ export default function AICommandCenter() {
     addMessage(userMsg)
     setIsStreaming(true)
 
-    // Initial delay — simulerar att Bernt "tänker"
-    await new Promise(r => setTimeout(r, 600 + Math.random() * 400))
-
-    const response = getMockResponse(trimmed)
     const assistantMsgId = genId()
-
-    // Lägg till tomt meddelande och streama in innehållet
     addMessage({
       id: assistantMsgId,
       role: 'assistant',
       content: '',
-      containers: response.containers,
       timestamp: Date.now(),
     })
 
+    try {
+      // Bygg konversationshistorik
+      const history = messages.slice(-10).map(m => ({
+        role: m.role as 'user' | 'assistant',
+        content: m.content,
+      }))
+
+      // Skicka till Bernt med streaming
+      await sendToBernt(trimmed, history, (chunk) => {
+        updateMessage(assistantMsgId, { content: chunk })
+      })
+    } catch (err) {
+      // Fallback till mock om Bernt inte svarar
+      console.warn('Bernt offline, kör mock:', err)
+      const mockText = getMockResponse(trimmed)
+      setIsStreaming(false)
+      await streamText(assistantMsgId, mockText)
+      return
+    }
+
     setIsStreaming(false)
-    await streamText(assistantMsgId, response.text)
   }
 
   function handleSend() {
@@ -259,6 +232,10 @@ export default function AICommandCenter() {
         value={input}
         onChangeText={setInput}
         onSend={handleSend}
+        onVoiceTranscribed={(text) => {
+          // Auto-skicka direkt efter rösttranskription
+          sendMessage(text)
+        }}
         disabled={isStreaming}
       />
     </SafeAreaView>
