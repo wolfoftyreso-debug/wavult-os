@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { ThailandCountdown } from '../thailand/ThailandCountdown'
 import { TeamStatusWidget } from '../team/TeamStatusWidget'
 import { ProjectProgressWidget } from '../projects/ProjectProgressWidget'
@@ -130,6 +130,222 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
   )
 }
 
+// ─── Live Activity Feed ───────────────────────────────────────────────────────
+
+interface LiveEvt {
+  id: string
+  actor: string
+  initials: string
+  color: string
+  action: string
+  target: string
+  age: number
+  category: 'deploy' | 'sale' | 'task' | 'system' | 'alert' | 'comms'
+}
+
+const EVT_POOL: Omit<LiveEvt, 'id' | 'age'>[] = [
+  { actor: 'Leon', initials: 'LR', color: '#10B981', action: 'stängde leadsamtal med', target: 'Stockholms Hamnar AB', category: 'sale' },
+  { actor: 'Johan', initials: 'JB', color: '#06B6D4', action: 'deployade quiXzoom API →', target: 'ECS eu-north-1', category: 'deploy' },
+  { actor: 'Dennis', initials: 'DB', color: '#F59E0B', action: 'signerade NDA med', target: 'Trafikverket', category: 'task' },
+  { actor: 'Winston', initials: 'WB', color: '#3B82F6', action: 'godkände faktura', target: 'AWS €1,240', category: 'sale' },
+  { actor: 'Leon', initials: 'LR', color: '#10B981', action: 'lade till kontakt:', target: 'Malmö Stad infrastruktur', category: 'comms' },
+  { actor: 'Johan', initials: 'JB', color: '#06B6D4', action: 'fixade bug i', target: 'zoomer-wallet', category: 'task' },
+  { actor: 'System', initials: 'SY', color: '#EF4444', action: 'API latency spike', target: 'quiXzoom → 320ms', category: 'alert' },
+  { actor: 'Dennis', initials: 'DB', color: '#F59E0B', action: 'bolagshandlingar klara för', target: 'Landvex AB', category: 'task' },
+  { actor: 'Winston', initials: 'WB', color: '#3B82F6', action: 'uppdaterade cashflow Q2', target: '2026', category: 'task' },
+  { actor: 'System', initials: 'SY', color: '#34C759', action: 'CF Tunnel', target: 'auto-restarted ✓', category: 'system' },
+  { actor: 'Leon', initials: 'LR', color: '#10B981', action: 'skickade pitch-deck till', target: 'Göteborgs Stad (Landvex)', category: 'comms' },
+  { actor: 'Johan', initials: 'JB', color: '#06B6D4', action: 'CI/CD live för', target: 'quiXzoom-landing CF Pages', category: 'deploy' },
+  { actor: 'System', initials: 'SY', color: '#34C759', action: '47 nya uppdrag i', target: 'quiXzoom Stockholm', category: 'system' },
+]
+
+const CAT_ICON: Record<string, string> = { deploy: '🚀', sale: '💰', task: '✅', system: '⚙️', alert: '⚡', comms: '💬' }
+
+function formatMs(ms: number) {
+  const s = Math.floor(ms / 1000)
+  if (s < 60) return `${s}s`
+  const m = Math.floor(s / 60)
+  if (m < 60) return `${m}m`
+  return `${Math.floor(m / 60)}h`
+}
+
+function LiveActivityFeed() {
+  const [events, setEvents] = useState<LiveEvt[]>(() =>
+    [0, 1, 2, 3, 4].map((i) => ({ ...EVT_POOL[i], id: `seed-${i}`, age: (i + 1) * 40 * 1000 }))
+  )
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Age events every second
+  useEffect(() => {
+    const t = setInterval(() => setEvents(prev => prev.map(e => ({ ...e, age: e.age + 1000 }))), 1000)
+    return () => clearInterval(t)
+  }, [])
+
+  // Inject new event every 9-16s
+  useEffect(() => {
+    const schedule = () => {
+      timerRef.current = setTimeout(() => {
+        const pool = EVT_POOL[Math.floor(Math.random() * EVT_POOL.length)]
+        setEvents(prev => [{ ...pool, id: `e-${Date.now()}`, age: 0 }, ...prev].slice(0, 7))
+        schedule()
+      }, 9000 + Math.random() * 7000)
+    }
+    schedule()
+    return () => { if (timerRef.current) clearTimeout(timerRef.current) }
+  }, [])
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-3">
+        <SectionHeading>Live — Teamet jobbar</SectionHeading>
+        <span className="flex items-center gap-1.5 text-xs" style={{ color: '#34C759' }}>
+          <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: '#34C759' }} />
+          LIVE
+        </span>
+      </div>
+      <div className="bg-surface-raised border border-surface-border rounded-xl overflow-hidden">
+        {events.map((evt, i) => (
+          <div
+            key={evt.id}
+            className="flex items-center gap-3 px-5 py-3"
+            style={{
+              borderBottom: i < events.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none',
+              opacity: Math.max(0.35, 1 - i * 0.1),
+              transition: 'opacity 0.5s ease',
+            }}
+          >
+            <div
+              className="h-7 w-7 rounded-full flex items-center justify-center flex-shrink-0 text-[10px] font-bold"
+              style={{ background: evt.color + '25', color: evt.color, border: `1px solid ${evt.color}40` }}
+            >
+              {evt.initials}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-gray-200">
+                <span className="font-semibold" style={{ color: evt.color }}>{evt.actor}</span>
+                {' '}{evt.action}{' '}
+                <span className="text-gray-400">{evt.target}</span>
+              </p>
+            </div>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <span className="text-[9px] text-gray-600 font-mono tabular-nums">{formatMs(evt.age)}</span>
+              <span className="text-xs">{CAT_ICON[evt.category]}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// ─── Nörd-rekrytering ─────────────────────────────────────────────────────────
+
+const TALENT_CHANNELS = [
+  { label: 'GitHub', sub: 'openclaw/openclaw — contributors med merged PRs', status: 'Aktivt', color: '#34C759' },
+  { label: 'ClawHub', sub: 'Skill-publicister som förstår systemet på djupet', status: 'Scouting', color: '#F59E0B' },
+  { label: 'Discord clawd', sub: 'Hjälpsamma nördar i communityt', status: 'Läser', color: '#8B5CF6' },
+  { label: 'Reddit r/openclaw', sub: 'Frustrerande engagerade = bäst att rekrytera', status: 'Bevakar', color: '#3B82F6' },
+  { label: 'Twitter/X', sub: '#openclaw, @openclawai — genomtänkta trådar', status: 'Passivt', color: '#06B6D4' },
+]
+
+const TALENT_MUST: string[] = ['Aktiv GitHub (senaste 3 mån)', 'TypeScript / Node.js', 'AI-agenter & automatisering', 'Europa eller Asien']
+const TALENT_BONUS: string[] = ['Vision AI / computer vision', 'React Native / Expo', 'Thailand-ready', 'Självgående — levererar utan struktur']
+const TALENT_RED: string[] = ['Pratar mycket — committar lite', 'Kräver kontor / fast struktur']
+
+function TalentRadarWidget() {
+  const [expanded, setExpanded] = useState(false)
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-3">
+          <SectionHeading>🎯 Nörd-rekrytering</SectionHeading>
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full mb-3"
+            style={{ background: '#F59E0B18', color: '#F59E0B', border: '1px solid #F59E0B30' }}>
+            IGÅNG
+          </span>
+        </div>
+        <button
+          onClick={() => setExpanded(e => !e)}
+          className="text-xs text-gray-500 hover:text-gray-300 transition-colors mb-3"
+        >
+          {expanded ? 'Dölj' : 'Visa detaljer'}
+        </button>
+      </div>
+
+      {/* Summary always visible */}
+      <div className="bg-surface-raised border border-surface-border rounded-xl p-5 mb-3">
+        <p className="text-sm text-gray-300 mb-4">
+          Varsam rekrytering av <span className="text-white font-semibold">OpenClaw/AI-agent-nördar</span> — folk som faktiskt bygger, inte pratar om att bygga. Skapa relation INNAN rekrytering.
+        </p>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <p className="text-[10px] text-gray-500 font-mono uppercase mb-2">Måste ha</p>
+            <div className="space-y-1">
+              {TALENT_MUST.map(t => (
+                <div key={t} className="flex items-center gap-2 text-xs text-gray-300">
+                  <span style={{ color: '#34C759' }}>✓</span> {t}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <p className="text-[10px] text-gray-500 font-mono uppercase mb-2">Röda flaggor</p>
+            <div className="space-y-1">
+              {TALENT_RED.map(t => (
+                <div key={t} className="flex items-center gap-2 text-xs text-gray-400">
+                  <span style={{ color: '#EF4444' }}>✗</span> {t}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Channel breakdown (expanded) */}
+      {expanded && (
+        <div className="bg-surface-raised border border-surface-border rounded-xl overflow-hidden">
+          {TALENT_CHANNELS.map((ch, i) => (
+            <div
+              key={ch.label}
+              className="flex items-center gap-4 px-5 py-3.5"
+              style={{ borderBottom: i < TALENT_CHANNELS.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none' }}
+            >
+              <div
+                className="h-8 w-8 rounded-lg flex items-center justify-center flex-shrink-0 text-[10px] font-bold"
+                style={{ background: ch.color + '20', color: ch.color, border: `1px solid ${ch.color}30` }}
+              >
+                {ch.label.slice(0, 2).toUpperCase()}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-white">{ch.label}</p>
+                <p className="text-xs text-gray-500 truncate">{ch.sub}</p>
+              </div>
+              <span
+                className="text-[10px] font-mono px-2 py-0.5 rounded-full flex-shrink-0"
+                style={{ background: ch.color + '15', color: ch.color, border: `1px solid ${ch.color}30` }}
+              >
+                {ch.status}
+              </span>
+            </div>
+          ))}
+          <div className="px-5 py-3 border-t border-surface-border">
+            <p className="text-[10px] text-gray-500 font-mono uppercase mb-1.5">Bonus-profil</p>
+            <div className="flex flex-wrap gap-2">
+              {TALENT_BONUS.map(b => (
+                <span key={b} className="text-[10px] text-gray-400 px-2 py-0.5 rounded-full"
+                  style={{ background: '#F59E0B10', border: '1px solid #F59E0B20' }}>
+                  ⭐ {b}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ─── Main Dashboard ────────────────────────────────────────────────────────────
 
 export function CommandDashboard() {
@@ -160,6 +376,12 @@ export function CommandDashboard() {
 
       {/* Entity Health Overview */}
       <HealthOverviewWidget />
+
+      {/* Live Activity Feed */}
+      <LiveActivityFeed />
+
+      {/* Nörd-rekrytering */}
+      <TalentRadarWidget />
 
       {/* Top KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

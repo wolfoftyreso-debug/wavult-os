@@ -1,0 +1,39 @@
+name: Deploy Wavult OS → os.wavult.com
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/command-center/**'
+      - '.github/workflows/deploy-command-center.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Build & Deploy to Cloudflare Pages
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Build Wavult OS
+        working-directory: apps/command-center
+        run: npx vite build
+
+      - name: Deploy to Cloudflare Pages (os.wavult.com)
+        working-directory: apps/command-center
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_KEY: ${{ secrets.CF_GLOBAL_KEY }}
+          CLOUDFLARE_EMAIL: ${{ secrets.CF_EMAIL }}
+        run: npx wrangler pages deploy dist --project-name=wavult-os --commit-dirty=true

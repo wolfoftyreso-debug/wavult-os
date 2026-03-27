@@ -41,40 +41,6 @@ function AuthenticatedApp() {
   if (!role) return <RoleLogin />
 
   return (
-<<<<<<< HEAD
-    <Shell>
-      <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/dashboard" element={<RoleDashboard />} />
-        <Route path="/projects" element={<ProjectsView />} />
-        <Route path="/tasks" element={<TasksView />} />
-        <Route path="/people" element={<PeopleView />} />
-        <Route path="/transactions" element={<TransactionFeed />} />
-        <Route path="/org" element={<OrgGraph />} />
-        <Route path="/org/context" element={<ContextView />} />
-        <Route path="/org/command" element={<CommandHierarchyView />} />
-        <Route path="/incidents" element={<IncidentCenter />} />
-        <Route path="/entities" element={<EntityView />} />
-        <Route path="/entities/:entityId" element={<EntityView />} />
-        <Route path="/markets" element={<MarketMap />} />
-        <Route path="/campaigns" element={<CampaignOS />} />
-        <Route path="/submissions" element={<SubmissionsView />} />
-        <Route path="/legal" element={<LegalHub />} />
-        <Route path="/company-launch" element={<CompanyLaunchView />} />
-        <Route path="/finance" element={<FinanceHub />} />
-        <Route path="/crm" element={<CRMHub />} />
-        <Route path="/payroll" element={<PayrollHub />} />
-        <Route path="/procurement" element={<ProcurementHub />} />
-        <Route path="/milestones" element={<MilestonesHub />} />
-        <Route path="/settings" element={<SettingsHub />} />
-        <Route path="/corporate" element={<CorporateHub />} />
-        <Route path="/reports" element={<ReportsHub />} />
-        <Route path="/communications" element={<CommHub />} />
-        <Route path="/media" element={<MediaHub />} />
-        <Route path="/system-status" element={<SystemStatusView />} />
-      </Routes>
-    </Shell>
-=======
     <OperatorProvider>
       <EventProvider>
         <Shell>
@@ -96,11 +62,21 @@ function AuthenticatedApp() {
             <Route path="/submissions" element={<SubmissionsView />} />
             <Route path="/legal" element={<LegalHub />} />
             <Route path="/company-launch" element={<CompanyLaunchView />} />
+            <Route path="/finance" element={<FinanceHub />} />
+            <Route path="/crm" element={<CRMHub />} />
+            <Route path="/payroll" element={<PayrollHub />} />
+            <Route path="/procurement" element={<ProcurementHub />} />
+            <Route path="/milestones" element={<MilestonesHub />} />
+            <Route path="/settings" element={<SettingsHub />} />
+            <Route path="/corporate" element={<CorporateHub />} />
+            <Route path="/reports" element={<ReportsHub />} />
+            <Route path="/communications" element={<CommHub />} />
+            <Route path="/media" element={<MediaHub />} />
+            <Route path="/system-status" element={<SystemStatusView />} />
           </Routes>
         </Shell>
       </EventProvider>
     </OperatorProvider>
->>>>>>> 069ef35271b8f2666f5fd6de5e22b2bc4f182c70
   )
 }
 
