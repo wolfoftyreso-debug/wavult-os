@@ -1,4 +1,5 @@
-import { TAX_DECLARATIONS, fmt, fmtPeriod, TaxDeclaration, totalGrossPerMonth, EMPLOYER_TAX_RATE } from './data'
+import { TAX_DECLARATIONS, TaxDeclaration } from './data'
+import { usePayroll } from './hooks/usePayroll'
 
 type TaxStatus = TaxDeclaration['status']
 
@@ -26,7 +27,13 @@ function daysUntil(deadline: string): number {
 }
 
 export function TaxComplianceView() {
-  const totalGross = totalGrossPerMonth()
+  const { totalGrossPerMonth, EMPLOYER_TAX_RATE, fmt, fmtPeriod, loading } = usePayroll()
+
+  if (loading) {
+    return <div className="flex items-center justify-center h-64 text-gray-500">Laddar skattedata...</div>
+  }
+
+  const totalGross = totalGrossPerMonth
   const monthlyEmployerTax = Math.round(totalGross * EMPLOYER_TAX_RATE)
 
   const upcoming = TAX_DECLARATIONS.find(d => d.status === 'not_filed')

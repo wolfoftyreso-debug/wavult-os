@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { EMPLOYEES, Employee, calcSalary, fmt, LEAVE_RECORDS } from './data'
+import { usePayroll, type Employee } from './hooks/usePayroll'
 
 const MONTHS = ['Jan','Feb','Mar','Apr','Maj','Jun','Jul','Aug','Sep','Okt','Nov','Dec']
 
@@ -11,19 +11,20 @@ function StatusBadge({ status }: { status: Employee['status'] }) {
   )
 }
 
-function EmployeePanel({ emp, onClose }: { emp: Employee; onClose: () => void }) {
-  const calc = calcSalary(emp.grossSalary)
-  const leave = LEAVE_RECORDS.find(l => l.employeeId === emp.id)
-  const daysRemaining = leave ? leave.daysEntitled - leave.daysUsed : 25
+function EmployeePanel({ emp, onClose, calcSalary, fmt }: { emp: Employee; onClose: () => void; calcSalary: (gross: number) => any; fmt: (n: number) => string }) {
+  const calc = calcSalary(emp.gross_salary)
+  // TODO: Add leave_records table and fetch leave data
+  const leave = null
+  const daysRemaining = 25
 
-  // Fake salary history (last 6 months)
+  // Salary history (last 6 months)
   const today = new Date()
   const history = Array.from({ length: 6 }, (_, i) => {
     const d = new Date(today.getFullYear(), today.getMonth() - (5 - i), 1)
     return {
       period: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`,
       label: `${MONTHS[d.getMonth()]} ${d.getFullYear()}`,
-      gross: emp.grossSalary,
+      gross: emp.gross_salary,
       net: calc.net,
     }
   })
@@ -60,9 +61,9 @@ function EmployeePanel({ emp, onClose }: { emp: Employee; onClose: () => void })
                 ['E-post', emp.email],
                 ['Telefon', emp.phone],
                 ['Ort', emp.location],
-                ['Anställd sedan', emp.startDate],
-                ['Sysselsättningsgrad', `${(emp.employmentRate * 100).toFixed(0)}%`],
-                ['Skattetabell', `Tabell ${emp.taxTable} (${emp.location})`],
+                ['Anställd sedan', emp.start_date],
+                ['Sysselsättningsgrad', `${(emp.employment_rate * 100).toFixed(0)}%`],
+                ['Skattetabell', `Tabell ${emp.tax_table} (${emp.location})`],
                 ['Status', emp.status === 'active' ? 'Aktiv' : 'Tjänstledig'],
               ].map(([label, value]) => (
                 <div key={label} className="flex justify-between items-center text-xs">
@@ -154,13 +155,22 @@ function EmployeePanel({ emp, onClose }: { emp: Employee; onClose: () => void })
 
 export function EmployeeList() {
   const [selected, setSelected] = useState<Employee | null>(null)
+  const { employees, loading, error, calcSalary, fmt } = usePayroll()
+
+  if (loading) {
+    return <div className="flex items-center justify-center h-64 text-gray-500">Laddar anställda...</div>
+  }
+
+  if (error) {
+    return <div className="flex items-center justify-center h-64 text-red-500">Fel: {error}</div>
+  }
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-sm font-semibold text-white">Anställda</h2>
-          <p className="text-xs text-gray-500 mt-0.5">{EMPLOYEES.length} personer</p>
+          <p className="text-xs text-gray-500 mt-0.5">{employees.length} personer</p>
         </div>
       </div>
 
@@ -178,7 +188,7 @@ export function EmployeeList() {
               </tr>
             </thead>
             <tbody>
-              {EMPLOYEES.map(emp => (
+              {employees.map(emp => (
                 <tr
                   key={emp.id}
                   className="border-b border-surface-border/50 hover:bg-surface-overlay/40 transition-colors cursor-pointer"
@@ -199,12 +209,12 @@ export function EmployeeList() {
                     </div>
                   </td>
                   <td className="px-5 py-3 text-xs text-gray-400">{emp.role}</td>
-                  <td className="px-5 py-3 text-xs text-gray-400">{emp.startDate}</td>
+                  <td className="px-5 py-3 text-xs text-gray-400">{emp.start_date}</td>
                   <td className="px-5 py-3 text-right text-xs text-white tabular-nums font-medium">
-                    {emp.grossSalary.toLocaleString('sv-SE')}
+                    {emp.gross_salary.toLocaleString('sv-SE')}
                   </td>
                   <td className="px-5 py-3 text-right text-xs text-gray-300">
-                    {(emp.employmentRate * 100).toFixed(0)}%
+                    {(emp.employment_rate * 100).toFixed(0)}%
                   </td>
                   <td className="px-5 py-3">
                     <StatusBadge status={emp.status} />
@@ -216,7 +226,7 @@ export function EmployeeList() {
         </div>
       </div>
 
-      {selected && <EmployeePanel emp={selected} onClose={() => setSelected(null)} />}
+      {selected && <EmployeePanel emp={selected} onClose={() => setSelected(null)} calcSalary={calcSalary} fmt={fmt} />}
     </div>
   )
 }

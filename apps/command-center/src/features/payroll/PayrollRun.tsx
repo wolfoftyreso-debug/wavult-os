@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { EMPLOYEES, calcSalary, fmt, fmtPeriod, PAYROLL_HISTORY, EMPLOYER_TAX_RATE } from './data'
+import { usePayroll } from './hooks/usePayroll'
 
 type Step = 1 | 2 | 3 | 4
 
@@ -15,10 +15,19 @@ export function PayrollRun() {
   const [ran, setRan] = useState(false)
   const [runComplete, setRunComplete] = useState(false)
 
-  const active = EMPLOYEES.filter(e => e.status === 'active')
-  const totalGross = active.reduce((s, e) => s + e.grossSalary, 0)
-  const totalTax = active.reduce((s, e) => s + calcSalary(e.grossSalary).taxDeduction, 0)
-  const totalNet = active.reduce((s, e) => s + calcSalary(e.grossSalary).net, 0)
+  const { activeEmployees: active, loading, error, calcSalary, fmt, fmtPeriod, EMPLOYER_TAX_RATE, createPayrollRun } = usePayroll()
+
+  if (loading) {
+    return <div className="flex items-center justify-center h-64 text-gray-500">Laddar lönedata...</div>
+  }
+
+  if (error) {
+    return <div className="flex items-center justify-center h-64 text-red-500">Fel: {error}</div>
+  }
+
+  const totalGross = active.reduce((s, e) => s + e.gross_salary, 0)
+  const totalTax = active.reduce((s, e) => s + calcSalary(e.gross_salary).taxDeduction, 0)
+  const totalNet = active.reduce((s, e) => s + calcSalary(e.gross_salary).net, 0)
   const totalEmployerTax = Math.round(totalGross * EMPLOYER_TAX_RATE)
   const totalCost = totalGross + totalEmployerTax
 
@@ -27,9 +36,31 @@ export function PayrollRun() {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
   })()
 
-  function handleRun() {
+  async function handleRun() {
     setRan(true)
-    setTimeout(() => setRunComplete(true), 1500)
+
+    // Create payroll run in database
+    const today = new Date()
+    const runDate = today.toISOString().split('T')[0]
+
+    const result = await createPayrollRun({
+      id: `pr-${currentPeriod}`,
+      period: currentPeriod,
+      run_date: runDate,
+      total_gross: totalGross,
+      total_employer_tax: totalEmployerTax,
+      total_net: totalNet,
+      total_cost: totalCost,
+      status: 'completed',
+      approved_by: 'Winston Bjarnemark', // TODO: Get from auth context
+    })
+
+    if (result.success) {
+      setTimeout(() => setRunComplete(true), 1500)
+    } else {
+      alert('Fel vid lönekörning: ' + result.error)
+      setRan(false)
+    }
   }
 
   function reset() {

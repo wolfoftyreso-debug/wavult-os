@@ -1,4 +1,5 @@
-import { EMPLOYEES, LEAVE_RECORDS, SWEDISH_HOLIDAYS_2026 } from './data'
+import { LEAVE_RECORDS, SWEDISH_HOLIDAYS_2026 } from './data'
+import { usePayroll } from './hooks/usePayroll'
 
 const MONTH_NAMES_LONG = ['Januari','Februari','Mars','April','Maj','Juni','Juli','Augusti','September','Oktober','November','December']
 
@@ -15,7 +16,7 @@ function LeaveBar({ used, planned, entitled }: { used: number; planned: number; 
   )
 }
 
-function SimpleCalendar({ month, year }: { month: number; year: number }) {
+function SimpleCalendar({ month, year, employees }: { month: number; year: number; employees: any[] }) {
   const firstDay = new Date(year, month, 1).getDay()
   const daysInMonth = new Date(year, month + 1, 0).getDate()
   const startOffset = (firstDay + 6) % 7 // Mon-first
@@ -27,9 +28,9 @@ function SimpleCalendar({ month, year }: { month: number; year: number }) {
     })
     .map(h => new Date(h.date).getDate())
 
-  const allLeave: { day: number; emp: typeof EMPLOYEES[0] }[] = []
+  const allLeave: { day: number; emp: any }[] = []
   LEAVE_RECORDS.forEach(record => {
-    const emp = EMPLOYEES.find(e => e.id === record.employeeId)
+    const emp = employees.find(e => e.id === record.employeeId)
     if (!emp) return
     record.plannedLeave.forEach(pl => {
       const start = new Date(pl.start)
@@ -95,6 +96,15 @@ function SimpleCalendar({ month, year }: { month: number; year: number }) {
 
 export function LeaveView() {
   const today = new Date()
+  const { employees, loading, error } = usePayroll()
+
+  if (loading) {
+    return <div className="flex items-center justify-center h-64 text-gray-500">Laddar semesterdata...</div>
+  }
+
+  if (error) {
+    return <div className="flex items-center justify-center h-64 text-red-500">Fel: {error}</div>
+  }
 
   return (
     <div className="space-y-6">
@@ -124,7 +134,7 @@ export function LeaveView() {
         </div>
 
         <div className="divide-y divide-surface-border/50">
-          {EMPLOYEES.map(emp => {
+          {employees.map(emp => {
             const record = LEAVE_RECORDS.find(l => l.employeeId === emp.id)
             const used = record?.daysUsed ?? 0
             const planned = record?.plannedLeave.reduce((s, pl) => s + pl.days, 0) ?? 0
@@ -191,7 +201,7 @@ export function LeaveView() {
         <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Kalendervy</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[3, 4, 5, 6, 7, 8].map(m => (
-            <SimpleCalendar key={m} month={m} year={2026} />
+            <SimpleCalendar key={m} month={m} year={2026} employees={employees} />
           ))}
         </div>
       </div>

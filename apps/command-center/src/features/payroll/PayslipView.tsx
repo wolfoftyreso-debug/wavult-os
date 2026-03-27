@@ -1,12 +1,20 @@
 import { useState } from 'react'
-import { EMPLOYEES, Employee, calcSalary, fmt, fmtPeriod, EMPLOYER_TAX_RATE, TAX_TABLE } from './data'
+import { usePayroll, type Employee } from './hooks/usePayroll'
 
 const MONTHS = [
   '2026-03', '2026-02', '2026-01', '2025-12', '2025-11', '2025-10',
 ]
 
-function PayslipDetail({ emp, period }: { emp: Employee; period: string }) {
-  const calc = calcSalary(emp.grossSalary)
+function PayslipDetail({ emp, period, calcSalary, fmt, fmtPeriod, EMPLOYER_TAX_RATE }: {
+  emp: Employee;
+  period: string;
+  calcSalary: (gross: number) => any;
+  fmt: (n: number) => string;
+  fmtPeriod: (period: string) => string;
+  EMPLOYER_TAX_RATE: number;
+}) {
+  const calc = calcSalary(emp.gross_salary)
+  const TAX_TABLE = emp.tax_table
   const [y, m] = period.split('-')
   const payDate = `${y}-${m}-25`
 
@@ -99,8 +107,26 @@ function PayslipDetail({ emp, period }: { emp: Employee; period: string }) {
 }
 
 export function PayslipView() {
-  const [selectedEmp, setSelectedEmp] = useState<Employee>(EMPLOYEES[0])
+  const { employees, loading, error, calcSalary, fmt, fmtPeriod, EMPLOYER_TAX_RATE } = usePayroll()
+  const [selectedEmp, setSelectedEmp] = useState<Employee | null>(null)
   const [selectedPeriod, setSelectedPeriod] = useState(MONTHS[0])
+
+  // Set default employee once loaded
+  if (!loading && !selectedEmp && employees.length > 0) {
+    setSelectedEmp(employees[0])
+  }
+
+  if (loading) {
+    return <div className="flex items-center justify-center h-64 text-gray-500">Laddar lönedata...</div>
+  }
+
+  if (error) {
+    return <div className="flex items-center justify-center h-64 text-red-500">Fel: {error}</div>
+  }
+
+  if (!selectedEmp) {
+    return <div className="flex items-center justify-center h-64 text-gray-500">Inga anställda hittades</div>
+  }
 
   return (
     <div className="space-y-4">
@@ -112,7 +138,7 @@ export function PayslipView() {
       {/* Selectors */}
       <div className="flex flex-wrap gap-3">
         <div className="flex flex-wrap gap-2">
-          {EMPLOYEES.map(emp => (
+          {employees.map(emp => (
             <button
               key={emp.id}
               onClick={() => setSelectedEmp(emp)}
@@ -144,7 +170,14 @@ export function PayslipView() {
         </select>
       </div>
 
-      <PayslipDetail emp={selectedEmp} period={selectedPeriod} />
+      <PayslipDetail
+        emp={selectedEmp}
+        period={selectedPeriod}
+        calcSalary={calcSalary}
+        fmt={fmt}
+        fmtPeriod={fmtPeriod}
+        EMPLOYER_TAX_RATE={EMPLOYER_TAX_RATE}
+      />
     </div>
   )
 }

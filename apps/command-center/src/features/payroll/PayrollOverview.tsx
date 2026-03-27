@@ -1,4 +1,4 @@
-import { EMPLOYEES, calcSalary, fmt, EMPLOYER_TAX_RATE, totalGrossPerMonth } from './data'
+import { usePayroll } from './hooks/usePayroll'
 
 function KpiCard({ label, value, sub, color }: { label: string; value: string; sub?: string; color: string }) {
   return (
@@ -11,11 +11,20 @@ function KpiCard({ label, value, sub, color }: { label: string; value: string; s
 }
 
 export function PayrollOverview() {
-  const active = EMPLOYEES.filter(e => e.status === 'active')
-  const totalGross = totalGrossPerMonth()
+  const { activeEmployees: active, totalGrossPerMonth, loading, error, calcSalary, fmt, EMPLOYER_TAX_RATE } = usePayroll()
+
+  if (loading) {
+    return <div className="flex items-center justify-center h-64 text-gray-500">Laddar lönedata...</div>
+  }
+
+  if (error) {
+    return <div className="flex items-center justify-center h-64 text-red-500">Fel: {error}</div>
+  }
+
+  const totalGross = totalGrossPerMonth
   const totalEmployerTax = Math.round(totalGross * EMPLOYER_TAX_RATE)
   const totalNet = active.reduce((sum, e) => {
-    const c = calcSalary(e.grossSalary)
+    const c = calcSalary(e.gross_salary)
     return sum + c.net
   }, 0)
   const totalCost = totalGross + totalEmployerTax
@@ -73,7 +82,7 @@ export function PayrollOverview() {
             </thead>
             <tbody>
               {active.map(emp => {
-                const c = calcSalary(emp.grossSalary)
+                const c = calcSalary(emp.gross_salary)
                 return (
                   <tr key={emp.id} className="border-b border-surface-border/50 hover:bg-surface-overlay/40 transition-colors">
                     <td className="px-5 py-3">
@@ -103,7 +112,7 @@ export function PayrollOverview() {
                 <td colSpan={2} className="px-5 py-3 text-xs font-semibold text-gray-400">TOTALT</td>
                 <td className="px-5 py-3 text-right text-xs font-bold text-white tabular-nums">{fmt(totalGross)}</td>
                 <td className="px-5 py-3 text-right text-xs font-bold text-red-400 tabular-nums">
-                  −{fmt(active.reduce((s, e) => s + calcSalary(e.grossSalary).taxDeduction, 0))}
+                  −{fmt(active.reduce((s, e) => s + calcSalary(e.gross_salary).taxDeduction, 0))}
                 </td>
                 <td className="px-5 py-3 text-right text-xs font-bold text-green-400 tabular-nums">{fmt(totalNet)}</td>
                 <td className="px-5 py-3 text-right text-xs font-bold text-amber-400 tabular-nums">{fmt(totalEmployerTax)}</td>
