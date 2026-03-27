@@ -81,6 +81,12 @@ const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
+    label: 'KUNSKAP',
+    items: [
+      { to: '/knowledge', label: 'Kunskapshub', icon: '📚' },
+    ],
+  },
+  {
     label: 'SYSTEM',
     items: [
       { to: '/communications', label: 'Kommunikation', icon: '📡' },
@@ -119,6 +125,7 @@ const ROUTE_LABELS: Record<string, string> = {
   '/media': 'Media & Ads',
   '/reports': 'Rapporter',
   '/system-status': 'System Status',
+  '/knowledge': 'Knowledge Hub',
 }
 
 function getBreadcrumb(pathname: string): string {

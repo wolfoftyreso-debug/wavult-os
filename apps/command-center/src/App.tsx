@@ -34,6 +34,7 @@ import { CommHub } from './features/communications/CommHub'
 import { ReportsHub } from './features/reports/ReportsHub'
 import { MediaHub } from './features/media/MediaHub'
 import { SystemStatusView } from './features/system-status/SystemStatusView'
+import { KnowledgeHub } from './features/knowledge'
 
 function AuthenticatedApp() {
   const { role } = useRole()
@@ -73,6 +74,7 @@ function AuthenticatedApp() {
             <Route path="/communications" element={<CommHub />} />
             <Route path="/media" element={<MediaHub />} />
             <Route path="/system-status" element={<SystemStatusView />} />
+            <Route path="/knowledge" element={<KnowledgeHub />} />
           </Routes>
         </Shell>
       </EventProvider>

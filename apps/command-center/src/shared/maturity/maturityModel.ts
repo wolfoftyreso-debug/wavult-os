@@ -224,4 +224,17 @@ export const MODULE_REGISTRY: ModuleMaturity[] = [
     dataSource: 'partial',
     lastUpdated: '2026-03-25',
   },
+  {
+    id: 'knowledge',
+    name: 'Knowledge Hub',
+    path: '/knowledge',
+    icon: '📚',
+    level: 'alpha',
+    phase: 1,
+    liveFeatures: ['Kunskapsbas (12 dokument)', 'Kunskapsgraf D3', 'Academy (5 kurser)', 'Zoomer-certifiering'],
+    mockFeatures: ['Alla dokument lokala', 'Progress i localStorage'],
+    plannedFeatures: ['Live Supabase sync', 'Dokumentredigering', 'Team-progress dashboard', 'AI-sökning'],
+    dataSource: 'mock',
+    lastUpdated: '2026-03-27',
+  },
 ]

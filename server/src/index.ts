@@ -127,6 +127,7 @@ import evaBotRouter from './eva-bot';
 import slaEngineRouter, { startSLAChecker } from './sla-engine';
 import duixProxyRouter from './duix-proxy';
 import pciRouter from './pci/router';
+import voiceRouter from './voice-api';
 
 // ---------------------------------------------------------------------------
 // App setup
@@ -284,6 +285,12 @@ app.use("/api/duix", duixProxyRouter);
 // PCI — Personal Cognitive Interface
 // ---------------------------------------------------------------------------
 app.use("/api/pci", pciRouter);
+
+// ---------------------------------------------------------------------------
+// Voice API — Siri → Bernt → Wavult OS
+// POST /api/voice { transcript, user } → { reply, action?, event_id }
+// ---------------------------------------------------------------------------
+app.use("/api/voice", voiceRouter);
 
 // ---------------------------------------------------------------------------
 // Health check — MUST be before auth middleware so it's always public
