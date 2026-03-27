@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, Component, type ReactNode } from 'react'
 import { useEntityScope } from '../../shared/scope/EntityScopeContext'
 import { ModuleHeader } from '../../shared/maturity/ModuleHeader'
 import { FinanceOverview } from './FinanceOverview'
@@ -10,6 +10,42 @@ import { TaxView } from './TaxView'
 import { IntercompanyView } from './IntercompanyView'
 import { PaymentProcessor } from './PaymentProcessor'
 import { CashFlowOptimizer } from './CashFlowOptimizer'
+
+// ─── Error Boundary ───────────────────────────────────────────────────────────
+class FinanceErrorBoundary extends Component<
+  { children: ReactNode; tabLabel: string },
+  { hasError: boolean; error: Error | null }
+> {
+  constructor(props: { children: ReactNode; tabLabel: string }) {
+    super(props)
+    this.state = { hasError: false, error: null }
+  }
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error }
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex flex-col items-center justify-center h-60 gap-4">
+          <div className="text-3xl">⚠️</div>
+          <p className="text-sm font-semibold text-white">{this.props.tabLabel} — data saknas</p>
+          <p className="text-xs text-gray-500 max-w-sm text-center">
+            Den här modulen behöver live-data från Supabase. Tabellerna är inte satta upp ännu.
+            All data är mockad tills Supabase-scheman är live.
+          </p>
+          <p className="text-[10px] text-gray-700 font-mono">{this.state.error?.message}</p>
+          <button
+            onClick={() => this.setState({ hasError: false, error: null })}
+            className="text-xs px-4 py-2 rounded-lg bg-surface-raised border border-surface-border text-gray-400 hover:text-white transition-colors"
+          >
+            Försök igen
+          </button>
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
 
 type Tab = 'overview' | 'accounts' | 'ledger' | 'invoices' | 'cashflow' | 'tax' | 'intercompany' | 'payments' | 'optimization'
 
@@ -76,15 +112,17 @@ export function FinanceHub() {
 
       {/* Content */}
       <div className="flex-1 overflow-auto p-6">
-        {activeTab === 'overview'     && <FinanceOverview />}
-        {activeTab === 'accounts'     && <ChartOfAccounts />}
-        {activeTab === 'ledger'       && <LedgerView />}
-        {activeTab === 'invoices'     && <InvoiceHub />}
-        {activeTab === 'cashflow'     && <CashFlowView />}
-        {activeTab === 'tax'          && <TaxView />}
-        {activeTab === 'intercompany' && <IntercompanyView />}
-        {activeTab === 'payments'     && <PaymentProcessor />}
-        {activeTab === 'optimization' && <CashFlowOptimizer />}
+        <FinanceErrorBoundary tabLabel={TABS.find(t => t.id === activeTab)?.label ?? activeTab}>
+          {activeTab === 'overview'     && <FinanceOverview />}
+          {activeTab === 'accounts'     && <ChartOfAccounts />}
+          {activeTab === 'ledger'       && <LedgerView />}
+          {activeTab === 'invoices'     && <InvoiceHub />}
+          {activeTab === 'cashflow'     && <CashFlowView />}
+          {activeTab === 'tax'          && <TaxView />}
+          {activeTab === 'intercompany' && <IntercompanyView />}
+          {activeTab === 'payments'     && <PaymentProcessor />}
+          {activeTab === 'optimization' && <CashFlowOptimizer />}
+        </FinanceErrorBoundary>
       </div>
     </div>
   )
