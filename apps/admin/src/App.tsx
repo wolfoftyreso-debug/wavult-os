@@ -991,6 +991,100 @@ export default function App() {
           </div>
         </div>
       </div>
+
+      {/* Bernt — floating AI widget */}
+      <BerntFloating />
     </>
   );
+}
+
+// ─── Bernt Floating Widget (Admin) ───────────────────────────────────────────
+function BerntFloating() {
+  const [open, setOpen] = React.useState(false)
+  const [input, setInput] = React.useState('')
+  const [messages, setMessages] = React.useState([
+    { role: 'bernt', text: 'Hej Erik! Bernt här. Vad behöver du?' }
+  ])
+  const [loading, setLoading] = React.useState(false)
+  const TUNNEL = 'https://complimentary-newton-richard-jenny.trycloudflare.com'
+
+  const send = async (text: string) => {
+    if (!text.trim()) return
+    setMessages(m => [...m, { role: 'user', text }])
+    setInput('')
+    setLoading(true)
+    try {
+      const res = await fetch(`${TUNNEL}/api/voice`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ transcript: text, user: 'Erik Svensson', source: 'wavult-admin' }),
+      })
+      const d = await res.json()
+      setMessages(m => [...m, { role: 'bernt', text: d.reply || d.text || 'OK.' }])
+    } catch {
+      setMessages(m => [...m, { role: 'bernt', text: 'Tunneln svarar inte just nu.' }])
+    } finally { setLoading(false) }
+  }
+
+  return (
+    <>
+      <button
+        onClick={() => setOpen(o => !o)}
+        style={{
+          position: 'fixed', bottom: 24, right: 24, zIndex: 9999,
+          width: 48, height: 48, borderRadius: '50%', border: 'none', cursor: 'pointer',
+          background: 'linear-gradient(135deg, #007AFF, #5856D6)',
+          fontSize: 20, boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}
+      >
+        {open ? '✕' : '🤖'}
+      </button>
+      {open && (
+        <div style={{
+          position: 'fixed', bottom: 80, right: 24, zIndex: 9999,
+          width: 320, height: 400, borderRadius: 16,
+          background: '#FFFFFF', border: '1px solid #E5E5EA',
+          boxShadow: '0 8px 40px rgba(0,0,0,0.15)',
+          display: 'flex', flexDirection: 'column', overflow: 'hidden',
+        }}>
+          <div style={{ padding: '12px 16px', borderBottom: '1px solid #F2F2F7', background: '#F9F9FB', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 18 }}>🤖</span>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 600 }}>Bernt</div>
+              <div style={{ fontSize: 10, color: '#34C759', fontFamily: 'monospace' }}>● ANSLUTEN</div>
+            </div>
+          </div>
+          <div style={{ flex: 1, overflowY: 'auto', padding: '12px 12px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {messages.map((m, i) => (
+              <div key={i} style={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start' }}>
+                <div style={{
+                  maxWidth: '80%', padding: '8px 12px', borderRadius: 12, fontSize: 12, lineHeight: 1.5,
+                  background: m.role === 'user' ? '#007AFF' : '#F2F2F7',
+                  color: m.role === 'user' ? '#fff' : '#000',
+                }}>
+                  {m.text}
+                </div>
+              </div>
+            ))}
+            {loading && <div style={{ fontSize: 12, color: '#8E8E93' }}>Bernt skriver...</div>}
+          </div>
+          <div style={{ padding: '8px 12px', borderTop: '1px solid #F2F2F7', display: 'flex', gap: 8 }}>
+            <input
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && send(input)}
+              placeholder="Fråga Bernt..."
+              style={{ flex: 1, padding: '8px 12px', borderRadius: 20, border: '1px solid #E5E5EA', fontSize: 12, outline: 'none' }}
+            />
+            <button
+              onClick={() => send(input)}
+              disabled={!input.trim() || loading}
+              style={{ padding: '8px 14px', borderRadius: 20, background: '#007AFF', color: '#fff', border: 'none', fontSize: 12, cursor: 'pointer', opacity: input.trim() ? 1 : 0.4 }}
+            >↑</button>
+          </div>
+        </div>
+      )}
+    </>
+  )
 }

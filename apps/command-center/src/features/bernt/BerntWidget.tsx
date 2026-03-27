@@ -5,7 +5,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 
 const BERNT_TUNNEL_KEY = 'bernt_tunnel_url'
-const DEFAULT_TUNNEL = '' // Sätts dynamiskt
+const DEFAULT_TUNNEL = 'https://complimentary-newton-richard-jenny.trycloudflare.com'
 
 interface Message {
   id: string
