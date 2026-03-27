@@ -5,10 +5,12 @@ import { SMSView } from './SMSView'
 import { NotificationCenter } from './NotificationCenter'
 import { WebhookLog } from './WebhookLog'
 import { APIStatusView } from './APIStatusView'
+import { ContactsView } from './ContactsView'
 
-type Tab = 'inbox' | 'sms' | 'notifications' | 'webhooks' | 'api-status'
+type Tab = 'contacts' | 'inbox' | 'sms' | 'notifications' | 'webhooks' | 'api-status'
 
 const TABS: Array<{ id: Tab; label: string; icon: string }> = [
+  { id: 'contacts',      label: 'Kontakter',   icon: '📋' },
   { id: 'inbox',         label: 'Inkorgen',    icon: '📬' },
   { id: 'sms',           label: 'SMS/Notiser', icon: '📱' },
   { id: 'notifications', label: 'Systemlarm',  icon: '🔔' },
@@ -17,7 +19,7 @@ const TABS: Array<{ id: Tab; label: string; icon: string }> = [
 ]
 
 export function CommHub() {
-  const [activeTab, setActiveTab] = useState<Tab>('inbox')
+  const [activeTab, setActiveTab] = useState<Tab>('contacts')
   const { activeEntity } = useEntityScope()
 
   return (
@@ -66,6 +68,7 @@ export function CommHub() {
 
       {/* Content */}
       <div className="flex-1 overflow-auto p-6">
+        {activeTab === 'contacts'      && <ContactsView />}
         {activeTab === 'inbox'         && <InboxView />}
         {activeTab === 'sms'           && <SMSView />}
         {activeTab === 'notifications' && <NotificationCenter />}
