@@ -1,5 +1,18 @@
 import { useState } from 'react'
-import { LEGAL_DOCUMENTS, SIGNING_LEVEL_LABELS, SIGN_METHOD_LABELS, type LegalDocument, type DocStatus } from './data'
+import {
+  LEGAL_DOCUMENTS,
+  SIGNING_LEVEL_LABELS,
+  SIGN_METHOD_LABELS,
+  DOC_TYPE_LABELS,
+  DOC_TYPE_SIGNING_LEVEL,
+  getSignMethod,
+  type LegalDocument,
+  type LegalDocType,
+  type DocStatus,
+  type SigningLevel,
+  type SignMethod,
+} from './data'
+import { getTemplate } from './templates'
 import { ENTITIES } from '../org-graph/data'
 import { useEntityScope } from '../../shared/scope/EntityScopeContext'
 
@@ -18,7 +31,8 @@ function entityName(id: string): string {
   return ENTITIES.find(e => e.id === id)?.shortName ?? id
 }
 
-// Inline SVG icon components — no external dependency
+// ─── Icon components ──────────────────────────────────────────────────────────
+
 function IconScale({ size = 16, className = '' }: { size?: number; className?: string }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -84,6 +98,16 @@ function IconChevronUp({ size = 12, className = '' }: { size?: number; className
   )
 }
 
+function IconPlus({ size = 14, className = '' }: { size?: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+    </svg>
+  )
+}
+
+// ─── DocRow ───────────────────────────────────────────────────────────────────
+
 function DocRow({ doc, onSend }: { doc: LegalDocument; onSend: (doc: LegalDocument) => void }) {
   const status = STATUS_CONFIG[doc.status]
   const levelColor = LEVEL_COLOR[doc.signing_level]
@@ -119,6 +143,8 @@ function DocRow({ doc, onSend }: { doc: LegalDocument; onSend: (doc: LegalDocume
     </div>
   )
 }
+
+// ─── SendModal ────────────────────────────────────────────────────────────────
 
 function SendModal({ doc, onClose }: { doc: LegalDocument; onClose: () => void }) {
   const [email, setEmail] = useState('')
@@ -180,24 +206,210 @@ function SendModal({ doc, onClose }: { doc: LegalDocument; onClose: () => void }
   )
 }
 
+// ─── NewDocModal ──────────────────────────────────────────────────────────────
+
+const ALL_DOC_TYPES = Object.keys(DOC_TYPE_LABELS) as LegalDocType[]
+
+function NewDocModal({ onClose, onSave }: { onClose: () => void; onSave: (doc: Partial<LegalDocument>) => void }) {
+  const [docType, setDocType] = useState<LegalDocType>('nda')
+  const [partyA, setPartyA] = useState('')
+  const [partyB, setPartyB] = useState('')
+  const [jurisdiction, setJurisdiction] = useState('SE')
+  const [saved, setSaved] = useState(false)
+
+  const template = getTemplate(docType)
+  const defaultLevel: SigningLevel = DOC_TYPE_SIGNING_LEVEL[docType]
+  const suggestedMethod: SignMethod = getSignMethod(jurisdiction, defaultLevel)
+  const levelColor = LEVEL_COLOR[defaultLevel]
+
+  const entityOptions = ENTITIES.map(e => ({ id: e.id, label: e.shortName ?? e.name }))
+
+  const handleSave = () => {
+    const now = new Date().toISOString().slice(0, 10)
+    onSave({
+      type: docType,
+      title: `${DOC_TYPE_LABELS[docType]} — ${partyA || 'Part A'} ↔ ${partyB || 'Part B'}`,
+      party_a: partyA,
+      party_b: partyB,
+      signing_level: defaultLevel,
+      sign_method: suggestedMethod,
+      status: 'draft',
+      created_at: now,
+      description: template?.description ?? '',
+      required: false,
+      auto_proposed: false,
+    })
+    setSaved(true)
+    setTimeout(onClose, 1200)
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+      <div className="bg-[#0D0F1A] border border-white/[0.08] rounded-2xl p-6 w-[540px] max-w-full shadow-2xl">
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-5">
+          <IconPlus size={18} className="text-purple-400" />
+          <h2 className="text-[14px] font-bold text-white">Nytt dokument</h2>
+        </div>
+
+        {/* Dokumenttyp */}
+        <div className="mb-4">
+          <label className="text-[10px] text-gray-500 font-mono uppercase tracking-wider block mb-1.5">Dokumenttyp</label>
+          <select
+            value={docType}
+            onChange={e => setDocType(e.target.value as LegalDocType)}
+            className="w-full bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-[12px] text-white focus:outline-none focus:border-white/20"
+          >
+            {ALL_DOC_TYPES.map(t => (
+              <option key={t} value={t}>{DOC_TYPE_LABELS[t]}</option>
+            ))}
+          </select>
+          {template && (
+            <p className="text-[10px] text-gray-600 mt-1.5">{template.description.slice(0, 100)}…</p>
+          )}
+        </div>
+
+        {/* Parter */}
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          <div>
+            <label className="text-[10px] text-gray-500 font-mono uppercase tracking-wider block mb-1.5">
+              {template?.partyALabel ?? 'Part A'}
+            </label>
+            <select
+              value={partyA}
+              onChange={e => setPartyA(e.target.value)}
+              className="w-full bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-[12px] text-white focus:outline-none focus:border-white/20"
+            >
+              <option value="">Välj part…</option>
+              {entityOptions.map(e => (
+                <option key={e.id} value={e.id}>{e.label}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="text-[10px] text-gray-500 font-mono uppercase tracking-wider block mb-1.5">
+              {template?.partyBLabel ?? 'Part B'}
+            </label>
+            <select
+              value={partyB}
+              onChange={e => setPartyB(e.target.value)}
+              className="w-full bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-[12px] text-white focus:outline-none focus:border-white/20"
+            >
+              <option value="">Välj part…</option>
+              {entityOptions.map(e => (
+                <option key={e.id} value={e.id}>{e.label}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Jurisdiktion */}
+        <div className="mb-4">
+          <label className="text-[10px] text-gray-500 font-mono uppercase tracking-wider block mb-1.5">Jurisdiktion (för signering)</label>
+          <select
+            value={jurisdiction}
+            onChange={e => setJurisdiction(e.target.value)}
+            className="w-full bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-[12px] text-white focus:outline-none focus:border-white/20"
+          >
+            <option value="SE">🇸🇪 Sverige (BankID)</option>
+            <option value="EU-LT">🇱🇹 Litauen (eIDAS)</option>
+            <option value="EU-DE">🇩🇪 Tyskland (eIDAS)</option>
+            <option value="AE">🇦🇪 Dubai / UAE (DocuSign)</option>
+            <option value="US">🇺🇸 USA (DocuSign)</option>
+            <option value="OTHER">🌍 Övriga (E-post OTP)</option>
+          </select>
+        </div>
+
+        {/* Föreslagen signering */}
+        <div className="flex items-center gap-2 mb-5 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.05]">
+          <span className="text-[10px] text-gray-500">Föreslagen signering:</span>
+          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded" style={{ color: levelColor, background: levelColor + '20' }}>
+            {defaultLevel} — {SIGNING_LEVEL_LABELS[defaultLevel]}
+          </span>
+          <span className="text-[10px] text-gray-400">{SIGN_METHOD_LABELS[suggestedMethod]}</span>
+        </div>
+
+        {/* Checklist */}
+        {template && template.checklist.length > 0 && (
+          <div className="mb-5">
+            <p className="text-[10px] text-gray-600 font-mono uppercase tracking-wider mb-2">Checklista för detta dokumenttyp</p>
+            <ul className="space-y-1">
+              {template.checklist.map((item, i) => (
+                <li key={i} className="flex items-start gap-2 text-[10px] text-gray-500">
+                  <span className="text-gray-700 flex-shrink-0 mt-0.5">◦</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Knappar */}
+        {saved ? (
+          <div className="flex items-center gap-2 text-emerald-400 text-[12px] font-semibold">
+            <IconCheck size={16} /> Sparat som utkast!
+          </div>
+        ) : (
+          <div className="flex gap-2">
+            <button
+              onClick={handleSave}
+              disabled={!partyA || !partyB}
+              className="flex-1 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-[12px] font-semibold transition-colors flex items-center justify-center gap-2"
+            >
+              <IconFile size={13} /> Spara som utkast
+            </button>
+            <button onClick={onClose} className="px-4 py-2 rounded-lg border border-white/[0.08] text-gray-500 text-[12px] hover:text-white transition-colors">
+              Avbryt
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ─── LegalHub ─────────────────────────────────────────────────────────────────
+
 export function LegalHub() {
   const [filter, setFilter] = useState<DocStatus | 'all'>('all')
   const [sendDoc, setSendDoc] = useState<LegalDocument | null>(null)
+  const [showNewDoc, setShowNewDoc] = useState(false)
   const [showTriggers, setShowTriggers] = useState(false)
+  const [localDocs, setLocalDocs] = useState<LegalDocument[]>([])
   const { activeEntity, scopedEntities } = useEntityScope()
+
+  const allDocs = [...LEGAL_DOCUMENTS, ...localDocs]
 
   // Scope: root entity (wavult-group, layer 0) → visa alla. Annars filtrera på party_a/party_b.
   const scopedIds = new Set(scopedEntities.map(e => e.id))
   const isRoot = activeEntity.layer === 0
   const scopedDocs = isRoot
-    ? LEGAL_DOCUMENTS
-    : LEGAL_DOCUMENTS.filter(d => scopedIds.has(d.party_a) || scopedIds.has(d.party_b))
+    ? allDocs
+    : allDocs.filter(d => scopedIds.has(d.party_a) || scopedIds.has(d.party_b))
 
   const proposed = scopedDocs.filter(d => d.status === 'proposed')
   const signed   = scopedDocs.filter(d => d.status === 'signed')
   const pending  = scopedDocs.filter(d => d.status === 'pending_signature')
 
   const filtered = filter === 'all' ? scopedDocs : scopedDocs.filter(d => d.status === filter)
+
+  const handleNewDocSave = (partial: Partial<LegalDocument>) => {
+    const newDoc: LegalDocument = {
+      id: `local-${Date.now()}`,
+      type: partial.type ?? 'nda',
+      title: partial.title ?? 'Nytt dokument',
+      party_a: partial.party_a ?? '',
+      party_b: partial.party_b ?? '',
+      signing_level: partial.signing_level ?? 'L2',
+      sign_method: partial.sign_method ?? 'bankid',
+      status: 'draft',
+      created_at: partial.created_at ?? new Date().toISOString().slice(0, 10),
+      description: partial.description ?? '',
+      required: false,
+      auto_proposed: false,
+    }
+    setLocalDocs(prev => [...prev, newDoc])
+  }
 
   return (
     <div className="flex flex-col h-full bg-[#070709] text-white">
@@ -207,11 +419,18 @@ export function LegalHub() {
           <IconScale size={20} className="text-purple-400" />
           <h1 className="text-[16px] font-bold text-white">Legal Hub</h1>
           <span className="text-[9px] font-mono ml-2" style={{ color: activeEntity.color }}>{activeEntity.name}</span>
+          {/* + Nytt dokument */}
+          <button
+            onClick={() => setShowNewDoc(true)}
+            className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/30 text-purple-300 text-[11px] font-semibold transition-colors"
+          >
+            <IconPlus size={12} /> Nytt dokument
+          </button>
         </div>
         {/* Stats */}
         <div className="flex gap-4">
           {[
-            { label: 'Totalt', value: LEGAL_DOCUMENTS.length, color: '#ffffff' },
+            { label: 'Totalt', value: allDocs.length, color: '#ffffff' },
             { label: 'Föreslagna', value: proposed.length, color: '#F59E0B' },
             { label: 'Väntar', value: pending.length, color: '#3B82F6' },
             { label: 'Signerade', value: signed.length, color: '#10B981' },
@@ -237,13 +456,13 @@ export function LegalHub() {
 
       {/* Filter tabs */}
       <div className="flex gap-1 px-4 py-3">
-        {(['all', 'proposed', 'pending_signature', 'signed'] as const).map(f => (
+        {(['all', 'proposed', 'pending_signature', 'draft', 'signed'] as const).map(f => (
           <button
             key={f}
             onClick={() => setFilter(f)}
             className={`px-3 py-1.5 rounded-lg text-[10px] font-semibold transition-colors ${filter === f ? 'bg-white/10 text-white' : 'text-gray-600 hover:text-gray-400'}`}
           >
-            {f === 'all' ? 'Alla' : f === 'proposed' ? 'Föreslagna' : f === 'pending_signature' ? 'Väntar' : 'Signerade'}
+            {f === 'all' ? 'Alla' : f === 'proposed' ? 'Föreslagna' : f === 'pending_signature' ? 'Väntar' : f === 'draft' ? 'Utkast' : 'Signerade'}
           </button>
         ))}
       </div>
@@ -298,6 +517,7 @@ export function LegalHub() {
       </div>
 
       {sendDoc && <SendModal doc={sendDoc} onClose={() => setSendDoc(null)} />}
+      {showNewDoc && <NewDocModal onClose={() => setShowNewDoc(false)} onSave={handleNewDocSave} />}
     </div>
   )
 }
