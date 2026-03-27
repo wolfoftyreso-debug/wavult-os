@@ -11,7 +11,7 @@ function fmt(n: number, currency: string) {
 }
 
 function ProgressBar({ value, max, color }: { value: number; max: number; color: string }) {
-  const pct = Math.min(100, Math.round((value / max) * 100))
+  const pct = max > 0 ? Math.min(100, Math.round((value / max) * 100)) : 0
   return (
     <div className="w-full bg-white/[0.06] rounded-full h-1.5 mt-1.5">
       <div
@@ -117,7 +117,7 @@ export function FinanceOverview() {
                 <div className="flex items-center justify-between">
                   <span className="text-[9px] text-gray-500 font-mono">Intäktsmål</span>
                   <span className="text-[9px] font-mono" style={{ color: '#10B981' }}>
-                    {Math.round((kpi.revenue / kpi.budget_revenue) * 100)}%
+                    {kpi.budget_revenue > 0 ? Math.round((kpi.revenue / kpi.budget_revenue) * 100) : 0}%
                   </span>
                 </div>
                 <ProgressBar value={kpi.revenue} max={kpi.budget_revenue} color="#10B981" />
@@ -126,7 +126,7 @@ export function FinanceOverview() {
                 <div className="flex items-center justify-between">
                   <span className="text-[9px] text-gray-500 font-mono">Kostnadsbudget</span>
                   <span className="text-[9px] font-mono" style={{ color: '#F59E0B' }}>
-                    {Math.round((kpi.expenses / kpi.budget_expenses) * 100)}%
+                    {kpi.budget_expenses > 0 ? Math.round((kpi.expenses / kpi.budget_expenses) * 100) : 0}%
                   </span>
                 </div>
                 <ProgressBar value={kpi.expenses} max={kpi.budget_expenses} color="#F59E0B" />
