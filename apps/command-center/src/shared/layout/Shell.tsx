@@ -7,6 +7,7 @@ import { useEntityScope } from '../scope/EntityScopeContext'
 import { LEGAL_DOCUMENTS } from '../../features/legal/data'
 import { MODULE_REGISTRY } from '../maturity/maturityModel'
 import { MaturityBadge } from '../maturity/MaturityBadge'
+import { BerntWidget } from '../../features/bernt/BerntWidget'
 
 function ContentArea({ children }: { children: React.ReactNode }) {
   const { pathname } = useLocation()
@@ -354,6 +355,9 @@ export function Shell({ children }: ShellProps) {
           <ContentArea>{children}</ContentArea>
         </div>
       </main>
+
+      {/* Bernt — persistent AI widget */}
+      <BerntWidget />
     </div>
   )
 }
