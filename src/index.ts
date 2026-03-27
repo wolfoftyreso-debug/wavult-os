@@ -41,6 +41,10 @@ import legalReviewRouter from "./legal-review";
 import personnelRouter from "./personnel-api";
 import auditWorkspaceRouter from "./audit-workspace";
 import integrationRouter from "./integrations/integration-api";
+import communicationHubRouter from "./communication-hub";
+import samplingImpartialityRouter from "./sampling-impartiality";
+import telephonyEngineRouter from "./telephony-engine";
+import voiceAiEngineRouter from "./voice-ai-engine";
 
 // ---------------------------------------------------------------------------
 // Certified Core imports
@@ -60,23 +64,7 @@ const PORT = Number(process.env.PORT) || 3001;
 // Middleware
 // ---------------------------------------------------------------------------
 app.use(helmet());
-// CORS — stöd komma-separerad lista av origins (browsers accepterar bara EN origin per svar)
-const _corsOrigins = (process.env.CORS_ORIGIN || "*")
-  .split(",")
-  .map((o) => o.trim())
-  .filter(Boolean);
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-      if (_corsOrigins.includes("*") || _corsOrigins.includes(origin)) {
-        return callback(null, origin);
-      }
-      callback(new Error(`CORS: Origin '${origin}' not allowed`));
-    },
-    credentials: true,
-  })
-);
+app.use(cors({ origin: process.env.CORS_ORIGIN || "*" }));
 app.use(express.json({ limit: "10mb" }));
 
 const limiter = rateLimit({
@@ -241,6 +229,26 @@ app.use(auditWorkspaceRouter);
 app.use(integrationRouter);
 
 // ---------------------------------------------------------------------------
+// Communication Hub — Multi-channel email, Slack, WhatsApp, Telegram, etc.
+// ---------------------------------------------------------------------------
+app.use(communicationHubRouter);
+
+// ---------------------------------------------------------------------------
+// Sampling & Impartiality — Stickprover, opartiskhet, ISO 17020/17025
+// ---------------------------------------------------------------------------
+app.use(samplingImpartialityRouter);
+
+// ---------------------------------------------------------------------------
+// Telephony — 46elks: nummer, röst, IVR, SMS, voicemail
+// ---------------------------------------------------------------------------
+app.use(telephonyEngineRouter);
+
+// ---------------------------------------------------------------------------
+// Voice AI — Autonomous customer interaction (ASR + LLM + TTS)
+// ---------------------------------------------------------------------------
+app.use(voiceAiEngineRouter);
+
+// ---------------------------------------------------------------------------
 // Auth helper for inline routes
 // ---------------------------------------------------------------------------
 const auth = (req: Request, res: Response, next: NextFunction) => {
@@ -270,11 +278,11 @@ app.get('/api/task-catalog/types', auth, async (req, res) => {
     .select('*, task_categories(code, name, entity)')
     .eq('is_active', true)
     .order('sort_order');
-  
+
   if (category) query = query.eq('category_id', category);
   if (phase) query = query.eq('phase', phase);
   if (role) query = query.contains('applicable_roles', [role as string]);
-  
+
   const { data, error } = await query;
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
@@ -294,7 +302,7 @@ app.get('/api/task-catalog/types/:code', auth, async (req, res) => {
     .select('*')
     .eq('task_type_id', taskType.id)
     .order('sort_order');
-  
+
   const { data: manuals } = await supabase
     .from('task_manuals')
     .select('*')
@@ -325,7 +333,7 @@ app.get('/api/task-catalog/types/:code/positions', auth, async (req, res) => {
 // ── TASK EXECUTIONS: Starta en uppgift ──
 app.post('/api/task-executions', auth, async (req, res) => {
   const { task_type_code, queue_source, deadline, linked_entity_type, linked_entity_id } = req.body;
-  
+
   const { data: taskType } = await supabase
     .from('task_types')
     .select('id, standard_minutes')
@@ -370,7 +378,7 @@ app.get('/api/task-executions/my', auth, async (req, res) => {
     .select('*, task_types(position_code, name, standard_minutes, manual_type, attention_type)')
     .eq('user_id', (req as any).user.id)
     .order('priority_score', { ascending: false });
-  
+
   if (qs) query = query.eq('status', qs as string);
   else query = query.in('status', ['queued', 'active', 'paused', 'blocked']);
 
@@ -572,7 +580,7 @@ app.get('/api/velocity/team', auth, async (req, res) => {
       .select('id, status')
       .eq('user_id', user.id)
       .gte('created_at', today);
-    
+
     const completed = (tasks || []).filter((t: any) => t.status === 'completed').length;
     const total = (tasks || []).length;
     results.push({
@@ -643,4 +651,3 @@ app.listen(PORT, () => {
 });
 
 export default app;
-// CORS fix Sun Mar 22 03:14:20 CET 2026

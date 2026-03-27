@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Wavult App — Mobile-first design system ──────────────────────────────── */
+
+@layer base {
+  :root {
+    --operator-color: #C4961A;
+    --safe-area-top: env(safe-area-inset-top, 0px);
+    --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  body {
+    @apply bg-w-bg text-tx-primary font-sans antialiased;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
+  }
+
+  /* Minimal scrollbar */
+  ::-webkit-scrollbar { width: 2px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #2A2F3A; border-radius: 1px; }
+}
+
+@layer components {
+  /* Card base */
+  .app-card {
+    @apply bg-w-card border border-w-border rounded-card p-4;
+    @apply transition-all duration-150 ease-out;
+  }
+  .app-card:active {
+    @apply bg-w-hover scale-[0.98];
+  }
+
+  /* Stat card */
+  .stat-card {
+    @apply bg-w-surface border border-w-border rounded-card p-4;
+  }
+
+  /* Action button — large, clear */
+  .app-btn {
+    @apply w-full py-3.5 rounded-xl font-semibold text-sm text-center;
+    @apply transition-all duration-150 ease-out active:scale-[0.97];
+  }
+  .app-btn--primary {
+    @apply bg-signal-amber text-w-bg;
+  }
+  .app-btn--ghost {
+    @apply bg-transparent text-tx-secondary border border-w-border;
+  }
+  .app-btn--danger {
+    @apply bg-signal-red/15 text-signal-red border border-signal-red/30;
+  }
+
+  /* Tab bar item */
+  .tab-item {
+    @apply flex flex-col items-center gap-0.5 py-2 px-3 text-tx-muted;
+    @apply transition-colors duration-150;
+  }
+  .tab-item--active {
+    @apply text-signal-amber;
+  }
+
+  /* Event micro-card */
+  .event-micro {
+    @apply flex items-start gap-3 px-4 py-3 border-b border-w-border;
+    @apply transition-all duration-150 active:bg-w-hover;
+  }
+
+  /* Notification dot */
+  .notif-dot {
+    @apply absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-signal-red;
+  }
+
+  /* Pull indicator */
+  .pull-indicator {
+    @apply h-1 w-10 rounded-full bg-w-border mx-auto;
+  }
+
+  /* Operator accent */
+  .op-accent {
+    border-left: 3px solid var(--operator-color);
+  }
+}

@@ -48,6 +48,11 @@ const envSchema = z.object({
 
   // ── Telegram bots (optional) ─────────────────────────────────────────────
   EVA_BOT_TOKEN: z.string().optional(),
+
+  // ── Duix Digital Human (optional) ──────────────────────────────────────
+  DUIX_APP_ID: z.string().optional(),
+  DUIX_APP_SECRET: z.string().optional(),
+  DUIX_CONVERSATION_ID: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;

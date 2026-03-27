@@ -19,10 +19,18 @@ if (!DATABASE_URL) {
   process.exit(1);
 }
 
-async function main() {
-  const sqlPath = path.join(__dirname, '..', 'sql', 'deploy_all.sql');
-  const sql = fs.readFileSync(sqlPath, 'utf-8');
+// SQL files to deploy, in order
+const SQL_FILES = [
+  'deploy_all.sql',           // Core schema + seed data
+  '12_iso_roles.sql',         // ISO system roles
+  '13_iso_compliance.sql',    // ISO 9001 + ISO 27001 compliance seed
+  '31_communication_hub.sql', // Communication hub tables
+  '32_sampling_impartiality.sql', // Sampling plans, impartiality, COI
+  '33_telephony.sql',            // Phone numbers, calls, IVR, voicemails
+  '34_voice_ai.sql',             // Voice AI agents, sessions, knowledge
+];
 
+async function main() {
   console.log('Connecting to database...');
   const client = new Client({
     connectionString: DATABASE_URL,
@@ -31,23 +39,41 @@ async function main() {
   await client.connect();
   console.log('Connected.\n');
 
-  const lines = sql.split('\n').length;
-  console.log(`Executing deploy_all.sql (${sql.length} chars, ~${lines} lines)...`);
+  let success = 0;
+  let failed = 0;
 
-  try {
-    await client.query(sql);
-    console.log('\nSchema deployed successfully!');
-  } catch (err) {
-    console.error('\nDeployment failed:');
-    console.error(`  ${err.message}`);
-    if (err.position) {
-      const prefix = sql.substring(0, parseInt(err.position));
-      console.error(`  Near line ${prefix.split('\n').length} in deploy_all.sql`);
+  for (const file of SQL_FILES) {
+    const sqlPath = path.join(__dirname, '..', 'sql', file);
+
+    if (!fs.existsSync(sqlPath)) {
+      console.warn(`  SKIP: ${file} not found`);
+      continue;
     }
-    process.exit(1);
-  } finally {
-    await client.end();
+
+    const sql = fs.readFileSync(sqlPath, 'utf-8');
+    const lines = sql.split('\n').length;
+    console.log(`Deploying ${file} (${sql.length} chars, ~${lines} lines)...`);
+
+    try {
+      await client.query(sql);
+      console.log(`  ✓ ${file} deployed successfully`);
+      success++;
+    } catch (err) {
+      console.error(`  ✗ ${file} failed:`);
+      console.error(`    ${err.message}`);
+      if (err.position) {
+        const prefix = sql.substring(0, parseInt(err.position));
+        console.error(`    Near line ${prefix.split('\n').length} in ${file}`);
+      }
+      failed++;
+      // Continue with next file instead of aborting
+    }
   }
+
+  await client.end();
+
+  console.log(`\nDone. ${success} succeeded, ${failed} failed out of ${SQL_FILES.length} files.`);
+  if (failed > 0) process.exit(1);
 }
 
 main();

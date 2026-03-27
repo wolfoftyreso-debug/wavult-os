@@ -74,11 +74,11 @@ export default function LoginScreen({ onLogin }: { onLogin: (token: string, user
         return;
       }
 
-      const SUPABASE_URL = "https://znmxtnxxjpmgtycmsqjv.supabase.co";
-      const ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpubXh0bnh4anBtZ3R5Y21zcWp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4ODA2NjUsImV4cCI6MjA4OTQ1NjY2NX0.3LzBF2cE95X0vtW-5LwfJu8iGebnE9AUXglHchMPH60";
-      const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+      const SB_URL = import.meta.env.VITE_SUPABASE_URL || "";
+      const SB_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
+      const res = await fetch(`${SB_URL}/auth/v1/token?grant_type=password`, {
         method: "POST",
-        headers: { "apikey": ANON_KEY, "Content-Type": "application/json" },
+        headers: { "apikey": SB_KEY, "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();

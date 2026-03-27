@@ -1,16 +1,199 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Wavult OS v2 — Design System ─────────────────────────────────────────── */
+
 @layer base {
   :root {
-    --brand-primary: #0A0F1E;
-    --brand-accent: #3B82F6;
-    --brand-highlight: #06B6D4;
+    /* Atmospheric state — controlled by JS */
+    --atmosphere: #14181E;
+    --atmosphere-intensity: 0;
+    --focal-accent: transparent;
+    --operator-color: #C4961A;
+
+    /* Transition timing */
+    --transition-atmosphere: 1.2s ease-in-out;
+    --transition-fast: 0.15s ease-out;
+    --transition-normal: 0.25s ease-out;
   }
-  
+
   body {
-    @apply bg-[#0A0F1E] text-gray-100 font-sans antialiased;
+    @apply bg-[#0F1218] text-text-primary font-sans antialiased;
     font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  /* Custom scrollbar — minimal, atmospheric */
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #2A2F3A;
+    border-radius: 2px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #363C48;
+  }
+}
+
+@layer components {
+  /* ─── Focal Zone ──────────────────────────────────────────────────────────── */
+  .focal-zone {
+    @apply relative flex-1 flex flex-col items-center justify-center;
+    transition: background var(--transition-atmosphere),
+                border-color var(--transition-atmosphere);
+  }
+
+  .focal-zone--neutral {
+    background: #14181E;
+  }
+
+  .focal-zone--attention {
+    background: linear-gradient(135deg, #14181E 0%, #1A1810 100%);
+  }
+
+  .focal-zone--action {
+    background: linear-gradient(135deg, #14181E 0%, #1A1215 100%);
+  }
+
+  /* Left-edge action stripe — industrial indicator light */
+  .focal-stripe {
+    @apply absolute left-0 top-0 bottom-0 w-1 rounded-r;
+    transition: background var(--transition-normal),
+                opacity var(--transition-normal);
+  }
+
+  .focal-stripe--neutral { @apply opacity-0; }
+  .focal-stripe--attention { @apply opacity-100 bg-signal-amber; }
+  .focal-stripe--action { @apply opacity-100 bg-signal-red; }
+  .focal-stripe--success { @apply opacity-100 bg-signal-green; }
+
+  /* ─── Mission Stack ───────────────────────────────────────────────────────── */
+  .mission-stack {
+    @apply flex flex-col;
+  }
+
+  .mission-item {
+    @apply relative flex items-start gap-3 px-4 py-3 border-b border-wavult-border cursor-pointer;
+    @apply transition-all duration-200 ease-out;
+  }
+
+  .mission-item:hover {
+    @apply bg-wavult-steel;
+  }
+
+  .mission-item--active {
+    @apply bg-wavult-slate border-l-2 border-l-signal-amber;
+  }
+
+  .mission-item--resolved {
+    @apply opacity-40;
+  }
+
+  .mission-item--urgent {
+    @apply border-l-2 border-l-signal-red;
+  }
+
+  /* ─── Event Cards ─────────────────────────────────────────────────────────── */
+  .event-card {
+    @apply bg-wavult-slate border border-wavult-border rounded-lg p-6;
+    @apply transition-all duration-300 ease-out;
+    max-width: 640px;
+    width: 100%;
+  }
+
+  .event-card--elevated {
+    @apply border-signal-amber/30;
+    box-shadow: 0 0 20px rgba(196, 150, 26, 0.05);
+  }
+
+  .event-card--critical {
+    @apply border-signal-red/30;
+    box-shadow: 0 0 20px rgba(217, 64, 64, 0.08);
+  }
+
+  /* ─── Action Buttons ──────────────────────────────────────────────────────── */
+  .action-btn {
+    @apply px-6 py-3 rounded-lg font-semibold text-sm;
+    @apply transition-all duration-150 ease-out;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-wavult-charcoal;
+  }
+
+  .action-btn--primary {
+    @apply bg-signal-amber text-wavult-carbon hover:brightness-110;
+    @apply focus:ring-signal-amber;
+  }
+
+  .action-btn--danger {
+    @apply bg-signal-red/15 text-signal-red border border-signal-red/30;
+    @apply hover:bg-signal-red/25 focus:ring-signal-red;
+  }
+
+  .action-btn--ghost {
+    @apply bg-transparent text-text-secondary border border-wavult-border;
+    @apply hover:text-text-primary hover:border-wavult-border-light;
+  }
+
+  .action-btn--approve {
+    @apply bg-signal-green/15 text-signal-green border border-signal-green/30;
+    @apply hover:bg-signal-green/25 focus:ring-signal-green;
+  }
+
+  /* Large binary decision buttons — Buzz-style */
+  .decision-btn {
+    @apply flex-1 py-5 rounded-lg text-lg font-semibold;
+    @apply transition-all duration-150 ease-out;
+    @apply focus:outline-none;
+  }
+
+  /* ─── Peripheral / HUD ────────────────────────────────────────────────────── */
+  .hud-indicator {
+    @apply flex items-center gap-1.5 font-mono text-telemetry text-text-tertiary;
+  }
+
+  .hud-dot {
+    @apply h-1.5 w-1.5 rounded-full;
+    transition: background var(--transition-atmosphere);
+  }
+
+  .hud-dot--ok { @apply bg-signal-green; }
+  .hud-dot--warn { @apply bg-signal-amber animate-pulse-slow; }
+  .hud-dot--critical { @apply bg-signal-red animate-pulse; }
+
+  /* ─── Gate Lock ───────────────────────────────────────────────────────────── */
+  .gate-lock {
+    @apply flex items-center gap-2 px-3 py-2 rounded-lg;
+    @apply bg-wavult-slate border border-wavult-border;
+    @apply text-text-tertiary text-xs font-mono;
+  }
+
+  .gate-lock--pending {
+    @apply border-signal-amber/20;
+  }
+
+  .gate-lock--blocked {
+    @apply border-signal-red/20;
+  }
+
+  /* ─── Momentum Bar ────────────────────────────────────────────────────────── */
+  .momentum-bar {
+    @apply h-0.5 rounded-full;
+    transition: width 0.6s ease-out, background 0.6s ease-out;
+  }
+
+  /* ─── Operator Color Accent ───────────────────────────────────────────────── */
+  .operator-accent {
+    border-left: 3px solid var(--operator-color);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
   }
 }

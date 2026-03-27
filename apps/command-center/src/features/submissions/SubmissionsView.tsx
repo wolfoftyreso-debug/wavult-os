@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useEntityScope } from '../../shared/scope/EntityScopeContext'
 
-const SUPABASE_URL = 'https://lpeipzdmnnlbcoxlfhoe.supabase.co'
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxwZWlwemRtbm5sYmNveGxmaG9lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI0MDMzMDksImV4cCI6MjA1Nzk3OTMwOX0.rOoqqnZWnqhWDVWHHp2sDHBkpE7Xs5oC8UaYzNsXFaQ'
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || ''
+const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
 
 type Submission = {
   id: string
@@ -85,20 +85,14 @@ export function SubmissionsView() {
     const payoutAmount = rawPayout ? parseFloat(rawPayout) : (sub.missions?.reward_amount ?? 10)
 
     try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/approve_submission`, {
+      const result = await supabaseFetch('rpc/approve_submission', {
         method: 'POST',
-        headers: {
-          apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${SUPABASE_KEY}`,
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           p_submission_id: sub.id,
-          p_admin_id: '00000000-0000-0000-0000-000000000001', // TODO: replace with actual admin session user
+          p_admin_id: '00000000-0000-0000-0000-000000000001',
           p_payout_amount: payoutAmount,
         }),
       })
-      const result = await res.json()
       if (result.success) {
         showToast(`✅ Godkänt! ${payoutAmount} SEK krediterat`, true)
         loadSubmissions()

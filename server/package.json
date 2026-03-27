@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Hypbit OMS API — Express + TypeScript",
   "private": true,
+  "license": "UNLICENSED",
   "main": "src/index.ts",
   "scripts": {
     "dev": "tsx watch src/index.ts",
@@ -12,9 +13,10 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
+    "@aws-sdk/client-polly": "^3.1016.0",
     "@aws-sdk/client-s3": "^3.1014.0",
     "@aws-sdk/s3-request-presigner": "^3.1014.0",
-    "@supabase/supabase-js": "^2.45.0",
+    "@supabase/supabase-js": "^2.47.2",
     "@trigger.dev/sdk": "^3.0.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/xml2js": "^0.4.14",
@@ -34,9 +36,8 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/node": "^22.0.0",
-    "nothing": "^0.1.0",
     "tsx": "^4.19.0",
-    "typescript": "^5.5.0"
+    "typescript": "^5.7.2"
   },
   "engines": {
     "node": ">=20.0.0"

@@ -1,0 +1,76 @@
+name: Setup Infrastructure
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/infra-setup.yml'
+      - 'infra/**'
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: eu-north-1
+
+jobs:
+  setup:
+    name: Provision AWS Infrastructure
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-north-1
+
+      - name: Show AWS identity
+        run: aws sts get-caller-identity
+
+      - name: Create S3 buckets
+        run: |
+          set +e
+          for BUCKET in pixdrift-landing-prod pixdrift-bc-workstation-prod pixdrift-bc-admin-prod pixdrift-bc-crm-prod pixdrift-bc-sales-prod; do
+            echo "--- $BUCKET ---"
+            if aws s3api head-bucket --bucket "$BUCKET" 2>&1; then
+              echo "EXISTS"
+            else
+              echo "Creating $BUCKET..."
+              aws s3 mb "s3://$BUCKET" --region eu-north-1 2>&1
+              RESULT=$?
+              if [ $RESULT -ne 0 ]; then
+                echo "::warning::Failed to create $BUCKET (exit $RESULT)"
+              else
+                echo "Created $BUCKET"
+              fi
+            fi
+          done
+          set -e
+
+      - name: Configure landing bucket for website hosting
+        run: |
+          aws s3 website "s3://pixdrift-landing-prod" --index-document index.html --error-document index.html 2>&1 || true
+          aws s3api put-public-access-block --bucket pixdrift-landing-prod \
+            --public-access-block-configuration BlockPublicAcls=false,IgnorePublicAcls=false,BlockPublicPolicy=false,RestrictPublicBuckets=false 2>&1 || true
+
+      - name: Create ECR repository
+        run: |
+          aws ecr describe-repositories --repository-names hypbit/api --region eu-north-1 2>/dev/null || \
+            aws ecr create-repository --repository-name hypbit/api --region eu-north-1 --image-scanning-configuration scanOnPush=true 2>&1
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "=== Infrastructure Summary ==="
+          echo "S3 Buckets:"
+          aws s3 ls 2>&1 | grep pixdrift || echo "  none found"
+          echo "ECR:"
+          aws ecr describe-repositories --region eu-north-1 --query "repositories[].repositoryUri" --output text 2>&1 || echo "  none found"

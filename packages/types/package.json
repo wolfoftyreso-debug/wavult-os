@@ -2,6 +2,8 @@
   "name": "@hypbit/types",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
   "main": "./index.ts",
   "types": "./index.ts",
   "scripts": {

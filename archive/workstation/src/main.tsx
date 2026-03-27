@@ -140,10 +140,10 @@ function Root() {
 
     if (savedToken && savedUser) {
       // Validera token direkt mot Supabase (ingen backend-proxy)
-      const SUPABASE_URL = "https://znmxtnxxjpmgtycmsqjv.supabase.co";
-      const ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpubXh0bnh4anBtZ3R5Y21zcWp2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4ODA2NjUsImV4cCI6MjA4OTQ1NjY2NX0.3LzBF2cE95X0vtW-5LwfJu8iGebnE9AUXglHchMPH60";
-      fetch(`${SUPABASE_URL}/auth/v1/user`, {
-        headers: { "apikey": ANON_KEY, "Authorization": `Bearer ${savedToken}` },
+      const SB_URL = import.meta.env.VITE_SUPABASE_URL || "";
+      const SB_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
+      fetch(`${SB_URL}/auth/v1/user`, {
+        headers: { "apikey": SB_KEY, "Authorization": `Bearer ${savedToken}` },
       })
         .then(res => {
           if (res.ok) {

@@ -170,7 +170,9 @@ export function getDirectReports(superiorId: string): CommandRole[] {
 }
 
 export function getApexRole(): CommandRole {
-  return COMMAND_CHAIN.find(r => r.reports_to === null)!
+  const apex = COMMAND_CHAIN.find(r => r.reports_to === null)
+  if (!apex) throw new Error('Command chain has no apex role (reports_to === null)')
+  return apex
 }
 
 /** Ordered chain from apex down — breadth-first */
