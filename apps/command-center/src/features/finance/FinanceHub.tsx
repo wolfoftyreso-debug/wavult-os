@@ -9,8 +9,9 @@ import { CashFlowView } from './CashFlowView'
 import { TaxView } from './TaxView'
 import { IntercompanyView } from './IntercompanyView'
 import { PaymentProcessor } from './PaymentProcessor'
+import { CashFlowOptimizer } from './CashFlowOptimizer'
 
-type Tab = 'overview' | 'accounts' | 'ledger' | 'invoices' | 'cashflow' | 'tax' | 'intercompany' | 'payments'
+type Tab = 'overview' | 'accounts' | 'ledger' | 'invoices' | 'cashflow' | 'tax' | 'intercompany' | 'payments' | 'optimization'
 
 const TABS: Array<{ id: Tab; label: string; icon: string }> = [
   { id: 'overview',      label: 'Översikt',      icon: '📊' },
@@ -21,6 +22,7 @@ const TABS: Array<{ id: Tab; label: string; icon: string }> = [
   { id: 'tax',           label: 'Moms/Skatt',    icon: '🏛️' },
   { id: 'intercompany',  label: 'Intercompany',  icon: '↔️' },
   { id: 'payments',      label: 'Betalningar',   icon: '💳' },
+  { id: 'optimization',  label: 'Optimering',    icon: '⚡' },
 ]
 
 export function FinanceHub() {
@@ -82,6 +84,7 @@ export function FinanceHub() {
         {activeTab === 'tax'          && <TaxView />}
         {activeTab === 'intercompany' && <IntercompanyView />}
         {activeTab === 'payments'     && <PaymentProcessor />}
+        {activeTab === 'optimization' && <CashFlowOptimizer />}
       </div>
     </div>
   )
