@@ -365,7 +365,7 @@ export const MARKET_SITES: MarketSite[] = [
     responsible_role_id: 'group-ceo',
     stage: 'setup',
     strategy: {
-      purpose: 'LandveX enterprise anchor. Smart city government contracts.',
+      purpose: 'Landvex enterprise anchor. Smart city government contracts.',
       market_reasoning: 'Dubai Smart City initiative, massive infrastructure investment. Government RFPs in progress. Regulatory sandboxes favor new tech.',
     },
     kpis: {
@@ -476,7 +476,7 @@ export const MARKET_SITES: MarketSite[] = [
     stage: 'planned',
     strategy: {
       purpose: 'US infrastructure market entry via Texas LLC.',
-      market_reasoning: 'US municipalities and port authorities represent the largest LandveX TAM. Texas LLC structure enables federal contracting eligibility.',
+      market_reasoning: 'US municipalities and port authorities represent the largest Landvex TAM. Texas LLC structure enables federal contracting eligibility.',
     },
     kpis: {
       revenue_target: 0,
@@ -497,7 +497,7 @@ export const MARKET_SITES: MarketSite[] = [
       notes: 'Entity forming. No team on-ground yet.',
     },
     legal: {
-      entity_linkage: 'LandveX Inc (US-TX)',
+      entity_linkage: 'Landvex Inc (US-TX)',
       contracts: [
         { name: 'Texas LLC formation docs', status: 'draft' },
       ],

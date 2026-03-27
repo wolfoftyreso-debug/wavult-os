@@ -318,7 +318,7 @@ export function getStatusLabel(status: MilestoneStatus): string {
 
 export const PROJECT_META: Record<ProjectKey, { label: string; color: string; icon: string }> = {
   quixzoom: { label: 'quiXzoom', color: '#3B82F6', icon: '📷' },
-  landvex: { label: 'LandveX', color: '#10B981', icon: '🌍' },
+  landvex: { label: 'Landvex', color: '#10B981', icon: '🌍' },
   hypbit: { label: 'Hypbit OS', color: '#A78BFA', icon: '⚙️' },
   bolagsstruktur: { label: 'Bolagsstruktur', color: '#F59E0B', icon: '🏛️' },
   thailand: { label: 'Thailand Prep', color: '#EF4444', icon: '🇹🇭' },

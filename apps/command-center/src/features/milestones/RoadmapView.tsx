@@ -47,7 +47,7 @@ export function RoadmapView() {
       <div className="flex items-start justify-between">
         <div>
           <h2 className="text-lg font-bold text-white">Roadmap 2026</h2>
-          <p className="text-[11px] text-gray-500 mt-0.5">Q2–Q4 · quiXzoom · LandveX · Hypbit OS</p>
+          <p className="text-[11px] text-gray-500 mt-0.5">Q2–Q4 · quiXzoom · Landvex · Hypbit OS</p>
         </div>
         <div className="text-right">
           <p className="text-[11px] text-gray-400">{done}/{total} klara</p>

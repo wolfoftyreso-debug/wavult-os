@@ -133,9 +133,9 @@ export const ENTITY_FINANCE: EntityFinance[] = [
     cashflow_status: 'ok',
     intercompany_in: [],
     intercompany_out: ['wavult-group', 'wavult-operations'],
-    billing_notes: 'LandveX AB är befintligt bolag. Sverige-marknad. Pilot Q3 2026.',
+    billing_notes: 'Landvex AB är befintligt bolag. Sverige-marknad. Pilot Q3 2026.',
     open_items: [
-      { label: 'Bolags-konvertering till LandveX-varumärke', status: 'watch' },
+      { label: 'Bolags-konvertering till Landvex-varumärke', status: 'watch' },
       { label: 'Trafikverket / kommunpipeline', status: 'watch' },
     ],
   },
@@ -166,7 +166,7 @@ export const ENTITY_LEGAL: EntityLegal[] = [
     contracts: [
       { name: 'IP Assignment Agreement', status: 'risk', note: 'Not executed. Code must transfer to WGH.' },
       { name: 'Shareholder Agreement', status: 'watch', note: 'Drafting in progress.' },
-      { name: 'Trademark registrations', status: 'watch', note: 'quiXzoom, Hypbit, LandveX pending.' },
+      { name: 'Trademark registrations', status: 'watch', note: 'quiXzoom, Hypbit, Landvex pending.' },
     ],
     open_items: [
       { label: 'DIFC incorporation completion', status: 'watch' },
@@ -237,16 +237,16 @@ export const ENTITY_LEGAL: EntityLegal[] = [
   {
     entity_id: 'landvex-ab',
     legal_form: 'Aktiebolag (AB)',
-    jurisdiction_detail: 'Sverige — registrerat som LandveX AB',
+    jurisdiction_detail: 'Sverige — registrerat som Landvex AB',
     incorporation_status: 'complete',
     compliance_status: 'ok',
     contracts: [
-      { name: 'Varumärkesregistrering LandveX AB', status: 'watch', note: 'Pågår.' },
+      { name: 'Varumärkesregistrering Landvex AB', status: 'watch', note: 'Pågår.' },
       { name: 'Kommunavtal — pilotmall', status: 'watch', note: 'Ej klar.' },
       { name: 'Royalty Agreement (WGH ← LVX-SE)', status: 'watch', note: 'Ingår i IC-paketet.' },
     ],
     open_items: [
-      { label: 'Namnbyte till LandveX AB formaliserat', status: 'watch' },
+      { label: 'Namnbyte till Landvex AB formaliserat', status: 'watch' },
     ],
   },
   {
@@ -433,7 +433,7 @@ export const ENTITY_OPS: EntityOps[] = [
       { label: 'US municipal pilot pipeline', owner: 'Leon', status: 'planned' },
     ],
     deliverables: [
-      { label: 'LandveX Inc incorporated', due: 'Q2 2026', status: 'at-risk' },
+      { label: 'Landvex Inc incorporated', due: 'Q2 2026', status: 'at-risk' },
       { label: 'First US enterprise pilot', due: 'Q4 2026', status: 'on-track' },
     ],
     kpis: [
@@ -445,7 +445,7 @@ export const ENTITY_OPS: EntityOps[] = [
     entity_id: 'landvex-ab',
     active_work: [
       { label: 'Optical Insight EU portal', owner: 'Erik', status: 'active' },
-      { label: 'LandveX brand rollout', owner: 'Dennis', status: 'active' },
+      { label: 'Landvex brand rollout', owner: 'Dennis', status: 'active' },
       { label: 'Kommunpipeline — pilot Q3 2026', owner: 'Leon', status: 'planned' },
     ],
     deliverables: [

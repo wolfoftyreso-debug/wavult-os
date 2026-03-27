@@ -1,6 +1,6 @@
 // ─── CRM Data Types ────────────────────────────────────────────────────────────
 
-export type CRMProduct = 'quiXzoom' | 'LandveX' | 'Hypbit'
+export type CRMProduct = 'quiXzoom' | 'Landvex' | 'Hypbit'
 export type CRMStage =
   | 'Lead'
   | 'Kvalificerad'
@@ -207,7 +207,7 @@ export const PROSPECTS: Prospect[] = [
     company: 'Lidingö Stad',
     contactName: 'Mikael Lundgren',
     contactId: 'c4',
-    product: 'LandveX',
+    product: 'Landvex',
     stage: 'Förhandling',
     valueSEK: 320000,
     lastActivity: '2026-03-24',
@@ -235,7 +235,7 @@ export const PROSPECTS: Prospect[] = [
     company: 'Akademiska Hus',
     contactName: 'Jonas Eriksson',
     contactId: 'c6',
-    product: 'LandveX',
+    product: 'Landvex',
     stage: 'Demo/Möte',
     valueSEK: 480000,
     lastActivity: '2026-03-21',
@@ -249,7 +249,7 @@ export const PROSPECTS: Prospect[] = [
     company: 'Castellum',
     contactName: 'Helena Svensson',
     contactId: 'c7',
-    product: 'LandveX',
+    product: 'Landvex',
     stage: 'Vunnen',
     valueSEK: 420000,
     lastActivity: '2026-03-10',
@@ -291,7 +291,7 @@ export const PROSPECTS: Prospect[] = [
     company: 'Haninge Kommun',
     contactName: 'Karl Magnusson',
     contactId: 'c10',
-    product: 'LandveX',
+    product: 'Landvex',
     stage: 'Lead',
     valueSEK: 95000,
     lastActivity: '2026-03-12',
@@ -309,7 +309,7 @@ export const DEALS: Deal[] = [
     id: 'd1',
     prospectId: 'p7',
     company: 'Castellum',
-    product: 'LandveX',
+    product: 'Landvex',
     status: 'Signerad',
     valueSEK: 420000,
     startDate: '2026-04-01',
@@ -320,7 +320,7 @@ export const DEALS: Deal[] = [
     id: 'd2',
     prospectId: 'p4',
     company: 'Lidingö Stad',
-    product: 'LandveX',
+    product: 'Landvex',
     status: 'Under förhandling',
     valueSEK: 320000,
     startDate: '2026-05-01',
@@ -388,7 +388,7 @@ export const ACTIVITIES: Activity[] = [
     company: 'Akademiska Hus',
     by: 'Erik',
     date: '2026-03-21T11:00:00',
-    note: 'Inledande samtal om LandveX. Stor portfölj, kan bli strategisk partner.',
+    note: 'Inledande samtal om Landvex. Stor portfölj, kan bli strategisk partner.',
   },
   {
     id: 'a5',
@@ -470,7 +470,7 @@ export const STAGE_COLORS: Record<CRMStage, string> = {
 
 export const PRODUCT_COLORS: Record<CRMProduct, string> = {
   quiXzoom: '#3B82F6',
-  LandveX: '#10B981',
+  Landvex: '#10B981',
   Hypbit: '#8B5CF6',
 }
 

@@ -77,7 +77,7 @@ export function CRMHub() {
           <div>
             <h1 className="text-sm font-semibold text-white">CRM</h1>
             <p className="text-sm text-gray-300 mt-0.5">
-              Wavult Sales — quiXzoom · LandveX · Hypbit
+              Wavult Sales — quiXzoom · Landvex · Hypbit
             </p>
           </div>
           <QuickStats />

@@ -25,8 +25,8 @@ const OWNERSHIP_TREE: OwnerNode = {
   children: [
     {
       id: 'landvex-ab',
-      name: 'LandveX AB',
-      shortName: 'LandveX AB',
+      name: 'Landvex AB',
+      shortName: 'Landvex AB',
       jurisdiction: 'Sverige 🇸🇪',
       orgNr: '559412-8834',
       founded: '2024-03-15',
@@ -47,8 +47,8 @@ const OWNERSHIP_TREE: OwnerNode = {
       children: [
         {
           id: 'landvex-inc',
-          name: 'LandveX Inc',
-          shortName: 'LandveX Inc',
+          name: 'Landvex Inc',
+          shortName: 'Landvex Inc',
           jurisdiction: 'Texas, USA 🇺🇸',
           orgNr: 'TX-0041882',
           founded: '2025-01-10',

@@ -587,7 +587,7 @@ export function MarketMap() {
             <option value="all">All products</option>
             <option value="quixzoom">QuixZoom</option>
             <option value="quixom-ads">Quixom Ads</option>
-            <option value="landvex">LandveX</option>
+            <option value="landvex">Landvex</option>
             <option value="hypbit">Hypbit</option>
           </select>
 

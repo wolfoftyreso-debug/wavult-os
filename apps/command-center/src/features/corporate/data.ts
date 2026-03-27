@@ -28,8 +28,8 @@ export const COMPANIES: Company[] = [
   },
   {
     id: 'landvex-ab',
-    name: 'LandveX AB',
-    shortName: 'LandveX AB',
+    name: 'Landvex AB',
+    shortName: 'Landvex AB',
     jurisdiction: 'Sverige',
     jurisdictionCode: 'SE',
     orgNr: '559412-8834',
@@ -50,8 +50,8 @@ export const COMPANIES: Company[] = [
   },
   {
     id: 'landvex-inc',
-    name: 'LandveX Inc',
-    shortName: 'LandveX Inc',
+    name: 'Landvex Inc',
+    shortName: 'Landvex Inc',
     jurisdiction: 'Texas, USA',
     jurisdictionCode: 'US-TX',
     orgNr: 'TX-0041882',
@@ -216,7 +216,7 @@ export interface JurisdictionRequirement {
 }
 
 export const JURISDICTION_REQUIREMENTS: JurisdictionRequirement[] = [
-  // LandveX AB (SE)
+  // Landvex AB (SE)
   {
     id: 'jr-001',
     companyId: 'landvex-ab',
@@ -272,7 +272,7 @@ export const JURISDICTION_REQUIREMENTS: JurisdictionRequirement[] = [
     amount: '$50',
   },
 
-  // LandveX Inc (US-TX)
+  // Landvex Inc (US-TX)
   {
     id: 'jr-007',
     companyId: 'landvex-inc',
@@ -367,8 +367,8 @@ export interface Document {
 }
 
 export const DOCUMENTS: Document[] = [
-  // LandveX AB
-  { id: 'doc-001', companyId: 'landvex-ab', name: 'Bolagsordning LandveX AB', category: 'Bolagsordning', date: '2024-03-15', status: 'arkiverat', fileType: 'pdf', size: '124 KB' },
+  // Landvex AB
+  { id: 'doc-001', companyId: 'landvex-ab', name: 'Bolagsordning Landvex AB', category: 'Bolagsordning', date: '2024-03-15', status: 'arkiverat', fileType: 'pdf', size: '124 KB' },
   { id: 'doc-002', companyId: 'landvex-ab', name: 'Aktiebok 2026-03-01', category: 'Aktiebok', date: '2026-03-01', status: 'signerat', fileType: 'xlsx', size: '48 KB' },
   { id: 'doc-003', companyId: 'landvex-ab', name: 'Protokoll styrelsemöte 2026-03-10', category: 'Styrelsebeslut', date: '2026-03-10', status: 'signerat', fileType: 'pdf', size: '88 KB' },
   { id: 'doc-004', companyId: 'landvex-ab', name: 'VD-instruktion 2026', category: 'Avtal', date: '2026-02-14', status: 'signerat', fileType: 'pdf', size: '56 KB' },
@@ -379,9 +379,9 @@ export const DOCUMENTS: Document[] = [
   { id: 'doc-008', companyId: 'quixzoom-inc', name: 'Cap Table 2026-Q1', category: 'Aktiebok', date: '2026-03-01', status: 'signerat', fileType: 'xlsx', size: '72 KB' },
   { id: 'doc-009', companyId: 'quixzoom-inc', name: 'Shareholder Agreement v2', category: 'Avtal', date: '2025-09-10', status: 'signerat', fileType: 'pdf', size: '340 KB' },
   { id: 'doc-010', companyId: 'quixzoom-inc', name: 'NDA — Erik Svensson', category: 'Avtal', date: '2024-08-20', status: 'arkiverat', fileType: 'pdf', size: '40 KB' },
-  // LandveX Inc
+  // Landvex Inc
   { id: 'doc-011', companyId: 'landvex-inc', name: 'Certificate of Formation (TX)', category: 'Registreringsbevis', date: '2025-01-10', status: 'arkiverat', fileType: 'pdf', size: '48 KB' },
-  { id: 'doc-012', companyId: 'landvex-inc', name: 'Operating Agreement LandveX Inc', category: 'Bolagsordning', date: '2025-01-10', status: 'signerat', fileType: 'pdf', size: '188 KB' },
+  { id: 'doc-012', companyId: 'landvex-inc', name: 'Operating Agreement Landvex Inc', category: 'Bolagsordning', date: '2025-01-10', status: 'signerat', fileType: 'pdf', size: '188 KB' },
   // QuiXzoom UAB
   { id: 'doc-013', companyId: 'quixzoom-uab', name: 'Steigimo dokumentai (UAB)', category: 'Registreringsbevis', date: '2025-03-01', status: 'arkiverat', fileType: 'pdf', size: '92 KB' },
   { id: 'doc-014', companyId: 'quixzoom-uab', name: 'Įstatai QuiXzoom UAB', category: 'Bolagsordning', date: '2025-03-01', status: 'arkiverat', fileType: 'pdf', size: '156 KB' },
@@ -389,7 +389,7 @@ export const DOCUMENTS: Document[] = [
   // Wavult Group
   { id: 'doc-016', companyId: 'wavult-group', name: 'DMCC Trade License', category: 'Registreringsbevis', date: '2025-06-01', status: 'arkiverat', fileType: 'pdf', size: '110 KB' },
   { id: 'doc-017', companyId: 'wavult-group', name: 'Memorandum of Association DMCC', category: 'Bolagsordning', date: '2025-06-01', status: 'arkiverat', fileType: 'pdf', size: '290 KB' },
-  { id: 'doc-018', companyId: 'wavult-group', name: 'Intercompany Loan Agreement — WG → LandveX AB', category: 'Avtal', date: '2025-11-01', status: 'signerat', fileType: 'pdf', size: '148 KB' },
+  { id: 'doc-018', companyId: 'wavult-group', name: 'Intercompany Loan Agreement — WG → Landvex AB', category: 'Avtal', date: '2025-11-01', status: 'signerat', fileType: 'pdf', size: '148 KB' },
 ]
 
 // ─── Compliance ──────────────────────────────────────────────────────────────
@@ -408,7 +408,7 @@ export interface ComplianceItem {
 }
 
 export const COMPLIANCE_ITEMS: ComplianceItem[] = [
-  // LandveX AB
+  // Landvex AB
   { id: 'ci-001', companyId: 'landvex-ab', category: 'Årsredovisning', requirement: 'Årsredovisning 2025 → Bolagsverket', deadline: '2026-07-31', status: 'ej påbörjad', owner: 'Winston Bjarnemark' },
   { id: 'ci-002', companyId: 'landvex-ab', category: 'Skattedeklaration', requirement: 'Inkomstdeklaration 2 (2025)', deadline: '2026-07-01', status: 'pågår', owner: 'Winston Bjarnemark' },
   { id: 'ci-003', companyId: 'landvex-ab', category: 'Skattedeklaration', requirement: 'Momsdeklaration Q1 2026', deadline: '2026-05-12', status: 'ej påbörjad', owner: 'Winston Bjarnemark' },
@@ -417,7 +417,7 @@ export const COMPLIANCE_ITEMS: ComplianceItem[] = [
   { id: 'ci-005', companyId: 'quixzoom-inc', category: 'Skattedeklaration', requirement: 'Delaware Franchise Tax 2025', deadline: '2026-03-01', status: 'klar', owner: 'Winston Bjarnemark' },
   { id: 'ci-006', companyId: 'quixzoom-inc', category: 'Årsredovisning', requirement: 'Annual Report Delaware 2026', deadline: '2027-03-01', status: 'ej påbörjad' },
   { id: 'ci-007', companyId: 'quixzoom-inc', category: 'Skattedeklaration', requirement: 'Federal Corporate Tax Return (Form 1120) 2025', deadline: '2026-04-15', status: 'pågår', owner: 'Winston Bjarnemark' },
-  // LandveX Inc
+  // Landvex Inc
   { id: 'ci-008', companyId: 'landvex-inc', category: 'Skattedeklaration', requirement: 'Texas Franchise Tax 2025', deadline: '2026-05-15', status: 'ej påbörjad', owner: 'Winston Bjarnemark' },
   { id: 'ci-009', companyId: 'landvex-inc', category: 'Bolagsregistrering', requirement: 'Texas PIR (Public Information Report)', deadline: '2026-05-15', status: 'ej påbörjad', owner: 'Dennis Bjarnemark' },
   // QuiXzoom UAB

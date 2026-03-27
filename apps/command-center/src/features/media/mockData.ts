@@ -11,7 +11,7 @@ import type {
 export const MOCK_CAMPAIGNS: Campaign[] = [
   {
     id: 'camp-001',
-    name: 'LandveX Sverige Launch',
+    name: 'Landvex Sverige Launch',
     objective: 'awareness',
     geo_scope: 'national',
     budget_total: 50000,
@@ -122,7 +122,7 @@ export const MOCK_CREATIVES: Creative[] = [
     campaign_id: 'camp-001',
     type: 'audio',
     hook: 'Sveriges infrastruktur behöver ögon.',
-    message: 'LandveX levererar realtidsdata om mark, vägar och infrastruktur till de som bygger Sverige.',
+    message: 'Landvex levererar realtidsdata om mark, vägar och infrastruktur till de som bygger Sverige.',
     cta: 'Läs mer på landvex.se',
     variants: [
       { id: 'v-001a', label: 'Version A — Direkt' },
@@ -135,7 +135,7 @@ export const MOCK_CREATIVES: Creative[] = [
     campaign_id: 'camp-001',
     type: 'video',
     hook: 'Vad händer när ingen ser?',
-    message: 'Vi fångar det som infrastrukturägare missar. LandveX — markdata i realtid.',
+    message: 'Vi fångar det som infrastrukturägare missar. Landvex — markdata i realtid.',
     cta: 'Se demo',
     variants: [{ id: 'v-002a', label: 'Version A — 15s' }],
     status: 'draft',

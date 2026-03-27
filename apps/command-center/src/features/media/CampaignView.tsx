@@ -47,7 +47,7 @@ function NewCampaignModal({ onClose }: { onClose: () => void }) {
             <input
               value={form.name}
               onChange={e => setForm({ ...form, name: e.target.value })}
-              placeholder="t.ex. LandveX Höst 2026"
+              placeholder="t.ex. Landvex Höst 2026"
               className="w-full bg-[#070912] border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-brand-accent/40"
             />
           </div>

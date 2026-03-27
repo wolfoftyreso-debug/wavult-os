@@ -274,10 +274,10 @@ export const CAMPAIGN_ACTIVITIES: CampaignActivity[] = [
     alerts: [],
   },
 
-  // 4. LandveX UAE — PR campaign (deployed)
+  // 4. Landvex UAE — PR campaign (deployed)
   {
     id: 'cos-004',
-    name: 'LandveX Dubai Smart City PR',
+    name: 'Landvex Dubai Smart City PR',
     brand: 'landvex',
     country: 'UAE',
     entity_id: 'wavult-group',
@@ -314,7 +314,7 @@ export const CAMPAIGN_ACTIVITIES: CampaignActivity[] = [
       result: 'underperform',
     },
     responsible_role_id: 'group-ceo',
-    description: 'Press release and media kit distribution targeting Gulf business media: Arabian Business, Gulf News, and Zawya. Focus on LandveX as AI-powered smart city infrastructure partner. Distribution via PR Wire MENA.',
+    description: 'Press release and media kit distribution targeting Gulf business media: Arabian Business, Gulf News, and Zawya. Focus on Landvex as AI-powered smart city infrastructure partner. Distribution via PR Wire MENA.',
     alerts: [
       {
         id: 'ale-004-1',
@@ -326,10 +326,10 @@ export const CAMPAIGN_ACTIVITIES: CampaignActivity[] = [
     ],
   },
 
-  // 5. LandveX Sweden — Outbound (ready)
+  // 5. Landvex Sweden — Outbound (ready)
   {
     id: 'cos-005',
-    name: 'LandveX SE Outbound — Municipalities',
+    name: 'Landvex SE Outbound — Municipalities',
     brand: 'landvex',
     country: 'Sweden',
     entity_id: 'quixzoom-uab',
@@ -372,10 +372,10 @@ export const CAMPAIGN_ACTIVITIES: CampaignActivity[] = [
     alerts: [],
   },
 
-  // 6. LandveX USA — LinkedIn (planned)
+  // 6. Landvex USA — LinkedIn (planned)
   {
     id: 'cos-006',
-    name: 'LandveX USA LinkedIn — Port Authorities',
+    name: 'Landvex USA LinkedIn — Port Authorities',
     brand: 'landvex',
     country: 'USA',
     entity_id: 'landvex-inc',
@@ -387,7 +387,7 @@ export const CAMPAIGN_ACTIVITIES: CampaignActivity[] = [
     asset: {
       id: 'ast-006',
       type: 'video',
-      name: 'LandveX product demo video (2 min)',
+      name: 'Landvex product demo video (2 min)',
       ready: false,
     },
     budget: {
@@ -684,7 +684,7 @@ export const CAMPAIGN_ACTIVITIES: CampaignActivity[] = [
       result: 'pending',
     },
     responsible_role_id: 'clo',
-    description: 'US outbound pilot targeting real estate marketing teams and local business associations in Texas. Leveraging LandveX Inc entity for credibility. 4-step sequence: intro → case study → demo offer → follow-up. Target 200 prospects.',
+    description: 'US outbound pilot targeting real estate marketing teams and local business associations in Texas. Leveraging Landvex Inc entity for credibility. 4-step sequence: intro → case study → demo offer → follow-up. Target 200 prospects.',
     alerts: [],
   },
 ]

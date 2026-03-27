@@ -24,7 +24,7 @@ interface Task {
 function projectToEntityId(project: string): string {
   if (project === 'Bolagsstruktur') return 'wavult-group'
   if (project === 'quiXzoom') return 'quixzoom-uab'
-  if (project === 'LandveX') return 'landvex-ab'
+  if (project === 'Landvex') return 'landvex-ab'
   if (project === 'Tech/API') return 'wavult-operations'
   if (project === 'Hypbit' || project === 'Hypbit OS') return 'wavult-operations'
   return 'wavult-group'

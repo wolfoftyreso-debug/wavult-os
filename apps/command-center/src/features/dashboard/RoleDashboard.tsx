@@ -32,15 +32,15 @@ function CeoDashboard() {
             { text: 'Thailand workcamp — projektstart 11 april', status: 'active' },
             { text: 'Bolagsstruktur Dubai — Wavult Group + Operations', status: 'active' },
             { text: 'quiXzoom MVP — Sverige juni 2026', status: 'active' },
-            { text: 'LandveX enterprise launch — Q3 2026', status: 'planned' },
-            { text: 'Texas LLC incorporation (LandveX Inc)', status: 'in-progress' },
+            { text: 'Landvex enterprise launch — Q3 2026', status: 'planned' },
+            { text: 'Texas LLC incorporation (Landvex Inc)', status: 'in-progress' },
           ]}
         </Section>
         <Section title="Kapitalallokering">
           {[
             { text: 'Wavult Operations — core team, system, drift', status: 'active' },
             { text: 'quiXzoom — MVP build + launch Sverige', status: 'active' },
-            { text: 'LandveX — enterprise infrastruktur', status: 'planned' },
+            { text: 'Landvex — enterprise infrastruktur', status: 'planned' },
             { text: 'Quixom Ads — fas 2 (efter quiXzoom)', status: 'planned' },
           ]}
         </Section>
@@ -49,7 +49,7 @@ function CeoDashboard() {
       <Section title="Beslutslogg (senaste)">
         {[
           { text: 'Hypbit-bilverkstad skrotad — fokus internt system', status: 'done' },
-          { text: 'LandveX AB (Sverige) — registrerat och aktivt', status: 'done' },
+          { text: 'Landvex AB (Sverige) — registrerat och aktivt', status: 'done' },
           { text: 'S3 multi-region bildlagring — EU + US live', status: 'done' },
           { text: 'OI Regional Architecture — EU/US separata instanser', status: 'done' },
           { text: 'Rollstruktur fastställd — 6 C-suite roller definierade', status: 'done' },
@@ -88,7 +88,7 @@ function Opsdashboard() {
           {[
             { text: 'Hypbit Command Center — rollsystem live', status: 'active' },
             { text: 'quiXzoom API — ECS eu-north-1 live', status: 'active' },
-            { text: 'LandveX sajt — CF Pages, senaste deploy live', status: 'active' },
+            { text: 'Landvex sajt — CF Pages, senaste deploy live', status: 'active' },
             { text: 'Bolagsstruktur UAE — väntar på rättslig rådgivning', status: 'blocked' },
             { text: 'Texas LLC — Dennis driver incorporation docs', status: 'in-progress' },
           ]}
@@ -224,7 +224,7 @@ function CloDashboard() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: 'Bolag totalt', value: '6', delta: '2 Dubai · 2 EU · 2 US', color: '#F59E0B' },
-          { label: 'Aktiva bolag', value: '1', delta: 'LandveX AB (Sverige) live', color: '#10B981' },
+          { label: 'Aktiva bolag', value: '1', delta: 'Landvex AB (Sverige) live', color: '#10B981' },
           { label: 'Under bildning', value: '5', delta: 'Dubai, Delaware, Texas, Litauen', color: '#FF9500' },
           { label: 'IP-skydd', value: 'Ej satt', delta: 'Ska ligga i Wavult Group Dubai', color: '#FF3B30' },
         ].map(s => (
@@ -243,8 +243,8 @@ function CloDashboard() {
             { text: 'Wavult Operations (Dubai Free Zone A) — planerat', status: 'planned' },
             { text: 'QuiXzoom UAB (Litauen) — planerat', status: 'planned' },
             { text: 'QuiXzoom Inc (Delaware) — planerat', status: 'planned' },
-            { text: 'LandveX Inc (Texas/Houston) — under bildning', status: 'in-progress' },
-            { text: 'LandveX AB (Sverige) — live', status: 'active' },
+            { text: 'Landvex Inc (Texas/Houston) — under bildning', status: 'in-progress' },
+            { text: 'Landvex AB (Sverige) — live', status: 'active' },
           ]}
         </Section>
         <Section title="Juridiska prioriteringar">
@@ -281,7 +281,7 @@ function CpoDashboard() {
         <Section title="Produkter — aktiva">
           {[
             { text: 'quiXzoom — crowdsourcad kamerainfrastruktur (zoomer-plattform)', status: 'active' },
-            { text: 'Optical Insight / LandveX — B2G kontrollsystem', status: 'active' },
+            { text: 'Optical Insight / Landvex — B2G kontrollsystem', status: 'active' },
             { text: 'Hypbit — internt operativsystem för Wavult Group', status: 'active' },
             { text: 'Quixom Ads — fas 2, monetisering av quiXzoom-data', status: 'planned' },
           ]}
@@ -290,7 +290,7 @@ function CpoDashboard() {
           {[
             { text: 'Säg aldrig "AI" — säg optisk analys, vision engine, optical layer', status: 'active' },
             { text: 'Zoomers — aldrig fotografer, operatörer, fältpersonal', status: 'active' },
-            { text: 'LandveX: Right control. Right cost. Right interval.', status: 'active' },
+            { text: 'Landvex: Right control. Right cost. Right interval.', status: 'active' },
             { text: 'OI: Works on day one. Gets smarter every day you use it.', status: 'active' },
           ]}
         </Section>

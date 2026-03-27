@@ -111,8 +111,8 @@ export const FINANCE_ENTITIES: FinanceEntity[] = [
   },
   {
     id: 'landvex-ab',
-    name: 'LandveX AB',
-    shortName: 'LandveX AB',
+    name: 'Landvex AB',
+    shortName: 'Landvex AB',
     currency: 'SEK',
     orgNr: '559141-7042',
     jurisdiction: 'Sverige',
@@ -128,8 +128,8 @@ export const FINANCE_ENTITIES: FinanceEntity[] = [
   },
   {
     id: 'landvex-inc',
-    name: 'LandveX Inc',
-    shortName: 'LandveX US',
+    name: 'Landvex Inc',
+    shortName: 'Landvex US',
     currency: 'USD',
     jurisdiction: 'Delaware, USA',
     color: '#10B981',
@@ -175,7 +175,7 @@ export const KPI_DATA: Record<EntityId, {
 // ─── Chart of Accounts ───────────────────────────────────────────────────────
 
 export const ACCOUNTS: Account[] = [
-  // LandveX AB — SEK
+  // Landvex AB — SEK
   { id: 'la-1930', number: '1930', name: 'Företagskonto', type: 'asset', group: '1xxx Tillgångar', entityId: 'landvex-ab', balance: 640000, currency: 'SEK' },
   { id: 'la-1510', number: '1510', name: 'Kundfordringar', type: 'asset', group: '1xxx Tillgångar', entityId: 'landvex-ab', balance: 285000, currency: 'SEK' },
   { id: 'la-1710', number: '1710', name: 'Förutbetalda kostnader', type: 'asset', group: '1xxx Tillgångar', entityId: 'landvex-ab', balance: 48000, currency: 'SEK' },
@@ -206,7 +206,7 @@ export const ACCOUNTS: Account[] = [
   { id: 'qu-3000', number: '3000', name: 'Intäkter', type: 'revenue', group: '3xxx Intäkter', entityId: 'quixzoom-uab', balance: -18900, currency: 'EUR' },
   { id: 'qu-5000', number: '5000', name: 'Lönekostnader', type: 'expense', group: '4-7xxx Kostnader', entityId: 'quixzoom-uab', balance: 12400, currency: 'EUR' },
 
-  // LandveX Inc — USD
+  // Landvex Inc — USD
   { id: 'li-1000', number: '1000', name: 'Checking Account', type: 'asset', group: '1xxx Tillgångar', entityId: 'landvex-inc', balance: 12100, currency: 'USD' },
   { id: 'li-3000', number: '3000', name: 'Revenue', type: 'revenue', group: '3xxx Intäkter', entityId: 'landvex-inc', balance: -43200, currency: 'USD' },
   { id: 'li-5000', number: '5000', name: 'Operating Costs', type: 'expense', group: '4-7xxx Kostnader', entityId: 'landvex-inc', balance: 38900, currency: 'USD' },
@@ -293,7 +293,7 @@ export const INVOICES: Invoice[] = [
   {
     id: 'inv-004',
     number: 'WH-0041',
-    recipient: 'LandveX AB',
+    recipient: 'Landvex AB',
     recipientEmail: 'ekonomi@landvex.se',
     entityId: 'wavult-group',
     currency: 'AED',
@@ -444,7 +444,7 @@ export const INTERCOMPANY_ENTRIES: IntercompanyEntry[] = [
     fromEntityId: 'wavult-group',
     toEntityId: 'landvex-inc',
     type: 'ip_license',
-    description: 'IP License — LandveX Platform Q1 2026',
+    description: 'IP License — Landvex Platform Q1 2026',
     amount: 4200,
     currency: 'USD',
     date: '2026-03-05',

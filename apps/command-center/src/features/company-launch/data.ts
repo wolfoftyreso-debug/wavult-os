@@ -25,11 +25,11 @@ export interface CompanyLaunch {
 
 export const COMPANY_LAUNCHES: CompanyLaunch[] = [
   // ─────────────────────────────────────────────
-  // 1. LandveX AB (Sverige)
+  // 1. Landvex AB (Sverige)
   // ─────────────────────────────────────────────
   {
     id: 'landvex-se',
-    name: 'LandveX AB',
+    name: 'Landvex AB',
     type: 'AB',
     jurisdiction: 'SE',
     flag: '🇸🇪',
@@ -38,7 +38,7 @@ export const COMPANY_LAUNCHES: CompanyLaunch[] = [
     steps: [
       {
         id: 'lvx-se-01',
-        title: 'LandveX AB — Registrering & Varumärke',
+        title: 'Landvex AB — Registrering & Varumärke',
         description: 'Byta firma via Bolagsverkets e-tjänst. Org.nr 559141-7042 behålls.',
         owner: 'dennis',
         category: 'registration',
@@ -64,7 +64,7 @@ export const COMPANY_LAUNCHES: CompanyLaunch[] = [
       {
         id: 'lvx-se-03',
         title: 'Öppna bankkonto Swedbank Business',
-        description: 'Öppna företagskonto hos Swedbank för LandveX AB.',
+        description: 'Öppna företagskonto hos Swedbank för Landvex AB.',
         owner: 'winston',
         category: 'banking',
         estimated_days: 14,
@@ -75,8 +75,8 @@ export const COMPANY_LAUNCHES: CompanyLaunch[] = [
       },
       {
         id: 'lvx-se-04',
-        title: 'IP-licensavtal: Wavult Group Dubai → LandveX AB',
-        description: 'Upprätta och signera IP-licensavtal där Wavult Group Dubai licensierar IP-rättigheter till LandveX AB. Signeras med BankID.',
+        title: 'IP-licensavtal: Wavult Group Dubai → Landvex AB',
+        description: 'Upprätta och signera IP-licensavtal där Wavult Group Dubai licensierar IP-rättigheter till Landvex AB. Signeras med BankID.',
         owner: 'dennis',
         category: 'ip',
         estimated_days: 7,
@@ -100,11 +100,11 @@ export const COMPANY_LAUNCHES: CompanyLaunch[] = [
   },
 
   // ─────────────────────────────────────────────
-  // 2. LandveX Inc (Texas)
+  // 2. Landvex Inc (Texas)
   // ─────────────────────────────────────────────
   {
     id: 'landvex-tx',
-    name: 'LandveX Inc',
+    name: 'Landvex Inc',
     type: 'Inc',
     jurisdiction: 'US-TX',
     flag: '🇺🇸',
@@ -152,7 +152,7 @@ export const COMPANY_LAUNCHES: CompanyLaunch[] = [
       {
         id: 'lvx-tx-04',
         title: 'Öppna bankkonto JPMorgan Chase Business',
-        description: 'Öppna företagskonto hos JPMorgan Chase för LandveX Inc.',
+        description: 'Öppna företagskonto hos JPMorgan Chase för Landvex Inc.',
         owner: 'winston',
         category: 'banking',
         estimated_days: 14,
@@ -163,8 +163,8 @@ export const COMPANY_LAUNCHES: CompanyLaunch[] = [
       },
       {
         id: 'lvx-tx-05',
-        title: 'IP-licensavtal: Wavult Group → LandveX Inc',
-        description: 'Upprätta och signera IP-licensavtal där Wavult Group Dubai licensierar IP-rättigheter till LandveX Inc.',
+        title: 'IP-licensavtal: Wavult Group → Landvex Inc',
+        description: 'Upprätta och signera IP-licensavtal där Wavult Group Dubai licensierar IP-rättigheter till Landvex Inc.',
         owner: 'dennis',
         category: 'ip',
         estimated_days: 7,
@@ -387,7 +387,7 @@ export const COMPANY_LAUNCHES: CompanyLaunch[] = [
       {
         id: 'wg-ae-05',
         title: 'Registrera varumärken hos UAE IP Dept',
-        description: 'Registrera varumärkena LandveX, QuiXzoom, Hypbit och Optical Insight hos UAE Ministry of Economy (IP-avdelningen).',
+        description: 'Registrera varumärkena Landvex, QuiXzoom, Hypbit och Optical Insight hos UAE Ministry of Economy (IP-avdelningen).',
         owner: 'dennis',
         category: 'ip',
         estimated_days: 30,

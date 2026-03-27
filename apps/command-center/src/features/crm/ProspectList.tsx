@@ -15,7 +15,7 @@ import {
 } from './data'
 
 const STAGES: Array<CRMStage | 'Alla'> = ['Alla', 'Lead', 'Kvalificerad', 'Demo/Möte', 'Offert', 'Förhandling', 'Vunnen', 'Förlorad']
-const PRODUCTS: Array<CRMProduct | 'Alla'> = ['Alla', 'quiXzoom', 'LandveX', 'Hypbit']
+const PRODUCTS: Array<CRMProduct | 'Alla'> = ['Alla', 'quiXzoom', 'Landvex', 'Hypbit']
 const ASSIGNEES: Array<TeamMember | 'Alla'> = ['Alla', 'Leon', 'Dennis', 'Erik']
 
 export function ProspectList() {

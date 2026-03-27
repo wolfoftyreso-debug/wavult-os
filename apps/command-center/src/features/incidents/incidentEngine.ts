@@ -317,11 +317,11 @@ const ACTION_TEMPLATES: Record<string, ProposedAction[]> = {
   'cfo-bank-accounts': [
     {
       id: 'act-cfo-bank-1',
-      text: 'Coordinate with CLO to complete entity formation for top-priority entities (LandveX AB + Wavult Operations) within 14 days',
+      text: 'Coordinate with CLO to complete entity formation for top-priority entities (Landvex AB + Wavult Operations) within 14 days',
       owner_role_id: 'cfo', approver_role_id: 'group-ceo',
       deadline_days: 14,
       smart_criteria: {
-        specific: 'Complete formation paperwork for LandveX AB and Wavult Operations',
+        specific: 'Complete formation paperwork for Landvex AB and Wavult Operations',
         measurable: '2 entities fully incorporated, registered, tax ID obtained',
         achievable: 'Swedish AB + Dubai Free Zone — both have clear formation paths',
         relevant: 'Unblocks bank account applications immediately',
@@ -331,7 +331,7 @@ const ACTION_TEMPLATES: Record<string, ProposedAction[]> = {
     },
     {
       id: 'act-cfo-bank-2',
-      text: 'Apply for business bank accounts for LandveX AB at SEB and Wavult Operations at Emirates NBD — within 3 days of entity formation',
+      text: 'Apply for business bank accounts for Landvex AB at SEB and Wavult Operations at Emirates NBD — within 3 days of entity formation',
       owner_role_id: 'cfo', approver_role_id: 'group-ceo',
       deadline_days: 3,
       smart_criteria: {
@@ -347,14 +347,14 @@ const ACTION_TEMPLATES: Record<string, ProposedAction[]> = {
   'clo-incorporated': [
     {
       id: 'act-clo-inc-1',
-      text: 'Engage Swedish formation agent for LandveX AB — target completion 21 days',
+      text: 'Engage Swedish formation agent for Landvex AB — target completion 21 days',
       owner_role_id: 'clo', approver_role_id: 'group-ceo',
       deadline_days: 21,
       smart_criteria: {
-        specific: 'File LandveX AB formation with Bolagsverket via registered formation agent',
+        specific: 'File Landvex AB formation with Bolagsverket via registered formation agent',
         measurable: 'Registration number received, F-skatt applied for',
         achievable: 'Swedish AB standard 1–3 weeks with agent',
-        relevant: 'LandveX AB is first EU entity required for LandveX go-to-market',
+        relevant: 'Landvex AB is first EU entity required for Landvex go-to-market',
         time_bound: '21 days from acceptance',
       },
       state: 'proposed',
