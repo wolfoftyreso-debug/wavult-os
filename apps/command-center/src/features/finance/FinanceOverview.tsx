@@ -1,5 +1,6 @@
 import { useEntityScope } from '../../shared/scope/EntityScopeContext'
 import { useFinanceKpis, useFinanceEntities, useFinanceLedger } from './hooks/useFinance'
+import { FINANCE_ENTITIES as MOCK_ENTITIES, KPI_DATA, LEDGER_ENTRIES as MOCK_LEDGER } from './mockData'
 import type { FinanceKpi } from '../../lib/supabase'
 
 function fmt(n: number, currency: string) {
@@ -45,15 +46,68 @@ export function FinanceOverview() {
   const isRoot = activeEntity.layer === 0
   const scopedIds = new Set(scopedEntities.map(e => e.id))
 
-  const { data: entities = [], isLoading: entitiesLoading } = useFinanceEntities()
-  const { data: kpis = [], isLoading: kpisLoading } = useFinanceKpis('2026-Q1')
-  const { data: recentEntries = [], isLoading: ledgerLoading } = useFinanceLedger()
+  const { data: entitiesRaw = [], isLoading: entitiesLoading } = useFinanceEntities()
+  const { data: kpisRaw = [], isLoading: kpisLoading } = useFinanceKpis('2026-Q1')
+  const { data: recentEntriesRaw = [], isLoading: ledgerLoading } = useFinanceLedger()
+
+  // Fall back to mockData if Supabase returns empty
+  const useMock = !entitiesLoading && entitiesRaw.length === 0
+
+  const entities = useMock
+    ? MOCK_ENTITIES.map(fe => ({
+        id: fe.id,
+        name: fe.name,
+        short_name: fe.shortName,
+        currency: fe.currency,
+        org_nr: fe.orgNr ?? null,
+        jurisdiction: fe.jurisdiction,
+        color: fe.color,
+        created_at: '',
+        updated_at: '',
+      }))
+    : entitiesRaw
+
+  const kpis: FinanceKpi[] = useMock
+    ? Object.entries(KPI_DATA).map(([entityId, kd]) => ({
+        id: entityId,
+        entity_id: entityId,
+        period: '2026-Q1',
+        revenue: kd.revenue,
+        expenses: kd.expenses,
+        result: kd.result,
+        cash: kd.cash,
+        currency: kd.currency,
+        budget_revenue: kd.budgetRevenue,
+        budget_expenses: kd.budgetExpenses,
+        created_at: '',
+        updated_at: '',
+      }))
+    : kpisRaw
+
+  const recentEntries = useMock
+    ? MOCK_LEDGER.map(le => ({
+        id: le.id,
+        date: le.date,
+        description: le.description,
+        account_id: le.accountId,
+        account_nr: le.accountNumber,
+        account_name: le.accountName,
+        debit: le.debit,
+        credit: le.credit,
+        balance: le.balance,
+        entity_id: le.entityId,
+        currency: le.currency,
+        ref_nr: le.refNr,
+        created_at: '',
+        updated_at: '',
+      }))
+    : recentEntriesRaw
 
   const entitiesToShow = isRoot
     ? entities
     : entities.filter(e => scopedIds.has(e.id))
 
-  const kpiMap = kpis.reduce<Record<string, FinanceKpi>>((acc, k) => {
+  const kpiMap = (kpis || []).reduce<Record<string, FinanceKpi>>((acc, k) => {
     acc[k.entity_id] = k
     return acc
   }, {})
@@ -61,7 +115,7 @@ export function FinanceOverview() {
   // Recent transactions from ledger (last 5 entries)
   const recentTxns = (isRoot
     ? recentEntries
-    : recentEntries.filter(e => scopedIds.has(e.entity_id))
+    : (recentEntries || []).filter(e => scopedIds.has(e.entity_id))
   ).slice(0, 5)
 
   const isLoading = entitiesLoading || kpisLoading || ledgerLoading
@@ -80,6 +134,7 @@ export function FinanceOverview() {
         <h2 className="text-lg font-bold text-white">Finansiell Översikt</h2>
         <p className="text-[11px] text-gray-500 mt-0.5">
           {isRoot ? 'Wavult Group — konsoliderad vy' : `${activeEntity.name}`}
+          {useMock && <span className="ml-2 text-yellow-600 text-[9px] font-mono">[demo-data]</span>}
         </p>
       </div>
 
@@ -102,13 +157,13 @@ export function FinanceOverview() {
 
             {/* KPI grid */}
             <div className="p-4 grid grid-cols-2 lg:grid-cols-4 gap-3">
-              <KpiCard label="Intäkter" value={kpi.revenue} currency={kpi.currency} color="#10B981" icon="📈"
-                sub={`Budget: ${fmt(kpi.budget_revenue, kpi.currency)}`} />
-              <KpiCard label="Kostnader" value={kpi.expenses} currency={kpi.currency} color="#EF4444" icon="📉"
-                sub={`Budget: ${fmt(kpi.budget_expenses, kpi.currency)}`} />
-              <KpiCard label="Resultat" value={kpi.result} currency={kpi.currency}
-                color={kpi.result >= 0 ? '#10B981' : '#EF4444'} icon="💹" />
-              <KpiCard label="Kassa" value={kpi.cash} currency={kpi.currency} color="#3B82F6" icon="🏦" />
+              <KpiCard label="Intäkter" value={kpi.revenue ?? 0} currency={kpi.currency} color="#10B981" icon="📈"
+                sub={`Budget: ${fmt(kpi.budget_revenue ?? 0, kpi.currency)}`} />
+              <KpiCard label="Kostnader" value={kpi.expenses ?? 0} currency={kpi.currency} color="#EF4444" icon="📉"
+                sub={`Budget: ${fmt(kpi.budget_expenses ?? 0, kpi.currency)}`} />
+              <KpiCard label="Resultat" value={kpi.result ?? 0} currency={kpi.currency}
+                color={(kpi.result ?? 0) >= 0 ? '#10B981' : '#EF4444'} icon="💹" />
+              <KpiCard label="Kassa" value={kpi.cash ?? 0} currency={kpi.currency} color="#3B82F6" icon="🏦" />
             </div>
 
             {/* Budget progress */}
@@ -117,24 +172,30 @@ export function FinanceOverview() {
                 <div className="flex items-center justify-between">
                   <span className="text-[9px] text-gray-500 font-mono">Intäktsmål</span>
                   <span className="text-[9px] font-mono" style={{ color: '#10B981' }}>
-                    {kpi.budget_revenue > 0 ? Math.round((kpi.revenue / kpi.budget_revenue) * 100) : 0}%
+                    {(kpi.budget_revenue ?? 0) > 0 ? Math.round(((kpi.revenue ?? 0) / kpi.budget_revenue) * 100) : 0}%
                   </span>
                 </div>
-                <ProgressBar value={kpi.revenue} max={kpi.budget_revenue} color="#10B981" />
+                <ProgressBar value={kpi.revenue ?? 0} max={kpi.budget_revenue ?? 0} color="#10B981" />
               </div>
               <div>
                 <div className="flex items-center justify-between">
                   <span className="text-[9px] text-gray-500 font-mono">Kostnadsbudget</span>
                   <span className="text-[9px] font-mono" style={{ color: '#F59E0B' }}>
-                    {kpi.budget_expenses > 0 ? Math.round((kpi.expenses / kpi.budget_expenses) * 100) : 0}%
+                    {(kpi.budget_expenses ?? 0) > 0 ? Math.round(((kpi.expenses ?? 0) / kpi.budget_expenses) * 100) : 0}%
                   </span>
                 </div>
-                <ProgressBar value={kpi.expenses} max={kpi.budget_expenses} color="#F59E0B" />
+                <ProgressBar value={kpi.expenses ?? 0} max={kpi.budget_expenses ?? 0} color="#F59E0B" />
               </div>
             </div>
           </div>
         )
       })}
+
+      {entitiesToShow.length === 0 && (
+        <div className="text-center py-8 text-gray-600 text-[12px]">
+          Inga bolag att visa
+        </div>
+      )}
 
       {/* Recent ledger entries */}
       <div className="rounded-xl border border-white/[0.06] bg-[#0D0F1A] overflow-hidden">
@@ -147,7 +208,7 @@ export function FinanceOverview() {
           ) : (
             recentTxns.map(tx => {
               const fe = entities.find(e => e.id === tx.entity_id)
-              const isCredit = tx.credit > 0
+              const isCredit = (tx.credit ?? 0) > 0
               return (
                 <div key={tx.id} className="flex items-center gap-3 px-4 py-3">
                   <div
@@ -164,7 +225,7 @@ export function FinanceOverview() {
                     className="text-[12px] font-semibold font-mono flex-shrink-0"
                     style={{ color: isCredit ? '#10B981' : '#EF4444' }}
                   >
-                    {isCredit ? '+' : '-'}{fmt(Math.max(tx.credit, tx.debit), tx.currency)}
+                    {isCredit ? '+' : '-'}{fmt(Math.max(tx.credit ?? 0, tx.debit ?? 0), tx.currency)}
                   </span>
                 </div>
               )

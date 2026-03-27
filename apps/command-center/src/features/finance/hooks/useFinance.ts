@@ -21,8 +21,12 @@ export function useFinanceEntities() {
         .from('finance_entities')
         .select('*')
         .order('name')
-      if (error) throw error
-      return data as FinanceEntity[]
+      // Don't throw — return empty array so UI falls back to mockData gracefully
+      if (error) {
+        console.warn('[Finance] finance_entities query error:', error.message)
+        return [] as FinanceEntity[]
+      }
+      return (data || []) as FinanceEntity[]
     },
     staleTime: 1000 * 60 * 5, // 5 min — entities rarely change
   })
@@ -37,8 +41,11 @@ export function useFinanceKpis(period?: string) {
       let query = supabase.from('finance_kpis').select('*').order('entity_id')
       if (period) query = query.eq('period', period)
       const { data, error } = await query
-      if (error) throw error
-      return data as FinanceKpi[]
+      if (error) {
+        console.warn('[Finance] finance_kpis query error:', error.message)
+        return [] as FinanceKpi[]
+      }
+      return (data || []) as FinanceKpi[]
     },
   })
 }
@@ -87,8 +94,11 @@ export function useFinanceLedger(filters?: LedgerFilters) {
       if (filters?.refNr)     query = query.ilike('ref_nr', `%${filters.refNr}%`)
 
       const { data, error } = await query
-      if (error) throw error
-      return data as FinanceLedgerEntry[]
+      if (error) {
+        console.warn('[Finance] finance_ledger query error:', error.message)
+        return [] as FinanceLedgerEntry[]
+      }
+      return (data || []) as FinanceLedgerEntry[]
     },
   })
 }
@@ -121,8 +131,11 @@ export function useFinanceAccounts(entityId?: string) {
         .order('account_nr')
       if (entityId) query = query.eq('entity_id', entityId)
       const { data, error } = await query
-      if (error) throw error
-      return data as FinanceAccount[]
+      if (error) {
+        console.warn('[Finance] finance_accounts query error:', error.message)
+        return [] as FinanceAccount[]
+      }
+      return (data || []) as FinanceAccount[]
     },
     staleTime: 1000 * 60 * 2,
   })
@@ -146,8 +159,11 @@ export function useFinanceInvoices(filters?: InvoiceFilters) {
       if (filters?.entityId) query = query.eq('entity_id', filters.entityId)
       if (filters?.status)   query = query.eq('status', filters.status)
       const { data, error } = await query
-      if (error) throw error
-      return data as FinanceInvoice[]
+      if (error) {
+        console.warn('[Finance] finance_invoices query error:', error.message)
+        return [] as FinanceInvoice[]
+      }
+      return (data || []) as FinanceInvoice[]
     },
   })
 }
@@ -192,14 +208,17 @@ export function useFinanceCashFlow(entityId?: string, year?: number) {
     queryKey: ['finance-cashflow', entityId, year],
     queryFn: async () => {
       let query = supabase
-        .from('finance_cashflow')
+        .from('finance_cashflow')    // correct table name: finance_cashflow (no underscore between cash and flow)
         .select('*')
         .order('period_year', { ascending: true })
       if (entityId) query = query.eq('entity_id', entityId)
       if (year)     query = query.eq('period_year', year)
       const { data, error } = await query
-      if (error) throw error
-      return data as FinanceCashFlow[]
+      if (error) {
+        console.warn('[Finance] finance_cashflow query error:', error.message)
+        return [] as FinanceCashFlow[]
+      }
+      return (data || []) as FinanceCashFlow[]
     },
   })
 }
@@ -214,8 +233,11 @@ export function useFinanceIntercompany() {
         .from('finance_intercompany')
         .select('*')
         .order('date', { ascending: false })
-      if (error) throw error
-      return data as FinanceIntercompany[]
+      if (error) {
+        console.warn('[Finance] finance_intercompany query error:', error.message)
+        return [] as FinanceIntercompany[]
+      }
+      return (data || []) as FinanceIntercompany[]
     },
   })
 }
@@ -249,8 +271,11 @@ export function useFinanceTaxPeriods(entityId?: string) {
         .order('due_date', { ascending: true })
       if (entityId) query = query.eq('entity_id', entityId)
       const { data, error } = await query
-      if (error) throw error
-      return data as FinanceTaxPeriod[]
+      if (error) {
+        console.warn('[Finance] finance_tax_periods query error:', error.message)
+        return [] as FinanceTaxPeriod[]
+      }
+      return (data || []) as FinanceTaxPeriod[]
     },
   })
 }

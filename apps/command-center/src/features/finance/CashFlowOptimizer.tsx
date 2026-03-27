@@ -310,7 +310,7 @@ export function CashFlowOptimizer() {
           <div className="flex justify-between text-[11px] mt-1">
             <span className="text-gray-500">Effektiv total skattebörda (grupp)</span>
             <span className="text-blue-300 font-mono font-semibold">
-              {((totalTaxPaidMonthly / entityCalcs.reduce((s, c) => s + c.revEur, 0)) * 100).toFixed(1)}%
+              {(() => { const tot = entityCalcs.reduce((s, c) => s + c.revEur, 0); return tot > 0 ? ((totalTaxPaidMonthly / tot) * 100).toFixed(1) : '0.0' })()}%
             </span>
           </div>
         </div>
