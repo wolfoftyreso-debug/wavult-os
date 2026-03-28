@@ -159,11 +159,11 @@ export async function getTeamSnapshots(): Promise<TeamMemberSnapshot[]> {
         .limit(1)
         .maybeSingle();
 
-      // Hämta användarinfo
+      // Hämta användarinfo — userId är public.users.id (inte auth_id)
       const { data: userRow } = await supabase
         .from('users')
         .select('full_name, email')
-        .eq('auth_id', userId)
+        .eq('id', userId)
         .maybeSingle();
 
       results.push({
