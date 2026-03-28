@@ -1,10 +1,11 @@
 /**
- * LoginPage — Wavult OS inloggning (ljust enterprise-tema)
+ * LoginPage — Wavult OS inloggning (Apple-native design system)
  */
 
 import { useState, FormEvent } from 'react'
 import { useAuth } from './AuthContext'
 import { useTranslation } from '../i18n/useTranslation'
+import { Input } from '../design-system/DesignSystem'
 
 export function LoginPage() {
   const { signIn } = useAuth()
@@ -24,74 +25,92 @@ export function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
+    <div
+      className="min-h-screen flex flex-col items-center justify-center p-4"
+      style={{ background: 'var(--color-bg-secondary)' }}
+    >
       {/* Card */}
-      <div className="bg-white border border-gray-200 rounded-2xl p-8 w-full max-w-sm shadow-md">
+      <div
+        className="w-full max-w-sm"
+        style={{
+          background: 'var(--color-bg-primary)',
+          borderRadius: 'var(--radius-xl)',
+          boxShadow: 'var(--shadow-lg)',
+          padding: 32,
+        }}
+      >
         {/* Logo */}
         <div className="mb-8 text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-purple-700 mb-4">
-            <span className="text-xl font-bold text-gray-900">W</span>
+          <div
+            className="inline-flex items-center justify-center mb-4"
+            style={{ width: 52, height: 52, borderRadius: '50%', background: 'var(--color-accent)' }}
+          >
+            <span style={{ fontSize: 22, fontWeight: 700, color: '#FFFFFF' }}>W</span>
           </div>
-          <h1 className="text-xl font-semibold text-gray-900">Wavult OS</h1>
-          <p className="text-xs text-gray-500 uppercase tracking-wide font-medium mt-1">Wavult Group</p>
-          <p className="text-sm text-gray-500 mt-2">{t('auth.login')}</p>
+          <h1 style={{ fontSize: 20, fontWeight: 600, color: 'var(--color-text-primary)', marginBottom: 4 }}>
+            Wavult OS
+          </h1>
+          <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--color-text-tertiary)' }}>
+            Wavult Group
+          </p>
+          <p style={{ fontSize: 14, color: 'var(--color-text-secondary)', marginTop: 8 }}>
+            {t('auth.login')}
+          </p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">
-              {t('auth.email')}
-            </label>
-            <input
+        <form onSubmit={handleSubmit}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <Input
               type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+              label={t('auth.email')}
               placeholder="namn@hypbit.com"
-              required
-              autoComplete="email"
-              className={`w-full bg-white border rounded-lg px-3 py-2 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 transition-colors ${
-                error
-                  ? 'border-red-400 focus:border-red-500 focus:ring-red-300'
-                  : 'border-gray-300 focus:border-purple-500 focus:ring-purple-500'
-              }`}
+              value={email}
+              onChange={setEmail}
             />
-          </div>
 
-          <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">
-              {t('auth.password')}
-            </label>
-            <input
+            <Input
               type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
+              label={t('auth.password')}
               placeholder="••••••••"
-              required
-              autoComplete="current-password"
-              className={`w-full bg-white border rounded-lg px-3 py-2 text-base text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 transition-colors ${
-                error
-                  ? 'border-red-400 focus:border-red-500 focus:ring-red-300'
-                  : 'border-gray-300 focus:border-purple-500 focus:ring-purple-500'
-              }`}
+              value={password}
+              onChange={setPassword}
             />
+
+            {error && (
+              <p style={{ fontSize: 12, color: 'var(--color-danger)', marginTop: -4 }}>{error}</p>
+            )}
+
+            <div style={{ marginTop: 8 }}>
+              <button
+                type="submit"
+                disabled={loading}
+                style={{
+                  width: '100%',
+                  padding: '12px 24px',
+                  borderRadius: 'var(--radius-md)',
+                  background: 'var(--color-accent)',
+                  color: '#FFFFFF',
+                  border: 'none',
+                  fontSize: 15,
+                  fontWeight: 600,
+                  fontFamily: 'var(--font-sans)',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  opacity: loading ? 0.6 : 1,
+                  transition: 'all var(--transition-fast)',
+                }}
+              >
+                {loading ? t('auth.logging_in') : t('auth.login')}
+              </button>
+            </div>
           </div>
-
-          {error && (
-            <p className="text-xs text-red-600 mt-1">{error}</p>
-          )}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-purple-700 hover:bg-purple-800 text-gray-900 font-medium py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm mt-2"
-          >
-            {loading ? t('auth.logging_in') : t('auth.login')}
-          </button>
         </form>
       </div>
 
-      <p className="absolute bottom-6 text-xs text-gray-500 font-mono">
+      <p
+        className="absolute bottom-6"
+        style={{ fontSize: 11, color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-mono)' }}
+      >
         Wavult OS · Intern access · Kontakta admin vid problem
       </p>
     </div>

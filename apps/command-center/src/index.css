@@ -4,88 +4,149 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── Wavult OS — Light Enterprise Design System ───────────────────────────── */
+/* ─── Wavult OS — Apple-native Design System ────────────────────────────────── */
 
 @layer base {
   :root {
-    /* ─── Light theme tokens ─────────────────────────────────────────────── */
-    --bg-base:      #FFFFFF;
-    --bg-surface:   #F9FAFB;
-    --bg-elevated:  #F3F4F6;
-    --border:       #E5E7EB;
-    --border-strong: #D1D5DB;
-    --text-primary:   #111827;
-    --text-secondary: #6B7280;
-    --text-muted:     #9CA3AF;
-    --accent:         #7C3AED;
-    --accent-light:   #EDE9FE;
-    --accent-text:    #6D28D9;
-    --success:        #059669;
-    --success-light:  #D1FAE5;
-    --warning:        #D97706;
-    --warning-light:  #FEF3C7;
-    --danger:         #DC2626;
-    --danger-light:   #FEE2E2;
-    --info:           #2563EB;
-    --info-light:     #DBEAFE;
+    /* ── BACKGROUND LAYERS (elevation system, never pure white) ── */
+    --color-bg-base:      #F2F2F7;  /* iOS system background — subtle warm gray */
+    --color-bg-primary:   #FFFFFF;  /* Cards, panels — true white for contrast */
+    --color-bg-secondary: #F2F2F7;  /* Page backgrounds */
+    --color-bg-elevated:  #FFFFFF;  /* Modals, dropdowns */
+    --color-bg-grouped:   #F2F2F7;  /* Grouped content, list backgrounds */
 
-    /* Legacy surface tokens (used by old components) */
-    --surface-bg:      #F9FAFB;
-    --surface-border:  #E5E7EB;
-    --surface-raised:  #FFFFFF;
-    --surface-overlay: #F3F4F6;
-    --entity-color:    #7C3AED;
+    /* ── BORDERS ── */
+    --color-border:        rgba(0,0,0,0.10);  /* Subtle dividers */
+    --color-border-strong: rgba(0,0,0,0.18);  /* Section borders */
 
-    /* Transition timing */
-    --transition-slow:   1.2s ease-in-out;
-    --transition-fast:   0.15s ease-out;
-    --transition-normal: 0.25s ease-out;
+    /* ── TEXT ── */
+    --color-text-primary:    #1C1C1E;    /* Primary labels */
+    --color-text-secondary:  #3C3C43CC;  /* Secondary, 80% opacity */
+    --color-text-tertiary:   #3C3C4399;  /* Tertiary, 60% opacity */
+    --color-text-quaternary: #3C3C434D;  /* Disabled, 30% opacity */
+
+    /* ── SEMANTIC COLORS ── */
+    --color-success:    #34C759;    /* iOS green */
+    --color-success-bg: #34C75914;
+    --color-warning:    #FF9500;    /* iOS orange */
+    --color-warning-bg: #FF950014;
+    --color-danger:     #FF3B30;    /* iOS red */
+    --color-danger-bg:  #FF3B3014;
+    --color-info:       #007AFF;    /* iOS blue */
+    --color-info-bg:    #007AFF14;
+
+    /* ── ACCENT (brand purple) ── */
+    --color-accent:       #5856D6;  /* iOS purple, slightly deeper */
+    --color-accent-light: #5856D614;
+    --color-accent-text:  #FFFFFF;
+
+    /* ── SHADOWS (elevation) ── */
+    --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.04);
+    --shadow-lg: 0 10px 15px rgba(0,0,0,0.06), 0 4px 6px rgba(0,0,0,0.04);
+
+    /* ── TYPOGRAPHY ── */
+    --font-sans:  -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+    --font-mono:  "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", monospace;
+    --font-round: "SF Pro Rounded", "Nunito", sans-serif;
+
+    /* ── SPACING (8pt grid) ── */
+    --space-1:   4px;
+    --space-2:   8px;
+    --space-3:  12px;
+    --space-4:  16px;
+    --space-5:  20px;
+    --space-6:  24px;
+    --space-8:  32px;
+    --space-10: 40px;
+
+    /* ── RADIUS ── */
+    --radius-sm:   6px;
+    --radius-md:  10px;
+    --radius-lg:  14px;
+    --radius-xl:  20px;
+    --radius-full: 9999px;
+
+    /* ── TRANSITIONS ── */
+    --transition-fast: 100ms ease;
+    --transition-base: 200ms ease;
+    --transition-slow: 350ms ease;
+
+    /* ── LEGACY ALIASES (backward compat) ── */
+    --bg-base:        var(--color-bg-base);
+    --bg-surface:     var(--color-bg-secondary);
+    --bg-elevated:    var(--color-bg-grouped);
+    --border:         var(--color-border);
+    --border-strong:  var(--color-border-strong);
+    --text-primary:   var(--color-text-primary);
+    --text-secondary: var(--color-text-secondary);
+    --text-muted:     var(--color-text-tertiary);
+    --accent:         var(--color-accent);
+    --accent-light:   var(--color-accent-light);
+    --accent-text:    var(--color-accent-text);
+    --success:        var(--color-success);
+    --success-light:  var(--color-success-bg);
+    --warning:        var(--color-warning);
+    --warning-light:  var(--color-warning-bg);
+    --danger:         var(--color-danger);
+    --danger-light:   var(--color-danger-bg);
+    --info:           var(--color-info);
+    --info-light:     var(--color-info-bg);
+    --surface-bg:      var(--color-bg-secondary);
+    --surface-border:  var(--color-border);
+    --surface-raised:  var(--color-bg-primary);
+    --surface-overlay: var(--color-bg-grouped);
+    --entity-color:    var(--color-accent);
+    --transition-normal: var(--transition-base);
   }
+
+  /* Base styles */
+  * { box-sizing: border-box; }
 
   body {
-    background-color: var(--bg-base);
-    color: var(--text-primary);
-    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
   }
 
-  /* Custom scrollbar — minimal */
-  ::-webkit-scrollbar {
-    width: 4px;
+  /* Bridge: legacy Tailwind classes → new tokens */
+  .bg-white    { background: var(--color-bg-primary) !important; }
+  .bg-gray-50  { background: var(--color-bg-secondary) !important; }
+  .bg-gray-100 { background: var(--color-bg-grouped) !important; }
+  .border-gray-200 { border-color: var(--color-border) !important; }
+  .text-gray-900 { color: var(--color-text-primary) !important; }
+  .text-gray-500 { color: var(--color-text-secondary) !important; }
+  .text-gray-400 { color: var(--color-text-tertiary) !important; }
+
+  /* iOS-grade inputs: 16px prevents zoom */
+  input, select, textarea {
+    font-size: 16px !important;
+    font-family: var(--font-sans);
   }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: #D1D5DB;
-    border-radius: 2px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #9CA3AF;
-  }
+  button { -webkit-tap-highlight-color: transparent; }
+  * { -webkit-overflow-scrolling: touch; }
+
+  /* Scrollbar (desktop) */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.25); }
 }
 
 @layer components {
-  /* ─── Legacy surface classes — mapped to light theme ─────────────────────── */
-  .bg-surface-raised {
-    background-color: #FFFFFF;
-  }
-
-  .border-surface-border {
-    border-color: #E5E7EB;
-  }
-
-  .bg-surface-overlay {
-    background-color: #F3F4F6;
-  }
+  /* ─── Legacy surface classes — mapped to new tokens ──────────────────────── */
+  .bg-surface-raised    { background-color: var(--color-bg-primary); }
+  .border-surface-border { border-color: var(--color-border); }
+  .bg-surface-overlay   { background-color: var(--color-bg-grouped); }
 
   /* ─── Status indicators ───────────────────────────────────────────────────── */
-  .status-dot {
-    @apply h-1.5 w-1.5 rounded-full;
-  }
-  .status-dot--ok     { background-color: var(--success); }
-  .status-dot--warn   { background-color: var(--warning); }
-  .status-dot--critical { background-color: var(--danger); }
+  .status-dot { @apply h-1.5 w-1.5 rounded-full; }
+  .status-dot--ok       { background-color: var(--color-success); }
+  .status-dot--warn     { background-color: var(--color-warning); }
+  .status-dot--critical { background-color: var(--color-danger); }
 
   /* ─── Action Buttons ──────────────────────────────────────────────────────── */
   .action-btn {
@@ -94,41 +155,50 @@
     @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
   }
   .action-btn--primary {
-    @apply bg-purple-700 hover:bg-purple-800 text-white focus:ring-purple-500;
+    background: var(--color-accent);
+    color: var(--color-accent-text);
+    @apply focus:ring-purple-500;
   }
+  .action-btn--primary:hover { opacity: 0.9; }
   .action-btn--ghost {
     @apply bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 focus:ring-gray-300;
   }
   .action-btn--danger {
-    @apply bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 focus:ring-red-400;
+    background: var(--color-danger-bg);
+    color: var(--color-danger);
+    border: 1px solid rgba(255,59,48,0.2);
   }
+  .action-btn--danger:hover { opacity: 0.85; }
   .action-btn--approve {
     @apply bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 focus:ring-emerald-400;
   }
 
   /* ─── Cards ───────────────────────────────────────────────────────────────── */
   .card {
-    @apply bg-white border border-gray-200 rounded-xl shadow-sm;
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
   }
 
   /* ─── Typography helpers ──────────────────────────────────────────────────── */
   .label-xs {
-    @apply text-xs font-mono text-gray-500;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--color-text-tertiary);
+    font-weight: 500;
   }
   .heading-xl {
-    @apply text-2xl font-semibold text-gray-900;
+    @apply text-2xl font-semibold;
+    color: var(--color-text-primary);
   }
 }
 
 @layer utilities {
   .text-balance { text-wrap: balance; }
 
-  .animate-fade-in {
-    animation: fade-in 0.2s ease-out;
-  }
-  .animate-slide-in {
-    animation: slide-in 0.25s ease-out;
-  }
+  .animate-fade-in  { animation: fade-in 0.2s ease-out; }
+  .animate-slide-in { animation: slide-in 0.25s ease-out; }
 }
 
 @keyframes fade-in {
@@ -141,28 +211,11 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
 /* Hide scrollbar but keep scroll functionality */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-/* ─── Mobile viewport & iOS fixes ──────────────────────────────────────────── */
-
-/* Prevent iOS text size adjustment on orientation change */
-html {
-  -webkit-text-size-adjust: 100%;
-}
-
-/* Prevent iOS zoom on input focus (font-size >= 16px = no zoom) */
-input, select, textarea {
-  font-size: 16px !important;
-}
-
-/* Safe momentum scrolling on iOS */
-* {
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Remove tap highlight on interactive elements */
-button, a {
-  -webkit-tap-highlight-color: transparent;
-}

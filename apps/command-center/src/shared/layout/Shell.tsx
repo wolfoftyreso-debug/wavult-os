@@ -100,7 +100,16 @@ function SidebarNav({ criticalAlertCount, onNavigate }: {
       {NAV_GROUPS.map((group, gi) => (
         <div key={gi} className={gi > 0 ? 'mt-4' : ''}>
           {group.labelKey && (
-            <div className="px-3 py-1 text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+            <div
+              className="px-3 py-1 mb-1"
+              style={{
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                color: 'var(--color-text-tertiary)',
+              }}
+            >
               {t(group.labelKey)}
             </div>
           )}
@@ -115,19 +124,35 @@ function SidebarNav({ criticalAlertCount, onNavigate }: {
                   key={item.to}
                   to={item.to}
                   onClick={onNavigate}
-                  className={() =>
-                    `flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors min-w-0 ${
-                      isActive
-                        ? 'bg-purple-50 text-purple-700 font-medium'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                    }`
-                  }
+                  className="flex items-center gap-3 min-w-0"
+                  style={{
+                    padding: '8px 12px',
+                    borderRadius: 'var(--radius-md)',
+                    fontSize: 14,
+                    fontWeight: isActive ? 600 : 400,
+                    color: isActive ? 'var(--color-accent)' : 'var(--color-text-secondary)',
+                    background: isActive ? 'var(--color-accent-light)' : 'transparent',
+                    transition: 'all var(--transition-fast)',
+                    textDecoration: 'none',
+                  }}
+                  onMouseEnter={e => !isActive && ((e.currentTarget as HTMLAnchorElement).style.background = 'var(--color-bg-grouped)')}
+                  onMouseLeave={e => !isActive && ((e.currentTarget as HTMLAnchorElement).style.background = 'transparent')}
                   end={item.to === '/'}
                 >
                   <item.icon className="w-4 h-4 flex-shrink-0" />
                   <span className="flex-1 min-w-0 truncate">{t(item.labelKey)}</span>
                   {item.to === '/alerts' && criticalAlertCount > 0 && (
-                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-red-500 text-gray-900 flex-shrink-0">
+                    <span
+                      className="flex-shrink-0"
+                      style={{
+                        fontSize: 9,
+                        fontWeight: 700,
+                        padding: '2px 5px',
+                        borderRadius: 'var(--radius-full)',
+                        background: 'var(--color-danger)',
+                        color: '#FFFFFF',
+                      }}
+                    >
                       {criticalAlertCount}
                     </span>
                   )}
@@ -163,7 +188,7 @@ export function Shell({ children }: ShellProps) {
   const notificationCount = 3
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
+    <div className="flex h-screen overflow-hidden" style={{ background: 'var(--color-bg-secondary)' }}>
 
       {/* Mobile overlay */}
       {sidebarOpen && (
@@ -174,25 +199,33 @@ export function Shell({ children }: ShellProps) {
       )}
 
       {/* ── Sidebar ───────────────────────────────────────────────────────── */}
-      <aside className={`
-        fixed md:static inset-y-0 left-0 z-40
-        w-60 flex-shrink-0
-        bg-white border-r border-gray-200
-        flex flex-col
-        transition-transform duration-200 ease-in-out
-        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-      `}>
+      <aside
+        className={`
+          fixed md:static inset-y-0 left-0 z-40
+          w-60 flex-shrink-0 flex flex-col
+          transition-transform duration-200 ease-in-out
+          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+        `}
+        style={{
+          background: 'var(--color-bg-primary)',
+          borderRight: '1px solid var(--color-border)',
+        }}
+      >
         {/* Logo */}
-        <div className="h-14 flex items-center px-4 border-b border-gray-200">
+        <div className="flex items-center px-4" style={{ height: 52, borderBottom: '1px solid var(--color-border)' }}>
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-7 h-7 rounded-full bg-purple-700 flex items-center justify-center flex-shrink-0">
-              <span className="text-xs font-bold text-gray-900">W</span>
+            <div
+              className="flex items-center justify-center flex-shrink-0"
+              style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--color-accent)' }}
+            >
+              <span style={{ fontSize: 13, fontWeight: 700, color: '#FFFFFF' }}>W</span>
             </div>
-            <span className="text-sm font-semibold text-gray-900">Wavult OS</span>
+            <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--color-text-primary)' }}>Wavult OS</span>
           </div>
           {/* Close btn (mobile) */}
           <button
-            className="ml-auto md:hidden p-1 text-gray-500 hover:text-gray-600"
+            className="ml-auto md:hidden p-1"
+            style={{ color: 'var(--color-text-tertiary)' }}
             onClick={() => setSidebarOpen(false)}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -208,14 +241,14 @@ export function Shell({ children }: ShellProps) {
         />
 
         {/* Agent Claw — priority queue */}
-        <div className="border-t border-gray-100 pt-3 mt-2 px-2">
-          <p className="px-3 py-1 text-xs font-mono text-gray-400 uppercase tracking-wide mb-2">Agent Claw</p>
+        <div className="pt-3 mt-2 px-2" style={{ borderTop: '1px solid var(--color-border)' }}>
+          <p className="px-3 py-1 mb-2" style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-mono)' }}>Agent Claw</p>
           <AgentCommandPanel />
         </div>
 
         {/* Footer */}
-        <div className="px-4 py-3 border-t border-gray-200 mt-2">
-          <p className="text-xs text-gray-500 font-mono">Wavult Group 2026</p>
+        <div className="px-4 py-3 mt-2" style={{ borderTop: '1px solid var(--color-border)' }}>
+          <p style={{ fontSize: 12, color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-mono)' }}>Wavult Group 2026</p>
         </div>
       </aside>
 
@@ -223,7 +256,16 @@ export function Shell({ children }: ShellProps) {
       <main className="flex-1 flex flex-col overflow-hidden min-w-0">
 
         {/* Topbar */}
-        <header className="h-14 flex-shrink-0 bg-white border-b border-gray-200 flex items-center justify-between px-6">
+        <header
+          className="flex-shrink-0 flex items-center justify-between px-6"
+          style={{
+            height: 52,
+            background: 'rgba(242,242,247,0.85)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            borderBottom: '1px solid var(--color-border)',
+          }}
+        >
 
           {/* Left: hamburger + entity pill */}
           <div className="flex items-center gap-3 min-w-0">
@@ -320,7 +362,7 @@ export function Shell({ children }: ShellProps) {
         </header>
 
         {/* Content */}
-        <div className="flex-1 overflow-auto bg-gray-50">
+        <div className="flex-1 overflow-auto" style={{ background: 'var(--color-bg-secondary)' }}>
           <div className="p-6 pb-[calc(env(safe-area-inset-bottom)+1.5rem)] md:pb-6">
             {children}
           </div>
