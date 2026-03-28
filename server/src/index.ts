@@ -457,6 +457,9 @@ app.use(async (req: Request, _res: Response, next: NextFunction) => {
 // ---------------------------------------------------------------------------
 // Module routes
 // ---------------------------------------------------------------------------
+// WHOOP — registreras FÖRE prefixlösa routers för att undvika catch-all konflikter
+app.use('/whoop', whoopRouter);                       // WHOOP Biometrics — /whoop/auth (public), /whoop/callback, /whoop/status, /whoop/me, /whoop/team
+
 app.use(executionRouter);
 app.use(capabilityRouter);
 app.use(processRouter);
@@ -520,7 +523,7 @@ app.use('/api/payments', paymentOrchestrationRouter); // GET /api/payments/confi
 app.use('/api/customer-state', customerStateRouter);  // GET/POST /api/customer-state/:contact_id, GET /api/customer-state/by-token/:token
 app.use('/api/customer-portal', customerPortalRouter); // GET /api/customer-portal/:token
 app.use('/api/revolut', revolutRouter);               // GET /api/revolut/accounts|cards, POST /api/revolut/cards, GET /api/revolut/cost-report
-app.use('/whoop', whoopRouter);                       // WHOOP Biometrics — /whoop/auth, /whoop/callback, /whoop/status, /whoop/me, /whoop/team, /whoop/disconnect
+// (whoopRouter already mounted above executionRouter — see line ~460)
 
 // ---------------------------------------------------------------------------
 // DMS — Dealer Management System (pixdrift automotive)
