@@ -55,6 +55,7 @@ const NAV_GROUPS: NavGroup[] = [
       { to: '/dashboard', label: 'Dashboard', icon: null },
       { to: '/crm', label: 'CRM', icon: null },
       { to: '/milestones', label: 'Milestones', icon: null },
+      { to: '/meeting-cadence', label: 'Möteshierarki', icon: null },
       { to: '/campaigns', label: 'Kampanjer', icon: null },
       { to: '/media', label: 'Media & Ads', icon: null },
       { to: '/submissions', label: 'Submissions', icon: null },
@@ -163,6 +164,7 @@ const ROUTE_LABELS: Record<string, string> = {
   '/whoop': 'WHOOP Team Pulse',
   '/insurance': 'Insurance Hub',
   '/team-map': 'Team Map',
+  '/meeting-cadence': 'Möteshierarki',
 }
 
 function getBreadcrumb(pathname: string): string {

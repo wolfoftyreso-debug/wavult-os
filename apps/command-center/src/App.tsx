@@ -49,6 +49,7 @@ const LLMHub                 = lazy(() => import('./features/llm-hub/LLMHub').th
 const WHOOPTeamDashboard     = lazy(() => import('./features/whoop/WHOOPTeamDashboard').then(m => ({ default: m.WHOOPTeamDashboard })))
 const InsuranceHub           = lazy(() => import('./features/insurance/InsuranceHub').then(m => ({ default: m.InsuranceHub })))
 const TeamMap                = lazy(() => import('./features/team-map/TeamMap').then(m => ({ default: m.TeamMap })))
+const MeetingCadenceView     = lazy(() => import('./features/milestones/MeetingCadenceView').then(m => ({ default: m.MeetingCadenceView })))
 
 // ─── Page loader fallback ───────────────────────────────────────────────────────
 function PageLoader() {
@@ -138,6 +139,7 @@ function AuthenticatedApp() {
               <Route path="/whoop" element={<WHOOPTeamDashboard />} />
               <Route path="/insurance" element={<InsuranceHub />} />
               <Route path="/team-map" element={<TeamMap />} />
+              <Route path="/meeting-cadence" element={<MeetingCadenceView />} />
             </Routes>
           </Suspense>
         </Shell>
