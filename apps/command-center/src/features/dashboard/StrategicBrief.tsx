@@ -33,8 +33,8 @@ const WAVULT_MISSION = {
 
 const STRATEGIC_POSITIONS: StrategicPosition[] = [
   {
-    product: 'Pixdrift (Wavult OS)',
-    tagline: 'Your Business, Running on pixdrift.',
+    product: 'Wavult OS',
+    tagline: 'Your Business, Running on Wavult OS.',
     positioning: 'Business Operating System (BOS) — inte ett verktyg, inte ett CRM, utan substratet hela verksamheten körs på.',
     uniqueness: 'Team-flat pricing + SIE4 native + ISO-compliance inbyggt + OMS dag 1. Ingen konkurrent har allt i ett paket.',
     color: '#8B5CF6',
@@ -70,14 +70,14 @@ const COMPETITORS: Competitor[] = [
     name: 'Monday.com',
     category: 'Work OS',
     weakness: 'Ger dig en tavla, inte ett system. Ingen ekonomi, ingen SIE4, data-silos mellan projekt och affärer.',
-    ourResponse: '"monday.com ger er en tavla. pixdrift ger er ett system."',
+    ourResponse: '"monday.com ger er en tavla. Wavult OS ger er ett system."',
     color: '#FF3D57',
   },
   {
     name: 'Notion',
     category: 'Workspace',
     weakness: 'Blank canvas-problem — hög kognitiv börda. Ingen CRM, ingen ekonomi, ingen compliance. Läcker vid 50+ anst.',
-    ourResponse: '"Notion är din anteckningsbok. pixdrift är ditt operativsystem."',
+    ourResponse: '"Notion är din anteckningsbok. Wavult OS är ditt operativsystem."',
     color: '#000000',
   },
   {

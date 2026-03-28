@@ -678,7 +678,7 @@ function PixPhilosophy() {
   const competitors = [
     { name: 'Palantir Foundry', cost: '€500K+/år', setup: '18 månader', verdict: 'Generisk ontologi — kräver datascientists' },
     { name: 'SAP', cost: '€100K+/år', setup: '12-24 månader', verdict: 'Enterprise-only, oöverkomlig komplexitet' },
-    { name: 'Pixdrift (PIX)', cost: '€499-1299/mo', setup: 'Dag 1', verdict: 'Pre-built för verkligheten — inte konsultprojekt' },
+    { name: 'Wavult OS', cost: '€499-1299/mo', setup: 'Dag 1', verdict: 'Pre-built för verkligheten — inte konsultprojekt' },
   ]
 
   return (
@@ -714,7 +714,7 @@ function PixPhilosophy() {
           <p className="text-sm text-gray-300 leading-relaxed">
             Avancerade bolag som Amazon, Nvidia och Tesla uppnår inte hög output av slumpen. De opererar på system som
             <strong className="text-white"> spårar verkligheten i realtid</strong>, kontinuerligt rekalibrerar och förbättrar sig
-            själva genom struktur. Pixdrift ger detta till alla bolag — inte som rapporter, utan som verklighet.
+            själva genom struktur. Wavult OS ger detta till alla bolag — inte som rapporter, utan som verklighet.
           </p>
         </div>
       </div>

@@ -207,7 +207,7 @@ function CtoDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Section title="Infrastruktur — live">
           {[
-            { text: 'hypbit-api — ECS eu-north-1, api.bc.pixdrift.com', status: 'active' },
+            { text: 'wavult-api — ECS eu-north-1, api.hypbit.com', status: 'active' },
             { text: 'quixzoom-api — ECS cluster hypbit, task def :2', status: 'active' },
             { text: 'quiXzoom frontend — S3 + CloudFront (dewrtqzc20flx)', status: 'active' },
             { text: 'Supabase lpeipzdm — 13 migrationer live', status: 'active' },
