@@ -6,6 +6,7 @@
  */
 
 import { useEffect, useState } from 'react'
+import { useApi } from '../../shared/auth/useApi'
 
 const API_BASE = import.meta.env.VITE_API_URL ?? 'https://api.hypbit.com'
 
@@ -45,6 +46,7 @@ function recoveryLabel(score: number | null | undefined): string {
 // ─── Komponent ────────────────────────────────────────────────────────────────
 
 export function WHOOPConnect() {
+  const { apiFetch } = useApi()
   const [status, setStatus] = useState<WhoopStatus | null>(null)
   const [data, setData] = useState<WhoopData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -53,8 +55,8 @@ export function WHOOPConnect() {
   async function loadStatus() {
     try {
       const [statusRes, meRes] = await Promise.all([
-        fetch(`${API_BASE}/whoop/status`, { credentials: 'include' }),
-        fetch(`${API_BASE}/whoop/me`, { credentials: 'include' }),
+        apiFetch('/whoop/status'),
+        apiFetch('/whoop/me'),
       ])
       if (statusRes.ok) setStatus(await statusRes.json())
       if (meRes.ok) setData(await meRes.json())
@@ -74,10 +76,8 @@ export function WHOOPConnect() {
 
       if (connectCode) {
         // Byt connect_code mot bekräftelse — tokens hanteras server-side
-        fetch(`${API_BASE}/whoop/token-exchange`, {
+        apiFetch('/whoop/token-exchange', {
           method: 'POST',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ connect_code: connectCode }),
         })
           .then(r => r.ok ? r.json() : null)
@@ -95,10 +95,7 @@ export function WHOOPConnect() {
     if (!confirm('Koppla bort WHOOP? Du kan koppla igen när som helst.')) return
     setDisconnecting(true)
     try {
-      await fetch(`${API_BASE}/whoop/disconnect`, {
-        method: 'DELETE',
-        credentials: 'include',
-      })
+      await apiFetch('/whoop/disconnect', { method: 'DELETE' })
       setStatus({ connected: false, whoop_user_id: null, connected_at: null })
       setData(null)
     } catch (err) {

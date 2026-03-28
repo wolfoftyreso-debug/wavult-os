@@ -1,8 +1,10 @@
 // ─── Wavult OS v2 — Application Root ───────────────────────────────────────────
-// Provider hierarchy: Role → EntityScope → Operator → Events → Shell
+// Provider hierarchy: Auth → Role → EntityScope → Operator → Events → Shell
 
 import { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
+import { AuthProvider, useAuth } from './shared/auth/AuthContext'
+import { LoginPage } from './shared/auth/LoginPage'
 import { RoleProvider, useRole } from './shared/auth/RoleContext'
 import { EntityScopeProvider } from './shared/scope/EntityScopeContext'
 import { OperatorProvider } from './core/operator/OperatorContext'
@@ -58,8 +60,22 @@ function PageLoader() {
 }
 
 function AuthenticatedApp() {
+  const { session, loading } = useAuth()
   const { role } = useRole()
 
+  // Vänta på att session-check är klar
+  if (loading) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-[#07080F]">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-600 border-t-purple-500" />
+      </div>
+    )
+  }
+
+  // Ej inloggad → visa login
+  if (!session) return <LoginPage />
+
+  // Inloggad men ingen roll vald → visa rollval
   if (!role) return <RoleLogin />
 
   return (
@@ -116,10 +132,12 @@ function AuthenticatedApp() {
 
 export default function App() {
   return (
-    <RoleProvider>
-      <EntityScopeProvider>
-        <AuthenticatedApp />
-      </EntityScopeProvider>
-    </RoleProvider>
+    <AuthProvider>
+      <RoleProvider>
+        <EntityScopeProvider>
+          <AuthenticatedApp />
+        </EntityScopeProvider>
+      </RoleProvider>
+    </AuthProvider>
   )
 }

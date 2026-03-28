@@ -15,8 +15,7 @@
  */
 
 import { useEffect, useState } from 'react'
-
-const API_BASE = import.meta.env.VITE_API_URL ?? 'https://api.hypbit.com'
+import { useApi } from '../../shared/auth/useApi'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -74,11 +73,7 @@ function minutesAgo(isoStr: string | null): string {
   return `${Math.floor(hrs / 24)}d sedan`
 }
 
-// ─── localStorage helpers ─────────────────────────────────────────────────────
 
-function getWhoopToken(): string | null {
-  return localStorage.getItem('whoop_access_token')
-}
 
 
 
@@ -184,6 +179,7 @@ function SetupGuide() {
 // ─── Connect Tab ──────────────────────────────────────────────────────────────
 
 function ConnectTab({ onConnected }: { onConnected: () => void }) {
+  const { apiFetch, apiBase } = useApi()
   const [connected, setConnected] = useState(false)
   const [myData, setMyData] = useState<MyData | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -198,11 +194,8 @@ function ConnectTab({ onConnected }: { onConnected: () => void }) {
       window.history.replaceState({}, '', '/whoop')
 
       if (connectCode) {
-        // Byt connect_code mot bekräftelse (tokens sparas server-side)
-        fetch(`${API_BASE}/whoop/token-exchange`, {
+        apiFetch('/whoop/token-exchange', {
           method: 'POST',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ connect_code: connectCode }),
         })
           .then(r => r.ok ? r.json() : null)
@@ -232,19 +225,18 @@ function ConnectTab({ onConnected }: { onConnected: () => void }) {
       window.history.replaceState({}, '', '/whoop')
     }
 
-    // Kolla status server-side (session-baserat, inte localStorage)
-    fetch(`${API_BASE}/whoop/status`, { credentials: 'include' })
+    // Kolla status server-side
+    apiFetch('/whoop/status')
       .then(r => r.ok ? r.json() : null)
       .then(data => { if (data?.connected) setConnected(true) })
       .catch(() => {})
   }, [])
 
-  // Ladda min data när kopplat (session-baserat)
+  // Ladda min data när kopplat
   useEffect(() => {
     if (!connected) return
-
     setLoadingData(true)
-    fetch(`${API_BASE}/whoop/me`, { credentials: 'include' })
+    apiFetch('/whoop/me')
       .then(r => r.ok ? r.json() : null)
       .then(data => { if (data) setMyData(data) })
       .catch(() => {})
@@ -252,12 +244,11 @@ function ConnectTab({ onConnected }: { onConnected: () => void }) {
   }, [connected])
 
   function handleConnect() {
-    window.location.href = `${API_BASE}/whoop/auth`
+    window.location.href = `${apiBase}/whoop/auth`
   }
 
   function handleDisconnect() {
-    fetch(`${API_BASE}/whoop/disconnect`, { method: 'DELETE', credentials: 'include' })
-      .catch(() => {})
+    apiFetch('/whoop/disconnect', { method: 'DELETE' }).catch(() => {})
     setConnected(false)
     setMyData(null)
   }
@@ -542,6 +533,7 @@ function TeamPulse({ data, loading, onRefresh, lastFetch }: {
 // ─── Huvud-komponent ──────────────────────────────────────────────────────────
 
 export function WHOOPTeamDashboard() {
+  const { apiFetch } = useApi()
   const [data, setData] = useState<TeamData | null>(null)
   const [loading, setLoading] = useState(true)
   const [lastFetch, setLastFetch] = useState<Date | null>(null)
@@ -555,11 +547,7 @@ export function WHOOPTeamDashboard() {
   async function loadTeamData() {
     setLoading(true)
     try {
-      const token = getWhoopToken()
-      const res = await fetch(`${API_BASE}/whoop/team`, {
-        credentials: 'include',
-        headers: token ? { 'Authorization': `Bearer ${token}` } : {},
-      })
+      const res = await apiFetch('/whoop/team')
       if (res.ok) {
         const json = await res.json()
         setData(json)
