@@ -18,7 +18,7 @@ export function LoginPage() {
     e.preventDefault()
     setError(null)
     setLoading(true)
-    const { error } = await signIn(email.trim(), password)
+    const { error } = await signIn(email.trim().toLowerCase(), password)
     if (error) setError(translateError(error, t))
     setLoading(false)
   }
