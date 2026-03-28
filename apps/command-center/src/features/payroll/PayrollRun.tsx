@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { usePayroll } from './hooks/usePayroll'
+import { PAYROLL_HISTORY } from './data'
 
 type Step = 1 | 2 | 3 | 4
 
@@ -102,7 +103,7 @@ export function PayrollRun() {
           </div>
           <div className="flex justify-between px-0 -mt-2">
             {([1, 2, 3, 4] as Step[]).map(s => (
-              <span key={s} className={`text-[10px] ${s === step ? 'text-purple-400' : 'text-gray-600'}`}>
+              <span key={s} className={`text-xs ${s === step ? 'text-purple-400' : 'text-gray-600'}`}>
                 {STEP_LABELS[s]}
               </span>
             ))}
@@ -116,7 +117,8 @@ export function PayrollRun() {
                   <h3 className="text-sm font-semibold text-white">Steg 1: Kontrollera anställda</h3>
                   <p className="text-xs text-gray-500 mt-0.5">Alla aktiva anställda ingår i körningen</p>
                 </div>
-                <table className="w-full text-sm">
+                <div className="overflow-x-auto">
+                <table className="w-full text-sm min-w-[400px]">
                   <thead>
                     <tr className="border-b border-surface-border text-xs text-gray-500">
                       <th className="text-left px-5 py-3">Namn</th>
@@ -130,7 +132,7 @@ export function PayrollRun() {
                       <tr key={emp.id} className="border-b border-surface-border/50">
                         <td className="px-5 py-3 text-xs text-white">{emp.name}</td>
                         <td className="px-5 py-3 text-xs text-gray-400">{emp.role}</td>
-                        <td className="px-5 py-3 text-right text-xs text-white tabular-nums">{fmt(emp.grossSalary)}</td>
+                        <td className="px-5 py-3 text-right text-xs text-white tabular-nums">{fmt(emp.gross_salary)}</td>
                         <td className="px-5 py-3">
                           <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/15 text-green-400">✓ OK</span>
                         </td>
@@ -138,6 +140,7 @@ export function PayrollRun() {
                     ))}
                   </tbody>
                 </table>
+                </div>{/* /overflow-x-auto */}
               </div>
             )}
 
@@ -146,7 +149,8 @@ export function PayrollRun() {
                 <div className="px-5 py-4 border-b border-surface-border">
                   <h3 className="text-sm font-semibold text-white">Steg 2: Beräkna skatter & avgifter</h3>
                 </div>
-                <table className="w-full text-sm">
+                <div className="overflow-x-auto">
+                <table className="w-full text-sm min-w-[420px]">
                   <thead>
                     <tr className="border-b border-surface-border text-xs text-gray-500">
                       <th className="text-left px-5 py-3">Namn</th>
@@ -158,7 +162,7 @@ export function PayrollRun() {
                   </thead>
                   <tbody>
                     {active.map(emp => {
-                      const c = calcSalary(emp.grossSalary)
+                      const c = calcSalary(emp.gross_salary)
                       return (
                         <tr key={emp.id} className="border-b border-surface-border/50">
                           <td className="px-5 py-3 text-xs text-white">{emp.name}</td>
@@ -171,6 +175,7 @@ export function PayrollRun() {
                     })}
                   </tbody>
                 </table>
+                </div>{/* /overflow-x-auto */}
               </div>
             )}
 
@@ -262,7 +267,8 @@ export function PayrollRun() {
       <div>
         <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Historik — körda löner</h3>
         <div className="bg-surface-raised border border-surface-border rounded-xl overflow-hidden">
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+          <table className="w-full text-sm min-w-[580px]">
             <thead>
               <tr className="border-b border-surface-border text-xs text-gray-500">
                 <th className="text-left px-5 py-3">Period</th>
@@ -290,6 +296,7 @@ export function PayrollRun() {
               ))}
             </tbody>
           </table>
+          </div>{/* /overflow-x-auto */}
         </div>
       </div>
     </div>

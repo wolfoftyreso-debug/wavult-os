@@ -5,12 +5,13 @@
  * Monteras på /whoop i index.ts.
  *
  * Endpoints:
- *   GET    /whoop/auth         → redirect till WHOOP OAuth (public — no session required)
- *   GET    /whoop/callback     → hantera OAuth callback, redirect till frontend med tokens
- *   GET    /whoop/status       → är WHOOP kopplat för inloggad user?
- *   GET    /whoop/me           → senaste recovery, sleep, strain (Bearer token eller session)
- *   GET    /whoop/team         → aggregerad teamdata (admin)
- *   DELETE /whoop/disconnect   → koppla bort WHOOP
+ *   GET    /whoop/auth            → redirect till WHOOP OAuth (kräver inloggning)
+ *   GET    /whoop/callback        → hantera OAuth callback, spara tokens, redirect med connect_code
+ *   POST   /whoop/token-exchange  → byt connect_code mot bekräftelse (tokens sparas server-side)
+ *   GET    /whoop/status          → är WHOOP kopplat för inloggad user?
+ *   GET    /whoop/me              → senaste recovery, sleep, strain
+ *   GET    /whoop/team            → aggregerad teamdata (admin)
+ *   DELETE /whoop/disconnect      → koppla bort WHOOP
  */
 
 import { randomUUID } from 'crypto';
@@ -35,22 +36,51 @@ import {
 
 const router = Router();
 
-// ─── In-memory state store för OAuth (PKCE-liknande CSRF-skydd) ───────────────
-// Varje state är ett random UUID som skapas i /auth och valideras i /callback.
-// States rensas efter 10 minuter.
+// ─── Frontend URL ─────────────────────────────────────────────────────────────
 
-const oauthStateStore = new Map<string, { createdAt: number }>()
+function getFrontendUrl(): string {
+  return process.env.WHOOP_FRONTEND_URL ?? 'https://wavult-os.pages.dev';
+}
 
-function cleanOldStates() {
-  const tenMinutesAgo = Date.now() - 10 * 60 * 1000
-  for (const [key, val] of oauthStateStore.entries()) {
-    if (val.createdAt < tenMinutesAgo) oauthStateStore.delete(key)
+// ─── HMAC-signerat state (löser CSRF utan in-memory store) ────────────────────
+// Format: <uuid>.<hmac-hex> — valideras utan lagring, fungerar i multi-instance ECS
+
+import { createHmac, timingSafeEqual } from 'crypto';
+
+function createSignedState(uuid: string): string {
+  const secret = process.env.OAUTH_STATE_SECRET ?? 'wavult-whoop-state-secret-change-me';
+  const hmac = createHmac('sha256', secret).update(uuid).digest('hex');
+  return `${uuid}.${hmac}`;
+}
+
+function verifySignedState(state: string): boolean {
+  try {
+    const [uuid, hmac] = state.split('.');
+    if (!uuid || !hmac) return false;
+    const expected = createHmac('sha256', process.env.OAUTH_STATE_SECRET ?? 'wavult-whoop-state-secret-change-me')
+      .update(uuid).digest('hex');
+    return timingSafeEqual(Buffer.from(hmac, 'hex'), Buffer.from(expected, 'hex'));
+  } catch {
+    return false;
   }
 }
 
-// ─── Frontend URL ─────────────────────────────────────────────────────────────
+// ─── Connect code store (kort-livat, 60 sekunder) ────────────────────────────
+// Används för att överföra connection-bekräftelse till frontend utan tokens i URL
 
-const FRONTEND_URL = 'https://wavult-os.pages.dev'
+interface ConnectCodeEntry {
+  userId: string;
+  createdAt: number;
+}
+
+const connectCodeStore = new Map<string, ConnectCodeEntry>();
+
+function cleanConnectCodes() {
+  const sixtySecondsAgo = Date.now() - 60 * 1000;
+  for (const [key, val] of connectCodeStore.entries()) {
+    if (val.createdAt < sixtySecondsAgo) connectCodeStore.delete(key);
+  }
+}
 
 // ─── Auth guard ───────────────────────────────────────────────────────────────
 
@@ -69,13 +99,12 @@ function requireAdmin(req: Request, res: Response, next: Function) {
   next();
 }
 
-// ─── Token helper: refresh om nödvändigt (session-baserat) ───────────────────
+// ─── Token helper: refresh om nödvändigt ─────────────────────────────────────
 
 async function getValidAccessToken(userId: string): Promise<string | null> {
   const tokens = await getWhoopTokens(userId);
   if (!tokens) return null;
 
-  // Kolla om token snart går ut (< 5 min kvar)
   if (tokens.expires_at) {
     const expiresAt = new Date(tokens.expires_at).getTime();
     const fiveMinFromNow = Date.now() + 5 * 60 * 1000;
@@ -90,7 +119,9 @@ async function getValidAccessToken(userId: string): Promise<string | null> {
         });
         return fresh.access_token;
       }
-      return null; // Refresh misslyckades
+      // Refresh misslyckades — rensa tokens så user vet att de måste koppla om
+      await deleteWhoopTokens(userId);
+      return null;
     }
   }
 
@@ -98,10 +129,10 @@ async function getValidAccessToken(userId: string): Promise<string | null> {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GET /whoop/auth — starta OAuth-flödet (PUBLIC — ingen inloggning krävs)
+// GET /whoop/auth — starta OAuth-flödet (kräver inloggning)
 // ─────────────────────────────────────────────────────────────────────────────
 
-router.get('/auth', (req: Request, res: Response) => {
+router.get('/auth', requireAuth, (req: Request, res: Response) => {
   const cfg = getConfig();
 
   if (!cfg.WHOOP_CLIENT_ID || !cfg.WHOOP_REDIRECT_URI) {
@@ -110,16 +141,14 @@ router.get('/auth', (req: Request, res: Response) => {
     });
   }
 
-  // Generera random state för CSRF-skydd
-  const state = randomUUID()
-  oauthStateStore.set(state, { createdAt: Date.now() })
-  cleanOldStates()
+  // HMAC-signerat state — fungerar i multi-instance ECS utan delad lagring
+  const state = createSignedState(randomUUID());
 
   const params = new URLSearchParams({
     response_type: 'code',
     client_id: cfg.WHOOP_CLIENT_ID,
     redirect_uri: cfg.WHOOP_REDIRECT_URI,
-    scope: 'read:recovery read:sleep read:workout read:body_measurement offline',
+    scope: 'read:recovery read:sleep read:workout offline',
     state,
   });
 
@@ -129,36 +158,35 @@ router.get('/auth', (req: Request, res: Response) => {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // GET /whoop/callback — hantera OAuth callback
-// Redirectar till frontend med tokens i URL (sparas i localStorage)
+// Tokens sparas server-side. Frontend får ett kort-livat connect_code (60s).
 // ─────────────────────────────────────────────────────────────────────────────
 
 router.get('/callback', async (req: Request, res: Response) => {
+  const frontendUrl = getFrontendUrl();
   const { code, state, error: oauthError } = req.query as Record<string, string>;
 
   if (oauthError) {
     console.warn('[WHOOP] OAuth error:', oauthError);
-    return res.redirect(`${FRONTEND_URL}/whoop?error=oauth_denied`);
+    return res.redirect(`${frontendUrl}/whoop?error=oauth_denied`);
   }
 
-  // State-validering: in-memory store fungerar inte i multi-instance ECS (2 tasks).
-  // Temporärt: acceptera alla state-värden. Ersätt med Supabase-baserat state i fas 2.
-  // TODO: migrera till Supabase oauth_states-tabell för CSRF-skydd
-  if (state && oauthStateStore.has(state)) {
-    oauthStateStore.delete(state) // Rensa om vi råkar ha det
+  // Validera HMAC-signerat state
+  if (!state || !verifySignedState(state)) {
+    console.warn('[WHOOP] Ogiltigt eller manipulerat state — möjlig CSRF');
+    return res.redirect(`${frontendUrl}/whoop?error=invalid_state`);
   }
-  console.log('[WHOOP] callback received, state:', state?.substring(0, 8) + '...')
 
   if (!code) {
-    return res.redirect(`${FRONTEND_URL}/whoop?error=no_code`);
+    return res.redirect(`${frontendUrl}/whoop?error=no_code`);
   }
 
   const tokens = await exchangeCodeForTokens(code);
   if (!tokens) {
-    return res.redirect(`${FRONTEND_URL}/whoop?error=token_exchange_failed`);
+    return res.redirect(`${frontendUrl}/whoop?error=token_exchange_failed`);
   }
 
-  // Om det finns en inloggad user (session), spara tokens i Supabase också
-  const userId = (req as any).user?.id
+  // Om inloggad: spara tokens direkt
+  const userId = (req as any).user?.id;
   if (userId) {
     try {
       const whoopUserId = await fetchWhoopUserId(tokens.access_token);
@@ -186,20 +214,50 @@ router.get('/callback', async (req: Request, res: Response) => {
           strain_score: strain?.score ?? null,
         });
       }
+
+      // Skapa connect_code — tokens skickas INTE i URL
+      const connectCode = randomUUID();
+      cleanConnectCodes();
+      connectCodeStore.set(connectCode, { userId, createdAt: Date.now() });
+
+      return res.redirect(`${frontendUrl}/whoop?connected=true&connect_code=${connectCode}`);
     } catch (err) {
-      console.warn('[WHOOP] Kunde inte spara tokens till Supabase (fortsätter ändå):', err)
+      console.warn('[WHOOP] Kunde inte spara tokens:', err instanceof Error ? err.message : 'unknown');
+      return res.redirect(`${frontendUrl}/whoop?error=save_failed`);
     }
   }
 
-  // Redirect till frontend med tokens i URL — frontend sparar i localStorage
-  const params = new URLSearchParams({
-    connected: 'true',
-    access_token: tokens.access_token,
-    refresh_token: tokens.refresh_token ?? '',
-    expires_at: tokens.expires_at ?? '',
-  });
+  // Inte inloggad — kan inte spara tokens, be user logga in
+  return res.redirect(`${frontendUrl}/login?redirect=/whoop&error=login_required`);
+});
 
-  return res.redirect(`${FRONTEND_URL}/whoop?${params.toString()}`);
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /whoop/token-exchange — byt connect_code mot bekräftelse
+// Frontend anropar detta direkt efter callback-redirect
+// ─────────────────────────────────────────────────────────────────────────────
+
+router.post('/token-exchange', requireAuth, (req: Request, res: Response) => {
+  const { connect_code } = req.body as { connect_code?: string };
+  const userId = (req as any).user.id;
+
+  if (!connect_code) {
+    return res.status(400).json({ error: 'Saknar connect_code' });
+  }
+
+  cleanConnectCodes();
+  const entry = connectCodeStore.get(connect_code);
+
+  if (!entry) {
+    return res.status(404).json({ error: 'Ogiltig eller utgången connect_code' });
+  }
+
+  // Säkerhetskontroll: connect_code måste tillhöra den inloggade användaren
+  if (entry.userId !== userId) {
+    return res.status(403).json({ error: 'connect_code tillhör annan användare' });
+  }
+
+  connectCodeStore.delete(connect_code);
+  return res.json({ success: true, connected: true });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -216,63 +274,34 @@ router.get('/status', requireAuth, async (req: Request, res: Response) => {
       connected_at: tokens?.connected_at ?? null,
     });
   } catch (err) {
-    console.error('[WHOOP] /status error:', err);
+    console.error('[WHOOP] /status error:', err instanceof Error ? err.message : 'unknown');
     return res.status(500).json({ error: 'Internt fel' });
   }
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GET /whoop/me — senaste data
-// Accepterar: Bearer <whoop_access_token> ELLER session-cookie
+// GET /whoop/me — senaste data (alltid session-baserat)
 // ─────────────────────────────────────────────────────────────────────────────
 
-router.get('/me', async (req: Request, res: Response) => {
+router.get('/me', requireAuth, async (req: Request, res: Response) => {
   try {
-    // Försök hämta Bearer token (från localStorage via frontend)
-    const authHeader = req.headers.authorization
-    let accessToken: string | null = null
+    const userId = (req as any).user.id;
+    const accessToken = await getValidAccessToken(userId);
 
-    if (authHeader?.startsWith('Bearer ')) {
-      accessToken = authHeader.slice(7)
-    }
-
-    if (accessToken) {
-      // Direkt Bearer-token-läge: anropa WHOOP API direkt med given token
-      const [recovery, sleep, strain] = await Promise.all([
-        fetchRecovery(accessToken),
-        fetchSleep(accessToken),
-        fetchStrain(accessToken),
-      ]);
-
-      return res.json({
-        connected: true,
-        recovery,
-        sleep,
-        strain,
-        cached: false,
-        last_updated: new Date().toISOString(),
+    if (!accessToken) {
+      return res.status(404).json({
+        error: 'WHOOP inte kopplat eller token utgången',
+        connected: false,
+        reason: 'token_expired',
       });
     }
 
-    // Fallback: session-baserat flöde (legacy)
-    const userId = (req as any).user?.id
-    if (!userId) {
-      return res.status(401).json({ error: 'Saknar access token eller inloggning', connected: false });
-    }
-
-    const sessionAccessToken = await getValidAccessToken(userId);
-    if (!sessionAccessToken) {
-      return res.status(404).json({ error: 'WHOOP inte kopplat', connected: false });
-    }
-
-    // Försök hämta live-data
     const [recovery, sleep, strain] = await Promise.all([
-      fetchRecovery(sessionAccessToken),
-      fetchSleep(sessionAccessToken),
-      fetchStrain(sessionAccessToken),
+      fetchRecovery(accessToken),
+      fetchSleep(accessToken),
+      fetchStrain(accessToken),
     ]);
 
-    // Spara snapshot om vi fick data
     if (recovery || sleep || strain) {
       await saveWhoopSnapshot(userId, {
         recovery_score: recovery?.score ?? null,
@@ -284,7 +313,6 @@ router.get('/me', async (req: Request, res: Response) => {
       });
     }
 
-    // Fallback: senaste cachade snapshot
     const cached = await getLatestSnapshot(userId);
 
     return res.json({
@@ -296,7 +324,7 @@ router.get('/me', async (req: Request, res: Response) => {
       last_updated: cached?.snapshot_at ?? null,
     });
   } catch (err) {
-    console.error('[WHOOP] /me error:', err);
+    console.error('[WHOOP] /me error:', err instanceof Error ? err.message : 'unknown');
     return res.status(500).json({ error: 'Internt fel' });
   }
 });
@@ -309,14 +337,12 @@ router.get('/team', requireAuth, requireAdmin, async (req: Request, res: Respons
   try {
     const members = await getTeamSnapshots();
 
-    // Sortera: lägst recovery score högst upp
     const sorted = [...members].sort((a, b) => {
       const aScore = a.recovery_score ?? 100;
       const bScore = b.recovery_score ?? 100;
       return aScore - bScore;
     });
 
-    // Beräkna team-genomsnitt
     const withRecovery = members.filter(m => m.recovery_score !== null);
     const avgRecovery = withRecovery.length > 0
       ? Math.round(withRecovery.reduce((sum, m) => sum + (m.recovery_score ?? 0), 0) / withRecovery.length)
@@ -334,30 +360,31 @@ router.get('/team', requireAuth, requireAdmin, async (req: Request, res: Respons
 
     return res.json({
       team: sorted,
-      averages: {
-        recovery: avgRecovery,
-        sleep: avgSleep,
-        strain: avgStrain,
-      },
+      averages: { recovery: avgRecovery, sleep: avgSleep, strain: avgStrain },
       total_connected: members.length,
     });
   } catch (err) {
-    console.error('[WHOOP] /team error:', err);
+    console.error('[WHOOP] /team error:', err instanceof Error ? err.message : 'unknown');
     return res.status(500).json({ error: 'Internt fel' });
   }
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// DELETE /whoop/disconnect — koppla bort WHOOP
+// DELETE /whoop/disconnect — koppla bort WHOOP (inkl. snapshots)
 // ─────────────────────────────────────────────────────────────────────────────
 
 router.delete('/disconnect', requireAuth, async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.id;
     await deleteWhoopTokens(userId);
+
+    // Radera även snapshots (GDPR — rätt till radering)
+    const { supabase } = await import('../supabase');
+    await supabase.from('whoop_snapshots').delete().eq('user_id', userId);
+
     return res.json({ success: true, message: 'WHOOP frånkopplat' });
   } catch (err) {
-    console.error('[WHOOP] /disconnect error:', err);
+    console.error('[WHOOP] /disconnect error:', err instanceof Error ? err.message : 'unknown');
     return res.status(500).json({ error: 'Internt fel' });
   }
 });

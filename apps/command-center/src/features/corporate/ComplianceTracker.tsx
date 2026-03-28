@@ -13,13 +13,13 @@ function daysUntil(date: string) {
 }
 
 function DeadlineBadge({ date, status }: { date: string; status: ComplianceStatus }) {
-  if (status === 'klar') return <span className="text-[10px] text-green-500 font-mono">✓ klar</span>
+  if (status === 'klar') return <span className="text-xs text-green-500 font-mono">✓ klar</span>
   const days = daysUntil(date)
   const formatted = new Date(date).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short', year: 'numeric' })
-  if (days < 0)   return <span className="text-[10px] text-red-400 font-mono font-semibold">FÖRFALLEN</span>
-  if (days <= 7)  return <span className="text-[10px] text-red-400 font-mono font-semibold animate-pulse">{formatted} ({days}d)</span>
-  if (days <= 30) return <span className="text-[10px] text-yellow-400 font-mono">{formatted} ({days}d)</span>
-  return <span className="text-[10px] text-gray-600 font-mono">{formatted}</span>
+  if (days < 0)   return <span className="text-xs text-red-400 font-mono font-semibold">FÖRFALLEN</span>
+  if (days <= 7)  return <span className="text-xs text-red-400 font-mono font-semibold animate-pulse">{formatted} ({days}d)</span>
+  if (days <= 30) return <span className="text-xs text-yellow-400 font-mono">{formatted} ({days}d)</span>
+  return <span className="text-xs text-gray-600 font-mono">{formatted}</span>
 }
 
 const ALL_STATUSES: ComplianceStatus[] = ['ej påbörjad', 'pågår', 'klar', 'förfallen']
@@ -53,38 +53,38 @@ export function ComplianceTracker() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4">
           <div className="text-[28px] font-bold text-white">{totals.klarCount}<span className="text-[16px] text-gray-600">/{totals.total}</span></div>
-          <div className="text-[11px] text-gray-500 mt-0.5">Krav uppfyllda</div>
+          <div className="text-xs text-gray-500 mt-0.5">Krav uppfyllda</div>
           <div className="mt-2 h-1 rounded-full bg-white/[0.06] overflow-hidden">
             <div className="h-full rounded-full bg-green-400 transition-all" style={{ width: `${progress}%` }} />
           </div>
-          <div className="text-[10px] text-gray-600 mt-1">{progress}% klart</div>
+          <div className="text-xs text-gray-600 mt-1">{progress}% klart</div>
         </div>
         <div className="rounded-xl bg-blue-500/[0.06] border border-blue-500/20 p-4">
           <div className="text-[28px] font-bold text-blue-400">{totals.pagarsCount}</div>
-          <div className="text-[11px] text-blue-400/70 mt-0.5">Pågår</div>
+          <div className="text-xs text-blue-400/70 mt-0.5">Pågår</div>
         </div>
         <div className="rounded-xl bg-red-500/[0.06] border border-red-500/20 p-4">
           <div className="text-[28px] font-bold text-red-400">{totals.overdue}</div>
-          <div className="text-[11px] text-red-400/70 mt-0.5">Förfallna</div>
+          <div className="text-xs text-red-400/70 mt-0.5">Förfallna</div>
         </div>
         <div className="rounded-xl bg-white/[0.03] border border-white/[0.06] p-4">
           <div className="text-[28px] font-bold text-white">{upcoming.length}</div>
-          <div className="text-[11px] text-gray-500 mt-0.5">Kommande (30d)</div>
+          <div className="text-xs text-gray-500 mt-0.5">Kommande (30d)</div>
         </div>
       </div>
 
       {/* Upcoming deadlines highlight */}
       {upcoming.length > 0 && (
         <div className="rounded-xl border border-yellow-500/20 bg-yellow-500/[0.04] p-4">
-          <h3 className="text-[11px] font-semibold text-yellow-400/80 uppercase tracking-wider mb-3">⚠ Nästa deadlines</h3>
+          <h3 className="text-xs font-semibold text-yellow-400/80 uppercase tracking-wider mb-3">⚠ Nästa deadlines</h3>
           <div className="space-y-2">
             {upcoming.map(item => {
               const company = COMPANIES.find(c => c.id === item.companyId)!
               return (
-                <div key={item.id} className="flex items-center gap-3 text-[12px]">
+                <div key={item.id} className="flex items-center gap-3 text-xs">
                   <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: company.color }} />
                   <span className="text-gray-300 flex-1">{item.requirement}</span>
-                  <span style={{ color: company.color }} className="text-[11px]">{company.shortName}</span>
+                  <span style={{ color: company.color }} className="text-xs">{company.shortName}</span>
                   <DeadlineBadge date={item.deadline} status={item.status} />
                 </div>
               )
@@ -98,7 +98,7 @@ export function ComplianceTracker() {
         <select
           value={selectedCompany}
           onChange={e => setSelectedCompany(e.target.value as CompanyId | 'all')}
-          className="text-[11px] bg-[#0D0F1A] border border-white/[0.08] rounded-lg px-3 py-1.5 text-gray-300 focus:outline-none"
+          className="text-xs bg-[#0D0F1A] border border-white/[0.08] rounded-lg px-3 py-1.5 text-gray-300 focus:outline-none"
         >
           <option value="all">Alla bolag</option>
           {COMPANIES.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -106,13 +106,13 @@ export function ComplianceTracker() {
         <div className="flex gap-1.5 flex-wrap">
           <button
             onClick={() => setSelectedStatus('all')}
-            className={`px-3 py-1.5 rounded-lg text-[11px] border transition-colors ${selectedStatus === 'all' ? 'bg-brand-accent/15 text-brand-accent border-brand-accent/30' : 'bg-white/[0.02] text-gray-500 border-white/[0.06] hover:text-white'}`}
+            className={`px-3 py-1.5 rounded-lg text-xs border transition-colors ${selectedStatus === 'all' ? 'bg-brand-accent/15 text-brand-accent border-brand-accent/30' : 'bg-white/[0.02] text-gray-500 border-white/[0.06] hover:text-white'}`}
           >Alla</button>
           {ALL_STATUSES.map(s => (
             <button
               key={s}
               onClick={() => setSelectedStatus(selectedStatus === s ? 'all' : s)}
-              className={`px-3 py-1.5 rounded-lg text-[11px] border capitalize transition-colors ${selectedStatus === s ? STATUS_STYLES[s].pill : 'bg-white/[0.02] text-gray-500 border-white/[0.06] hover:text-white'}`}
+              className={`px-3 py-1.5 rounded-lg text-xs border capitalize transition-colors ${selectedStatus === s ? STATUS_STYLES[s].pill : 'bg-white/[0.02] text-gray-500 border-white/[0.06] hover:text-white'}`}
             >
               {STATUS_STYLES[s].label}
             </button>
@@ -122,7 +122,8 @@ export function ComplianceTracker() {
 
       {/* Checklist table */}
       <div className="rounded-xl border border-white/[0.06] overflow-hidden">
-        <table className="w-full text-[12px]">
+        <div className="overflow-x-auto">
+        <table className="w-full text-xs min-w-[540px]">
           <thead>
             <tr className="border-b border-white/[0.06] bg-white/[0.02]">
               <th className="text-left px-4 py-2.5 text-gray-500 font-medium w-6" />
@@ -150,7 +151,7 @@ export function ComplianceTracker() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="text-gray-200">{item.requirement}</div>
-                    {item.notes && <div className="text-[10px] text-gray-600 mt-0.5">{item.notes}</div>}
+                    {item.notes && <div className="text-xs text-gray-600 mt-0.5">{item.notes}</div>}
                   </td>
                   <td className="px-4 py-3">
                     <span className="flex items-center gap-1.5">
@@ -159,7 +160,7 @@ export function ComplianceTracker() {
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="text-[10px] text-gray-500 bg-white/[0.03] px-2 py-0.5 rounded border border-white/[0.05]">
+                    <span className="text-xs text-gray-500 bg-white/[0.03] px-2 py-0.5 rounded border border-white/[0.05]">
                       {item.category}
                     </span>
                   </td>
@@ -170,7 +171,7 @@ export function ComplianceTracker() {
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1.5">
                       <span className={`h-1.5 w-1.5 rounded-full ${STATUS_STYLES[item.status].dot}`} />
-                      <span className={`text-[10px] font-medium px-2 py-0.5 rounded border ${STATUS_STYLES[item.status].pill}`}>
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded border ${STATUS_STYLES[item.status].pill}`}>
                         {STATUS_STYLES[item.status].label}
                       </span>
                     </div>
@@ -180,6 +181,7 @@ export function ComplianceTracker() {
             })}
           </tbody>
         </table>
+        </div>{/* /overflow-x-auto */}
       </div>
     </div>
   )

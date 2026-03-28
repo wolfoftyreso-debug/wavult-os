@@ -141,14 +141,14 @@ export function NotificationCenter() {
       {/* Header row */}
       <div className="flex items-center gap-3 flex-wrap">
         <div className="flex items-center gap-2">
-          <span className="text-[13px] font-semibold text-white">System-notifikationer</span>
+          <span className="text-sm font-semibold text-white">System-notifikationer</span>
           {unreadCount > 0 && (
-            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-blue-500 text-white">
+            <span className="text-xs font-bold px-1.5 py-0.5 rounded-full bg-blue-500 text-white">
               {unreadCount}
             </span>
           )}
           {criticalCount > 0 && (
-            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-red-500 text-white animate-pulse">
+            <span className="text-xs font-bold px-1.5 py-0.5 rounded-full bg-red-500 text-white animate-pulse">
               {criticalCount} kritisk
             </span>
           )}
@@ -159,7 +159,7 @@ export function NotificationCenter() {
               <button
                 key={f}
                 onClick={() => setFilter(f)}
-                className={`px-2.5 py-1 rounded-md text-[10px] font-medium transition-colors ${
+                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
                   filter === f
                     ? f === 'all' ? 'bg-brand-accent/20 text-brand-accent' :
                       f === 'critical' ? 'bg-red-500/20 text-red-400' :
@@ -175,7 +175,7 @@ export function NotificationCenter() {
           {unreadCount > 0 && (
             <button
               onClick={markAllRead}
-              className="text-[10px] text-gray-500 hover:text-gray-300 transition-colors px-2 py-1"
+              className="text-xs text-gray-500 hover:text-gray-300 transition-colors px-2 py-1"
             >
               Markera alla lästa
             </button>
@@ -184,7 +184,7 @@ export function NotificationCenter() {
       </div>
 
       {/* Live indicator */}
-      <div className="flex items-center gap-2 text-[10px] text-gray-600">
+      <div className="flex items-center gap-2 text-xs text-gray-600">
         <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" />
         <span className="font-mono">Realtid — polling var 15s</span>
       </div>
@@ -204,11 +204,11 @@ export function NotificationCenter() {
                 <div className={`h-2 w-2 rounded-full flex-shrink-0 mt-1.5 ${cfg.dot} ${!notif.read ? '' : 'opacity-30'}`} />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
-                    <span className={`text-[12px] font-medium ${!notif.read ? 'text-white' : 'text-gray-400'}`}>
+                    <span className={`text-xs font-medium ${!notif.read ? 'text-white' : 'text-gray-400'}`}>
                       {notif.title}
                     </span>
                     <div className="flex items-center gap-2 flex-shrink-0">
-                      <span className="text-[10px] text-gray-600 font-mono">
+                      <span className="text-xs text-gray-600 font-mono">
                         {new Date(notif.timestamp).toLocaleString('sv-SE', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                       </span>
                       {!notif.read && (
@@ -221,7 +221,7 @@ export function NotificationCenter() {
                       )}
                     </div>
                   </div>
-                  <p className="text-[11px] text-gray-500 mt-0.5">{notif.body}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{notif.body}</p>
                   <div className="flex items-center gap-2 mt-1.5">
                     <span className="text-[9px] text-gray-700 font-mono">{notif.source}</span>
                     <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full border ${cfg.bg} ${cfg.color}`}>
@@ -234,7 +234,7 @@ export function NotificationCenter() {
           )
         })}
         {filtered.length === 0 && (
-          <div className="text-center py-12 text-gray-600 text-[12px]">
+          <div className="text-center py-12 text-gray-600 text-xs">
             Inga notifikationer för valt filter
           </div>
         )}

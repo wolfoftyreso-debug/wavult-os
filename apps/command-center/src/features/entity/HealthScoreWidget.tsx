@@ -112,7 +112,7 @@ export function DimensionPill({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <span className="text-xs font-semibold text-white">{dim.label}</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded font-mono"
+            <span className="text-xs px-1.5 py-0.5 rounded font-mono"
               style={{ background: color + '20', color }}>
               {LEVEL_LABEL[dim.level]}
             </span>
@@ -122,7 +122,7 @@ export function DimensionPill({
             <div className="h-1.5 rounded-full overflow-hidden flex-1" style={{ background: '#ffffff08' }}>
               <div className="h-full rounded-full transition-all" style={{ width: `${dim.score}%`, background: color }} />
             </div>
-            <span className="text-[10px] font-mono flex-shrink-0" style={{ color }}>{dim.score}</span>
+            <span className="text-xs font-mono flex-shrink-0" style={{ color }}>{dim.score}</span>
           </div>
         </div>
         <span className="text-gray-600 text-xs">{expanded ? '▲' : '▾'}</span>
@@ -197,7 +197,7 @@ export function HealthBadge({ score, level }: { score: number; level: ScoreLevel
   const icon  = level === 'good' ? '✓' : level === 'watch' ? '⚠' : '✕'
   return (
     <span
-      className="inline-flex items-center gap-1 text-[10px] font-mono px-1.5 py-0.5 rounded"
+      className="inline-flex items-center gap-1 text-xs font-mono px-1.5 py-0.5 rounded"
       style={{ background: color + '18', color, border: `1px solid ${color}25` }}
     >
       {icon} {score}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 interface Lesson {
   title: string
@@ -16,6 +16,138 @@ interface Course {
 }
 
 const COURSES: Course[] = [
+  // ── Dag 1-kurs ── Ny teammedlem — snabbstart ────────────────────────────────
+  {
+    id: 'dag-1',
+    title: 'Ny teammedlem — Dag 1',
+    description: 'Den snabbaste vägen in. Vad vi bygger, vilka vi är och hur du hittar rätt från dag ett.',
+    icon: '🚀',
+    color: '#EC4899',
+    lessons: [
+      {
+        title: 'Vad vi bygger — 2 minuter',
+        duration: 2,
+        content: `Wavult Group bygger tre inbyggda produkter som tillsammans bildar en värdekedja.
+
+**QuiXzoom**
+En mobilapp där zoomers — frilansar med smartphones — tar geo-taggade fotouppdrag mot betalning. Tänk Uber Eats, fast för bilddata. Vi kallar det "last mile intelligence capture".
+
+**Quixom Ads**
+B2B-monetisering av QuiXzoom-datan. Hyperlokal affärsintelligens och annonsering. Aktiveras i fas 2.
+
+**Landvex**
+Enterprise B2G-plattform. Säljer händelsebaserade larm och analysabonnemang till kommuner och Trafikverket. Kärnvärdet: *"Right control. Right cost. Right interval."*
+
+**Sekvensen är låst:**
+QuiXzoom bygger datan → Quixom Ads monetiserar den → Landvex säljer analysen till offentlig sektor. I den ordningen, inte tvärtom.
+
+**Nästa lansering:** Sverige, mitten juni 2026. Startpunkt: Stockholms skärgård.`,
+      },
+      {
+        title: 'Teamet — vem gör vad',
+        duration: 3,
+        content: `Wavult Group är 5 personer plus en AI-agent. Lär dig vem som äger vad.
+
+**Erik Svensson — Chairman & Group CEO**
+Grundare och yttersta beslutsfattaren. Äger produktvisionen. Alla L3-beslut (> 50 000 SEK, bolagsavtal) kräver Eriks signatur.
+Kontakt: +46 709 123 223
+
+**Leon Russo — CEO Wavult Operations**
+Dag-till-dag drift, sälj och zoomer-rekrytering. Frågor om operations, HR, sälj → Leon.
+Kontakt: +46 738 968 949
+
+**Dennis Bjarnemark — Chief Legal & Operations (Interim)**
+Allt juridiskt: bolagsbildningar, avtal, compliance, GDPR. Frågor om juridik → Dennis.
+Kontakt: +46 761 474 243
+
+**Winston Bjarnemark — CFO**
+Finans, bokföring, bank, transfer pricing, zoomer-utbetalningar. Frågor om ekonomi → Winston.
+Kontakt: +46 768 123 548
+
+**Johan Berglund — Group CTO**
+All tech: AWS, frontend, backend, mobile, CI/CD. Frågor om teknik → Johan.
+Kontakt: +46 736 977 576
+
+**Bernt — AI-agent**
+OpenClaw-instans integrerad i Wavult OS. Klicka på 🤖-knappen i topbaren. Bernt kan svara på de flesta frågor och utföra uppgifter.
+
+**Kommunikation:** Telegram är primär kanal. Be om access till teamets grupp direkt.`,
+      },
+      {
+        title: 'Bolagsstrukturen — förenklat',
+        duration: 3,
+        content: `Wavult Group har 6 juridiska entiteter. Du behöver förstå strukturen på en övergripande nivå.
+
+**Lagret 1 — Dubai (Holding & IP)**
+• Wavult Group FZCO — äger all IP, varumärken och kod. 0% skatt på IP-inkomster.
+• Wavult DevOps FZCO — bygger systemen, licensierar IP till driftsbolagen.
+
+**Lagret 2 — Driftsbolag**
+• QuiXzoom Inc (Delaware, USA) — global/USA-verksamhet
+• QuiXzoom UAB (Litauen) — EU-verksamhet, GDPR-hemvist
+• Landvex AB (Stockholm, Sverige) — säljer till svenska kommuner
+• Landvex Inc (Houston, Texas) — säljer till amerikanska myndigheter
+
+**Varför Dubai?**
+IP registrerat i Dubai beskattas med 0%. Driftsbolagen betalar en del av sina intäkter som "IP-licens" uppåt till Dubai — legalt och OECD-compliant. Effektiv skattesats för koncernen: < 5%.
+
+**Status 2026-03-27:**
+Dubai-bolagen är inte bildade ännu (business plan klar). Texas LLC halvklar. Sverige-namnbyte pågår.
+
+**Du behöver inte detaljerna nu** — läs "Bolagsstruktur — Komplett Koncernkarta" i Kunskapsbasen när du är redo.`,
+      },
+      {
+        title: 'Verktyg & access — checklista',
+        duration: 2,
+        content: `Säkra din access dag 1 — be din manager om följande:
+
+**Alla i teamet:**
+• Telegram — primär kommunikationskanal (privat grupp)
+• Wavult OS — admin-inbjudan (detta system)
+• E-postkonto (namn@hypbit.com) — be Leon
+
+**Tech-teamet (Johan-sidan):**
+• GitHub — wolfoftyreso-debug/hypbit (repo-access)
+• Supabase — wavult-os + quixzoom-v2 projekt
+• AWS Console — account 155407238699 (begränsat read-only för start)
+• Cloudflare — pages.dev-access
+
+**Finance (Winston-sidan):**
+• Revolut Business — kortaccess
+
+**Legal (Dennis-sidan):**
+• DocuSign — för digitala signaturer
+• Bolagsverket-access (om relevant)
+
+**Bernt är alltid tillgänglig** via 🤖-knappen — ingen access krävs. Fråga Bernt om du fastnar.`,
+      },
+      {
+        title: 'Thailand Workcamp — 11 april 2026',
+        duration: 2,
+        content: `**Det första stora milstolpen för hela teamet är Thailand Workcamp.**
+
+**Datum:** 11 april 2026  
+**Plats:** Bangkok, Thailand — Nysa Hotel, Sukhumvit 13  
+**Deltagare:** Erik, Leon, Dennis, Winston, Johan
+
+**Vecka 1 — Utbildning & Orientering:**
+• Måndag: Ankomst & kickoff
+• Tisdag: Wavult OS Bootcamp — alla tar Academy-kurserna
+• Onsdag: Bolagsstruktur & juridik
+• Torsdag: Tech Deep Dive
+• Fredag: Teambuilding
+• Lördag–Söndag: Sprint-planering
+
+**Vecka 2+ — Byggfas:**
+• QuiXzoom MVP klart för Sverige-lansering
+• Landvex beta-sajt live
+• Dubai-struktur presenterad
+
+**Mål för dig innan workcamp:**
+Klara minst 2 Academy-kurser + Zoomer-certifieringen. Alla i teamet ska vara certifierade.`,
+      },
+    ],
+  },
   {
     id: 'wavult-os',
     title: 'Wavult OS — Grundkurs',
@@ -50,7 +182,7 @@ Wavult OS är byggt i React 18 + TypeScript, Tailwind CSS, Vite. Det körs på C
 
 **Sidebar (vänster)**
 Sidebaren är organiserad i grupper:
-• CORE: Dashboard, Incident Center
+• CORE: Dashboard, Alerts
 • BUSINESS: Finance, CRM, Legal
 • PRODUCTS: QuiXzoom, Landvex
 • TEAM: HR, Communications
@@ -145,7 +277,7 @@ Access till CRM, Communications, HR. Begränsad Finance (kan se budgetar, ej än
 Bernt har tillgång till all information i Knowledge Hub. Istället för att läsa allt kan du fråga Bernt: "Förklara Landvex prismodell" eller "Vilka är stegen för Texas LLC?"`,
       },
       {
-        title: 'Dashboard & Incident Center',
+        title: 'Dashboard & Alerts',
         duration: 5,
         content: `Dashboard är Wavult OS startsida — realtidsöversikt av hela koncernen.
 
@@ -157,7 +289,7 @@ Bernt har tillgång till all information i Knowledge Hub. Istället för att lä
 • Team-aktivitet (senaste commits, deployments)
 • Bernt-aktivitet (senaste AI-interaktioner)
 
-**Incident Center:**
+**Alerts:**
 Samlar alla aktiva incidents — tekniska problem, juridiska deadlines, kritiska affärshändelser.
 
 Incident-nivåer:
@@ -1231,7 +1363,7 @@ function LessonModal({ course, lessonIndex, progress, onUpdate, onClose }: {
           <div className="flex items-center gap-3 mb-3">
             <span className="text-2xl">{course.icon}</span>
             <div className="flex-1">
-              <p className="text-[10px] text-gray-600 font-mono uppercase">{course.title}</p>
+              <p className="text-xs text-gray-600 font-mono uppercase">{course.title}</p>
               <h2 className="text-sm font-semibold text-white">{lesson.title}</h2>
             </div>
             <button onClick={onClose} className="text-gray-600 hover:text-gray-300 text-xl leading-none">×</button>
@@ -1243,7 +1375,7 @@ function LessonModal({ course, lessonIndex, progress, onUpdate, onClose }: {
               <button
                 key={i}
                 onClick={() => setCurrentLesson(i)}
-                className={`px-2 py-1 rounded text-[10px] font-mono transition-colors ${
+                className={`px-2 py-1 rounded text-xs font-mono transition-colors ${
                   i === currentLesson
                     ? 'text-white'
                     : i < progress
@@ -1262,14 +1394,14 @@ function LessonModal({ course, lessonIndex, progress, onUpdate, onClose }: {
         <div className="flex-1 overflow-y-auto p-5 min-h-0">
           <div className="flex items-center gap-3 mb-4">
             <div
-              className="text-[10px] font-mono px-2 py-0.5 rounded"
+              className="text-xs font-mono px-2 py-0.5 rounded"
               style={{ background: course.color + '20', color: course.color }}
             >
               Lektion {currentLesson + 1} av {course.lessons.length}
             </div>
-            <span className="text-[10px] text-gray-600 font-mono">~{lesson.duration} min</span>
+            <span className="text-xs text-gray-600 font-mono">~{lesson.duration} min</span>
             {isCompleted && (
-              <span className="text-[10px] text-green-500 font-mono ml-auto">✓ Avklarad</span>
+              <span className="text-xs text-green-500 font-mono ml-auto">✓ Avklarad</span>
             )}
           </div>
 
@@ -1304,7 +1436,7 @@ function LessonModal({ course, lessonIndex, progress, onUpdate, onClose }: {
         {/* Footer */}
         <div className="flex-shrink-0 p-4 border-t border-white/[0.05]">
           <ProgressBar value={progress} max={course.lessons.length} color={course.color} />
-          <p className="text-[10px] text-gray-600 font-mono mt-1 mb-3">
+          <p className="text-xs text-gray-600 font-mono mt-1 mb-3">
             {progress}/{course.lessons.length} lektioner avklarade
           </p>
 
@@ -1350,6 +1482,15 @@ function LessonModal({ course, lessonIndex, progress, onUpdate, onClose }: {
   )
 }
 
+// Rekommenderad kursordning för nybörjare — visas tills 2 kurser är klara
+const ONBOARDING_ORDER: { courseId: string; reason: string }[] = [
+  { courseId: 'dag-1', reason: 'Börja här — 12 min' },
+  { courseId: 'wavult-os', reason: 'Förstå verktyget du jobbar i' },
+  { courseId: 'quixzoom', reason: 'Kärnprodukten — 7 lektioner' },
+  { courseId: 'landvex', reason: 'B2G-armen och intäktsmodellen' },
+  { courseId: 'dubai', reason: 'Juridisk struktur och skatteoptimering' },
+]
+
 export function AcademyView() {
   const [progress, setProgress] = useState<ProgressMap>(getProgress)
   const [openCourse, setOpenCourse] = useState<{ course: Course; lesson: number } | null>(null)
@@ -1357,6 +1498,10 @@ export function AcademyView() {
   const totalLessons = COURSES.reduce((sum, c) => sum + c.lessons.length, 0)
   const completedLessons = COURSES.reduce((sum, c) => sum + Math.min(progress[c.id] ?? 0, c.lessons.length), 0)
   const overallPct = Math.round((completedLessons / totalLessons) * 100)
+  const completedCourses = COURSES.filter(c => (progress[c.id] ?? 0) >= c.lessons.length).length
+
+  // Visa onboarding-guide tills minst 2 kurser är avklarade
+  const showOnboarding = completedCourses < 2
 
   function handleUpdate(courseId: string, lessons: number) {
     const next = { ...progress, [courseId]: lessons }
@@ -1366,24 +1511,62 @@ export function AcademyView() {
 
   return (
     <div className="h-full flex flex-col">
+      {/* Onboarding "Var börjar jag?" — visas tills 2 kurser är klara */}
+      {showOnboarding && (
+        <div className="mb-4 bg-[#0D0F1A] border border-brand-accent/20 rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-base">🧭</span>
+            <h3 className="text-sm font-semibold text-white">Ny här? Börja i den här ordningen</h3>
+            <span className="ml-auto text-xs text-gray-600 font-mono">Försvinner när 2 kurser är klara</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {ONBOARDING_ORDER.map((item, idx) => {
+              const course = COURSES.find(c => c.id === item.courseId)
+              if (!course) return null
+              const done = (progress[course.id] ?? 0) >= course.lessons.length
+              return (
+                <button
+                  key={item.courseId}
+                  onClick={() => {
+                    const nextLesson = Math.min(progress[course.id] ?? 0, course.lessons.length - 1)
+                    setOpenCourse({ course, lesson: nextLesson })
+                  }}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs border transition-all ${
+                    done
+                      ? 'border-green-500/20 bg-green-500/5 text-green-400'
+                      : 'border-brand-accent/20 bg-brand-accent/5 text-gray-300 hover:text-white hover:border-brand-accent/40'
+                  }`}
+                >
+                  <span className="font-mono text-gray-600">{idx + 1}.</span>
+                  <span>{course.icon}</span>
+                  <span>{course.title}</span>
+                  {done && <span className="text-green-500">✓</span>}
+                  {!done && <span className="text-gray-600 text-xs">— {item.reason}</span>}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Header stats */}
-      <div className="grid grid-cols-3 gap-3 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
         <div className="bg-[#0D0F1A] border border-surface-border rounded-xl p-4">
-          <p className="text-[10px] text-gray-600 font-mono mb-1">TOTAL PROGRESS</p>
+          <p className="text-xs text-gray-600 font-mono mb-1">TOTAL PROGRESS</p>
           <p className="text-2xl font-bold text-white">{overallPct}%</p>
           <div className="mt-2">
             <ProgressBar value={completedLessons} max={totalLessons} color="#8B5CF6" />
           </div>
         </div>
         <div className="bg-[#0D0F1A] border border-surface-border rounded-xl p-4">
-          <p className="text-[10px] text-gray-600 font-mono mb-1">KURSER KLARA</p>
+          <p className="text-xs text-gray-600 font-mono mb-1">KURSER KLARA</p>
           <p className="text-2xl font-bold text-white">
             {COURSES.filter(c => (progress[c.id] ?? 0) >= c.lessons.length).length}
             <span className="text-base text-gray-600">/{COURSES.length}</span>
           </p>
         </div>
         <div className="bg-[#0D0F1A] border border-surface-border rounded-xl p-4">
-          <p className="text-[10px] text-gray-600 font-mono mb-1">LEKTIONER KLARA</p>
+          <p className="text-xs text-gray-600 font-mono mb-1">LEKTIONER KLARA</p>
           <p className="text-2xl font-bold text-white">
             {completedLessons}
             <span className="text-base text-gray-600">/{totalLessons}</span>
@@ -1410,19 +1593,19 @@ export function AcademyView() {
                 <span className="text-3xl">{course.icon}</span>
                 <div className="flex flex-col items-end gap-1">
                   {isComplete && (
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 font-mono border border-green-500/20">
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/15 text-green-400 font-mono border border-green-500/20">
                       ✓ Klar
                     </span>
                   )}
                   {!isComplete && done > 0 && (
                     <span
-                      className="text-[10px] px-2 py-0.5 rounded-full font-mono"
+                      className="text-xs px-2 py-0.5 rounded-full font-mono"
                       style={{ background: course.color + '15', color: course.color, border: `1px solid ${course.color}30` }}
                     >
                       {pct}%
                     </span>
                   )}
-                  <span className="text-[10px] text-gray-700 font-mono">
+                  <span className="text-xs text-gray-700 font-mono">
                     {total} lektioner
                   </span>
                 </div>
@@ -1436,7 +1619,7 @@ export function AcademyView() {
               {/* Next lesson preview */}
               {!isComplete && (
                 <div
-                  className="text-[10px] font-mono px-2 py-1 rounded mb-3 text-left truncate"
+                  className="text-xs font-mono px-2 py-1 rounded mb-3 text-left truncate"
                   style={{ background: course.color + '10', color: course.color + 'cc' }}
                 >
                   ▶ {course.lessons[nextLessonIndex]?.title}
@@ -1445,7 +1628,7 @@ export function AcademyView() {
 
               <div className="space-y-2">
                 <ProgressBar value={done} max={total} color={course.color} />
-                <div className="flex justify-between text-[10px] font-mono">
+                <div className="flex justify-between text-xs font-mono">
                   <span className="text-gray-600">{done}/{total} lektioner</span>
                   <span className="text-gray-600">
                     ~{course.lessons.reduce((s, l) => s + l.duration, 0)} min totalt

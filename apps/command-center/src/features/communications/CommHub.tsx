@@ -6,13 +6,15 @@ import { NotificationCenter } from './NotificationCenter'
 import { WebhookLog } from './WebhookLog'
 import { APIStatusView } from './APIStatusView'
 import { ContactsView } from './ContactsView'
+import { RoutingView } from './RoutingView'
 
-type Tab = 'contacts' | 'inbox' | 'sms' | 'notifications' | 'webhooks' | 'api-status'
+type Tab = 'contacts' | 'inbox' | 'sms' | 'routing' | 'notifications' | 'webhooks' | 'api-status'
 
 const TABS: Array<{ id: Tab; label: string; icon: string }> = [
   { id: 'contacts',      label: 'Kontakter',   icon: '📋' },
   { id: 'inbox',         label: 'Inkorgen',    icon: '📬' },
   { id: 'sms',           label: 'SMS/Notiser', icon: '📱' },
+  { id: 'routing',       label: 'Routing',     icon: '🔀' },
   { id: 'notifications', label: 'Systemlarm',  icon: '🔔' },
   { id: 'webhooks',      label: 'Webhooks',    icon: '🔗' },
   { id: 'api-status',    label: 'API-status',  icon: '🟢' },
@@ -30,12 +32,12 @@ export function CommHub() {
           <span className="text-xl">📡</span>
           <div>
             <h1 className="text-[16px] font-bold text-white">Kommunikation</h1>
-            <p className="text-[10px] text-gray-600 font-mono">
+            <p className="text-xs text-gray-600 font-mono">
               {activeEntity.layer === 0 ? 'Wavult Group — alla kanaler' : activeEntity.name}
             </p>
           </div>
           <div
-            className="ml-auto flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-medium"
+            className="ml-auto flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium"
             style={{
               background: activeEntity.color + '15',
               border: `1px solid ${activeEntity.color}30`,
@@ -54,7 +56,7 @@ export function CommHub() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-colors whitespace-nowrap flex-shrink-0 ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap flex-shrink-0 ${
               activeTab === tab.id
                 ? 'bg-brand-accent/15 text-brand-accent border border-brand-accent/30'
                 : 'text-gray-500 hover:text-gray-300 hover:bg-white/[0.04]'
@@ -71,6 +73,7 @@ export function CommHub() {
         {activeTab === 'contacts'      && <ContactsView />}
         {activeTab === 'inbox'         && <InboxView />}
         {activeTab === 'sms'           && <SMSView />}
+        {activeTab === 'routing'       && <RoutingView />}
         {activeTab === 'notifications' && <NotificationCenter />}
         {activeTab === 'webhooks'      && <WebhookLog />}
         {activeTab === 'api-status'    && <APIStatusView />}

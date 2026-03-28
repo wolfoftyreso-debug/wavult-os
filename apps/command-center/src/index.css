@@ -8,14 +8,14 @@
 
 @layer base {
   :root {
-    /* Atmospheric state — controlled by JS */
-    --atmosphere: #14181E;
-    --atmosphere-intensity: 0;
-    --focal-accent: transparent;
-    --operator-color: #C4961A;
+    /* Surface state — controlled by JS */
+    --surface-bg: #14181E;
+    --surface-intensity: 0;
+    --accent-color: transparent;
+    --entity-color: #C4961A;
 
     /* Transition timing */
-    --transition-atmosphere: 1.2s ease-in-out;
+    --transition-slow: 1.2s ease-in-out;
     --transition-fast: 0.15s ease-out;
     --transition-normal: 0.25s ease-out;
   }
@@ -25,7 +25,7 @@
     font-family: 'Inter', system-ui, sans-serif;
   }
 
-  /* Custom scrollbar — minimal, atmospheric */
+  /* Custom scrollbar — minimal */
   ::-webkit-scrollbar {
     width: 4px;
   }
@@ -42,60 +42,60 @@
 }
 
 @layer components {
-  /* ─── Focal Zone ──────────────────────────────────────────────────────────── */
-  .focal-zone {
+  /* ─── Content Area ────────────────────────────────────────────────────────── */
+  .content-area {
     @apply relative flex-1 flex flex-col items-center justify-center;
-    transition: background var(--transition-atmosphere),
-                border-color var(--transition-atmosphere);
+    transition: background var(--transition-slow),
+                border-color var(--transition-slow);
   }
 
-  .focal-zone--neutral {
+  .content-area--neutral {
     background: #14181E;
   }
 
-  .focal-zone--attention {
+  .content-area--attention {
     background: linear-gradient(135deg, #14181E 0%, #1A1810 100%);
   }
 
-  .focal-zone--action {
+  .content-area--action {
     background: linear-gradient(135deg, #14181E 0%, #1A1215 100%);
   }
 
-  /* Left-edge action stripe — industrial indicator light */
-  .focal-stripe {
+  /* Left-edge status stripe — industrial indicator */
+  .status-bar {
     @apply absolute left-0 top-0 bottom-0 w-1 rounded-r;
     transition: background var(--transition-normal),
                 opacity var(--transition-normal);
   }
 
-  .focal-stripe--neutral { @apply opacity-0; }
-  .focal-stripe--attention { @apply opacity-100 bg-signal-amber; }
-  .focal-stripe--action { @apply opacity-100 bg-signal-red; }
-  .focal-stripe--success { @apply opacity-100 bg-signal-green; }
+  .status-bar--neutral { @apply opacity-0; }
+  .status-bar--attention { @apply opacity-100 bg-signal-amber; }
+  .status-bar--action { @apply opacity-100 bg-signal-red; }
+  .status-bar--success { @apply opacity-100 bg-signal-green; }
 
-  /* ─── Mission Stack ───────────────────────────────────────────────────────── */
-  .mission-stack {
+  /* ─── Item List ───────────────────────────────────────────────────────────── */
+  .item-list {
     @apply flex flex-col;
   }
 
-  .mission-item {
+  .list-item {
     @apply relative flex items-start gap-3 px-4 py-3 border-b border-wavult-border cursor-pointer;
     @apply transition-all duration-200 ease-out;
   }
 
-  .mission-item:hover {
+  .list-item:hover {
     @apply bg-wavult-steel;
   }
 
-  .mission-item--active {
+  .list-item--active {
     @apply bg-wavult-slate border-l-2 border-l-signal-amber;
   }
 
-  .mission-item--resolved {
+  .list-item--resolved {
     @apply opacity-40;
   }
 
-  .mission-item--urgent {
+  .list-item--urgent {
     @apply border-l-2 border-l-signal-red;
   }
 
@@ -109,12 +109,21 @@
 
   .event-card--elevated {
     @apply border-signal-amber/30;
-    box-shadow: 0 0 20px rgba(196, 150, 26, 0.05);
+    border-left: 3px solid #E8A020;
   }
 
   .event-card--critical {
     @apply border-signal-red/30;
-    box-shadow: 0 0 20px rgba(217, 64, 64, 0.08);
+    border-left: 3px solid #CF222E;
+  }
+
+  /* ─── Alert Cards ─────────────────────────────────────────────────────────── */
+  .alert-card--warning {
+    border-left: 3px solid #E8A020;
+  }
+
+  .alert-card--critical {
+    border-left: 3px solid #CF222E;
   }
 
   /* ─── Action Buttons ──────────────────────────────────────────────────────── */
@@ -144,51 +153,60 @@
     @apply hover:bg-signal-green/25 focus:ring-signal-green;
   }
 
-  /* Large binary decision buttons — Buzz-style */
+  /* Large binary decision buttons */
   .decision-btn {
     @apply flex-1 py-5 rounded-lg text-lg font-semibold;
     @apply transition-all duration-150 ease-out;
     @apply focus:outline-none;
   }
 
-  /* ─── Peripheral / HUD ────────────────────────────────────────────────────── */
-  .hud-indicator {
-    @apply flex items-center gap-1.5 font-mono text-telemetry text-text-tertiary;
+  /* ─── Status Indicator ────────────────────────────────────────────────────── */
+  .status-indicator {
+    @apply flex items-center gap-1.5 font-mono text-label-xs text-text-tertiary;
   }
 
-  .hud-dot {
+  .status-dot {
     @apply h-1.5 w-1.5 rounded-full;
-    transition: background var(--transition-atmosphere);
+    transition: background var(--transition-slow);
   }
 
-  .hud-dot--ok { @apply bg-signal-green; }
-  .hud-dot--warn { @apply bg-signal-amber animate-pulse-slow; }
-  .hud-dot--critical { @apply bg-signal-red animate-pulse; }
+  .status-dot--ok { @apply bg-signal-green; }
+  .status-dot--warn { @apply bg-signal-amber animate-pulse-slow; }
+  .status-dot--critical { @apply bg-signal-red animate-pulse; }
 
-  /* ─── Gate Lock ───────────────────────────────────────────────────────────── */
-  .gate-lock {
+  /* ─── Access Lock ─────────────────────────────────────────────────────────── */
+  .access-lock {
     @apply flex items-center gap-2 px-3 py-2 rounded-lg;
     @apply bg-wavult-slate border border-wavult-border;
     @apply text-text-tertiary text-xs font-mono;
   }
 
-  .gate-lock--pending {
+  .access-lock--pending {
     @apply border-signal-amber/20;
   }
 
-  .gate-lock--blocked {
+  .access-lock--blocked {
     @apply border-signal-red/20;
   }
 
-  /* ─── Momentum Bar ────────────────────────────────────────────────────────── */
-  .momentum-bar {
+  /* ─── Progress Bar ────────────────────────────────────────────────────────── */
+  .progress-bar {
     @apply h-0.5 rounded-full;
     transition: width 0.6s ease-out, background 0.6s ease-out;
   }
 
-  /* ─── Operator Color Accent ───────────────────────────────────────────────── */
-  .operator-accent {
-    border-left: 3px solid var(--operator-color);
+  /* ─── Entity Color Accent ─────────────────────────────────────────────────── */
+  .entity-accent {
+    border-left: 3px solid var(--entity-color);
+  }
+
+  /* ─── Typography ──────────────────────────────────────────────────────────── */
+  .label-xs {
+    @apply text-xs font-mono;
+  }
+
+  .heading-xl {
+    @apply text-2xl font-bold;
   }
 }
 
@@ -196,4 +214,27 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  /* ─── Animations (standard UX — keep these) ───────────────────────────────── */
+  .animate-fade-in {
+    animation: fade-in 0.2s ease-out;
+  }
+
+  .animate-slide-in {
+    animation: slide-in 0.25s ease-out;
+  }
 }
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Hide scrollbar but keep scroll functionality */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

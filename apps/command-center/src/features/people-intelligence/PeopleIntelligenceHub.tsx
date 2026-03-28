@@ -35,6 +35,16 @@ interface DiscScore {
   C: number
 }
 
+interface Responsibility {
+  id: string
+  title: string
+  description: string
+  expectations: string[]
+  tools: string[]
+  collaboratesWith: string[]
+  frequency: 'daily' | 'weekly' | 'monthly' | 'ongoing'
+}
+
 interface TeamMember {
   id: string
   name: string
@@ -51,6 +61,7 @@ interface TeamMember {
   decisionStyle: string
   decisionAuthority: string[]
   idealTasks: string[]
+  responsibilities: Responsibility[]
   energyLevel: number   // 0-100 (mock)
   focusScore: number    // 0-100 (mock)
   currentPriority: string
@@ -97,6 +108,44 @@ const TEAM_MEMBERS: TeamMember[] = [
       'Godkänna stora beslut',
       'Teamvision & inspiration',
     ],
+    responsibilities: [
+      {
+        id: 'erik-strategy',
+        title: 'Strategisk riktning & vision',
+        description: 'Sätter den övergripande riktningen för Wavult Group — vilka marknader vi går in i, vilka produkter vi bygger och i vilken ordning. Ansvarar för att hela organisationen rör sig mot samma mål.',
+        expectations: ['Kvartalsvis strategirevision med teamet', 'Tydlig product roadmap per bolag', 'Go/no-go-beslut inom 48h', 'Kommunicera pivots till teamet omedelbart'],
+        tools: ['Wavult OS Strategy', 'Milestones', 'Morning Brief'],
+        collaboratesWith: ['LR', 'DB', 'WB', 'JB'],
+        frequency: 'ongoing',
+      },
+      {
+        id: 'erik-capital',
+        title: 'Kapitalallokering & funding',
+        description: 'Bestämmer hur kapital fördelas mellan bolag, produkter och team. Ansvarar för externa relationer med investerare och finansiärer. Tar slutbeslut om stora utgifter.',
+        expectations: ['Månadsvis P&L-genomgång med Winston', 'Budget-godkännanden >50k SEK', 'Investor updates kvartalsvis', 'Intercompany-flöden optimerade'],
+        tools: ['Finance Hub', 'Wavult OS', 'Revolut Business'],
+        collaboratesWith: ['WB', 'DB'],
+        frequency: 'monthly',
+      },
+      {
+        id: 'erik-partnerships',
+        title: 'Partnerships & externa relationer',
+        description: 'Representerar Wavult Group externt mot partners, myndigheter och strategiska kunder. Öppnar dörrar som kräver CEO-nivå. Ansvarar för att NDA:er och LOI:er signeras.',
+        expectations: ['Minst 2 strategiska möten/vecka', 'Pipeline uppdaterad i CRM', 'Alla avtal >100k SEK via Legal'],
+        tools: ['CRM', 'Legal Hub', 'Wavult OS'],
+        collaboratesWith: ['LR', 'DB'],
+        frequency: 'weekly',
+      },
+      {
+        id: 'erik-bolagstruktur',
+        title: 'Bolagsstruktur & expansion',
+        description: 'Driver etableringen av nya juridiska enheter (Dubai FZCO, Texas LLC, Litauisk UAB). Ansvarar för att strukturen är skatteeffektiv och operativt korrekt.',
+        expectations: ['Dubai FZCO klar Q2 2026', 'Texas LLC registrerad', 'Holding-struktur dokumenterad', 'Intercompany-avtal på plats'],
+        tools: ['Legal Hub', 'Entities', 'Wavult OS'],
+        collaboratesWith: ['DB', 'WB'],
+        frequency: 'monthly',
+      },
+    ],
     energyLevel: 88,
     focusScore: 82,
     currentPriority: 'Thailand workcamp + Dubai-struktur',
@@ -138,6 +187,35 @@ const TEAM_MEMBERS: TeamMember[] = [
       'Teambuilding & event',
       'Partnerdialoger',
       'Rekrytering & onboarding',
+    ],
+    responsibilities: [
+      {
+        id: 'leon-gtm',
+        title: 'Go-to-market & försäljning',
+        description: 'Driver quiXzoom och LandveX mot marknaden. Ansvarar för att leads genereras, demos bokas och affärer stängs. Primär kontakt för nya kunder.',
+        expectations: ['5 kvalificerade leads/vecka', 'Demo-rate >60%', 'Pipeline uppdaterad dagligen i CRM', 'Månadsvis säljrapport till Erik'],
+        tools: ['CRM', 'quiXzoom App', 'Wavult OS'],
+        collaboratesWith: ['ES', 'JB'],
+        frequency: 'daily',
+      },
+      {
+        id: 'leon-ops',
+        title: 'Daglig operativ drift',
+        description: 'Koordinerar det dagliga arbetet i Wavult Operations. Säkerställer att uppdrag levereras, deadlines hålls och teamet vet vad som prioriteras.',
+        expectations: ['Daglig standup med ops-teamet', 'Blockers eskaleras samma dag', 'Milestones uppdaterade veckovis', 'Inga leveranser missas utan varning'],
+        tools: ['Milestones', 'Tasks', 'Wavult OS'],
+        collaboratesWith: ['ES', 'DB', 'WB', 'JB'],
+        frequency: 'daily',
+      },
+      {
+        id: 'leon-team',
+        title: 'Teambuilding & kultur',
+        description: 'Ansvarar för att teamets energi och sammanhållning är hög. Driver onboarding av nya teammedlemmar och säkerställer att kulturen lever.',
+        expectations: ['Thailand workcamp genomfört april 2026', 'WHOOP-data följs upp veckovis', 'En teamaktivitet per månad', 'Ny teammedlem onboardad inom 1 vecka'],
+        tools: ['WHOOP', 'People Intelligence', 'Wavult OS'],
+        collaboratesWith: ['ES', 'DB'],
+        frequency: 'weekly',
+      },
     ],
     energyLevel: 91,
     focusScore: 68,
@@ -181,6 +259,35 @@ const TEAM_MEMBERS: TeamMember[] = [
       'Legal due diligence',
       'Compliance-checklistor',
     ],
+    responsibilities: [
+      {
+        id: 'dennis-legal',
+        title: 'Legal granskning & avtal',
+        description: 'Granskar och förhandlar alla juridiska dokument för koncernen. Säkerställer att inga avtal signeras utan legal review. Primär kontakt för externa jurister.',
+        expectations: ['Alla avtal granskade inom 48h', 'Standardmallar för vanliga avtalssituationer', 'NDA-process automatiserad i Wavult OS', 'Noll unsigned compliance-deadlines'],
+        tools: ['Legal Hub', 'Wavult OS', 'Supabase'],
+        collaboratesWith: ['ES', 'WB'],
+        frequency: 'daily',
+      },
+      {
+        id: 'dennis-bolagsadmin',
+        title: 'Bolagsadmin (Dubai/SE/US)',
+        description: 'Hanterar alla formalia för bolagen — registreringar, årsredovisningar, styrelsemöten, aktiebok och bolagsordning. Säkerställer att alla deadlines till Bolagsverket, DIFC och IRS hålls.',
+        expectations: ['Dubai FZCO registrering koordinerad', 'Årsredovisningar inlämnade i tid', 'Styrelseprotokoll dokumenterade', 'Aktiebok uppdaterad'],
+        tools: ['Entities', 'Legal Hub', 'Wavult OS'],
+        collaboratesWith: ['ES', 'WB'],
+        frequency: 'monthly',
+      },
+      {
+        id: 'dennis-processer',
+        title: 'Process- och SOP-dokumentation',
+        description: 'Dokumenterar och standardiserar operativa processer i Wavult OS. Säkerställer att allt som händer en gång kan hanteras av vem som helst nästa gång.',
+        expectations: ['SOP för varje återkommande process', 'Knowledge base uppdaterad', 'Onboarding-checklista för nya medarbetare', 'ISO 27001-förberedelse påbörjad'],
+        tools: ['Knowledge Hub', 'Wavult OS', 'Legal Hub'],
+        collaboratesWith: ['JB', 'ES'],
+        frequency: 'weekly',
+      },
+    ],
     energyLevel: 72,
     focusScore: 88,
     currentPriority: 'Bolagsstruktur Dubai + FZCO',
@@ -223,6 +330,35 @@ const TEAM_MEMBERS: TeamMember[] = [
       'Invoice & procurement review',
       'Likviditethantering',
     ],
+    responsibilities: [
+      {
+        id: 'winston-rapportering',
+        title: 'Finansiell rapportering & bokslut',
+        description: 'Ansvarar för månadsrapporter, kvartalsrapporter och årsredovisning. Säkerställer att siffrorna är korrekta och att Erik har underlag för strategiska beslut.',
+        expectations: ['Månadsrapport klar senast den 5:e', 'P&L per bolag månadsvis', 'Kvartalsvis konsoliderat bokslut', 'Avvikelser förklarade med åtgärdsplan'],
+        tools: ['Finance Hub', 'Transactions', 'Wavult OS'],
+        collaboratesWith: ['ES', 'DB'],
+        frequency: 'monthly',
+      },
+      {
+        id: 'winston-likviditet',
+        title: 'Likviditet & intercompany cashflow',
+        description: 'Hanterar kassaflödet mellan bolagen och säkerställer att varje bolag har tillräcklig likviditet. Optimerar när pengar ska flyttas mellan enheter för skatteeffektivitet.',
+        expectations: ['Likviditetsrapport veckovis', 'Intercompany-flöden dokumenterade', 'Minimalt 3 månaders runway per bolag', 'Betalningar processade inom 24h'],
+        tools: ['Finance Hub', 'Revolut Business', 'Stripe'],
+        collaboratesWith: ['ES', 'DB'],
+        frequency: 'weekly',
+      },
+      {
+        id: 'winston-payroll',
+        title: 'Lön & personalekonomin',
+        description: 'Ansvarar för att löner betalas korrekt och i tid. Hanterar ersättningar, utlägg och förmåner för hela koncernen.',
+        expectations: ['Löner utbetalda den 25:e varje månad', 'Utläggsredovisningar godkända inom 48h', 'Skattemässigt korrekta lönekörningar', 'Personalekonomisk rapport kvartalsvis'],
+        tools: ['Payroll', 'Finance Hub', 'Wavult OS'],
+        collaboratesWith: ['DB', 'ES'],
+        frequency: 'monthly',
+      },
+    ],
     energyLevel: 78,
     focusScore: 90,
     currentPriority: 'Intercompany cashflow + löner',
@@ -264,6 +400,35 @@ const TEAM_MEMBERS: TeamMember[] = [
       'Developer hiring & mentoring',
       'CI/CD & deployment pipeline',
       'Säkerhetsgranskningar',
+    ],
+    responsibilities: [
+      {
+        id: 'johan-arkitektur',
+        title: 'Systemarkitektur & teknisk vision',
+        description: 'Sätter den tekniska riktningen för hela Wavult Group. Bestämmer vilka teknologier som används, hur systemen integreras och hur vi skalerar. Ansvarar för att vi aldrig bygger teknisk skuld vi inte kan betala.',
+        expectations: ['Arkitekturdokument per system', 'Tech review veckovis', 'Inga produktionsdriftstörningar utan RCA', 'Ny developer onboardad på <1 vecka'],
+        tools: ['Wavult OS', 'GitHub', 'AWS ECS', 'Supabase'],
+        collaboratesWith: ['ES', 'LR'],
+        frequency: 'ongoing',
+      },
+      {
+        id: 'johan-infrastruktur',
+        title: 'Infrastruktur & driftsäkerhet',
+        description: 'Ansvarar för att alla system är uppe, säkra och presterande. Hanterar AWS, Cloudflare, Supabase och alla produktionsmiljöer. Sätter upp monitoring och alerting.',
+        expectations: ['99.9% uptime per system', 'Monitoring på alla kritiska endpoints', 'Backuper testade månadsvis', 'Säkerhetsuppdateringar inom 24h'],
+        tools: ['AWS ECS', 'Cloudflare', 'Supabase', 'System Status'],
+        collaboratesWith: ['ES'],
+        frequency: 'daily',
+      },
+      {
+        id: 'johan-kodstandard',
+        title: 'Kodkvalitet & developer standards',
+        description: 'Sätter och upprätthåller kodstandarder för hela tech-teamet. Ansvarar för code reviews, CI/CD-pipelines och att vi följer best practices konsekvent.',
+        expectations: ['Code review på alla PRs >100 rader', 'CI/CD pipeline för alla produkter', 'Testcoverage >80% på kritiska moduler', 'Tech debt loggad och prioriterad'],
+        tools: ['GitHub', 'GitHub Actions', 'Wavult OS'],
+        collaboratesWith: ['ES'],
+        frequency: 'weekly',
+      },
     ],
     energyLevel: 75,
     focusScore: 92,
@@ -317,7 +482,7 @@ function EnergyRing({ value, color, label }: { value: number; color: string; lab
           {value}
         </text>
       </svg>
-      <span className="text-[10px] text-gray-400 uppercase tracking-wide">{label}</span>
+      <span className="text-xs text-gray-400 uppercase tracking-wide">{label}</span>
     </div>
   )
 }
@@ -362,6 +527,96 @@ function MemberCard({ member, selected, onClick }: {
         </div>
       )}
     </button>
+  )
+}
+
+// ─── Responsibility Card ──────────────────────────────────────────────────────
+
+function ResponsibilityCard({ resp, memberColor, team }: {
+  resp: Responsibility
+  memberColor: string
+  team: TeamMember[]
+}) {
+  const [open, setOpen] = useState(false)
+  const freqLabel: Record<Responsibility['frequency'], string> = {
+    daily: 'Dagligen',
+    weekly: 'Veckovis',
+    monthly: 'Månadsvis',
+    ongoing: 'Löpande',
+  }
+
+  return (
+    <div className="rounded-xl border border-white/10 overflow-hidden transition-all">
+      {/* Header — alltid synlig, klickbar */}
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between px-4 py-3 hover:bg-white/5 transition-colors text-left"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: memberColor }} />
+          <span className="text-sm font-medium text-white">{resp.title}</span>
+        </div>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <span className="text-xs text-gray-500 uppercase tracking-wide">{freqLabel[resp.frequency]}</span>
+          <span className="text-gray-500 text-xs">{open ? '▲' : '▼'}</span>
+        </div>
+      </button>
+
+      {/* Expanded content */}
+      {open && (
+        <div className="px-4 pb-4 flex flex-col gap-4 border-t border-white/10 pt-4">
+          {/* Description */}
+          <p className="text-sm text-gray-300 leading-relaxed">{resp.description}</p>
+
+          {/* Expectations */}
+          <div>
+            <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Förväntningar & KPI</div>
+            <div className="flex flex-col gap-1.5">
+              {resp.expectations.map(e => (
+                <div key={e} className="flex items-start gap-2 text-sm text-gray-300">
+                  <span className="text-green-400 mt-0.5 flex-shrink-0">✓</span>
+                  {e}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Tools */}
+          <div>
+            <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Verktyg & System</div>
+            <div className="flex flex-wrap gap-1.5">
+              {resp.tools.map(t => (
+                <span key={t} className="text-xs px-2 py-0.5 rounded-full bg-white/10 text-gray-300">{t}</span>
+              ))}
+            </div>
+          </div>
+
+          {/* Collaborates with */}
+          {resp.collaboratesWith.length > 0 && (
+            <div>
+              <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Samarbetar med</div>
+              <div className="flex gap-2 flex-wrap">
+                {resp.collaboratesWith.map(initials => {
+                  const collab = team.find(m => m.initials === initials)
+                  if (!collab) return null
+                  return (
+                    <div key={initials} className="flex items-center gap-1.5 text-xs text-gray-300">
+                      <div
+                        className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold"
+                        style={{ backgroundColor: collab.color + '33', color: collab.color }}
+                      >
+                        {initials}
+                      </div>
+                      {collab.name.split(' ')[0]}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   )
 }
 
@@ -507,26 +762,18 @@ function DetailPanel({ member }: { member: TeamMember }) {
       )}
 
       {tab === 'uppgifter' && (
-        <div className="flex flex-col gap-5">
-          <div>
-            <div className="text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">Optimala arbetsuppgifter</div>
-            <div className="flex flex-col gap-2">
-              {member.idealTasks.map((task, i) => (
-                <div
-                  key={task}
-                  className="flex items-center gap-3 rounded-lg bg-white/5 border border-white/10 px-3 py-2"
-                >
-                  <div
-                    className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0"
-                    style={{ backgroundColor: member.color + '22', color: member.color }}
-                  >
-                    {i + 1}
-                  </div>
-                  <span className="text-sm text-gray-300">{task}</span>
-                </div>
-              ))}
-            </div>
+        <div className="flex flex-col gap-3">
+          <div className="text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">
+            Ansvarsområden — klicka för att läsa mer
           </div>
+          {member.responsibilities.map(resp => (
+            <ResponsibilityCard
+              key={resp.id}
+              resp={resp}
+              memberColor={member.color}
+              team={TEAM_MEMBERS}
+            />
+          ))}
         </div>
       )}
     </div>
@@ -655,15 +902,15 @@ function TeamOverview() {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function PeopleIntelligenceHub() {
-  const [selectedId, setSelectedId] = useState<string>('erik')
+  const [selectedId, setSelectedId] = useState<string>('')
   const [showOverview, setShowOverview] = useState(false)
 
-  const selectedMember = TEAM_MEMBERS.find(m => m.id === selectedId) || TEAM_MEMBERS[0]
+  const selectedMember = TEAM_MEMBERS.find(m => m.id === selectedId) ?? TEAM_MEMBERS[0]
 
   return (
     <div className="h-full flex flex-col gap-0 bg-gray-950 text-white overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 flex-shrink-0">
+      <div className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-white/10 flex-shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-purple-500/20 flex items-center justify-center">
             <BrainIcon />
@@ -693,10 +940,10 @@ export function PeopleIntelligenceHub() {
             <TeamOverview />
           </div>
         ) : (
-          /* Detail mode: sidebar + panel */
+          /* Detail mode: sidebar + panel — mobile: master/detail toggle */
           <>
-            {/* Sidebar */}
-            <div className="w-72 border-r border-white/10 flex flex-col overflow-hidden flex-shrink-0">
+            {/* Sidebar — hidden on mobile when detail is shown */}
+            <div className={`${selectedId ? 'hidden md:flex' : 'flex'} w-full md:w-72 border-r border-white/10 flex-col overflow-hidden md:flex-shrink-0`}>
               <div className="px-4 py-3 border-b border-white/10">
                 <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Team</div>
               </div>
@@ -706,15 +953,24 @@ export function PeopleIntelligenceHub() {
                     key={member.id}
                     member={member}
                     selected={selectedId === member.id}
-                    onClick={() => setSelectedId(member.id)}
+                    onClick={() => setSelectedId(member.id === selectedId ? member.id : member.id)}
                   />
                 ))}
               </div>
             </div>
 
-            {/* Detail panel */}
-            <div className="flex-1 overflow-auto p-6">
-              <DetailPanel member={selectedMember} />
+            {/* Detail panel — full screen on mobile */}
+            <div className={`${selectedId ? 'flex' : 'hidden md:flex'} flex-1 flex-col overflow-auto`}>
+              {/* Mobile back button */}
+              <button
+                className="md:hidden flex items-center gap-2 px-4 py-3 text-xs text-gray-500 border-b border-white/10"
+                onClick={() => setSelectedId('')}
+              >
+                ← Tillbaka
+              </button>
+              <div className="flex-1 overflow-auto p-4 md:p-6">
+                <DetailPanel member={selectedMember} />
+              </div>
             </div>
           </>
         )}

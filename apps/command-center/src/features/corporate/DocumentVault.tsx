@@ -36,11 +36,11 @@ export function DocumentVault() {
       <div className="flex flex-wrap gap-3 items-start">
         {/* Company */}
         <div>
-          <label className="text-[10px] text-gray-600 block mb-1.5 font-mono uppercase tracking-wider">Bolag</label>
+          <label className="text-xs text-gray-600 block mb-1.5 font-mono uppercase tracking-wider">Bolag</label>
           <select
             value={selectedCompany}
             onChange={e => setSelectedCompany(e.target.value as CompanyId | 'all')}
-            className="text-[11px] bg-[#0D0F1A] border border-white/[0.08] rounded-lg px-3 py-1.5 text-gray-300 focus:outline-none"
+            className="text-xs bg-[#0D0F1A] border border-white/[0.08] rounded-lg px-3 py-1.5 text-gray-300 focus:outline-none"
           >
             <option value="all">Alla bolag</option>
             {COMPANIES.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -49,17 +49,17 @@ export function DocumentVault() {
 
         {/* Category pills */}
         <div>
-          <label className="text-[10px] text-gray-600 block mb-1.5 font-mono uppercase tracking-wider">Kategori</label>
+          <label className="text-xs text-gray-600 block mb-1.5 font-mono uppercase tracking-wider">Kategori</label>
           <div className="flex gap-1.5 flex-wrap">
             <button
               onClick={() => setSelectedCategory('all')}
-              className={`px-2.5 py-1 rounded-lg text-[11px] border transition-colors ${selectedCategory === 'all' ? 'bg-brand-accent/15 text-brand-accent border-brand-accent/30' : 'bg-white/[0.02] text-gray-500 border-white/[0.06] hover:text-white'}`}
+              className={`px-2.5 py-1 rounded-lg text-xs border transition-colors ${selectedCategory === 'all' ? 'bg-brand-accent/15 text-brand-accent border-brand-accent/30' : 'bg-white/[0.02] text-gray-500 border-white/[0.06] hover:text-white'}`}
             >Alla</button>
             {CATEGORIES.map(cat => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-2.5 py-1 rounded-lg text-[11px] border transition-colors ${selectedCategory === cat ? 'bg-brand-accent/15 text-brand-accent border-brand-accent/30' : 'bg-white/[0.02] text-gray-500 border-white/[0.06] hover:text-white'}`}
+                className={`px-2.5 py-1 rounded-lg text-xs border transition-colors ${selectedCategory === cat ? 'bg-brand-accent/15 text-brand-accent border-brand-accent/30' : 'bg-white/[0.02] text-gray-500 border-white/[0.06] hover:text-white'}`}
               >{cat}</button>
             ))}
           </div>
@@ -67,15 +67,15 @@ export function DocumentVault() {
 
         {/* Upload button */}
         <div className="ml-auto flex flex-col items-end gap-1.5">
-          <label className="text-[10px] text-gray-600 block font-mono uppercase tracking-wider opacity-0">·</label>
-          <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/[0.04] border border-white/[0.1] text-gray-300 text-[12px] hover:bg-white/[0.07] transition-colors">
+          <label className="text-xs text-gray-600 block font-mono uppercase tracking-wider opacity-0">·</label>
+          <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/[0.04] border border-white/[0.1] text-gray-300 text-xs hover:bg-white/[0.07] transition-colors">
             <span>⬆</span> Ladda upp dokument
           </button>
         </div>
       </div>
 
       {/* Stats row */}
-      <div className="flex gap-3 flex-wrap text-[11px]">
+      <div className="flex gap-3 flex-wrap text-xs">
         {(['utkast', 'signerat', 'arkiverat'] as DocumentStatus[]).map(s => {
           const count = DOCUMENTS.filter(d =>
             (selectedCompany === 'all' || d.companyId === selectedCompany) && d.status === s
@@ -104,9 +104,9 @@ export function DocumentVault() {
       {/* Document list */}
       <div className="rounded-xl border border-white/[0.06] overflow-hidden">
         {filtered.length === 0 ? (
-          <div className="px-6 py-12 text-center text-gray-600 text-[13px]">Inga dokument matchar filtret.</div>
+          <div className="px-6 py-12 text-center text-gray-600 text-sm">Inga dokument matchar filtret.</div>
         ) : (
-          <table className="w-full text-[12px]">
+          <table className="w-full text-xs">
             <thead>
               <tr className="border-b border-white/[0.06] bg-white/[0.02]">
                 <th className="text-left px-4 py-2.5 text-gray-500 font-medium">Dokument</th>
@@ -127,7 +127,7 @@ export function DocumentVault() {
                         <span className="text-base">{FILE_ICONS[doc.fileType]}</span>
                         <div>
                           <div className="text-gray-200">{doc.name}</div>
-                          <div className="text-[10px] text-gray-600 font-mono uppercase">{doc.fileType}{doc.size ? ` · ${doc.size}` : ''}</div>
+                          <div className="text-xs text-gray-600 font-mono uppercase">{doc.fileType}{doc.size ? ` · ${doc.size}` : ''}</div>
                         </div>
                       </div>
                     </td>
@@ -138,18 +138,18 @@ export function DocumentVault() {
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="text-[11px] text-gray-400 bg-white/[0.04] px-2 py-0.5 rounded border border-white/[0.06]">
+                      <span className="text-xs text-gray-400 bg-white/[0.04] px-2 py-0.5 rounded border border-white/[0.06]">
                         {doc.category}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{formatDate(doc.date)}</td>
                     <td className="px-4 py-3">
-                      <span className={`text-[10px] font-medium px-2 py-0.5 rounded border ${STATUS_STYLES[doc.status]}`}>
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded border ${STATUS_STYLES[doc.status]}`}>
                         {doc.status}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <button className="text-[11px] text-gray-600 hover:text-brand-accent transition-colors">⬇ Hämta</button>
+                      <button className="text-xs text-gray-600 hover:text-brand-accent transition-colors">⬇ Hämta</button>
                     </td>
                   </tr>
                 )

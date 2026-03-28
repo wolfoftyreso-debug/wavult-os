@@ -148,7 +148,7 @@ function commandChainEvents(): OperationalEvent[] {
       subtitle: `${redRoles.map(r => r.person).join(', ')} — action required`,
       responseType: 'multi',
       actions: [
-        { id: 'cc-review', label: 'Review Command Chain', variant: 'primary', navigateTo: '/org/command' },
+        { id: 'cc-review', label: 'Review Org Hierarchy', variant: 'primary', navigateTo: '/org/command' },
         { id: 'cc-incidents', label: 'View Incidents', variant: 'ghost', navigateTo: '/incidents' },
       ],
       sourceRoleId: 'group-ceo',

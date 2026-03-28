@@ -249,9 +249,9 @@ export function ProspectList() {
                     <div className="min-w-0">
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs font-medium text-white">{a.type}</span>
-                        <span className="text-[10px] text-gray-600">·</span>
-                        <span className="text-[10px] text-gray-600">{a.by}</span>
-                        <span className="text-[10px] text-gray-700 ml-auto">{new Date(a.date).toLocaleDateString('sv-SE')}</span>
+                        <span className="text-xs text-gray-600">·</span>
+                        <span className="text-xs text-gray-600">{a.by}</span>
+                        <span className="text-xs text-gray-700 ml-auto">{new Date(a.date).toLocaleDateString('sv-SE')}</span>
                       </div>
                       <p className="text-xs text-gray-400 mt-0.5 leading-relaxed">{a.note}</p>
                     </div>

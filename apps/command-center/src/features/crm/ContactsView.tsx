@@ -84,7 +84,7 @@ export function ContactsView() {
                 >
                   <div className="flex items-center gap-2">
                     <span
-                      className="text-[10px] px-1.5 py-0.5 rounded"
+                      className="text-xs px-1.5 py-0.5 rounded"
                       style={{ background: PRODUCT_COLORS[prospect.product] + '20', color: PRODUCT_COLORS[prospect.product] }}
                     >
                       {prospect.product}
@@ -92,7 +92,7 @@ export function ContactsView() {
                     <span className="text-xs text-gray-500">{prospect.company}</span>
                   </div>
                   <span
-                    className="text-[10px] px-1.5 py-0.5 rounded"
+                    className="text-xs px-1.5 py-0.5 rounded"
                     style={{ background: STAGE_COLORS[prospect.stage] + '20', color: STAGE_COLORS[prospect.stage] }}
                   >
                     {prospect.stage}

@@ -79,7 +79,7 @@ export function SystemView() {
         <div className="grid grid-cols-1 gap-2">
           {SYSTEM_INFO.map(row => (
             <div key={row.label} className="flex items-center gap-3">
-              <span className="text-[10px] text-gray-600 w-36 flex-shrink-0">{row.label}</span>
+              <span className="text-xs text-gray-600 w-36 flex-shrink-0">{row.label}</span>
               <span
                 className={`text-xs ${row.mono ? 'font-mono' : 'font-medium'}`}
                 style={{ color: row.highlight ?? '#D1D5DB' }}
@@ -96,9 +96,9 @@ export function SystemView() {
         <div className="flex items-center justify-between px-5 py-3 border-b border-white/[0.04]">
           <div className="text-[9px] text-gray-700 font-mono uppercase">Uptime per tjänst</div>
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono" style={{ color: '#10B981' }}>▲ {runningCount} up</span>
-            {degradedCount > 0 && <span className="text-[10px] font-mono" style={{ color: '#F59E0B' }}>⚠ {degradedCount}</span>}
-            {downCount > 0 && <span className="text-[10px] font-mono" style={{ color: '#EF4444' }}>✕ {downCount} down</span>}
+            <span className="text-xs font-mono" style={{ color: '#10B981' }}>▲ {runningCount} up</span>
+            {degradedCount > 0 && <span className="text-xs font-mono" style={{ color: '#F59E0B' }}>⚠ {degradedCount}</span>}
+            {downCount > 0 && <span className="text-xs font-mono" style={{ color: '#EF4444' }}>✕ {downCount} down</span>}
           </div>
         </div>
         <div className="divide-y divide-white/[0.04]">
@@ -111,8 +111,8 @@ export function SystemView() {
                   style={{ background: cfg.color, boxShadow: svc.status === 'running' ? `0 0 5px ${cfg.color}80` : 'none' }}
                 />
                 <span className="flex-1 text-xs text-gray-300">{svc.name}</span>
-                <span className="text-[10px] font-mono text-gray-600">{svc.latency}</span>
-                <span className="text-[10px] font-mono text-gray-500">{svc.uptime}</span>
+                <span className="text-xs font-mono text-gray-600">{svc.latency}</span>
+                <span className="text-xs font-mono text-gray-500">{svc.uptime}</span>
                 <span
                   className="text-[9px] px-2 py-0.5 rounded font-mono flex-shrink-0"
                   style={{ background: cfg.bg, border: `1px solid ${cfg.border}`, color: cfg.color }}
@@ -148,7 +148,7 @@ export function SystemView() {
               {deploying ? 'Deploying…' : deployDone ? 'Deploy triggered!' : 'Force Deploy'}
             </span>
           </div>
-          <p className="text-[10px] text-gray-600">
+          <p className="text-xs text-gray-600">
             {deploying
               ? 'GitHub Actions workflow aktiverad…'
               : deployDone
@@ -186,7 +186,7 @@ export function SystemView() {
               {clearing ? 'Rensar…' : clearDone ? 'Cache rensad!' : 'Clear Cache'}
             </span>
           </div>
-          <p className="text-[10px] text-gray-600">
+          <p className="text-xs text-gray-600">
             {clearing
               ? 'Rensar Cloudflare edge cache…'
               : clearDone
@@ -197,7 +197,7 @@ export function SystemView() {
       </div>
 
       {/* Footer note */}
-      <div className="rounded-xl border border-white/[0.04] bg-white/[0.01] px-4 py-3 text-[10px] text-gray-700 font-mono">
+      <div className="rounded-xl border border-white/[0.04] bg-white/[0.01] px-4 py-3 text-xs text-gray-700 font-mono">
         ⚙️ Wavult OS — all system data är live från ECS, Supabase & GitHub Actions. Force deploy triggar wolfoftyreso-debug/hypbit CI/CD pipeline.
       </div>
     </div>

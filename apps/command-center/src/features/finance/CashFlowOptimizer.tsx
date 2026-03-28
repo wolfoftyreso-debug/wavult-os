@@ -111,7 +111,7 @@ export function CashFlowOptimizer() {
       {/* Header */}
       <div>
         <h2 className="text-lg font-bold text-white">⚡ Cashflow-optimering</h2>
-        <p className="text-[11px] text-gray-500 mt-0.5">
+        <p className="text-xs text-gray-500 mt-0.5">
           Simulera licensstruktur och se skatteeffekt per entitet och Dubai-ackumulering
         </p>
       </div>
@@ -167,8 +167,8 @@ export function CashFlowOptimizer() {
       <div className="rounded-xl border border-white/[0.08] bg-[#0D0F1A] p-5">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <p className="text-[13px] font-semibold text-white">License Rate Simulator</p>
-            <p className="text-[10px] text-gray-500 mt-0.5">
+            <p className="text-sm font-semibold text-white">License Rate Simulator</p>
+            <p className="text-xs text-gray-500 mt-0.5">
               Justera licensavgiftsprocenten och se effekten i realtid
             </p>
           </div>
@@ -213,7 +213,7 @@ export function CashFlowOptimizer() {
 
       {/* Entity revenue sliders */}
       <div className="rounded-xl border border-white/[0.08] bg-[#0D0F1A] p-5 space-y-4">
-        <p className="text-[13px] font-semibold text-white">Omsättning per bolag</p>
+        <p className="text-sm font-semibold text-white">Omsättning per bolag</p>
         {ENTITIES.map(e => {
           const rev = revenues[e.id] ?? e.defaultRevenue
           const calc = entityCalcs.find(c => c.entity.id === e.id)!
@@ -222,11 +222,11 @@ export function CashFlowOptimizer() {
               <div className="flex items-center justify-between mb-1.5">
                 <div className="flex items-center gap-2">
                   <span className="h-2 w-2 rounded-full" style={{ background: e.color }} />
-                  <span className="text-[12px] font-semibold text-white">{e.name}</span>
+                  <span className="text-xs font-semibold text-white">{e.name}</span>
                   <span className="text-[9px] text-gray-600 font-mono">{e.jurisdiction}</span>
                 </div>
                 <div className="flex items-center gap-3 text-right">
-                  <span className="text-[11px] font-mono text-white">
+                  <span className="text-xs font-mono text-white">
                     {rev.toLocaleString()} {e.currency}
                   </span>
                   <button
@@ -253,7 +253,7 @@ export function CashFlowOptimizer() {
                 <span>Skatt: <span className="text-red-400">{calc.taxPaid.toLocaleString(undefined, { maximumFractionDigits: 0 })} {e.currency}</span></span>
               </div>
               {showDetails === e.id && (
-                <div className="mt-2 rounded-lg bg-white/[0.04] border border-white/[0.06] p-3 grid grid-cols-2 gap-2 text-[10px]">
+                <div className="mt-2 rounded-lg bg-white/[0.04] border border-white/[0.06] p-3 grid grid-cols-2 gap-2 text-xs">
                   {[
                     { label: 'Omsättning', value: `${rev.toLocaleString()} ${e.currency}` },
                     { label: '≈ EUR', value: fmtEur(calc.revEur) },
@@ -280,10 +280,10 @@ export function CashFlowOptimizer() {
 
       {/* Dubai accumulation timeline */}
       <div className="rounded-xl border border-emerald-500/20 bg-[#0D0F1A] p-5">
-        <p className="text-[13px] font-semibold text-white mb-3">
+        <p className="text-sm font-semibold text-white mb-3">
           🏦 Dubai-ackumulering — Wavult DevOps FZCO
         </p>
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[1, 3, 6, 12].map(months => (
             <div
               key={months}
@@ -299,15 +299,15 @@ export function CashFlowOptimizer() {
           ))}
         </div>
         <div className="mt-4 pt-3 border-t border-white/[0.05]">
-          <div className="flex justify-between text-[11px]">
+          <div className="flex justify-between text-xs">
             <span className="text-gray-500">Total skatt i dotterbolag/mån</span>
             <span className="text-red-400 font-mono font-semibold">{fmtEur(totalTaxPaidMonthly)}</span>
           </div>
-          <div className="flex justify-between text-[11px] mt-1">
+          <div className="flex justify-between text-xs mt-1">
             <span className="text-gray-500">Skattebesparning vs. ingen struktur/mån</span>
             <span className="text-emerald-400 font-mono font-semibold">{fmtEur(totalTaxSavedMonthly)}</span>
           </div>
-          <div className="flex justify-between text-[11px] mt-1">
+          <div className="flex justify-between text-xs mt-1">
             <span className="text-gray-500">Effektiv total skattebörda (grupp)</span>
             <span className="text-blue-300 font-mono font-semibold">
               {(() => { const tot = entityCalcs.reduce((s, c) => s + c.revEur, 0); return tot > 0 ? ((totalTaxPaidMonthly / tot) * 100).toFixed(1) : '0.0' })()}%
@@ -318,7 +318,7 @@ export function CashFlowOptimizer() {
 
       {/* Optimal rate recommendation */}
       <div className="rounded-xl border border-blue-500/20 bg-blue-500/05 p-4">
-        <p className="text-[12px] font-semibold text-blue-300 mb-2">🎯 Optimal licensstruktur — rekommendation</p>
+        <p className="text-xs font-semibold text-blue-300 mb-2">🎯 Optimal licensstruktur — rekommendation</p>
         <div className="space-y-2">
           {ENTITIES.map(e => {
             const calc = entityCalcs.find(c => c.entity.id === e.id)!
@@ -326,17 +326,17 @@ export function CashFlowOptimizer() {
             return (
               <div key={e.id} className="flex items-center gap-3">
                 <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: e.color }} />
-                <span className="text-[11px] text-white flex-1">{e.name}</span>
-                <span className="text-[10px] text-gray-500 font-mono">
+                <span className="text-xs text-white flex-1">{e.name}</span>
+                <span className="text-xs text-gray-500 font-mono">
                   {(calc.rev * OPTIMAL_RATE.recommended).toLocaleString(undefined, { maximumFractionDigits: 0 })} {e.currency}/mån
                 </span>
-                <span className="text-[10px] text-blue-300 font-mono">≈ {fmtEur(optimal)}</span>
+                <span className="text-xs text-blue-300 font-mono">≈ {fmtEur(optimal)}</span>
               </div>
             )
           })}
         </div>
         <div className="mt-3 pt-3 border-t border-blue-500/15">
-          <div className="flex justify-between text-[11px]">
+          <div className="flex justify-between text-xs">
             <span className="text-gray-500">Total optimal license income till Dubai</span>
             <span className="text-blue-300 font-mono font-bold">
               {fmtEur(entityCalcs.reduce((s, c) => s + c.revEur * OPTIMAL_RATE.recommended, 0))}/mån
@@ -348,7 +348,7 @@ export function CashFlowOptimizer() {
       {/* Disclaimer */}
       <div className="rounded-xl border border-yellow-500/20 bg-yellow-500/05 px-4 py-3 flex gap-3">
         <span className="text-yellow-400 flex-shrink-0">⚠️</span>
-        <p className="text-[10px] text-yellow-200/60 leading-relaxed">
+        <p className="text-xs text-yellow-200/60 leading-relaxed">
           Denna simulering är för strategisk planering och illustrativa syften. Alla licensavgifter och
           management fees måste dokumenteras i enlighet med OECD Transfer Pricing Guidelines och lokala
           skattelagar. Konsultera en skatterådgivare innan implementation.

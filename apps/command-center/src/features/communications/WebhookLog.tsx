@@ -161,21 +161,28 @@ export function WebhookLog() {
 
   return (
     <div className="space-y-4">
+      {/* MOCKDATA BANNER */}
+      <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-yellow-500/10 border border-yellow-500/25 text-yellow-400 text-xs font-medium">
+        <span>⚠️</span>
+        <span>Visar mockdata — live webhook-loggning kopplas in när backend är konfigurerat</span>
+        <span className="ml-auto text-yellow-600 font-mono text-xs">MOCKDATA</span>
+      </div>
+
       {/* Stats */}
       <div className="flex items-center gap-3 flex-wrap">
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0D0F1A] border border-white/[0.06] text-[11px]">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0D0F1A] border border-white/[0.06] text-xs">
           <span className="text-gray-400">Total:</span>
           <span className="text-white font-medium">{MOCK_WEBHOOKS.length}</span>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-green-500/10 border border-green-500/20 text-[11px]">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-green-500/10 border border-green-500/20 text-xs">
           <span className="text-gray-400">Lyckade:</span>
           <span className="text-green-400 font-medium">{MOCK_WEBHOOKS.filter(w => w.status === 200).length}</span>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-[11px]">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-xs">
           <span className="text-gray-400">Fel:</span>
           <span className="text-red-400 font-medium">{MOCK_WEBHOOKS.filter(w => w.status >= 400).length}</span>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0D0F1A] border border-white/[0.06] text-[11px]">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0D0F1A] border border-white/[0.06] text-xs">
           <span className="text-gray-400">Success rate:</span>
           <span className="text-white font-medium">{successRate}%</span>
         </div>
@@ -184,7 +191,7 @@ export function WebhookLog() {
             <button
               key={s}
               onClick={() => setSourceFilter(s)}
-              className={`px-2.5 py-1 rounded-md text-[10px] font-medium transition-colors ${
+              className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
                 sourceFilter === s
                   ? 'bg-brand-accent/20 text-brand-accent'
                   : 'text-gray-500 hover:text-gray-300'
@@ -199,7 +206,7 @@ export function WebhookLog() {
       {/* Table */}
       <div className="bg-[#0D0F1A] rounded-xl border border-white/[0.06] overflow-hidden">
         {/* Header */}
-        <div className="grid grid-cols-[1fr_1.5fr_140px_90px_60px] gap-3 px-4 py-2.5 border-b border-white/[0.06] text-[10px] text-gray-600 font-mono uppercase tracking-wider">
+        <div className="grid grid-cols-[1fr_1.5fr_140px_90px_60px] gap-3 px-4 py-2.5 border-b border-white/[0.06] text-xs text-gray-600 font-mono uppercase tracking-wider">
           <span>Källa</span>
           <span>Typ</span>
           <span>Tidsstämpel</span>
@@ -217,24 +224,24 @@ export function WebhookLog() {
                   onClick={() => setExpanded(isExpanded ? null : wh.id)}
                   className="w-full grid grid-cols-[1fr_1.5fr_140px_90px_60px] gap-3 px-4 py-3 text-left hover:bg-white/[0.02] transition-colors"
                 >
-                  <span className="text-[12px] text-gray-300 font-medium">{wh.source}</span>
-                  <span className="text-[11px] text-gray-500 font-mono truncate">{wh.type}</span>
-                  <span className="text-[10px] text-gray-600 font-mono">
+                  <span className="text-xs text-gray-300 font-medium">{wh.source}</span>
+                  <span className="text-xs text-gray-500 font-mono truncate">{wh.type}</span>
+                  <span className="text-xs text-gray-600 font-mono">
                     {new Date(wh.timestamp).toLocaleString('sv-SE', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                   </span>
-                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full border text-center ${sc.bg} ${sc.color}`}>
+                  <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full border text-center ${sc.bg} ${sc.color}`}>
                     {sc.label}
                   </span>
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] text-gray-600 font-mono">{wh.duration_ms}</span>
-                    <span className={`text-gray-600 text-[10px] transition-transform ${isExpanded ? 'rotate-90' : ''}`}>›</span>
+                    <span className="text-xs text-gray-600 font-mono">{wh.duration_ms}</span>
+                    <span className={`text-gray-600 text-xs transition-transform ${isExpanded ? 'rotate-90' : ''}`}>›</span>
                   </div>
                 </button>
                 {isExpanded && (
                   <div className="px-4 pb-4">
                     <div className="bg-[#07080F] rounded-lg p-3 border border-white/[0.06]">
-                      <div className="text-[10px] text-gray-600 font-mono uppercase tracking-wider mb-2">Payload</div>
-                      <pre className="text-[10px] text-gray-400 font-mono overflow-x-auto leading-relaxed whitespace-pre-wrap">
+                      <div className="text-xs text-gray-600 font-mono uppercase tracking-wider mb-2">Payload</div>
+                      <pre className="text-xs text-gray-400 font-mono overflow-x-auto leading-relaxed whitespace-pre-wrap">
                         {JSON.stringify(wh.payload, null, 2)}
                       </pre>
                     </div>

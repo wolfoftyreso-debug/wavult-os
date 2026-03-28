@@ -22,10 +22,10 @@ function daysUntil(date: string) {
 
 function DeadlineBadge({ date }: { date: string }) {
   const days = daysUntil(date)
-  if (days < 0)  return <span className="text-[10px] text-red-400 font-mono">FÖRFALLEN ({Math.abs(days)}d)</span>
-  if (days <= 14) return <span className="text-[10px] text-red-400 font-semibold font-mono animate-pulse">{days}d</span>
-  if (days <= 30) return <span className="text-[10px] text-yellow-400 font-mono">{days}d</span>
-  return <span className="text-[10px] text-gray-600 font-mono">{new Date(date).toLocaleDateString('sv-SE', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+  if (days < 0)  return <span className="text-xs text-red-400 font-mono">FÖRFALLEN ({Math.abs(days)}d)</span>
+  if (days <= 14) return <span className="text-xs text-red-400 font-semibold font-mono animate-pulse">{days}d</span>
+  if (days <= 30) return <span className="text-xs text-yellow-400 font-mono">{days}d</span>
+  return <span className="text-xs text-gray-600 font-mono">{new Date(date).toLocaleDateString('sv-SE', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
 }
 
 export function JurisdictionView() {
@@ -42,7 +42,7 @@ export function JurisdictionView() {
         <div className="flex gap-1.5 flex-wrap">
           <button
             onClick={() => setSelectedCompany('all')}
-            className={`px-3 py-1.5 rounded-lg text-[11px] font-medium border transition-colors ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
               selectedCompany === 'all'
                 ? 'bg-brand-accent/15 text-brand-accent border-brand-accent/30'
                 : 'bg-white/[0.02] text-gray-500 border-white/[0.06] hover:text-white'
@@ -54,7 +54,7 @@ export function JurisdictionView() {
             <button
               key={c.id}
               onClick={() => setSelectedCompany(c.id)}
-              className={`px-3 py-1.5 rounded-lg text-[11px] font-medium border transition-colors ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
                 selectedCompany === c.id
                   ? 'border opacity-100'
                   : 'bg-white/[0.02] text-gray-500 border-white/[0.06] hover:text-white'
@@ -84,9 +84,9 @@ export function JurisdictionView() {
                       <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-red-500 text-white">{urgentCount} brådskande</span>
                     )}
                   </div>
-                  <div className="text-[11px] text-gray-500">{company.jurisdiction} · {company.orgNr}</div>
+                  <div className="text-xs text-gray-500">{company.jurisdiction} · {company.orgNr}</div>
                 </div>
-                <div className="flex gap-2 text-[10px]">
+                <div className="flex gap-2 text-xs">
                   {(['ej inlämnad', 'inlämnad', 'betald'] as FilingStatus[]).map(s => {
                     const count = reqs.filter(r => r.status === s).length
                     if (!count) return null
@@ -101,7 +101,7 @@ export function JurisdictionView() {
 
               {/* Requirements table */}
               <div className="overflow-x-auto">
-                <table className="w-full text-[12px]">
+                <table className="w-full text-xs">
                   <thead>
                     <tr className="border-b border-white/[0.04] bg-white/[0.01]">
                       <th className="text-left px-4 py-2 text-gray-600 font-medium">Myndighet</th>
@@ -114,17 +114,17 @@ export function JurisdictionView() {
                   <tbody>
                     {reqs.map(req => (
                       <tr key={req.id} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
-                        <td className="px-4 py-2.5 text-gray-400 font-mono text-[11px]">{req.authority}</td>
+                        <td className="px-4 py-2.5 text-gray-400 font-mono text-xs">{req.authority}</td>
                         <td className="px-4 py-2.5">
                           <div className="text-gray-200">{req.requirement}</div>
-                          {req.notes && <div className="text-[10px] text-gray-600 mt-0.5">{req.notes}</div>}
+                          {req.notes && <div className="text-xs text-gray-600 mt-0.5">{req.notes}</div>}
                         </td>
                         <td className="px-4 py-2.5 whitespace-nowrap">
                           <DeadlineBadge date={req.deadline} />
                         </td>
                         <td className="px-4 py-2.5 text-gray-500 whitespace-nowrap">{req.amount || '—'}</td>
                         <td className="px-4 py-2.5">
-                          <span className={`text-[10px] font-medium px-2 py-0.5 rounded border ${STATUS_STYLES[req.status]}`}>
+                          <span className={`text-xs font-medium px-2 py-0.5 rounded border ${STATUS_STYLES[req.status]}`}>
                             {req.status}
                           </span>
                         </td>

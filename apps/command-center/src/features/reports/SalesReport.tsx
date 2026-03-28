@@ -57,9 +57,9 @@ function PipelineBar() {
         {stages.map(s => (
           <div key={s} className="flex items-center gap-1.5">
             <span className="h-2 w-2 rounded-full flex-shrink-0" style={{ background: STAGE_COLOR[s] }} />
-            <span className="text-[10px] text-gray-400">{s}</span>
-            <span className="text-[10px] text-gray-600 font-mono">({counts[s]})</span>
-            <span className="text-[10px] font-mono" style={{ color: STAGE_COLOR[s] }}>{fmt(values[s])}</span>
+            <span className="text-xs text-gray-400">{s}</span>
+            <span className="text-xs text-gray-600 font-mono">({counts[s]})</span>
+            <span className="text-xs font-mono" style={{ color: STAGE_COLOR[s] }}>{fmt(values[s])}</span>
           </div>
         ))}
       </div>
@@ -75,7 +75,7 @@ function WinRateCard() {
 
   return (
     <div className="bg-white/[0.03] border border-white/[0.07] rounded-xl p-5 text-center">
-      <p className="text-[10px] text-gray-500 font-mono uppercase tracking-wider mb-2">Win Rate</p>
+      <p className="text-xs text-gray-500 font-mono uppercase tracking-wider mb-2">Win Rate</p>
       <div className="relative w-20 h-20 mx-auto mb-2">
         <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
           <circle cx="18" cy="18" r="15.9" fill="none" stroke="#1a1d2e" strokeWidth="3.5" />
@@ -93,7 +93,7 @@ function WinRateCard() {
           <span className="text-xl font-black text-white">{rate}%</span>
         </div>
       </div>
-      <p className="text-[10px] text-gray-500">{won} vann / {lost} förlorade</p>
+      <p className="text-xs text-gray-500">{won} vann / {lost} förlorade</p>
     </div>
   )
 }
@@ -108,11 +108,11 @@ function ARRByProduct() {
 
   return (
     <div className="bg-white/[0.03] border border-white/[0.07] rounded-xl p-4">
-      <p className="text-[11px] font-bold text-gray-300 mb-3 uppercase tracking-widest">ARR per produkt (stängda)</p>
+      <p className="text-xs font-bold text-gray-300 mb-3 uppercase tracking-widest">ARR per produkt (stängda)</p>
       <div className="space-y-2.5">
         {Object.entries(products).map(([prod, val]) => (
           <div key={prod}>
-            <div className="flex justify-between text-[11px] mb-1">
+            <div className="flex justify-between text-xs mb-1">
               <span className="text-gray-300">{prod}</span>
               <span className="font-mono" style={{ color: PRODUCT_COLOR[prod] ?? '#6B7280' }}>{fmt(val)}</span>
             </div>
@@ -125,7 +125,7 @@ function ARRByProduct() {
           </div>
         ))}
         {Object.keys(products).length === 0 && (
-          <p className="text-[11px] text-gray-600">Inga stängda affärer ännu</p>
+          <p className="text-xs text-gray-600">Inga stängda affärer ännu</p>
         )}
       </div>
     </div>
@@ -136,14 +136,14 @@ function ActivityTable() {
   return (
     <div className="bg-white/[0.03] border border-white/[0.07] rounded-xl overflow-hidden">
       <div className="px-4 py-3 border-b border-white/[0.06]">
-        <p className="text-[11px] font-bold text-gray-300 uppercase tracking-widest">Aktiviteter per säljare</p>
+        <p className="text-xs font-bold text-gray-300 uppercase tracking-widest">Aktiviteter per säljare</p>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full text-[11px]">
+        <table className="w-full text-xs">
           <thead>
             <tr className="border-b border-white/[0.05]">
               {['Säljare','Samtal','Mail','Möten','Demos','Vann','Förlorade','Pipeline'].map(h => (
-                <th key={h} className="px-3 py-2 text-left text-[10px] text-gray-600 font-mono">{h}</th>
+                <th key={h} className="px-3 py-2 text-left text-xs text-gray-600 font-mono">{h}</th>
               ))}
             </tr>
           </thead>
@@ -177,11 +177,11 @@ function DealsTable({ filter }: { filter: string }) {
   return (
     <div className="bg-white/[0.03] border border-white/[0.07] rounded-xl overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="w-full text-[11px]">
+        <table className="w-full text-xs">
           <thead>
             <tr className="border-b border-white/[0.06]">
               {['Deal','Produkt','Värde','Sannolikhet','Ansvarig','Stängs'].map(h => (
-                <th key={h} className="px-3 py-2 text-left text-[10px] text-gray-600 font-mono">{h}</th>
+                <th key={h} className="px-3 py-2 text-left text-xs text-gray-600 font-mono">{h}</th>
               ))}
             </tr>
           </thead>
@@ -198,7 +198,7 @@ function DealsTable({ filter }: { filter: string }) {
                   </div>
                 </td>
                 <td className="px-3 py-2.5">
-                  <span className="text-[10px] px-2 py-0.5 rounded-full font-medium"
+                  <span className="text-xs px-2 py-0.5 rounded-full font-medium"
                     style={{ background: (PRODUCT_COLOR[d.product] ?? '#6B7280') + '20', color: PRODUCT_COLOR[d.product] ?? '#6B7280' }}>
                     {d.product}
                   </span>
@@ -243,26 +243,26 @@ export function SalesReport() {
       {/* Top KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div className="bg-white/[0.03] border border-white/[0.07] rounded-xl p-4 text-center">
-          <p className="text-[10px] text-gray-500 font-mono uppercase mb-1">Total pipeline</p>
+          <p className="text-xs text-gray-500 font-mono uppercase mb-1">Total pipeline</p>
           <p className="text-xl font-black text-white">{fmt(totalPipeline)}</p>
         </div>
         <div className="bg-white/[0.03] border border-white/[0.07] rounded-xl p-4 text-center">
-          <p className="text-[10px] text-gray-500 font-mono uppercase mb-1">Viktat värde</p>
+          <p className="text-xs text-gray-500 font-mono uppercase mb-1">Viktat värde</p>
           <p className="text-xl font-black text-[#6C63FF]">{fmt(weightedPipeline)}</p>
         </div>
         <div className="bg-white/[0.03] border border-white/[0.07] rounded-xl p-4 text-center">
-          <p className="text-[10px] text-gray-500 font-mono uppercase mb-1">Aktiva deals</p>
+          <p className="text-xs text-gray-500 font-mono uppercase mb-1">Aktiva deals</p>
           <p className="text-xl font-black text-white">{PIPELINE_DEALS.filter(d => d.stage !== 'Stängd-Vann' && d.stage !== 'Stängd-Förlorad').length}</p>
         </div>
         <div className="bg-white/[0.03] border border-white/[0.07] rounded-xl p-4 text-center">
-          <p className="text-[10px] text-gray-500 font-mono uppercase mb-1">Stängda (vann)</p>
+          <p className="text-xs text-gray-500 font-mono uppercase mb-1">Stängda (vann)</p>
           <p className="text-xl font-black text-green-400">{PIPELINE_DEALS.filter(d => d.stage === 'Stängd-Vann').length}</p>
         </div>
       </div>
 
       {/* Pipeline bar */}
       <div className="bg-white/[0.03] border border-white/[0.07] rounded-xl p-4">
-        <p className="text-[11px] font-bold text-gray-300 uppercase tracking-widest mb-3">Pipeline-konvertering</p>
+        <p className="text-xs font-bold text-gray-300 uppercase tracking-widest mb-3">Pipeline-konvertering</p>
         <PipelineBar />
       </div>
 
@@ -280,13 +280,13 @@ export function SalesReport() {
       {/* Deals table */}
       <div>
         <div className="flex items-center gap-2 mb-3 flex-wrap">
-          <p className="text-[12px] font-bold text-gray-300 uppercase tracking-widest flex-1">Alla deals</p>
+          <p className="text-xs font-bold text-gray-300 uppercase tracking-widest flex-1">Alla deals</p>
           <div className="flex gap-1">
             {['all', ...STAGE_ORDER].map(s => (
               <button
                 key={s}
                 onClick={() => setStageFilter(s)}
-                className={`text-[10px] px-2.5 py-1 rounded-lg transition-colors ${
+                className={`text-xs px-2.5 py-1 rounded-lg transition-colors ${
                   stageFilter === s
                     ? 'bg-white/10 text-white'
                     : 'text-gray-600 hover:text-gray-400'

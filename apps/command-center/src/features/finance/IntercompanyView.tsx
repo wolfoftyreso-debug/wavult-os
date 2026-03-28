@@ -156,15 +156,64 @@ export function IntercompanyView() {
       {/* Header */}
       <div>
         <h2 className="text-lg font-bold text-white">Intercompany</h2>
-        <p className="text-[11px] text-gray-500 mt-0.5">Mellanhavanden & skattestruktur — Wavult Group</p>
+        <p className="text-xs text-gray-500 mt-0.5">Mellanhavanden &amp; skattestruktur — Wavult Group</p>
+      </div>
+
+      {/* What is intercompany — plain language explanation */}
+      <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3">
+        <p className="text-xs text-gray-400 leading-relaxed">
+          <span className="font-semibold text-white">Vad är intercompany?</span>{' '}
+          Betalningar <em>inom</em> koncernen — t.ex. när ett dotterbolag betalar en licensavgift till holdingbolaget i Dubai.
+          Det är inte försäljning till kund — det är pengar som <span className="text-emerald-400">flyttas</span> mellan egna bolag.
+          Syftet kan vara skatteoptimering, koncernintern finansiering, eller fördelning av tjänster.
+        </p>
+      </div>
+
+      {/* Visual flow diagram */}
+      <div className="rounded-xl border border-white/[0.06] bg-[#0D0F1A] p-4">
+        <p className="text-xs font-semibold text-white mb-3">💸 Pengarnas väg — koncernstruktur</p>
+        {/* Flow: subsidiaries → Dubai */}
+        <div className="flex flex-col items-center gap-2">
+          {/* Subsidiaries row */}
+          <div className="flex flex-wrap gap-2 justify-center">
+            {[
+              { name: 'Landvex AB', flag: '🇸🇪', color: '#3B82F6', fee: '45k SEK/mån' },
+              { name: 'Landvex Inc', flag: '🇺🇸', color: '#8B5CF6', fee: '6k USD/mån' },
+              { name: 'QuiXzoom Inc', flag: '🇺🇸', color: '#F59E0B', fee: '8.5k USD/mån' },
+              { name: 'QuiXzoom UAB', flag: '🇱🇹', color: '#10B981', fee: '7.2k EUR/mån' },
+            ].map(sub => (
+              <div key={sub.name}
+                className="flex flex-col items-center px-3 py-2 rounded-lg border text-center"
+                style={{ borderColor: sub.color + '40', background: sub.color + '10' }}>
+                <span className="text-base">{sub.flag}</span>
+                <span className="text-xs font-semibold text-white mt-0.5">{sub.name}</span>
+                <span className="text-[9px] font-mono mt-0.5" style={{ color: sub.color }}>{sub.fee}</span>
+              </div>
+            ))}
+          </div>
+          {/* Arrow down */}
+          <div className="flex flex-col items-center text-gray-600 text-xs gap-0.5">
+            <div className="flex gap-8">
+              {['↓', '↓', '↓', '↓'].map((a, i) => <span key={i} className="text-emerald-600 text-lg font-bold">{a}</span>)}
+            </div>
+            <span className="text-[9px] text-gray-600 font-mono">Licensavgifter + Management fees</span>
+          </div>
+          {/* Dubai holding */}
+          <div className="flex flex-col items-center px-6 py-3 rounded-xl border border-emerald-500/40 bg-emerald-500/10 text-center">
+            <span className="text-2xl">🇦🇪</span>
+            <span className="text-xs font-bold text-emerald-300 mt-1">Wavult DevOps FZCO</span>
+            <span className="text-xs text-emerald-600 font-mono">Dubai Freezone · 0% bolagsskatt</span>
+            <span className="text-[14px] font-bold text-emerald-300 mt-1">≈ €{TOTAL_DUBAI_EUR.toLocaleString()}/mån</span>
+          </div>
+        </div>
       </div>
 
       {/* Arm's Length Warning — Sektion E */}
       <div className="rounded-xl border border-yellow-500/30 bg-yellow-500/10 px-4 py-3 flex gap-3">
         <span className="text-yellow-400 text-lg flex-shrink-0">⚠️</span>
         <div>
-          <p className="text-[12px] font-semibold text-yellow-300">Arm's Length-krav (OECD Transfer Pricing)</p>
-          <p className="text-[11px] text-yellow-200/70 mt-1 leading-relaxed">
+          <p className="text-xs font-semibold text-yellow-300">Arm's Length-krav (OECD Transfer Pricing)</p>
+          <p className="text-xs text-yellow-200/70 mt-1 leading-relaxed">
             Licensavgifterna måste vara marknadsmässiga (arm's length) enligt OECD Transfer Pricing Guidelines.
             Rekommenderat intervall: <strong className="text-yellow-300">8–15% av omsättning</strong> per dotterbolag.
             Fullständig dokumentation krävs — funktionsanalys, jämförbarhetsanalys & prissättningspolicy.
@@ -178,7 +227,7 @@ export function IntercompanyView() {
           <button
             key={tab.id}
             onClick={() => setSection(tab.id)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-colors whitespace-nowrap flex-shrink-0 ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap flex-shrink-0 ${
               section === tab.id
                 ? 'bg-blue-500/20 text-blue-300 border border-blue-500/40'
                 : 'text-gray-500 hover:text-gray-300 hover:bg-white/[0.04]'
@@ -196,9 +245,9 @@ export function IntercompanyView() {
           {/* Dubai total */}
           <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 flex items-center justify-between">
             <div>
-              <p className="text-[11px] text-emerald-400 font-mono uppercase tracking-widest">Total insamlat i Dubai / mån</p>
+              <p className="text-xs text-emerald-400 font-mono uppercase tracking-widest">Total insamlat i Dubai / mån</p>
               <p className="text-3xl font-bold text-emerald-300 mt-1">≈ €{TOTAL_DUBAI_EUR.toLocaleString()}</p>
-              <p className="text-[10px] text-emerald-600 mt-0.5">Wavult DevOps FZCO — 0% corporate tax</p>
+              <p className="text-xs text-emerald-600 mt-0.5">Wavult DevOps FZCO — 0% corporate tax</p>
             </div>
             <div className="text-5xl opacity-30">🇦🇪</div>
           </div>
@@ -210,19 +259,19 @@ export function IntercompanyView() {
                 <div className="flex items-center gap-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-[13px] font-bold text-white">{lf.from}</span>
+                      <span className="text-sm font-bold text-white">{lf.from}</span>
                       <span className="text-[9px] text-gray-600 font-mono">{lf.jurisdiction}</span>
                     </div>
                     <div className="flex items-center gap-2 mt-1.5">
-                      <span className="text-[11px] text-gray-400 font-mono">
+                      <span className="text-xs text-gray-400 font-mono">
                         {lf.amount.toLocaleString()} {lf.currency}/mån
                       </span>
                       <span className="text-gray-600">→</span>
-                      <span className="text-[11px] font-semibold text-emerald-400">Wavult DevOps FZCO</span>
+                      <span className="text-xs font-semibold text-emerald-400">Wavult DevOps FZCO</span>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-[11px] text-gray-500">≈ EUR-ekvivalent</p>
+                    <p className="text-xs text-gray-500">≈ EUR-ekvivalent</p>
                     <p className="text-[16px] font-bold text-white font-mono">€{lf.euroEquiv.toLocaleString()}</p>
                   </div>
                 </div>
@@ -249,8 +298,8 @@ export function IntercompanyView() {
       {section === 'mgmt' && (
         <div className="space-y-4">
           <div className="rounded-xl border border-blue-500/20 bg-blue-500/05 p-4">
-            <p className="text-[12px] font-semibold text-blue-300 mb-1">🏛️ Management Services</p>
-            <p className="text-[11px] text-gray-400 leading-relaxed">
+            <p className="text-xs font-semibold text-blue-300 mb-1">🏛️ Management Services</p>
+            <p className="text-xs text-gray-400 leading-relaxed">
               Wavult DevOps FZCO tillhandahåller management services till alla dotterbolag.
               Kostnaden sätts till <strong className="text-white">15% av resp. bolags omsättning</strong> och
               faktureras månadsvis. Detta är avdragsgillt i respektive land och reducerar lokal beskattningsbar vinst.
@@ -270,21 +319,21 @@ export function IntercompanyView() {
                 <div key={row.entity} className="rounded-xl border border-white/[0.08] bg-[#0D0F1A] p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-[13px] font-bold text-white">{row.entity}</p>
-                      <p className="text-[10px] text-gray-500 font-mono mt-0.5">
+                      <p className="text-sm font-bold text-white">{row.entity}</p>
+                      <p className="text-xs text-gray-500 font-mono mt-0.5">
                         Omsättning: {row.revenue.toLocaleString()} {row.currency}/mån
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-[11px] text-gray-500">Management fee</p>
+                      <p className="text-xs text-gray-500">Management fee</p>
                       <p className="text-[16px] font-bold text-blue-300 font-mono">
                         {fee.toLocaleString()} {row.currency}
                       </p>
                     </div>
                   </div>
                   <div className="mt-2 pt-2 border-t border-white/[0.05] flex justify-between">
-                    <span className="text-[10px] text-gray-600">→ Wavult DevOps FZCO</span>
-                    <span className="text-[10px] text-green-400 font-mono">
+                    <span className="text-xs text-gray-600">→ Wavult DevOps FZCO</span>
+                    <span className="text-xs text-green-400 font-mono">
                       Skattebesparning: ~{taxSaving.toFixed(0)} {row.currency}
                     </span>
                   </div>
@@ -299,8 +348,8 @@ export function IntercompanyView() {
       {section === 'netting' && (
         <div className="space-y-4">
           <div className="rounded-xl border border-amber-500/20 bg-amber-500/05 p-4">
-            <p className="text-[12px] font-semibold text-amber-300 mb-1">⚖️ Nettningsöversikt — Utestående mellanhavanden</p>
-            <p className="text-[11px] text-gray-400">
+            <p className="text-xs font-semibold text-amber-300 mb-1">⚖️ Nettningsöversikt — Utestående mellanhavanden</p>
+            <p className="text-xs text-gray-400">
               Netto vad varje entitet betalar/tar emot. Licensavgifter + management fees netteras per valuta.
             </p>
           </div>
@@ -313,26 +362,26 @@ export function IntercompanyView() {
                   <div key={i} className="flex items-center gap-3 px-4 py-3 hover:bg-white/[0.02] transition-colors">
                     <div className="flex items-center gap-1.5">
                       <span className="h-1.5 w-1.5 rounded-full" style={{ background: entityColor(pair.fromId) }} />
-                      <span className="text-[11px] text-white font-semibold">{entityShortName(pair.fromId)}</span>
+                      <span className="text-xs text-white font-semibold">{entityShortName(pair.fromId)}</span>
                     </div>
                     <span className="text-gray-500 text-sm">→</span>
                     <div className="flex items-center gap-1.5">
                       <span className="h-1.5 w-1.5 rounded-full" style={{ background: entityColor(pair.toId) }} />
-                      <span className="text-[11px] text-white font-semibold">{entityShortName(pair.toId)}</span>
+                      <span className="text-xs text-white font-semibold">{entityShortName(pair.toId)}</span>
                     </div>
-                    <span className="ml-auto text-[12px] font-bold text-amber-400 font-mono">{fmt(pair.netAmount, pair.currency)}</span>
+                    <span className="ml-auto text-xs font-bold text-amber-400 font-mono">{fmt(pair.netAmount, pair.currency)}</span>
                     <span className="text-[9px] text-gray-600 font-mono">{pair.count} poster</span>
                   </div>
                 ))}
               </div>
             </div>
           ) : (
-            <p className="text-[11px] text-gray-600 px-1">Inga utestående mellanhavanden.</p>
+            <p className="text-xs text-gray-600 px-1">Inga utestående mellanhavanden.</p>
           )}
 
           {/* Dubai accumulation */}
           <div className="rounded-xl border border-emerald-500/20 bg-[#0D0F1A] p-4 space-y-2">
-            <p className="text-[12px] font-semibold text-emerald-300">🏦 Kvarvar i Dubai (Wavult DevOps FZCO)</p>
+            <p className="text-xs font-semibold text-emerald-300">🏦 Kvarvar i Dubai (Wavult DevOps FZCO)</p>
             <div className="grid grid-cols-3 gap-3 mt-2">
               {[
                 { label: '/mån', value: TOTAL_DUBAI_EUR, suffix: '' },
@@ -347,7 +396,7 @@ export function IntercompanyView() {
                 </div>
               ))}
             </div>
-            <p className="text-[10px] text-gray-600 mt-2">
+            <p className="text-xs text-gray-600 mt-2">
               * Exkl. management fees som betalas ut. Siffror baserade på approximerade EUR-ekvivalenter.
             </p>
           </div>
@@ -358,8 +407,8 @@ export function IntercompanyView() {
       {section === 'tax' && (
         <div className="space-y-4">
           <div className="rounded-xl border border-purple-500/20 bg-purple-500/05 p-4">
-            <p className="text-[12px] font-semibold text-purple-300 mb-1">📊 Skatteeffekt per jurisdiktion</p>
-            <p className="text-[11px] text-gray-400">
+            <p className="text-xs font-semibold text-purple-300 mb-1">📊 Skatteeffekt per jurisdiktion</p>
+            <p className="text-xs text-gray-400">
               Licensavgifterna minskar beskattningsbar vinst i högskatteländer och samlas i Dubai (0% skatt).
             </p>
           </div>
@@ -367,11 +416,11 @@ export function IntercompanyView() {
           {/* Tax table */}
           <div className="rounded-xl border border-white/[0.08] bg-[#0D0F1A] overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="w-full text-[11px]">
+              <table className="w-full text-xs">
                 <thead>
                   <tr className="border-b border-white/[0.08]">
                     {['Entitet', 'Jurisdiktion', 'Skattesats', 'Beskattningsbar vinst', 'Skatt', 'Vinst till Dubai'].map(h => (
-                      <th key={h} className="text-left px-4 py-2.5 text-[10px] text-gray-600 font-mono uppercase tracking-wide">
+                      <th key={h} className="text-left px-4 py-2.5 text-xs text-gray-600 font-mono uppercase tracking-wide">
                         {h}
                       </th>
                     ))}
@@ -417,14 +466,14 @@ export function IntercompanyView() {
           {/* Tax saved summary */}
           <div className="grid grid-cols-2 gap-3">
             <div className="rounded-xl border border-red-500/20 bg-red-500/05 p-4 text-center">
-              <p className="text-[10px] text-gray-500 font-mono uppercase">Total skatt i dotterbolag</p>
+              <p className="text-xs text-gray-500 font-mono uppercase">Total skatt i dotterbolag</p>
               <p className="text-[22px] font-bold text-red-400 font-mono mt-1">
                 ~€{(LICENSE_FEES.reduce((s, lf) => s + lf.localTax * (lf.currency === 'SEK' ? 0.091 : lf.currency === 'USD' ? 0.93 : 1), 0)).toFixed(0)}
               </p>
               <p className="text-[9px] text-gray-600 mt-0.5">per månad</p>
             </div>
             <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/05 p-4 text-center">
-              <p className="text-[10px] text-gray-500 font-mono uppercase">Skatt i Dubai</p>
+              <p className="text-xs text-gray-500 font-mono uppercase">Skatt i Dubai</p>
               <p className="text-[22px] font-bold text-emerald-400 font-mono mt-1">€0</p>
               <p className="text-[9px] text-gray-600 mt-0.5">0% corporate tax</p>
             </div>
@@ -442,7 +491,7 @@ export function IntercompanyView() {
               <div key={type} className="rounded-xl border border-white/[0.06] bg-[#0D0F1A] overflow-hidden">
                 <div className="px-4 py-3 border-b border-white/[0.06] flex items-center gap-2">
                   <span>{typeInfo.icon}</span>
-                  <span className="text-[12px] font-semibold text-white">{typeInfo.label}</span>
+                  <span className="text-xs font-semibold text-white">{typeInfo.label}</span>
                   <span className="text-[9px] font-mono text-gray-600 ml-1">{entries.length} poster</span>
                 </div>
                 <div className="divide-y divide-white/[0.04]">
@@ -453,19 +502,19 @@ export function IntercompanyView() {
                         <div className="flex items-center gap-2 flex-1 min-w-0">
                           <div className="flex items-center gap-1.5">
                             <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: entityColor(ic.fromEntityId) }} />
-                            <span className="text-[11px] text-white font-semibold truncate">{entityShortName(ic.fromEntityId)}</span>
+                            <span className="text-xs text-white font-semibold truncate">{entityShortName(ic.fromEntityId)}</span>
                           </div>
                           <span className="text-gray-600 text-sm flex-shrink-0">→</span>
                           <div className="flex items-center gap-1.5">
                             <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: entityColor(ic.toEntityId) }} />
-                            <span className="text-[11px] text-white font-semibold truncate">{entityShortName(ic.toEntityId)}</span>
+                            <span className="text-xs text-white font-semibold truncate">{entityShortName(ic.toEntityId)}</span>
                           </div>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-[11px] text-gray-300 truncate">{ic.description}</p>
+                          <p className="text-xs text-gray-300 truncate">{ic.description}</p>
                           <p className="text-[9px] text-gray-600 font-mono mt-0.5">{ic.date}</p>
                         </div>
-                        <span className="text-[12px] font-bold font-mono text-white flex-shrink-0">{fmt(ic.amount, ic.currency)}</span>
+                        <span className="text-xs font-bold font-mono text-white flex-shrink-0">{fmt(ic.amount, ic.currency)}</span>
                         <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0"
                           style={{ color: st.color, background: st.bg }}>
                           {st.label}

@@ -27,11 +27,11 @@ function MeetingDetail({ meeting, onClose }: { meeting: BoardMeeting; onClose: (
             <div className="flex items-center gap-2 mb-1">
               <span className="text-lg">{TYPE_ICONS[meeting.type]}</span>
               <h2 className="text-[15px] font-bold text-white capitalize">{meeting.type}</h2>
-              <span className={`text-[10px] font-medium px-2 py-0.5 rounded border capitalize ${STATUS_STYLES[meeting.status]}`}>
+              <span className={`text-xs font-medium px-2 py-0.5 rounded border capitalize ${STATUS_STYLES[meeting.status]}`}>
                 {meeting.status}
               </span>
             </div>
-            <div className="flex items-center gap-2 text-[11px] text-gray-500">
+            <div className="flex items-center gap-2 text-xs text-gray-500">
               <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: company.color }} />
               <span style={{ color: company.color }}>{company.name}</span>
               <span>·</span>
@@ -42,10 +42,10 @@ function MeetingDetail({ meeting, onClose }: { meeting: BoardMeeting; onClose: (
         </div>
         <div className="p-6 space-y-5">
           <div>
-            <h3 className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Dagordning</h3>
+            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Dagordning</h3>
             <ul className="space-y-1.5">
               {meeting.agenda.map((item, i) => (
-                <li key={i} className="flex items-start gap-2 text-[13px] text-gray-300">
+                <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
                   <span className="text-gray-600 font-mono mt-0.5 flex-shrink-0">{i + 1}.</span>
                   {item}
                 </li>
@@ -54,10 +54,10 @@ function MeetingDetail({ meeting, onClose }: { meeting: BoardMeeting; onClose: (
           </div>
           {meeting.decisions.length > 0 && (
             <div>
-              <h3 className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Beslut</h3>
+              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Beslut</h3>
               <ul className="space-y-2">
                 {meeting.decisions.map((dec, i) => (
-                  <li key={i} className="flex items-start gap-2 text-[13px] text-gray-200">
+                  <li key={i} className="flex items-start gap-2 text-sm text-gray-200">
                     <span className="text-green-400 mt-0.5 flex-shrink-0">✓</span>
                     {dec}
                   </li>
@@ -67,10 +67,10 @@ function MeetingDetail({ meeting, onClose }: { meeting: BoardMeeting; onClose: (
           )}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <h3 className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Deltagare</h3>
+              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Deltagare</h3>
               <ul className="space-y-1">
                 {meeting.attendees.map(a => (
-                  <li key={a} className="text-[12px] text-gray-300 flex items-center gap-1.5">
+                  <li key={a} className="text-xs text-gray-300 flex items-center gap-1.5">
                     <span className="h-1.5 w-1.5 rounded-full bg-gray-600" />
                     {a}
                     {a === meeting.chairperson && <span className="text-[9px] text-yellow-400/80 font-mono ml-1">ordf.</span>}
@@ -80,8 +80,8 @@ function MeetingDetail({ meeting, onClose }: { meeting: BoardMeeting; onClose: (
               </ul>
             </div>
             <div>
-              <h3 className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Info</h3>
-              <div className="space-y-1 text-[12px] text-gray-400">
+              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">Info</h3>
+              <div className="space-y-1 text-xs text-gray-400">
                 <div><span className="text-gray-600">Ordförande:</span> {meeting.chairperson}</div>
                 {meeting.minutesTaker && <div><span className="text-gray-600">Sekreterare:</span> {meeting.minutesTaker}</div>}
               </div>
@@ -134,7 +134,7 @@ export function BoardView() {
           { label: 'Planerade', value: counts.planerat, color: 'bg-blue-400' },
           { label: 'Protokoll klart', value: counts.klar, color: 'bg-green-400' },
         ].map(s => (
-          <div key={s.label} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06] text-[11px]">
+          <div key={s.label} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06] text-xs">
             <span className={`h-1.5 w-1.5 rounded-full ${s.color}`} />
             <span className="text-gray-500">{s.label}:</span>
             <span className="text-white font-semibold">{s.value}</span>
@@ -144,14 +144,14 @@ export function BoardView() {
           <select
             value={filterCompany}
             onChange={e => setFilterCompany(e.target.value as CompanyId | 'all')}
-            className="text-[11px] bg-[#0D0F1A] border border-white/[0.08] rounded-lg px-2.5 py-1.5 text-gray-400 focus:outline-none"
+            className="text-xs bg-[#0D0F1A] border border-white/[0.08] rounded-lg px-2.5 py-1.5 text-gray-400 focus:outline-none"
           >
             <option value="all">Alla bolag</option>
             {COMPANIES.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
           <button
             onClick={() => setShowForm(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-accent/15 border border-brand-accent/30 text-brand-accent text-[11px] font-medium hover:bg-brand-accent/25 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-accent/15 border border-brand-accent/30 text-brand-accent text-xs font-medium hover:bg-brand-accent/25 transition-colors"
           >
             + Nytt beslut
           </button>
@@ -160,7 +160,8 @@ export function BoardView() {
 
       {/* Table */}
       <div className="rounded-xl border border-white/[0.06] overflow-hidden">
-        <table className="w-full text-[12px]">
+        <div className="overflow-x-auto">
+        <table className="w-full text-xs min-w-[560px]">
           <thead>
             <tr className="border-b border-white/[0.06] bg-white/[0.02]">
               <th className="text-left px-4 py-2.5 text-gray-500 font-medium">Datum</th>
@@ -197,7 +198,7 @@ export function BoardView() {
                     {m.agenda.join(', ')}
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`text-[10px] font-medium px-2 py-0.5 rounded border capitalize ${STATUS_STYLES[m.status]}`}>
+                    <span className={`text-xs font-medium px-2 py-0.5 rounded border capitalize ${STATUS_STYLES[m.status]}`}>
                       {m.status}
                     </span>
                   </td>
@@ -207,6 +208,7 @@ export function BoardView() {
             })}
           </tbody>
         </table>
+        </div>{/* /overflow-x-auto */}
       </div>
 
       {/* Detail modal */}
@@ -223,21 +225,21 @@ export function BoardView() {
             <div className="p-5 space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[11px] text-gray-500 block mb-1">Bolag</label>
+                  <label className="text-xs text-gray-500 block mb-1">Bolag</label>
                   <select
                     value={form.companyId}
                     onChange={e => setForm(f => ({ ...f, companyId: e.target.value as CompanyId }))}
-                    className="w-full text-[12px] bg-[#07080F] border border-white/[0.08] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-brand-accent/50"
+                    className="w-full text-xs bg-[#07080F] border border-white/[0.08] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-brand-accent/50"
                   >
                     {COMPANIES.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="text-[11px] text-gray-500 block mb-1">Typ</label>
+                  <label className="text-xs text-gray-500 block mb-1">Typ</label>
                   <select
                     value={form.type}
                     onChange={e => setForm(f => ({ ...f, type: e.target.value as MeetingType }))}
-                    className="w-full text-[12px] bg-[#07080F] border border-white/[0.08] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-brand-accent/50"
+                    className="w-full text-xs bg-[#07080F] border border-white/[0.08] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-brand-accent/50"
                   >
                     <option value="styrelsemöte">Styrelsemöte</option>
                     <option value="extra styrelsemöte">Extra styrelsemöte</option>
@@ -246,40 +248,40 @@ export function BoardView() {
                 </div>
               </div>
               <div>
-                <label className="text-[11px] text-gray-500 block mb-1">Datum</label>
+                <label className="text-xs text-gray-500 block mb-1">Datum</label>
                 <input
                   type="date"
                   value={form.date}
                   onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
-                  className="w-full text-[12px] bg-[#07080F] border border-white/[0.08] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-brand-accent/50"
+                  className="w-full text-xs bg-[#07080F] border border-white/[0.08] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-brand-accent/50"
                 />
               </div>
               <div>
-                <label className="text-[11px] text-gray-500 block mb-1">Ärenden (en per rad)</label>
+                <label className="text-xs text-gray-500 block mb-1">Ärenden (en per rad)</label>
                 <textarea
                   rows={3}
                   value={form.agenda}
                   onChange={e => setForm(f => ({ ...f, agenda: e.target.value }))}
                   placeholder="Godkännande av budget&#10;Rekrytering av CTO"
-                  className="w-full text-[12px] bg-[#07080F] border border-white/[0.08] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-brand-accent/50 resize-none"
+                  className="w-full text-xs bg-[#07080F] border border-white/[0.08] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-brand-accent/50 resize-none"
                 />
               </div>
               <div>
-                <label className="text-[11px] text-gray-500 block mb-1">Beslut (en per rad)</label>
+                <label className="text-xs text-gray-500 block mb-1">Beslut (en per rad)</label>
                 <textarea
                   rows={3}
                   value={form.decisions}
                   onChange={e => setForm(f => ({ ...f, decisions: e.target.value }))}
                   placeholder="Budget om X kr godkänd.&#10;CTO-rekrytering inleds."
-                  className="w-full text-[12px] bg-[#07080F] border border-white/[0.08] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-brand-accent/50 resize-none"
+                  className="w-full text-xs bg-[#07080F] border border-white/[0.08] rounded-lg px-3 py-2 text-white focus:outline-none focus:border-brand-accent/50 resize-none"
                 />
               </div>
             </div>
             <div className="px-5 py-4 border-t border-white/[0.06] flex justify-end gap-2">
-              <button onClick={() => { setShowForm(false); setForm(EMPTY_FORM) }} className="px-4 py-2 text-[12px] text-gray-400 hover:text-white transition-colors">Avbryt</button>
+              <button onClick={() => { setShowForm(false); setForm(EMPTY_FORM) }} className="px-4 py-2 text-xs text-gray-400 hover:text-white transition-colors">Avbryt</button>
               <button
                 onClick={() => { setShowForm(false); setForm(EMPTY_FORM) }}
-                className="px-4 py-2 text-[12px] bg-brand-accent/15 border border-brand-accent/30 text-brand-accent rounded-lg hover:bg-brand-accent/25 transition-colors"
+                className="px-4 py-2 text-xs bg-brand-accent/15 border border-brand-accent/30 text-brand-accent rounded-lg hover:bg-brand-accent/25 transition-colors"
               >
                 Spara beslut
               </button>

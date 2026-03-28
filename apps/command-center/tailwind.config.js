@@ -7,11 +7,11 @@ export default {
       colors: {
         // Wavult OS v2 — Atmospheric color system
         wavult: {
-          charcoal: '#14181E',       // Deep matte charcoal — neutral/cruising
-          carbon: '#0F1218',         // Deeper shade for contrast
-          slate: '#1C2029',          // Raised surfaces
-          steel: '#252A34',          // Overlay / hover states
-          border: '#2A2F3A',         // Subtle borders
+          charcoal: '#161B22',       // Deep matte charcoal — neutral/cruising
+          carbon: '#0D1117',         // Deeper shade for contrast
+          slate: '#21262D',          // Raised surfaces
+          steel: '#2D333B',          // Overlay / hover states
+          border: '#30363D',         // Subtle borders
           'border-light': '#363C48', // Emphasized borders
         },
         // Signal colors — operational language
@@ -51,12 +51,12 @@ export default {
         display: ['Inter', 'system-ui', 'sans-serif'],
       },
       fontSize: {
-        // Action text — disproportionately large
-        'action-lg': ['2rem', { lineHeight: '1.1', fontWeight: '600' }],
-        'action-md': ['1.5rem', { lineHeight: '1.2', fontWeight: '600' }],
-        // System telemetry
-        'telemetry': ['0.625rem', { lineHeight: '1.4', fontWeight: '500', letterSpacing: '0.05em' }],
-        'telemetry-sm': ['0.5625rem', { lineHeight: '1.4', fontWeight: '500', letterSpacing: '0.05em' }],
+        // Heading text
+        'heading-xl': ['2rem', { lineHeight: '1.1', fontWeight: '600' }],
+        'heading-lg': ['1.5rem', { lineHeight: '1.2', fontWeight: '600' }],
+        // Label / micro text
+        'label-xs': ['0.625rem', { lineHeight: '1.4', fontWeight: '500', letterSpacing: '0.05em' }],
+        'label-2xs': ['0.5625rem', { lineHeight: '1.4', fontWeight: '500', letterSpacing: '0.05em' }],
       },
       animation: {
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
@@ -64,8 +64,6 @@ export default {
         'slide-out': 'slideOut 0.25s ease-in',
         'fade-in': 'fadeIn 0.2s ease-out',
         'resolve': 'resolve 0.4s ease-out',
-        'glow-amber': 'glowAmber 2s ease-in-out infinite',
-        'glow-red': 'glowRed 1.5s ease-in-out infinite',
       },
       keyframes: {
         slideIn: {
@@ -84,14 +82,6 @@ export default {
           '0%': { transform: 'scale(1)', opacity: '1' },
           '50%': { transform: 'scale(0.98)', opacity: '0.8' },
           '100%': { transform: 'scale(1)', opacity: '0' },
-        },
-        glowAmber: {
-          '0%, 100%': { boxShadow: '0 0 0 0 rgba(196, 150, 26, 0)' },
-          '50%': { boxShadow: '0 0 8px 2px rgba(196, 150, 26, 0.15)' },
-        },
-        glowRed: {
-          '0%, 100%': { boxShadow: '0 0 0 0 rgba(217, 64, 64, 0)' },
-          '50%': { boxShadow: '0 0 8px 2px rgba(217, 64, 64, 0.2)' },
         },
       },
       spacing: {

@@ -106,8 +106,8 @@ function KpiBar({ label, current, target }: { label: string; current: number; ta
   return (
     <div className="space-y-1">
       <div className="flex justify-between items-center">
-        <span className="text-[10px] text-gray-500">{label}</span>
-        <span className="text-[10px] font-mono" style={{ color }}>
+        <span className="text-xs text-gray-500">{label}</span>
+        <span className="text-xs font-mono" style={{ color }}>
           {current.toLocaleString()} / {target.toLocaleString()}
         </span>
       </div>
@@ -154,7 +154,7 @@ function ActivityCard({ activity, selected, onClick }: {
             style={{ color: brandColor }}>
             {BRAND_ABBR[activity.brand]}
           </span>
-          <span className="text-[10px] text-white font-semibold truncate flex-1">
+          <span className="text-xs text-white font-semibold truncate flex-1">
             {activity.name}
           </span>
         </div>
@@ -202,7 +202,7 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
 
   return (
     <div
-      className="w-[340px] flex-shrink-0 flex flex-col h-full overflow-hidden"
+      className="w-full md:w-[340px] flex-shrink-0 flex flex-col h-full overflow-hidden"
       style={{ background: '#09090F', borderLeft: '1px solid rgba(255,255,255,0.06)' }}
     >
       {/* Header */}
@@ -212,7 +212,7 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
             style={{ color: brandColor }}>
             {BRAND_ABBR[activity.brand]}
           </span>
-          <span className="text-[13px] font-semibold text-white truncate">{activity.name}</span>
+          <span className="text-sm font-semibold text-white truncate">{activity.name}</span>
         </div>
         <button
           onClick={onClose}
@@ -234,7 +234,7 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
               {activity.brand}
             </span>
           </div>
-          <div className="flex items-center justify-between text-[10px] mt-1">
+          <div className="flex items-center justify-between text-xs mt-1">
             <span className="text-gray-500">{activity.country}</span>
             <span className="font-mono text-gray-600">{formatDate(activity.date)} · {activity.time}</span>
           </div>
@@ -266,7 +266,7 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
                     border: `1px solid ${alert.severity === 'critical' ? '#EF4444' : '#F59E0B'}30`,
                   }}
                 >
-                  <p className="text-[10px] font-semibold"
+                  <p className="text-xs font-semibold"
                     style={{ color: alert.severity === 'critical' ? '#EF4444' : '#F59E0B' }}>
                     ⚠ {alert.message}
                   </p>
@@ -279,18 +279,18 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
             </div>
           ) : valid && activity.status === 'ready' ? (
             <div className="rounded-lg px-3 py-2 bg-white/[0.03] border border-white/[0.05]">
-              <p className="text-[10px]" style={{ color: '#10B981' }}>✓ Ready to deploy</p>
+              <p className="text-xs" style={{ color: '#10B981' }}>✓ Ready to deploy</p>
               <p className="text-[9px] text-gray-600 mt-0.5">All requirements met</p>
             </div>
           ) : (
-            <p className="text-[10px] text-gray-600">No actions required</p>
+            <p className="text-xs text-gray-600">No actions required</p>
           )}
         </PanelSection>
 
         {/* 3. KPI TARGET */}
         <PanelSection label="KPI Target">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] text-white font-semibold capitalize">{activity.kpi.metric}</span>
+            <span className="text-xs text-white font-semibold capitalize">{activity.kpi.metric}</span>
             <span className="text-[8px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded"
               style={{ background: kpiColor + '20', color: kpiColor }}>
               {activity.kpi.result}
@@ -317,7 +317,7 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
                 {activity.asset.ready ? 'Ready' : 'Not ready'}
               </span>
             </div>
-            <p className="text-[10px] text-white">{activity.asset.name}</p>
+            <p className="text-xs text-white">{activity.asset.name}</p>
             {activity.asset.url && (
               <a
                 href={activity.asset.url}
@@ -334,11 +334,11 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
         {/* 5. BUDGET */}
         <PanelSection label="Budget">
           <div className="space-y-2">
-            <div className="flex items-center justify-between text-[10px]">
+            <div className="flex items-center justify-between text-xs">
               <span className="text-gray-500">Monthly cost</span>
               <span className="text-white font-mono">${activity.budget.cost_monthly.toLocaleString()}</span>
             </div>
-            <div className="flex items-center justify-between text-[10px]">
+            <div className="flex items-center justify-between text-xs">
               <span className="text-gray-500">Spend to date</span>
               <span className="font-mono"
                 style={{ color: spendPct > 90 ? '#EF4444' : '#10B981' }}>
@@ -374,32 +374,32 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
         {/* 6. AUTOMATION */}
         <PanelSection label="Automation">
           <div className="space-y-2">
-            <div className="flex items-center justify-between text-[10px]">
+            <div className="flex items-center justify-between text-xs">
               <span className="text-gray-500">Trigger</span>
               <span className="font-mono text-white uppercase">{activity.automation.trigger}</span>
             </div>
             {activity.automation.schedule && (
-              <div className="flex items-center justify-between text-[10px]">
+              <div className="flex items-center justify-between text-xs">
                 <span className="text-gray-500">Schedule</span>
                 <span className="font-mono text-gray-400 text-[9px]">{activity.automation.schedule}</span>
               </div>
             )}
-            <div className="flex items-center justify-between text-[10px]">
+            <div className="flex items-center justify-between text-xs">
               <span className="text-gray-500">Channel API</span>
               <ChannelBadge channel={activity.automation.channel_api} />
             </div>
-            <div className="flex items-center justify-between text-[10px]">
+            <div className="flex items-center justify-between text-xs">
               <span className="text-gray-500">Retry count</span>
               <span className="font-mono text-gray-400">{activity.automation.retry_count}</span>
             </div>
             {activity.automation.fallback_channel && (
-              <div className="flex items-center justify-between text-[10px]">
+              <div className="flex items-center justify-between text-xs">
                 <span className="text-gray-500">Fallback</span>
                 <ChannelBadge channel={activity.automation.fallback_channel} />
               </div>
             )}
             {activity.automation.last_run && (
-              <div className="flex items-center justify-between text-[10px]">
+              <div className="flex items-center justify-between text-xs">
                 <span className="text-gray-500">Last run</span>
                 <span className="font-mono text-gray-600 text-[9px]">
                   {activity.automation.last_run.substring(0, 10)}
@@ -407,7 +407,7 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
               </div>
             )}
             {activity.automation.next_run && (
-              <div className="flex items-center justify-between text-[10px]">
+              <div className="flex items-center justify-between text-xs">
                 <span className="text-gray-500">Next run</span>
                 <span className="font-mono text-gray-400 text-[9px]">
                   {activity.automation.next_run.substring(0, 10)}
@@ -421,7 +421,7 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
         <PanelSection label="Connections">
           <div className="space-y-2">
             {entity && (
-              <div className="flex items-center justify-between text-[10px]">
+              <div className="flex items-center justify-between text-xs">
                 <span className="text-gray-500">Entity</span>
                 <button
                   onClick={() => navigate('/entities/' + entity.id)}
@@ -432,7 +432,7 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
               </div>
             )}
             {site && (
-              <div className="flex items-center justify-between text-[10px]">
+              <div className="flex items-center justify-between text-xs">
                 <span className="text-gray-500">Market site</span>
                 <button
                   onClick={() => navigate('/markets')}
@@ -449,7 +449,7 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
                   {role.initials}
                 </div>
                 <div>
-                  <p className="text-[10px] text-white">{role.person}</p>
+                  <p className="text-xs text-white">{role.person}</p>
                   <p className="text-[9px] text-gray-600">{role.title}</p>
                 </div>
               </div>
@@ -459,7 +459,7 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
 
         {/* 8. DESCRIPTION */}
         <PanelSection label="Description">
-          <p className="text-[10px] text-gray-400 leading-relaxed">{activity.description}</p>
+          <p className="text-xs text-gray-400 leading-relaxed">{activity.description}</p>
         </PanelSection>
 
       </div>
@@ -535,7 +535,7 @@ export function CampaignOS() {
   const TODAY = '2026-03-25'
 
   const selectDropdownClass =
-    'text-[10px] bg-[#0D0F1A] border border-white/[0.08] rounded-lg px-2.5 py-1 font-mono cursor-pointer focus:outline-none appearance-none text-gray-400'
+    'text-xs bg-[#0D0F1A] border border-white/[0.08] rounded-lg px-2.5 py-1 font-mono cursor-pointer focus:outline-none appearance-none text-gray-400'
 
   return (
     <div className="flex flex-col h-full" style={{ background: '#07080F' }}>
@@ -546,7 +546,7 @@ export function CampaignOS() {
       >
         {/* Left: title + period */}
         <div className="flex items-center gap-3">
-          <span className="text-[12px] font-bold text-white tracking-wide">Campaign OS</span>
+          <span className="text-xs font-bold text-white tracking-wide">Campaign OS</span>
           <span className="text-[9px] font-mono text-gray-700 px-2 py-0.5 rounded border border-white/[0.06] bg-white/[0.02]">
             Q2 2026
           </span>
@@ -607,7 +607,7 @@ export function CampaignOS() {
         <div className="flex-1 overflow-y-auto px-5 py-4 space-y-6">
           {grouped.size === 0 ? (
             <div className="flex items-center justify-center h-40">
-              <p className="text-[11px] text-gray-700">No activities match current filters</p>
+              <p className="text-xs text-gray-700">No activities match current filters</p>
             </div>
           ) : (
             Array.from(grouped.entries()).map(([mk, byDay]) => {
@@ -619,7 +619,7 @@ export function CampaignOS() {
                   {/* Month header */}
                   <div className="flex items-center gap-3 mb-3">
                     <span
-                      className="text-[11px] font-bold uppercase tracking-[0.15em]"
+                      className="text-xs font-bold uppercase tracking-[0.15em]"
                       style={{ color: monthColor }}
                     >
                       {monthLabel(mk)}
@@ -687,12 +687,14 @@ export function CampaignOS() {
           )}
         </div>
 
-        {/* ── ACTIVITY PANEL (right, 340px) ──────────────────────────────── */}
+        {/* ── ACTIVITY PANEL (right, 340px) — full screen on mobile ──────── */}
         {selectedActivity && (
-          <ActivityPanel
-            activity={selectedActivity}
-            onClose={() => setSelectedId(null)}
-          />
+          <div className="fixed md:static inset-0 md:inset-auto z-50 md:z-auto">
+            <ActivityPanel
+              activity={selectedActivity}
+              onClose={() => setSelectedId(null)}
+            />
+          </div>
         )}
       </div>
     </div>

@@ -44,7 +44,7 @@ export function ModuleHeader({ moduleId }: ModuleHeaderProps) {
             </span>
           </div>
           <div className="flex items-center gap-3 mt-0.5">
-            <span className="text-[10px] text-gray-500 font-mono">{description}</span>
+            <span className="text-xs text-gray-500 font-mono">{description}</span>
             {mod.dataSource === 'mock' && (
               <span className="text-[9px] font-mono text-amber-600/70">· mockdata</span>
             )}
@@ -64,7 +64,7 @@ export function ModuleHeader({ moduleId }: ModuleHeaderProps) {
           <div className="text-[9px] text-gray-600 font-mono uppercase tracking-wider mb-0.5">
             Live-features
           </div>
-          <div className="text-[10px] text-gray-400">
+          <div className="text-xs text-gray-400">
             {livePreview}{hasMore ? `… +${mod.liveFeatures.length - 3}` : ''}
           </div>
         </div>
@@ -75,7 +75,7 @@ export function ModuleHeader({ moduleId }: ModuleHeaderProps) {
           <div className="text-[9px] text-gray-600 font-mono uppercase tracking-wider mb-0.5">
             Live-features
           </div>
-          <div className="text-[10px] text-gray-600 italic">Inga aktiva ännu</div>
+          <div className="text-xs text-gray-600 italic">Inga aktiva ännu</div>
         </div>
       )}
 

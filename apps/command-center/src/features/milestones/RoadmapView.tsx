@@ -21,7 +21,7 @@ function MilestoneChip({ item }: { item: typeof ROADMAP_ITEMS[0] }) {
     >
       <span className="text-base leading-none mt-0.5 flex-shrink-0">{meta.icon}</span>
       <div className="flex-1 min-w-0">
-        <p className={`text-[11px] font-medium leading-snug ${item.status === 'done' ? 'text-gray-500 line-through' : 'text-white'}`}>
+        <p className={`text-xs font-medium leading-snug ${item.status === 'done' ? 'text-gray-500 line-through' : 'text-white'}`}>
           {item.title}
         </p>
         {item.month && (
@@ -47,10 +47,10 @@ export function RoadmapView() {
       <div className="flex items-start justify-between">
         <div>
           <h2 className="text-lg font-bold text-white">Roadmap 2026</h2>
-          <p className="text-[11px] text-gray-500 mt-0.5">Q2–Q4 · quiXzoom · Landvex · Hypbit OS</p>
+          <p className="text-xs text-gray-500 mt-0.5">Q2–Q4 · quiXzoom · Landvex · Hypbit OS</p>
         </div>
         <div className="text-right">
-          <p className="text-[11px] text-gray-400">{done}/{total} klara</p>
+          <p className="text-xs text-gray-400">{done}/{total} klara</p>
           <div className="w-24 bg-white/[0.06] rounded-full h-1.5 mt-1">
             <div
               className="h-1.5 rounded-full bg-brand-accent transition-all"
@@ -67,7 +67,7 @@ export function RoadmapView() {
           return (
             <div key={key} className="flex items-center gap-1.5">
               <span className="text-base">{meta.icon}</span>
-              <span className="text-[11px] font-medium" style={{ color: meta.color }}>{meta.label}</span>
+              <span className="text-xs font-medium" style={{ color: meta.color }}>{meta.label}</span>
             </div>
           )
         })}
@@ -103,7 +103,7 @@ export function RoadmapView() {
                   style={{ background: q.color }}
                 />
                 <div>
-                  <p className="text-[13px] font-bold text-white">{q.label}</p>
+                  <p className="text-sm font-bold text-white">{q.label}</p>
                   <p className="text-[9px] text-gray-500 font-mono">{q.months}</p>
                 </div>
                 <span
@@ -126,7 +126,7 @@ export function RoadmapView() {
                       <div className="flex items-center gap-1.5 mb-2">
                         <span className="text-sm">{meta.icon}</span>
                         <span
-                          className="text-[10px] font-semibold font-mono uppercase tracking-wide"
+                          className="text-xs font-semibold font-mono uppercase tracking-wide"
                           style={{ color: meta.color }}
                         >
                           {meta.label}
@@ -148,7 +148,7 @@ export function RoadmapView() {
 
       {/* Bolagsstruktur separate row */}
       <div>
-        <h3 className="text-[11px] text-gray-500 font-mono uppercase tracking-wider mb-3">
+        <h3 className="text-xs text-gray-500 font-mono uppercase tracking-wider mb-3">
           🏛️ Bolagsstruktur
         </h3>
         <div className="rounded-xl border border-white/[0.06] bg-[#0D0F1A] p-4">
@@ -157,7 +157,7 @@ export function RoadmapView() {
               const items = ROADMAP_ITEMS.filter(i => i.quarter === q.id && i.project === 'bolagsstruktur')
               if (items.length === 0) return (
                 <div key={q.id} className="text-center py-4">
-                  <p className="text-[10px] text-gray-700 font-mono">—</p>
+                  <p className="text-xs text-gray-700 font-mono">—</p>
                 </div>
               )
               return (

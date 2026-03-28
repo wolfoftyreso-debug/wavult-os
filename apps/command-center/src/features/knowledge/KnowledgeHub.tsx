@@ -21,12 +21,18 @@ export function KnowledgeHub() {
   return (
     <div className="flex flex-col h-full bg-[#07080F] overflow-hidden">
       {/* Header */}
-      <div className="flex-shrink-0 border-b border-surface-border px-6 pt-5 pb-0">
+      <div className="flex-shrink-0 border-b border-surface-border px-4 md:px-6 pt-4 md:pt-5 pb-0">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-lg font-bold text-white">📚 Knowledge Hub</h1>
             <p className="text-xs text-gray-600 mt-0.5">
-              Wavult Groups samlade kunskap, strukturer och utbildningsmaterial
+              Wavult Groups samlade kunskap, strukturer och utbildningsmaterial —{' '}
+              <button
+                onClick={() => setActiveTab('utbildning')}
+                className="text-brand-accent hover:underline"
+              >
+                Ny i teamet? Börja med Utbildning →
+              </button>
             </p>
           </div>
         </div>

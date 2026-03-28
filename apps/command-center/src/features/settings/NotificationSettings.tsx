@@ -49,7 +49,7 @@ const INITIAL_RULES: NotificationRule[] = [
   {
     id: 'incident-critical',
     label: 'Incident kritisk',
-    description: 'Severity=critical skapas i Incident Center',
+    description: 'Severity=critical skapas i Alerts',
     icon: '🔴',
     category: 'incident',
     channels: { email: true, sms: true, intern: true },
@@ -109,7 +109,7 @@ export function NotificationSettings() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-[11px] text-gray-600">
+        <p className="text-xs text-gray-600">
           Välj vilka händelser som ska trigga notifikationer och via vilken kanal.
         </p>
         <button
@@ -158,16 +158,16 @@ export function NotificationSettings() {
                     {catCfg.label}
                   </span>
                 </div>
-                <div className="text-[10px] text-gray-600 mt-0.5 ml-6">{rule.description}</div>
+                <div className="text-xs text-gray-600 mt-0.5 ml-6">{rule.description}</div>
                 {rule.threshold !== undefined && (
                   <div className="flex items-center gap-1.5 mt-1 ml-6">
-                    <span className="text-[10px] text-gray-700">Tröskel:</span>
+                    <span className="text-xs text-gray-700">Tröskel:</span>
                     <input
                       value={thresholds[rule.id] ?? rule.threshold}
                       onChange={e =>
                         setThresholds(prev => ({ ...prev, [rule.id]: e.target.value }))
                       }
-                      className="text-[10px] font-mono text-gray-400 bg-white/[0.04] border border-white/[0.06] rounded px-2 py-0.5 w-24 focus:outline-none"
+                      className="text-xs font-mono text-gray-400 bg-white/[0.04] border border-white/[0.06] rounded px-2 py-0.5 w-24 focus:outline-none"
                     />
                   </div>
                 )}
@@ -200,7 +200,7 @@ export function NotificationSettings() {
       {/* Legend */}
       <div className="flex items-center gap-4 flex-wrap">
         {(Object.entries(CHANNEL_CONFIG) as [Channel, typeof CHANNEL_CONFIG[Channel]][]).map(([key, cfg]) => (
-          <div key={key} className="flex items-center gap-1.5 text-[10px] text-gray-600">
+          <div key={key} className="flex items-center gap-1.5 text-xs text-gray-600">
             <span>{cfg.icon}</span>
             <span className="font-mono">{cfg.label}</span>
             <span>— notifierar via {key === 'email' ? 'e-post' : key === 'sms' ? 'SMS (46elks)' : 'app-notis'}</span>

@@ -143,7 +143,7 @@ function InlineMarkdown({ text }: { text: string }) {
     const codeMatch = remaining.match(/^(.*?)`(.+?)`/)
     if (codeMatch) {
       if (codeMatch[1]) parts.push(<span key={key++}>{codeMatch[1]}</span>)
-      parts.push(<code key={key++} className="bg-white/10 text-brand-accent px-1 rounded text-[10px] font-mono">{codeMatch[2]}</code>)
+      parts.push(<code key={key++} className="bg-white/10 text-brand-accent px-1 rounded text-xs font-mono">{codeMatch[2]}</code>)
       remaining = remaining.slice(codeMatch[0].length)
       continue
     }
@@ -209,27 +209,27 @@ function DocModal({
 
           {/* Meta bar */}
           <div className="flex items-center gap-4 py-2 border-b border-white/[0.05] mb-0">
-            <div className="flex items-center gap-1.5 text-[10px] text-gray-600 font-mono">
+            <div className="flex items-center gap-1.5 text-xs text-gray-600 font-mono">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
               </svg>
               ~{readTime} min läsning
             </div>
-            <div className="flex items-center gap-1.5 text-[10px] text-gray-600 font-mono">
+            <div className="flex items-center gap-1.5 text-xs text-gray-600 font-mono">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                 <polyline points="14 2 14 8 20 8"/>
               </svg>
               {doc.content.trim().split(/\s+/).length} ord
             </div>
-            <div className="flex items-center gap-1.5 text-[10px] text-gray-600 font-mono">
+            <div className="flex items-center gap-1.5 text-xs text-gray-600 font-mono">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/>
                 <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
               </svg>
               {doc.updatedAt}
             </div>
-            <div className="text-[10px] text-gray-700 font-mono ml-auto">
+            <div className="text-xs text-gray-700 font-mono ml-auto">
               {currentIndex + 1} / {allDocs.length}
             </div>
           </div>
@@ -245,7 +245,7 @@ function DocModal({
           {/* Tags */}
           <div className="flex flex-wrap gap-1.5 mb-3">
             {doc.tags.map(tag => (
-              <span key={tag} className="px-2 py-0.5 rounded-full bg-white/[0.05] text-gray-500 text-[10px]">
+              <span key={tag} className="px-2 py-0.5 rounded-full bg-white/[0.05] text-gray-500 text-xs">
                 #{tag}
               </span>
             ))}
@@ -364,12 +364,41 @@ export function KnowledgeBase() {
         </span>
       </div>
 
+      {/* Startpunkt-guide — visas bara när inget filter är aktivt och ingen sökning */}
+      {activeCategory === 'Alla' && !search && (
+        <div className="mb-4 bg-[#0D0F1A] border border-white/[0.05] rounded-xl p-3">
+          <p className="text-xs text-gray-600 font-mono mb-2">🧭 REKOMMENDERAD LÄSORDNING — NY TEAMMEDLEM</p>
+          <div className="flex flex-wrap gap-2">
+            {[
+              { id: 'doc-int-004', label: '1. Start här →' },
+              { id: 'doc-wg-005', label: '2. Investerarbriefing' },
+              { id: 'doc-wg-001', label: '3. Bolagsstruktur' },
+              { id: 'doc-qx-001', label: '4. QuiXzoom Arkitektur' },
+              { id: 'doc-lx-001', label: '5. Landvex Produktspec' },
+            ].map(item => {
+              const doc = KNOWLEDGE_DOCS.find(d => d.id === item.id)
+              if (!doc) return null
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setSelectedDoc(doc)}
+                  className="text-xs px-2.5 py-1 rounded-lg bg-white/[0.03] text-gray-500 border border-surface-border hover:text-gray-300 hover:border-white/20 transition-colors font-mono"
+                >
+                  {item.label}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Document Grid */}
       <div className="flex-1 overflow-y-auto">
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-40 text-gray-600">
             <span className="text-2xl mb-2">🔍</span>
-            <p className="text-sm">Inga dokument matchar sökningen</p>
+            <p className="text-sm mb-1">Inga dokument matchar sökningen</p>
+            <p className="text-xs text-gray-700">Prova att söka på: quixzoom, landvex, dubai, bolagsstruktur, zoomer</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
@@ -390,13 +419,13 @@ export function KnowledgeBase() {
 
                   <div className="flex items-start justify-between mb-2">
                     <span
-                      className="px-2 py-0.5 rounded text-[10px] font-mono"
+                      className="px-2 py-0.5 rounded text-xs font-mono"
                       style={{ background: CATEGORY_BG[doc.category], color: CATEGORY_COLORS[doc.category] }}
                     >
                       {doc.category}
                     </span>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] text-gray-700 font-mono">~{readTime} min</span>
+                      <span className="text-xs text-gray-700 font-mono">~{readTime} min</span>
                       <svg
                         className="text-gray-700 group-hover:text-gray-400 transition-colors"
                         width="11" height="11" viewBox="0 0 24 24" fill="none"
@@ -424,17 +453,17 @@ export function KnowledgeBase() {
                         }}
                       />
                     </div>
-                    <span className="text-[10px] text-gray-700 font-mono">{wordCount} ord</span>
+                    <span className="text-xs text-gray-700 font-mono">{wordCount} ord</span>
                   </div>
 
                   <div className="flex flex-wrap gap-1">
                     {doc.tags.slice(0, 3).map(tag => (
-                      <span key={tag} className="px-1.5 py-0.5 rounded bg-white/[0.04] text-gray-600 text-[10px]">
+                      <span key={tag} className="px-1.5 py-0.5 rounded bg-white/[0.04] text-gray-600 text-xs">
                         #{tag}
                       </span>
                     ))}
                     {doc.tags.length > 3 && (
-                      <span className="text-[10px] text-gray-700">+{doc.tags.length - 3}</span>
+                      <span className="text-xs text-gray-700">+{doc.tags.length - 3}</span>
                     )}
                   </div>
                 </button>

@@ -50,7 +50,7 @@ export function ThailandCountdown() {
       </div>
 
       {/* Countdown grid */}
-      <div className="grid grid-cols-4 gap-3 px-5 py-5">
+      <div className="grid grid-cols-4 gap-2 md:gap-3 px-3 md:px-5 py-4 md:py-5">
         {[
           { label: 'DAGAR', value: time.days },
           { label: 'TIMMAR', value: time.hours },
@@ -62,7 +62,7 @@ export function ThailandCountdown() {
             className="rounded-xl p-3 text-center"
             style={{ background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.15)' }}
           >
-            <p className="text-5xl font-bold tabular-nums leading-none" style={{ color: '#a78bfa' }}>
+            <p className="text-3xl md:text-5xl font-bold tabular-nums leading-none" style={{ color: '#a78bfa' }}>
               {String(value).padStart(2, '0')}
             </p>
             <p className="text-[9px] text-gray-600 uppercase tracking-wider mt-2">{label}</p>

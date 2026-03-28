@@ -1,11 +1,36 @@
+import { useState } from 'react'
 import { useRole } from '../../shared/auth/RoleContext'
 import { CommandDashboard } from './CommandDashboard'
 import { useEntityScope } from '../../shared/scope/EntityScopeContext'
+
+// ─── Help banner for first-time users ────────────────────────────────────────
+function WelcomeBanner() {
+  const [dismissed, setDismissed] = useState(() => !!localStorage.getItem('wavult-banner-dismissed'))
+  if (dismissed) return null
+  return (
+    <div className="mb-6 rounded-xl border border-indigo-500/30 bg-indigo-500/8 p-4 flex items-start gap-3">
+      <span className="text-xl flex-shrink-0">👋</span>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-semibold text-white mb-1">Välkommen till Wavult OS</p>
+        <p className="text-xs text-gray-400 leading-relaxed">
+          Det här är ert operativsystem. Alla moduler i vänstermenyn har ett <strong className="text-gray-300">?</strong>-märke — klicka på det för att förstå vad en flik eller funktion gör. Byt bolag med <strong className="text-gray-300">väljaren uppe till vänster</strong>.
+        </p>
+      </div>
+      <button
+        onClick={() => { localStorage.setItem('wavult-banner-dismissed', '1'); setDismissed(true) }}
+        className="text-gray-600 hover:text-gray-400 transition-colors flex-shrink-0 text-lg leading-none"
+      >
+        ×
+      </button>
+    </div>
+  )
+}
 
 // ─── CEO Dashboard ─────────────────────────────────────────────────────────────
 function CeoDashboard() {
   return (
     <div className="space-y-8 max-w-6xl">
+      <WelcomeBanner />
       <div>
         <h1 className="text-sm font-semibold text-white">Group CEO</h1>
         <p className="text-gray-400 mt-1">Strategisk överblick — Wavult Ecosystem</p>

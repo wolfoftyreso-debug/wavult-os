@@ -63,16 +63,29 @@ export function ChartOfAccounts() {
 
   return (
     <div className="space-y-4">
+      {/* Explanatory ingress */}
+      <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3">
+        <p className="text-xs text-gray-400 leading-relaxed">
+          <span className="font-semibold text-white">Vad är en kontoplan?</span>{' '}
+          En kontoplan är bokföringens "adressbok" — varje konto har ett nummer och ett syfte.
+          Sverige använder <span className="text-blue-400 font-mono">BAS-kontoplanen</span>:{' '}
+          <span className="text-blue-400">1xxx</span> = tillgångar (vad bolaget äger),{' '}
+          <span className="text-amber-400">2xxx</span> = skulder &amp; eget kapital (vad bolaget är skyldigt),{' '}
+          <span className="text-emerald-400">3xxx</span> = intäkter (försäljning),{' '}
+          <span className="text-red-400">4–7xxx</span> = kostnader (löner, hyra, material m.m.).
+        </p>
+      </div>
+
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-bold text-white">Kontoplan</h2>
-          <p className="text-[11px] text-gray-500 mt-0.5">BAS-kontoplan — Wavult Group</p>
+          <p className="text-xs text-gray-500 mt-0.5">BAS-kontoplan — Wavult Group</p>
         </div>
         {/* Entity filter */}
         <select
           value={entityFilter}
           onChange={e => setEntityFilter(e.target.value)}
-          className="text-[11px] bg-[#0D0F1A] border border-white/[0.08] rounded-lg px-3 py-1.5 text-white font-mono focus:outline-none"
+          className="text-xs bg-[#0D0F1A] border border-white/[0.08] rounded-lg px-3 py-1.5 text-white font-mono focus:outline-none"
         >
           <option value="all">Alla bolag</option>
           {availableEntities.map(fe => (
@@ -82,7 +95,7 @@ export function ChartOfAccounts() {
       </div>
 
       {isLoading && (
-        <div className="flex items-center justify-center py-12 text-gray-600 text-[12px]">
+        <div className="flex items-center justify-center py-12 text-gray-600 text-xs">
           Laddar kontoplan...
         </div>
       )}
@@ -102,9 +115,9 @@ export function ChartOfAccounts() {
               className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/[0.02] transition-colors text-left"
             >
               <span className="text-base">{isExpanded ? '▾' : '▸'}</span>
-              <span className="text-[13px] font-semibold text-white flex-1">{group}</span>
-              <span className="text-[10px] font-mono text-gray-500">{groupAccounts.length} konton</span>
-              <span className="text-[11px] font-mono ml-4"
+              <span className="text-sm font-semibold text-white flex-1">{group}</span>
+              <span className="text-xs font-mono text-gray-500">{groupAccounts.length} konton</span>
+              <span className="text-xs font-mono ml-4"
                 style={{ color: total < 0 ? '#EF4444' : '#10B981' }}>
                 {fmt(total, groupAccounts[0]?.currency ?? '')}
               </span>
@@ -112,9 +125,9 @@ export function ChartOfAccounts() {
 
             {/* Accounts */}
             {isExpanded && (
-              <div className="border-t border-white/[0.06]">
+              <div className="border-t border-white/[0.06] overflow-x-auto">
                 {/* Table header */}
-                <div className="grid grid-cols-12 px-4 py-2 text-[9px] font-mono text-gray-600 uppercase tracking-wider border-b border-white/[0.04]">
+                <div className="grid grid-cols-12 px-4 py-2 text-[9px] font-mono text-gray-600 uppercase tracking-wider border-b border-white/[0.04] min-w-[500px]">
                   <span className="col-span-1">Konto</span>
                   <span className="col-span-4">Benämning</span>
                   <span className="col-span-2">Typ</span>
@@ -129,10 +142,10 @@ export function ChartOfAccounts() {
                   return (
                     <div
                       key={account.id}
-                      className="grid grid-cols-12 px-4 py-2.5 items-center border-b border-white/[0.03] last:border-0 hover:bg-white/[0.02] transition-colors"
+                      className="grid grid-cols-12 px-4 py-2.5 items-center border-b border-white/[0.03] last:border-0 hover:bg-white/[0.02] transition-colors min-w-[500px]"
                     >
-                      <span className="col-span-1 text-[11px] font-mono text-gray-400">{account.account_nr}</span>
-                      <span className="col-span-4 text-[12px] text-white">{account.name}</span>
+                      <span className="col-span-1 text-xs font-mono text-gray-400">{account.account_nr}</span>
+                      <span className="col-span-4 text-xs text-white">{account.name}</span>
                       <span className="col-span-2">
                         <span className="text-[9px] font-mono px-1.5 py-0.5 rounded"
                           style={{ color: typeColor, background: typeColor + '15' }}>
@@ -141,10 +154,10 @@ export function ChartOfAccounts() {
                       </span>
                       <div className="col-span-2 flex items-center gap-1.5">
                         <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: fe?.color }} />
-                        <span className="text-[10px] text-gray-500 font-mono truncate">{fe?.short_name}</span>
+                        <span className="text-xs text-gray-500 font-mono truncate">{fe?.short_name}</span>
                       </div>
-                      <span className="col-span-2 text-[10px] font-mono text-gray-500">{account.currency}</span>
-                      <span className="col-span-1 text-right text-[12px] font-mono font-semibold"
+                      <span className="col-span-2 text-xs font-mono text-gray-500">{account.currency}</span>
+                      <span className="col-span-1 text-right text-xs font-mono font-semibold"
                         style={{ color: account.balance < 0 ? '#EF4444' : '#10B981' }}>
                         {fmt(account.balance, account.currency)}
                       </span>

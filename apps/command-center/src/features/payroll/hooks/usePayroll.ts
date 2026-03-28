@@ -106,9 +106,9 @@ export function usePayroll() {
 
       if (fetchError) throw fetchError
       setEmployees(data || [])
-    } catch (err: any) {
-      setError(err.message)
-      console.error('Failed to fetch employees:', err)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : String(err))
+      console.error("Supabase fetch failed:", err)
     }
   }
 
@@ -122,9 +122,9 @@ export function usePayroll() {
 
       if (fetchError) throw fetchError
       setPayrollRuns(data || [])
-    } catch (err: any) {
-      setError(err.message)
-      console.error('Failed to fetch payroll runs:', err)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : String(err))
+      console.error("Supabase fetch failed:", err)
     }
   }
 
@@ -140,10 +140,10 @@ export function usePayroll() {
       if (insertError) throw insertError
       setEmployees(prev => [...prev, data])
       return { success: true, data }
-    } catch (err: any) {
-      setError(err.message)
-      console.error('Failed to create employee:', err)
-      return { success: false, error: err.message }
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : String(err))
+      console.error("Supabase fetch failed:", err)
+      return { success: false, error: err instanceof Error ? err.message : String(err) }
     }
   }
 
@@ -160,10 +160,10 @@ export function usePayroll() {
       if (updateError) throw updateError
       setEmployees(prev => prev.map(emp => emp.id === id ? data : emp))
       return { success: true, data }
-    } catch (err: any) {
-      setError(err.message)
-      console.error('Failed to update employee:', err)
-      return { success: false, error: err.message }
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : String(err))
+      console.error("Supabase fetch failed:", err)
+      return { success: false, error: err instanceof Error ? err.message : String(err) }
     }
   }
 
@@ -178,10 +178,10 @@ export function usePayroll() {
       if (deleteError) throw deleteError
       setEmployees(prev => prev.filter(emp => emp.id !== id))
       return { success: true }
-    } catch (err: any) {
-      setError(err.message)
-      console.error('Failed to delete employee:', err)
-      return { success: false, error: err.message }
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : String(err))
+      console.error("Supabase fetch failed:", err)
+      return { success: false, error: err instanceof Error ? err.message : String(err) }
     }
   }
 
@@ -197,10 +197,10 @@ export function usePayroll() {
       if (insertError) throw insertError
       setPayrollRuns(prev => [data, ...prev])
       return { success: true, data }
-    } catch (err: any) {
-      setError(err.message)
-      console.error('Failed to create payroll run:', err)
-      return { success: false, error: err.message }
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : String(err))
+      console.error("Supabase fetch failed:", err)
+      return { success: false, error: err instanceof Error ? err.message : String(err) }
     }
   }
 
@@ -217,10 +217,10 @@ export function usePayroll() {
       if (updateError) throw updateError
       setPayrollRuns(prev => prev.map(run => run.id === id ? data : run))
       return { success: true, data }
-    } catch (err: any) {
-      setError(err.message)
-      console.error('Failed to update payroll run:', err)
-      return { success: false, error: err.message }
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : String(err))
+      console.error("Supabase fetch failed:", err)
+      return { success: false, error: err instanceof Error ? err.message : String(err) }
     }
   }
 

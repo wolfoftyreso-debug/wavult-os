@@ -1,6 +1,6 @@
-// ─── Wavult OS v2 — Mission Stack ──────────────────────────────────────────────
-// The left rail. Not a menu — a living timeline. Items enter from top,
-// resolve downward. Shows what's coming, what's active, what's resolved.
+// ─── Wavult OS v2 — Event Queue ────────────────────────────────────────────────
+// The left rail. A living timeline of operational events.
+// Items enter from top, resolve downward. Shows pending, active, and resolved.
 
 import { useEvents } from '../events/EventContext'
 import { useOperator } from '../operator/OperatorContext'
@@ -25,7 +25,7 @@ const CATEGORY_ICON: Record<string, string> = {
   gate: '◉',
 }
 
-function MissionItem({
+function EventListItem({
   event,
   isActive,
   isResolved,
@@ -43,10 +43,10 @@ function MissionItem({
     <button
       onClick={onClick}
       className={`
-        mission-item w-full text-left
-        ${isActive ? 'mission-item--active' : ''}
-        ${isResolved ? 'mission-item--resolved' : ''}
-        ${event.priority === 'critical' ? 'mission-item--urgent' : ''}
+        list-item w-full text-left
+        ${isActive ? 'list-item--active' : ''}
+        ${isResolved ? 'list-item--resolved' : ''}
+        ${event.priority === 'critical' ? 'list-item--urgent' : ''}
       `}
       style={{
         borderLeftColor: isActive ? priorityColor : undefined,
@@ -55,13 +55,13 @@ function MissionItem({
       {/* Priority indicator */}
       <div className="flex flex-col items-center gap-1 pt-0.5">
         <span
-          className="text-[10px] leading-none"
+          className="text-xs leading-none"
           style={{ color: priorityColor }}
         >
           {CATEGORY_ICON[event.category] || '●'}
         </span>
         {event.priority === 'critical' && !isResolved && (
-          <span className="hud-dot hud-dot--critical" />
+          <span className="status-dot status-dot--critical" />
         )}
       </div>
 
@@ -82,12 +82,12 @@ function MissionItem({
         </div>
 
         {event.subtitle && (
-          <div className="text-telemetry-sm text-text-tertiary mt-0.5 truncate">
+          <div className="text-label-2xs text-text-tertiary mt-0.5 truncate">
             {event.subtitle}
           </div>
         )}
 
-        {/* Gate lock indicator */}
+        {/* Access lock indicator */}
         {event.category === 'gate' && (
           <div className="flex items-center gap-1 mt-1">
             <svg width="8" height="8" viewBox="0 0 12 12" fill="none" className="flex-shrink-0">
@@ -115,7 +115,7 @@ export function MissionStack() {
   const { maxItemsPerView } = useOperator()
 
   const visiblePending = pendingEvents.slice(0, maxItemsPerView)
-  const visibleResolved = resolvedEvents.slice(0, 3) // Show last 3 resolved
+  const visibleResolved = resolvedEvents.slice(0, 3)
 
   return (
     <aside className="w-56 flex-shrink-0 bg-wavult-charcoal border-r border-wavult-border flex flex-col h-full overflow-hidden">
@@ -123,14 +123,14 @@ export function MissionStack() {
       <div className="h-14 flex items-center px-4 border-b border-wavult-border flex-shrink-0">
         <div className="flex items-center gap-2">
           <span className="text-sm font-bold text-text-primary tracking-wider">WAVULT</span>
-          <span className="text-telemetry text-signal-amber font-mono">OS</span>
+          <span className="text-label-xs text-signal-amber font-mono">OS</span>
         </div>
       </div>
 
       {/* Queue count */}
       <div className="px-4 py-2 border-b border-wavult-border flex items-center justify-between flex-shrink-0">
-        <span className="text-telemetry text-text-tertiary font-mono uppercase">Mission Queue</span>
-        <span className="text-telemetry font-mono" style={{
+        <span className="text-label-xs text-text-tertiary font-mono uppercase">Event Queue</span>
+        <span className="text-label-xs font-mono" style={{
           color: pendingEvents.length > 5 ? '#D94040' : pendingEvents.length > 2 ? '#C4961A' : '#4A7A5B',
         }}>
           {pendingEvents.length}
@@ -138,15 +138,15 @@ export function MissionStack() {
       </div>
 
       {/* Pending events */}
-      <div className="flex-1 overflow-y-auto mission-stack">
+      <div className="flex-1 overflow-y-auto item-list">
         {visiblePending.length === 0 ? (
           <div className="px-4 py-8 text-center">
             <div className="text-text-muted text-xs font-mono">ALL CLEAR</div>
-            <div className="text-text-tertiary text-[10px] mt-1">No pending events</div>
+            <div className="text-text-tertiary text-xs mt-1">No pending events</div>
           </div>
         ) : (
           visiblePending.map(event => (
-            <MissionItem
+            <EventListItem
               key={event.id}
               event={event}
               isActive={activeEvent?.id === event.id}
@@ -158,7 +158,7 @@ export function MissionStack() {
 
         {pendingEvents.length > maxItemsPerView && (
           <div className="px-4 py-2 text-center">
-            <span className="text-telemetry-sm text-text-muted font-mono">
+            <span className="text-label-2xs text-text-muted font-mono">
               +{pendingEvents.length - maxItemsPerView} more
             </span>
           </div>
@@ -168,10 +168,10 @@ export function MissionStack() {
         {visibleResolved.length > 0 && (
           <>
             <div className="px-4 py-2 border-t border-wavult-border flex-shrink-0">
-              <span className="text-telemetry-sm text-text-muted font-mono uppercase">Resolved</span>
+              <span className="text-label-2xs text-text-muted font-mono uppercase">Resolved</span>
             </div>
             {visibleResolved.map(event => (
-              <MissionItem
+              <EventListItem
                 key={event.id}
                 event={event}
                 isActive={false}
@@ -183,17 +183,17 @@ export function MissionStack() {
         )}
       </div>
 
-      {/* Footer — Momentum */}
+      {/* Footer — Progress */}
       <div className="px-4 py-3 border-t border-wavult-border flex-shrink-0 bg-wavult-carbon">
-        <div className="text-telemetry-sm text-text-muted font-mono uppercase mb-1">Momentum</div>
+        <div className="text-label-2xs text-text-muted font-mono uppercase mb-1">Progress</div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1">
             <span className="text-xs font-semibold text-text-primary">{resolvedEvents.length}</span>
-            <span className="text-telemetry-sm text-text-tertiary">resolved</span>
+            <span className="text-label-2xs text-text-tertiary">resolved</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="text-xs font-semibold text-signal-amber">{pendingEvents.filter(e => e.priority === 'critical').length}</span>
-            <span className="text-telemetry-sm text-text-tertiary">critical</span>
+            <span className="text-label-2xs text-text-tertiary">critical</span>
           </div>
         </div>
       </div>

@@ -127,11 +127,11 @@ function IntegrationRow({ integration }: { integration: Integration }) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-sm font-semibold text-white">{integration.name}</span>
-          <span className="text-[10px] text-gray-600 font-mono bg-white/[0.04] px-1.5 py-0.5 rounded">
+          <span className="text-xs text-gray-600 font-mono bg-white/[0.04] px-1.5 py-0.5 rounded">
             {integration.env}
           </span>
         </div>
-        <div className="flex items-center gap-3 mt-1 text-[10px] text-gray-600 flex-wrap">
+        <div className="flex items-center gap-3 mt-1 text-xs text-gray-600 flex-wrap">
           <span>Nyckel: <span className="text-gray-400 font-mono">{integration.keyHint}</span></span>
           <span>Scope: <span className="text-gray-500">{integration.scope}</span></span>
         </div>
@@ -139,14 +139,14 @@ function IntegrationRow({ integration }: { integration: Integration }) {
 
       {/* Status badge */}
       <div
-        className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold flex-shrink-0"
+        className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono font-bold flex-shrink-0"
         style={{ background: cfg.bg, border: `1px solid ${cfg.border}`, color: cfg.color }}
       >
         {cfg.icon} {integration.statusLabel}
       </div>
 
       {/* Last tested */}
-      <div className="text-[10px] text-gray-600 font-mono flex-shrink-0 hidden lg:block">
+      <div className="text-xs text-gray-600 font-mono flex-shrink-0 hidden lg:block">
         {integration.lastTested}
       </div>
 
@@ -154,7 +154,7 @@ function IntegrationRow({ integration }: { integration: Integration }) {
       <button
         onClick={handleTest}
         disabled={testing}
-        className="flex-shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-all"
+        className="flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
         style={{
           background: testing ? '#ffffff08' : '#ffffff0a',
           border: '1px solid #ffffff10',
@@ -176,23 +176,23 @@ export function APIKeysView() {
     <div className="space-y-4">
       {/* Summary bar */}
       <div className="flex items-center gap-3 flex-wrap">
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[11px] font-mono"
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-mono"
           style={{ background: '#10B98115', border: '1px solid #10B98130', color: '#10B981' }}>
           ✅ {okCount} aktiva
         </div>
         {warnCount > 0 && (
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[11px] font-mono"
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-mono"
             style={{ background: '#F59E0B15', border: '1px solid #F59E0B30', color: '#F59E0B' }}>
             ⚠️ {warnCount} varning
           </div>
         )}
         {errCount > 0 && (
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[11px] font-mono"
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-mono"
             style={{ background: '#EF444415', border: '1px solid #EF444430', color: '#EF4444' }}>
             ❌ {errCount} fel
           </div>
         )}
-        <span className="text-[10px] text-gray-700 font-mono ml-auto">
+        <span className="text-xs text-gray-700 font-mono ml-auto">
           {INTEGRATIONS.length} integrationer totalt
         </span>
       </div>
@@ -205,7 +205,7 @@ export function APIKeysView() {
       </div>
 
       {/* Footer note */}
-      <div className="rounded-xl border border-white/[0.04] bg-white/[0.02] px-4 py-3 text-[10px] text-gray-700 font-mono">
+      <div className="rounded-xl border border-white/[0.04] bg-white/[0.02] px-4 py-3 text-xs text-gray-700 font-mono">
         🔒 Nycklar lagras krypterat i miljövariabler. Sista 4 tecken visas för identifiering. Kontakta CTO för rotation.
       </div>
     </div>

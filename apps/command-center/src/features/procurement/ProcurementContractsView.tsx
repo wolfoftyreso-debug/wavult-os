@@ -15,27 +15,27 @@ function daysUntil(dateStr: string): number {
 function ExpiryBadge({ days }: { days: number }) {
   if (days < 0) {
     return (
-      <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-red-500/20 text-red-400">
+      <span className="text-xs px-2 py-0.5 rounded-full font-semibold bg-red-500/20 text-red-400">
         Utgånget
       </span>
     )
   }
   if (days <= 30) {
     return (
-      <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-red-500/20 text-red-400">
+      <span className="text-xs px-2 py-0.5 rounded-full font-semibold bg-red-500/20 text-red-400">
         ⚠ {days}d kvar
       </span>
     )
   }
   if (days <= 90) {
     return (
-      <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-amber-500/20 text-amber-400">
+      <span className="text-xs px-2 py-0.5 rounded-full font-semibold bg-amber-500/20 text-amber-400">
         ⚠ {days}d kvar
       </span>
     )
   }
   return (
-    <span className="text-[10px] px-2 py-0.5 rounded-full font-medium bg-emerald-500/10 text-emerald-500">
+    <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-emerald-500/10 text-emerald-500">
       {days}d kvar
     </span>
   )
@@ -52,10 +52,10 @@ export function ProcurementContractsView() {
         <div className="mx-6 mt-4 p-3 rounded-xl border border-amber-500/30 bg-amber-500/[0.06] flex items-start gap-3 flex-shrink-0">
           <span className="text-amber-400 text-lg leading-none mt-0.5">⚠</span>
           <div>
-            <p className="text-[12px] font-semibold text-amber-300">
+            <p className="text-xs font-semibold text-amber-300">
               {expiringSoon.length} avtal löper ut inom 90 dagar
             </p>
-            <p className="text-[11px] text-amber-500/70 mt-0.5">
+            <p className="text-xs text-amber-500/70 mt-0.5">
               {expiringSoon.map(c => c.supplierName).join(', ')} — kontrollera förnyelse
             </p>
           </div>
@@ -63,12 +63,13 @@ export function ProcurementContractsView() {
       )}
 
       {/* Table */}
-      <div className="flex-1 overflow-auto px-6 py-4">
-        <table className="w-full">
+      <div className="flex-1 overflow-auto px-4 md:px-6 py-4">
+        <div className="overflow-x-auto">
+        <table className="w-full min-w-[500px]">
           <thead>
             <tr className="text-left border-b border-white/[0.06]">
               {['Leverantör', 'Beskrivning', 'Start', 'Slutar', 'Status', 'Auto-förlängning', 'Värde/år'].map(h => (
-                <th key={h} className="pb-2 text-[10px] font-semibold text-gray-600 uppercase tracking-wider pr-5">{h}</th>
+                <th key={h} className="pb-2 text-xs font-semibold text-gray-600 uppercase tracking-wider pr-5">{h}</th>
               ))}
             </tr>
           </thead>
@@ -83,16 +84,16 @@ export function ProcurementContractsView() {
                   }`}
                 >
                   <td className="py-3 pr-5">
-                    <span className="text-[13px] font-semibold text-white">{c.supplierName}</span>
+                    <span className="text-sm font-semibold text-white">{c.supplierName}</span>
                   </td>
                   <td className="py-3 pr-5">
-                    <span className="text-[11px] text-gray-500">{c.description}</span>
+                    <span className="text-xs text-gray-500">{c.description}</span>
                   </td>
                   <td className="py-3 pr-5">
-                    <span className="text-[11px] text-gray-600 font-mono">{c.startDate}</span>
+                    <span className="text-xs text-gray-600 font-mono">{c.startDate}</span>
                   </td>
                   <td className="py-3 pr-5">
-                    <span className={`text-[11px] font-mono ${days <= 90 ? 'text-amber-400' : 'text-gray-400'}`}>
+                    <span className={`text-xs font-mono ${days <= 90 ? 'text-amber-400' : 'text-gray-400'}`}>
                       {c.endDate}
                     </span>
                   </td>
@@ -100,12 +101,12 @@ export function ProcurementContractsView() {
                     <ExpiryBadge days={days} />
                   </td>
                   <td className="py-3 pr-5">
-                    <span className={`text-[11px] font-medium ${c.autoRenewal ? 'text-emerald-400' : 'text-gray-600'}`}>
+                    <span className={`text-xs font-medium ${c.autoRenewal ? 'text-emerald-400' : 'text-gray-600'}`}>
                       {c.autoRenewal ? '✓ Ja' : '✗ Nej'}
                     </span>
                   </td>
                   <td className="py-3">
-                    <span className="text-[12px] font-mono text-white">
+                    <span className="text-xs font-mono text-white">
                       {formatAmount(c.annualValue, c.currency)}
                     </span>
                   </td>
@@ -114,8 +115,9 @@ export function ProcurementContractsView() {
             })}
           </tbody>
         </table>
+        </div>{/* /overflow-x-auto */}
 
-        <div className="mt-4 text-[10px] text-gray-700 font-mono">
+        <div className="mt-4 text-xs text-gray-700 font-mono">
           {CONTRACTS.length} aktiva avtal · Totalt{' '}
           {new Intl.NumberFormat('sv-SE', { style: 'currency', currency: 'SEK' }).format(
             CONTRACTS.reduce((sum, c) => sum + c.annualValue, 0)

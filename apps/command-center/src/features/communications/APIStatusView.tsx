@@ -39,12 +39,12 @@ const INITIAL_SERVICES: APIService[] = [
     id: '46elks',
     name: '46elks SMS',
     icon: '📱',
-    status: 'error',
-    lastPing: '2026-03-26T08:00:00Z',
-    latency_ms: null,
-    configured: false,
+    status: 'ok',
+    lastPing: '2026-03-27T19:00:00Z',
+    latency_ms: 98,
+    configured: true,
     endpoint: 'api.46elks.com',
-    description: 'Primär SMS-leverantör (Sverige)',
+    description: 'Primär SMS-leverantör (Sverige) — 14 200 SEK kredit · Avsändare: Wavult · Inget dedikerat +46-nummer ännu',
   },
   {
     id: 'supabase',
@@ -108,7 +108,7 @@ function LatencyBar({ ms }: { ms: number }) {
       <div className="flex-1 h-1 bg-white/[0.05] rounded-full overflow-hidden">
         <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
       </div>
-      <span className="text-[10px] font-mono text-gray-400 w-12 text-right">{ms} ms</span>
+      <span className="text-xs font-mono text-gray-400 w-12 text-right">{ms} ms</span>
     </div>
   )
 }
@@ -149,18 +149,18 @@ export function APIStatusView() {
       <div className="flex items-center gap-3 flex-wrap">
         <div className="flex items-center gap-2">
           <div className={`h-2.5 w-2.5 rounded-full ${errorCount === 0 ? 'bg-green-400' : 'bg-yellow-400'} animate-pulse`} />
-          <span className="text-[13px] font-semibold text-white">
+          <span className="text-sm font-semibold text-white">
             API-status {errorCount === 0 ? '— Allt operativt' : `— ${errorCount} problem`}
           </span>
         </div>
         <div className="flex items-center gap-2 ml-auto">
-          <span className="text-[10px] text-gray-600 font-mono">
+          <span className="text-xs text-gray-600 font-mono">
             Uppdaterad {lastRefresh.toLocaleTimeString('sv-SE')}
           </span>
           <button
             onClick={simulateRefresh}
             disabled={refreshing}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium bg-[#0D0F1A] border border-white/[0.08] text-gray-400 hover:text-white hover:border-white/[0.16] transition-colors disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#0D0F1A] border border-white/[0.08] text-gray-400 hover:text-white hover:border-white/[0.16] transition-colors disabled:opacity-50"
           >
             <span className={refreshing ? 'animate-spin' : ''}>↻</span>
             {refreshing ? 'Checkar…' : 'Refresha'}
@@ -172,15 +172,15 @@ export function APIStatusView() {
       <div className="grid grid-cols-3 gap-3">
         <div className="bg-[#0D0F1A] rounded-xl border border-green-500/20 p-3 text-center">
           <div className="text-2xl font-bold text-green-400">{okCount}</div>
-          <div className="text-[10px] text-gray-500 mt-0.5">Operativa</div>
+          <div className="text-xs text-gray-500 mt-0.5">Operativa</div>
         </div>
         <div className={`bg-[#0D0F1A] rounded-xl border p-3 text-center ${errorCount > 0 ? 'border-yellow-500/20' : 'border-white/[0.06]'}`}>
           <div className={`text-2xl font-bold ${errorCount > 0 ? 'text-yellow-400' : 'text-gray-600'}`}>{errorCount}</div>
-          <div className="text-[10px] text-gray-500 mt-0.5">Problem</div>
+          <div className="text-xs text-gray-500 mt-0.5">Problem</div>
         </div>
         <div className="bg-[#0D0F1A] rounded-xl border border-white/[0.06] p-3 text-center">
           <div className="text-2xl font-bold text-gray-300">{services.length}</div>
-          <div className="text-[10px] text-gray-500 mt-0.5">Totalt</div>
+          <div className="text-xs text-gray-500 mt-0.5">Totalt</div>
         </div>
       </div>
 
@@ -199,8 +199,8 @@ export function APIStatusView() {
                 <span className="text-xl flex-shrink-0">{svc.icon}</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-[13px] font-semibold text-white">{svc.name}</span>
-                    <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${sc.bg} ${sc.color}`}>
+                    <span className="text-sm font-semibold text-white">{svc.name}</span>
+                    <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${sc.bg} ${sc.color}`}>
                       {sc.label}
                     </span>
                     <span className={`text-[9px] px-1.5 py-0.5 rounded-full ${
@@ -211,10 +211,10 @@ export function APIStatusView() {
                       {svc.configured ? '✓ Konfigurerad' : '✗ Ej konfigurerad'}
                     </span>
                   </div>
-                  <p className="text-[11px] text-gray-500 mb-2">{svc.description}</p>
+                  <p className="text-xs text-gray-500 mb-2">{svc.description}</p>
                   <div className="flex items-center gap-4">
-                    <span className="text-[10px] text-gray-700 font-mono">{svc.endpoint}</span>
-                    <span className="text-[10px] text-gray-600">
+                    <span className="text-xs text-gray-700 font-mono">{svc.endpoint}</span>
+                    <span className="text-xs text-gray-600">
                       Senaste anrop: {new Date(svc.lastPing).toLocaleTimeString('sv-SE')}
                     </span>
                   </div>
@@ -224,7 +224,7 @@ export function APIStatusView() {
                     </div>
                   )}
                   {svc.latency_ms === null && (
-                    <div className="mt-2 text-[10px] text-red-400">Ingen respons — timeout</div>
+                    <div className="mt-2 text-xs text-red-400">Ingen respons — timeout</div>
                   )}
                 </div>
               </div>

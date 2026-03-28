@@ -332,7 +332,7 @@ const MARKET_SIGNALS: MarketSignal[] = [
 
 // ─── Health Score Gauge ───────────────────────────────────────────────────────
 
-function HealthGauge({ score, color }: { score: number; color: string }) {
+function HealthGauge({ score, color: _color }: { score: number; color: string }) {
   const r = 24
   const circ = 2 * Math.PI * r
   const offset = circ - (score / 100) * circ
@@ -384,7 +384,7 @@ function EntityCard({ entity }: { entity: EntityHealth }) {
             <span className="text-lg">{entity.emoji}</span>
             <span className="font-bold text-white text-sm">{entity.name}</span>
             <span
-              className="text-[10px] font-bold px-1.5 py-0.5 rounded"
+              className="text-xs font-bold px-1.5 py-0.5 rounded"
               style={{ backgroundColor: statusColors[entity.status] + '22', color: statusColors[entity.status] }}
             >
               {entity.code}
@@ -457,7 +457,7 @@ function RiskMatrix() {
           >
             <div className="flex items-center gap-2 mb-1">
               <div
-                className="text-[10px] font-bold px-1.5 py-0.5 rounded uppercase"
+                className="text-xs font-bold px-1.5 py-0.5 rounded uppercase"
                 style={{ backgroundColor: levelColors[risk.level] + '22', color: levelColors[risk.level] }}
               >
                 {levelLabels[risk.level]}
@@ -574,7 +574,7 @@ function DecisionLog() {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap mb-1">
                 <div
-                  className="text-[10px] font-bold px-1.5 py-0.5 rounded uppercase"
+                  className="text-xs font-bold px-1.5 py-0.5 rounded uppercase"
                   style={{ backgroundColor: statusColors[entry.status] + '22', color: statusColors[entry.status] }}
                 >
                   {statusLabels[entry.status]}
@@ -588,7 +588,7 @@ function DecisionLog() {
               <h4 className="text-sm font-bold text-white mb-1">{entry.decision}</h4>
               <p className="text-xs text-gray-400 mb-2">{entry.context}</p>
               <div className="rounded bg-white/5 border border-white/10 px-3 py-2">
-                <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide mb-0.5">Konsekvens</div>
+                <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-0.5">Konsekvens</div>
                 <p className="text-xs text-gray-300">{entry.consequence}</p>
               </div>
             </div>
@@ -628,19 +628,19 @@ function MarketSignals() {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap mb-1">
                 <div
-                  className="text-[10px] font-bold px-1.5 py-0.5 rounded"
+                  className="text-xs font-bold px-1.5 py-0.5 rounded"
                   style={{ backgroundColor: (productColors[signal.product] || '#6B7280') + '22', color: productColors[signal.product] || '#6B7280' }}
                 >
                   {signal.product}
                 </div>
                 <div
-                  className="text-[10px] font-bold px-1.5 py-0.5 rounded uppercase"
+                  className="text-xs font-bold px-1.5 py-0.5 rounded uppercase"
                   style={{ backgroundColor: strengthColors[signal.strength] + '22', color: strengthColors[signal.strength] }}
                 >
                   {signal.strength}
                 </div>
                 {signal.actionable && (
-                  <div className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 uppercase">
+                  <div className="text-xs font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 uppercase">
                     Actionable
                   </div>
                 )}
@@ -657,7 +657,183 @@ function MarketSignals() {
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
-type ActiveTab = 'oscilloskop' | 'risker' | 'beslut' | 'marknad'
+// ─── PIX Philosophy ───────────────────────────────────────────────────────────
+
+function PixPhilosophy() {
+  const pixLayers = [
+    { layer: 'Core Layer', description: 'PIX Event Layer + Ledger + Identity + Company Core', color: '#8B5CF6', note: 'Aldrig modulärt — grunden som aldrig byts ut' },
+    { layer: 'Module Layer', description: 'Execution · Process · Finance · Workforce · Workshop · Intelligence', color: '#3B82F6', note: 'Vad kunder betalar för — bygger på Core' },
+    { layer: 'Industry Packs', description: 'Automotive Pack · Construction Pack · Healthcare Pack · Restaurant Pack', color: '#10B981', note: 'Pre-konfigurerade bundles per bransch' },
+    { layer: 'Intelligence Layer', description: 'Control Tower · Root Cause Engine · PIX Analytics · AI Insights', color: '#F59E0B', note: 'Premium-lager med högst marginal' },
+  ]
+
+  const quixzoomPix = [
+    { event: 'mission_created', desc: 'En ny bilduppgift läggs till på kartan — en PIX föds', color: '#8B5CF6' },
+    { event: 'photographer_assigned', desc: 'Fotograf accepterar uppdrag — PIX byter status', color: '#3B82F6' },
+    { event: 'photo_captured', desc: 'Bild tagen och uppladdad — en operationell pixel levererad', color: '#F59E0B' },
+    { event: 'submission_reviewed', desc: 'Kvalitetsgodkänd av AI/admin — PIX valideras', color: '#10B981' },
+    { event: 'payment_triggered', desc: 'Fotograf betalas — PIX avslutas med ekonomisk signal', color: '#EC4899' },
+  ]
+
+  const competitors = [
+    { name: 'Palantir Foundry', cost: '€500K+/år', setup: '18 månader', verdict: 'Generisk ontologi — kräver datascientists' },
+    { name: 'SAP', cost: '€100K+/år', setup: '12-24 månader', verdict: 'Enterprise-only, oöverkomlig komplexitet' },
+    { name: 'Pixdrift (PIX)', cost: '€499-1299/mo', setup: 'Dag 1', verdict: 'Pre-built för verkligheten — inte konsultprojekt' },
+  ]
+
+  return (
+    <div className="flex flex-col gap-8">
+      {/* Hero */}
+      <div className="rounded-2xl bg-gradient-to-br from-purple-500/10 to-blue-500/10 border border-purple-500/20 p-6">
+        <div className="text-2xl font-bold text-white mb-2">PIX — Operational Pixels</div>
+        <div className="text-sm text-gray-300 leading-relaxed max-w-2xl">
+          Varje operation består av tusentals små, konkreta händelser. Vi kallar dem <strong className="text-purple-300">PIX</strong> — operational pixels.
+          När dessa inte är synliga blir verksamheten ogenomskinlig. När de är synliga — blir allt tydligt.
+        </div>
+        <div className="mt-4 grid grid-cols-3 gap-4">
+          <div className="text-center">
+            <div className="text-3xl font-bold text-purple-400">∞</div>
+            <div className="text-xs text-gray-400">PIX per operation</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl font-bold text-blue-400">0s</div>
+            <div className="text-xs text-gray-400">Delay till synlighet</div>
+          </div>
+          <div className="text-center">
+            <div className="text-3xl font-bold text-green-400">1</div>
+            <div className="text-xs text-gray-400">Källa för sanning</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Core Philosophy */}
+      <div>
+        <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Kärnprincip</div>
+        <div className="rounded-xl border border-white/10 bg-white/5 p-5">
+          <div className="text-lg font-bold text-white mb-2 italic">"Systems should run the business. Not the other way around."</div>
+          <p className="text-sm text-gray-300 leading-relaxed">
+            Avancerade bolag som Amazon, Nvidia och Tesla uppnår inte hög output av slumpen. De opererar på system som
+            <strong className="text-white"> spårar verkligheten i realtid</strong>, kontinuerligt rekalibrerar och förbättrar sig
+            själva genom struktur. Pixdrift ger detta till alla bolag — inte som rapporter, utan som verklighet.
+          </p>
+        </div>
+      </div>
+
+      {/* Architecture Layers */}
+      <div>
+        <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Arkitekturlager</div>
+        <div className="flex flex-col gap-2">
+          {pixLayers.map((layer, i) => (
+            <div
+              key={layer.layer}
+              className="rounded-xl border p-4 flex items-start gap-4"
+              style={{ borderColor: layer.color + '33', backgroundColor: layer.color + '0A' }}
+            >
+              <div
+                className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5"
+                style={{ backgroundColor: layer.color + '22', color: layer.color }}
+              >
+                {i + 1}
+              </div>
+              <div className="flex-1">
+                <div className="font-semibold text-white text-sm">{layer.layer}</div>
+                <div className="text-xs text-gray-300 mt-0.5">{layer.description}</div>
+                <div className="text-xs mt-1 italic" style={{ color: layer.color }}>{layer.note}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* quiXzoom PIX flow */}
+      <div>
+        <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">quiXzoom: Varje bild = en PIX</div>
+        <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-5">
+          <p className="text-sm text-gray-300 mb-4">
+            quiXzoom är PIX-konceptet applicerat på bildinfrastruktur. Varje foto-uppdrag genererar en kedja av operationella pixels —
+            från <span className="text-amber-300">uppdrag skapat</span> till <span className="text-green-300">betalning triggrad</span>.
+          </p>
+          <div className="flex flex-col gap-2">
+            {quixzoomPix.map((pix, i) => (
+              <div key={pix.event} className="flex items-center gap-3">
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <div
+                    className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold"
+                    style={{ backgroundColor: pix.color + '22', color: pix.color }}
+                  >
+                    {i + 1}
+                  </div>
+                  {i < quixzoomPix.length - 1 && (
+                    <div className="w-px h-4 bg-white/10 ml-2" />
+                  )}
+                </div>
+                <div className="flex-1 rounded-lg bg-white/5 border border-white/10 px-3 py-2">
+                  <div className="flex items-center gap-2">
+                    <code className="text-xs font-mono" style={{ color: pix.color }}>{pix.event}</code>
+                    <span className="text-xs text-gray-400">— {pix.desc}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Competitor comparison */}
+      <div>
+        <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Systemic Thinking — vs Konkurrenter</div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="border-b border-white/10">
+                <th className="text-left text-gray-400 pb-2 pr-4">System</th>
+                <th className="text-left text-gray-400 pb-2 pr-4">Kostnad</th>
+                <th className="text-left text-gray-400 pb-2 pr-4">Driftsättning</th>
+                <th className="text-left text-gray-400 pb-2">Verklighet</th>
+              </tr>
+            </thead>
+            <tbody>
+              {competitors.map((c, i) => (
+                <tr key={c.name} className={`border-b border-white/5 ${i === competitors.length - 1 ? 'bg-green-500/5' : ''}`}>
+                  <td className={`py-2 pr-4 font-medium ${i === competitors.length - 1 ? 'text-green-400' : 'text-white'}`}>{c.name}</td>
+                  <td className={`py-2 pr-4 ${i === competitors.length - 1 ? 'text-green-300' : 'text-red-400'}`}>{c.cost}</td>
+                  <td className={`py-2 pr-4 ${i === competitors.length - 1 ? 'text-green-300' : 'text-amber-400'}`}>{c.setup}</td>
+                  <td className="py-2 text-gray-400">{c.verdict}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Modular strategy */}
+      <div className="rounded-xl border border-white/10 bg-white/5 p-5">
+        <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Modulär Strategi</div>
+        <div className="grid grid-cols-2 gap-3 text-xs">
+          <div>
+            <div className="text-red-400 font-semibold mb-1">❌ Säljer INTE</div>
+            <div className="text-gray-400">• Licenser per användare</div>
+            <div className="text-gray-400">• Per-seat pricing</div>
+            <div className="text-gray-400">• Isolerade verktyg</div>
+          </div>
+          <div>
+            <div className="text-green-400 font-semibold mb-1">✅ Säljer</div>
+            <div className="text-gray-300">• Kapacitet + funktion</div>
+            <div className="text-gray-300">• Team-flat pricing</div>
+            <div className="text-gray-300">• Operativsystem (BOS)</div>
+          </div>
+        </div>
+        <div className="mt-3 text-xs text-gray-400 italic border-t border-white/10 pt-3">
+          Sell modularity. Build as modular monolith. Extract to microservices under scale pressure.
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── Main Component ───────────────────────────────────────────────────────────
+
+type ActiveTab = 'oscilloskop' | 'risker' | 'beslut' | 'marknad' | 'pix'
 
 export function SystemIntelligenceHub() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('oscilloskop')
@@ -667,6 +843,7 @@ export function SystemIntelligenceHub() {
     { id: 'risker', label: 'Riskmatris', icon: '⚠️' },
     { id: 'beslut', label: 'Beslutslogg', icon: '📋' },
     { id: 'marknad', label: 'Marknadssignaler', icon: '📈' },
+    { id: 'pix', label: 'PIX-filosofi', icon: '⚡' },
   ]
 
   // Overall group health = average
@@ -677,7 +854,7 @@ export function SystemIntelligenceHub() {
   return (
     <div className="h-full flex flex-col bg-gray-950 text-white overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 flex-shrink-0">
+      <div className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-white/10 flex-shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-blue-500/20 flex items-center justify-center">
             <ActivityIcon />
@@ -694,15 +871,15 @@ export function SystemIntelligenceHub() {
             <div className={`text-xl font-bold ${avgHealth >= 70 ? 'text-green-400' : avgHealth >= 40 ? 'text-amber-400' : 'text-red-400'}`}>
               λ {(avgHealth / 100).toFixed(2)}
             </div>
-            <div className="text-[10px] text-gray-400">Group Lambda</div>
+            <div className="text-xs text-gray-400">Group Lambda</div>
           </div>
           <div className="text-center">
             <div className="text-xl font-bold text-red-400">{criticalRisks}</div>
-            <div className="text-[10px] text-gray-400">Kritiska risker</div>
+            <div className="text-xs text-gray-400">Kritiska risker</div>
           </div>
           <div className="text-center">
             <div className="text-xl font-bold text-amber-400">{highRisks}</div>
-            <div className="text-[10px] text-gray-400">Höga risker</div>
+            <div className="text-xs text-gray-400">Höga risker</div>
           </div>
         </div>
       </div>
@@ -773,6 +950,8 @@ export function SystemIntelligenceHub() {
         {activeTab === 'beslut' && <DecisionLog />}
 
         {activeTab === 'marknad' && <MarketSignals />}
+
+        {activeTab === 'pix' && <PixPhilosophy />}
       </div>
     </div>
   )

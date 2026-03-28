@@ -1,13 +1,12 @@
-// ─── Wavult OS v2 — Peripheral HUD ─────────────────────────────────────────────
-// Always-on system state. Aircraft HUD paradigm: you don't read it, you sense it.
-// Top bar + bottom telemetry. Color temperature shifts based on atmosphere.
+// ─── Wavult OS v2 — Status Bar ─────────────────────────────────────────────────
+// Always-on system state. Top bar + bottom status. Color temperature shifts based on state.
 
 import { useEvents } from '../events/EventContext'
 import { useOperator } from '../operator/OperatorContext'
 import { useRole, ROLES } from '../../shared/auth/RoleContext'
 import { useEntityScope } from '../../shared/scope/EntityScopeContext'
 
-// ─── Top HUD Bar ─────────────────────────────────────────────────────────────
+// ─── Top Status Bar ───────────────────────────────────────────────────────────
 
 export function TopHUD() {
   const { systemState, momentum, atmosphere } = useEvents()
@@ -22,9 +21,9 @@ export function TopHUD() {
     <header className="h-10 flex-shrink-0 border-b border-wavult-border flex items-center justify-between px-5 bg-wavult-carbon">
       {/* Left — System status */}
       <div className="flex items-center gap-4">
-        {/* Atmosphere indicator */}
-        <div className="hud-indicator">
-          <span className="hud-dot" style={{ background: atmosphereColor }} />
+        {/* State indicator */}
+        <div className="status-indicator">
+          <span className="status-dot" style={{ background: atmosphereColor }} />
           <span style={{ color: atmosphereColor }}>
             {atmosphere === 'action' ? 'ACTION REQUIRED'
               : atmosphere === 'attention' ? 'ATTENTION'
@@ -33,23 +32,23 @@ export function TopHUD() {
         </div>
 
         {/* Pending count */}
-        <div className="hud-indicator">
+        <div className="status-indicator">
           <span className="text-text-primary font-semibold">{systemState.pendingEvents}</span>
           <span>PENDING</span>
         </div>
 
         {/* Scope */}
-        <div className="hud-indicator">
+        <div className="status-indicator">
           <span className="h-1.5 w-1.5 rounded-full" style={{ background: scopeEntity.color }} />
           <span>{scopeEntity.layer === 0 ? 'GROUP' : scopeEntity.shortName}</span>
         </div>
       </div>
 
-      {/* Right — Role context + momentum + logout */}
+      {/* Right — Role context + progress + logout */}
       <div className="flex items-center gap-3">
-        {/* Momentum pulse */}
+        {/* Resolved count */}
         {momentum.resolvedToday > 0 && (
-          <div className="hud-indicator">
+          <div className="status-indicator">
             <span className="text-signal-green">{momentum.resolvedToday}</span>
             <span>RESOLVED</span>
             {momentum.velocity === 'high' && (
@@ -58,7 +57,7 @@ export function TopHUD() {
           </div>
         )}
 
-        {/* Operator badge */}
+        {/* Role badge */}
         {effectiveRole && (
           <div className="flex items-center gap-2">
             {isAdmin ? (
@@ -68,7 +67,7 @@ export function TopHUD() {
                   const found = nonAdminRoles.find(r => r.id === e.target.value) ?? null
                   setViewAs(found)
                 }}
-                className="text-telemetry bg-wavult-carbon border border-wavult-border rounded px-2 py-1 font-mono cursor-pointer focus:outline-none appearance-none"
+                className="text-label-xs bg-wavult-carbon border border-wavult-border rounded px-2 py-1 font-mono cursor-pointer focus:outline-none appearance-none"
                 style={{ color: viewAs ? viewAs.color : '#5A6170' }}
               >
                 <option value="">SYS ADMIN</option>
@@ -77,7 +76,7 @@ export function TopHUD() {
                 ))}
               </select>
             ) : (
-              <div className="hud-indicator" style={{ color: effectiveRole.color }}>
+              <div className="status-indicator" style={{ color: effectiveRole.color }}>
                 <span
                   className="h-5 w-5 rounded flex items-center justify-center text-[8px] font-bold"
                   style={{ background: effectiveRole.color + '20', color: effectiveRole.color }}
@@ -90,7 +89,7 @@ export function TopHUD() {
 
             <button
               onClick={() => { setRole(null); setViewAs(null) }}
-              className="text-telemetry text-text-muted hover:text-text-tertiary transition-colors font-mono"
+              className="text-label-xs text-text-muted hover:text-text-tertiary transition-colors font-mono"
             >
               EXIT
             </button>
@@ -101,7 +100,7 @@ export function TopHUD() {
   )
 }
 
-// ─── Bottom Telemetry Bar ────────────────────────────────────────────────────
+// ─── Bottom Status Bar ────────────────────────────────────────────────────────
 
 export function BottomTelemetry() {
   const { systemState, momentum } = useEvents()
@@ -109,26 +108,26 @@ export function BottomTelemetry() {
 
   return (
     <footer className="h-7 flex-shrink-0 border-t border-wavult-border flex items-center justify-between px-5 bg-wavult-carbon">
-      {/* Left — Operator telemetry */}
+      {/* Left — Status metrics */}
       <div className="flex items-center gap-4">
-        <div className="hud-indicator">
+        <div className="status-indicator">
           <span className="text-text-tertiary">AVG RESPONSE</span>
           <span className="text-text-secondary">{systemState.averageResponseTime}m</span>
         </div>
 
         {systemState.escalatedCount > 0 && (
-          <div className="hud-indicator">
+          <div className="status-indicator">
             <span className="text-signal-red">{systemState.escalatedCount}</span>
             <span className="text-signal-red">ESCALATED</span>
           </div>
         )}
 
-        {/* Momentum bar */}
+        {/* Progress bar */}
         <div className="flex items-center gap-2">
-          <span className="text-telemetry-sm text-text-muted font-mono">MOMENTUM</span>
+          <span className="text-label-2xs text-text-muted font-mono">PROGRESS</span>
           <div className="w-16 h-0.5 bg-wavult-border rounded-full overflow-hidden">
             <div
-              className="momentum-bar"
+              className="progress-bar"
               style={{
                 width: `${Math.min(100, momentum.streakLength * 20)}%`,
                 background: momentum.velocity === 'high' ? '#4A7A5B'
@@ -141,10 +140,10 @@ export function BottomTelemetry() {
 
       {/* Right — System meta */}
       <div className="flex items-center gap-3">
-        <span className="text-telemetry-sm text-text-muted font-mono">
+        <span className="text-label-2xs text-text-muted font-mono">
           {profile.density.toUpperCase()} · {profile.pacing.toUpperCase()}
         </span>
-        <span className="text-telemetry-sm text-text-muted font-mono">
+        <span className="text-label-2xs text-text-muted font-mono">
           WAVULT OS v2
         </span>
       </div>

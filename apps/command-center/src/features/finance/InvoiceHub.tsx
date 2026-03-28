@@ -135,25 +135,25 @@ export function InvoiceHub() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-bold text-white">Fakturor</h2>
-          <p className="text-[11px] text-gray-500 mt-0.5">Hantera utgående fakturor</p>
+          <p className="text-xs text-gray-500 mt-0.5">Hantera utgående fakturor</p>
         </div>
         <button
           onClick={() => setShowNewForm(s => !s)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-accent/20 hover:bg-brand-accent/30 text-brand-accent text-[11px] font-semibold transition-colors border border-brand-accent/30"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-accent/20 hover:bg-brand-accent/30 text-brand-accent text-xs font-semibold transition-colors border border-brand-accent/30"
         >
           + Ny faktura
         </button>
       </div>
 
       {/* Status tabs */}
-      <div className="flex gap-1">
+      <div className="flex gap-1 overflow-x-auto pb-1">
         {(['all', 'draft', 'sent', 'paid', 'overdue'] as const).map(s => {
           const cfg = s === 'all' ? { label: 'Alla', color: '#ffffff', bg: '#ffffff15' } : STATUS_CONFIG[s]
           return (
             <button
               key={s}
               onClick={() => setStatusFilter(s)}
-              className={`px-3 py-1.5 rounded-lg text-[10px] font-semibold transition-colors flex items-center gap-1.5 ${statusFilter === s ? 'bg-white/10 text-white' : 'text-gray-600 hover:text-gray-400'}`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 ${statusFilter === s ? 'bg-white/10 text-white' : 'text-gray-600 hover:text-gray-400'}`}
             >
               {s !== 'all' && <span className="h-1.5 w-1.5 rounded-full" style={{ background: cfg.color }} />}
               {s === 'all' ? 'Alla' : STATUS_CONFIG[s as InvoiceStatus].label}
@@ -166,24 +166,24 @@ export function InvoiceHub() {
       {/* New invoice form */}
       {showNewForm && (
         <div className="rounded-xl border border-white/[0.08] bg-[#0D0F1A] p-4 space-y-3">
-          <h3 className="text-[13px] font-bold text-white">Ny faktura</h3>
+          <h3 className="text-sm font-bold text-white">Ny faktura</h3>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-[9px] text-gray-500 font-mono uppercase tracking-wider block mb-1">Mottagare</label>
               <input value={form.recipient} onChange={e => setForm(f => ({ ...f, recipient: e.target.value }))}
-                className="w-full bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-[12px] text-white placeholder-gray-700 focus:outline-none focus:border-white/20"
+                className="w-full bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-gray-700 focus:outline-none focus:border-white/20"
                 placeholder="Bolagsnamn..." />
             </div>
             <div>
               <label className="text-[9px] text-gray-500 font-mono uppercase tracking-wider block mb-1">E-post</label>
               <input value={form.recipientEmail} onChange={e => setForm(f => ({ ...f, recipientEmail: e.target.value }))}
-                className="w-full bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-[12px] text-white placeholder-gray-700 focus:outline-none focus:border-white/20"
+                className="w-full bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-gray-700 focus:outline-none focus:border-white/20"
                 placeholder="ekonomi@kund.se" />
             </div>
             <div>
               <label className="text-[9px] text-gray-500 font-mono uppercase tracking-wider block mb-1">Utfärdande bolag</label>
               <select value={form.entityId} onChange={e => setForm(f => ({ ...f, entityId: e.target.value as EntityId }))}
-                className="w-full bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-[12px] text-white focus:outline-none">
+                className="w-full bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white focus:outline-none">
                 {FINANCE_ENTITIES.map(fe => <option key={fe.id} value={fe.id}>{fe.name}</option>)}
               </select>
             </div>
@@ -191,14 +191,14 @@ export function InvoiceHub() {
               <div>
                 <label className="text-[9px] text-gray-500 font-mono uppercase tracking-wider block mb-1">Valuta</label>
                 <select value={form.currency} onChange={e => setForm(f => ({ ...f, currency: e.target.value as Currency }))}
-                  className="w-full bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-[12px] text-white focus:outline-none">
+                  className="w-full bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white focus:outline-none">
                   {(['SEK', 'EUR', 'USD', 'AED'] as Currency[]).map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
               </div>
               <div>
                 <label className="text-[9px] text-gray-500 font-mono uppercase tracking-wider block mb-1">Förfallodatum</label>
                 <input type="date" value={form.dueDate} onChange={e => setForm(f => ({ ...f, dueDate: e.target.value }))}
-                  className="w-full bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-[12px] text-white focus:outline-none" />
+                  className="w-full bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white focus:outline-none" />
               </div>
             </div>
           </div>
@@ -206,37 +206,39 @@ export function InvoiceHub() {
           <div>
             <label className="text-[9px] text-gray-500 font-mono uppercase tracking-wider block mb-2">Rader</label>
             {form.lines.map((line, i) => (
-              <div key={i} className="grid grid-cols-12 gap-2 mb-2">
+              <div key={i} className="flex flex-col sm:flex-row gap-2 mb-2">
                 <input value={line.description} onChange={e => updateLine(i, 'description', e.target.value)}
-                  className="col-span-6 bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-[12px] text-white placeholder-gray-700 focus:outline-none"
+                  className="flex-1 bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-gray-700 focus:outline-none"
                   placeholder="Beskrivning..." />
-                <input type="number" value={line.qty} onChange={e => updateLine(i, 'qty', Number(e.target.value))}
-                  className="col-span-2 bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-[12px] text-white focus:outline-none text-center"
-                  placeholder="Antal" min={1} />
-                <input type="number" value={line.unitPrice} onChange={e => updateLine(i, 'unitPrice', Number(e.target.value))}
-                  className="col-span-2 bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-[12px] text-white focus:outline-none"
-                  placeholder="À-pris" />
-                <div className="col-span-2 flex items-center justify-center text-[11px] font-mono text-green-400">
-                  {(line.qty * line.unitPrice).toLocaleString()}
+                <div className="flex gap-2">
+                  <input type="number" value={line.qty} onChange={e => updateLine(i, 'qty', Number(e.target.value))}
+                    className="w-16 bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white focus:outline-none text-center"
+                    placeholder="Antal" min={1} />
+                  <input type="number" value={line.unitPrice} onChange={e => updateLine(i, 'unitPrice', Number(e.target.value))}
+                    className="w-24 bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white focus:outline-none"
+                    placeholder="À-pris" />
+                  <div className="w-20 flex items-center justify-center text-xs font-mono text-green-400">
+                    {(line.qty * line.unitPrice).toLocaleString()}
+                  </div>
                 </div>
               </div>
             ))}
             <button onClick={() => setForm(f => ({ ...f, lines: [...f.lines, { description: '', qty: 1, unitPrice: 0 }] }))}
-              className="text-[10px] text-gray-600 hover:text-gray-400 transition-colors">
+              className="text-xs text-gray-600 hover:text-gray-400 transition-colors">
               + Lägg till rad
             </button>
           </div>
           {/* Total */}
           <div className="flex items-center justify-between pt-2 border-t border-white/[0.06]">
-            <span className="text-[11px] text-gray-500">Totalt netto</span>
+            <span className="text-xs text-gray-500">Totalt netto</span>
             <span className="text-[14px] font-bold text-white">{lineTotal.toLocaleString()} {form.currency}</span>
           </div>
           <div className="flex gap-2 justify-end">
             <button onClick={() => setShowNewForm(false)}
-              className="px-4 py-2 rounded-lg border border-white/[0.08] text-gray-500 text-[12px] hover:text-white transition-colors">
+              className="px-4 py-2 rounded-lg border border-white/[0.08] text-gray-500 text-xs hover:text-white transition-colors">
               Avbryt
             </button>
-            <button className="px-4 py-2 rounded-lg bg-brand-accent/20 border border-brand-accent/30 text-brand-accent text-[12px] font-semibold hover:bg-brand-accent/30 transition-colors">
+            <button className="px-4 py-2 rounded-lg bg-brand-accent/20 border border-brand-accent/30 text-brand-accent text-xs font-semibold hover:bg-brand-accent/30 transition-colors">
               Spara utkast
             </button>
           </div>
@@ -245,7 +247,8 @@ export function InvoiceHub() {
 
       {/* Invoice list */}
       <div className="rounded-xl border border-white/[0.06] bg-[#0D0F1A] overflow-hidden">
-        <div className="grid grid-cols-12 px-4 py-2 text-[9px] font-mono text-gray-600 uppercase tracking-wider border-b border-white/[0.06]">
+        <div className="overflow-x-auto">
+        <div className="grid grid-cols-12 px-4 py-2 text-[9px] font-mono text-gray-600 uppercase tracking-wider border-b border-white/[0.06] min-w-[560px]">
           <span className="col-span-2">Nr</span>
           <span className="col-span-3">Mottagare</span>
           <span className="col-span-2">Bolag</span>
@@ -259,20 +262,20 @@ export function InvoiceHub() {
           const st = STATUS_CONFIG[inv.status]
           return (
             <div key={inv.id}
-              className="grid grid-cols-12 px-4 py-3 items-center border-b border-white/[0.03] last:border-0 hover:bg-white/[0.02] transition-colors">
-              <span className="col-span-2 text-[11px] font-mono text-gray-400">{inv.number}</span>
+              className="grid grid-cols-12 px-4 py-3 items-center border-b border-white/[0.03] last:border-0 hover:bg-white/[0.02] transition-colors min-w-[560px]">
+              <span className="col-span-2 text-xs font-mono text-gray-400">{inv.number}</span>
               <div className="col-span-3">
-                <p className="text-[12px] text-white truncate">{inv.recipient}</p>
+                <p className="text-xs text-white truncate">{inv.recipient}</p>
                 <p className="text-[9px] text-gray-600 truncate">{inv.recipientEmail}</p>
               </div>
               <div className="col-span-2 flex items-center gap-1.5">
                 <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: fe?.color }} />
-                <span className="text-[10px] text-gray-500 font-mono truncate">{fe?.shortName}</span>
+                <span className="text-xs text-gray-500 font-mono truncate">{fe?.shortName}</span>
               </div>
-              <span className="col-span-2 text-right text-[12px] font-mono font-semibold text-white">
+              <span className="col-span-2 text-right text-xs font-mono font-semibold text-white">
                 {fmt(inv.total, inv.currency)}
               </span>
-              <span className="col-span-1 text-[10px] font-mono text-gray-500">{inv.dueDate.slice(5)}</span>
+              <span className="col-span-1 text-xs font-mono text-gray-500">{inv.dueDate.slice(5)}</span>
               <span className="col-span-1">
                 <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full"
                   style={{ color: st.color, background: st.bg }}>
@@ -282,7 +285,7 @@ export function InvoiceHub() {
               <div className="col-span-1 flex justify-end">
                 <button
                   onClick={() => setPreviewInvoice(inv)}
-                  className="text-[10px] text-gray-600 hover:text-white transition-colors px-2 py-1 rounded bg-white/[0.04] hover:bg-white/[0.08]"
+                  className="text-xs text-gray-600 hover:text-white transition-colors px-2 py-1 rounded bg-white/[0.04] hover:bg-white/[0.08]"
                 >
                   Preview
                 </button>
@@ -290,16 +293,19 @@ export function InvoiceHub() {
             </div>
           )
         })}
+        </div>{/* /overflow-x-auto */}
       </div>
 
       {/* Invoice preview modal */}
       {previewInvoice && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50" onClick={() => setPreviewInvoice(null)}>
-          <div onClick={e => e.stopPropagation()}>
-            <InvoicePreview invoice={previewInvoice} />
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" onClick={() => setPreviewInvoice(null)}>
+          <div className="w-full max-w-[500px]" onClick={e => e.stopPropagation()}>
+            <div className="overflow-x-auto">
+              <InvoicePreview invoice={previewInvoice} />
+            </div>
             <button
               onClick={() => setPreviewInvoice(null)}
-              className="mt-3 w-full py-2 rounded-lg bg-white/[0.08] text-white/60 text-[12px] hover:bg-white/[0.12] transition-colors"
+              className="mt-3 w-full py-2 rounded-lg bg-white/[0.08] text-white/60 text-xs hover:bg-white/[0.12] transition-colors"
             >
               Stäng
             </button>

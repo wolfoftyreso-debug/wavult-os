@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ENTITIES } from '../org-graph/data'
 import { useEntityScope } from '../../shared/scope/EntityScopeContext'
+import { Tooltip } from '../../shared/ui/Tooltip'
 
 const FLAG_MAP: Record<string, string> = {
   Dubai: '🇦🇪', 'EU-LT': '🇱🇹', 'US-DE': '🇺🇸', 'US-TX': '🇺🇸', SE: '🇸🇪', Global: '🌐',
@@ -16,23 +17,29 @@ export function EntitySwitcher() {
   const statusDot: Record<string, string> = { live: '#10B981', forming: '#F59E0B', planned: '#6B7280' }
 
   return (
-    <div className="relative">
+    <div className="relative" data-tour="entity-switcher">
       {/* Trigger button */}
       <button
         onClick={() => setOpen(o => !o)}
         className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg bg-[#0D0F1A] hover:bg-[#111420] border border-white/[0.06] transition-colors text-left"
       >
         <div
-          className="h-6 w-6 rounded-md flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0"
+          className="h-6 w-6 rounded-md flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
           style={{ backgroundColor: activeEntity.color }}
         >
           {activeEntity.flag}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[11px] font-semibold text-white truncate">{activeEntity.shortName}</p>
+          <p className="text-xs font-semibold text-white truncate">{activeEntity.shortName}</p>
           <p className="text-[9px] text-gray-600 font-mono">{activeEntity.jurisdiction} · L{activeEntity.layer}</p>
         </div>
         <span className="text-gray-600 text-[9px]">{open ? '▲' : '▼'}</span>
+        <Tooltip
+          content="Välj vilket bolag du vill titta på. 'Group' visar hela koncernen samlat. Alla moduler — Finance, Legal, People — filtreras automatiskt per valt bolag."
+          title="Bolagsväxlaren"
+          asIcon
+          position="right"
+        />
       </button>
 
       {/* Dropdown */}
@@ -64,7 +71,7 @@ export function EntitySwitcher() {
                 <span className="text-sm flex-shrink-0">{entity.flag}</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <p className="text-[11px] font-semibold text-white truncate">{entity.shortName}</p>
+                    <p className="text-xs font-semibold text-white truncate">{entity.shortName}</p>
                     <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: dot }} />
                   </div>
                   <p className="text-[9px] text-gray-600 font-mono truncate">

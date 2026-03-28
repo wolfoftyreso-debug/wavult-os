@@ -25,6 +25,8 @@ export interface CommandKPI {
   value: string
   trend: 'up' | 'down' | 'flat'
   good: boolean                   // is current trend positive?
+  why?: string                    // förklaring varför det är rött/gult
+  action?: string                 // vad som ska göras
 }
 
 // ─── The chain (immutable) ────────────────────────────────────────────────────
@@ -101,9 +103,21 @@ export const COMMAND_CHAIN: CommandRole[] = [
       'Banking relationships',
     ],
     kpis: [
-      { label: 'Intercompany setup', value: 'Pending',  trend: 'flat', good: false },
-      { label: 'Bank accounts',      value: '0 / 4',    trend: 'flat', good: false },
-      { label: 'Cashflow status',    value: 'Watch',    trend: 'down', good: false },
+      {
+        label: 'Intercompany setup', value: 'Pending', trend: 'flat', good: false,
+        why: 'Intercompany-avtal mellan bolagen är inte på plats. Utan dessa kan vi inte flytta pengar legalt mellan entiteterna.',
+        action: 'Dennis upprättar avtalen. Winston koordinerar med Erik för att signera.',
+      },
+      {
+        label: 'Bank accounts', value: '0 / 4', trend: 'flat', good: false,
+        why: 'Inget av de planerade bankkontona (SE, Dubai, US, EU) är öppnade ännu. Utan konton kan vi inte ta emot betalningar.',
+        action: 'Prioritera Revolut Business för SE + Dubai. Boka KYC-möte denna vecka.',
+      },
+      {
+        label: 'Cashflow status', value: 'Watch', trend: 'down', good: false,
+        why: 'Utan aktiva bankkonton finns inget formellt kassaflöde att redovisa. Löpande kostnader betalas via Eriks privata medel.',
+        action: 'Öppna bankkonton → sätt upp intercompany-flöden → flytta kapital till rätt entitet.',
+      },
     ],
     status: 'red',
   },
@@ -151,9 +165,21 @@ export const COMMAND_CHAIN: CommandRole[] = [
       'Intercompany legal framework',
     ],
     kpis: [
-      { label: 'Entities incorporated', value: '1 / 7',  trend: 'up',   good: false },
-      { label: 'Contracts signed',      value: '0',      trend: 'flat', good: false },
-      { label: 'Compliance status',     value: 'Watch',  trend: 'flat', good: false },
+      {
+        label: 'Entities incorporated', value: '1 / 7', trend: 'up', good: false,
+        why: 'Av 7 planerade entiteter (SE, Dubai FZCO, Texas LLC, Litauisk UAB, m.fl.) är bara 1 registrerad. Övriga blockerar bankkonton och legala flöden.',
+        action: 'Prioritera Dubai FZCO (mest kritisk för skattestruktur) → Texas LLC → Litauen UAB.',
+      },
+      {
+        label: 'Contracts signed', value: '0', trend: 'flat', good: false,
+        why: 'Inga formella avtal är signerade ännu — varken intercompany, anställningsavtal, NDA:er eller kundavtal.',
+        action: 'Börja med intercompany-ramavtal + anställningsavtal för teamet. Använd Legal Hub i Wavult OS.',
+      },
+      {
+        label: 'Compliance status', value: 'Watch', trend: 'flat', good: false,
+        why: 'Utan registrerade entiteter och signerade avtal är compliance-statusen oklar i samtliga jurisdiktioner.',
+        action: 'Entitetsregistrering → avtal → compliance-genomgång per jurisdiktion (SE, UAE, US).',
+      },
     ],
     status: 'red',
   },

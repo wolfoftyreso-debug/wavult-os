@@ -1,5 +1,5 @@
 import { LEAVE_RECORDS, SWEDISH_HOLIDAYS_2026 } from './data'
-import { usePayroll } from './hooks/usePayroll'
+import { usePayroll, type Employee } from './hooks/usePayroll'
 
 const MONTH_NAMES_LONG = ['Januari','Februari','Mars','April','Maj','Juni','Juli','Augusti','September','Oktober','November','December']
 
@@ -16,7 +16,7 @@ function LeaveBar({ used, planned, entitled }: { used: number; planned: number; 
   )
 }
 
-function SimpleCalendar({ month, year, employees }: { month: number; year: number; employees: any[] }) {
+function SimpleCalendar({ month, year, employees }: { month: number; year: number; employees: Employee[] }) {
   const firstDay = new Date(year, month, 1).getDay()
   const daysInMonth = new Date(year, month + 1, 0).getDate()
   const startOffset = (firstDay + 6) % 7 // Mon-first
@@ -28,7 +28,7 @@ function SimpleCalendar({ month, year, employees }: { month: number; year: numbe
     })
     .map(h => new Date(h.date).getDate())
 
-  const allLeave: { day: number; emp: any }[] = []
+  const allLeave: { day: number; emp: Employee }[] = []
   LEAVE_RECORDS.forEach(record => {
     const emp = employees.find(e => e.id === record.employeeId)
     if (!emp) return
@@ -56,7 +56,7 @@ function SimpleCalendar({ month, year, employees }: { month: number; year: numbe
   return (
     <div className="bg-surface-raised border border-surface-border rounded-xl p-4">
       <div className="text-xs font-semibold text-white mb-3">{MONTH_NAMES_LONG[month]} {year}</div>
-      <div className="grid grid-cols-7 gap-px text-center text-[10px] text-gray-600 mb-1">
+      <div className="grid grid-cols-7 gap-px text-center text-xs text-gray-600 mb-1">
         {['Mån','Tis','Ons','Tor','Fre','Lör','Sön'].map(d => <div key={d}>{d}</div>)}
       </div>
       <div className="grid grid-cols-7 gap-px">
@@ -69,7 +69,7 @@ function SimpleCalendar({ month, year, employees }: { month: number; year: numbe
             <div
               key={i}
               title={isHoliday ? SWEDISH_HOLIDAYS_2026.find(h => new Date(h.date).getDate() === day && new Date(h.date).getMonth() === month)?.name : undefined}
-              className={`relative flex flex-col items-center justify-start py-1 rounded text-[10px] min-h-[28px] ${
+              className={`relative flex flex-col items-center justify-start py-1 rounded text-xs min-h-[28px] ${
                 isHoliday ? 'text-red-400' : isToday ? 'font-bold text-purple-300' : 'text-gray-400'
               } ${isToday ? 'ring-1 ring-purple-500/60 bg-purple-500/10' : ''}`}
             >
@@ -118,15 +118,15 @@ export function LeaveView() {
         <div className="px-5 py-4 border-b border-surface-border">
           <h3 className="text-sm font-semibold text-white">Semesteröversikt 2026</h3>
           <div className="flex gap-4 mt-2">
-            <div className="flex items-center gap-1.5 text-[10px] text-gray-500">
+            <div className="flex items-center gap-1.5 text-xs text-gray-500">
               <div className="h-2 w-4 rounded-full bg-amber-400" />
               Uttaget
             </div>
-            <div className="flex items-center gap-1.5 text-[10px] text-gray-500">
+            <div className="flex items-center gap-1.5 text-xs text-gray-500">
               <div className="h-2 w-4 rounded-full bg-blue-400/60" />
               Planerat
             </div>
-            <div className="flex items-center gap-1.5 text-[10px] text-gray-500">
+            <div className="flex items-center gap-1.5 text-xs text-gray-500">
               <div className="h-2 w-4 rounded-full bg-surface-border" />
               Kvar
             </div>
@@ -153,25 +153,25 @@ export function LeaveView() {
                     </div>
                     <div>
                       <div className="text-xs font-medium text-white">{emp.name}</div>
-                      <div className="text-[10px] text-gray-500">{emp.role}</div>
+                      <div className="text-xs text-gray-500">{emp.role}</div>
                     </div>
                   </div>
                   <div className="flex gap-4 text-right">
                     <div>
                       <div className="text-xs font-semibold text-amber-400">{used}</div>
-                      <div className="text-[10px] text-gray-600">uttaget</div>
+                      <div className="text-xs text-gray-600">uttaget</div>
                     </div>
                     <div>
                       <div className="text-xs font-semibold text-blue-400">{planned}</div>
-                      <div className="text-[10px] text-gray-600">planerat</div>
+                      <div className="text-xs text-gray-600">planerat</div>
                     </div>
                     <div>
                       <div className="text-xs font-semibold text-green-400">{remaining}</div>
-                      <div className="text-[10px] text-gray-600">kvar</div>
+                      <div className="text-xs text-gray-600">kvar</div>
                     </div>
                     <div>
                       <div className="text-xs font-semibold text-gray-300">{entitled}</div>
-                      <div className="text-[10px] text-gray-600">totalt</div>
+                      <div className="text-xs text-gray-600">totalt</div>
                     </div>
                   </div>
                 </div>
@@ -181,7 +181,7 @@ export function LeaveView() {
                 {record && record.plannedLeave.length > 0 && (
                   <div className="mt-2 space-y-1">
                     {record.plannedLeave.map((pl, i) => (
-                      <div key={i} className="flex items-center justify-between text-[10px]">
+                      <div key={i} className="flex items-center justify-between text-xs">
                         <span className="text-gray-500">{pl.start} → {pl.end} ({pl.days} dagar)</span>
                         <span className={pl.approved ? 'text-green-400' : 'text-amber-400'}>
                           {pl.approved ? '✓ Godkänd' : '⏳ Inväntar'}
@@ -215,7 +215,7 @@ export function LeaveView() {
             const isPast = d < today
             return (
               <div key={h.date} className={`flex items-center gap-2 text-xs ${isPast ? 'opacity-40' : ''}`}>
-                <span className="text-red-400 font-mono text-[10px] w-20 flex-shrink-0">
+                <span className="text-red-400 font-mono text-xs w-20 flex-shrink-0">
                   {h.date.slice(5)}
                 </span>
                 <span className="text-gray-300">{h.name}</span>

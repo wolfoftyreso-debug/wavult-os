@@ -34,13 +34,13 @@ export function SuppliersView() {
   return (
     <div className="flex flex-col h-full">
       {/* Filters */}
-      <div className="flex items-center gap-3 px-6 py-3 border-b border-white/[0.06] flex-shrink-0 flex-wrap">
+      <div className="flex items-center gap-3 px-4 md:px-6 py-3 border-b border-white/[0.06] flex-shrink-0 flex-wrap">
         <input
           type="text"
           placeholder="Sök leverantör…"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="bg-white/[0.05] border border-white/[0.08] rounded-lg px-3 py-1.5 text-[12px] text-white placeholder-gray-600 focus:outline-none focus:border-white/20 w-44"
+          className="bg-white/[0.05] border border-white/[0.08] rounded-lg px-3 py-1.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-white/20 w-44"
         />
 
         <div className="flex gap-1">
@@ -48,7 +48,7 @@ export function SuppliersView() {
             <button
               key={cat}
               onClick={() => setFilterCategory(cat as SupplierCategory | 'Alla')}
-              className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-colors ${
+              className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors ${
                 filterCategory === cat
                   ? 'bg-white/10 text-white'
                   : 'text-gray-500 hover:text-gray-300'
@@ -70,7 +70,7 @@ export function SuppliersView() {
             <button
               key={s}
               onClick={() => setFilterStatus(s as SupplierStatus | 'Alla')}
-              className={`px-2.5 py-1 rounded-lg text-[11px] transition-colors ${
+              className={`px-2.5 py-1 rounded-lg text-xs transition-colors ${
                 filterStatus === s ? 'bg-white/10 text-white' : 'text-gray-500 hover:text-gray-300'
               }`}
             >
@@ -81,12 +81,13 @@ export function SuppliersView() {
       </div>
 
       {/* Table */}
-      <div className="flex-1 overflow-auto px-6 py-4">
-        <table className="w-full">
+      <div className="flex-1 overflow-auto px-4 md:px-6 py-4">
+        <div className="overflow-x-auto">
+        <table className="w-full min-w-[500px]">
           <thead>
             <tr className="text-left border-b border-white/[0.06]">
               {['Leverantör', 'Kategori', 'Land', 'Kontakt', 'Status'].map(h => (
-                <th key={h} className="pb-2 text-[10px] font-semibold text-gray-600 uppercase tracking-wider pr-6">{h}</th>
+                <th key={h} className="pb-2 text-xs font-semibold text-gray-600 uppercase tracking-wider pr-6">{h}</th>
               ))}
             </tr>
           </thead>
@@ -96,25 +97,25 @@ export function SuppliersView() {
               return (
                 <tr key={s.id} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors">
                   <td className="py-3 pr-6">
-                    <span className="text-[13px] font-semibold text-white">{s.name}</span>
+                    <span className="text-sm font-semibold text-white">{s.name}</span>
                   </td>
                   <td className="py-3 pr-6">
                     <span
-                      className="text-[11px] px-2 py-0.5 rounded-md font-medium"
+                      className="text-xs px-2 py-0.5 rounded-md font-medium"
                       style={{ color: CATEGORY_COLORS[s.category], background: CATEGORY_COLORS[s.category] + '18' }}
                     >
                       {s.category}
                     </span>
                   </td>
                   <td className="py-3 pr-6">
-                    <span className="text-[12px] text-gray-400">{s.country}</span>
+                    <span className="text-xs text-gray-400">{s.country}</span>
                   </td>
                   <td className="py-3 pr-6">
-                    <span className="text-[11px] text-gray-500 font-mono">{s.email}</span>
+                    <span className="text-xs text-gray-500 font-mono">{s.email}</span>
                   </td>
                   <td className="py-3">
                     <span
-                      className="text-[11px] px-2 py-0.5 rounded-full font-medium"
+                      className="text-xs px-2 py-0.5 rounded-full font-medium"
                       style={{ color: badge.color, background: badge.bg }}
                     >
                       {badge.label}
@@ -125,12 +126,13 @@ export function SuppliersView() {
             })}
           </tbody>
         </table>
+        </div>{/* /overflow-x-auto */}
 
         {filtered.length === 0 && (
-          <div className="text-center py-16 text-gray-600 text-[13px]">Inga leverantörer matchar filtret</div>
+          <div className="text-center py-16 text-gray-600 text-sm">Inga leverantörer matchar filtret</div>
         )}
 
-        <div className="mt-4 text-[10px] text-gray-700 font-mono">
+        <div className="mt-4 text-xs text-gray-700 font-mono">
           {filtered.length} av {SUPPLIERS.length} leverantörer
         </div>
       </div>

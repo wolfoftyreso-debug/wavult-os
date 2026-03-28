@@ -174,8 +174,9 @@ export function PipelineView() {
         </div>
       </div>
 
-      {/* Active stages kanban */}
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
+      {/* Active stages kanban — horizontal scroll on mobile */}
+      <div className="overflow-x-auto -mx-1 px-1 pb-2">
+      <div className="grid grid-cols-5 gap-3 min-w-[700px] md:min-w-0 md:grid-cols-3 xl:grid-cols-5">
         {STAGE_ACTIVE.map(stage => {
           const cards = filtered.filter(p => p.stage === stage)
           const stageValue = cards.reduce((s, p) => s + p.valueSEK, 0)
@@ -194,7 +195,7 @@ export function PipelineView() {
                 </span>
               </div>
               {cards.length > 0 && (
-                <p className="text-[10px] text-gray-600 px-1 tabular-nums">{formatSEK(stageValue)}</p>
+                <p className="text-xs text-gray-600 px-1 tabular-nums">{formatSEK(stageValue)}</p>
               )}
               <div
                 className="flex flex-col gap-2 min-h-24 p-2 rounded-xl"
@@ -211,6 +212,7 @@ export function PipelineView() {
           )
         })}
       </div>
+      </div>{/* /overflow-x-auto */}
 
       {/* Closed stages */}
       <div className="grid grid-cols-2 gap-3">
@@ -228,7 +230,7 @@ export function PipelineView() {
                 </div>
                 <div className="flex items-center gap-2">
                   {cards.length > 0 && (
-                    <span className="text-[10px] text-gray-600 tabular-nums">{formatSEK(stageValue)}</span>
+                    <span className="text-xs text-gray-600 tabular-nums">{formatSEK(stageValue)}</span>
                   )}
                   <span
                     className="text-xs font-bold tabular-nums px-1.5 py-0.5 rounded-full"

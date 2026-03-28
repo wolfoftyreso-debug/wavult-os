@@ -208,22 +208,27 @@ function CommandNode({
                 {role.initials}
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-[11px] font-bold text-white leading-tight truncate">
+                <div className="text-xs font-bold text-white leading-tight truncate">
                   {role.person}
                 </div>
                 <div
-                  className="text-[10px] font-semibold leading-tight truncate"
+                  className="text-xs font-semibold leading-tight truncate"
                   style={{ color: role.color }}
                 >
                   {role.title}
                 </div>
               </div>
-              {/* Status dot */}
-              <div
-                className="h-2 w-2 rounded-full flex-shrink-0 mt-1"
-                style={{ background: statusColor, boxShadow: `0 0 6px ${statusColor}` }}
-                title={STATUS_LABEL[role.status]}
-              />
+              {/* Status dot + click hint */}
+              <div className="flex flex-col items-center gap-1 flex-shrink-0">
+                <div
+                  className="h-2 w-2 rounded-full"
+                  style={{ background: statusColor }}
+                  title={STATUS_LABEL[role.status]}
+                />
+                {!selected && (
+                  <span className="text-[8px] text-gray-600 font-mono">tap</span>
+                )}
+              </div>
             </div>
 
             {/* Divider */}
@@ -304,16 +309,30 @@ function DetailPanel({ role, onClose, onNavigate }: {
       {/* KPIs */}
       <div className="px-5 py-4 border-b border-white/[0.05]">
         <div className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3">KPIs</div>
-        <div className="space-y-3">
+        <div className="space-y-4">
           {role.kpis.map(kpi => {
             const trendColor = kpi.good ? '#10B981' : kpi.trend === 'flat' ? '#6B7280' : '#EF4444'
             const trendIcon  = kpi.trend === 'up' ? '↑' : kpi.trend === 'down' ? '↓' : '–'
+            const isIssue = !kpi.good
             return (
-              <div key={kpi.label} className="flex items-center justify-between">
-                <span className="text-xs text-gray-500">{kpi.label}</span>
-                <span className="text-sm font-semibold font-mono" style={{ color: trendColor }}>
-                  {kpi.value} {trendIcon}
-                </span>
+              <div key={kpi.label} className={`rounded-xl p-3 border ${isIssue ? 'bg-red-500/5 border-red-500/15' : 'bg-white/[0.02] border-white/[0.05]'}`}>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs text-gray-400 font-medium">{kpi.label}</span>
+                  <span className="text-sm font-bold font-mono" style={{ color: trendColor }}>
+                    {kpi.value} {trendIcon}
+                  </span>
+                </div>
+                {isIssue && kpi.why && (
+                  <div className="mt-2 space-y-1.5">
+                    <p className="text-xs text-gray-400 leading-relaxed">{kpi.why}</p>
+                    {kpi.action && (
+                      <div className="flex gap-1.5 mt-2">
+                        <span className="text-xs text-amber-400 font-semibold flex-shrink-0">→ Åtgärd:</span>
+                        <p className="text-xs text-amber-300 leading-relaxed">{kpi.action}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )
           })}
@@ -334,8 +353,8 @@ function DetailPanel({ role, onClose, onNavigate }: {
               >
                 <span>{e.flag}</span>
                 <span className="text-xs font-semibold" style={{ color: e.color }}>{e.shortName}</span>
-                <span className="text-[10px] text-gray-600 flex-1 truncate">{e.jurisdiction}</span>
-                <span className="text-[10px] text-gray-600">→</span>
+                <span className="text-xs text-gray-600 flex-1 truncate">{e.jurisdiction}</span>
+                <span className="text-xs text-gray-600">→</span>
               </button>
             ))}
           </div>
@@ -370,12 +389,12 @@ export function CommandHierarchyView() {
             <h1 className="text-sm font-bold text-white">Command Hierarchy</h1>
             <span className="text-xs text-gray-600 font-mono">reports_to chain · always visible</span>
             {criticalCount > 0 && (
-              <span className="text-[10px] px-2 py-0.5 rounded font-mono bg-red-500/15 text-red-400 border border-red-500/20">
+              <span className="text-xs px-2 py-0.5 rounded font-mono bg-red-500/15 text-red-400 border border-red-500/20">
                 {criticalCount} action needed
               </span>
             )}
             {watchCount > 0 && (
-              <span className="text-[10px] px-2 py-0.5 rounded font-mono bg-yellow-500/15 text-yellow-400 border border-yellow-500/20">
+              <span className="text-xs px-2 py-0.5 rounded font-mono bg-yellow-500/15 text-yellow-400 border border-yellow-500/20">
                 {watchCount} watch
               </span>
             )}
@@ -390,8 +409,8 @@ export function CommandHierarchyView() {
           </div>
         </div>
 
-        {/* SVG canvas */}
-        <div className="flex-1 overflow-auto flex items-start justify-center p-10">
+        {/* SVG canvas — hidden on mobile, list shown instead */}
+        <div className="hidden md:flex flex-1 overflow-auto items-start justify-center p-10">
           <svg
             width={vw}
             height={vh + 20}
@@ -413,17 +432,74 @@ export function CommandHierarchyView() {
           </svg>
         </div>
 
+        {/* Mobile list view */}
+        <div className="md:hidden flex-1 overflow-auto p-4 space-y-3">
+          {COMMAND_CHAIN.map(role => {
+            const sc = STATUS_COLOR[role.status]
+            const issues = role.kpis.filter(k => !k.good)
+            return (
+              <button
+                key={role.id}
+                onClick={() => setSelectedId(prev => prev === role.id ? null : role.id)}
+                className="w-full text-left rounded-xl border p-4 transition-all"
+                style={{
+                  borderColor: selectedId === role.id ? role.color + '60' : sc + '30',
+                  background: selectedId === role.id ? role.color + '10' : '#0D1117',
+                }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg flex items-center justify-center font-bold text-xs flex-shrink-0"
+                    style={{ background: role.color + '20', color: role.color }}>
+                    {role.initials}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-white truncate">{role.person}</p>
+                    <p className="text-xs font-medium truncate" style={{ color: role.color }}>{role.title}</p>
+                  </div>
+                  <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                    <div className="h-2 w-2 rounded-full" style={{ background: sc }} />
+                    {issues.length > 0 && (
+                      <span className="text-xs text-red-400">{issues.length} issue{issues.length > 1 ? 's' : ''}</span>
+                    )}
+                  </div>
+                </div>
+                {selectedId === role.id && (
+                  <div className="mt-3 pt-3 border-t border-white/10 space-y-2">
+                    {role.kpis.map(kpi => {
+                      const tc = kpi.good ? '#10B981' : '#EF4444'
+                      return (
+                        <div key={kpi.label} className={`rounded-lg p-2.5 ${!kpi.good ? 'bg-red-500/5 border border-red-500/15' : 'bg-white/[0.02]'}`}>
+                          <div className="flex justify-between items-center">
+                            <span className="text-xs text-gray-400">{kpi.label}</span>
+                            <span className="text-xs font-bold font-mono" style={{ color: tc }}>{kpi.value}</span>
+                          </div>
+                          {!kpi.good && kpi.why && (
+                            <p className="text-xs text-gray-400 mt-1 leading-relaxed">{kpi.why}</p>
+                          )}
+                          {!kpi.good && kpi.action && (
+                            <p className="text-xs text-amber-300 mt-1 leading-relaxed">→ {kpi.action}</p>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+              </button>
+            )
+          })}
+        </div>
+
         {/* Legend */}
         <div className="flex-shrink-0 border-t border-white/[0.04] px-6 py-2 flex items-center gap-6">
           {(['green', 'yellow', 'red'] as const).map(s => (
             <div key={s} className="flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full" style={{ background: STATUS_COLOR[s] }} />
-              <span className="text-[10px] text-gray-600">{STATUS_LABEL[s]}</span>
+              <span className="text-xs text-gray-600">{STATUS_LABEL[s]}</span>
             </div>
           ))}
           <div className="flex items-center gap-1.5 ml-4">
-            <span className="text-[10px] text-gray-600 font-mono">-- --</span>
-            <span className="text-[10px] text-gray-600">reports_to</span>
+            <span className="text-xs text-gray-600 font-mono">-- --</span>
+            <span className="text-xs text-gray-600">reports_to</span>
           </div>
         </div>
       </div>

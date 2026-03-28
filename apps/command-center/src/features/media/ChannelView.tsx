@@ -118,12 +118,12 @@ export function ChannelView() {
                   <div className="text-xs text-gray-500">{TYPE_LABELS[channel.type]}</div>
                 </div>
               </div>
-              <span className={`text-[10px] px-2 py-0.5 rounded-full font-mono ${STATUS_STYLES[channel.status]}`}>
+              <span className={`text-xs px-2 py-0.5 rounded-full font-mono ${STATUS_STYLES[channel.status]}`}>
                 {channel.status}
               </span>
             </div>
 
-            <div className="text-[10px] text-gray-600 font-mono">
+            <div className="text-xs text-gray-600 font-mono">
               {channel.api_adapter}
             </div>
 

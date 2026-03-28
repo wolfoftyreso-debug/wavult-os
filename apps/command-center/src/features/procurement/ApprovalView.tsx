@@ -39,15 +39,15 @@ export function ApprovalView() {
             <div className="flex items-center gap-2 mb-1">
               <span className="text-[14px] font-bold text-white">{req.supplierName}</span>
               <span
-                className="text-[10px] px-2 py-0.5 rounded-full font-medium"
+                className="text-xs px-2 py-0.5 rounded-full font-medium"
                 style={{ color: meta.color, background: meta.bg }}
               >
                 {meta.label}
               </span>
-              <span className="text-[10px] text-gray-600 font-mono ml-auto">{req.approver}-godkännande</span>
+              <span className="text-xs text-gray-600 font-mono ml-auto">{req.approver}-godkännande</span>
             </div>
-            <p className="text-[12px] text-gray-400 mb-2">{req.description}</p>
-            <div className="flex items-center gap-4 text-[10px] text-gray-600 font-mono">
+            <p className="text-xs text-gray-400 mb-2">{req.description}</p>
+            <div className="flex items-center gap-4 text-xs text-gray-600 font-mono">
               <span>PO: {req.purchaseOrderId.toUpperCase()}</span>
               <span>Begärd av: {req.requestedBy}</span>
               <span>{new Date(req.requestedAt).toLocaleDateString('sv-SE')}</span>
@@ -72,18 +72,18 @@ export function ApprovalView() {
               placeholder="Kommentar (valfritt)…"
               value={comment[req.id] ?? ''}
               onChange={e => setComment(prev => ({ ...prev, [req.id]: e.target.value }))}
-              className="w-full bg-white/[0.05] border border-white/[0.08] rounded-lg px-3 py-1.5 text-[11px] text-white placeholder-gray-600 focus:outline-none focus:border-white/20 mb-3"
+              className="w-full bg-white/[0.05] border border-white/[0.08] rounded-lg px-3 py-1.5 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-white/20 mb-3"
             />
             <div className="flex gap-2">
               <button
                 onClick={() => resolve(req.id, 'godkänd')}
-                className="px-4 py-1.5 rounded-lg text-[11px] font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30 transition-colors"
+                className="px-4 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30 transition-colors"
               >
                 ✓ Godkänn
               </button>
               <button
                 onClick={() => resolve(req.id, 'avslagen')}
-                className="px-4 py-1.5 rounded-lg text-[11px] font-semibold bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30 transition-colors"
+                className="px-4 py-1.5 rounded-lg text-xs font-semibold bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30 transition-colors"
               >
                 ✗ Avvisa
               </button>
@@ -95,7 +95,7 @@ export function ApprovalView() {
   }
 
   return (
-    <div className="flex flex-col h-full overflow-auto px-6 py-4 space-y-6">
+    <div className="flex flex-col h-full overflow-auto px-4 md:px-6 py-4 space-y-6">
       {/* Summary */}
       <div className="grid grid-cols-3 gap-4 flex-shrink-0">
         {[
@@ -108,7 +108,7 @@ export function ApprovalView() {
             className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4"
           >
             <div className="text-[24px] font-bold" style={{ color: stat.color }}>{stat.value}</div>
-            <div className="text-[10px] text-gray-600 font-mono uppercase tracking-wider mt-1">{stat.label}</div>
+            <div className="text-xs text-gray-600 font-mono uppercase tracking-wider mt-1">{stat.label}</div>
           </div>
         ))}
       </div>
@@ -116,7 +116,7 @@ export function ApprovalView() {
       {/* Pending */}
       {pending.length > 0 && (
         <div>
-          <p className="text-[11px] font-semibold text-amber-400 uppercase tracking-wider mb-3">
+          <p className="text-xs font-semibold text-amber-400 uppercase tracking-wider mb-3">
             Väntande godkännanden ({pending.length})
           </p>
           <div className="space-y-3">
@@ -126,7 +126,7 @@ export function ApprovalView() {
       )}
 
       {pending.length === 0 && (
-        <div className="text-center py-10 text-gray-600 text-[13px]">
+        <div className="text-center py-10 text-gray-600 text-sm">
           ✓ Inga väntande godkännanden
         </div>
       )}
@@ -134,7 +134,7 @@ export function ApprovalView() {
       {/* Resolved */}
       {resolved.length > 0 && (
         <div>
-          <p className="text-[11px] font-semibold text-gray-600 uppercase tracking-wider mb-3">
+          <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3">
             Hanterade ({resolved.length})
           </p>
           <div className="space-y-3">

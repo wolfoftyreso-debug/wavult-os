@@ -45,7 +45,7 @@ function StatusBadge({ v }: { v: string }) {
     : v === 'building' || v === 'in-progress' || v === 'pending' ? '#F59E0B'
     : '#6B7280'
   return (
-    <span className="text-[10px] px-1.5 py-0.5 rounded font-mono"
+    <span className="text-xs px-1.5 py-0.5 rounded font-mono"
       style={{ background: color + '18', color, border: `1px solid ${color}25` }}>
       {v}
     </span>
@@ -349,7 +349,7 @@ function PeopleTab({ entityId }: { entityId: string }) {
           </div>
           <div className="flex flex-wrap gap-1.5 mt-3 pl-13">
             {p.permissions.map(perm => (
-              <span key={perm} className="text-[10px] px-2 py-0.5 rounded bg-white/[0.04] text-gray-500 font-mono">{perm}</span>
+              <span key={perm} className="text-xs px-2 py-0.5 rounded bg-white/[0.04] text-gray-500 font-mono">{perm}</span>
             ))}
           </div>
         </div>
@@ -501,45 +501,6 @@ function HealthTab({ entityId }: { entityId: string }) {
   return <HealthScorePanel hs={hs} />
 }
 
-// ─── Entity selector (left panel) ─────────────────────────────────────────────
-
-function EntitySelector({ currentId, onSelect }: { currentId: string; onSelect: (id: string) => void }) {
-  return (
-    <div className="w-56 flex-shrink-0 border-r border-white/[0.06] bg-[#07090F] overflow-y-auto">
-      <div className="px-3 py-3 border-b border-white/[0.05]">
-        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Entities</p>
-      </div>
-      <div className="py-2">
-        {ENTITIES.map(entity => {
-          const active = entity.id === currentId
-          const statusColor = { live: '#10B981', forming: '#F59E0B', planned: '#6B7280' }[entity.active_status]
-          const hs = computeHealthScore(entity.id)
-          return (
-            <button
-              key={entity.id}
-              onClick={() => onSelect(entity.id)}
-              className="w-full flex items-center gap-2.5 px-3 py-2.5 text-left transition-colors hover:bg-white/[0.03]"
-              style={{ background: active ? entity.color + '12' : undefined }}
-            >
-              <span className="text-base flex-shrink-0">{entity.flag}</span>
-              <div className="flex-1 min-w-0">
-                <div className="text-xs font-semibold truncate" style={{ color: active ? entity.color : '#9CA3AF' }}>
-                  {entity.shortName}
-                </div>
-                <div className="flex items-center gap-1.5 mt-0.5">
-                  <HealthBar score={hs.overall} level={hs.level} />
-                  <span className="text-[9px] font-mono" style={{ color: LEVEL_COLOR[hs.level] }}>{hs.overall}</span>
-                </div>
-              </div>
-              <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: statusColor }} />
-            </button>
-          )
-        })}
-      </div>
-    </div>
-  )
-}
-
 // ─── Main component ────────────────────────────────────────────────────────────
 
 export function EntityView() {
@@ -554,7 +515,14 @@ export function EntityView() {
   const entity = ENTITIES.find(e => e.id === resolvedId)
   const hs = useMemo(() => computeHealthScore(resolvedId), [resolvedId])
 
-  // Default tab based on role overlay
+  // On mobile: if no entityId in URL, show list; if entityId, show detail
+  const [mobileShowDetail, setMobileShowDetail] = useState(!!entityId)
+
+  // Keep in sync when URL changes
+  useMemo(() => {
+    setMobileShowDetail(!!entityId)
+  }, [entityId])
+
   const defaultTab: TabId =
     perms.overlayMode === 'financial' ? 'finance' :
     perms.overlayMode === 'technical' ? 'systems' :
@@ -562,7 +530,6 @@ export function EntityView() {
 
   const [activeTab, setActiveTab] = useState<TabId>(defaultTab)
 
-  // Filter tabs by role
   const visibleTabs = useMemo(() => ALL_TABS.filter(tab => {
     if (!tab.requiresScope) return true
     if (perms.overlayMode === 'full') return true
@@ -580,70 +547,109 @@ export function EntityView() {
 
   const statusColor = { live: '#10B981', forming: '#F59E0B', planned: '#6B7280' }[entity.active_status]
 
+  const handleSelectEntity = (id: string) => {
+    navigate(`/entities/${id}`)
+    setActiveTab(defaultTab)
+    setMobileShowDetail(true)
+  }
+
   return (
     <div className="flex h-full overflow-hidden">
-      {/* ── Entity selector ── */}
-      <EntitySelector
-        currentId={resolvedId}
-        onSelect={(id) => {
-          navigate(`/entities/${id}`)
-          setActiveTab(defaultTab)
-        }}
-      />
 
-      {/* ── Main panel ── */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      {/* ── Entity selector — hidden on mobile when detail shown ── */}
+      <div className={`
+        ${mobileShowDetail ? 'hidden md:flex' : 'flex'}
+        w-full md:w-56 flex-shrink-0
+        flex-col
+        border-r border-white/[0.06] bg-[#07090F] overflow-y-auto
+      `}>
+        <div className="px-3 py-3 border-b border-white/[0.05]">
+          <p className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Entities</p>
+        </div>
+        <div className="py-2">
+          {ENTITIES.map(ent => {
+            const active = ent.id === resolvedId
+            const sc = { live: '#10B981', forming: '#F59E0B', planned: '#6B7280' }[ent.active_status]
+            const ehs = computeHealthScore(ent.id)
+            return (
+              <button
+                key={ent.id}
+                onClick={() => handleSelectEntity(ent.id)}
+                className="w-full flex items-center gap-2.5 px-3 py-3 md:py-2.5 text-left transition-colors hover:bg-white/[0.03]"
+                style={{ background: active ? ent.color + '12' : undefined }}
+              >
+                <span className="text-base flex-shrink-0">{ent.flag}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm md:text-xs font-semibold truncate" style={{ color: active ? ent.color : '#9CA3AF' }}>
+                    {ent.shortName}
+                  </div>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <HealthBar score={ehs.overall} level={ehs.level} />
+                    <span className="text-[9px] font-mono" style={{ color: LEVEL_COLOR[ehs.level] }}>{ehs.overall}</span>
+                  </div>
+                </div>
+                <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: sc }} />
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* ── Detail panel — full width on mobile ── */}
+      <div className={`
+        ${mobileShowDetail ? 'flex' : 'hidden md:flex'}
+        flex-1 flex-col min-w-0 overflow-hidden
+      `}>
 
         {/* Header */}
         <div className="flex-shrink-0 border-b border-white/[0.06] bg-[#08090F]">
-          <div className="px-6 py-4">
+          <div className="px-4 md:px-6 py-4">
             <div className="flex items-start justify-between">
-              <div>
-                <div className="flex items-center gap-3 flex-wrap">
-                  <span className="text-2xl">{entity.flag}</span>
-                  <div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h1 className="text-lg font-bold text-white">{entity.name}</h1>
-                      <span className="text-xs px-2 py-0.5 rounded-full font-mono"
-                        style={{ background: statusColor + '18', color: statusColor, border: `1px solid ${statusColor}30` }}>
-                        {entity.active_status}
-                      </span>
-                      <span className="text-xs px-2 py-0.5 rounded-full"
-                        style={{ background: entity.color + '15', color: entity.color, border: `1px solid ${entity.color}25` }}>
-                        {entity.type}
-                      </span>
-                      <HealthBadge score={hs.overall} level={hs.level} />
-                    </div>
-                    <div className="text-xs text-gray-600 font-mono mt-0.5">
-                      {entity.jurisdiction} · Layer {entity.layer} · {entity.shortName}
-                    </div>
+              <div className="flex items-center gap-3 min-w-0">
+                {/* Back button — mobile only */}
+                <button
+                  className="md:hidden flex-shrink-0 p-1 -ml-1 text-gray-500 hover:text-gray-300"
+                  onClick={() => setMobileShowDetail(false)}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <span className="text-2xl flex-shrink-0">{entity.flag}</span>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h1 className="text-base md:text-lg font-bold text-white truncate">{entity.name}</h1>
+                    <span className="text-xs px-2 py-0.5 rounded-full font-mono flex-shrink-0"
+                      style={{ background: statusColor + '18', color: statusColor, border: `1px solid ${statusColor}30` }}>
+                      {entity.active_status}
+                    </span>
+                    <HealthBadge score={hs.overall} level={hs.level} />
+                  </div>
+                  <div className="text-xs text-gray-600 font-mono mt-0.5">
+                    {entity.jurisdiction} · Layer {entity.layer} · {entity.shortName}
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-2 flex-shrink-0 ml-4">
-                <button
-                  onClick={() => navigate('/org')}
-                  className="text-xs text-gray-600 hover:text-gray-300 px-2.5 py-1.5 rounded-lg border border-white/[0.06] transition-colors"
-                >
-                  Graph →
-                </button>
-              </div>
+              <button
+                onClick={() => navigate('/org')}
+                className="hidden md:block text-xs text-gray-600 hover:text-gray-300 px-2.5 py-1.5 rounded-lg border border-white/[0.06] transition-colors flex-shrink-0 ml-4"
+              >
+                Graph →
+              </button>
             </div>
 
-            {/* Tab bar */}
-            <div className="flex gap-0 mt-4 -mb-px">
+            {/* Tab bar — scrollable on mobile */}
+            <div className="flex gap-0 mt-4 -mb-px overflow-x-auto no-scrollbar">
               {visibleTabs.map(tab => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className="text-xs pb-2 mr-5 transition-colors border-b-2 flex items-center gap-1.5"
+                  className="text-xs pb-2 mr-4 md:mr-5 transition-colors border-b-2 flex items-center gap-1 flex-shrink-0"
                   style={{
                     color: activeTab === tab.id ? entity.color : '#6B7280',
                     borderColor: activeTab === tab.id ? entity.color : 'transparent',
                   }}
                 >
                   <span>{tab.icon}</span>
-                  <span className="font-medium">{tab.label}</span>
+                  <span className="font-medium whitespace-nowrap">{tab.label}</span>
                 </button>
               ))}
             </div>
@@ -651,7 +657,7 @@ export function EntityView() {
         </div>
 
         {/* Tab content */}
-        <div className="flex-1 overflow-y-auto px-6 py-5">
+        <div className="flex-1 overflow-y-auto px-4 md:px-6 py-5">
           <Suspense fallback={<div className="text-xs text-gray-600 animate-pulse">Loading…</div>}>
             {activeTab === 'overview'  && <OverviewTab  entityId={resolvedId} />}
             {activeTab === 'health'    && <HealthTab    entityId={resolvedId} />}

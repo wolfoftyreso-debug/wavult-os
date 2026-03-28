@@ -52,15 +52,12 @@ export function WHOOPConnect() {
 
   async function loadStatus() {
     try {
-      const res = await fetch(`${API_BASE}/whoop/status`, { credentials: 'include' })
-      if (res.ok) {
-        const s = await res.json()
-        setStatus(s)
-        if (s.connected) {
-          const meRes = await fetch(`${API_BASE}/whoop/me`, { credentials: 'include' })
-          if (meRes.ok) setData(await meRes.json())
-        }
-      }
+      const [statusRes, meRes] = await Promise.all([
+        fetch(`${API_BASE}/whoop/status`, { credentials: 'include' }),
+        fetch(`${API_BASE}/whoop/me`, { credentials: 'include' }),
+      ])
+      if (statusRes.ok) setStatus(await statusRes.json())
+      if (meRes.ok) setData(await meRes.json())
     } catch (err) {
       console.error('[WHOOPConnect] loadStatus error:', err)
     } finally {
@@ -69,11 +66,27 @@ export function WHOOPConnect() {
   }
 
   useEffect(() => {
-    loadStatus()
-    // Kolla om vi just kom tillbaka från OAuth
+    // Kolla om vi just kom tillbaka från OAuth callback
     const params = new URLSearchParams(window.location.search)
     if (params.get('connected') === 'true') {
+      const connectCode = params.get('connect_code')
       window.history.replaceState({}, '', window.location.pathname)
+
+      if (connectCode) {
+        // Byt connect_code mot bekräftelse — tokens hanteras server-side
+        fetch(`${API_BASE}/whoop/token-exchange`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ connect_code: connectCode }),
+        })
+          .then(r => r.ok ? r.json() : null)
+          .then(data => { if (data?.connected) loadStatus() })
+          .catch(() => loadStatus())
+      } else {
+        loadStatus()
+      }
+    } else {
       loadStatus()
     }
   }, [])
@@ -86,7 +99,7 @@ export function WHOOPConnect() {
         method: 'DELETE',
         credentials: 'include',
       })
-      setStatus(null)
+      setStatus({ connected: false, whoop_user_id: null, connected_at: null })
       setData(null)
     } catch (err) {
       console.error('[WHOOPConnect] disconnect error:', err)

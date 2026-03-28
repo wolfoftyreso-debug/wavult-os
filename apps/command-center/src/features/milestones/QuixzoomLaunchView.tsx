@@ -78,7 +78,7 @@ export function QuixzoomLaunchView() {
           <span className="text-4xl">📷</span>
           <div className="flex-1">
             <h2 className="text-[18px] font-bold text-white">quiXzoom — Sverige-launch</h2>
-            <p className="text-[11px] text-gray-400 mt-0.5">Mitten juni 2026 · Crowdsourcad kamerainfrastruktur</p>
+            <p className="text-xs text-gray-400 mt-0.5">Mitten juni 2026 · Crowdsourcad kamerainfrastruktur</p>
             <div className="flex items-center gap-3 mt-2">
               <div className="flex-1 bg-white/[0.08] rounded-full h-2">
                 <div
@@ -86,19 +86,19 @@ export function QuixzoomLaunchView() {
                   style={{ width: `${pct}%` }}
                 />
               </div>
-              <span className="text-[11px] font-mono text-white">{pct}%</span>
+              <span className="text-xs font-mono text-white">{pct}%</span>
             </div>
           </div>
           <div className="text-right flex-shrink-0">
             <p className="text-4xl font-bold leading-none text-blue-400">{daysLeft}</p>
-            <p className="text-[10px] text-gray-400 font-mono mt-1">dagar kvar</p>
+            <p className="text-xs text-gray-400 font-mono mt-1">dagar kvar</p>
           </div>
         </div>
       </div>
 
       {/* Milestone list */}
       <div>
-        <h3 className="text-[11px] text-gray-500 font-mono uppercase tracking-wider mb-3">Milstolpar</h3>
+        <h3 className="text-xs text-gray-500 font-mono uppercase tracking-wider mb-3">Milstolpar</h3>
         <div className="rounded-xl border border-white/[0.06] bg-[#0D0F1A] overflow-hidden divide-y divide-white/[0.04]">
           {QUIXZOOM_MILESTONES.map(m => {
             const daysToEnd = getDaysUntil(m.endDate)
@@ -108,7 +108,7 @@ export function QuixzoomLaunchView() {
                   {m.status === 'done' ? '✅' : m.status === 'in-progress' ? '🔄' : '⏳'}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <p className={`text-[13px] font-medium ${m.status === 'done' ? 'text-gray-500 line-through' : 'text-white'}`}>
+                  <p className={`text-sm font-medium ${m.status === 'done' ? 'text-gray-500 line-through' : 'text-white'}`}>
                     {m.title}
                   </p>
                   <p className="text-[9px] text-gray-600 font-mono mt-0.5">👤 {m.owner}</p>
@@ -130,7 +130,7 @@ export function QuixzoomLaunchView() {
 
       {/* Gantt timeline */}
       <div>
-        <h3 className="text-[11px] text-gray-500 font-mono uppercase tracking-wider mb-3">
+        <h3 className="text-xs text-gray-500 font-mono uppercase tracking-wider mb-3">
           Tidslinje — Apr → Jun 2026
         </h3>
         <div className="rounded-xl border border-white/[0.06] bg-[#0D0F1A] p-4">
@@ -163,7 +163,7 @@ export function QuixzoomLaunchView() {
                 const color = getStatusColor(m.status)
                 return (
                   <div key={m.id} className="flex items-center gap-3">
-                    <span className="text-[10px] text-gray-400 w-40 flex-shrink-0 truncate">{m.title}</span>
+                    <span className="text-xs text-gray-400 w-40 flex-shrink-0 truncate">{m.title}</span>
                     <div className="flex-1">
                       <GanttBar
                         startDate={m.startDate}

@@ -112,7 +112,7 @@ function NodeCard({ node, depth = 0 }: { node: OwnerNode; depth?: number }) {
                   {node.status}
                 </span>
               </div>
-              <div className="flex items-center gap-2 text-[11px] text-gray-500 ml-4">
+              <div className="flex items-center gap-2 text-xs text-gray-500 ml-4">
                 <span>{node.jurisdiction}</span>
                 <span>·</span>
                 <span className="font-mono">{node.orgNr}</span>
@@ -121,13 +121,13 @@ function NodeCard({ node, depth = 0 }: { node: OwnerNode; depth?: number }) {
             <div className="text-right flex-shrink-0">
               {node.ownership && (
                 <div
-                  className="text-[11px] font-semibold px-2.5 py-1 rounded-lg border mb-1"
+                  className="text-xs font-semibold px-2.5 py-1 rounded-lg border mb-1"
                   style={{ background: node.color + '15', color: node.color, borderColor: node.color + '40' }}
                 >
                   {node.ownership}
                 </div>
               )}
-              <div className="text-[10px] text-gray-600 font-mono">
+              <div className="text-xs text-gray-600 font-mono">
                 Grundat {new Date(node.founded).toLocaleDateString('sv-SE', { year: 'numeric', month: 'short' })}
               </div>
             </div>
@@ -186,12 +186,12 @@ function StatsGrid() {
           className="rounded-xl p-3 border"
           style={{ borderColor: c.color + '30', background: c.color + '08' }}
         >
-          <div className="text-[13px] font-semibold text-white mb-0.5">{c.shortName}</div>
-          <div className="text-[10px] text-gray-500 font-mono">{c.orgNr}</div>
-          <div className="text-[10px] text-gray-600 mt-1">{c.jurisdiction}</div>
+          <div className="text-sm font-semibold text-white mb-0.5">{c.shortName}</div>
+          <div className="text-xs text-gray-500 font-mono">{c.orgNr}</div>
+          <div className="text-xs text-gray-600 mt-1">{c.jurisdiction}</div>
           <div className="mt-2 flex items-center gap-1">
             <span className={`h-1.5 w-1.5 rounded-full ${c.status === 'aktiv' ? 'bg-green-400' : 'bg-yellow-400'}`} />
-            <span className="text-[10px] text-gray-500">{c.status}</span>
+            <span className="text-xs text-gray-500">{c.status}</span>
           </div>
         </div>
       ))}
@@ -207,12 +207,12 @@ export function OwnershipView() {
 
       {/* Ownership tree */}
       <div className="rounded-xl border border-white/[0.06] bg-white/[0.01] p-5">
-        <h3 className="text-[12px] font-semibold text-gray-400 uppercase tracking-wider mb-5">Ägarstruktur</h3>
+        <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-5">Ägarstruktur</h3>
         <OwnershipTree />
       </div>
 
       {/* Legend */}
-      <div className="flex flex-wrap gap-4 text-[11px] text-gray-500">
+      <div className="flex flex-wrap gap-4 text-xs text-gray-500">
         <div className="flex items-center gap-2">
           <div className="h-1.5 w-1.5 rounded-full bg-green-400" />
           <span>Aktiv</span>

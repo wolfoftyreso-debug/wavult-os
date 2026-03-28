@@ -30,7 +30,7 @@ function StepTrack({ currentStep, color }: { currentStep: Step; color: string })
           <div key={step} className="flex items-center flex-1">
             <div className="flex flex-col items-center flex-1">
               <div
-                className="h-6 w-6 rounded-full flex items-center justify-center text-[10px] flex-shrink-0 transition-all"
+                className="h-6 w-6 rounded-full flex items-center justify-center text-xs flex-shrink-0 transition-all"
                 style={{
                   background: isActive ? color + '20' : isDone ? color : '#1F2937',
                   border: `1.5px solid ${stepColor}`,
@@ -85,11 +85,11 @@ function BolagCard({ bolag }: { bolag: Bolag }) {
         <span className="text-2xl">{bolag.flag}</span>
         <div className="flex-1 min-w-0">
           <p className="text-[14px] font-bold text-white truncate">{bolag.name}</p>
-          <p className="text-[10px] text-gray-500 font-mono">{bolag.jurisdiction}</p>
+          <p className="text-xs text-gray-500 font-mono">{bolag.jurisdiction}</p>
         </div>
         <div className="text-right flex-shrink-0">
           {isOperational ? (
-            <span className="text-[10px] font-mono px-2 py-1 rounded-full bg-green-500/15 text-green-400">
+            <span className="text-xs font-mono px-2 py-1 rounded-full bg-green-500/15 text-green-400">
               ✅ Operativt
             </span>
           ) : (
@@ -132,11 +132,11 @@ function BolagCard({ bolag }: { bolag: Bolag }) {
       >
         <div className="flex items-center gap-1.5">
           <span className="text-[9px] text-gray-600 font-mono">👤 Ansvarig:</span>
-          <span className="text-[10px] text-gray-300">{bolag.owner}</span>
+          <span className="text-xs text-gray-300">{bolag.owner}</span>
         </div>
         <div className="flex items-center gap-1.5">
           <span className="text-[9px] text-gray-600 font-mono">🗓️ Est.:</span>
-          <span className="text-[10px] text-gray-300">
+          <span className="text-xs text-gray-300">
             {new Date(bolag.estimatedDate).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short', year: '2-digit' })}
           </span>
         </div>
@@ -150,7 +150,7 @@ function BolagCard({ bolag }: { bolag: Bolag }) {
           </p>
           <ul className="space-y-1">
             {bolag.blockers.map((b, i) => (
-              <li key={i} className="flex items-start gap-1.5 text-[10px] text-red-300">
+              <li key={i} className="flex items-start gap-1.5 text-xs text-red-300">
                 <span className="mt-0.5 flex-shrink-0">·</span>
                 {b}
               </li>
@@ -172,7 +172,7 @@ export function BolagsstrukturView() {
       {/* Header */}
       <div>
         <h2 className="text-lg font-bold text-white">Bolagsstruktur</h2>
-        <p className="text-[11px] text-gray-500 mt-0.5">Wavult Group — {BOLAG_LIST.length} bolag · Global expansion</p>
+        <p className="text-xs text-gray-500 mt-0.5">Wavult Group — {BOLAG_LIST.length} bolag · Global expansion</p>
       </div>
 
       {/* Summary */}
@@ -198,7 +198,7 @@ export function BolagsstrukturView() {
           {STEPS.map((step, i) => (
             <div key={step} className="flex items-center gap-1.5">
               <span className="text-sm">{STEP_ICONS[step]}</span>
-              <span className="text-[10px] text-gray-400">{i + 1}. {STEP_LABELS[step]}</span>
+              <span className="text-xs text-gray-400">{i + 1}. {STEP_LABELS[step]}</span>
             </div>
           ))}
         </div>

@@ -368,7 +368,7 @@ export function PeopleView() {
       </div>
 
       {/* Summary bar */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
           { label: 'Totalt team', value: String(visibleTeam.length), color: '#3B82F6' },
           { label: 'Aktiva nu', value: String(visibleTeam.filter(t => t.status === 'active').length), color: '#10B981' },

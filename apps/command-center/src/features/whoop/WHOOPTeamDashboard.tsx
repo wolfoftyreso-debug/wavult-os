@@ -80,17 +80,7 @@ function getWhoopToken(): string | null {
   return localStorage.getItem('whoop_access_token')
 }
 
-function clearWhoopTokens() {
-  localStorage.removeItem('whoop_access_token')
-  localStorage.removeItem('whoop_refresh_token')
-  localStorage.removeItem('whoop_expires_at')
-}
 
-function saveWhoopTokens(access_token: string, refresh_token?: string, expires_at?: string) {
-  localStorage.setItem('whoop_access_token', access_token)
-  if (refresh_token) localStorage.setItem('whoop_refresh_token', refresh_token)
-  if (expires_at) localStorage.setItem('whoop_expires_at', expires_at)
-}
 
 // ─── Setup Guide ──────────────────────────────────────────────────────────────
 
@@ -200,44 +190,61 @@ function ConnectTab({ onConnected }: { onConnected: () => void }) {
   const [loadingData, setLoadingData] = useState(false)
 
   useEffect(() => {
-    // Hantera OAuth callback — fånga tokens från URL-params
+    // Hantera OAuth callback — tokens hanteras server-side, vi får bara connect_code
     const params = new URLSearchParams(window.location.search)
 
     if (params.get('connected') === 'true') {
-      const access_token = params.get('access_token')
-      const refresh_token = params.get('refresh_token') ?? undefined
-      const expires_at = params.get('expires_at') ?? undefined
+      const connectCode = params.get('connect_code')
+      window.history.replaceState({}, '', '/whoop')
 
-      if (access_token) {
-        saveWhoopTokens(access_token, refresh_token, expires_at)
-        setConnected(true)
-        onConnected()
-        // Rensa URL-params
-        window.history.replaceState({}, '', '/whoop')
+      if (connectCode) {
+        // Byt connect_code mot bekräftelse (tokens sparas server-side)
+        fetch(`${API_BASE}/whoop/token-exchange`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ connect_code: connectCode }),
+        })
+          .then(r => r.ok ? r.json() : null)
+          .then(data => {
+            if (data?.connected) {
+              setConnected(true)
+              onConnected()
+            } else {
+              setError('Koppling misslyckades — försök igen')
+            }
+          })
+          .catch(() => setError('Nätverksfel vid koppling'))
       }
     }
 
     if (params.get('error')) {
-      setError('Koppling misslyckades: ' + params.get('error'))
+      const errCode = params.get('error')
+      const errMessages: Record<string, string> = {
+        oauth_denied: 'Du nekade åtkomst till WHOOP',
+        invalid_state: 'Säkerhetsfel — försök igen',
+        no_code: 'WHOOP skickade inget code — försök igen',
+        token_exchange_failed: 'Kunde inte hämta tokens från WHOOP — försök igen',
+        login_required: 'Du måste vara inloggad i Wavult OS innan du kopplar WHOOP',
+        save_failed: 'Kunde inte spara kopplingen — försök igen',
+      }
+      setError(errMessages[errCode ?? ''] ?? `Koppling misslyckades: ${errCode}`)
       window.history.replaceState({}, '', '/whoop')
     }
 
-    // Kolla om redan kopplat via localStorage
-    if (getWhoopToken()) {
-      setConnected(true)
-    }
+    // Kolla status server-side (session-baserat, inte localStorage)
+    fetch(`${API_BASE}/whoop/status`, { credentials: 'include' })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data?.connected) setConnected(true) })
+      .catch(() => {})
   }, [])
 
-  // Ladda min data när kopplat
+  // Ladda min data när kopplat (session-baserat)
   useEffect(() => {
     if (!connected) return
-    const token = getWhoopToken()
-    if (!token) return
 
     setLoadingData(true)
-    fetch(`${API_BASE}/whoop/me`, {
-      headers: { 'Authorization': `Bearer ${token}` },
-    })
+    fetch(`${API_BASE}/whoop/me`, { credentials: 'include' })
       .then(r => r.ok ? r.json() : null)
       .then(data => { if (data) setMyData(data) })
       .catch(() => {})
@@ -249,7 +256,8 @@ function ConnectTab({ onConnected }: { onConnected: () => void }) {
   }
 
   function handleDisconnect() {
-    clearWhoopTokens()
+    fetch(`${API_BASE}/whoop/disconnect`, { method: 'DELETE', credentials: 'include' })
+      .catch(() => {})
     setConnected(false)
     setMyData(null)
   }
@@ -268,31 +276,44 @@ function ConnectTab({ onConnected }: { onConnected: () => void }) {
             <p className="text-xs text-gray-500">Hämtar din data…</p>
           )}
 
-          {myData && !loadingData && (
-            <div className="w-full rounded-xl border border-white/[0.08] bg-black/20 p-4 grid grid-cols-3 gap-3 text-center">
-              <div>
-                <div
-                  className="text-2xl font-bold"
-                  style={{ color: recoveryColor(myData.recovery?.score ?? null) }}
-                >
-                  {myData.recovery?.score != null ? `${Math.round(myData.recovery.score)}%` : '—'}
+          {myData && !loadingData && (() => {
+            const hasData = myData.recovery?.score != null || myData.sleep?.performancePercent != null || myData.strain?.score != null
+            if (!hasData) {
+              return (
+                <div className="w-full rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 text-center space-y-2">
+                  <div className="text-2xl">📡</div>
+                  <p className="text-sm font-semibold text-amber-300">Samlar data</p>
+                  <p className="text-xs text-gray-400 leading-relaxed">
+                    WHOOP behöver bäras dygnet runt i <strong className="text-white">minst 4–5 dagar</strong> innan
+                    recovery-data är tillgänglig. Armbandet kalibrerar din baslinjenivå för HRV, puls och sömn.
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">Håll armbandet på — data visas automatiskt när det är klart.</p>
                 </div>
-                <div className="text-[10px] text-gray-600 font-mono mt-1 uppercase">Recovery</div>
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-blue-400">
-                  {myData.sleep?.performancePercent != null ? `${Math.round(myData.sleep.performancePercent)}%` : '—'}
+              )
+            }
+            return (
+              <div className="w-full rounded-xl border border-white/[0.08] bg-black/20 p-4 grid grid-cols-3 gap-3 text-center">
+                <div>
+                  <div className="text-2xl font-bold" style={{ color: recoveryColor(myData.recovery?.score ?? null) }}>
+                    {myData.recovery?.score != null ? `${Math.round(myData.recovery.score)}%` : '—'}
+                  </div>
+                  <div className="text-xs text-gray-600 mt-1 uppercase">Recovery</div>
                 </div>
-                <div className="text-[10px] text-gray-600 font-mono mt-1 uppercase">Sömn</div>
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-orange-400">
-                  {myData.strain?.score != null ? Math.round(myData.strain.score * 10) / 10 : '—'}
+                <div>
+                  <div className="text-2xl font-bold text-blue-400">
+                    {myData.sleep?.performancePercent != null ? `${Math.round(myData.sleep.performancePercent)}%` : '—'}
+                  </div>
+                  <div className="text-xs text-gray-600 mt-1 uppercase">Sömn</div>
                 </div>
-                <div className="text-[10px] text-gray-600 font-mono mt-1 uppercase">Strain</div>
+                <div>
+                  <div className="text-2xl font-bold text-orange-400">
+                    {myData.strain?.score != null ? Math.round(myData.strain.score * 10) / 10 : '—'}
+                  </div>
+                  <div className="text-xs text-gray-600 mt-1 uppercase">Strain</div>
+                </div>
               </div>
-            </div>
-          )}
+            )
+          })()}
 
           <button
             onClick={handleDisconnect}
@@ -379,7 +400,7 @@ function MemberCard({ member }: { member: TeamMember }) {
           className="text-xs font-bold px-2 py-0.5 rounded-full flex-shrink-0"
           style={{ backgroundColor: color + '20', color }}
         >
-          {score != null ? `${Math.round(score)}%` : '?'}
+          {score != null ? `${Math.round(score)}%` : '📡'}
         </div>
       </div>
 
@@ -453,6 +474,21 @@ function TeamPulse({ data, loading, onRefresh, lastFetch }: {
           {loading ? '↻ Synkar…' : '↻ Synka'}
         </button>
       </div>
+
+      {/* Samlar data-banner om ingen har data ännu */}
+      {averages.recovery == null && averages.sleep == null && (
+        <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 flex gap-3">
+          <span className="text-xl flex-shrink-0">📡</span>
+          <div>
+            <p className="text-sm font-semibold text-amber-300">Armbanden samlar data</p>
+            <p className="text-xs text-gray-400 leading-relaxed mt-0.5">
+              WHOOP behöver bäras dygnet runt i <strong className="text-white">4–5 dagar</strong> innan recovery-data 
+              är pålitlig. Under den här perioden kalibrerar varje armband din personliga baslinjenivå för HRV och puls.
+              Data börjar visas successivt — håll armbanden på.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Genomsnitt */}
       <div className="rounded-2xl border border-white/[0.08] bg-[#0D0F1A] p-5">

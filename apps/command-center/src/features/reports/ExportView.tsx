@@ -73,7 +73,7 @@ export function ExportView() {
 
           {/* Report type */}
           <div>
-            <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest mb-2">1. Välj rapport</p>
+            <p className="text-xs text-gray-500 font-mono uppercase tracking-widest mb-2">1. Välj rapport</p>
             <div className="space-y-2">
               {REPORT_OPTIONS.map(opt => (
                 <button
@@ -88,12 +88,12 @@ export function ExportView() {
                   <span className="text-xl flex-shrink-0 mt-0.5">{opt.icon}</span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className={`text-[12px] font-semibold ${selectedReport === opt.id ? 'text-white' : 'text-gray-300'}`}>
+                      <span className={`text-xs font-semibold ${selectedReport === opt.id ? 'text-white' : 'text-gray-300'}`}>
                         {opt.label}
                       </span>
                       <span className="text-[9px] text-gray-600 font-mono">{opt.pages}</span>
                     </div>
-                    <p className="text-[10px] text-gray-500 mt-0.5 leading-snug">{opt.description}</p>
+                    <p className="text-xs text-gray-500 mt-0.5 leading-snug">{opt.description}</p>
                   </div>
                   {selectedReport === opt.id && (
                     <span className="text-[#6C63FF] flex-shrink-0 mt-1"><CheckIcon /></span>
@@ -105,13 +105,13 @@ export function ExportView() {
 
           {/* Period */}
           <div>
-            <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest mb-2">2. Period</p>
+            <p className="text-xs text-gray-500 font-mono uppercase tracking-widest mb-2">2. Period</p>
             <div className="grid grid-cols-2 gap-2">
               {PERIOD_OPTIONS.map(p => (
                 <button
                   key={p.id}
                   onClick={() => setSelectedPeriod(p.id)}
-                  className={`px-3 py-2.5 rounded-lg border text-[11px] text-left transition-all ${
+                  className={`px-3 py-2.5 rounded-lg border text-xs text-left transition-all ${
                     selectedPeriod === p.id
                       ? 'border-[#6C63FF]/50 bg-[#6C63FF]/10 text-white'
                       : 'border-white/[0.06] bg-white/[0.02] text-gray-400 hover:text-gray-200'
@@ -125,13 +125,13 @@ export function ExportView() {
 
           {/* Entity */}
           <div>
-            <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest mb-2">3. Entitet</p>
+            <p className="text-xs text-gray-500 font-mono uppercase tracking-widest mb-2">3. Entitet</p>
             <div className="space-y-1.5">
               {ENTITY_FINANCIALS.map(e => (
                 <button
                   key={e.id}
                   onClick={() => setSelectedEntity(e.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg border text-[11px] transition-all ${
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg border text-xs transition-all ${
                     selectedEntity === e.id
                       ? 'border-white/[0.15] bg-white/[0.06] text-white'
                       : 'border-white/[0.04] bg-white/[0.01] text-gray-400 hover:text-gray-200'
@@ -149,7 +149,7 @@ export function ExportView() {
 
           {/* Format */}
           <div>
-            <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest mb-2">4. Format</p>
+            <p className="text-xs text-gray-500 font-mono uppercase tracking-widest mb-2">4. Format</p>
             <div className="flex gap-2">
               {FORMAT_OPTIONS.map(f => (
                 <button
@@ -162,7 +162,7 @@ export function ExportView() {
                   }`}
                 >
                   <span className="text-xl">{f.icon}</span>
-                  <span className={`text-[11px] font-bold ${selectedFormat === f.id ? 'text-white' : 'text-gray-400'}`}>{f.label}</span>
+                  <span className={`text-xs font-bold ${selectedFormat === f.id ? 'text-white' : 'text-gray-400'}`}>{f.label}</span>
                   <span className="text-[9px] text-gray-600">{f.desc}</span>
                 </button>
               ))}
@@ -175,17 +175,17 @@ export function ExportView() {
 
           {/* Preview card */}
           <div>
-            <p className="text-[10px] text-gray-500 font-mono uppercase tracking-widest mb-2">Förhandsgranskning</p>
+            <p className="text-xs text-gray-500 font-mono uppercase tracking-widest mb-2">Förhandsgranskning</p>
             <div className="bg-white/[0.03] border border-white/[0.07] rounded-xl p-5 space-y-3">
               <div className="flex items-center gap-3">
                 <span className="text-3xl">{report.icon}</span>
                 <div>
                   <p className="text-[14px] font-bold text-white">{report.label}</p>
-                  <p className="text-[10px] text-gray-500">{report.pages}</p>
+                  <p className="text-xs text-gray-500">{report.pages}</p>
                 </div>
               </div>
 
-              <div className="space-y-1.5 text-[11px]">
+              <div className="space-y-1.5 text-xs">
                 <div className="flex justify-between">
                   <span className="text-gray-500">Entitet</span>
                   <div className="flex items-center gap-1.5">
@@ -208,7 +208,7 @@ export function ExportView() {
               </div>
 
               <div className="pt-1 border-t border-white/[0.06]">
-                <p className="text-[10px] text-gray-500 leading-relaxed">{report.description}</p>
+                <p className="text-xs text-gray-500 leading-relaxed">{report.description}</p>
               </div>
             </div>
           </div>
@@ -250,17 +250,17 @@ export function ExportView() {
             <div className="bg-green-500/5 border border-green-500/20 rounded-xl p-4 space-y-2">
               <div className="flex items-center gap-2">
                 <span className="text-green-400 text-sm">✅</span>
-                <p className="text-[12px] font-semibold text-green-400">Rapport genererad</p>
+                <p className="text-xs font-semibold text-green-400">Rapport genererad</p>
               </div>
-              <p className="text-[10px] text-gray-500">{filename}</p>
+              <p className="text-xs text-gray-500">{filename}</p>
               <div className="flex gap-2 mt-2">
                 <button
                   onClick={() => setGenerated(false)}
-                  className="flex-1 py-2 rounded-lg bg-white/[0.04] border border-white/[0.08] text-[11px] text-gray-300 hover:text-white transition-colors"
+                  className="flex-1 py-2 rounded-lg bg-white/[0.04] border border-white/[0.08] text-xs text-gray-300 hover:text-white transition-colors"
                 >
                   Ny rapport
                 </button>
-                <button className="flex-1 py-2 rounded-lg bg-white/[0.04] border border-white/[0.08] text-[11px] text-gray-300 hover:text-white transition-colors">
+                <button className="flex-1 py-2 rounded-lg bg-white/[0.04] border border-white/[0.08] text-xs text-gray-300 hover:text-white transition-colors">
                   Schemalägg
                 </button>
               </div>
@@ -269,13 +269,13 @@ export function ExportView() {
 
           {/* Scheduled reports hint */}
           <div className="bg-white/[0.02] border border-white/[0.05] rounded-xl p-4">
-            <p className="text-[10px] text-gray-500 font-mono uppercase tracking-wider mb-2">Schemalagda rapporter</p>
+            <p className="text-xs text-gray-500 font-mono uppercase tracking-wider mb-2">Schemalagda rapporter</p>
             <div className="space-y-2">
               {[
                 { label: 'Executive Summary', freq: 'Varje måndag 08:00', next: '30 mar' },
                 { label: 'Finansrapport Q2',  freq: 'Kvartalsvis',         next: '1 apr' },
               ].map((r, i) => (
-                <div key={i} className="flex items-center gap-2 text-[10px]">
+                <div key={i} className="flex items-center gap-2 text-xs">
                   <span className="h-1.5 w-1.5 rounded-full bg-[#6C63FF] flex-shrink-0" />
                   <span className="flex-1 text-gray-400">{r.label}</span>
                   <span className="text-gray-600 font-mono">{r.freq}</span>

@@ -26,11 +26,11 @@ export function SettingsHub() {
           <span className="text-xl">⚙️</span>
           <div>
             <h1 className="text-[16px] font-bold text-white">Inställningar</h1>
-            <p className="text-[10px] text-gray-600 font-mono">
+            <p className="text-xs text-gray-600 font-mono">
               Wavult OS — systemkonfiguration &amp; behörigheter
             </p>
           </div>
-          <div className="ml-auto flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-mono"
+          <div className="ml-auto flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-mono"
             style={{
               background: '#8B5CF615',
               border: '1px solid #8B5CF630',
@@ -49,7 +49,7 @@ export function SettingsHub() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-colors whitespace-nowrap flex-shrink-0 ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap flex-shrink-0 ${
               activeTab === tab.id
                 ? 'bg-brand-accent/15 text-brand-accent border border-brand-accent/30'
                 : 'text-gray-500 hover:text-gray-300 hover:bg-white/[0.04]'

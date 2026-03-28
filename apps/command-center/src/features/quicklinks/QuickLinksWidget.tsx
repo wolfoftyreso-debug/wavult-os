@@ -24,7 +24,7 @@ export function QuickLinksWidget() {
           >
             <span className="text-xl">{link.icon}</span>
             <span className="text-xs text-white/50 text-center leading-tight">{link.label}</span>
-            {'sub' in link && <span className="text-[10px] text-white/25 text-center leading-tight">{(link as { sub: string }).sub}</span>}
+            {'sub' in link && <span className="text-xs text-white/25 text-center leading-tight">{(link as { sub: string }).sub}</span>}
           </a>
         ))}
       </div>

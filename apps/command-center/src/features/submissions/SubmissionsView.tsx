@@ -173,7 +173,7 @@ export function SubmissionsView() {
       </div>
 
       {/* Status filter */}
-      <div className="flex gap-2">
+      <div className="flex gap-2 overflow-x-auto pb-1">
         {(['pending', 'approved', 'rejected', 'all'] as const).map(s => (
           <button
             key={s}
@@ -233,17 +233,17 @@ export function SubmissionsView() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <span
-                      className="text-[10px] font-mono px-2 py-0.5 rounded-full font-semibold"
+                      className="text-xs font-mono px-2 py-0.5 rounded-full font-semibold"
                       style={{ background: statusColor + '20', color: statusColor }}
                     >
                       {sub.status}
                     </span>
                     {sub.ai_score != null && (
-                      <span className="text-[10px] text-gray-500 font-mono">
+                      <span className="text-xs text-gray-500 font-mono">
                         AI score: <span className="text-white">{(sub.ai_score * 100).toFixed(0)}%</span>
                       </span>
                     )}
-                    <span className="text-[10px] text-gray-600 font-mono">{imgCount} bilder</span>
+                    <span className="text-xs text-gray-600 font-mono">{imgCount} bilder</span>
                   </div>
 
                   <p className="text-sm font-semibold text-white truncate">
@@ -252,7 +252,7 @@ export function SubmissionsView() {
                   <p className="text-xs text-gray-500 mt-0.5">
                     {sub.profiles?.full_name ?? 'Okänd zoomer'} · {sub.profiles?.email ?? ''}
                   </p>
-                  <p className="text-[10px] text-gray-700 font-mono mt-1">
+                  <p className="text-xs text-gray-700 font-mono mt-1">
                     {new Date(sub.submitted_at).toLocaleString('sv-SE')}
                   </p>
                 </div>
@@ -270,7 +270,7 @@ export function SubmissionsView() {
                         min="0"
                         step="1"
                       />
-                      <span className="text-[10px] text-gray-600">SEK</span>
+                      <span className="text-xs text-gray-600">SEK</span>
                     </div>
                     <button
                       onClick={() => handleApprove(sub)}
@@ -294,7 +294,7 @@ export function SubmissionsView() {
                 {sub.status === 'approved' && (
                   <div className="text-right flex-shrink-0">
                     <p className="text-emerald-400 font-bold text-sm">+{sub.payout_amount ?? 0} SEK</p>
-                    <p className="text-[10px] text-gray-600 font-mono mt-0.5">
+                    <p className="text-xs text-gray-600 font-mono mt-0.5">
                       {sub.approved_at ? new Date(sub.approved_at).toLocaleString('sv-SE') : ''}
                     </p>
                   </div>

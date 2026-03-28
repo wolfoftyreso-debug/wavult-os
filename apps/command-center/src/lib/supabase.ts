@@ -273,3 +273,49 @@ export type CorpDocument = {
   created_at: string
   updated_at: string
 }
+
+// ─── CRM Types ────────────────────────────────────────────────────────────────
+
+export type Company = {
+  id: string
+  name: string
+  industry?: string | null
+  size?: string | null
+  status?: string | null
+  website?: string | null
+  phone?: string | null
+  email?: string | null
+  address?: string | null
+  notes?: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type Contact = {
+  id: string
+  name: string
+  email?: string | null
+  phone?: string | null
+  company_id?: string | null
+  type?: string | null
+  status?: string | null
+  role?: string | null
+  notes?: string | null
+  created_at: string
+  updated_at: string
+}
+
+export type Deal = {
+  id: string
+  name?: string | null
+  contact_id?: string | null
+  company_id?: string | null
+  amount?: number | null
+  currency: string
+  stage?: string | null
+  status?: string | null
+  close_date?: string | null
+  notes?: string | null
+  created_at: string
+  updated_at: string
+}

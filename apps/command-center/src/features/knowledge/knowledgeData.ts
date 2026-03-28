@@ -1657,6 +1657,452 @@ Tidpunkt: När Wavult DevOps FZCO är bildat och bankkonto öppnat
 **Jurist:** Dennis Bjarnemark (dennis@hypbit.com)  
 **Ansvarig:** Dennis Bjarnemark (daglig kontakt med Bolagsverket)`
   },
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // NYA DOKUMENT — Adderade efter Red Team Audit 2026-03-27
+  // ─────────────────────────────────────────────────────────────────────────────
+  {
+    id: 'doc-int-004',
+    title: 'Ny teammedlem dag 1 — Start här',
+    category: 'Internt',
+    summary: 'Din onboarding-guide: vilka vi är, vad vi bygger, vilka verktyg du behöver och var du börjar.',
+    tags: ['onboarding', 'dag-1', 'start', 'team', 'verktyg', 'roller'],
+    updatedAt: '2026-03-27',
+    content: `## Ny teammedlem dag 1 — Start här
+
+Välkommen till Wavult Group. Det här dokumentet är din startpunkt. Läs det från topp till botten — det tar 10 minuter och ger dig hela bilden.
+
+---
+
+### Vad vi bygger
+
+Wavult Group bygger tre inbyggda produkter som bildar en värdekedja:
+
+**QuiXzoom** — En mobilapp där zoomers (fältpersonal) tar geo-taggade fotouppdrag mot betalning. Vi kallar det "last mile intelligence capture" — vi täcker det som satelliter och drönare inte når.
+
+**Quixom Ads** — B2B-monetisering av QuiXzoom-datan. Hyperlokal affärsintelligens och annonsering (aktiveras fas 2, när databasen är stor nog).
+
+**Landvex** — Enterprise B2G-plattform som säljer händelsebaserade larm och analysrapporter till kommuner och Trafikverket. Kärnvärdet: *"Right control. Right cost. Right interval."*
+
+**Sekvensen:** QuiXzoom bygger datan → Quixom Ads monetiserar den → Landvex säljer analysen till offentlig sektor.
+
+---
+
+### Teamet
+
+| Person | Roll | Kontakt |
+|---|---|---|
+| Erik Svensson | Chairman & Group CEO | +46 709 123 223 |
+| Leon Russo | CEO Wavult Operations | +46 738 968 949 |
+| Dennis Bjarnemark | Chief Legal & Operations | +46 761 474 243 |
+| Winston Bjarnemark | CFO | +46 768 123 548 |
+| Johan Berglund | Group CTO | +46 736 977 576 |
+| Bernt | AI-agent (OpenClaw) | Telegram / Wavult OS |
+
+**Primär kommunikationskanal:** Telegram (intern grupp).
+
+---
+
+### Bolagsstrukturen (förenklat)
+
+Wavult Group har 6 juridiska entiteter. Förstå detta på en övergripande nivå:
+
+- **Dubai (holding):** Äger all IP och kod. Skattemässigt optimalt (0% skatt på IP-inkomster).
+- **QuiXzoom Inc (Delaware):** Global/USA-verksamhet.
+- **QuiXzoom UAB (Litauen):** EU-verksamhet, GDPR-hemvist.
+- **Landvex AB (Sverige):** Säljer till svenska kommuner.
+- **Landvex Inc (Texas):** Säljer till amerikanska myndigheter.
+
+Du behöver inte kunna alla detaljer nu — läs doc-wg-001 (Bolagsstruktur) när du är redo.
+
+---
+
+### Verktyg du behöver tillgång till
+
+Be din manager (Leon/Erik) om access till:
+- [ ] Telegram-gruppen (primär kommunikation)
+- [ ] GitHub (wolfoftyreso-debug/hypbit) — om du är tech
+- [ ] Wavult OS (detta system) — admin-inbjudan
+- [ ] Supabase (wavult-os + quixzoom-v2) — om du är tech
+- [ ] AWS Console (account 155407238699) — om du är tech
+- [ ] Revolut Business — om du är CFO/finance
+
+---
+
+### Din rekommenderade läsordning
+
+**Dag 1 — Orientering (3 timmar):**
+1. Det här dokumentet (klart!)
+2. Doc: "Wavult Group — Investerarbriefing" (oversiktsvy)
+3. Kurs: "Wavult OS — Grundkurs" (7 lektioner, 35 min)
+
+**Dag 2 — Din specifika roll:**
+- **Tech (Johan):** Doc "QuiXzoom Plattformsarkitektur" + Kurs "Systemarkitektur"
+- **Sälj (Leon):** Doc "QuiXzoom Säljmanus & Elevator Pitch" + Kurs "QuiXzoom Plattformsguide"
+- **Legal (Dennis):** Doc "Bolagsstruktur" + Doc "Texas LLC Formation" + Doc "Landvex AB Namnbyte"
+- **Finance (Winston):** Doc "Intercompany Cashflow & Transfer Pricing" + Kurs "Dubai-strukturen"
+
+**Dag 3 — Certifiering:**
+- Ta Zoomer-certifieringen (ZoomerCert-fliken) — alla i teamet bör vara certifierade
+
+---
+
+### Nästa milstolpe: Thailand Workcamp
+
+**Datum:** 11 april 2026  
+**Plats:** Bangkok, Thailand — Nysa Hotel  
+**Vad:** Hela teamet samlas för att bygga, utbilda och planera. Vecka 1: utbildning och certification. Vecka 2+: Sprint för QuiXzoom MVP.
+
+Läs doc-wg-003 (Thailand Workcamp) för fullständig agenda.
+
+---
+
+### Frågor?
+
+Fråga Bernt (AI-agenten) — klicka på 🤖-knappen i topbaren. Bernt har läst allt och kan svara på de flesta frågor om Wavult Group, produkterna och strukturen.
+
+Alternativt: Pinga Leon på Telegram för operationella frågor, Johan för tekniska frågor, Dennis för juridiska frågor.`
+  },
+  {
+    id: 'doc-wg-005',
+    title: 'Wavult Group — Investerarbriefing',
+    category: 'Wavult Group',
+    summary: 'Komplett oversiktsvy för investerare: vision, team, produkter, marknad, bolagsstruktur och traction.',
+    tags: ['investerare', 'pitch', 'overview', 'marknad', 'team', 'traction', 'vision'],
+    updatedAt: '2026-03-27',
+    content: `## Wavult Group — Investerarbriefing
+
+### The One-Liner
+
+Wavult Group bygger världens crowdsourcade infrastrukturkartering — zoomers med smartphones skapar det bildlager som kommuner, myndigheter och fastighetsbolag betalar för att ha kontroll över sin infrastruktur.
+
+---
+
+### Problemet (Marknaden Vill Ha)
+
+Infrastrukturägare globalt spenderar hundratals miljarder SEK per år på manuell inspektion av vägar, broar, bryggor, parker och fastigheter. Inspektionerna är:
+- **Dyra:** 500–2 000 SEK per objekt och tillfälle
+- **Sällsynta:** 1–4 gånger per år
+- **Reaktiva:** Problem hittas efter skadan skett
+
+Ingen befintlig lösning kombinerar realtidsdata + kontinuitet + skalbarhet + låg kostnad.
+
+---
+
+### Lösningen — Tre Inbyggda Produkter
+
+**1. QuiXzoom (Supply-sidan)**
+Mobilapp där zoomers (frilansar med smartphones) tar geo-taggade fotouppdrag mot betalning.
+- Modell: Gig-economy (Uber Eats möter Google Street View)
+- Täcker: Gatunivå, inomhus, bryggor — allt satelliter inte kan nå
+
+**2. Quixom Ads (B2B-monetisering)**
+Datan paketeras och säljs som hyperlokal affärsintelligens och annonsering.
+- Kunder: Fastighetsbolag, försäkringsbolag, lokal handel
+- Intäkt: Prenumeration + CPM
+
+**3. Landvex (Enterprise B2G)**
+Händelsebaserade larm och analysabonnemang till kommuner och Trafikverket.
+- Kärnvärde: "Right control. Right cost. Right interval."
+- Priser: 4 900–49 000+ SEK/mån per kund
+- Modell: SaaS med 3-åriga kommunavtal
+
+---
+
+### Affärsmodell & Unit Economics
+
+| Metrik | Mål år 1 | Mål år 2 |
+|---|---|---|
+| Aktiva zoomers | 500 | 5 000 |
+| Uppdrag/månad | 10 000 | 100 000 |
+| Landvex-kunder | 5 | 50 |
+| MRR | 250 000 SEK | 3 000 000 SEK |
+| CAC (zoomer) | < 300 SEK | < 200 SEK |
+| LTV/CAC (zoomer) | > 16x | > 20x |
+
+**Gross margin:** 65–75% (SaaS-komponenten driver marginalerna)
+
+---
+
+### Marknad
+
+**TAM (Total Addressable Market):**
+- Global infrastrukturinspektion: > 500 miljarder SEK/år
+- Crowdsourced geodata: > 50 miljarder SEK/år
+- Hyperlokal annonsering: > 100 miljarder SEK/år
+
+**SAM (Serviceable Addressable Market — EU + USA):**
+- 80 000+ kommuner i EU + USA
+- Genomsnittlig inspektionsbudget: 500 000–5 000 000 SEK/år
+
+**SOM (Serviceable Obtainable Market — år 1–3):**
+- 100 svenska kommuner × 9 000 SEK/mån = 10,8 MSEK/år
+- 20 holländska kommuner × 12 000 SEK/mån = 2,9 MSEK/år
+
+---
+
+### Konkurrensfördel (Moat)
+
+**1. Datamängden är moat:** Ju fler uppdrag, desto bättre AI, desto bättre larm, desto fler kunder. Svårt att kopiera.
+
+**2. Tvåsidig marknad:** Supply (zoomers) + Demand (kommuner) är svårare att starta men bildar kraftfullt nätverk när det väl funkar.
+
+**3. Integrerad värdekedja:** QuiXzoom data → Landvex larm är end-to-end kontroll som konkurrenter inte har.
+
+**4. Inbyggt i regelverk:** Kommuner köper LOU-upphandlat — leverantörsbyten tar 12–18 månader. Sticky.
+
+---
+
+### Team
+
+| Person | Roll | Bakgrund |
+|---|---|---|
+| Erik Svensson | Chairman & Group CEO | Grundare, produktvision, strategi |
+| Leon Russo | CEO Operations | Sälj, operations, people |
+| Dennis Bjarnemark | CLO Interim | Juridik, bolag, compliance |
+| Winston Bjarnemark | CFO | Finans, bank, transfer pricing |
+| Johan Berglund | Group CTO | Full-stack, cloud, mobile |
+
+**Bernt** (AI-agent, OpenClaw) — integrerad i all verksamhet.
+
+---
+
+### Juridisk Struktur (Skatteoptimerat)
+
+- Wavult Group FZCO (Dubai) — IP-holding, 0% skatt
+- Wavult DevOps FZCO (Dubai) — Tech/operations
+- QuiXzoom Inc (Delaware) + QuiXzoom UAB (Litauen) — Global/EU verksamhet
+- Landvex AB (Sverige) + Landvex Inc (Texas) — B2G-försäljning
+
+**Effektiv skattesats:** < 5% via legal IP-licensstruktur (OECD-compliant)
+
+---
+
+### Status & Nästa Steg
+
+**Nu (Mars 2026):**
+- Wavult OS: Live och i drift
+- QuiXzoom API: Live på AWS ECS eu-north-1
+- QuiXzoom App: React Native, slutfas
+- Landvex: Beta-sajt live
+
+**April 2026:** Thailand Workcamp — team samlas för intensiv byggsprint
+
+**Juni 2026:** QuiXzoom beta-lansering Sverige (Stockholms skärgård)
+
+**Q3 2026:** Landvex pilot med 2–3 kommuner
+
+**Q4 2026:** Quixom Ads pilot
+
+**Q1 2027:** Expansion Nederländerna
+
+---
+
+### Investeringsthesis
+
+Wavult Group är en infrastructure-play dold i en gig-economy applikation. QuiXzoom ser ut som "Uber för fotografer" men är i grunden en sensor-as-a-service-plattform som säljer analyserad data till offentlig sektor via Landvex. Marginalerna är SaaS-liknande (65–75%) men data-nätverkseffekter gör moaten djupare än typisk SaaS.
+
+**Kontakt för investering:** erik@hypbit.com (Erik Svensson, Chairman & Group CEO)`
+  },
+  {
+    id: 'doc-qx-004',
+    title: 'QuiXzoom — Säljmanus & Elevator Pitch',
+    category: 'QuiXzoom',
+    summary: 'Snabbreferens för sälj: 30-sek pitch, 2-min pitch, vanliga invändningar och svar, nyckelmetrik.',
+    tags: ['sälj', 'pitch', 'manus', 'elevator-pitch', 'invändningar', 'b2b', 'demo'],
+    updatedAt: '2026-03-27',
+    content: `## QuiXzoom — Säljmanus & Elevator Pitch
+
+### 30-sekunders Pitch (för nätverksevent, hissar)
+
+"QuiXzoom är en app där vanliga människor tar betalt för att fotografera platser som ingen annars fotograferar — bryggor, industriområden, kommunal infrastruktur. Våra kunder — kommuner och Trafikverket — köper analyserade larm när vi hittar skador. Det är Google Street View möter gig-economy, fast det vi faktiskt säljer är kontroll."
+
+---
+
+### 2-minuterspitch (för möten, demos)
+
+**Problem:**
+"Svenska kommuner spenderar hundratals miljoner per år på att inspektera infrastruktur — bryggor, vägar, lekplatser. Inspektionerna är dyra, sker sällan, och hittar ändå skador för sent. Det är ett olöst problem."
+
+**Lösning:**
+"Vi har byggt QuiXzoom — en plattform där zoomers, det vill säga frilansar med smartphones, tar geo-taggade uppdrag och fotograferar specifika objekt mot betalning. Tänk Uber Eats, fast för bilddata istället för mat."
+
+**Affärsmodellen:**
+"Vi tar 25% av varje uppdrag. Men den riktiga intäkten kommer från vår B2B-arm Landvex, som säljer analyserade larm och månadsabonnemang till kommuner. 4 900–49 000 SEK i månaden beroende på storlek."
+
+**Traction:**
+"Vi lanserar Sverige i juni 2026, startpunkt Stockholms skärgård. Teamet är 5 personer plus vår AI-agent Bernt. Vi är i slutfas av appen och har identifierat de första pilot-kommunerna."
+
+**Frågan:**
+"Vad är er utmaning med infrastrukturinspektion idag?" *(lyss — anpassa nästa svar)*
+
+---
+
+### Vanliga Invändningar & Svar
+
+**"Vi har inte budget för det."**
+→ "Vårt Basabonnemang är 4 900 SEK/mån — det är under direktupphandlingsgränsen (700 000 SEK/år). Ni behöver inte upphandla. Och ROI-kalkylen visar typiskt 5–10x besparing mot manuell inspektion. Vill du se beräkningen för er situation?"
+
+**"Vi har redan ett inspektionssystem."**
+→ "Perfekt — Landvex kompletterar det, ersätter det inte. Vi tar bilderna, ert system hanterar arbetsorder. Vi har API och webhook-integration mot ServiceNow och Maximo."
+
+**"Vi vet inte om bildkvaliteten räcker."**
+→ "Bra fråga. Vi validerar varje bild automatiskt — GPS-metadata, bildskärpa, korrekt objekt. Zoomers som levererar dåliga bilder får inte betalt. Vi kan visa er kvalitetsdata från piloten."
+
+**"GDPR — fotografering i offentliga miljöer?"**
+→ "Zoomers fotograferar infrastruktur — bryggor, skyltar, vägar — inte personer. Inga ansikten, inga privata miljöer. Vi är GDPR-compliant och EU-registrerade via QuiXzoom UAB i Litauen. Dennis Bjarnemark (CLO) kan förse er med vår GDPR-analys."
+
+**"Vad händer om en zoomer gör fel?"**
+→ "Varje uppdrag valideras av AI innan vi godkänner det. Om uppdraget underkänns — zoomer får inte betalt. Vi har en strikt kvalitetsprocess och data-validering i realtid."
+
+**"Är ni ett seriöst bolag?"**
+→ "Vi är 5 personer med en tech-stack på AWS ECS, Supabase och Cloudflare. Plattformen är live. Moderbolaget har juridisk struktur i Dubai, EU och USA. Vi bjuder gärna in er på en demo så ni kan se systemet live."
+
+---
+
+### Nyckeltal att ha i huvudet
+
+| Fakta | Siffra |
+|---|---|
+| Lanseringsland | Sverige (juni 2026) |
+| Startpunkt | Stockholms skärgård |
+| Zoomer-mål (60 dagar) | 100 aktiva zoomers |
+| Basabonnemang | 4 900 SEK/mån |
+| Standardabonnemang | 14 900 SEK/mån |
+| Uppdragserspättning (zoomer) | 75% av uppdragspris |
+| Wavult-marginal | 25% |
+| ROI-kalkyl (300 objekt) | ~850 000 SEK besparing/år |
+| Direktupphandlingsgräns | < 700 000 SEK/år |
+
+---
+
+### Demo-flödet (30 minuter)
+
+1. **(5 min) Problem-validering** — "Hur många objekt inspekterar ni idag? Vad kostar det?"
+2. **(5 min) Plattformsvisning** — Visa kartan med live-uppdrag i appen
+3. **(5 min) Uppdragsflödet** — Visa ett uppdrag från publicering till leverans
+4. **(5 min) Larm och rapport** — Visa ett larm med foto + GPS + analys
+5. **(5 min) ROI-kalkyl** — Fyll i deras siffror live
+6. **(5 min) Pilot-erbjudande** — "90 dagar gratis, 20 objekt, ingen bindningstid"
+
+**Mål:** Bokar ett Pilot-avtal eller nästa möte med beslutsfattare.
+
+---
+
+### VIKTIGT — Varumärkes-regler i Sälj
+
+- Säg ALDRIG "fotografer" eller "field agents" — det är **ZOOMERS**
+- Säg ALDRIG "AI-övervakning" eller "säkerhetsövervakning"
+- Säg ALDRIG "kameraövervakning"
+- Varumärket mot kommuner är **Landvex**, inte QuiXzoom
+- Nämn ALDRIG Landvex när du pratar med zoomers — det är separata varumärken`
+  },
+  {
+    id: 'doc-jur-003',
+    title: 'GDPR & Juridik för Zoomers — Vad du behöver veta',
+    category: 'Juridik',
+    summary: 'Fotorätter, integritetsskydd, vad du FÅR och INTE får fotografera som zoomer. Enkel guide.',
+    tags: ['gdpr', 'zoomer', 'fotorätter', 'integritet', 'personuppgifter', 'offentlig-plats'],
+    updatedAt: '2026-03-27',
+    content: `## GDPR & Juridik för Zoomers — Vad du behöver veta
+
+### Den enkla regeln
+
+**Du fotograferar objekt — INTE människor.**
+
+Bryggor, skyltar, vägar, lekplatser, fasader, parkbänkar. Det är vad QuiXzoom-uppdragen handlar om. Inte bilar med läsliga registreringsskyltar. Inte ansikten. Inte privata hem inifrån.
+
+---
+
+### Vad du FÅR fotografera (som zoomer)
+
+**Alltid OK:**
+- Kommunal infrastruktur (bryggor, pirar, vägar, tunnlar)
+- Offentliga platser (parker, torg, stränderna)
+- Byggnaders utsidor (fasad, tak, fundament)
+- Skyltar, lyktstolpar, brunnslock, parkeringsautomater
+- Naturliga element (stränder, skogar, sjöar)
+
+**OK med försiktighet:**
+- Parkeringsplatser — undvik tydliga registreringsskyltar på bilar
+- Trottoarer och gator — om människor syns, se till att de är suddig/ej identifierbara
+- Hamnar och kajer — privata delar kräver ibland tillstånd
+
+---
+
+### Vad du INTE FÅR fotografera
+
+**Aldrig OK:**
+- Ansikten som är identifierbara (GDPR-brott)
+- Privatpersoners hem, trädgårdar, balkonger (kränkning av privatliv)
+- Militära anläggningar och skyddsobjekt
+- Bankkontor och säkerhetsinstallationer (utan tillstånd)
+- Barn i fokus (aldrig, oavsett sammanhang)
+
+**Aldrig av uppdrag heller:**
+Om ett uppdrag ber dig fotografera något av ovanstående — avvisa uppdraget och rapportera det till support@quixzoom.com.
+
+---
+
+### Fotografering på privat mark
+
+Om du behöver ta dig in på privat mark för ett uppdrag:
+1. **Kontrollera uppdragets metadata** — betalande klient ska ha gett tillstånd
+2. **Kontakta support** om du är osäker: support@quixzoom.com
+3. **Ring aldrig på dörrar** utan att det framgår tydligt av uppdraget
+4. **Visa upp din Zoomer-legitimation** (i appen) om någon frågar
+
+QuiXzoom-plattformsavtalet ger dig inte automatiskt tillträdesrätt till privat mark.
+
+---
+
+### Om någon frågar varför du fotograferar
+
+Du har full rätt att fotografera i offentlig miljö i Sverige. Men om någon frågar:
+
+**Svara:** "Jag jobbar med ett kartläggningsprojekt för infrastruktur. Vi dokumenterar offentlig infrastruktur för kommuner och underhållsbolag."
+
+**Visa gärna:** Din Zoomer-profil i appen. Den verifierar att du är certifierad.
+
+**Om du möter aggression:** Avsluta uppdraget, lämna platsen, rapportera incidenten i appen.
+
+---
+
+### GDPR och dina egna data
+
+Som zoomer i QuiXzoom behandlar vi dina personuppgifter:
+- **Namn och e-post:** För konto och kommunikation
+- **Bankkonto/Swish:** För utbetalningar
+- **GPS-data från uppdrag:** Kopplas till uppdraget, inte till dig personligen i kundrapporter
+- **Betyg och uppdragshistorik:** För att beräkna din zoomer-nivå
+
+**Dina rättigheter (GDPR Art. 15–22):**
+- Rätt att se dina data (begär via din profil)
+- Rätt att radera ditt konto (inaktiverar din profil, raderar personuppgifter inom 30 dagar)
+- Rätt att exportera dina data (begär via support)
+
+**Ansvarig för EU-data:** QuiXzoom UAB (Vilnius, Litauen) — EU-registrerad, GDPR-compliant.
+
+---
+
+### Plattformsavtalet — Det viktigaste du signerade
+
+Genom att bli zoomer godkände du att:
+1. Du fotograferar ärligt och sanningsenligt (inget staging, inga falska bilder)
+2. Du inte delar uppdragsinnehåll med tredje part
+3. Du följer QuiXzooms etiska riktlinjer
+4. Du är oberoende uppdragstagare (ej anställd)
+
+**Konsekvens av brott mot avtalet:** Suspension från plattformen, krav på återbetalning av utbetalda belopp, möjlig rättslig åtgärd vid allvarliga brott.
+
+---
+
+### Kontakt för juridiska frågor
+
+**Zoomer-support:** support@quixzoom.com  
+**Legal-ansvarig:** Dennis Bjarnemark — dennis@hypbit.com  
+**Dataskyddsombud (planerat):** dpo@quixzoom.com`
+  },
 ]
 
 // ─── Knowledge Graph Nodes ────────────────────────────────────────────────────

@@ -95,7 +95,7 @@ function VelocityBadge({ velocity, color }: { velocity: number; color: string })
 
   return (
     <span
-      className="inline-flex items-center gap-0.5 text-[10px] font-mono px-1.5 py-0.5 rounded"
+      className="inline-flex items-center gap-0.5 text-xs font-mono px-1.5 py-0.5 rounded"
       style={{
         background: color + '18',
         color: color,

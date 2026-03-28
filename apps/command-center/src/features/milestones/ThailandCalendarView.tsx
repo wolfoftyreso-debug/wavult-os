@@ -313,7 +313,7 @@ export function ThailandCalendarView() {
               {selectedDay.events.map((evt, i) => (
                 <div key={i} className="flex items-start gap-3 px-5 py-3">
                   <div className="flex-shrink-0 w-14 text-right">
-                    <span className="text-[10px] font-mono text-gray-600">{evt.time}</span>
+                    <span className="text-xs font-mono text-gray-600">{evt.time}</span>
                   </div>
                   <div
                     className="h-4 w-0.5 rounded-full flex-shrink-0 mt-0.5"

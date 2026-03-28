@@ -16,13 +16,43 @@ import { getTemplate } from './templates'
 import { ENTITIES } from '../org-graph/data'
 import { useEntityScope } from '../../shared/scope/EntityScopeContext'
 
-const STATUS_CONFIG: Record<DocStatus, { label: string; color: string; bg: string }> = {
-  proposed:          { label: 'Föreslagen',         color: '#F59E0B', bg: '#F59E0B15' },
-  draft:             { label: 'Utkast',              color: '#6B7280', bg: '#6B728015' },
-  pending_signature: { label: 'Väntar på signatur',  color: '#3B82F6', bg: '#3B82F615' },
-  signed:            { label: 'Signerad',            color: '#10B981', bg: '#10B98115' },
-  expired:           { label: 'Utgången',            color: '#EF4444', bg: '#EF444415' },
-  rejected:          { label: 'Avvisad',             color: '#EF4444', bg: '#EF444415' },
+const STATUS_CONFIG: Record<DocStatus, { label: string; color: string; bg: string; description: string }> = {
+  proposed:          {
+    label: 'Föreslagen',
+    color: '#F59E0B',
+    bg: '#F59E0B15',
+    description: 'Systemet har identifierat ett juridiskt behov baserat på bolagsstrukturen. Dokumentet är ej skapat ännu — granska och skicka för signering.',
+  },
+  draft:             {
+    label: 'Utkast',
+    color: '#6B7280',
+    bg: '#6B728015',
+    description: 'Dokumentet är skapat men ej skickat för signering. Redigera och skicka när det är klart.',
+  },
+  pending_signature: {
+    label: 'Väntar på signatur',
+    color: '#3B82F6',
+    bg: '#3B82F615',
+    description: 'Dokumentet är skickat och väntar på digital signering från en eller flera parter (BankID / DocuSign / eIDAS).',
+  },
+  signed:            {
+    label: 'Signerad',
+    color: '#10B981',
+    bg: '#10B98115',
+    description: 'Alla parter har signerat. Dokumentet är juridiskt bindande och arkiverat.',
+  },
+  expired:           {
+    label: 'Utgången',
+    color: '#EF4444',
+    bg: '#EF444415',
+    description: 'Avtalets giltighetstid har löpt ut. Förnya eller arkivera dokumentet.',
+  },
+  rejected:          {
+    label: 'Avvisad',
+    color: '#EF4444',
+    bg: '#EF444415',
+    description: 'En part har avvisat signeringen. Granska kommentarer och revideraeller avbryt dokumentet.',
+  },
 }
 
 const LEVEL_COLOR: Record<string, string> = { L1: '#6B7280', L2: '#3B82F6', L3: '#8B5CF6' }
@@ -112,31 +142,38 @@ function DocRow({ doc, onSend }: { doc: LegalDocument; onSend: (doc: LegalDocume
   const status = STATUS_CONFIG[doc.status]
   const levelColor = LEVEL_COLOR[doc.signing_level]
   return (
-    <div className="flex items-center gap-3 px-4 py-3 border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
-      <IconFile size={14} className="text-gray-600 flex-shrink-0" />
-      <div className="flex-1 min-w-0">
-        <p className="text-[12px] font-semibold text-white truncate">{doc.title}</p>
-        <p className="text-[10px] text-gray-500 mt-0.5">{doc.description}</p>
-        <div className="flex items-center gap-2 mt-1">
-          <span className="text-[9px] font-mono text-gray-600">{entityName(doc.party_a)} → {entityName(doc.party_b)}</span>
-          {doc.amount && <span className="text-[9px] text-gray-600 font-mono">{doc.amount.toLocaleString()} {doc.currency}</span>}
-          {doc.royalty_rate && <span className="text-[9px] text-gray-600 font-mono">{doc.royalty_rate}% royalty</span>}
+    <div className="px-4 py-3 border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
+      {/* Row 1: icon + title + status badge */}
+      <div className="flex items-start gap-2">
+        <IconFile size={13} className="text-gray-600 flex-shrink-0 mt-0.5" />
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-semibold text-white leading-snug">{doc.title}</p>
         </div>
-      </div>
-      <div className="flex items-center gap-2 flex-shrink-0">
-        <span className="text-[9px] font-mono px-1.5 py-0.5 rounded" style={{ color: levelColor, background: levelColor + '15' }}>
-          {doc.signing_level} · {SIGNING_LEVEL_LABELS[doc.signing_level]}
-        </span>
-        <span className="text-[9px] font-mono">{SIGN_METHOD_LABELS[doc.sign_method]}</span>
-        <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full" style={{ color: status.color, background: status.bg }}>
+        <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0 ml-1"
+          style={{ color: status.color, background: status.bg }}>
           {status.label}
         </span>
+      </div>
+
+      {/* Row 2: meta + action */}
+      <div className="flex items-center gap-2 mt-1.5 pl-5 flex-wrap">
+        <span className="text-[9px] font-mono text-gray-600 truncate max-w-[140px]">
+          {entityName(doc.party_a)} → {entityName(doc.party_b)}
+        </span>
+        <span className="text-[9px] font-mono px-1.5 py-0.5 rounded flex-shrink-0"
+          style={{ color: levelColor, background: levelColor + '15' }}>
+          {doc.signing_level}
+        </span>
+        <span className="text-[9px] text-gray-700 font-mono flex-shrink-0">{SIGN_METHOD_LABELS[doc.sign_method]}</span>
+        {doc.royalty_rate && (
+          <span className="text-[9px] text-gray-600 font-mono flex-shrink-0">{doc.royalty_rate}% royalty</span>
+        )}
         {(doc.status === 'proposed' || doc.status === 'draft') && (
           <button
             onClick={() => onSend(doc)}
-            className="flex items-center gap-1 px-2 py-1 rounded text-[9px] font-semibold bg-white/[0.06] hover:bg-white/[0.10] text-white transition-colors"
+            className="flex items-center gap-1 px-2 py-0.5 rounded text-[9px] font-semibold bg-white/[0.06] hover:bg-white/[0.10] text-white transition-colors flex-shrink-0 ml-auto"
           >
-            <IconSend size={10} /> Skicka
+            <IconSend size={9} /> Skicka
           </button>
         )}
       </div>
@@ -163,24 +200,24 @@ function SendModal({ doc, onClose }: { doc: LegalDocument; onClose: () => void }
           <IconScale size={18} className="text-purple-400" />
           <h2 className="text-[14px] font-bold text-white">Skicka för signering</h2>
         </div>
-        <p className="text-[12px] text-white font-semibold mb-1">{doc.title}</p>
-        <p className="text-[11px] text-gray-500 mb-4">{doc.description}</p>
+        <p className="text-xs text-white font-semibold mb-1">{doc.title}</p>
+        <p className="text-xs text-gray-500 mb-4">{doc.description}</p>
         <div className="flex items-center gap-2 mb-4">
-          <span className="text-[10px] font-mono px-2 py-1 rounded" style={{ color: levelColor, background: levelColor + '20' }}>
+          <span className="text-xs font-mono px-2 py-1 rounded" style={{ color: levelColor, background: levelColor + '20' }}>
             {doc.signing_level} — {SIGNING_LEVEL_LABELS[doc.signing_level]}
           </span>
-          <span className="text-[10px] text-gray-500">{SIGN_METHOD_LABELS[doc.sign_method]}</span>
+          <span className="text-xs text-gray-500">{SIGN_METHOD_LABELS[doc.sign_method]}</span>
         </div>
         {doc.sign_method !== 'click' && (
           <div className="mb-4">
-            <label className="text-[10px] text-gray-500 font-mono uppercase tracking-wider block mb-1.5">
+            <label className="text-xs text-gray-500 font-mono uppercase tracking-wider block mb-1.5">
               {doc.sign_method === 'bankid' ? 'Personnummer (YYYYMMDD-XXXX)' : 'E-postadress till motpart'}
             </label>
             <input
               value={email}
               onChange={e => setEmail(e.target.value)}
               placeholder={doc.sign_method === 'bankid' ? '19870926-1234' : 'motpart@företag.com'}
-              className="w-full bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-[12px] text-white placeholder-gray-700 focus:outline-none focus:border-white/20"
+              className="w-full bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-gray-700 focus:outline-none focus:border-white/20"
             />
             {doc.sign_method !== 'bankid' && (
               <p className="text-[9px] text-amber-500/70 mt-1.5">⚠️ BankID kräver svenskt personnummer. Internationella parter signerar via {SIGN_METHOD_LABELS[doc.sign_method]}.</p>
@@ -188,15 +225,15 @@ function SendModal({ doc, onClose }: { doc: LegalDocument; onClose: () => void }
           </div>
         )}
         {sent ? (
-          <div className="flex items-center gap-2 text-emerald-400 text-[12px] font-semibold">
+          <div className="flex items-center gap-2 text-emerald-400 text-xs font-semibold">
             <IconCheck size={16} /> Skickat!
           </div>
         ) : (
           <div className="flex gap-2">
-            <button onClick={handle} className="flex-1 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-[12px] font-semibold transition-colors flex items-center justify-center gap-2">
+            <button onClick={handle} className="flex-1 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold transition-colors flex items-center justify-center gap-2">
               <IconSend size={13} /> Skicka för signering
             </button>
-            <button onClick={onClose} className="px-4 py-2 rounded-lg border border-white/[0.08] text-gray-500 text-[12px] hover:text-white transition-colors">
+            <button onClick={onClose} className="px-4 py-2 rounded-lg border border-white/[0.08] text-gray-500 text-xs hover:text-white transition-colors">
               Avbryt
             </button>
           </div>
@@ -254,31 +291,31 @@ function NewDocModal({ onClose, onSave }: { onClose: () => void; onSave: (doc: P
 
         {/* Dokumenttyp */}
         <div className="mb-4">
-          <label className="text-[10px] text-gray-500 font-mono uppercase tracking-wider block mb-1.5">Dokumenttyp</label>
+          <label className="text-xs text-gray-500 font-mono uppercase tracking-wider block mb-1.5">Dokumenttyp</label>
           <select
             value={docType}
             onChange={e => setDocType(e.target.value as LegalDocType)}
-            className="w-full bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-[12px] text-white focus:outline-none focus:border-white/20"
+            className="w-full bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-white/20"
           >
             {ALL_DOC_TYPES.map(t => (
               <option key={t} value={t}>{DOC_TYPE_LABELS[t]}</option>
             ))}
           </select>
           {template && (
-            <p className="text-[10px] text-gray-600 mt-1.5">{template.description.slice(0, 100)}…</p>
+            <p className="text-xs text-gray-600 mt-1.5">{template.description.slice(0, 100)}…</p>
           )}
         </div>
 
         {/* Parter */}
         <div className="grid grid-cols-2 gap-3 mb-4">
           <div>
-            <label className="text-[10px] text-gray-500 font-mono uppercase tracking-wider block mb-1.5">
+            <label className="text-xs text-gray-500 font-mono uppercase tracking-wider block mb-1.5">
               {template?.partyALabel ?? 'Part A'}
             </label>
             <select
               value={partyA}
               onChange={e => setPartyA(e.target.value)}
-              className="w-full bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-[12px] text-white focus:outline-none focus:border-white/20"
+              className="w-full bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-white/20"
             >
               <option value="">Välj part…</option>
               {entityOptions.map(e => (
@@ -287,13 +324,13 @@ function NewDocModal({ onClose, onSave }: { onClose: () => void; onSave: (doc: P
             </select>
           </div>
           <div>
-            <label className="text-[10px] text-gray-500 font-mono uppercase tracking-wider block mb-1.5">
+            <label className="text-xs text-gray-500 font-mono uppercase tracking-wider block mb-1.5">
               {template?.partyBLabel ?? 'Part B'}
             </label>
             <select
               value={partyB}
               onChange={e => setPartyB(e.target.value)}
-              className="w-full bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-[12px] text-white focus:outline-none focus:border-white/20"
+              className="w-full bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-white/20"
             >
               <option value="">Välj part…</option>
               {entityOptions.map(e => (
@@ -305,11 +342,11 @@ function NewDocModal({ onClose, onSave }: { onClose: () => void; onSave: (doc: P
 
         {/* Jurisdiktion */}
         <div className="mb-4">
-          <label className="text-[10px] text-gray-500 font-mono uppercase tracking-wider block mb-1.5">Jurisdiktion (för signering)</label>
+          <label className="text-xs text-gray-500 font-mono uppercase tracking-wider block mb-1.5">Jurisdiktion (för signering)</label>
           <select
             value={jurisdiction}
             onChange={e => setJurisdiction(e.target.value)}
-            className="w-full bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-[12px] text-white focus:outline-none focus:border-white/20"
+            className="w-full bg-[#070709] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-white/20"
           >
             <option value="SE">🇸🇪 Sverige (BankID)</option>
             <option value="EU-LT">🇱🇹 Litauen (eIDAS)</option>
@@ -322,20 +359,20 @@ function NewDocModal({ onClose, onSave }: { onClose: () => void; onSave: (doc: P
 
         {/* Föreslagen signering */}
         <div className="flex items-center gap-2 mb-5 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.05]">
-          <span className="text-[10px] text-gray-500">Föreslagen signering:</span>
-          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded" style={{ color: levelColor, background: levelColor + '20' }}>
+          <span className="text-xs text-gray-500">Föreslagen signering:</span>
+          <span className="text-xs font-mono px-1.5 py-0.5 rounded" style={{ color: levelColor, background: levelColor + '20' }}>
             {defaultLevel} — {SIGNING_LEVEL_LABELS[defaultLevel]}
           </span>
-          <span className="text-[10px] text-gray-400">{SIGN_METHOD_LABELS[suggestedMethod]}</span>
+          <span className="text-xs text-gray-400">{SIGN_METHOD_LABELS[suggestedMethod]}</span>
         </div>
 
         {/* Checklist */}
         {template && template.checklist.length > 0 && (
           <div className="mb-5">
-            <p className="text-[10px] text-gray-600 font-mono uppercase tracking-wider mb-2">Checklista för detta dokumenttyp</p>
+            <p className="text-xs text-gray-600 font-mono uppercase tracking-wider mb-2">Checklista för detta dokumenttyp</p>
             <ul className="space-y-1">
               {template.checklist.map((item, i) => (
-                <li key={i} className="flex items-start gap-2 text-[10px] text-gray-500">
+                <li key={i} className="flex items-start gap-2 text-xs text-gray-500">
                   <span className="text-gray-700 flex-shrink-0 mt-0.5">◦</span>
                   {item}
                 </li>
@@ -346,7 +383,7 @@ function NewDocModal({ onClose, onSave }: { onClose: () => void; onSave: (doc: P
 
         {/* Knappar */}
         {saved ? (
-          <div className="flex items-center gap-2 text-emerald-400 text-[12px] font-semibold">
+          <div className="flex items-center gap-2 text-emerald-400 text-xs font-semibold">
             <IconCheck size={16} /> Sparat som utkast!
           </div>
         ) : (
@@ -354,11 +391,11 @@ function NewDocModal({ onClose, onSave }: { onClose: () => void; onSave: (doc: P
             <button
               onClick={handleSave}
               disabled={!partyA || !partyB}
-              className="flex-1 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-[12px] font-semibold transition-colors flex items-center justify-center gap-2"
+              className="flex-1 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-semibold transition-colors flex items-center justify-center gap-2"
             >
               <IconFile size={13} /> Spara som utkast
             </button>
-            <button onClick={onClose} className="px-4 py-2 rounded-lg border border-white/[0.08] text-gray-500 text-[12px] hover:text-white transition-colors">
+            <button onClick={onClose} className="px-4 py-2 rounded-lg border border-white/[0.08] text-gray-500 text-xs hover:text-white transition-colors">
               Avbryt
             </button>
           </div>
@@ -370,11 +407,24 @@ function NewDocModal({ onClose, onSave }: { onClose: () => void; onSave: (doc: P
 
 // ─── LegalHub ─────────────────────────────────────────────────────────────────
 
+/**
+ * LegalHub — Manages all legal documents and signing flows within
+ * the Wavult Group corporate structure.
+ *
+ * Status legend:
+ *   Föreslagen        → systemgenererat behov, ej skapat ännu
+ *   Utkast            → skapad, ej skickad
+ *   Väntar på signatur→ skickad för signering
+ *   Signerad          → juridiskt bindande, arkiverad
+ *   Utgången          → avtalstid löpt ut
+ *   Avvisad           → part har nekat signering
+ */
 export function LegalHub() {
   const [filter, setFilter] = useState<DocStatus | 'all'>('all')
   const [sendDoc, setSendDoc] = useState<LegalDocument | null>(null)
   const [showNewDoc, setShowNewDoc] = useState(false)
   const [showTriggers, setShowTriggers] = useState(false)
+  const [showStatusLegend, setShowStatusLegend] = useState(false)
   const [localDocs, setLocalDocs] = useState<LegalDocument[]>([])
   const { activeEntity, scopedEntities } = useEntityScope()
 
@@ -414,30 +464,29 @@ export function LegalHub() {
   return (
     <div className="flex flex-col h-full bg-[#070709] text-white">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-white/[0.06]">
-        <div className="flex items-center gap-3 mb-4">
-          <IconScale size={20} className="text-purple-400" />
-          <h1 className="text-[16px] font-bold text-white">Legal Hub</h1>
-          <span className="text-[9px] font-mono ml-2" style={{ color: activeEntity.color }}>{activeEntity.name}</span>
-          {/* + Nytt dokument */}
+      <div className="px-4 md:px-6 py-3 border-b border-white/[0.06]">
+        <div className="flex items-center gap-2 mb-3">
+          <IconScale size={18} className="text-purple-400 flex-shrink-0" />
+          <h1 className="text-[15px] font-bold text-white">Legal Hub</h1>
+          <span className="text-[9px] font-mono" style={{ color: activeEntity.color }}>{activeEntity.name}</span>
           <button
             onClick={() => setShowNewDoc(true)}
-            className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/30 text-purple-300 text-[11px] font-semibold transition-colors"
+            className="ml-auto flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/30 text-purple-300 text-xs font-semibold transition-colors flex-shrink-0"
           >
-            <IconPlus size={12} /> Nytt dokument
+            <IconPlus size={11} /> <span className="hidden sm:inline">Nytt dokument</span><span className="sm:hidden">Nytt</span>
           </button>
         </div>
-        {/* Stats */}
-        <div className="flex gap-4">
+        {/* Stats — horizontal scroll on mobile */}
+        <div className="flex gap-4 overflow-x-auto no-scrollbar">
           {[
             { label: 'Totalt', value: allDocs.length, color: '#ffffff' },
             { label: 'Föreslagna', value: proposed.length, color: '#F59E0B' },
             { label: 'Väntar', value: pending.length, color: '#3B82F6' },
             { label: 'Signerade', value: signed.length, color: '#10B981' },
           ].map(s => (
-            <div key={s.label} className="text-center">
-              <p className="text-[20px] font-bold" style={{ color: s.color }}>{s.value}</p>
-              <p className="text-[9px] text-gray-600 font-mono uppercase tracking-wider">{s.label}</p>
+            <div key={s.label} className="text-center flex-shrink-0">
+              <p className="text-[20px] font-bold leading-none" style={{ color: s.color }}>{s.value}</p>
+              <p className="text-[9px] text-gray-600 font-mono uppercase tracking-wider mt-1">{s.label}</p>
             </div>
           ))}
         </div>
@@ -448,8 +497,8 @@ export function LegalHub() {
         <div className="mx-4 mt-3 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-3">
           <IconWarning size={16} className="text-amber-400 flex-shrink-0" />
           <div className="flex-1">
-            <p className="text-[12px] font-semibold text-amber-300">{proposed.length} dokument föreslagna av systemet</p>
-            <p className="text-[10px] text-amber-600 mt-0.5">Systemet har identifierat juridiska behov baserat på bolagsstrukturen. Granska och skicka för signering.</p>
+            <p className="text-xs font-semibold text-amber-300">{proposed.length} dokument föreslagna av systemet</p>
+            <p className="text-xs text-amber-600 mt-0.5">Systemet har identifierat juridiska behov baserat på bolagsstrukturen. Granska och skicka för signering.</p>
           </div>
         </div>
       )}
@@ -460,11 +509,40 @@ export function LegalHub() {
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`px-3 py-1.5 rounded-lg text-[10px] font-semibold transition-colors ${filter === f ? 'bg-white/10 text-white' : 'text-gray-600 hover:text-gray-400'}`}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${filter === f ? 'bg-white/10 text-white' : 'text-gray-600 hover:text-gray-400'}`}
           >
             {f === 'all' ? 'Alla' : f === 'proposed' ? 'Föreslagna' : f === 'pending_signature' ? 'Väntar' : f === 'draft' ? 'Utkast' : 'Signerade'}
           </button>
         ))}
+      </div>
+
+      {/* Status legend — collapsible inline reference */}
+      <div className="px-4 pb-2">
+        <button
+          onClick={() => setShowStatusLegend(s => !s)}
+          className="flex items-center gap-1.5 text-xs text-gray-600 hover:text-gray-400 transition-colors"
+        >
+          <IconShield size={10} />
+          {showStatusLegend ? 'Dölj statusförklaring' : 'Vad betyder statusarna? →'}
+        </button>
+        {showStatusLegend && (
+          <div className="mt-2 rounded-xl border border-white/[0.06] bg-[#0D0F1A] overflow-hidden">
+            <div className="px-4 py-2.5 border-b border-white/[0.05]">
+              <p className="text-xs text-gray-500 font-mono uppercase tracking-wider">Dokumentstatus — förklaring</p>
+            </div>
+            {(Object.entries(STATUS_CONFIG) as [DocStatus, typeof STATUS_CONFIG[DocStatus]][]).map(([key, cfg]) => (
+              <div key={key} className="flex items-start gap-3 px-4 py-2.5 border-b border-white/[0.04] last:border-0">
+                <span
+                  className="text-[9px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0 mt-0.5"
+                  style={{ color: cfg.color, background: cfg.bg }}
+                >
+                  {cfg.label}
+                </span>
+                <p className="text-xs text-gray-500 leading-snug">{cfg.description}</p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Document list */}
@@ -474,7 +552,7 @@ export function LegalHub() {
             <div className="flex items-center justify-center py-12 text-gray-700">
               <div className="text-center">
                 <IconCheck size={32} className="mx-auto mb-2 opacity-30" />
-                <p className="text-[12px]">Inga dokument i denna kategori</p>
+                <p className="text-xs">Inga dokument i denna kategori</p>
               </div>
             </div>
           ) : (
@@ -486,7 +564,7 @@ export function LegalHub() {
         <div className="mx-4 mt-4 mb-6">
           <button
             onClick={() => setShowTriggers(s => !s)}
-            className="flex items-center gap-2 text-[10px] text-gray-600 hover:text-gray-400 transition-colors"
+            className="flex items-center gap-2 text-xs text-gray-600 hover:text-gray-400 transition-colors"
           >
             {showTriggers ? <IconChevronUp size={12} /> : <IconChevronDown size={12} />}
             <IconShield size={11} />
@@ -503,8 +581,8 @@ export function LegalHub() {
                 <div key={t.title} className="flex items-start gap-3 px-4 py-3 border-b border-white/[0.04] last:border-0">
                   <span className="text-sm flex-shrink-0 mt-0.5">{t.icon}</span>
                   <div>
-                    <p className="text-[11px] font-semibold text-white">{t.title}</p>
-                    <p className="text-[10px] text-gray-500 mt-0.5">{t.desc}</p>
+                    <p className="text-xs font-semibold text-white">{t.title}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">{t.desc}</p>
                   </div>
                   <span className={`ml-auto text-[8px] font-mono px-1.5 py-0.5 rounded flex-shrink-0 ${t.priority === 'critical' ? 'bg-red-500/15 text-red-400' : t.priority === 'high' ? 'bg-amber-500/15 text-amber-400' : 'bg-gray-500/15 text-gray-400'}`}>
                     {t.priority}

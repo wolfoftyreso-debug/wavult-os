@@ -22,7 +22,7 @@ const ALL_MODULES: Module[] = [
   { id: 'finance',        label: 'Finance',           icon: '💰' },
   { id: 'payroll',        label: 'Lön & Personal',    icon: '👥' },
   { id: 'transactions',   label: 'Transaktioner',     icon: '↕' },
-  { id: 'incidents',      label: 'Incident Center',   icon: '🚨' },
+  { id: 'incidents',      label: 'Alerts',   icon: '🚨' },
   { id: 'legal',          label: 'Legal Hub',         icon: '⚖️' },
   { id: 'entities',       label: 'Entities',          icon: '🏢' },
   { id: 'org',            label: 'Corporate Graph',   icon: '🏗' },
@@ -116,7 +116,7 @@ export function RolesView() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => setSelectedRole(null)}
-            className="text-[11px] text-gray-500 hover:text-gray-300 transition-colors flex items-center gap-1"
+            className="text-xs text-gray-500 hover:text-gray-300 transition-colors flex items-center gap-1"
           >
             ← Tillbaka
           </button>
@@ -128,7 +128,7 @@ export function RolesView() {
           </div>
           <div>
             <h2 className="text-sm font-bold text-white">{role.person} — {role.title}</h2>
-            <p className="text-[10px] text-gray-600">{role.description}</p>
+            <p className="text-xs text-gray-600">{role.description}</p>
           </div>
         </div>
 
@@ -156,7 +156,7 @@ export function RolesView() {
                   />
                 </button>
                 <span
-                  className="text-[10px] font-mono w-12 text-right flex-shrink-0"
+                  className="text-xs font-mono w-12 text-right flex-shrink-0"
                   style={{ color: enabled ? role.color : '#6B7280' }}
                 >
                   {enabled ? 'PÅ' : 'AV'}
@@ -183,7 +183,7 @@ export function RolesView() {
         )}
 
         {selectedRole === 'admin' && (
-          <div className="rounded-xl border border-purple-500/20 bg-purple-500/5 px-4 py-3 text-[11px] text-gray-500">
+          <div className="rounded-xl border border-purple-500/20 bg-purple-500/5 px-4 py-3 text-xs text-gray-500">
             🔐 Admin har alltid full tillgång och kan inte begränsas.
           </div>
         )}
@@ -193,7 +193,7 @@ export function RolesView() {
 
   return (
     <div className="space-y-3">
-      <p className="text-[11px] text-gray-600">Klicka på en roll för att redigera modultillgång.</p>
+      <p className="text-xs text-gray-600">Klicka på en roll för att redigera modultillgång.</p>
 
       {ROLES.map(r => {
         const modules = getModules(r.id)
@@ -219,13 +219,13 @@ export function RolesView() {
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-semibold text-white">{r.person}</span>
                   <span
-                    className="text-[10px] px-1.5 py-0.5 rounded font-mono"
+                    className="text-xs px-1.5 py-0.5 rounded font-mono"
                     style={{ background: r.color + '15', color: r.color }}
                   >
                     {r.title}
                   </span>
                 </div>
-                <p className="text-[11px] text-gray-600 mt-0.5 truncate">{r.description}</p>
+                <p className="text-xs text-gray-600 mt-0.5 truncate">{r.description}</p>
               </div>
 
               {/* Module count */}

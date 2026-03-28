@@ -36,11 +36,11 @@ function CheckItem({ item }: { item: typeof THAILAND_CHECKLIST[0] }) {
     >
       <span className="text-base mt-0.5 flex-shrink-0">{STATUS_ICON[item.status]}</span>
       <div className="flex-1 min-w-0">
-        <p className={`text-[13px] font-medium ${item.status === 'done' ? 'text-gray-500 line-through' : 'text-white'}`}>
+        <p className={`text-sm font-medium ${item.status === 'done' ? 'text-gray-500 line-through' : 'text-white'}`}>
           {item.title}
         </p>
         {item.notes && (
-          <p className="text-[10px] text-gray-600 mt-0.5 italic">{item.notes}</p>
+          <p className="text-xs text-gray-600 mt-0.5 italic">{item.notes}</p>
         )}
         <div className="flex items-center gap-2 mt-1">
           <span className="text-[9px] text-gray-500 font-mono">👤 {item.owner}</span>
@@ -82,7 +82,7 @@ export function ThailandPrepView() {
           <span className="text-4xl">🇹🇭</span>
           <div className="flex-1">
             <h2 className="text-[18px] font-bold text-white">Thailand Workcamp</h2>
-            <p className="text-[11px] text-gray-400 mt-0.5">
+            <p className="text-xs text-gray-400 mt-0.5">
               11 april 2026 — Vecka 1: Teambuilding & Utbildning
             </p>
             <div className="flex items-center gap-3 mt-2">
@@ -92,20 +92,20 @@ export function ThailandPrepView() {
                   style={{ width: `${totalPct}%`, background: urgencyColor }}
                 />
               </div>
-              <span className="text-[11px] font-mono text-white">{totalPct}%</span>
+              <span className="text-xs font-mono text-white">{totalPct}%</span>
             </div>
           </div>
           <div className="text-right flex-shrink-0">
             <p className="text-5xl font-bold leading-none" style={{ color: urgencyColor }}>
               {daysLeft}
             </p>
-            <p className="text-[10px] text-gray-400 font-mono mt-1">dagar kvar</p>
+            <p className="text-xs text-gray-400 font-mono mt-1">dagar kvar</p>
           </div>
         </div>
 
         {daysLeft <= 16 && (
           <div
-            className="mt-3 flex items-center gap-2 text-[11px] font-medium px-3 py-2 rounded-lg"
+            className="mt-3 flex items-center gap-2 text-xs font-medium px-3 py-2 rounded-lg"
             style={{ background: urgencyColor + '15', color: urgencyColor }}
           >
             <span>⚡</span>
@@ -129,7 +129,7 @@ export function ThailandPrepView() {
                 className="h-2 w-2 rounded-full flex-shrink-0"
                 style={{ background: catColor }}
               />
-              <span className="text-[13px] font-semibold text-white">{cat}</span>
+              <span className="text-sm font-semibold text-white">{cat}</span>
               <span
                 className="ml-auto text-[9px] font-mono px-2 py-0.5 rounded-full"
                 style={{ background: catColor + '15', color: catColor }}

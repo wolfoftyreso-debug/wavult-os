@@ -480,7 +480,7 @@ function DrillPanel({
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="font-bold text-white text-[15px] leading-tight">{entity.shortName}</span>
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded"
+                <span className="text-xs font-mono px-1.5 py-0.5 rounded"
                   style={{ background: statusColor + '18', color: statusColor }}>
                   {entity.active_status.toUpperCase()}
                 </span>
@@ -491,7 +491,7 @@ function DrillPanel({
           <div className="flex items-center gap-2 flex-shrink-0">
             <button
               onClick={() => navigate(`/entities/${entity.id}`)}
-              className="text-[10px] px-2.5 py-1.5 rounded-lg font-bold tracking-wide transition-all hover:opacity-80"
+              className="text-xs px-2.5 py-1.5 rounded-lg font-bold tracking-wide transition-all hover:opacity-80"
               style={{ background: entity.color + '22', color: entity.color, border: `1px solid ${entity.color}38` }}
             >
               OPEN
@@ -505,15 +505,15 @@ function DrillPanel({
 
         {/* Impact strip: type · jurisdiction · layer */}
         <div className="flex items-center gap-2 mt-3 flex-wrap">
-          <span className="text-[10px] text-gray-600 font-mono uppercase">{entity.type}</span>
+          <span className="text-xs text-gray-600 font-mono uppercase">{entity.type}</span>
           <span className="text-gray-800">·</span>
-          <span className="text-[10px] text-gray-600">{entity.jurisdiction}</span>
+          <span className="text-xs text-gray-600">{entity.jurisdiction}</span>
           <span className="text-gray-800">·</span>
-          <span className="text-[10px] font-mono" style={{ color: entity.color }}>Layer {entity.layer}</span>
+          <span className="text-xs font-mono" style={{ color: entity.color }}>Layer {entity.layer}</span>
           {children.length > 0 && (
             <>
               <span className="text-gray-800">·</span>
-              <span className="text-[10px] text-gray-600">{children.length} subsidiaries</span>
+              <span className="text-xs text-gray-600">{children.length} subsidiaries</span>
             </>
           )}
         </div>
@@ -528,7 +528,7 @@ function DrillPanel({
               style={{ color: urgencyStyle.text }}>
               {nextAction.urgency === 'critical' ? 'CRITICAL — ACTION REQUIRED' : nextAction.urgency === 'warn' ? 'NEXT STEP' : 'STATUS'}
             </div>
-            <p className="text-[11px] text-gray-300 leading-snug">{nextAction.text}</p>
+            <p className="text-xs text-gray-300 leading-snug">{nextAction.text}</p>
           </div>
         </div>
       </div>
@@ -538,7 +538,7 @@ function DrillPanel({
 
         {/* 2. PURPOSE */}
         <PanelSection label="Purpose — why it exists">
-          <p className="text-[12px] text-gray-400 leading-relaxed px-1">{entity.description}</p>
+          <p className="text-xs text-gray-400 leading-relaxed px-1">{entity.description}</p>
         </PanelSection>
 
         {/* 3. HOW IT WORKS — key facts */}
@@ -548,8 +548,8 @@ function DrillPanel({
               {metaEntries.map(([k, v], i) => (
                 <div key={k}
                   className={`flex gap-3 px-3 py-2 ${i < metaEntries.length - 1 ? 'border-b border-white/[0.04]' : ''}`}>
-                  <span className="text-[10px] text-gray-600 font-mono w-24 flex-shrink-0 pt-0.5 leading-relaxed">{k}</span>
-                  <span className="text-[11px] text-gray-300 leading-relaxed flex-1">{v}</span>
+                  <span className="text-xs text-gray-600 font-mono w-24 flex-shrink-0 pt-0.5 leading-relaxed">{k}</span>
+                  <span className="text-xs text-gray-300 leading-relaxed flex-1">{v}</span>
                 </div>
               ))}
             </div>
@@ -571,9 +571,9 @@ function DrillPanel({
                   return (
                     <div key={kpi.id} className="rounded-lg px-3 py-2 border border-white/[0.04] bg-white/[0.01]">
                       <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-[11px] text-gray-300">{kpi.name}</span>
+                        <span className="text-xs text-gray-300">{kpi.name}</span>
                         <div className="flex items-center gap-1.5">
-                          <span className="text-[10px] font-bold font-mono" style={{ color: c }}>{kpi.current}</span>
+                          <span className="text-xs font-bold font-mono" style={{ color: c }}>{kpi.current}</span>
                           <span className="text-[9px] px-1 py-px rounded font-mono"
                             style={{ background: c + '18', color: c }}>{st.toUpperCase()}</span>
                         </div>
@@ -617,8 +617,8 @@ function DrillPanel({
                       )
                     })()}
                     <div className="flex-1 min-w-0">
-                      <div className="text-[11px] font-semibold text-white">{r.person}</div>
-                      <div className="text-[10px] text-gray-600">{r.role_type}</div>
+                      <div className="text-xs font-semibold text-white">{r.person}</div>
+                      <div className="text-xs text-gray-600">{r.role_type}</div>
                     </div>
                     <div className="flex items-center gap-1.5 flex-shrink-0">
                       {kpiStatus && (
@@ -646,9 +646,9 @@ function DrillPanel({
                 return (
                   <div key={r.id} className="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-white/[0.04]">
                     <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: s.stroke }} />
-                    <span className="text-[10px] text-gray-600 w-20 flex-shrink-0">{s.label}</span>
-                    <span className="text-[10px] text-gray-600">→</span>
-                    <span className="text-[11px] font-semibold flex-1" style={{ color: target?.color ?? '#fff' }}>
+                    <span className="text-xs text-gray-600 w-20 flex-shrink-0">{s.label}</span>
+                    <span className="text-xs text-gray-600">→</span>
+                    <span className="text-xs font-semibold flex-1" style={{ color: target?.color ?? '#fff' }}>
                       {target?.shortName}
                     </span>
                     <span className="text-[9px] text-gray-700 truncate max-w-[80px]">{r.label}</span>
@@ -661,11 +661,11 @@ function DrillPanel({
                 return (
                   <div key={r.id} className="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-white/[0.04] bg-white/[0.005]">
                     <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: s.stroke }} />
-                    <span className="text-[11px] font-semibold" style={{ color: source?.color ?? '#fff' }}>
+                    <span className="text-xs font-semibold" style={{ color: source?.color ?? '#fff' }}>
                       {source?.shortName}
                     </span>
-                    <span className="text-[10px] text-gray-600">→</span>
-                    <span className="text-[10px] text-gray-600 flex-1">{s.label}</span>
+                    <span className="text-xs text-gray-600">→</span>
+                    <span className="text-xs text-gray-600 flex-1">{s.label}</span>
                   </div>
                 )
               })}
@@ -684,8 +684,8 @@ function DrillPanel({
               <div key={i} className="flex items-center gap-2.5 px-3 py-1.5">
                 <span className="h-1.5 w-1.5 rounded-full flex-shrink-0"
                   style={{ background: item.done ? '#10B981' : '#374151' }} />
-                <span className="text-[10px] text-gray-600 w-28 flex-shrink-0">{item.label}</span>
-                <span className="text-[10px] font-mono text-gray-500">{item.date}</span>
+                <span className="text-xs text-gray-600 w-28 flex-shrink-0">{item.label}</span>
+                <span className="text-xs font-mono text-gray-500">{item.date}</span>
               </div>
             ))}
           </div>
@@ -700,18 +700,20 @@ function DrillPanel({
                 entity.active_status !== 'live'     && { label: 'Operational', status: 'pending' },
                                                        { label: 'Revenue generating', status: 'target' },
                                                        { label: 'Intercompany agreements signed', status: 'target' },
-              ].filter(Boolean).map((item: any, i: number) => (
+              ].filter(Boolean).map((item, i: number) => {
+                const typedItem = item as { label: string; status: string }
+                return (
                 <div key={i} className="flex items-center gap-2">
                   <span className="text-[9px] font-mono px-1.5 py-0.5 rounded"
                     style={{
-                      background: item.status === 'pending' ? '#F59E0B15' : '#8B5CF615',
-                      color: item.status === 'pending' ? '#F59E0B' : '#8B5CF6',
+                      background: typedItem.status === 'pending' ? '#F59E0B15' : '#8B5CF615',
+                      color: typedItem.status === 'pending' ? '#F59E0B' : '#8B5CF6',
                     }}>
-                    {item.status === 'pending' ? 'PENDING' : 'TARGET'}
+                    {typedItem.status === 'pending' ? 'PENDING' : 'TARGET'}
                   </span>
-                  <span className="text-[11px] text-gray-400">{item.label}</span>
+                  <span className="text-xs text-gray-400">{typedItem.label}</span>
                 </div>
-              ))}
+              )})}
             </div>
           </div>
         </PanelSection>
@@ -725,7 +727,7 @@ function DrillPanel({
                 return (
                   <div key={c.id} className="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-white/[0.04]">
                     <span className="text-sm">{c.flag}</span>
-                    <span className="text-[11px] font-semibold flex-1" style={{ color: c.color }}>{c.shortName}</span>
+                    <span className="text-xs font-semibold flex-1" style={{ color: c.color }}>{c.shortName}</span>
                     <span className="text-[9px] font-mono text-gray-600">{c.jurisdiction}</span>
                     <span className="h-1.5 w-1.5 rounded-full" style={{ background: cs }} />
                   </div>
@@ -750,7 +752,7 @@ function DrillPanel({
                       onClick={() => navigate('/markets')}
                     >
                       <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: sc }} />
-                      <span className="text-[11px] font-semibold text-white flex-1">{site.name}</span>
+                      <span className="text-xs font-semibold text-white flex-1">{site.name}</span>
                       <span className="text-[9px] font-mono" style={{ color: sc }}>{site.status}</span>
                     </div>
                   )
@@ -808,7 +810,7 @@ function Legend({ visibleTypes }: { visibleTypes: RelationshipType[] }) {
   )
 }
 
-// ─── Command Chain SVG overlay ────────────────────────────────────────────────
+// ─── Org Hierarchy SVG overlay ────────────────────────────────────────────────
 // Rendered as a permanent column to the right of entity nodes.
 // Straight vertical lines — no curves. Always on.
 
@@ -1117,14 +1119,18 @@ export function OrgGraph() {
 
   return (
     <div className="flex h-full overflow-hidden">
+      {/* Mobile hint banner */}
+      <div className="md:hidden absolute top-12 left-0 right-0 z-10 px-4 py-2 bg-amber-500/10 border-b border-amber-500/20 flex items-center gap-2">
+        <span className="text-amber-400 text-xs">📐 Graf-vy — skrolla horisontellt för att navigera</span>
+      </div>
       {/* ── Graph area ── */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden md:pt-0 pt-8">
         {/* ── Toolbar — precision control bar ── */}
         <div className="flex-shrink-0 flex items-center justify-between gap-4 px-5 py-2.5 border-b border-white/[0.06] bg-[#07080F]">
           {/* Left: title + count */}
           <div className="flex items-center gap-3 min-w-0">
             <h1 className="text-sm font-bold text-white tracking-tight">Corporate Graph</h1>
-            <span className="text-[10px] text-gray-700 font-mono">
+            <span className="text-xs text-gray-700 font-mono">
               {visibleEntities.length}e · {visibleRels.length}r
             </span>
             {scopeEntity.id !== 'wavult-group' && (
@@ -1143,7 +1149,7 @@ export function OrgGraph() {
             <select
               value={perms.overlayMode}
               disabled
-              className="text-[10px] bg-[#0D0F1A] border border-white/[0.08] text-gray-400 rounded-lg px-2.5 py-1.5 font-mono cursor-default focus:outline-none appearance-none"
+              className="text-xs bg-[#0D0F1A] border border-white/[0.08] text-gray-400 rounded-lg px-2.5 py-1.5 font-mono cursor-default focus:outline-none appearance-none"
               title="Viewing context — determined by your role"
             >
               <option>👁 {perms.overlayMode === 'full' ? 'Full view' : perms.overlayMode === 'financial' ? 'Financial view' : perms.overlayMode === 'legal' ? 'Legal view' : 'Technical view'}</option>
@@ -1152,10 +1158,10 @@ export function OrgGraph() {
             {/* Divider */}
             <div className="w-px h-5 bg-white/[0.06]" />
 
-            {/* 2. Overlay toggle: Command Chain */}
+            {/* 2. Overlay toggle: Org Hierarchy */}
             <button
               onClick={() => setShowCommandChain(p => !p)}
-              className="text-[10px] px-3 py-1.5 rounded-lg border font-medium transition-all"
+              className="text-xs px-3 py-1.5 rounded-lg border font-medium transition-all"
               style={showCommandChain
                 ? { background: '#8B5CF618', color: '#A78BFA', borderColor: '#8B5CF635' }
                 : { background: 'transparent', color: '#4B5563', borderColor: '#ffffff0a' }
@@ -1167,7 +1173,7 @@ export function OrgGraph() {
             {/* 5. Show all relationships toggle */}
             <button
               onClick={() => setShowAllEdges(s => !s)}
-              className={`px-2 py-1 text-[10px] rounded font-mono border transition-colors ${showAllEdges ? 'bg-white/10 border-white/30 text-white' : 'border-white/10 text-gray-600 hover:text-gray-400'}`}
+              className={`px-2 py-1 text-xs rounded font-mono border transition-colors ${showAllEdges ? 'bg-white/10 border-white/30 text-white' : 'border-white/10 text-gray-600 hover:text-gray-400'}`}
             >
               {showAllEdges ? '← Enkel vy' : '+ Visa alla relationer'}
             </button>
@@ -1178,7 +1184,7 @@ export function OrgGraph() {
                 <div className="w-px h-5 bg-white/[0.06]" />
                 <button
                   onClick={() => setSelectedEntity(null)}
-                  className="text-[10px] text-gray-600 hover:text-gray-400 px-2 py-1.5 transition-colors font-mono"
+                  className="text-xs text-gray-600 hover:text-gray-400 px-2 py-1.5 transition-colors font-mono"
                 >
                   ✕ clear
                 </button>
@@ -1248,7 +1254,7 @@ export function OrgGraph() {
               )
             })}
 
-            {/* ── Command Chain Layer (always right, togglable) ── */}
+            {/* ── Org Hierarchy Layer (always right, togglable) ── */}
             <CommandChainLayer
               visible={showCommandChain}
               selectedCmdId={selectedCmdId}
@@ -1276,7 +1282,7 @@ export function OrgGraph() {
 
       {/* ── Detail panel ── */}
       {selectedEntity && (
-        <div className="w-[320px] flex-shrink-0">
+        <div className="fixed md:static inset-0 md:inset-auto md:w-[320px] md:flex-shrink-0 z-50 md:z-auto">
           <DrillPanel
             entity={selectedEntity}
             perms={perms}

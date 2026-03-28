@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 type Stage = 'intro' | 'quiz' | 'result' | 'certificate'
 
@@ -9,50 +9,113 @@ interface Question {
   correct: number
 }
 
+// ─── ZoomerCert Frågor — 10 stycken, pedagogiska och rätt svårighetsgrad ────
+// Uppdaterade 2026-03-27 efter Red Team Audit.
+// Täcker: plattform, etik, juridik, kvalitet, affärsmodell, nomenklatur.
 const QUESTIONS: Question[] = [
   {
     id: 1,
     text: 'Vad är QuiXzooms primära affärsmodell?',
     options: [
-      'Sälja kameror till konsumenter',
-      'Crowdsourcad kamerainfrastruktur — fotografer tar uppdrag och levererar bilddata',
-      'B2B videostreamingtjänst',
-      'Socialt medieplattform för fotografer',
+      'Sälja kameror och tillbehör till fotografer',
+      'Crowdsourcad kamerainfrastruktur — zoomers tar geo-taggade uppdrag och levererar bilddata mot betalning',
+      'B2B videostreamingtjänst för kommuner',
+      'Socialt medieplattform för bilddelning',
     ],
     correct: 1,
   },
   {
     id: 2,
-    text: 'Vad kallas en certifierad QuiXzoom-fotograf?',
-    options: ['Pixlare', 'Snapster', 'Zoomer', 'Framer'],
+    // Testar nomenklatur — ett av de viktigaste att förstå
+    text: 'Vad är den korrekta termen för en person som utför uppdrag i QuiXzoom-plattformen?',
+    options: ['Fotograf', 'Fältoperatör', 'Zoomer', 'Field Agent'],
     correct: 2,
   },
   {
     id: 3,
-    text: 'Vilken juridisk enhet driver QuiXzoom i EU?',
-    options: [
-      'QuiXzoom AB (Sverige)',
-      'QuiXzoom GmbH (Tyskland)',
-      'QuiXzoom UAB (Litauen)',
-      'Wavult Operations (Dubai)',
-    ],
+    // Testar förståelse av uppdragsflödet — praktisk kunskap
+    text: 'Hur länge är ett uppdrag "låst" för en zoomer efter att hen accepterat det?',
+    options: ['30 minuter', '1 timme', '2 timmar', '4 timmar'],
     correct: 2,
   },
   {
     id: 4,
-    text: 'Vilket betygssnitt krävs minimum för Pro Zoomer-status?',
-    options: ['3.5', '4.0', '4.5', '5.0'],
+    // Testar juridik och struktur — viktigt för EU-zoomers
+    text: 'Vilken juridisk enhet är ansvarig för QuiXzoom-verksamheten i EU?',
+    options: [
+      'QuiXzoom AB (Sverige)',
+      'QuiXzoom GmbH (Tyskland)',
+      'QuiXzoom UAB (Litauen)',
+      'Wavult Group FZCO (Dubai)',
+    ],
     correct: 2,
   },
   {
     id: 5,
-    text: 'Vilken B2B-arm säljer analyserad intelligens till infrastrukturägare baserat på QuiXzoom-data?',
-    options: ['Landvex', 'Optical Insight', 'Wavult Analytics', 'PixData'],
-    correct: 0,
+    // Testar kvalitetskrav — praktisk kunskap
+    text: 'Vad händer om ett inlämnat uppdrag underkänns av AI-validering?',
+    options: [
+      'Zoomer får automatiskt halv betalning',
+      'Uppdraget arkiveras utan åtgärd',
+      'Zoomer får bildspecifik feedback och kan eventuellt göra om uppdraget',
+      'Zoomer stängs av från plattformen',
+    ],
+    correct: 2,
+  },
+  {
+    id: 6,
+    // Testar certifieringsnivåer — motivation att stanna och bli bättre
+    text: 'Hur många godkända uppdrag krävs som minimum för att uppnå Pro Zoomer-status?',
+    options: ['10 uppdrag', '25 uppdrag', '50 uppdrag', '100 uppdrag'],
+    correct: 2,
+  },
+  {
+    id: 7,
+    // Testar etik och GDPR — kritisk för praktiken
+    text: 'Vilket av följande är INTE tillåtet att fotografera som zoomer?',
+    options: [
+      'En kommunal brygga i offentlig hamn',
+      'En persons ansikte som tydligt syns och är identifierbart',
+      'En trasig parkbänk i ett offentligt område',
+      'Ett brunnslock på en gata',
+    ],
+    correct: 1,
+  },
+  {
+    id: 8,
+    // Testar betalningsmodellen — viktig för zoomer-motivation
+    text: 'Vilken andel av ett uppdragspris får zoomern utbetalt?',
+    options: ['50%', '60%', '75%', '90%'],
+    correct: 2,
+  },
+  {
+    id: 9,
+    // Testar förståelse av värdekedjan — ger helhetsbild
+    text: 'Vad är Landvex i relation till QuiXzoom?',
+    options: [
+      'En konkurrent som samlar in liknande data',
+      'Enterprise-plattformen som säljer analyserade larm till kommuner, baserat på QuiXzoom-data',
+      'En zoomer-app för äldre målgrupper',
+      'QuiXzooms betalningsprocessor',
+    ],
+    correct: 1,
+  },
+  {
+    id: 10,
+    // Testar kärncitatet och positioneringen — viktig för att förstå affärsidén
+    text: 'Vad är Landvex kärnvärde — det som skiljer dem från traditionell inspektion?',
+    options: [
+      '"AI-övervakning dygnet runt, 365 dagar om året"',
+      '"Billigaste kameraövervakningen på marknaden"',
+      '"Right control. Right cost. Right interval."',
+      '"Världens snabbaste drönartjänst"',
+    ],
+    correct: 2,
   },
 ]
 
-const PASS_THRESHOLD = 4 // 4 av 5 rätt
+// 7 av 10 rätt krävs för godkänt
+const PASS_THRESHOLD = 7
 
 function CertificateView({ onReset }: { onReset: () => void }) {
   const date = new Date().toLocaleDateString('sv-SE', {
@@ -70,7 +133,7 @@ function CertificateView({ onReset }: { onReset: () => void }) {
 
         <div className="text-5xl mb-4">🏆</div>
 
-        <p className="text-[10px] text-amber-400/60 font-mono tracking-[0.3em] mb-2">WAVULT GROUP — QUIXZOOM</p>
+        <p className="text-xs text-amber-400/60 font-mono tracking-[0.3em] mb-2">WAVULT GROUP — QUIXZOOM</p>
 
         <h1 className="text-2xl font-bold text-white mb-1">Certifikat</h1>
         <h2 className="text-lg text-amber-300 mb-6">Standard Zoomer</h2>
@@ -82,13 +145,13 @@ function CertificateView({ onReset }: { onReset: () => void }) {
         </p>
 
         <div className="border-t border-amber-400/20 pt-4 mb-6">
-          <p className="text-[10px] text-gray-600 font-mono">UTFÄRDAT AV</p>
+          <p className="text-xs text-gray-600 font-mono">UTFÄRDAT AV</p>
           <p className="text-sm text-white font-semibold mt-0.5">Wavult Group</p>
           <p className="text-xs text-gray-600 mt-0.5">QuiXzoom UAB</p>
         </div>
 
         <div className="bg-amber-400/5 border border-amber-400/15 rounded-lg px-4 py-2 mb-6">
-          <p className="text-[10px] text-gray-600 font-mono">DATUM</p>
+          <p className="text-xs text-gray-600 font-mono">DATUM</p>
           <p className="text-sm text-amber-300">{date}</p>
         </div>
 
@@ -177,10 +240,11 @@ export function ZoomerCert() {
             <h3 className="text-sm font-semibold text-white mb-4">Vad du behöver veta</h3>
             <div className="space-y-3">
               {[
-                { icon: '❓', text: '5 frågor om QuiXzoom-plattformen' },
-                { icon: '✅', text: 'Kräver 4 av 5 rätt svar för godkänt' },
+                { icon: '❓', text: '10 frågor om plattform, etik, juridik och kvalitet' },
+                { icon: '✅', text: 'Kräver 7 av 10 rätt svar för godkänt (70%)' },
                 { icon: '🎓', text: 'Godkänt = Standard Zoomer-certifikat' },
-                { icon: '🔄', text: 'Obegränsat antal försök' },
+                { icon: '📖', text: 'Tips: Läs kursen "QuiXzoom — Plattformsguide" och dokumentet "GDPR för Zoomers" innan du börjar' },
+                { icon: '🔄', text: 'Obegränsat antal försök — feedback visas efter varje fråga' },
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-3">
                   <span className="text-base w-6 text-center flex-shrink-0">{item.icon}</span>
@@ -212,7 +276,7 @@ export function ZoomerCert() {
           </h1>
           <p className="text-gray-400 text-sm mb-6">
             Du fick <span className="text-white font-semibold">{score} av {QUESTIONS.length}</span> rätt.
-            {!passed && ` Kräver ${PASS_THRESHOLD} rätt. Försök igen!`}
+            {!passed && ` Kräver ${PASS_THRESHOLD} av ${QUESTIONS.length} rätt. Läs "QuiXzoom Plattformsguide" och försök igen!`}
           </p>
 
           <div className="bg-[#0D0F1A] border border-surface-border rounded-xl p-4 mb-6">
@@ -269,7 +333,7 @@ export function ZoomerCert() {
 
         {/* Question */}
         <div className="bg-[#0D0F1A] border border-surface-border rounded-xl p-6 mb-4">
-          <p className="text-[10px] text-amber-400/60 font-mono mb-3">FRÅGA {currentQ + 1}</p>
+          <p className="text-xs text-amber-400/60 font-mono mb-3">FRÅGA {currentQ + 1}</p>
           <h2 className="text-base font-semibold text-white leading-snug">{question.text}</h2>
         </div>
 
@@ -293,15 +357,15 @@ export function ZoomerCert() {
 
             return (
               <button key={i} className={cls} onClick={() => handleAnswer(i)} disabled={showFeedback}>
-                <span className="font-mono text-[10px] mr-2 opacity-50">
+                <span className="font-mono text-xs mr-2 opacity-50">
                   {String.fromCharCode(65 + i)}.
                 </span>
                 {option}
                 {showFeedback && i === question.correct && (
-                  <span className="ml-2 text-green-400 text-[10px]">✓ Rätt</span>
+                  <span className="ml-2 text-green-400 text-xs">✓ Rätt</span>
                 )}
                 {showFeedback && i === selectedOption && i !== question.correct && (
-                  <span className="ml-2 text-red-400 text-[10px]">✗ Fel</span>
+                  <span className="ml-2 text-red-400 text-xs">✗ Fel</span>
                 )}
               </button>
             )

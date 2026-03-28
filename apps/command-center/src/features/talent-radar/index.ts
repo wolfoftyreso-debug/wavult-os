@@ -1,0 +1,1 @@
+export { TalentRadar } from './TalentRadar'

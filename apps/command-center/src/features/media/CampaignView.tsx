@@ -10,11 +10,19 @@ const OBJECTIVE_LABELS: Record<Campaign['objective'], string> = {
 }
 
 const STATUS_COLORS: Record<Campaign['status'], string> = {
-  draft: 'bg-gray-700 text-gray-300',
-  active: 'bg-green-900 text-green-300',
-  paused: 'bg-yellow-900 text-yellow-300',
-  completed: 'bg-blue-900 text-blue-300',
-  archived: 'bg-gray-800 text-gray-500',
+  draft: 'bg-white/[0.06] text-gray-400 border border-white/10',
+  active: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25',
+  paused: 'bg-amber-500/15 text-amber-400 border border-amber-500/25',
+  completed: 'bg-blue-500/15 text-blue-400 border border-blue-500/25',
+  archived: 'bg-white/[0.04] text-gray-600 border border-white/[0.06]',
+}
+
+const STATUS_DOT: Record<Campaign['status'], string> = {
+  draft: 'bg-gray-500',
+  active: 'bg-emerald-400',
+  paused: 'bg-amber-400',
+  completed: 'bg-blue-400',
+  archived: 'bg-gray-700',
 }
 
 const GEO_SCOPE_LABELS: Record<Campaign['geo_scope'], string> = {
@@ -156,7 +164,7 @@ function CampaignDetail({ campaign, onBack }: { campaign: Campaign; onBack: () =
         </span>
       </div>
 
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
           { label: 'Budget', value: `${campaign.budget_total.toLocaleString()} ${campaign.currency}` },
           { label: 'Spend', value: '0 ' + campaign.currency },
@@ -223,32 +231,36 @@ export function CampaignView() {
         </button>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-3">
         {MOCK_CAMPAIGNS.map(campaign => (
           <div
             key={campaign.id}
             onClick={() => setSelected(campaign)}
-            className="bg-[#0D0F1A] border border-white/10 rounded-xl p-4 cursor-pointer hover:border-white/20 transition-colors"
+            className="rounded-xl border border-white/[0.08] bg-[#161B22] p-5 cursor-pointer hover:border-white/[0.16] hover:bg-[#1C2129] transition-all"
           >
-            <div className="flex items-start justify-between">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-white font-medium">{campaign.name}</span>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-mono ${STATUS_COLORS[campaign.status]}`}>
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1 min-w-0">
+                {/* Status + Namn */}
+                <div className="flex items-center gap-2.5 mb-2">
+                  <div className={`h-2 w-2 rounded-full flex-shrink-0 ${STATUS_DOT[campaign.status]}`} />
+                  <span className="text-white font-semibold text-sm truncate">{campaign.name}</span>
+                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium flex-shrink-0 ${STATUS_COLORS[campaign.status]}`}>
                     {campaign.status}
                   </span>
                 </div>
-                <div className="flex items-center gap-3 text-xs text-gray-500">
-                  <span>{OBJECTIVE_LABELS[campaign.objective]}</span>
+                {/* Metadata */}
+                <div className="flex items-center gap-2 text-xs text-gray-500 flex-wrap">
+                  <span className="px-1.5 py-0.5 rounded bg-white/[0.04] text-gray-400">{OBJECTIVE_LABELS[campaign.objective]}</span>
                   <span>·</span>
                   <span>{GEO_SCOPE_LABELS[campaign.geo_scope]}</span>
                   <span>·</span>
-                  <span>{campaign.start_date} → {campaign.end_date}</span>
+                  <span className="font-mono">{campaign.start_date} → {campaign.end_date}</span>
                 </div>
               </div>
-              <div className="text-right">
-                <div className="text-white font-mono text-sm">
-                  {campaign.budget_total.toLocaleString()} {campaign.currency}
+              {/* Budget */}
+              <div className="text-right flex-shrink-0">
+                <div className="text-white font-semibold text-sm font-mono">
+                  {campaign.budget_total.toLocaleString()} <span className="text-gray-500 text-xs font-sans">{campaign.currency}</span>
                 </div>
                 <div className="text-xs text-gray-600 mt-0.5">0 spenderat</div>
               </div>

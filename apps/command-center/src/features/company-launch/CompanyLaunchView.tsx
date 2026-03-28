@@ -151,7 +151,7 @@ function StepRow({
         <p className="text-xs text-gray-500">{step.description}</p>
 
         {/* Meta row */}
-        <div className="flex items-center gap-3 flex-wrap text-[10px] text-gray-600">
+        <div className="flex items-center gap-3 flex-wrap text-xs text-gray-600">
           <span>⏱ {step.estimated_days}d</span>
           {step.cost_eur && <span>💰 {fmtCost(step.cost_eur)}</span>}
           {step.external_url && (
@@ -188,7 +188,7 @@ function StepRow({
         )}
 
         {/* Evidence required */}
-        <p className="text-[10px] text-gray-600 italic">📎 {step.evidence_required}</p>
+        <p className="text-xs text-gray-600 italic">📎 {step.evidence_required}</p>
       </div>
     </div>
   )
@@ -241,7 +241,7 @@ export function CompanyLaunchView() {
       <aside className="w-[280px] flex-shrink-0 border-r border-white/8 flex flex-col overflow-hidden">
         <div className="px-4 py-4 border-b border-white/8">
           <h2 className="text-xs font-mono text-gray-500 uppercase tracking-widest">Company Launch</h2>
-          <p className="text-[10px] text-gray-700 mt-0.5">Wavult Ecosystem · 5 bolag</p>
+          <p className="text-xs text-gray-700 mt-0.5">Wavult Ecosystem · 5 bolag</p>
         </div>
 
         <div className="flex-1 overflow-y-auto py-2">
@@ -310,17 +310,17 @@ export function CompanyLaunchView() {
             {/* Stats */}
             <div className="flex gap-4 text-right flex-shrink-0">
               <div>
-                <p className="text-[10px] text-gray-600">Progress</p>
+                <p className="text-xs text-gray-600">Progress</p>
                 <p className="text-sm font-bold text-white">{selPct}%</p>
                 <p className="text-[9px] text-gray-700">{selDone}/{selTotal} done</p>
               </div>
               <div>
-                <p className="text-[10px] text-gray-600">Est. time</p>
+                <p className="text-xs text-gray-600">Est. time</p>
                 <p className="text-sm font-bold text-white">{selDays}d</p>
                 <p className="text-[9px] text-gray-700">critical path</p>
               </div>
               <div>
-                <p className="text-[10px] text-gray-600">Total cost</p>
+                <p className="text-xs text-gray-600">Total cost</p>
                 <p className="text-sm font-bold text-white">{fmtCost(selCost)}</p>
                 <p className="text-[9px] text-gray-700">approx EUR</p>
               </div>
@@ -372,15 +372,15 @@ export function CompanyLaunchView() {
         <div className="px-6 py-3 border-t border-white/8 flex-shrink-0 bg-white/[0.02]">
           <div className="flex items-center gap-6 flex-wrap">
             <div className="flex items-center gap-2">
-              <span className="text-[10px] text-gray-600 font-mono">TOTAL COST</span>
+              <span className="text-xs text-gray-600 font-mono">TOTAL COST</span>
               <span className="text-sm font-bold text-white">{fmtCost(selCost)}</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] text-gray-600 font-mono">CRITICAL PATH</span>
+              <span className="text-xs text-gray-600 font-mono">CRITICAL PATH</span>
               <span className="text-sm font-bold text-white">{selDays} days</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] text-gray-600 font-mono">REMAINING</span>
+              <span className="text-xs text-gray-600 font-mono">REMAINING</span>
               <span className="text-sm font-bold text-white">{selTotal - selDone} steps</span>
             </div>
 

@@ -19,19 +19,19 @@ export function HealthOverviewWidget() {
         <div className="flex items-center gap-2">
           <p className="text-sm font-medium text-white/70">Entity Health</p>
           {critical > 0 && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded font-mono bg-red-500/15 text-red-400 border border-red-500/20">
+            <span className="text-xs px-1.5 py-0.5 rounded font-mono bg-red-500/15 text-red-400 border border-red-500/20">
               {critical} critical
             </span>
           )}
           {watching > 0 && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded font-mono bg-yellow-500/15 text-yellow-400 border border-yellow-500/20">
+            <span className="text-xs px-1.5 py-0.5 rounded font-mono bg-yellow-500/15 text-yellow-400 border border-yellow-500/20">
               {watching} watch
             </span>
           )}
         </div>
         <button
           onClick={() => navigate('/entities')}
-          className="text-[10px] text-gray-600 hover:text-gray-400 transition-colors"
+          className="text-xs text-gray-600 hover:text-gray-400 transition-colors"
         >
           Details →
         </button>
@@ -62,12 +62,12 @@ export function HealthOverviewWidget() {
                 <div className="flex items-center gap-1.5">
                   <span className="text-sm">{entity.flag}</span>
                   <span className="text-xs font-semibold text-white">{entity.shortName}</span>
-                  <span className="text-[10px] px-1 py-0.5 rounded font-mono"
+                  <span className="text-xs px-1 py-0.5 rounded font-mono"
                     style={{ color, background: color + '18' }}>
                     {LEVEL_LABEL[hs.level]}
                   </span>
                 </div>
-                <div className="text-[10px] text-gray-600 truncate mt-0.5">{hs.summary.slice(2, 60)}…</div>
+                <div className="text-xs text-gray-600 truncate mt-0.5">{hs.summary.slice(2, 60)}…</div>
               </div>
 
               {/* Dimension mini-bars */}

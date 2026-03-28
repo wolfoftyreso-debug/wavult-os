@@ -210,10 +210,10 @@ export function KnowledgeGraph() {
             Klicka på en nod för att se detaljer.
           </p>
           <div className="mt-3 pt-3 border-t border-surface-border">
-            <div className="flex justify-between text-[10px] font-mono text-gray-600">
+            <div className="flex justify-between text-xs font-mono text-gray-600">
               <span>Noder</span><span className="text-gray-400">{GRAPH_NODES.length}</span>
             </div>
-            <div className="flex justify-between text-[10px] font-mono text-gray-600 mt-1">
+            <div className="flex justify-between text-xs font-mono text-gray-600 mt-1">
               <span>Kopplingar</span>
               <span className="text-gray-400">
                 {GRAPH_NODES.reduce((sum, n) => sum + (n.links?.length ?? 0), 0)}
@@ -230,7 +230,7 @@ export function KnowledgeGraph() {
             </div>
 
             <div
-              className="inline-block px-2 py-0.5 rounded text-[10px] font-mono mb-3"
+              className="inline-block px-2 py-0.5 rounded text-xs font-mono mb-3"
               style={{ background: selectedNode.color + '20', color: selectedNode.color }}
             >
               {TYPE_LABELS[selectedNode.type]}
@@ -240,7 +240,7 @@ export function KnowledgeGraph() {
 
             {selectedNode.links && selectedNode.links.length > 0 && (
               <div>
-                <p className="text-[10px] text-gray-600 font-mono mb-2">KOPPLINGAR ({selectedNode.links.length})</p>
+                <p className="text-xs text-gray-600 font-mono mb-2">KOPPLINGAR ({selectedNode.links.length})</p>
                 <div className="flex flex-col gap-1">
                   {selectedNode.links.map(linkId => {
                     const linked = GRAPH_NODES.find(n => n.id === linkId)
@@ -257,7 +257,7 @@ export function KnowledgeGraph() {
             )}
 
             <div className="mt-3 pt-3 border-t border-surface-border">
-              <span className="text-[10px] text-gray-700 font-mono">Layer {selectedNode.layer}</span>
+              <span className="text-xs text-gray-700 font-mono">Layer {selectedNode.layer}</span>
             </div>
           </div>
         ) : (

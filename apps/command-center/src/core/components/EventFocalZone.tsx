@@ -1,7 +1,6 @@
-// ─── Wavult OS v2 — Event Focal Zone ───────────────────────────────────────────
+// ─── Wavult OS v2 — Event Content Area ─────────────────────────────────────────
 // The center of the OS. ~60% of viewport. ONE primary event/task/decision at a time.
 // Clear statement of what happened or what's needed. Context expandable.
-// The Buzz feeling: one clear thing, immediate feedback, no ambiguity.
 
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -10,9 +9,9 @@ import { useOperator } from '../operator/OperatorContext'
 import { COMMAND_CHAIN } from '../../features/org-graph/commandChain'
 import type { OperationalEvent, GateDependency } from '../events/types'
 
-// ─── Gate Lock Display ───────────────────────────────────────────────────────
+// ─── Access Lock Display ─────────────────────────────────────────────────────
 
-function GateLockView({ dependencies }: { dependencies: GateDependency[] }) {
+function AccessLockView({ dependencies }: { dependencies: GateDependency[] }) {
   return (
     <div className="mt-4 space-y-2">
       <div className="flex items-center gap-2 mb-2">
@@ -30,7 +29,7 @@ function GateLockView({ dependencies }: { dependencies: GateDependency[] }) {
         return (
           <div
             key={i}
-            className={`gate-lock ${dep.status === 'blocked' ? 'gate-lock--blocked' : 'gate-lock--pending'}`}
+            className={`access-lock ${dep.status === 'blocked' ? 'access-lock--blocked' : 'access-lock--pending'}`}
           >
             <span className="h-2 w-2 rounded-full flex-shrink-0" style={{ background: statusColor }} />
             <span className="flex-1">{dep.label}</span>
@@ -82,14 +81,14 @@ function EventView({ event }: { event: OperationalEvent }) {
     : event.priority === 'high' ? 'event-card event-card--elevated'
     : 'event-card'
 
-  const stripeClass = event.priority === 'critical' ? 'focal-stripe--action'
-    : event.priority === 'high' ? 'focal-stripe--attention'
-    : 'focal-stripe--neutral'
+  const stripeClass = event.priority === 'critical' ? 'status-bar--action'
+    : event.priority === 'high' ? 'status-bar--attention'
+    : 'status-bar--neutral'
 
   return (
     <div className={`${cardClass} animate-slide-in relative`}>
-      {/* Left-edge stripe — industrial indicator */}
-      <div className={`focal-stripe ${stripeClass}`} />
+      {/* Left-edge stripe — status indicator */}
+      <div className={`status-bar ${stripeClass}`} />
 
       {/* Source badge */}
       {role && (
@@ -100,10 +99,10 @@ function EventView({ event }: { event: OperationalEvent }) {
           >
             {role.initials}
           </div>
-          <span className="text-telemetry font-mono text-text-tertiary">
+          <span className="text-label-xs font-mono text-text-tertiary">
             {role.person} · {role.title}
           </span>
-          <span className={`text-telemetry font-mono px-1.5 py-0.5 rounded ${
+          <span className={`text-label-xs font-mono px-1.5 py-0.5 rounded ${
             event.priority === 'critical' ? 'bg-signal-red/10 text-signal-red'
             : event.priority === 'high' ? 'bg-signal-amber/10 text-signal-amber'
             : 'bg-wavult-steel text-text-tertiary'
@@ -111,15 +110,15 @@ function EventView({ event }: { event: OperationalEvent }) {
             {event.priority.toUpperCase()}
           </span>
           {event.category === 'escalation' && (
-            <span className="text-telemetry font-mono px-1.5 py-0.5 rounded bg-signal-red/10 text-signal-red">
+            <span className="text-label-xs font-mono px-1.5 py-0.5 rounded bg-signal-red/10 text-signal-red">
               ESCALATED
             </span>
           )}
         </div>
       )}
 
-      {/* Title — disproportionately large (Buzz paradigm) */}
-      <h2 className="text-action-md text-text-primary text-balance leading-tight">
+      {/* Title */}
+      <h2 className="text-heading-lg text-text-primary text-balance leading-tight">
         {event.title}
       </h2>
 
@@ -135,7 +134,7 @@ function EventView({ event }: { event: OperationalEvent }) {
         <div className="mt-3">
           <button
             onClick={() => setExpanded(!expanded)}
-            className="text-telemetry font-mono text-text-tertiary hover:text-text-secondary transition-colors flex items-center gap-1"
+            className="text-label-xs font-mono text-text-tertiary hover:text-text-secondary transition-colors flex items-center gap-1"
           >
             <span className="transform transition-transform" style={{ transform: expanded ? 'rotate(90deg)' : '' }}>
               ▸
@@ -152,16 +151,15 @@ function EventView({ event }: { event: OperationalEvent }) {
         </div>
       )}
 
-      {/* Gate dependencies */}
+      {/* Access lock dependencies */}
       {event.gateDependencies && event.gateDependencies.length > 0 && (
-        <GateLockView dependencies={event.gateDependencies} />
+        <AccessLockView dependencies={event.gateDependencies} />
       )}
 
-      {/* Actions — large, clear, Buzz-style */}
+      {/* Actions */}
       {event.actions.length > 0 && !isGate && (
         <div className="mt-6 flex gap-3">
           {event.responseType === 'binary' ? (
-            // Binary: two large decision buttons
             event.actions.slice(0, 2).map(action => (
               <button
                 key={action.id}
@@ -178,7 +176,6 @@ function EventView({ event }: { event: OperationalEvent }) {
               </button>
             ))
           ) : (
-            // Multi/other: standard button row
             event.actions.map(action => (
               <button
                 key={action.id}
@@ -198,7 +195,7 @@ function EventView({ event }: { event: OperationalEvent }) {
         </div>
       )}
 
-      {/* Gate actions (navigate only) */}
+      {/* Access lock actions (navigate only) */}
       {isGate && event.actions.length > 0 && (
         <div className="mt-6 flex gap-3">
           {event.actions.map(action => (
@@ -213,11 +210,11 @@ function EventView({ event }: { event: OperationalEvent }) {
         </div>
       )}
 
-      {/* Defer option (for non-gate events with 3+ actions) */}
+      {/* Defer option */}
       {!isGate && event.actions.length > 2 && (
         <button
           onClick={() => deferEvent(event.id)}
-          className="mt-3 text-telemetry font-mono text-text-muted hover:text-text-tertiary transition-colors"
+          className="mt-3 text-label-xs font-mono text-text-muted hover:text-text-tertiary transition-colors"
         >
           DEFER →
         </button>
@@ -226,19 +223,19 @@ function EventView({ event }: { event: OperationalEvent }) {
   )
 }
 
-// ─── Focal Zone Container ────────────────────────────────────────────────────
+// ─── Content Area Container ──────────────────────────────────────────────────
 
 export function EventFocalZone() {
   const { activeEvent, atmosphere } = useEvents()
 
-  const zoneClass = atmosphere === 'action' ? 'focal-zone--action'
-    : atmosphere === 'attention' ? 'focal-zone--attention'
-    : 'focal-zone--neutral'
+  const zoneClass = atmosphere === 'action' ? 'content-area--action'
+    : atmosphere === 'attention' ? 'content-area--attention'
+    : 'content-area--neutral'
 
   if (!activeEvent) return null
 
   return (
-    <div className={`focal-zone ${zoneClass} p-8`}>
+    <div className={`content-area ${zoneClass} p-8`}>
       <div className="w-full max-w-2xl mx-auto">
         <EventView event={activeEvent} />
       </div>

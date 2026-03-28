@@ -17,3 +17,5 @@ server/dist/
 
 # Turbo cache
 .turbo/
+.env.local
+*.env.local

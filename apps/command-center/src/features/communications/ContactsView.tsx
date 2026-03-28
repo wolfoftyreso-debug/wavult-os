@@ -57,7 +57,7 @@ const CONTACTS: Contact[] = [
     entity: 'Wavult Group',
     entityColor: '#F59E0B',
     email: 'dennis@hypbit.com',
-    phone: '0761474243',
+    phone: '+46761474243',
     category: 'team',
     tags: ['Board', 'Legal', 'Operations'],
     notes: 'Bolagsjuridik, avtal, compliance. Kör Texas LLC och Dubai-struktur.',
@@ -69,7 +69,7 @@ const CONTACTS: Contact[] = [
     entity: 'Wavult Group',
     entityColor: '#3B82F6',
     email: 'winston@hypbit.com',
-    phone: '0768123548',
+    phone: '+46768123548',
     category: 'team',
     tags: ['C-suite', 'Finance', 'CFO'],
     notes: 'Ekonomisk infrastruktur, betafärdiga system, cashflow.',
@@ -279,7 +279,7 @@ function ContactCard({ contact, expanded, onToggle }: {
         <div className="px-4 pb-4 border-t border-surface-border pt-3 space-y-2">
           {contact.email && (
             <div className="flex items-center gap-2">
-              <span className="text-[11px] text-gray-500 w-20 flex-shrink-0 font-mono">EMAIL</span>
+              <span className="text-xs text-gray-500 w-20 flex-shrink-0 font-mono">EMAIL</span>
               <a
                 href={`mailto:${contact.email}`}
                 className="text-xs text-signal-amber hover:underline"
@@ -291,7 +291,7 @@ function ContactCard({ contact, expanded, onToggle }: {
           )}
           {contact.phone && (
             <div className="flex items-center gap-2">
-              <span className="text-[11px] text-gray-500 w-20 flex-shrink-0 font-mono">TELEFON</span>
+              <span className="text-xs text-gray-500 w-20 flex-shrink-0 font-mono">TELEFON</span>
               <a
                 href={`tel:${contact.phone}`}
                 className="text-xs text-white hover:text-gray-300"
@@ -303,13 +303,13 @@ function ContactCard({ contact, expanded, onToggle }: {
           )}
           {contact.telegram && (
             <div className="flex items-center gap-2">
-              <span className="text-[11px] text-gray-500 w-20 flex-shrink-0 font-mono">TELEGRAM</span>
+              <span className="text-xs text-gray-500 w-20 flex-shrink-0 font-mono">TELEGRAM</span>
               <span className="text-xs text-[#229ED9]">{contact.telegram}</span>
             </div>
           )}
           {contact.notes && (
             <div className="flex items-start gap-2 mt-2">
-              <span className="text-[11px] text-gray-500 w-20 flex-shrink-0 font-mono pt-0.5">NOTERING</span>
+              <span className="text-xs text-gray-500 w-20 flex-shrink-0 font-mono pt-0.5">NOTERING</span>
               <p className="text-xs text-gray-400 leading-relaxed">{contact.notes}</p>
             </div>
           )}
@@ -364,7 +364,7 @@ export function ContactsView() {
       <div className="flex gap-2 overflow-x-auto pb-1">
         <button
           onClick={() => setActiveCategory('all')}
-          className={`text-[11px] font-mono px-3 py-1.5 rounded-lg flex-shrink-0 transition-colors ${
+          className={`text-xs font-mono px-3 py-1.5 rounded-lg flex-shrink-0 transition-colors ${
             activeCategory === 'all'
               ? 'bg-brand-accent/15 text-brand-accent border border-brand-accent/30'
               : 'text-gray-500 border border-surface-border hover:text-gray-300'
@@ -378,7 +378,7 @@ export function ContactsView() {
             <button
               key={key}
               onClick={() => setActiveCategory(key)}
-              className={`text-[11px] font-mono px-3 py-1.5 rounded-lg flex-shrink-0 transition-colors whitespace-nowrap ${
+              className={`text-xs font-mono px-3 py-1.5 rounded-lg flex-shrink-0 transition-colors whitespace-nowrap ${
                 activeCategory === key
                   ? 'bg-brand-accent/15 text-brand-accent border border-brand-accent/30'
                   : 'text-gray-500 border border-surface-border hover:text-gray-300'

@@ -149,21 +149,28 @@ export function InboxView() {
   const unreadCount = messages.filter(m => !m.read).length
 
   return (
-    <div className="flex h-full gap-4">
+    <div className="flex flex-col h-full gap-4">
+      {/* MOCKDATA BANNER */}
+      <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-yellow-500/10 border border-yellow-500/25 text-yellow-400 text-xs font-medium flex-shrink-0">
+        <span>⚠️</span>
+        <span>Visar mockdata — live IMAP kopplas in i fas 2</span>
+        <span className="ml-auto text-yellow-600 font-mono text-xs">SMTP ut: live via Loopia · IMAP in: ej konfigurerat</span>
+      </div>
+      <div className="flex h-full gap-4">
       {/* Message list */}
       <div className="flex flex-col flex-shrink-0 w-[400px]">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <h2 className="text-[13px] font-semibold text-white">Inkorg</h2>
+            <h2 className="text-sm font-semibold text-white">Inkorg</h2>
             {unreadCount > 0 && (
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-blue-500 text-white">
+              <span className="text-xs font-bold px-1.5 py-0.5 rounded-full bg-blue-500 text-white">
                 {unreadCount}
               </span>
             )}
           </div>
           <button
             onClick={() => setShowCompose(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium bg-brand-accent/15 text-brand-accent border border-brand-accent/30 hover:bg-brand-accent/25 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-brand-accent/15 text-brand-accent border border-brand-accent/30 hover:bg-brand-accent/25 transition-colors"
           >
             ✏️ Nytt meddelande
           </button>
@@ -184,24 +191,24 @@ export function InboxView() {
             >
               <div className="flex items-start gap-2.5">
                 <div
-                  className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 mt-0.5"
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5"
                   style={{ background: msg.fromColor + '25', color: msg.fromColor }}
                 >
                   {msg.fromInitials}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <span className={`text-[12px] font-medium truncate ${!msg.read ? 'text-white' : 'text-gray-300'}`}>
+                    <span className={`text-xs font-medium truncate ${!msg.read ? 'text-white' : 'text-gray-300'}`}>
                       {msg.from}
                     </span>
-                    <span className="text-[10px] text-gray-600 flex-shrink-0 font-mono">
+                    <span className="text-xs text-gray-600 flex-shrink-0 font-mono">
                       {new Date(msg.timestamp).toLocaleDateString('sv-SE', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
-                  <div className={`text-[11px] truncate ${!msg.read ? 'text-gray-200 font-medium' : 'text-gray-400'}`}>
+                  <div className={`text-xs truncate ${!msg.read ? 'text-gray-200 font-medium' : 'text-gray-400'}`}>
                     {msg.subject}
                   </div>
-                  <div className="text-[10px] text-gray-600 truncate mt-0.5">
+                  <div className="text-xs text-gray-600 truncate mt-0.5">
                     Till: {msg.to}
                   </div>
                 </div>
@@ -219,16 +226,16 @@ export function InboxView() {
         {showCompose ? (
           <div className="p-5 h-full flex flex-col">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-[13px] font-semibold text-white">Nytt meddelande</h3>
+              <h3 className="text-sm font-semibold text-white">Nytt meddelande</h3>
               <button onClick={() => setShowCompose(false)} className="text-gray-500 hover:text-gray-300 text-lg leading-none">×</button>
             </div>
             <div className="space-y-3 flex-1 flex flex-col">
               <div>
-                <label className="text-[10px] text-gray-500 font-mono uppercase tracking-wider mb-1 block">Till</label>
+                <label className="text-xs text-gray-500 font-mono uppercase tracking-wider mb-1 block">Till</label>
                 <select
                   value={form.to}
                   onChange={e => setForm(f => ({ ...f, to: e.target.value }))}
-                  className="w-full bg-[#07080F] border border-white/[0.08] rounded-lg px-3 py-2 text-[12px] text-white focus:outline-none focus:border-brand-accent/50"
+                  className="w-full bg-[#07080F] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-brand-accent/50"
                 >
                   <option value="">Välj mottagare…</option>
                   {TEAM_MEMBERS.map(m => (
@@ -237,26 +244,26 @@ export function InboxView() {
                 </select>
               </div>
               <div>
-                <label className="text-[10px] text-gray-500 font-mono uppercase tracking-wider mb-1 block">Ämne</label>
+                <label className="text-xs text-gray-500 font-mono uppercase tracking-wider mb-1 block">Ämne</label>
                 <input
                   value={form.subject}
                   onChange={e => setForm(f => ({ ...f, subject: e.target.value }))}
                   placeholder="Ämnesrad…"
-                  className="w-full bg-[#07080F] border border-white/[0.08] rounded-lg px-3 py-2 text-[12px] text-white placeholder-gray-600 focus:outline-none focus:border-brand-accent/50"
+                  className="w-full bg-[#07080F] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-brand-accent/50"
                 />
               </div>
               <div className="flex-1 flex flex-col">
-                <label className="text-[10px] text-gray-500 font-mono uppercase tracking-wider mb-1 block">Meddelande</label>
+                <label className="text-xs text-gray-500 font-mono uppercase tracking-wider mb-1 block">Meddelande</label>
                 <textarea
                   value={form.body}
                   onChange={e => setForm(f => ({ ...f, body: e.target.value }))}
                   placeholder="Skriv ditt meddelande…"
-                  className="flex-1 w-full bg-[#07080F] border border-white/[0.08] rounded-lg px-3 py-2 text-[12px] text-white placeholder-gray-600 focus:outline-none focus:border-brand-accent/50 resize-none"
+                  className="flex-1 w-full bg-[#07080F] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-gray-600 focus:outline-none focus:border-brand-accent/50 resize-none"
                 />
               </div>
               <button
                 onClick={sendMessage}
-                className="self-end px-5 py-2 rounded-lg text-[12px] font-medium bg-brand-accent text-white hover:bg-brand-accent/90 transition-colors"
+                className="self-end px-5 py-2 rounded-lg text-xs font-medium bg-brand-accent text-white hover:bg-brand-accent/90 transition-colors"
               >
                 Skicka →
               </button>
@@ -266,7 +273,7 @@ export function InboxView() {
           <div className="p-5 h-full overflow-auto">
             <div className="flex items-start gap-3 mb-5">
               <div
-                className="w-10 h-10 rounded-full flex items-center justify-center text-[13px] font-bold flex-shrink-0"
+                className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
                 style={{ background: selected.fromColor + '25', color: selected.fromColor }}
               >
                 {selected.fromInitials}
@@ -274,15 +281,15 @@ export function InboxView() {
               <div className="flex-1">
                 <div className="flex items-center justify-between">
                   <span className="text-[14px] font-semibold text-white">{selected.from}</span>
-                  <span className="text-[10px] text-gray-500 font-mono">
+                  <span className="text-xs text-gray-500 font-mono">
                     {new Date(selected.timestamp).toLocaleString('sv-SE')}
                   </span>
                 </div>
-                <div className="text-[11px] text-gray-500">Till: {selected.to}</div>
+                <div className="text-xs text-gray-500">Till: {selected.to}</div>
               </div>
             </div>
             <h2 className="text-[15px] font-bold text-white mb-4">{selected.subject}</h2>
-            <div className="text-[12px] text-gray-300 leading-relaxed whitespace-pre-line">
+            <div className="text-xs text-gray-300 leading-relaxed whitespace-pre-line">
               {selected.body}
             </div>
             <div className="mt-5 pt-4 border-t border-white/[0.06]">
@@ -291,7 +298,7 @@ export function InboxView() {
                   setForm({ to: selected.from, subject: `Re: ${selected.subject}`, body: '' })
                   setShowCompose(true)
                 }}
-                className="text-[11px] text-brand-accent hover:text-brand-accent/80 font-medium transition-colors"
+                className="text-xs text-brand-accent hover:text-brand-accent/80 font-medium transition-colors"
               >
                 ↩ Svara
               </button>
@@ -301,10 +308,11 @@ export function InboxView() {
           <div className="h-full flex items-center justify-center">
             <div className="text-center">
               <div className="text-4xl mb-3">📬</div>
-              <p className="text-gray-600 text-[12px]">Välj ett meddelande för att läsa det</p>
+              <p className="text-gray-600 text-xs">Välj ett meddelande för att läsa det</p>
             </div>
           </div>
         )}
+      </div>
       </div>
     </div>
   )

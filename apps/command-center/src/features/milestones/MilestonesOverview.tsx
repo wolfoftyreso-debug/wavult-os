@@ -95,8 +95,8 @@ function CountdownCard({ title, date, color, icon, urgent }: {
     >
       <span className="text-3xl">{icon}</span>
       <div className="flex-1">
-        <p className="text-[10px] text-gray-500 font-mono uppercase tracking-wider">{title}</p>
-        <p className="text-[11px] text-gray-400 mt-0.5">{dateLabel}</p>
+        <p className="text-xs text-gray-500 font-mono uppercase tracking-wider">{title}</p>
+        <p className="text-xs text-gray-400 mt-0.5">{dateLabel}</p>
       </div>
       <div className="text-right">
         <p
@@ -121,7 +121,7 @@ function KpiCard({ label, value, color, icon }: {
       style={{ background: color + '08', borderColor: color + '20' }}
     >
       <div className="flex items-center justify-between mb-2">
-        <span className="text-[10px] text-gray-500 font-mono uppercase tracking-wider">{label}</span>
+        <span className="text-xs text-gray-500 font-mono uppercase tracking-wider">{label}</span>
         <span className="text-xl">{icon}</span>
       </div>
       <p className="text-3xl font-bold" style={{ color }}>{value}</p>
@@ -192,7 +192,7 @@ export function MilestonesOverview() {
     <div className="space-y-6">
       <div>
         <h2 className="text-lg font-bold text-white">Milestones Översikt</h2>
-        <p className="text-[11px] text-gray-500 mt-0.5">Wavult Group — alla projekt</p>
+        <p className="text-xs text-gray-500 mt-0.5">Wavult Group — alla projekt</p>
       </div>
 
       {/* KPI row */}
@@ -205,7 +205,7 @@ export function MilestonesOverview() {
 
       {/* Countdowns */}
       <div className="space-y-3">
-        <h3 className="text-[11px] text-gray-500 font-mono uppercase tracking-wider">Nedräkningar</h3>
+        <h3 className="text-xs text-gray-500 font-mono uppercase tracking-wider">Nedräkningar</h3>
         <CountdownCard
           title="Thailand Workcamp"
           date={THAILAND_DATE}
@@ -223,7 +223,7 @@ export function MilestonesOverview() {
 
       {/* Critical milestones */}
       <div>
-        <h3 className="text-[11px] text-gray-500 font-mono uppercase tracking-wider mb-3">
+        <h3 className="text-xs text-gray-500 font-mono uppercase tracking-wider mb-3">
           Kritiska milstolpar — närmast i tid
         </h3>
         <div className="rounded-xl border border-white/[0.06] bg-[#0D0F1A] overflow-hidden divide-y divide-white/[0.04]">
@@ -235,7 +235,7 @@ export function MilestonesOverview() {
               <div key={m.id} className="flex items-center gap-3 px-4 py-3">
                 <span className="text-base">{proj?.icon ?? '📌'}</span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[12px] text-white truncate">{m.title}</p>
+                  <p className="text-xs text-white truncate">{m.title}</p>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span className="text-[9px] font-mono text-gray-600">{proj?.label}</span>
                     {m.owner && <span className="text-[9px] text-gray-600">· {m.owner}</span>}
@@ -243,7 +243,7 @@ export function MilestonesOverview() {
                 </div>
                 <div className="text-right flex-shrink-0">
                   <p
-                    className="text-[11px] font-mono font-bold"
+                    className="text-xs font-mono font-bold"
                     style={{ color: days <= 7 ? '#EF4444' : days <= 30 ? '#F59E0B' : '#6B7280' }}
                   >
                     {days <= 0 ? 'IDAG' : `${days}d`}
@@ -263,7 +263,7 @@ export function MilestonesOverview() {
 
       {/* Per project progress rings */}
       <div>
-        <h3 className="text-[11px] text-gray-500 font-mono uppercase tracking-wider mb-3">
+        <h3 className="text-xs text-gray-500 font-mono uppercase tracking-wider mb-3">
           Progress per projekt
         </h3>
         <div className="rounded-xl border border-white/[0.06] bg-[#0D0F1A] p-5">
@@ -272,7 +272,7 @@ export function MilestonesOverview() {
               <div key={pp.key} className="flex flex-col items-center gap-2">
                 <ProgressRing progress={pp.pct} color={pp.meta.color} size={64} stroke={5} />
                 <div className="text-center">
-                  <p className="text-[11px] text-white font-medium">{pp.meta.icon} {pp.meta.label}</p>
+                  <p className="text-xs text-white font-medium">{pp.meta.icon} {pp.meta.label}</p>
                   <p className="text-[9px] text-gray-600 font-mono">{pp.done}/{pp.count} klara</p>
                 </div>
               </div>

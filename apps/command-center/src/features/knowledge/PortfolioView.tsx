@@ -42,7 +42,7 @@ export function PortfolioView() {
             <button
               key={s}
               onClick={() => setFilter(s)}
-              className={`text-[10px] font-mono px-2.5 py-1 rounded-lg capitalize transition-colors ${
+              className={`text-xs font-mono px-2.5 py-1 rounded-lg capitalize transition-colors ${
                 filter === s
                   ? 'bg-brand-accent/15 text-brand-accent border border-brand-accent/30'
                   : 'text-gray-500 border border-surface-border hover:text-gray-300'
@@ -91,7 +91,7 @@ export function PortfolioView() {
           </div>
           <p className="text-sm text-gray-300 leading-relaxed mb-4">{selectedProject.description}</p>
           <div className="p-3 rounded-lg mb-4" style={{ background: '#10B98110', border: '1px solid #10B98130' }}>
-            <p className="text-[10px] text-gray-500 font-mono uppercase mb-1">Potential i Wavult-stacken</p>
+            <p className="text-xs text-gray-500 font-mono uppercase mb-1">Potential i Wavult-stacken</p>
             <p className="text-xs text-gray-300">{selectedProject.potential}</p>
           </div>
           <div className="flex flex-wrap gap-1.5">
@@ -128,7 +128,7 @@ function ProjectCard({ project, onClick, selected }: {
           {status.label}
         </span>
       </div>
-      <p className="text-[10px] text-gray-500 mb-2">{project.domain} · {project.pages} sidor</p>
+      <p className="text-xs text-gray-500 mb-2">{project.domain} · {project.pages} sidor</p>
       <p className="text-xs text-gray-400 leading-relaxed line-clamp-2">{project.description}</p>
     </div>
   )

@@ -72,7 +72,7 @@ export function CRMHub() {
     <div className="flex flex-col h-full">
       <ModuleHeader moduleId="crm" />
       {/* Header */}
-      <div className="px-6 pt-6 pb-0 flex flex-col gap-4 flex-shrink-0">
+      <div className="px-4 md:px-6 pt-4 md:pt-6 pb-0 flex flex-col gap-4 flex-shrink-0">
         <div className="flex items-start justify-between flex-wrap gap-3">
           <div>
             <h1 className="text-sm font-semibold text-white">CRM</h1>
@@ -103,7 +103,7 @@ export function CRMHub() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-auto px-6 py-5">
+      <div className="flex-1 overflow-auto px-4 md:px-6 py-4 md:py-5">
         {activeTab === 'pipeline' && <PipelineView />}
         {activeTab === 'prospects' && <ProspectList />}
         {activeTab === 'contacts' && <ContactsView />}

@@ -215,7 +215,7 @@ function LiveActivityFeed() {
             }}
           >
             <div
-              className="h-7 w-7 rounded-full flex items-center justify-center flex-shrink-0 text-[10px] font-bold"
+              className="h-7 w-7 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold"
               style={{ background: evt.color + '25', color: evt.color, border: `1px solid ${evt.color}40` }}
             >
               {evt.initials}
@@ -260,7 +260,7 @@ function TalentRadarWidget() {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-3">
           <SectionHeading>🎯 Nörd-rekrytering</SectionHeading>
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full mb-3"
+          <span className="text-xs font-mono px-2 py-0.5 rounded-full mb-3"
             style={{ background: '#F59E0B18', color: '#F59E0B', border: '1px solid #F59E0B30' }}>
             IGÅNG
           </span>
@@ -280,7 +280,7 @@ function TalentRadarWidget() {
         </p>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p className="text-[10px] text-gray-500 font-mono uppercase mb-2">Måste ha</p>
+            <p className="text-xs text-gray-500 font-mono uppercase mb-2">Måste ha</p>
             <div className="space-y-1">
               {TALENT_MUST.map(t => (
                 <div key={t} className="flex items-center gap-2 text-xs text-gray-300">
@@ -290,7 +290,7 @@ function TalentRadarWidget() {
             </div>
           </div>
           <div>
-            <p className="text-[10px] text-gray-500 font-mono uppercase mb-2">Röda flaggor</p>
+            <p className="text-xs text-gray-500 font-mono uppercase mb-2">Röda flaggor</p>
             <div className="space-y-1">
               {TALENT_RED.map(t => (
                 <div key={t} className="flex items-center gap-2 text-xs text-gray-400">
@@ -312,7 +312,7 @@ function TalentRadarWidget() {
               style={{ borderBottom: i < TALENT_CHANNELS.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none' }}
             >
               <div
-                className="h-8 w-8 rounded-lg flex items-center justify-center flex-shrink-0 text-[10px] font-bold"
+                className="h-8 w-8 rounded-lg flex items-center justify-center flex-shrink-0 text-xs font-bold"
                 style={{ background: ch.color + '20', color: ch.color, border: `1px solid ${ch.color}30` }}
               >
                 {ch.label.slice(0, 2).toUpperCase()}
@@ -322,7 +322,7 @@ function TalentRadarWidget() {
                 <p className="text-xs text-gray-500 truncate">{ch.sub}</p>
               </div>
               <span
-                className="text-[10px] font-mono px-2 py-0.5 rounded-full flex-shrink-0"
+                className="text-xs font-mono px-2 py-0.5 rounded-full flex-shrink-0"
                 style={{ background: ch.color + '15', color: ch.color, border: `1px solid ${ch.color}30` }}
               >
                 {ch.status}
@@ -330,10 +330,10 @@ function TalentRadarWidget() {
             </div>
           ))}
           <div className="px-5 py-3 border-t border-surface-border">
-            <p className="text-[10px] text-gray-500 font-mono uppercase mb-1.5">Bonus-profil</p>
+            <p className="text-xs text-gray-500 font-mono uppercase mb-1.5">Bonus-profil</p>
             <div className="flex flex-wrap gap-2">
               {TALENT_BONUS.map(b => (
-                <span key={b} className="text-[10px] text-gray-400 px-2 py-0.5 rounded-full"
+                <span key={b} className="text-xs text-gray-400 px-2 py-0.5 rounded-full"
                   style={{ background: '#F59E0B10', border: '1px solid #F59E0B20' }}>
                   ⭐ {b}
                 </span>

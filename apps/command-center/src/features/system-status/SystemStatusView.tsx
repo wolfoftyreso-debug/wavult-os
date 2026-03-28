@@ -45,7 +45,7 @@ function ModuleCard({ mod }: { mod: (typeof MODULE_REGISTRY)[0] }) {
             className="rounded-full"
             style={{ width: 5, height: 5, background: '#22C55E', flexShrink: 0 }}
           />
-          <span className="text-[10px] text-gray-400 font-mono">
+          <span className="text-xs text-gray-400 font-mono">
             {mod.liveFeatures.length} live
           </span>
         </div>
@@ -54,7 +54,7 @@ function ModuleCard({ mod }: { mod: (typeof MODULE_REGISTRY)[0] }) {
             className="rounded-full"
             style={{ width: 5, height: 5, background: '#F59E0B', flexShrink: 0 }}
           />
-          <span className="text-[10px] text-gray-500 font-mono">
+          <span className="text-xs text-gray-500 font-mono">
             {mod.mockFeatures.length} mock
           </span>
         </div>
@@ -62,7 +62,7 @@ function ModuleCard({ mod }: { mod: (typeof MODULE_REGISTRY)[0] }) {
       </div>
 
       {/* Description */}
-      <p className="text-[10px] text-gray-600 font-mono leading-relaxed">
+      <p className="text-xs text-gray-600 font-mono leading-relaxed">
         {MATURITY_DESCRIPTION[mod.level]}
       </p>
 
@@ -93,6 +93,29 @@ function ModuleCard({ mod }: { mod: (typeof MODULE_REGISTRY)[0] }) {
   )
 }
 
+// ─── quiXzoom API Endpoints (scraped from wolfoftyreso-debug/quixzoom-api) ────
+
+const QUIXZOOM_ENDPOINTS = [
+  { method: 'GET',    route: '/health',                        desc: 'Health check — service alive',               auth: false },
+  { method: 'GET',    route: '/missions',                      desc: 'Lista tillgängliga uppdrag (med filter)',     auth: true  },
+  { method: 'POST',   route: '/missions',                      desc: 'Skapa nytt uppdrag (admin)',                 auth: true  },
+  { method: 'POST',   route: '/missions/:id/assign',           desc: 'Fotograf accepterar uppdrag',                auth: true  },
+  { method: 'POST',   route: '/missions/:id/complete',         desc: 'Markera uppdrag som slutfört',              auth: true  },
+  { method: 'POST',   route: '/missions/:id/publish',          desc: 'Publicera uppdrag på kartan',               auth: true  },
+  { method: 'DELETE', route: '/missions/:id',                  desc: 'Ta bort uppdrag',                           auth: true  },
+  { method: 'POST',   route: '/billing/checkout',              desc: 'Starta Stripe checkout-session',             auth: true  },
+  { method: 'POST',   route: '/billing/portal',                desc: 'Öppna Stripe customer portal',              auth: true  },
+  { method: 'GET',    route: '/admin/stats',                   desc: 'Plattformsstatistik (admin)',                auth: true  },
+  { method: 'GET',    route: '/admin/payouts',                 desc: 'Lista pågående utbetalningar',               auth: true  },
+  { method: 'POST',   route: '/admin/payouts/approve/:id',     desc: 'Godkänn fotograferens utbetalning',         auth: true  },
+  { method: 'POST',   route: '/admin/payouts/reject/:id',      desc: 'Avvisa utbetalning',                        auth: true  },
+  { method: 'GET',    route: '/admin/photographers',           desc: 'Lista alla registrerade fotografer',         auth: true  },
+  { method: 'PATCH',  route: '/admin/photographers/:id',       desc: 'Uppdatera fotografstatus/nivå',             auth: true  },
+  { method: 'POST',   route: '/notifications/mission-available', desc: 'Push-notis: nytt uppdrag tillgängligt',   auth: true  },
+  { method: 'POST',   route: '/notifications/submission-reviewed', desc: 'Push-notis: inlämning granskad',        auth: true  },
+  { method: 'POST',   route: '/webhooks/stripe',               desc: 'Stripe webhook-handler (raw body)',          auth: false },
+] as const
+
 function LegendDot({ level }: { level: MaturityLevel }) {
   const color = MATURITY_COLORS[level]
   const label = MATURITY_LABELS[level]
@@ -101,7 +124,7 @@ function LegendDot({ level }: { level: MaturityLevel }) {
   return (
     <div className="flex items-center gap-1.5">
       <span className="rounded-full" style={{ width: 7, height: 7, background: color, flexShrink: 0 }} />
-      <span className="text-[10px] font-mono" style={{ color }}>
+      <span className="text-xs font-mono" style={{ color }}>
         {label}
       </span>
       <span className="text-[9px] font-mono text-gray-700">×{count}</span>
@@ -166,6 +189,43 @@ export function SystemStatusView() {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
           {sortedModules.map(mod => (
             <ModuleCard key={mod.id} mod={mod} />
+          ))}
+        </div>
+      </div>
+
+      {/* quiXzoom API Intelligence */}
+      <div className="flex-shrink-0 px-6 py-5 border-t border-white/[0.06]">
+        <div className="flex items-center gap-1.5 mb-3">
+          <span className="text-[9px] font-mono text-amber-500/70 uppercase tracking-wider">quiXzoom API — Endpoint Intelligence</span>
+          <div className="flex-1 border-t border-white/[0.04]" />
+          <span className="text-[9px] font-mono text-gray-600">api.quixzoom.com · ECS eu-north-1</span>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+          {QUIXZOOM_ENDPOINTS.map(ep => (
+            <div
+              key={ep.route}
+              className="rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2 flex items-start gap-2"
+            >
+              <span
+                className="text-[9px] font-mono font-bold mt-0.5 flex-shrink-0"
+                style={{ color: ep.method === 'GET' ? '#34D399' : ep.method === 'POST' ? '#60A5FA' : ep.method === 'PATCH' ? '#F59E0B' : '#EF4444' }}
+              >
+                {ep.method}
+              </span>
+              <div className="flex-1 min-w-0">
+                <code className="text-xs text-white/80 font-mono block truncate">{ep.route}</code>
+                <span className="text-[9px] text-gray-600">{ep.desc}</span>
+              </div>
+              <span
+                className="text-[8px] px-1 py-0.5 rounded font-mono flex-shrink-0"
+                style={{
+                  backgroundColor: ep.auth ? '#1e3a5f' : '#1a1a1a',
+                  color: ep.auth ? '#60A5FA' : '#6B7280',
+                }}
+              >
+                {ep.auth ? '🔒' : '🌐'}
+              </span>
+            </div>
           ))}
         </div>
       </div>

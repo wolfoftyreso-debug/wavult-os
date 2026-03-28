@@ -34,7 +34,7 @@ export function ProcurementHub() {
           <span className="text-xl">🛒</span>
           <div>
             <h1 className="text-[16px] font-bold text-white">Inköp & Leverantörer</h1>
-            <p className="text-[10px] text-gray-600 font-mono">Procurement — Wavult Group</p>
+            <p className="text-xs text-gray-600 font-mono">Procurement — Wavult Group</p>
           </div>
         </div>
       </div>
@@ -45,13 +45,13 @@ export function ProcurementHub() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-colors whitespace-nowrap flex-shrink-0 relative ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap flex-shrink-0 relative ${
               activeTab === tab.id
                 ? 'bg-white/[0.08] text-white'
                 : 'text-gray-500 hover:text-gray-300 hover:bg-white/[0.04]'
             }`}
           >
-            <span className="text-[13px] leading-none">{tab.icon}</span>
+            <span className="text-sm leading-none">{tab.icon}</span>
             {tab.label}
             {tab.badge != null && tab.badge > 0 && (
               <span className="ml-1 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500 text-black">

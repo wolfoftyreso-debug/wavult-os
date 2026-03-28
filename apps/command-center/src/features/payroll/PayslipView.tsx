@@ -21,7 +21,7 @@ function PayslipDetail({ emp, period, calcSalary, fmt, fmtPeriod, EMPLOYER_TAX_R
   return (
     <div className="bg-surface-raised border border-surface-border rounded-xl overflow-hidden">
       {/* Print header */}
-      <div className="px-6 py-4 border-b border-surface-border flex items-center justify-between">
+      <div className="px-4 md:px-6 py-4 border-b border-surface-border flex items-center justify-between flex-wrap gap-2">
         <div>
           <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">Lönespecifikation</div>
           <div className="text-sm font-bold text-white">{fmtPeriod(period)}</div>
@@ -34,7 +34,7 @@ function PayslipDetail({ emp, period, calcSalary, fmt, fmtPeriod, EMPLOYER_TAX_R
         </button>
       </div>
 
-      <div className="px-6 py-5 space-y-6">
+      <div className="px-4 md:px-6 py-5 space-y-6">
         {/* Employee info */}
         <div className="flex items-start justify-between">
           <div>
@@ -45,7 +45,7 @@ function PayslipDetail({ emp, period, calcSalary, fmt, fmtPeriod, EMPLOYER_TAX_R
           <div className="text-right">
             <div className="text-xs text-gray-500">Utbetalningsdatum</div>
             <div className="text-sm font-semibold text-white">{payDate}</div>
-            <div className="text-xs text-gray-500 mt-1">Skattetabell {emp.taxTable} ({emp.location})</div>
+            <div className="text-xs text-gray-500 mt-1">Skattetabell {emp.tax_table} ({emp.location})</div>
           </div>
         </div>
 
@@ -98,7 +98,7 @@ function PayslipDetail({ emp, period, calcSalary, fmt, fmtPeriod, EMPLOYER_TAX_R
         </div>
 
         {/* Footer */}
-        <div className="text-[10px] text-gray-600 border-t border-surface-border pt-4">
+        <div className="text-xs text-gray-600 border-t border-surface-border pt-4">
           Wavult Group · Org.nr: 559XXX-XXXX · Utfärdad: {new Date().toLocaleDateString('sv-SE')} · Skattetabell {TAX_TABLE}, kolumn 1
         </div>
       </div>
@@ -149,7 +149,7 @@ export function PayslipView() {
               }
             >
               <div
-                className="h-5 w-5 rounded-md flex items-center justify-center text-[10px] font-bold"
+                className="h-5 w-5 rounded-md flex items-center justify-center text-xs font-bold"
                 style={{ background: emp.color + '30', color: emp.color }}
               >
                 {emp.initials[0]}

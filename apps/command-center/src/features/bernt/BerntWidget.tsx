@@ -24,7 +24,8 @@ const BERNT_STARTERS = [
 // ─── Speech Recognition ───────────────────────────────────────────────────────
 
 function useSpeechRecognition(onResult: (text: string) => void) {
-  const recRef = useRef<SpeechRecognition | null>(null)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const recRef = useRef<any>(null)
   const [listening, setListening] = useState(false)
 
   const start = useCallback(() => {
@@ -36,7 +37,8 @@ function useSpeechRecognition(onResult: (text: string) => void) {
     rec.continuous = false
     rec.interimResults = false
 
-    rec.onresult = (e: SpeechRecognitionEvent) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    rec.onresult = (e: any) => {
       const text = e.results[0][0].transcript
       onResult(text)
     }
@@ -177,7 +179,7 @@ export function BerntWidget() {
           {/* Settings panel */}
           {showSettings && (
             <div className="px-4 py-3 flex-shrink-0 border-b border-surface-border animate-fade-in">
-              <p className="text-[10px] text-gray-500 font-mono mb-1.5">TUNNEL URL</p>
+              <p className="text-xs text-gray-500 font-mono mb-1.5">TUNNEL URL</p>
               <div className="flex gap-2">
                 <input
                   type="text"

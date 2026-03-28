@@ -14,7 +14,7 @@ function StatusBadge({ status }: { status: Employee['status'] }) {
 function EmployeePanel({ emp, onClose, calcSalary, fmt }: { emp: Employee; onClose: () => void; calcSalary: (gross: number) => any; fmt: (n: number) => string }) {
   const calc = calcSalary(emp.gross_salary)
   // TODO: Add leave_records table and fetch leave data
-  const leave = null
+  const leave = null as null | { daysEntitled: number; daysUsed: number; plannedLeave: { start: string; end: string; days: number; approved: boolean }[] }
   const daysRemaining = 25
 
   // Salary history (last 6 months)
@@ -32,11 +32,11 @@ function EmployeePanel({ emp, onClose, calcSalary, fmt }: { emp: Employee; onClo
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-end" onClick={onClose}>
       <div
-        className="h-full w-[420px] bg-[#0D0F1A] border-l border-surface-border overflow-y-auto"
+        className="h-full w-full md:w-[420px] bg-[#0D0F1A] border-l border-surface-border overflow-y-auto"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="sticky top-0 bg-[#0D0F1A] border-b border-surface-border px-6 py-4 flex items-center justify-between z-10">
+        <div className="sticky top-0 bg-[#0D0F1A] border-b border-surface-border px-4 md:px-6 py-4 flex items-center justify-between z-10">
           <div className="flex items-center gap-3">
             <div
               className="h-10 w-10 rounded-xl flex items-center justify-center text-sm font-bold"
@@ -52,7 +52,7 @@ function EmployeePanel({ emp, onClose, calcSalary, fmt }: { emp: Employee; onClo
           <button onClick={onClose} className="text-gray-500 hover:text-white transition-colors text-lg">×</button>
         </div>
 
-        <div className="px-6 py-5 space-y-6">
+        <div className="px-4 md:px-6 py-5 space-y-6">
           {/* Personuppgifter */}
           <section>
             <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Personuppgifter</h3>
@@ -122,7 +122,7 @@ function EmployeePanel({ emp, onClose, calcSalary, fmt }: { emp: Employee; onClo
                   ].map(s => (
                     <div key={s.label} className="bg-surface-raised rounded-lg p-3 text-center">
                       <div className="text-xl font-bold" style={{ color: s.color }}>{s.value}</div>
-                      <div className="text-[10px] text-gray-500 mt-0.5">{s.label}</div>
+                      <div className="text-xs text-gray-500 mt-0.5">{s.label}</div>
                     </div>
                   ))}
                 </div>
@@ -134,7 +134,7 @@ function EmployeePanel({ emp, onClose, calcSalary, fmt }: { emp: Employee; onClo
                         <span className="text-gray-300">{pl.start} → {pl.end}</span>
                         <div className="flex items-center gap-2">
                           <span className="text-gray-500">{pl.days} dagar</span>
-                          <span className={`px-1.5 py-0.5 rounded text-[10px] ${pl.approved ? 'bg-green-500/15 text-green-400' : 'bg-amber-500/15 text-amber-400'}`}>
+                          <span className={`px-1.5 py-0.5 rounded text-xs ${pl.approved ? 'bg-green-500/15 text-green-400' : 'bg-amber-500/15 text-amber-400'}`}>
                             {pl.approved ? 'Godkänd' : 'Inväntar'}
                           </span>
                         </div>
@@ -204,7 +204,7 @@ export function EmployeeList() {
                       </div>
                       <div>
                         <div className="text-xs font-medium text-white">{emp.name}</div>
-                        <div className="text-[10px] text-gray-500">{emp.email}</div>
+                        <div className="text-xs text-gray-500">{emp.email}</div>
                       </div>
                     </div>
                   </td>

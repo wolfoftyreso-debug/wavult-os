@@ -175,7 +175,7 @@ export function TaxComplianceView() {
               <div className={`text-xs font-semibold mt-1 ${d.paid ? 'text-green-400' : 'text-gray-300'}`}>
                 {d.paid ? '✓ ' : ''}{d.deadline}
               </div>
-              <div className="text-[10px] mt-1" style={{ color: d.paid ? '#34D399' : '#6B7280' }}>
+              <div className="text-xs mt-1" style={{ color: d.paid ? '#34D399' : '#6B7280' }}>
                 {d.paid ? 'Betald' : 'Förfaller'}
               </div>
             </div>
