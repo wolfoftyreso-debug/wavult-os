@@ -39,10 +39,7 @@ export default function CRMScreen() {
   const [selectedDeal, setSelectedDeal] = useState<Deal | null>(null)
 
   const dealsInStage = (stage: Stage) => deals.filter(d => d.stage === stage)
-  const totalValue = (stage: Stage) => dealsInStage(stage).reduce((sum, d) => {
-    const num = parseFloat(d.value.replace(/[^0-9.]/g, ''))
-    return sum + (isNaN(num) ? 0 : num)
-  }, 0)
+
 
   function moveStage(deal: Deal, direction: 1 | -1) {
     const idx = STAGES.indexOf(deal.stage)
