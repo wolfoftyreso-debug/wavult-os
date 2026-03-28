@@ -26,3 +26,4 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     </QueryClientProvider>
   </React.StrictMode>
 )
+// mapbox token env Sat Mar 28 14:28:17 CET 2026
