@@ -90,8 +90,8 @@ function AuthenticatedApp() {
   // Vänta på att session-check är klar
   if (loading) {
     return (
-      <div className="flex h-screen w-full items-center justify-center bg-[#07080F]">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-600 border-t-purple-500" />
+      <div className="flex h-screen w-full items-center justify-center bg-gray-50">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-purple-600" />
       </div>
     )
   }
@@ -118,6 +118,8 @@ function AuthenticatedApp() {
               <Route path="/org/context" element={<ContextView />} />
               <Route path="/org/command" element={<CommandHierarchyView />} />
               <Route path="/incidents" element={<IncidentCenter />} />
+              <Route path="/alerts" element={<IncidentCenter />} />
+              <Route path="/people-governance" element={<PeopleView />} />
               <Route path="/entities" element={<EntityView />} />
               <Route path="/entities/:entityId" element={<EntityView />} />
               <Route path="/markets" element={<MarketMap />} />

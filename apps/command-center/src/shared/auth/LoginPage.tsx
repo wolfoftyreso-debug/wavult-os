@@ -1,8 +1,5 @@
 /**
- * LoginPage — Wavult OS inloggning
- *
- * Supabase email/lösenord-auth. Efter lyckad inloggning
- * fortsätter flödet till rollvalet (RoleLogin).
+ * LoginPage — Wavult OS inloggning (ljust enterprise-tema)
  */
 
 import { useState, FormEvent } from 'react'
@@ -19,33 +16,29 @@ export function LoginPage() {
     e.preventDefault()
     setError(null)
     setLoading(true)
-
     const { error } = await signIn(email.trim(), password)
-    if (error) {
-      setError(translateError(error))
-    }
-
+    if (error) setError(translateError(error))
     setLoading(false)
   }
 
   return (
-    <div className="min-h-screen bg-[#07080F] flex flex-col items-center justify-center p-6">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
       {/* Card */}
-      <div className="max-w-sm w-full bg-[#0D0F1A] border border-white/[0.06] rounded-2xl p-8">
+      <div className="bg-white border border-gray-200 rounded-2xl p-8 w-full max-w-sm shadow-md">
         {/* Logo */}
         <div className="mb-8 text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-[#8B5CF6]/15 border border-[#8B5CF6]/20 mb-4">
-            <span className="text-2xl font-bold text-[#8B5CF6]">W</span>
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-purple-700 mb-4">
+            <span className="text-xl font-bold text-white">W</span>
           </div>
-          <h1 className="text-xl font-semibold text-white">Wavult OS</h1>
-          <p className="text-xs text-gray-600 font-mono mt-1 tracking-widest uppercase">Wavult Group</p>
+          <h1 className="text-xl font-semibold text-gray-900">Wavult OS</h1>
+          <p className="text-xs text-gray-500 uppercase tracking-wide font-medium mt-1">Wavult Group</p>
           <p className="text-sm text-gray-500 mt-2">Logga in för att fortsätta</p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider">
+            <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">
               E-post
             </label>
             <input
@@ -55,16 +48,16 @@ export function LoginPage() {
               placeholder="namn@hypbit.com"
               required
               autoComplete="email"
-              className={`w-full bg-[#141720] border rounded-lg px-4 py-2.5 text-white text-sm placeholder-gray-600 focus:outline-none transition-colors ${
+              className={`w-full bg-white border rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 transition-colors ${
                 error
-                  ? 'border-red-500/60 focus:border-red-500'
-                  : 'border-white/[0.06] focus:border-[#8B5CF6]'
+                  ? 'border-red-400 focus:border-red-500 focus:ring-red-300'
+                  : 'border-gray-300 focus:border-purple-500 focus:ring-purple-500'
               }`}
             />
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider">
+            <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">
               Lösenord
             </label>
             <input
@@ -74,36 +67,34 @@ export function LoginPage() {
               placeholder="••••••••"
               required
               autoComplete="current-password"
-              className={`w-full bg-[#141720] border rounded-lg px-4 py-2.5 text-white text-sm placeholder-gray-600 focus:outline-none transition-colors ${
+              className={`w-full bg-white border rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 transition-colors ${
                 error
-                  ? 'border-red-500/60 focus:border-red-500'
-                  : 'border-white/[0.06] focus:border-[#8B5CF6]'
+                  ? 'border-red-400 focus:border-red-500 focus:ring-red-300'
+                  : 'border-gray-300 focus:border-purple-500 focus:ring-purple-500'
               }`}
             />
           </div>
 
           {error && (
-            <p className="text-xs text-red-400 mt-1">{error}</p>
+            <p className="text-xs text-red-600 mt-1">{error}</p>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#8B5CF6] hover:bg-[#7C3AED] text-white font-medium py-2.5 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm mt-2"
+            className="w-full bg-purple-700 hover:bg-purple-800 text-white font-medium py-2.5 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm mt-2"
           >
             {loading ? 'Loggar in...' : 'Logga in'}
           </button>
         </form>
       </div>
 
-      <p className="mt-6 text-xs text-gray-700 font-mono">
+      <p className="absolute bottom-6 text-xs text-gray-400 font-mono">
         Wavult OS · Intern access · Kontakta admin vid problem
       </p>
     </div>
   )
 }
-
-// ─── Error translation ────────────────────────────────────────────────────────
 
 function translateError(msg: string): string {
   if (msg.includes('Invalid login credentials')) return 'Fel e-post eller lösenord'

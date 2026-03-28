@@ -4,25 +4,49 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── Wavult OS v2 — Design System ─────────────────────────────────────────── */
+/* ─── Wavult OS — Light Enterprise Design System ───────────────────────────── */
 
 @layer base {
   :root {
-    /* Surface state — controlled by JS */
-    --surface-bg: #14181E;
-    --surface-intensity: 0;
-    --accent-color: transparent;
-    --entity-color: #C4961A;
+    /* ─── Light theme tokens ─────────────────────────────────────────────── */
+    --bg-base:      #FFFFFF;
+    --bg-surface:   #F9FAFB;
+    --bg-elevated:  #F3F4F6;
+    --border:       #E5E7EB;
+    --border-strong: #D1D5DB;
+    --text-primary:   #111827;
+    --text-secondary: #6B7280;
+    --text-muted:     #9CA3AF;
+    --accent:         #7C3AED;
+    --accent-light:   #EDE9FE;
+    --accent-text:    #6D28D9;
+    --success:        #059669;
+    --success-light:  #D1FAE5;
+    --warning:        #D97706;
+    --warning-light:  #FEF3C7;
+    --danger:         #DC2626;
+    --danger-light:   #FEE2E2;
+    --info:           #2563EB;
+    --info-light:     #DBEAFE;
+
+    /* Legacy surface tokens (used by old components) */
+    --surface-bg:      #F9FAFB;
+    --surface-border:  #E5E7EB;
+    --surface-raised:  #FFFFFF;
+    --surface-overlay: #F3F4F6;
+    --entity-color:    #7C3AED;
 
     /* Transition timing */
-    --transition-slow: 1.2s ease-in-out;
-    --transition-fast: 0.15s ease-out;
+    --transition-slow:   1.2s ease-in-out;
+    --transition-fast:   0.15s ease-out;
     --transition-normal: 0.25s ease-out;
   }
 
   body {
-    @apply bg-[#0F1218] text-text-primary font-sans antialiased;
+    background-color: var(--bg-base);
+    color: var(--text-primary);
     font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
   }
 
   /* Custom scrollbar — minimal */
@@ -33,193 +57,75 @@
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: #2A2F3A;
+    background: #D1D5DB;
     border-radius: 2px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #363C48;
+    background: #9CA3AF;
   }
 }
 
 @layer components {
-  /* ─── Content Area ────────────────────────────────────────────────────────── */
-  .content-area {
-    @apply relative flex-1 flex flex-col items-center justify-center;
-    transition: background var(--transition-slow),
-                border-color var(--transition-slow);
+  /* ─── Legacy surface classes — mapped to light theme ─────────────────────── */
+  .bg-surface-raised {
+    background-color: #FFFFFF;
   }
 
-  .content-area--neutral {
-    background: #14181E;
+  .border-surface-border {
+    border-color: #E5E7EB;
   }
 
-  .content-area--attention {
-    background: linear-gradient(135deg, #14181E 0%, #1A1810 100%);
+  .bg-surface-overlay {
+    background-color: #F3F4F6;
   }
 
-  .content-area--action {
-    background: linear-gradient(135deg, #14181E 0%, #1A1215 100%);
+  /* ─── Status indicators ───────────────────────────────────────────────────── */
+  .status-dot {
+    @apply h-1.5 w-1.5 rounded-full;
   }
-
-  /* Left-edge status stripe — industrial indicator */
-  .status-bar {
-    @apply absolute left-0 top-0 bottom-0 w-1 rounded-r;
-    transition: background var(--transition-normal),
-                opacity var(--transition-normal);
-  }
-
-  .status-bar--neutral { @apply opacity-0; }
-  .status-bar--attention { @apply opacity-100 bg-signal-amber; }
-  .status-bar--action { @apply opacity-100 bg-signal-red; }
-  .status-bar--success { @apply opacity-100 bg-signal-green; }
-
-  /* ─── Item List ───────────────────────────────────────────────────────────── */
-  .item-list {
-    @apply flex flex-col;
-  }
-
-  .list-item {
-    @apply relative flex items-start gap-3 px-4 py-3 border-b border-wavult-border cursor-pointer;
-    @apply transition-all duration-200 ease-out;
-  }
-
-  .list-item:hover {
-    @apply bg-wavult-steel;
-  }
-
-  .list-item--active {
-    @apply bg-wavult-slate border-l-2 border-l-signal-amber;
-  }
-
-  .list-item--resolved {
-    @apply opacity-40;
-  }
-
-  .list-item--urgent {
-    @apply border-l-2 border-l-signal-red;
-  }
-
-  /* ─── Event Cards ─────────────────────────────────────────────────────────── */
-  .event-card {
-    @apply bg-wavult-slate border border-wavult-border rounded-lg p-6;
-    @apply transition-all duration-300 ease-out;
-    max-width: 640px;
-    width: 100%;
-  }
-
-  .event-card--elevated {
-    @apply border-signal-amber/30;
-    border-left: 3px solid #E8A020;
-  }
-
-  .event-card--critical {
-    @apply border-signal-red/30;
-    border-left: 3px solid #CF222E;
-  }
-
-  /* ─── Alert Cards ─────────────────────────────────────────────────────────── */
-  .alert-card--warning {
-    border-left: 3px solid #E8A020;
-  }
-
-  .alert-card--critical {
-    border-left: 3px solid #CF222E;
-  }
+  .status-dot--ok     { background-color: var(--success); }
+  .status-dot--warn   { background-color: var(--warning); }
+  .status-dot--critical { background-color: var(--danger); }
 
   /* ─── Action Buttons ──────────────────────────────────────────────────────── */
   .action-btn {
-    @apply px-6 py-3 rounded-lg font-semibold text-sm;
+    @apply px-4 py-2 rounded-lg font-medium text-sm;
     @apply transition-all duration-150 ease-out;
-    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-wavult-charcoal;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
   }
-
   .action-btn--primary {
-    @apply bg-signal-amber text-wavult-carbon hover:brightness-110;
-    @apply focus:ring-signal-amber;
+    @apply bg-purple-700 hover:bg-purple-800 text-white focus:ring-purple-500;
   }
-
-  .action-btn--danger {
-    @apply bg-signal-red/15 text-signal-red border border-signal-red/30;
-    @apply hover:bg-signal-red/25 focus:ring-signal-red;
-  }
-
   .action-btn--ghost {
-    @apply bg-transparent text-text-secondary border border-wavult-border;
-    @apply hover:text-text-primary hover:border-wavult-border-light;
+    @apply bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 focus:ring-gray-300;
   }
-
+  .action-btn--danger {
+    @apply bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 focus:ring-red-400;
+  }
   .action-btn--approve {
-    @apply bg-signal-green/15 text-signal-green border border-signal-green/30;
-    @apply hover:bg-signal-green/25 focus:ring-signal-green;
+    @apply bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 focus:ring-emerald-400;
   }
 
-  /* Large binary decision buttons */
-  .decision-btn {
-    @apply flex-1 py-5 rounded-lg text-lg font-semibold;
-    @apply transition-all duration-150 ease-out;
-    @apply focus:outline-none;
+  /* ─── Cards ───────────────────────────────────────────────────────────────── */
+  .card {
+    @apply bg-white border border-gray-200 rounded-xl shadow-sm;
   }
 
-  /* ─── Status Indicator ────────────────────────────────────────────────────── */
-  .status-indicator {
-    @apply flex items-center gap-1.5 font-mono text-label-xs text-text-tertiary;
-  }
-
-  .status-dot {
-    @apply h-1.5 w-1.5 rounded-full;
-    transition: background var(--transition-slow);
-  }
-
-  .status-dot--ok { @apply bg-signal-green; }
-  .status-dot--warn { @apply bg-signal-amber animate-pulse-slow; }
-  .status-dot--critical { @apply bg-signal-red animate-pulse; }
-
-  /* ─── Access Lock ─────────────────────────────────────────────────────────── */
-  .access-lock {
-    @apply flex items-center gap-2 px-3 py-2 rounded-lg;
-    @apply bg-wavult-slate border border-wavult-border;
-    @apply text-text-tertiary text-xs font-mono;
-  }
-
-  .access-lock--pending {
-    @apply border-signal-amber/20;
-  }
-
-  .access-lock--blocked {
-    @apply border-signal-red/20;
-  }
-
-  /* ─── Progress Bar ────────────────────────────────────────────────────────── */
-  .progress-bar {
-    @apply h-0.5 rounded-full;
-    transition: width 0.6s ease-out, background 0.6s ease-out;
-  }
-
-  /* ─── Entity Color Accent ─────────────────────────────────────────────────── */
-  .entity-accent {
-    border-left: 3px solid var(--entity-color);
-  }
-
-  /* ─── Typography ──────────────────────────────────────────────────────────── */
+  /* ─── Typography helpers ──────────────────────────────────────────────────── */
   .label-xs {
-    @apply text-xs font-mono;
+    @apply text-xs font-mono text-gray-500;
   }
-
   .heading-xl {
-    @apply text-2xl font-bold;
+    @apply text-2xl font-semibold text-gray-900;
   }
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+  .text-balance { text-wrap: balance; }
 
-  /* ─── Animations (standard UX — keep these) ───────────────────────────────── */
   .animate-fade-in {
     animation: fade-in 0.2s ease-out;
   }
-
   .animate-slide-in {
     animation: slide-in 0.25s ease-out;
   }

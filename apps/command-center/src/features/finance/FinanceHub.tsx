@@ -28,16 +28,15 @@ class FinanceErrorBoundary extends Component<
     if (this.state.hasError) {
       return (
         <div className="flex flex-col items-center justify-center h-60 gap-4">
-          <div className="text-3xl">⚠️</div>
-          <p className="text-sm font-semibold text-white">{this.props.tabLabel} — data saknas</p>
+          <p className="text-sm font-semibold text-gray-900">{this.props.tabLabel} — data saknas</p>
           <p className="text-xs text-gray-500 max-w-sm text-center">
             Den här modulen behöver live-data från Supabase. Tabellerna är inte satta upp ännu.
             All data är mockad tills Supabase-scheman är live.
           </p>
-          <p className="text-xs text-gray-700 font-mono">{this.state.error?.message}</p>
+          <p className="text-xs text-gray-400 font-mono">{this.state.error?.message}</p>
           <button
             onClick={() => this.setState({ hasError: false, error: null })}
-            className="text-xs px-4 py-2 rounded-lg bg-surface-raised border border-surface-border text-gray-400 hover:text-white transition-colors"
+            className="text-xs px-4 py-2 rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
           >
             Försök igen
           </button>
@@ -50,84 +49,69 @@ class FinanceErrorBoundary extends Component<
 
 type Tab = 'overview' | 'accounts' | 'ledger' | 'invoices' | 'cashflow' | 'tax' | 'intercompany' | 'payments' | 'optimization'
 
-const TABS: Array<{ id: Tab; label: string; icon: string; tooltip: string; ingress: string }> = [
+const TABS: Array<{ id: Tab; label: string; tooltip: string; ingress: string }> = [
   {
     id: 'overview',
-    label: 'Översikt',
-    icon: '📊',
+    label: 'Oversikt',
     tooltip: 'Sammanfattning av ekonomin för valt bolag. KPI:er, senaste transaktioner och status på ett ställe.',
     ingress: 'Sammanfattning av ekonomin för valt bolag — KPI:er, senaste transaktioner och status i ett enda vy.',
   },
   {
     id: 'accounts',
     label: 'Kontoplan',
-    icon: '📋',
     tooltip: 'Alla konton i bokföringen — intäkter, kostnader, tillgångar och skulder. Baserat på BAS-kontoplanen.',
     ingress: 'Alla bokföringskonton organiserade enligt BAS-kontoplanen — intäkter, kostnader, tillgångar och skulder.',
   },
   {
     id: 'ledger',
     label: 'Transaktioner',
-    icon: '↕',
     tooltip: 'Alla enskilda transaktioner kronologiskt. Filtrera per bolag, konto eller period.',
     ingress: 'Kronologisk lista över alla transaktioner. Filtrera per bolag, konto eller tidsperiod.',
   },
   {
     id: 'invoices',
     label: 'Fakturor',
-    icon: '🧾',
     tooltip: 'Utgående fakturor till kunder och inkommande fakturor från leverantörer.',
     ingress: 'Utgående fakturor till kunder och inkommande leverantörsfakturor. Status: utkast, skickad, betald.',
   },
   {
     id: 'cashflow',
-    label: 'Kassaflöde',
-    icon: '💧',
+    label: 'Kassaflode',
     tooltip: 'Pengar in minus pengar ut. Det viktigaste måttet på bolagets hälsa i realtid.',
     ingress: 'Pengar in minus pengar ut — det viktigaste måttet på bolagets löpande hälsa.',
   },
   {
     id: 'tax',
     label: 'Moms/Skatt',
-    icon: '🏛️',
     tooltip: 'Momsredovisning och skatteberäkning per bolag och jurisdiktion. SE, LT och UAE har olika regler.',
     ingress: 'Momsredovisning och skatteberäkning per jurisdiktion. Sverige, Litauen och UAE har olika regler och periodicitet.',
   },
   {
     id: 'intercompany',
     label: 'Intercompany',
-    icon: '↔️',
     tooltip: 'Betalningar MELLAN bolagen i koncernen — t.ex. licensavgifter från dotterbolag till Dubai-holding.',
     ingress: 'Betalningar och licensavgifter MELLAN bolagen i koncernen. Licensflöden samlas i Wavult DevOps FZCO (Dubai, 0% bolagsskatt).',
   },
   {
     id: 'payments',
     label: 'Betalningar',
-    icon: '💳',
     tooltip: 'Betalningsflöden via Stripe, Revolut och andra PSP:er. Status och historik.',
     ingress: 'Betalningsflöden via Stripe, Revolut och andra betalningsprocessorer — status och historik per transaktion.',
   },
   {
     id: 'optimization',
     label: 'Optimering',
-    icon: '⚡',
     tooltip: 'AI-driven rekommendation: när och hur ska ni flytta pengar mellan bolagen för att optimera kassaflöde och skatt.',
     ingress: 'AI-driven kassaflödesoptimering — rekommendationer för när och hur pengar bör flyttas mellan bolagen för att minimera skatt och maximera likviditet.',
   },
 ]
 
-/**
- * FinanceHub — Main finance module with tab navigation.
- * Displays inline ingress text on tab switch and semantic
- * section descriptions for Intercompany and Optimering.
- */
 export function FinanceHub() {
   const [activeTab, setActiveTab] = useState<Tab>('overview')
   const [showIngress, setShowIngress] = useState(true)
   const prevTabRef = useRef<Tab>('overview')
   const { activeEntity } = useEntityScope()
 
-  // Show ingress briefly when the user switches tabs
   useEffect(() => {
     if (prevTabRef.current !== activeTab) {
       setShowIngress(true)
@@ -138,22 +122,23 @@ export function FinanceHub() {
   }, [activeTab])
 
   return (
-    <div className="flex flex-col h-full bg-[#07080F] text-white">
+    <div className="flex flex-col h-full bg-white text-gray-900 rounded-xl border border-gray-200 shadow-sm overflow-hidden">
       <ModuleHeader moduleId="finance" />
+
       {/* Header */}
-      <div className="px-4 md:px-6 py-4 border-b border-white/[0.06] flex-shrink-0">
+      <div className="px-4 md:px-6 py-4 border-b border-gray-200 flex-shrink-0">
         <div className="flex items-center gap-3">
           <div className="min-w-0 flex-1">
-            <h1 className="text-[16px] font-bold text-white">Finance Hub</h1>
-            <p className="text-xs text-gray-600 font-mono truncate">
+            <h1 className="text-base font-semibold text-gray-900">Finance Hub</h1>
+            <p className="text-xs text-gray-500 font-mono truncate">
               {activeEntity.layer === 0 ? 'Wavult Group — konsoliderad' : activeEntity.name}
             </p>
           </div>
           <div
-            className="flex-shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium"
+            className="flex-shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium border"
             style={{
-              background: activeEntity.color + '15',
-              border: `1px solid ${activeEntity.color}30`,
+              background: activeEntity.color + '12',
+              borderColor: activeEntity.color + '30',
               color: activeEntity.color,
             }}
           >
@@ -164,15 +149,15 @@ export function FinanceHub() {
       </div>
 
       {/* Tab navigation */}
-      <div className="flex gap-1 px-4 md:px-6 py-2 border-b border-white/[0.06] flex-shrink-0 overflow-x-auto">
+      <div className="flex gap-1 px-4 md:px-6 border-b border-gray-200 flex-shrink-0 overflow-x-auto">
         {TABS.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap flex-shrink-0 ${
+            className={`flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium transition-colors whitespace-nowrap flex-shrink-0 border-b-2 -mb-px ${
               activeTab === tab.id
-                ? 'bg-[#8B5CF6]/15 text-[#8B5CF6] border border-[#8B5CF6]/30'
-                : 'text-gray-500 hover:text-gray-300 hover:bg-white/[0.04]'
+                ? 'border-purple-600 text-purple-700'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
             }`}
           >
             {tab.label}
@@ -181,16 +166,16 @@ export function FinanceHub() {
         ))}
       </div>
 
-      {/* Tab ingress — shown briefly on tab switch */}
+      {/* Tab ingress */}
       {showIngress && (() => {
         const tab = TABS.find(t => t.id === activeTab)
         return tab ? (
-          <div className="px-6 py-2 border-b border-white/[0.04] flex-shrink-0 flex items-center gap-2 bg-white/[0.01]">
+          <div className="px-6 py-2 border-b border-gray-100 flex-shrink-0 flex items-center gap-2 bg-gray-50">
             <p className="text-xs text-gray-500 leading-snug">{tab.ingress}</p>
             <button
               onClick={() => setShowIngress(false)}
-              className="ml-auto text-gray-700 hover:text-gray-500 transition-colors flex-shrink-0"
-              aria-label="Stäng beskrivning"
+              className="ml-auto text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0"
+              aria-label="Stang beskrivning"
             >
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M18 6L6 18M6 6l12 12" />
@@ -201,7 +186,7 @@ export function FinanceHub() {
       })()}
 
       {/* Content */}
-      <div className="flex-1 overflow-auto p-4 md:p-6">
+      <div className="flex-1 overflow-auto p-4 md:p-6 bg-gray-50">
         <FinanceErrorBoundary tabLabel={TABS.find(t => t.id === activeTab)?.label ?? activeTab}>
           {activeTab === 'overview'     && <FinanceOverview />}
           {activeTab === 'accounts'     && <ChartOfAccounts />}

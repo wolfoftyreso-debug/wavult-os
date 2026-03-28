@@ -8,7 +8,7 @@ import {
   BookOpen, Server, Settings,
   Bell, Inbox,
 } from 'lucide-react'
-import { useRole } from '../auth/RoleContext'
+import { useRole, ROLES } from '../auth/RoleContext'
 import { generateIncidents } from '../../features/incidents/incidentEngine'
 import { useEntityScope } from '../scope/EntityScopeContext'
 import { BerntWidget } from '../../features/bernt/BerntWidget'
@@ -244,13 +244,15 @@ export function Shell({ children }: ShellProps) {
                   <select
                     value={viewAs?.id ?? ''}
                     onChange={e => {
-                      const nonAdminRoles = [role, ...([] as typeof role[])].filter(Boolean)
-                      // find from context
-                      setViewAs(null) // reset first
+                      const found = ROLES.find(r => r.id === e.target.value) ?? null
+                      setViewAs(found)
                     }}
                     className="hidden sm:block text-xs bg-purple-50 border border-purple-200 rounded-full px-3 py-1 font-medium text-purple-700 cursor-pointer focus:outline-none appearance-none"
                   >
                     <option value="">Admin</option>
+                    {ROLES.filter(r => r.id !== 'admin').map(r => (
+                      <option key={r.id} value={r.id}>{r.title}</option>
+                    ))}
                   </select>
                 ) : (
                   <span

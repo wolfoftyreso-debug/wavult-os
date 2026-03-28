@@ -1,5 +1,5 @@
-// ─── Wavult OS — Command Center (default route) ────────────────────────────────
-// Decision-based operational dashboard. Första vyn man ser på /.
+// ─── Wavult OS — Command Center (default route /) ──────────────────────────────
+// Zero Think UX: status, max 3 actions, tydlig konsekvens.
 
 import React from 'react'
 import { AlertTriangle, Clock, CheckCircle, TrendingDown, ArrowRight } from 'lucide-react'
@@ -11,7 +11,6 @@ interface CriticalIssue {
   title: string
   description: string
   action: string
-  actionHref?: string
 }
 
 interface ActionItem {
@@ -110,34 +109,34 @@ const METRICS: MetricCard[] = [
 ]
 
 const SYSTEMS: SystemService[] = [
-  { id: 'wavult-os-api', name: 'wavult-os-api', status: 'green' },
-  { id: 'quixzoom-api', name: 'quixzoom-api', status: 'green' },
-  { id: 'supabase-wavult', name: 'supabase-wavult', status: 'yellow', note: 'FREE tier — risk för auto-pause' },
+  { id: 'wavult-os-api',     name: 'wavult-os-api',     status: 'green' },
+  { id: 'quixzoom-api',      name: 'quixzoom-api',      status: 'green' },
+  { id: 'supabase-wavult',   name: 'supabase-wavult',   status: 'yellow', note: 'FREE tier — risk för auto-pause' },
   { id: 'supabase-quixzoom', name: 'supabase-quixzoom', status: 'yellow', note: 'FREE tier — risk för auto-pause' },
-  { id: 'github-actions', name: 'github-actions', status: 'green' },
+  { id: 'github-actions',    name: 'github-actions',    status: 'green' },
 ]
 
 const NEXT_ACTIONS: NextAction[] = [
-  { rank: 1, text: 'Välj bokföringsbyrå', owner: 'Dennis' },
-  { rank: 2, text: 'Betala SOSDirect $325', owner: 'Dennis' },
-  { rank: 3, text: 'Uppgradera Supabase till Pro ($25/mån)', owner: 'Johan' },
-  { rank: 4, text: 'Boka DMCC-konsultation (Dubai FZCO)', owner: 'Erik' },
-  { rank: 5, text: 'Flytta Loopia NS till Cloudflare (wavult.com aktiv)', owner: 'Johan' },
+  { rank: 1, text: 'Välj bokföringsbyrå',                         owner: 'Dennis' },
+  { rank: 2, text: 'Betala SOSDirect $325',                       owner: 'Dennis' },
+  { rank: 3, text: 'Uppgradera Supabase till Pro ($25/mån)',       owner: 'Johan' },
+  { rank: 4, text: 'Boka DMCC-konsultation (Dubai FZCO)',          owner: 'Erik' },
+  { rank: 5, text: 'Flytta Loopia NS till Cloudflare (wavult.com)', owner: 'Johan' },
 ]
 
 // ─── Sub-components ────────────────────────────────────────────────────────────
 
 function StatusDot({ status }: { status: 'green' | 'yellow' | 'red' }) {
   const color =
-    status === 'green' ? 'bg-emerald-400' :
-    status === 'yellow' ? 'bg-amber-400' :
+    status === 'green'  ? 'bg-emerald-500' :
+    status === 'yellow' ? 'bg-amber-500'   :
     'bg-red-500'
   return <span className={`inline-block h-2 w-2 rounded-full ${color} flex-shrink-0`} />
 }
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="text-[10px] font-mono text-gray-700 uppercase tracking-widest mb-3">
+    <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">
       {children}
     </div>
   )
@@ -151,22 +150,25 @@ export function CommandView() {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
   })
 
-  // System score — crude heuristic based on green services
   const greenCount = SYSTEMS.filter(s => s.status === 'green').length
   const systemScore = Math.round((greenCount / SYSTEMS.length) * 100)
 
   return (
-    <div className="min-h-full bg-[#07080F] text-white p-4 md:p-6 space-y-6">
+    <div className="space-y-6 animate-fade-in max-w-5xl">
 
       {/* ── Header ──────────────────────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
-          <h1 className="text-lg font-semibold text-white">Wavult OS — Command Center</h1>
-          <p className="text-xs font-mono text-gray-600 mt-0.5">{dateStr}</p>
+          <h1 className="text-lg font-semibold text-gray-900">Command Center</h1>
+          <p className="text-xs font-mono text-gray-500 mt-0.5">{dateStr}</p>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/[0.06] bg-[#0D0F1A] self-start">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-gray-200 bg-white shadow-sm self-start">
           <span className="text-xs font-mono text-gray-500">System Score</span>
-          <span className={`text-sm font-mono font-bold ${systemScore >= 80 ? 'text-emerald-400' : systemScore >= 60 ? 'text-amber-400' : 'text-red-400'}`}>
+          <span className={`text-sm font-mono font-bold ${
+            systemScore >= 80 ? 'text-emerald-600' :
+            systemScore >= 60 ? 'text-amber-600'   :
+            'text-red-600'
+          }`}>
             {systemScore}%
           </span>
         </div>
@@ -175,22 +177,22 @@ export function CommandView() {
       {/* ── CRITICAL ────────────────────────────────────────────────────────── */}
       <section>
         <SectionLabel>
-          <span className="text-red-600">CRITICAL — kräver omedelbar åtgärd</span>
+          <span className="text-red-600">Critical — kräver omedelbar åtgärd</span>
         </SectionLabel>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {CRITICAL_ISSUES.map(issue => (
             <div
               key={issue.id}
-              className="rounded-xl border border-red-800/40 bg-red-950/20 p-4 flex flex-col gap-3"
+              className="rounded-xl border border-red-200 bg-red-50 p-4 flex flex-col gap-3"
             >
               <div className="flex items-start gap-2">
                 <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-red-200 leading-snug">{issue.title}</p>
-                  <p className="text-xs text-red-400/70 mt-1 leading-relaxed">{issue.description}</p>
+                  <p className="text-sm font-semibold text-red-800 leading-snug">{issue.title}</p>
+                  <p className="text-xs text-red-600 mt-1 leading-relaxed">{issue.description}</p>
                 </div>
               </div>
-              <button className="mt-auto flex items-center gap-1.5 text-xs font-mono text-red-300 hover:text-red-100 transition-colors self-start group">
+              <button className="mt-auto flex items-center gap-1.5 text-xs font-medium text-red-700 hover:text-red-900 transition-colors self-start group">
                 <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
                 {issue.action}
               </button>
@@ -202,22 +204,22 @@ export function CommandView() {
       {/* ── ACTIONS ─────────────────────────────────────────────────────────── */}
       <section>
         <SectionLabel>
-          <span className="text-amber-600">ACTIONS — tidskritiska deadlines</span>
+          <span className="text-amber-600">Actions — tidskritiska deadlines</span>
         </SectionLabel>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {ACTION_ITEMS.map(item => (
             <div
               key={item.id}
-              className="rounded-xl border border-amber-800/40 bg-amber-950/20 p-4 flex flex-col gap-2"
+              className="rounded-xl border border-amber-200 bg-amber-50 p-4 flex flex-col gap-2"
             >
               <div className="flex items-start gap-2">
-                <Clock className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                <Clock className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-amber-200">{item.title}</p>
-                  <p className="text-xs font-mono text-amber-400/70 mt-0.5">{item.detail}</p>
+                  <p className="text-sm font-semibold text-amber-900">{item.title}</p>
+                  <p className="text-xs font-mono text-amber-700 mt-0.5">{item.detail}</p>
                 </div>
               </div>
-              <span className="self-start text-[10px] font-mono px-2 py-0.5 rounded-full border border-amber-700/40 text-amber-400/80">
+              <span className="self-start text-[10px] font-mono px-2 py-0.5 rounded-full border border-amber-300 text-amber-700 bg-white">
                 {item.dueLabel}
               </span>
             </div>
@@ -227,25 +229,23 @@ export function CommandView() {
 
       {/* ── METRICS ─────────────────────────────────────────────────────────── */}
       <section>
-        <SectionLabel>METRICS</SectionLabel>
+        <SectionLabel>Metrics</SectionLabel>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {METRICS.map(metric => (
             <div
               key={metric.label}
-              className={`rounded-xl border p-4 ${
-                metric.warning
-                  ? 'border-amber-800/40 bg-amber-950/20'
-                  : 'border-white/[0.06] bg-[#0D0F1A]'
+              className={`rounded-xl border p-4 bg-white shadow-sm ${
+                metric.warning ? 'border-amber-200' : 'border-gray-200'
               }`}
             >
-              <p className="text-[10px] font-mono text-gray-600 uppercase tracking-wider mb-1">
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
                 {metric.label}
               </p>
-              <p className={`text-xl font-mono font-bold ${metric.warning ? 'text-amber-400' : 'text-white'}`}>
+              <p className={`text-xl font-mono font-bold ${metric.warning ? 'text-amber-600' : 'text-gray-900'}`}>
                 {metric.value}
               </p>
               {metric.sub && (
-                <p className="text-[10px] font-mono text-gray-600 mt-1">{metric.sub}</p>
+                <p className="text-[10px] font-mono text-gray-500 mt-1">{metric.sub}</p>
               )}
             </div>
           ))}
@@ -254,17 +254,17 @@ export function CommandView() {
 
       {/* ── SYSTEMS ─────────────────────────────────────────────────────────── */}
       <section>
-        <SectionLabel>SYSTEMS — service status</SectionLabel>
-        <div className="rounded-xl border border-white/[0.06] bg-[#0D0F1A] divide-y divide-white/[0.04]">
+        <SectionLabel>Systems — service status</SectionLabel>
+        <div className="rounded-xl border border-gray-200 bg-white shadow-sm divide-y divide-gray-100">
           {SYSTEMS.map(svc => (
             <div key={svc.id} className="flex items-center gap-3 px-4 py-3">
               <StatusDot status={svc.status} />
-              <span className="text-xs font-mono text-gray-400 flex-1">{svc.name}</span>
+              <span className="text-xs font-mono text-gray-700 flex-1">{svc.name}</span>
               {svc.note && (
-                <span className="text-[10px] font-mono text-amber-600/70">{svc.note}</span>
+                <span className="text-[10px] font-mono text-amber-600">{svc.note}</span>
               )}
               {!svc.note && svc.status === 'green' && (
-                <CheckCircle className="w-3.5 h-3.5 text-emerald-700" />
+                <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
               )}
             </div>
           ))}
@@ -273,15 +273,15 @@ export function CommandView() {
 
       {/* ── NEXT ACTIONS ────────────────────────────────────────────────────── */}
       <section>
-        <SectionLabel>NEXT ACTIONS — denna vecka</SectionLabel>
-        <div className="rounded-xl border border-white/[0.06] bg-[#0D0F1A] divide-y divide-white/[0.04]">
+        <SectionLabel>Next actions — denna vecka</SectionLabel>
+        <div className="rounded-xl border border-gray-200 bg-white shadow-sm divide-y divide-gray-100">
           {NEXT_ACTIONS.map(action => (
             <div key={action.rank} className="flex items-center gap-4 px-4 py-3">
-              <span className="text-xs font-mono text-gray-700 w-4 flex-shrink-0">
+              <span className="text-xs font-mono text-gray-400 w-4 flex-shrink-0">
                 {action.rank}.
               </span>
-              <span className="text-sm text-gray-300 flex-1">{action.text}</span>
-              <span className="text-[10px] font-mono text-gray-600 flex-shrink-0">
+              <span className="text-sm text-gray-700 flex-1">{action.text}</span>
+              <span className="text-xs font-mono text-gray-400 flex-shrink-0">
                 {action.owner}
               </span>
             </div>
@@ -289,8 +289,8 @@ export function CommandView() {
         </div>
       </section>
 
-      {/* Footer note */}
-      <div className="flex items-center gap-2 text-[10px] font-mono text-gray-800 pt-2 pb-1">
+      {/* Footer */}
+      <div className="flex items-center gap-2 text-xs font-mono text-gray-400 pt-2 pb-1">
         <TrendingDown className="w-3 h-3" />
         <span>Data uppdateras manuellt — live integration planerad Q2 2026</span>
       </div>
