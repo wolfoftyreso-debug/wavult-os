@@ -2292,6 +2292,1738 @@ Post-mortem: Alla P0-incidents får ett skrivet post-mortem (vad hände, varför
       },
     ],
   },
+
+  // ── CRM & Kundhantering ─────────────────────────────────────────────────────
+  {
+    id: 'crm',
+    title: 'CRM & Kundhantering',
+    description: 'Pipeline-hantering, kundkort, uppföljningsregler och CRM som teamverktyg i Wavult OS.',
+    icon: '🤝',
+    color: '#06B6D4',
+    lessons: [
+      {
+        title: 'Vad är ett CRM och varför vi behöver ett',
+        duration: 4,
+        content: `**Vad är ett CRM?**
+CRM = Customer Relationship Management. Ett system för att spåra alla kontakter, konversationer och affärer med potentiella och befintliga kunder.
+
+**Varför Excel inte räcker**
+• Excel har ingen historik per kund — vem sa vad och när?
+• Ingen pipeline-vy — var i säljprocessen befinner sig varje kund?
+• Ingen påminnelselogik — uppföljningar faller bort
+• Ingen teamdelning i realtid
+
+**Pipeline-konceptet**
+En pipeline visualiserar affärer som rör sig genom stadier — från första kontakt till stängd affär. Varje kund befinner sig alltid i ett tydligt steg.
+
+**Wavults CRM-modul i Wavult OS**
+• Tillgänglig under CRM-fliken i Wavult OS
+• Kopplad till Landvex-pipelines (kommuner + Trafikverket)
+• Alla teammedlemmar har läsrättigheter
+• Leon och Erik har skrivrättigheter för pipelines`,
+      },
+      {
+        title: 'Pipeline-stadier för Landvex-kunder',
+        duration: 5,
+        content: `**De sju stadierna**
+
+• **Prospekt** — Identifierad som potentiell kund. Ingen kontakt ännu. Källa: LOU-databas, kommunlistor, tips.
+
+• **Kontaktad** — Första e-post eller samtal gjort. Väntar på svar. Dokumentera datum och kanal.
+
+• **Intresserad** — Kunden har svarat positivt och vill veta mer. Boka in ett informationsmöte.
+
+• **Demo** — Vi har presenterat Landvex live. Kunden har sett produkten i aktion. Notera reaktioner.
+
+• **Pilot** — Kunden testar Landvex i liten skala, typiskt 1-3 månader. Stöd aktivt.
+
+• **Kund** — Signerat avtal och betalar prenumeration. Flytta till customer success-flödet.
+
+• **Churnad** — Kunden avslutade. Dokumentera alltid orsaken — det är guld för produktförbättring.
+
+**Vad som händer i varje steg**
+Varje steg har en "definition of done" — tydliga kriterier för när man flyttar en kund vidare. Fråga Leon om du är osäker.
+
+**Hur man dokumenterar**
+Lägg alltid in ett notat efter varje kontakt: datum, vem du pratade med, vad som sades, nästa åtgärd.`,
+      },
+      {
+        title: 'Kundkort — vad ska fyllas i',
+        duration: 4,
+        content: `**Kundkortet är Landvex-teamets gemensamma minne**
+Allt som händer med en kund dokumenteras här. Inget i huvudet, allt i systemet.
+
+**Obligatoriska fält**
+
+• **Kontaktperson + roll** — Namn, titel, e-post, telefon. Vem är beslutsfattaren? Vem är teknikansvarig?
+
+• **Kommunstorlek** — Antal invånare och antal objekt (kameror, sensorer) de potentiellt kan köpa
+
+• **Budget-estimat** — Vad tror vi kunden kan betala per år? Bas: kommunens storlek och befintliga tech-budget
+
+• **Antal objekt** — Estimat på hur många kameror/platser de vill övervaka
+
+• **Nästa åtgärd** — Alltid en tydlig next step med datum. Aldrig tomt.
+
+• **Senaste interaktion** — Datum + kort beskrivning av vad som hände
+
+**Tips**
+Fyll i kundkortet direkt efter varje möte eller samtal. Minnet bleknar fort. Ett komplett kundkort är skillnaden mellan att vinna och förlora en affär.`,
+      },
+      {
+        title: 'Uppföljningsregler och kadenser',
+        duration: 4,
+        content: `**B2G kräver tålamod — men inte passivitet**
+Kommuner beslutar långsamt. Det betyder inte att vi väntar passivt. Struktur vinner.
+
+**Standardkadensen vid tystnad**
+
+• Ingen svar efter första kontakt: Ring dag 3
+• Fortfarande ingen respons: E-post dag 7 med nytt värdeargument
+• Vilande efter 14 dagar utan respons: Markera som "vilande", schemalägg nästa försök om 30 dagar
+• Aldrig ge upp under de första 6 månaderna — kommuner har långa beslutsprocesser
+
+**Varför B2G kräver tålamod**
+• Kommuner har budgetcykler (jan-dec), beslut fattas ofta i september-november
+• Upphandlingsprocesser tar 3-6 månader under LOU
+• Besluten involverar ofta 3-5 beslutsfattare
+• En "nej" i dag kan bli ett "ja" nästa budgetår
+
+**Vad du INTE gör**
+• Skicka inte samma e-post igen utan att lägga till nytt värde
+• Ring inte mer än en gång i veckan under vilofas
+• Ge aldrig upp utan att dokumentera varför i CRM`,
+      },
+      {
+        title: 'CRM som teamverktyg — inte bara säljarens',
+        duration: 3,
+        content: `**CRM tillhör hela teamet**
+Det är lätt att se CRM som ett säljverktyg. Det är det inte. Det är hela bolagets gemensamma kundminne.
+
+**Vad varje roll ser i CRM**
+
+• **Leon** — Sälj: pipeline-status, nästa steg, affärspotential
+• **Johan** — Tech: tekniska krav kunden ställde, integrationsbehov, API-frågor från demos
+• **Dennis** — Juridik: avtalskrav, GDPR-frågor kunden lyfte, LOU-krav för upphandling
+• **Winston** — Finance: estimerad affärsstorlek, betalningsvillkor, fakturaadress
+
+**Gemensam sanning**
+Ingen information om en kund lever i en persons huvud eller privata anteckningar. Allt som är affärskritiskt dokumenteras i CRM.
+
+**Praktisk regel**
+Om du har haft ett möte, ett samtal eller ett mejlutbyte med en kund eller prospekt — logga det i CRM inom 24 timmar.`,
+      },
+    ],
+  },
+
+  // ── Milestones & OKR ────────────────────────────────────────────────────────
+  {
+    id: 'milestones',
+    title: 'Milestones & OKR',
+    description: 'OKR-ramverket, Wavults Q2-struktur, skillnaden mot KPI och hur du uppdaterar status i Wavult OS.',
+    icon: '🎯',
+    color: '#10B981',
+    lessons: [
+      {
+        title: 'Vad är OKR och varför startups använder det',
+        duration: 4,
+        content: `**OKR = Objectives and Key Results**
+Ett ramverk för att sätta och mäta mål. Ursprungligen från Intel, populariserat av Google på 1990-talet.
+
+**Strukturen**
+• **Objective (O)** — En inspirerande, kvalitativ riktning. Inte mätbar i sig. Exempel: "Etablera Landvex som marknadsledare i Sverige"
+• **Key Results (KR)** — 3-5 mätbara utfall som definierar om Objective är uppnått. Exempel: "Signera 5 kommunavtal", "Nå NPS > 40"
+
+**Skillnad mot KPI**
+KPI = löpande nyckeltal man alltid mäter (ex. antal aktiva kunder, churn rate).
+OKR = tidsbegränsade mål (per kvartal) som driver förändring och prioritering.
+
+**Varför det funkar för snabbväxande bolag**
+• Skapar fokus — alla vet vad som prioriteras just nu
+• Mätbart — inga luddiga mål som "bli bättre"
+• Transparent — alla ser varandras OKR
+• Ambitiöst — 70% completion av ett OKR är ofta bättre än 100% av ett för enkelt mål
+
+**Googles ursprung**
+John Doerr lärde sig OKR av Andy Grove på Intel och introducerade det på Google 1999. Sedan dess har det spridits till tusentals bolag.`,
+      },
+      {
+        title: 'Wavults Q2 2026 OKR-struktur',
+        duration: 5,
+        content: `**Wavults primära Objective Q2 2026**
+"QuiXzoom live i Sverige med 100 aktiva Zoomers"
+
+**Key Results (KR)**
+• KR1: 100 Zoomers registrerade och verifierade i Sverige senast 30 juni 2026
+• KR2: Minst 3 betalande B2B-kunder (via Quixom Ads eller Landvex) signerade Q2
+• KR3: Appen lever i App Store och Google Play med betyg > 4.0 vid lansering
+
+**Hur de bryts ned till dagliga uppgifter**
+Varje Key Result delas upp i veckovisa initiativ och dagliga tasks:
+• KR1 → Leon rekryterar via sociala medier + referrals, mål: 15 nya Zoomers/vecka
+• KR2 → Erik + Leon driver 2 demos/vecka mot kommuner
+• KR3 → Johan + team levererar release candidate senast 1 juni
+
+**Ägarskap**
+Varje KR har en tydlig ägare. Ägaren rapporterar status varje vecka i Wavult OS Milestones-modulen.
+
+**Vad händer om vi missar?**
+En post-mortem per missat KR: vad blockerade, vad lärde vi oss, vad justerar vi för Q3?`,
+      },
+      {
+        title: 'Milestones vs OKR vs Tasks',
+        duration: 4,
+        content: `**Tre nivåer — olika syften**
+
+**Milestone**
+• Binärt: antingen klart eller inte klart
+• Exempel: "Appen är live i App Store" — ja eller nej
+• Används för stora delmål som markerar verkliga framsteg
+• Synlig för hela teamet och styrelsen
+
+**OKR**
+• Riktning + mätning
+• Sätts per kvartal, ägs av en person
+• Exempel: "Nå 100 Zoomers" — mäts löpande
+• Balanserar ambition med verklighet
+
+**Task**
+• Daglig handling som bidrar till ett OKR eller Milestone
+• Exempel: "Ring kommunen i Nacka tisdag kl 10"
+• Hanteras i Wavult OS Tasks-modulen eller i personliga to-do-listor
+
+**Hur de hänger ihop**
+Tasks → uppfyller OKR Key Results → leder till Milestones.
+Gör du rätt tasks varje dag, tar sig OKR:en framåt, och Milestones uppnås i rätt tid.
+
+**Vanligaste misstaget**
+Att blanda ihop nivåerna. En Milestone är INTE ett KR. En task är INTE ett OKR. Håll dem separata.`,
+      },
+      {
+        title: 'Sprint-planering på Thailand Workcamp',
+        duration: 5,
+        content: `**Thailand Workcamp — 11 april 2026**
+Hela teamet samlas för intensiv sprint-planering. Det är startskottet för Q2.
+
+**90-dagars sprint**
+April-juni är en sammanhängande 90-dagars sprint mot Q2 OKR. Allt som planeras på Thailand ska leda till de tre Key Results.
+
+**Vem äger vad**
+Ägarskap bestäms på Workcamp och dokumenteras i Wavult OS:
+• Leon: Zoomer-rekrytering och B2B-sälj
+• Johan: App-release och tech-infrastruktur
+• Dennis: Juridik, avtal och compliance
+• Winston: Finans, payroll och budget
+• Erik: Produktvision, investerare och styrning
+
+**Definition of Done**
+Varje deliverable definieras tydligt — vad innebär det att något är "klart"? Inga gissningar.
+
+**Dagliga standups**
+Under Workcamp: standup kl 09:00 varje dag.
+Efter Workcamp: asynkron standup i Telegram (vad gjorde jag igår, vad gör jag idag, blockerat av?).
+
+**Veckovis review**
+Varje fredag: gå igenom KR-status i Wavult OS, eskalera blockerade punkter till Erik.`,
+      },
+      {
+        title: 'Hur du uppdaterar status i Wavult OS',
+        duration: 3,
+        content: `**Milestones-modulen i Wavult OS**
+Navigera till Milestones i sidomenyn. Här ser du alla aktiva milstolpar för bolaget.
+
+**Statuskoder**
+• ✅ Klart — Milestonet är uppnått, datum registrerat
+• 🔄 Pågår — Aktivt arbete, förväntat slutdatum satt
+• ⚠️ Försenat — Deadline passerad, men arbete pågår
+• 🔴 Blockerat — Kan inte fortsätta utan extern insats
+
+**Blockerat vs Försenat**
+Viktigt att skilja på:
+• Försenat = vi jobbar på det, men hinner inte i tid
+• Blockerat = vi kan inte jobba på det alls — det saknas ett beslut, en resurs eller en extern faktor
+
+**Kommunicera tidigt**
+Uppdatera status INNAN deadlines missas. En sen varning är bättre än en chock. Skriv alltid en kommentar: vad blockerar, vad behövs för att komma vidare.
+
+**Frekvens**
+Uppdatera din status minst en gång per vecka — gärna i samband med fredagsreviewen.`,
+      },
+    ],
+  },
+
+  // ── Finance-modulen ─────────────────────────────────────────────────────────
+  {
+    id: 'finance-module',
+    title: 'Finance-modulen — Praktisk Guide',
+    description: 'P&L, intercompany-fakturering, budget vs utfall och Causal OS för finansiell simulering.',
+    icon: '📊',
+    color: '#22C55E',
+    lessons: [
+      {
+        title: 'Finance-modulens delar',
+        duration: 4,
+        content: `**Finance-modulen i Wavult OS**
+Tillgänglig under Finance-fliken. Winston är primär ägare och ansvarig.
+
+**Sektioner**
+
+• **Översikt** — Dashboard med nyckeltal: burn rate, runway, totala tillgångar per entitet
+
+• **Transaktioner** — Alla in- och utbetalningar per bolag. Kopplade till Revolut och bankkonton.
+
+• **Payroll** — Löner och arvoden. Vem får vad, när och från vilket bolag. Inklusive skatteberäkningar per jurisdiktion.
+
+• **Procurement** — Inköp och leverantörer. Alla återkommande kostnader registrerade: AWS, Supabase, Cloudflare, etc.
+
+• **Optimering** — Analys av var bolaget kan spara. Duplicerade abonnemang, underutnyttjad kapacitet, alternativa leverantörer.
+
+**Åtkomst**
+• Alla teammedlemmar har läsrättigheter till Översikt
+• Winston har full skrivrättighet
+• Erik har godkännanderätt för betalningar > 10 000 SEK`,
+      },
+      {
+        title: 'Hur du läser en P&L (Resultaträkning)',
+        duration: 5,
+        content: `**Vad är en P&L?**
+P&L = Profit and Loss. På svenska: Resultaträkning. Det är bolagets ekonomiska facit för en period.
+
+**Grundstrukturen**
+Intäkter (Revenue)
+– Kostnad för sålda varor/tjänster (COGS)
+= Bruttoresultat (Gross Profit)
+– Rörelsekostnader (OpEx: löner, hyra, marknadsföring)
+= Rörelseresultat (EBIT)
+– Räntor och skatt
+= Nettoresultat (Net Profit / Loss)
+
+**Bruttomarginal vs Nettomarginal**
+• Bruttomarginal = (Intäkt - COGS) / Intäkt. Visar hur lönsam produkten är.
+• Nettomarginal = Nettoresultat / Intäkt. Visar vad som faktiskt blir kvar.
+
+**Wavults P&L i dag**
+Vi är i pre-revenue-fas: noll intäkter, negativ burn (vi spenderar mer än vi tjänar). Det är normalt för en startup i byggfas. Fokus är att minimera burn och nå intäkter senast Q3 2026.
+
+**Varför siffrorna är viktiga**
+P&L styr alla viktiga beslut: anställningar, investeringar, produktprioriteringar. Förstår du P&L förstår du bolagets hälsa.`,
+      },
+      {
+        title: 'Intercompany-fakturering i praktiken',
+        duration: 5,
+        content: `**Vad är intercompany-fakturering?**
+Transaktioner mellan bolag inom samma koncern. Wavult Group har 6 entiteter — de fakturerar varandra för tjänster och kostnader.
+
+**Praktiskt exempel**
+Winston skapar en faktura från Landvex AB (Sverige) till Wavult DevOps FZCO (Dubai) för management fee.
+
+**Vad ska stå på fakturan**
+• Fakturanummer (sekventiellt per bolag)
+• Fakturadatum och förfallodatum
+• Säljarens fullständiga bolagsuppgifter (namn, org.nr, adress, VAT-nr)
+• Köparens fullständiga bolagsuppgifter
+• Beskrivning av tjänsten: "Management services fee, [månad] 2026"
+• Belopp i avtalad valuta (typiskt SEK eller USD)
+• Betalningsvillkor: 30 dagar netto
+
+**Viktigt**
+Alla intercompany-transaktioner ska följa arm's length-principen — priset ska motsvara vad oberoende parter skulle betala. Dennis och Winston ansvarar för transfer pricing-dokumentationen.
+
+**Arkivering**
+Alla fakturor sparas i Legal Hub under respektive bolags mapp.`,
+      },
+      {
+        title: 'Budget vs Utfall — hur vi följer upp',
+        duration: 4,
+        content: `**Budget**
+Budget sätts per kvartal i samband med OKR-planeringen. Winston ansvarar för budgetprocessen med input från alla avdelningsägare.
+
+**Utfall**
+Faktiska kostnader och intäkter stäms av månadsvis mot budgeten. Avvikelse = utfall minus budget.
+
+**Avvikelsegränser**
+• Avvikelse under 5%: acceptabelt utan förklaring
+• Avvikelse 5-10%: dokumentera orsaken i Finance-modulen
+• Avvikelse över 10%: kräver skriftlig förklaring och godkännande från Erik
+
+**Winstons roll**
+Winston producerar månadsrapporten senast den 5:e i efterföljande månad. Rapporten distribueras till Erik och Dennis.
+
+**Varför detta är viktigt**
+Utan budget vs utfall-uppföljning vet vi inte om vi spenderar för mycket, om intäkterna håller plan eller om vi riskerar att köra slut på cash. Det är bolagets ekonomiska kompass.`,
+      },
+      {
+        title: 'Causal OS — finansiell simulering',
+        duration: 4,
+        content: `**Vad är Causal OS-modulen?**
+En inbyggd finansiell simulator i Wavult OS. Låter dig simulera ekonomiska scenarion utan att röra bokföringen.
+
+**Likviditetsvyn**
+Visar dag-för-dag kassaflöde baserat på:
+• Kända inbetalningar (avtal, abonnemang)
+• Kända utbetalningar (löner, infrastruktur, abonnemang)
+• Uppskattade framtida flöden (sannolikhetsvägt)
+
+**Confidence-nivåer**
+• Säkert (grön): Kontrakterade flöden, bekräftade fakturor
+• Sannolikt (gul): Pipelineaffärer med hög sannolikhet
+• Spekulativt (orange): Möjliga men osäkra framtida intäkter
+
+**Scenario Engine**
+Skapa scenarion: vad händer om vi anställer en säljare? Vad händer om Landvex-affären dröjer 3 månader? Simulera utan risk.
+
+**Beslutsstöd**
+Causal OS ger svar på: "Har vi råd med detta?" och "Hur länge håller kassan?" — viktiga frågor inför varje större beslut.`,
+      },
+    ],
+  },
+
+  // ── Legal Hub & Bolagsadmin ─────────────────────────────────────────────────
+  {
+    id: 'legal-hub',
+    title: 'Legal Hub & Bolagsadmin',
+    description: 'Avtalshierarki, DocuSign, bolagsadmin per jurisdiktion och vad du aldrig gör utan Dennis.',
+    icon: '⚖️',
+    color: '#F59E0B',
+    lessons: [
+      {
+        title: 'Legal Hub — vad som finns här',
+        duration: 4,
+        content: `**Legal Hub i Wavult OS**
+Samlingsplatsen för allt juridiskt material i Wavult Group. Dennis är ansvarig och primär ägare.
+
+**Vad som finns**
+• Alla bolagsavtal (SHA, MSA, IP-licensavtal)
+• Kundavtal och NDA:er
+• Compliance-dokumentation per bolag (GDPR, LOU, AML)
+• Signeringshistorik via DocuSign
+
+**Compliance-status**
+Varje bolag har en compliance-dashboard som visar:
+• Årsredovisningsstatus (inlämnad/förfaller/försenad)
+• GDPR-registerföring (uppdaterad/behöver uppdateras)
+• Pågående juridiska processer (om sådana finns)
+
+**Hur man hittar ett specifikt avtal**
+1. Navigera till Legal Hub i Wavult OS
+2. Välj bolag (Landvex AB, QuiXzoom Ltd, etc.)
+3. Välj avtalskategori (Bolagsavtal, Kundavtal, etc.)
+4. Sök på motpart eller datum
+
+**Viktigt**
+Ladda aldrig ner och skicka avtal externt utan Denniss godkännande. Avtal är konfidentiella.`,
+      },
+      {
+        title: 'Avtalshierarki i Wavult Group',
+        duration: 5,
+        content: `**Fyra nivåer av avtal**
+
+**1. SHA — Shareholders Agreement (Ägaravtal)**
+Det viktigaste avtalet. Reglerar ägarförhållanden, rösträtt, drag-along/tag-along, vesting för grundare. Signerat av alla ägare. Ändras bara med unanimitet.
+
+**2. MSA — Management Services Agreement**
+Reglerar hur holding-bolaget (Dubai) tillhandahåller tjänster till dotterbolagen. Grunden för intercompany-fakturering och management fees.
+
+**3. IP-licensavtal**
+Reglerar hur Dubai-holdingen licensierar all IP (kod, varumärken, algoritmer) till dotterbolagen. Säkerställer att all IP ägs centralt.
+
+**4. Kundavtal**
+Avtal med externa kunder (kommuner, B2B-kunder). Underordnade alla ovanstående.
+
+**Vilket avtal styr vid konflikt?**
+SHA vinner alltid. MSA vinner över IP-licens. Kundavtal kan aldrig strida mot SHA eller MSA.
+
+**Varför denna struktur?**
+Skyddar bolaget vid investeringar, förvärv och tvister. Dennis och Erik har utformat hierarkin gemensamt.`,
+      },
+      {
+        title: 'DocuSign — digital signering',
+        duration: 4,
+        content: `**DocuSign i Wavult OS**
+Alla avtal signeras digitalt via DocuSign, integrerat i Legal Hub. Ingen pappershantering krävs.
+
+**Hur man signerar ett avtal**
+1. Du får ett e-postmeddelande från DocuSign med länk
+2. Klicka på länken, granska dokumentet NOGGRANT
+3. Klicka på signaturmarkeringarna och signera
+4. Bekräfta med BankID (eller annan verifiering beroende på jurisdiktion)
+5. Alla parter får en kopia automatiskt, arkiveras i Legal Hub
+
+**Vad du ska läsa innan du skriver under**
+• Avtalsparter — är bolagsnamnen korrekta?
+• Belopp och valuta — stämmer de?
+• Löptid och uppsägningstid — vad har vi åtagit oss?
+• Jurisdiktion — vilket lands lag gäller?
+
+**L3-krav: Erik + Dennis**
+Avtal av typ SHA, MSA och IP-licensavtal kräver signatur av BÅDE Erik och Dennis (L3-beslutsnivå). Inga undantag.
+
+**Arkivering**
+Signerade avtal arkiveras automatiskt i Legal Hub med datum, parter och avtalskategori.`,
+      },
+      {
+        title: 'Bolagsadmin — löpande krav',
+        duration: 5,
+        content: `**Varje bolag har löpande juridiska krav**
+Dennis ansvarar för dessa, men alla bör känna till dem.
+
+**Årsredovisning**
+Varje bolag lämnar in årsredovisning enligt lokal lagstiftning:
+• Sverige (AB): senast 7 månader efter räkenskapsårets slut → Bolagsverket
+• UK (Ltd): senast 9 månader → Companies House
+• Dubai (FZCO): senast 3 månader → DMCC
+
+**Styrelsemöten**
+• Minst ett per år per bolag (ofta fler)
+• KRÄVER skriftligt protokoll med datum, deltagare och beslutspunkter
+• Protokoll arkiveras i Legal Hub
+• Beslut utan protokoll är juridiskt ogiltiga
+
+**Ändringsanmälningar**
+Namnbyten, styrelseändringar, adressändringar måste anmälas till rätt myndighet:
+• Sverige: Bolagsverket (digitalt via Mina sidor)
+• UK: Companies House (Companies House WebFiling)
+• Dubai: DMCC (DMCC-portalen)
+
+**Deadline-krav**
+Missade deadlines leder till böter och i värsta fall att bolaget avregistreras. Dennis håller en kalender i Legal Hub.`,
+      },
+      {
+        title: 'Vad du ALDRIG gör utan Dennis',
+        duration: 3,
+        content: `**Fyra absoluta regler**
+
+**1. Signera aldrig ett avtal**
+Oavsett hur enkelt det verkar — NDA, samarbetsavtal, villkorsuppdatering. Allt går via Dennis för granskning innan signering.
+
+**2. Gör aldrig offentliga uttalanden om ägarstruktur**
+Ägarförhållanden i Wavult Group är konfidentiella. Frågor om vem som äger vad besvaras av Erik eller Dennis — aldrig av dig.
+
+**3. Svara aldrig på myndighetsförfrågningar**
+Brev, e-post eller samtal från Skatteverket, Bolagsverket, Finansinspektionen, DMCC eller andra myndigheter vidarebefordras OMEDELBART till Dennis utan eget svar.
+
+**4. Ingå aldrig partnerskap med immateriella rättigheter**
+Integrationer, co-branding, plattformsavtal som involverar delning av kod, data eller varumärke kräver Denniss granskning och Eriks godkännande.
+
+**Varför dessa regler finns**
+Juridiska misstag är dyra och ibland oåterkalleliga. Det kostar mer att undo ett dåligt avtal än att förebygga det. Dennis är vår försäkring.`,
+      },
+    ],
+  },
+
+  // ── Communications & Morning Brief ─────────────────────────────────────────
+  {
+    id: 'communications',
+    title: 'Communications & Morning Brief',
+    description: 'Kommunikationsmodulen, Morning Brief, Telegram som primär kanal och extern kommunikationspolicy.',
+    icon: '📡',
+    color: '#8B5CF6',
+    lessons: [
+      {
+        title: 'Communications-modulen — översikt',
+        duration: 3,
+        content: `**Communications-modulen i Wavult OS**
+Samlingsplatsen för intern och extern kommunikationsinfrastruktur.
+
+**Morning Brief-konfiguration**
+Konfigurera vad som ingår i din dagliga Morning Brief: nyhetsflöden, systemstatus, company knowledge, citat. Levereras kl 08:00 varje vardag.
+
+**Notifikationscentret**
+Hantera vilka larm och notifikationer du vill ta emot:
+• Systemlarm (infrastruktur)
+• Landvex-incidenter
+• CRM-påminnelser
+• Finansiella varningar
+
+**API-status-vyn**
+Realtidsöversikt av alla externa API-integrationer: Stripe, Supabase, AWS, n8n. Ser du rött här — eskalera till Johan.
+
+**Varför intern kommunikation är strukturerad**
+Med ett distribuerat team (Sverige + Dubai + remote) är strukturerad kommunikation inte en nice-to-have — det är vad som håller bolaget koordinerat.`,
+      },
+      {
+        title: 'Morning Brief — hur det fungerar',
+        duration: 4,
+        content: `**Morning Brief**
+En daglig e-postsammanfattning som Bernt genererar och skickar varje vardag kl 08:00.
+
+**Teknisk pipeline**
+Bernt (AI-agent) → n8n (automation) → AWS SES (e-postleverans) → Din inkorg
+
+**Innehållssektioner**
+• **Nyheter** — Curated nyheter relevanta för Wavults branscher (drone-tech, B2G, SaaS)
+• **Systemskola** — En lärdom per dag om Wavult OS, produkterna eller branschen
+• **Company knowledge** — Interna uppdateringar, beslut, milstolpar från föregående dag
+• **Citat** — Ett inspirerande citat för dagen
+
+**BCC-regel**
+Alla Morning Briefs skickas alltid med BCC till erik@hypbit.com. Erik har alltid en kopia av vad som kommuniceras.
+
+**Anpassa din brief**
+Gå till Communications → Morning Brief Settings för att justera vilka sektioner du vill ha och eventuella extra nyhetsflöden.`,
+      },
+      {
+        title: 'Telegram som primär kanal',
+        duration: 4,
+        content: `**Varför Telegram?**
+• End-to-end krypterat (Secret Chats)
+• Snabbt och tillförlitligt på alla enheter
+• Stödjer bots och automation (Bernt-boten)
+• Gratis och utan företagsbindning
+
+**Kanalstrukturen**
+• **Team-gruppen** — Hela teamet, daglig kommunikation
+• **Direktkanaler** — Bilaterala konversationer (Erik-Leon, Erik-Dennis etc.)
+• **Bernt-boten** — Skriv till @BerntBot för AI-assistans direkt i Telegram
+
+**Vad kommuniceras var**
+• Telegram: snabba uppdateringar, frågor, daglig status, larm
+• E-post: formell kommunikation, externa parter, dokumentation
+• Wavult OS: strukturerad data, milestones, CRM, Finance
+
+**Vad som INTE kommuniceras i Telegram**
+• Lösenord eller tokens (aldrig — använd Secrets-modulen)
+• Kunddata eller personuppgifter (GDPR-risk)
+• Kontroversiella ämnen som ska dokumenteras formellt
+
+**Responstid**
+Förväntan: svar inom 2 timmar på vardagar. Urgent = ring direkt.`,
+      },
+      {
+        title: 'Extern kommunikation — regler',
+        duration: 5,
+        content: `**Vem pratar med pressen?**
+Bara Erik. Ingen annan i teamet uttalar sig till media om Wavult Group, QuiXzoom eller Landvex utan Eriks explicita godkännande.
+
+**Om du kontaktas av media**
+Standardsvar: "Tack för ditt intresse. Vänligen kontakta vår CEO Erik Svensson på erik@hypbit.com."
+Säg ingenting mer. Inga kommentarer, inga spekulationer.
+
+**Social media-policy för teamet**
+• Du får gärna posta om branschen, tech och generella iakttagelser
+• Du får gärna säga att du jobbar på Wavult/QuiXzoom/Landvex
+• Du får INTE avslöja ej offentliggjord information (produktplaner, finansiella data, partnerskap)
+• Du får INTE kritisera kollegor, kunder eller konkurrenter offentligt
+
+**Vad som aldrig postas offentligt**
+• Finansiell information (burn rate, kapitalresning, runway)
+• Kundnamn utan deras skriftliga godkännande
+• Intern strategi eller roadmap
+• Information om pågående upphandlingar eller avtal
+
+**Konsekvenser**
+Brott mot extern kommunikationspolicy är ett allvarligt disciplinärende. Fråga alltid Erik om du är osäker.`,
+      },
+      {
+        title: 'Notifikationscentret',
+        duration: 3,
+        content: `**Notifikationscentret i Wavult OS**
+Konfigurera vilka händelser som ska trigga en notifikation till dig — i appen, via Telegram eller e-post.
+
+**Notifikationstyper**
+
+• **Systemlarm** — Infrastruktur-alerts (CPU, memory, service down). Levereras till Johan primärt.
+
+• **Landvex-larm** — Händelsebaserade larm från kameranätverket landar i Communications-modulen och kan vidarebefordras till ansvarig person.
+
+• **CRM-påminnelser** — "Du har inte följt upp [kund] på 7 dagar." Levereras till den som äger kontakten.
+
+• **Finansiella varningar** — Runway-varningar, missade fakturor, ovanliga transaktioner.
+
+**Hur man sätter upp notiser**
+1. Gå till Communications → Notification Center
+2. Välj notifikationstyp
+3. Välj leveranskanal (in-app, Telegram, e-post)
+4. Sätt tröskelvärden om tillämpligt (ex. "varna om CPU > 80%")
+
+**Best practice**
+Undvik notifikationsfatigue. Välj bara notiser du faktiskt agerar på.`,
+      },
+    ],
+  },
+
+  // ── Causal OS & Finansiell Simulering ──────────────────────────────────────
+  {
+    id: 'causal-os-course',
+    title: 'Causal OS — Finansiell Simulering',
+    description: 'Kausal logik, likviditetsmotorn, scenario-engine, Decision Impact Calculator och systemvarningar.',
+    icon: '🧠',
+    color: '#6366F1',
+    lessons: [
+      {
+        title: 'Vad är ett kausalt operativsystem',
+        duration: 4,
+        content: `**Bortom siffror**
+Traditionella finansverktyg visar vad som HÄNT. Causal OS visar vad som HÄNDER och vad som KOMMER ATT HÄNDA — och varför.
+
+**Kausalitet vs korrelation**
+• Korrelation: "När det regnar säljer vi mer paraplyer" (två saker samvarierar)
+• Kausalitet: "Regn ORSAKAR ökad paraplförsäljning" (orsak-verkan)
+Causal OS modellerar orsak-verkan-kedjor, inte bara statistiska mönster.
+
+**Hur ett beslut påverkar hela verksamheten**
+Varje beslut har kaskadeffekter. Exempel: "Vi anställer en säljare":
+• Lönen ökar burn rate (+15 000 SEK/mån)
+• Säljaren förväntas generera X nya kunder om 6 månader
+• Nya kunder genererar MRR
+• MRR förändrar runway
+Causal OS beräknar hela kedjan automatiskt.
+
+**Wavults Causal OS som digital tvilling**
+Causal OS är en digital kopia av bolagets ekonomi. Alla kända parametrar är inlagda. Ändringar i verkligheten uppdaterar modellen.`,
+      },
+      {
+        title: 'Likviditetsmotorn — dag-för-dag',
+        duration: 5,
+        content: `**Likviditetsvyn**
+En tidslinje som visar kassan dag-för-dag under de kommande 12 månaderna.
+
+**Hur man läser vyn**
+• X-axeln = tid (dagar/veckor/månader)
+• Y-axeln = kassan (SEK)
+• Linjen sjunker vid utbetalningar, stiger vid inbetalningar
+
+**Confidence-nivåer**
+Varje kassaflöde är klassificerat:
+• Säkert (grön) — Kontrakterade, bekräftade flöden
+• Sannolikt (gul) — Pipelineaffärer med >70% sannolikhet
+• Spekulativt (orange) — Möjliga men osäkra framtida intäkter
+
+**Varningsnivåer**
+• Gul: Runway under 6 månader — planera nu
+• Orange: Runway under 3 månader — agera nu
+• Röd: Runway under 1 månad — kris
+
+**Runway-begreppet**
+Runway = hur länge kassan räcker till vid nuvarande burn rate.
+Formel: Kassa / Månatlig burn = Runway i månader
+Mål: alltid ha minst 6 månaders runway.`,
+      },
+      {
+        title: 'Scenario Engine — simulera framtiden',
+        duration: 5,
+        content: `**Scenario Engine**
+Skapa parallella versioner av framtiden och jämför dem. Inga konsekvenser i verkligheten — bara i simuleringen.
+
+**Tre grundscenarios**
+• **Basfall** — Realistisk prognos baserad på nuvarande pipeline och kända kostnader
+• **Bull** — Optimistiskt scenario: alla affärer stängs, inga oväntade kostnader
+• **Bear** — Pessimistiskt scenario: inga nya intäkter, oväntade kostnader uppstår
+
+**Hur man drar i reglage**
+Varje variabel (MRR-tillväxt, burn rate, anställningar, churn) har ett reglage. Dra i ett reglage och se effekten i realtid i likviditetsvyn.
+
+**Kausal propagation**
+När du ändrar en variabel beräknar Causal OS automatiskt alla nedströms effekter.
+Exempel: Öka "antal Landvex-kunder" med 5 → systemet beräknar MRR-ökning → beräknar ökad support-kostnad → justerar runway.
+
+**Live preview**
+Alla scenarioändringar visas live utan att du behöver spara. Spara bara det scenario du vill presentera för styrelsen.`,
+      },
+      {
+        title: 'Decision Impact Calculator',
+        duration: 5,
+        content: `**Decision Impact Calculator**
+Ett verktyg för att beräkna den faktiska ekonomiska effekten av ett specifikt beslut innan det fattas.
+
+**Hur det fungerar**
+1. Välj ett beslut från listan (eller skapa ett eget)
+2. Fyll i parametrar (kostnad, förväntad effekt, tidshorisont)
+3. Systemet beräknar kausala konsekvenser
+4. Du får en rekommendation: "Genomförbar nu / Inte genomförbar / Genomförbar om X"
+
+**Exempelbeslut**
+• Anställ en fältsäljare: +15 000 SEK/mån kostnad, förväntat +3 kunder/kvartal
+• Dubbla marknadsföringsbudgeten: +20 000 SEK/mån, förväntat +40% leads
+• Köp serverhardware: engångskostnad 50 000 SEK, sparar 5 000 SEK/mån
+
+**Genomförbarhetscheck**
+"Kan vi göra detta nu?" Systemet kontrollerar:
+• Räcker kassan?
+• Finns kapacitet i teamet?
+• Är det i linje med Q2 OKR?
+
+**Side-by-side jämförelse**
+Jämför upp till 3 besluts alternativ bredvid varandra för att välja det optimala.`,
+      },
+      {
+        title: 'Systemvarningar — lyssna på systemet',
+        duration: 4,
+        content: `**Causal OS genererar automatiska varningar**
+När modellen detekterar ett potentiellt problem skickas en varning — innan det är ett akut problem.
+
+**Varningsnivåer**
+
+• **Info (blå)** — Notera detta. Ingen omedelbar åtgärd krävs. Exempel: "Runway sjunker mot 8 månader"
+
+• **Warning (gul)** — Uppmärksamhet krävs. Planera en åtgärd. Exempel: "Runway under 6 månader om ingen ny intäkt inom 60 dagar"
+
+• **Critical (röd)** — Agera nu. Eskalera till Erik omedelbart. Exempel: "Runway under 3 månader"
+
+**Suggested Actions**
+Varje varning innehåller förslag på åtgärder:
+• Reducera burn rate (vilka kostnader kan skäras?)
+• Accelerera intäkter (vilka affärer kan stängas snabbare?)
+• Kapitalanskaffning (är det dags att söka bridge-finansiering?)
+
+**Bernt integreras med Causal OS**
+Bernt prenumererar på Causal OS-varningar och kan proaktivt meddela teamet via Telegram när en kritisk tröskel nås — utan att någon manuellt behöver kolla dashboarden.`,
+      },
+    ],
+  },
+
+  // ── Infrastructure & Drift ──────────────────────────────────────────────────
+  {
+    id: 'infrastructure-course',
+    title: 'Infrastructure & Drift',
+    description: 'Infrastructure Operations Center, larmhantering, failover, fakturering och underhållsrutiner.',
+    icon: '🖥️',
+    color: '#64748B',
+    lessons: [
+      {
+        title: 'Infrastructure Operations Center — översikt',
+        duration: 4,
+        content: `**Infrastructure Operations Center (IOC)**
+Finns under Infrastructure-fliken i Wavult OS. Realtidsvy av all teknisk infrastruktur.
+
+**Vad modulen visar**
+• Status för varje registrerad tjänst (grön/gul/röd)
+• CPU, minne och lagring per service
+• Uptime-statistik och incidenthistorik
+• Deployment-logg (vad deployades, när, av vem)
+
+**15 registrerade tjänster**
+Inkluderar: wavult-os-api, quixzoom-api, n8n, supabase, cloudflare-pages, team-pulse, och mer. Varje tjänst har ett referensnummer (WG-TECH-2026-XXX).
+
+**Kritikalitetsnivåer**
+• Nivå 1 (Kritisk): Tjänsten påverkar intäkter eller kundleverans. Kräver omedelbar åtgärd vid fel.
+• Nivå 2 (Viktig): Påverkar intern drift men inte kundleverans. Åtgärdas inom 4 timmar.
+• Nivå 3 (Nice-to-have): Påverkar inte drift. Kan vänta till nästa arbetspass.
+
+**Johan är primär ägare**
+Alla infrastrukturfrågor eskaleras till Johan i första hand.`,
+      },
+      {
+        title: 'Larmhantering — vad gör du när något är rött',
+        duration: 5,
+        content: `**Incidentnivåer**
+
+• **P0** — Kritisk: Produktion nere, kunder påverkade. Eskalera till Johan OCH Erik omedelbart (Telegram + ring).
+
+• **P1** — Allvarlig: Degraderad funktionalitet, kunder potentiellt påverkade. Johan åtgärdar inom 1 timme.
+
+• **P2** — Varning: Ej kritisk men behöver åtgärd. Löses i nästa arbetspass.
+
+• **P3** — Info: Notera och dokumentera. Åtgärdas vid nästa planerat underhåll.
+
+**Eskaleringskedja**
+Johan (primär) → Erik (eskalering vid P0) → Dennis (vid juridiska konsekvenser) → Winston (vid finansiella konsekvenser)
+
+**Hur man kvitterar ett larm**
+1. Öppna larmet i IOC
+2. Klicka "Acknowledge" — larmet är nu känt
+3. Tilldela ägare och estimerad lösningstid
+4. Uppdatera status allteftersom
+
+**Post-mortem vid P0**
+Alla P0-incidenter KRÄVER ett skrivet post-mortem inom 48 timmar:
+• Vad hände?
+• Varför hände det (root cause)?
+• Vad gör vi för att det inte händer igen?`,
+      },
+      {
+        title: 'Failover — vad händer om en tjänst faller',
+        duration: 4,
+        content: `**Wavults redundansstrategi**
+Vi bygger system som klarar fel utan manuell intervention — men vi behöver förstå hur.
+
+**ECS Auto-restart**
+AWS Elastic Container Service (ECS) overvakar alla containerbaserade tjänster med health checks.
+• Health check misslyckas 3 gånger i rad → ECS startar om containern automatiskt
+• Typisk återhämtningstid: 30-60 sekunder
+• Ingen manuell åtgärd krävs för transienta fel
+
+**S3 Cross-Region Replication (CRR)**
+All data i S3 replikeras automatiskt till en backup-region.
+• Primär region: eu-north-1 (Stockholm)
+• Backup-region: eu-west-1 (Irland)
+• Om primärregionen faller helt kan vi aktivera backup inom timmar
+
+**RTO och RPO**
+• RTO (Recovery Time Objective): Hur lång tid det tar att återställa service. Mål: < 4 timmar.
+• RPO (Recovery Point Objective): Hur gammal data vi maximalt förlorar. Mål: < 1 timme.
+
+**Varför vi har redundans**
+En enda server som faller = potentiell datakatastrof. Redundans kostar lite extra men skyddar mot katastrofer.`,
+      },
+      {
+        title: 'Betalningar och fakturering för infra',
+        duration: 4,
+        content: `**Infrastrukturkostnader är löpande**
+Alla infra-kostnader betalas med Revolut virtuella kort kopplade till Wavult DevOps FZCO (Dubai).
+
+**Månadsvis fakturering**
+
+• **AWS** — Faktura varje månad baserat på förbrukning. Inkluderar ECS, S3, SES, CloudWatch.
+• **Supabase** — Månatlig prenumeration för databas och auth-tjänster.
+• **Cloudflare** — Domänregistrering och CDN/DNS-tjänster.
+• **GitHub** — Repository-hosting och CI/CD Actions.
+
+**Revolut virtuella kort**
+Vi använder separata virtuella kort per kostnadscenter — ett för AWS, ett för SaaS-tjänster, etc. Detta gör det enkelt att följa upp kostnader per kategori.
+
+**Total infra-kostnad**
+Aktuell total infrastrukturkostnad: 27 840 SEK/år (exkl. skalningskostnader).
+
+**Winstons roll**
+Winston stämmer av infra-fakturor mot budget månadsvis. Johan flaggar oväntade kostnadsökningar.`,
+      },
+      {
+        title: 'Underhåll och uppdateringar',
+        duration: 4,
+        content: `**Löpande underhåll är preventivt arbete**
+Regelbundna uppdateringar förhindrar säkerhetsproblem och teknisk skuld.
+
+**Uppdatera en ECS-service (ny Docker-tag)**
+1. Johan bygger ny Docker-image och pushar till ECR
+2. Image taggas med commit-SHA (ex. v1.2.3-abc1234)
+3. ECS Task Definition uppdateras med ny image-tag
+4. ECS rolling deployment startar — ny version rullas ut utan driftstopp
+5. Health checks bekräftar att nya versionen fungerar
+
+**Cloudflare Pages-deploy**
+Sker automatiskt via GitHub Actions vid push till main-branchen.
+• Push → GitHub Actions bygger → Cloudflare Pages deployas
+• Typisk byggtid: 2-4 minuter
+
+**n8n-uppdatering**
+n8n körs som en ECS-service och uppdateras via Docker-tag-metoden ovan. OBS: testa alltid n8n-workflows efter uppdatering.
+
+**Dependabot-alerts i GitHub**
+GitHub Dependabot skannar dependencies automatiskt och skapar Pull Requests för säkerhetsuppdateringar. Johan reviewar och mergar veckovis.`,
+      },
+    ],
+  },
+
+  // ── Finansiella Begrepp & Facktermer ────────────────────────────────────────
+  {
+    id: 'financial-terms',
+    title: 'Finansiella Begrepp & Facktermer',
+    description: 'SaaS-metriker, unit economics, burn rate, EBITDA, kapitalstruktur och intercompany-grunderna.',
+    icon: '📚',
+    color: '#0EA5E9',
+    lessons: [
+      {
+        title: 'SaaS-metriker: MRR, ARR, Churn',
+        duration: 5,
+        content: `**MRR — Monthly Recurring Revenue**
+Summan av alla aktiva månatliga prenumerationsintäkter. Exempel: 50 kunder betalar 1 000 SEK/mån = MRR 50 000 SEK.
+Inkluderar INTE: engångsbetalningar, setup-avgifter, konsulttimmar.
+
+**ARR — Annual Recurring Revenue**
+ARR = MRR x 12. Annualiserar intäkterna för att ge en mer jämförbar siffra vid investerardiskussioner.
+
+**Churn**
+Andelen kunder (eller MRR) som försvinner per månad.
+• Customer churn: "5% av våra kunder lämnar varje månad"
+• Revenue churn: "3% av vår MRR churnar varje månad"
+
+**Varför churn är viktigare än tillväxt**
+Om du tappar kunder lika snabbt som du vinner dem stannar MRR. Hög churn dödar ett SaaS-bolag trots stark tillväxt.
+
+Formel: Netto MRR-tillväxt = Ny MRR + Expansion MRR – Churn MRR
+
+**Hälsosamma riktmärken (B2B SaaS)**
+• MRR-tillväxt: >10% per månad i tidigt skede
+• Churn: <2% per månad är bra, <5% är acceptabelt`,
+      },
+      {
+        title: 'CAC, LTV och unit economics',
+        duration: 5,
+        content: `**CAC — Customer Acquisition Cost**
+Total kostnad för att förvärva en ny kund.
+Formel: Total sälj- och marknadsföringskostnad / Antal nya kunder under perioden
+Exempel: Vi spenderar 100 000 SEK på sälj och vinner 10 kunder = CAC 10 000 SEK
+
+**LTV — Lifetime Value**
+Total intäkt från en kund under hela relationen.
+Formel: Genomsnittlig MRR per kund / Churn rate
+Exempel: Kund betalar 2 000 SEK/mån, churn 2%/mån = LTV 100 000 SEK
+
+**LTV/CAC-kvoten**
+Nyckeltal för hälsosam unit economics:
+• LTV/CAC > 3: Hälsosamt — för varje SEK vi spenderar på sälj tjänar vi 3 SEK
+• LTV/CAC < 1: Katastrofalt — vi förlorar pengar på varje kund
+• Mål för Wavult: LTV/CAC > 3 vid slutet av 2026
+
+**Hur Wavult beräknar detta per produkt**
+Landvex och QuiXzoom beräknas separat — de har olika CAC (Landvex är dyrare att sälja) och olika LTV (Landvex har längre kundrelationer).`,
+      },
+      {
+        title: 'Burn rate, runway och break-even',
+        duration: 5,
+        content: `**Burn rate**
+Netto kassautflöde per månad — hur mycket pengar vi "bränner" (spenderar mer än vi tjänar).
+Formel: Totala utbetalningar – Totala inbetalningar per månad
+Exempel: Vi spenderar 200 000 SEK och tjänar 50 000 SEK = Burn rate 150 000 SEK/mån
+
+**Gross burn vs Net burn**
+• Gross burn: Totala kostnader (oavsett intäkter)
+• Net burn: Kostnader minus intäkter (vad vi faktiskt förlorar)
+
+**Runway**
+Hur länge kassan räcker vid nuvarande burn rate.
+Formel: Kassa i banken / Månatlig net burn = Runway i månader
+Exempel: 900 000 SEK kassa / 150 000 SEK/mån = 6 månaders runway
+
+**Break-even**
+Punkten när intäkter täcker kostnader — net burn = 0.
+Mål för Wavult: Break-even vid ca 50 betalande Landvex-kunder (estimat).
+
+**Varför startup-bolag fokuserar på runway**
+Runway är livsnerven. Tar pengarna slut innan intäkterna kickar in är det game over. Förvalta runway med respekt.`,
+      },
+      {
+        title: 'Marginal, EBITDA och rörelseresultat',
+        duration: 5,
+        content: `**Bruttomarginal**
+Formel: (Intäkt – COGS) / Intäkt x 100 = Bruttomarginal %
+COGS = direkt kostnad för att leverera tjänsten (hosting, transaktionsavgifter, support)
+Hälsosam SaaS-bruttomarginal: 70-85%
+
+**Rörelseresultat (EBIT)**
+EBIT = Earnings Before Interest and Taxes
+= Intäkter – Alla rörelsekostnader (COGS + OpEx)
+Visar hur lönsam den operativa verksamheten är, innan finanskostnader och skatt.
+
+**EBITDA**
+EBITDA = Earnings Before Interest, Taxes, Depreciation, and Amortization
+= EBIT + Avskrivningar
+Vanligt mått vid bolagsvärdering. Eliminerar effekten av finansieringsstruktur och redovisningsval.
+
+**Varför investerare fokuserar på EBITDA**
+EBITDA är ett proxy för kassagenerering — hur mycket kontanter verksamheten genererar från sin kärnverksamhet. Jämförbart mellan bolag med olika skuldsättning.
+
+**Wavults situation**
+Negativ EBITDA i dag (pre-revenue). Målet är positiv EBITDA 12 månader efter intäktsstart.`,
+      },
+      {
+        title: 'Kapitalstruktur och equity',
+        duration: 5,
+        content: `**Kapitalstruktur**
+Hur ett bolag finansieras: mix av eget kapital (equity) och skuld (debt).
+
+**Equity (eget kapital)**
+Ägarnas andel i bolaget. Representeras av aktier.
+• Fördel: Inga återbetalningskrav
+• Nackdel: Ägarandelen späds ut (dilution) vid ny emission
+
+**Skuld (debt)**
+Lån som ska återbetalas med ränta.
+• Fördel: Ingen dilution
+• Nackdel: Kräver kassaflöde för amortering och ränta
+
+**Dilution**
+När nya aktier emitteras späds befintliga ägares procentuella andel ut. Exempel: Du äger 20% av 1 000 aktier = 200 aktier. Bolaget emitterar 1 000 nya aktier → du äger nu 200 av 2 000 = 10%.
+
+**Pre-money vs post-money valuation**
+• Pre-money: Bolagets värde INNAN ny investering
+• Post-money: Pre-money + Investerat belopp
+Exempel: Pre-money 10M SEK, investering 2M SEK = Post-money 12M SEK, investeraren äger 2/12 = 16,7%
+
+**Wavults Dubai-struktur**
+IP och equity samlat i Dubai-holdingen. Dotterbolagen äger ingen IP. Vid en exit säljs holdingen.`,
+      },
+      {
+        title: 'Intercompany och transfer pricing — grunderna',
+        duration: 5,
+        content: `**Intercompany-transaktioner**
+Affärshändelser mellan bolag inom samma koncern.
+Exempel: Wavult DevOps FZCO (Dubai) licensierar IP till Landvex AB (Sverige) och tar betalt för det.
+
+**Arm's length-principen**
+Prissättningen mellan koncernbolag ska vara densamma som om de vore oberoende parter på marknaden. Du kan inte sätta priser godtyckligt för att minimera skatt.
+
+**Transfer pricing-dokumentation**
+Skattemyndigheter kräver dokumentation som visar att intercompany-priser följer arm's length.
+Dennis och Winston ansvarar för denna dokumentation i Wavult Group.
+
+**Varför transfer pricing-dokumentation krävs**
+Utan dokumentation kan skattemyndigheten (Skatteverket, DMCC, HMRC) omvärdera priserna och kräva mer skatt + ränta + sanktioner.
+
+**Vad som händer vid brister**
+• Påslag av skatt retroaktivt
+• Ränta och böter
+• I allvarliga fall: kriminellt ansvar för företagsledningen
+
+**Vår approach**
+Alla intercompany-flöden dokumenteras löpande. Årsvis review med extern skatterådgivare. Dennis äger processen.`,
+      },
+    ],
+  },
+
+  // ── Juridiska & Affärsmässiga Begrepp ──────────────────────────────────────
+  {
+    id: 'legal-terms',
+    title: 'Juridiska & Affärsmässiga Begrepp',
+    description: 'Bolagsformer, avtalstyper, GDPR, LOU, immateriella rättigheter och investerartermer.',
+    icon: '📜',
+    color: '#EF4444',
+    lessons: [
+      {
+        title: 'Bolagsformer globalt: LLC, UAB, FZCO, AB',
+        duration: 5,
+        content: `**Varför vi har olika bolagsformer**
+Olika jurisdiktioner, olika skattemässiga behandling, olika ägarkrav. Wavult Group är globalt strukturerat för optimal flexibilitet.
+
+**LLC — Limited Liability Company (USA)**
+Pass-through-beskattning: vinster beskattas hos ägarna, inte bolaget (undviker dubbelbeskattning).
+Enkel administration. Används i Texas.
+
+**C-Corp (USA)**
+Dubbelbeskattning: bolaget betalar bolagsskatt, sedan betalar ägarna skatt på utdelning.
+Föredras av VC-investerare. Wavult använder inte C-Corp just nu.
+
+**UAB (Litauen)**
+Litauisk variant av limited liability company. Låg bolagsskatt (15%). Bra EU-tillgång.
+
+**FZCO — Free Zone Company (Dubai)**
+Bolagsform i Dubais fri-zoner (ex. DMCC). 0% bolagsskatt. 100% utländskt ägande tillåtet.
+Wavults primärt holding- och IP-bolag.
+
+**AB — Aktiebolag (Sverige)**
+Standardform för svenska bolag. 20,6% bolagsskatt. Strikt Bolagsverket-reglering.
+Landvex AB och QuiXzoom AB är svenska AB.`,
+      },
+      {
+        title: 'Avtal: SHA, MSA, DPA, IP-licens',
+        duration: 5,
+        content: `**De fyra viktigaste avtalstyperna i Wavult**
+
+**SHA — Shareholders Agreement (Ägaravtal)**
+Reglerar relationen mellan ägare/aktieägare.
+Täcker: vinstdelning, rösträtt, drag-along (majority kan tvinga minority att sälja), tag-along (minority kan följa med vid försäljning), vesting.
+Förändras bara med unanimitet.
+
+**MSA — Management Services Agreement**
+Avtal om tjänsteleverans — typiskt från holding till dotterbolag.
+Wavults Dubai-bolag levererar "management services" (strategi, IP, infra) till dotterbolagen mot en fee.
+Grunden för intercompany-fakturering.
+
+**DPA — Data Processing Agreement**
+GDPR-krav. Krävs när ett bolag (processor) behandlar personuppgifter på uppdrag av ett annat (controller).
+Wavult måste ha DPA med leverantörer som hanterar kunddata (Supabase, AWS, etc.).
+
+**IP-licensavtal**
+Reglerar rätten att använda immateriella rättigheter som ägs av ett bolag.
+Dubai-holdingen äger all IP. Dotterbolagen licensierar rätten att använda IP mot en licensavgift.`,
+      },
+      {
+        title: 'GDPR-begrepp: controller, processor, DPO',
+        duration: 5,
+        content: `**GDPR — General Data Protection Regulation**
+EU:s dataskyddsförordning. Gäller alla bolag som behandlar personuppgifter om EU-medborgare.
+
+**Personuppgiftsansvarig (Controller)**
+Bestämmer VARFÖR och HUR personuppgifter behandlas.
+Wavult Group är controller för zoomer-data och kunddata.
+Ansvarig: Dennis (och ytterst Erik).
+
+**Personuppgiftsbiträde (Processor)**
+Behandlar personuppgifter på uppdrag av en controller.
+Supabase är vår processor (hostar data). AWS är processor (kör infrastruktur).
+Kräver DPA-avtal med varje processor.
+
+**DPO — Dataskyddsombud**
+Krävs inte alltid men rekommenderas. Övervakar GDPR-compliance internt.
+Wavult har Dennis i en quasi-DPO-roll.
+
+**Rättslig grund**
+Personuppgiftsbehandling kräver en av sex rättsliga grunder:
+• Samtycke — användaren godkänner
+• Avtal — nödvändigt för avtalsuppfyllelse
+• Berättigat intresse — vi har ett legitimt skäl
+
+**Rätt till radering**
+Individer kan begära att deras data raderas ("rätten att bli glömd"). Vi måste kunna efterleva detta inom 30 dagar.`,
+      },
+      {
+        title: 'LOU och offentlig upphandling',
+        duration: 5,
+        content: `**LOU — Lagen om offentlig upphandling**
+Reglerar hur offentliga aktörer (kommuner, regioner, statliga myndigheter) köper varor och tjänster.
+Grundprincipen: transparens, icke-diskriminering, konkurrens.
+
+**Direktupphandling**
+Under en viss gräns kan kommunen köpa utan upphandlingsprocess.
+Gräns: 700 000 SEK per år (2024-nivå).
+Möjlighet: Landvex kan sälja direkt till kommuner under gränsen — snabbare säljcykel.
+
+**Förenklad upphandling**
+Mellan direktupphandlingsgränsen och EU-tröskelvärdena. Enklare process, kortare tid.
+
+**Öppen upphandling**
+Över EU-tröskelvärdena (ca 7 MSEK för varor/tjänster). Fullt upphandlingsförfarande med annonsering, anbud och utvärdering. Tar 6-18 månader.
+
+**Hur Landvex navigerar LOU**
+• Primär strategi: Direktupphandling (snabbast, under 700k SEK/år)
+• Sekundär strategi: Förenklad upphandling via befintliga ramavtal
+• Vi hjälper kommuner formulera kravspecifikationer för att säkerställa att Landvex passar upphandlingen
+
+**Viktigt**
+Fråga Dennis om det finns LOU-frågor. Felaktig rådgivning kan leda till att kommunen måste avbryta en upphandling.`,
+      },
+      {
+        title: 'Immateriella rättigheter: patent, varumärke, upphovsrätt',
+        duration: 5,
+        content: `**Fyra typer av immateriella rättigheter**
+
+**Patent**
+Skyddar uppfinningar och tekniska lösningar.
+• Kräver ansökan och godkännande
+• Tidsbegränsat (20 år)
+• Ger exklusiv rätt att kommersialisera uppfinningen
+• Wavult har inga patent just nu men AI-algoritmerna kan bli patenterbara
+
+**Varumärke**
+Skyddar namn, logotyper och kännetecken.
+• Registreras per klass och jurisdiktion
+• QuiXzoom, Landvex, Wavult Group är skyddsvärda varumärken
+• Dennis hanterar varumärkesregistrering
+
+**Upphovsrätt**
+Uppstår automatiskt vid skapande av kod, text, bilder.
+• Ingen registrering krävs
+• All kod Johan skriver ägs av Wavult Group (via anställningsavtal)
+• Skyddstid: 70 år efter upphovsmannens död
+
+**Trade secret**
+Konfidentiell information som ger konkurrensfördel.
+• Skyddas via sekretessavtal (NDA)
+• Exempel: Landvex algoritmer, Zoomer-nätverksdata
+
+**Wavults IP i Dubai**
+All IP ägs centralt av holdingbolaget i Dubai. Dotterbolagen har licens att använda IP. Vid en exit säljs holdingen — med all IP.`,
+      },
+      {
+        title: 'Due diligence och investerartermer',
+        duration: 5,
+        content: `**Due diligence**
+Grundlig granskning som en investerare gör innan de investerar. Täcker: juridik, finans, teknik, team, marknad.
+Wavult måste vara redo för due diligence — alla avtal klara, böcker i ordning.
+
+**Term sheet**
+Icke-bindande dokument som sammanfattar villkoren för en investering:
+• Värdering (pre-money)
+• Investeringsbelopp
+• Typ av aktier (ordinary vs preferred)
+• Styrelserepresentation
+• Anti-dilution-klausuler
+
+**Cap table (Capitalization table)**
+Tabell som visar alla ägare och deras andelar. Inkluderar grundare, investerare, optionspool.
+Winston och Dennis underhåller Wavults cap table.
+
+**Dilution**
+Se Kapitalstruktur-kursen. Varje ny aktieemission späder ut befintliga ägare.
+
+**Pro rata**
+Befintliga investerares rätt att delta i framtida investeringsrundor pro rata (i proportion till sin ägarandel) för att undvika dilution.
+
+**Vesting och cliff**
+Vesting: Grundare "tjänar ihop" sina aktier över tid (ex. 4 år).
+Cliff: Ingen aktie innan ett minimum av tid (ex. 1 år) — skyddar mot att en grundare hoppar av tidigt.`,
+      },
+    ],
+  },
+
+  // ── Tech-termer för Icke-tekniker ───────────────────────────────────────────
+  {
+    id: 'tech-terms',
+    title: 'Tech-termer för Icke-tekniker',
+    description: 'API, cloud, databaser, CI/CD, säkerhetsbegrepp och skalbarhet — förklarat utan jargong.',
+    icon: '💻',
+    color: '#6366F1',
+    lessons: [
+      {
+        title: 'API, REST och webhooks — vad det faktiskt är',
+        duration: 5,
+        content: `**API — Application Programming Interface**
+En programmatisk ingångspunkt: ett sätt för ett program att prata med ett annat.
+Tänk det som en meny på en restaurang — du vet vad du kan beställa, men behöver inte veta hur köket fungerar.
+
+**REST-API**
+REST = Representational State Transfer. En arkitekturstil för hur API:er byggs.
+De flesta moderna API:er är REST-baserade. De använder HTTP-metoder:
+• GET — hämta data
+• POST — skapa ny data
+• PUT/PATCH — uppdatera data
+• DELETE — radera data
+
+**Webhook**
+"Ring mig när något händer."
+Istället för att du frågar ett system varje sekund (polling) skickar systemet dig ett meddelande när något händer.
+Exempel: Stripe skickar en webhook till vår server när en betalning lyckas → vi aktiverar kundkontot automatiskt.
+
+**Varför Landvex kan integreras mot kommuner**
+Kommuner har egna IT-system (trafikledning, fastighetshantering). Via API:er kan Landvex skicka larm direkt in i kommunens system — utan manuell hantering.`,
+      },
+      {
+        title: 'Cloud och infrastruktur-begrepp',
+        duration: 5,
+        content: `**Server vs Cloud**
+Traditionell server: en fysisk maskin du äger och underhåller.
+Cloud: computing-kapacitet du hyr on-demand. Skalbart, flexibelt, ingen hårdvarukostnad.
+
+**IaaS / PaaS / SaaS**
+• IaaS (Infrastructure as a Service): Du hyr servrar och nätverk. Du installerar allt själv. (Ex: AWS EC2)
+• PaaS (Platform as a Service): Plattform är förberedd, du deployer kod. (Ex: Heroku, Cloudflare Pages)
+• SaaS (Software as a Service): Färdig applikation du prenumererar på. (Ex: Slack, Wavult OS)
+
+**Container vs VM**
+• VM (Virtual Machine): En hel dator i en dator. Tung att starta, isolerad.
+• Container: Lättviktspaket med kod och dependencies. Startar på sekunder. (Docker)
+Wavult kör allt i containers via AWS ECS.
+
+**Serverless**
+Kod som körs utan att du hanterar servrar. Betala per exekvering, inte per timme.
+Vi använder serverless för enklare automatiseringsuppgifter.
+
+**Region och Availability Zone**
+• Region: Geografisk plats för datacenter (ex. eu-north-1 = Stockholm)
+• Availability Zone: Separat datacenter inom en region. Vi kör i minst 2 AZ:er för redundans.`,
+      },
+      {
+        title: 'Databas-begrepp: SQL, NoSQL, realtid',
+        duration: 5,
+        content: `**Relationsdatabas (SQL)**
+Data lagras i tabeller med rader och kolumner — som ett Excel-ark, men kraftfullare.
+Relationer mellan tabeller (ex. "Kund" kopplas till "Order").
+SQL = Structured Query Language — språket för att hämta och manipulera data.
+
+**NoSQL**
+Icke-relationell databas. Data lagras som dokument, nyckel-värde-par eller grafer.
+Flexibelt schema, snabbt för enkla queries. Bra för ostrukturerad data.
+
+**SQL-frågor — det grundläggande**
+SELECT * FROM kunder WHERE stad = "Stockholm" — hämta alla kunder i Stockholm.
+INSERT, UPDATE, DELETE — skapa, uppdatera, radera data.
+
+**Index**
+En databas-index gör queries snabbare — som ett register i en bok.
+Utan index måste databasen läsa varje rad. Med index hoppar den direkt till rätt ställe.
+
+**Row Level Security (RLS)**
+Säkerhetslager i databasen: du ser bara rader du har behörighet till.
+Wavult använder RLS i Supabase — en kund ser bara sin egen data, aldrig andras.
+
+**Realtidsprenumerationer**
+Supabase kan skicka uppdateringar i realtid till klienten när data ändras — utan att klienten behöver fråga.`,
+      },
+      {
+        title: 'CI/CD och DevOps för icke-tekniker',
+        duration: 5,
+        content: `**CI/CD — Continuous Integration / Continuous Deployment**
+Automatiserad pipeline från kod till produktion. Minskar mänskliga fel och snabbar upp leverans.
+
+**Vad som händer när Johan pushar kod**
+1. Johan skriver kod, commitar och pushar till GitHub
+2. GitHub Actions triggas automatiskt (CI-steget)
+3. Automatiska tester körs — hittas fel: pipeline avbryts, Johan får notis
+4. Koden byggs till en Docker-image
+5. Image deployas till AWS ECS (CD-steget)
+6. Health checks bekräftar att nya versionen fungerar
+7. Gammal version ersätts med ny — utan driftstopp
+
+**Health check**
+Automatisk kontroll av att en tjänst fungerar. "Svarar du på /health? Bra. Svarar du inte? Starta om."
+
+**Rollback**
+Om en ny version har buggar kan vi snabbt byta tillbaka till föregående version. ECS-historik bevarar gamla versioner.
+
+**Varför automatisering minskar mänskliga fel**
+Manuell deployment kräver att rätt person gör rätt saker i rätt ordning. Automatisering gör samma sak varje gång — deterministiskt och reproducerbart.`,
+      },
+      {
+        title: 'Säkerhetsbegrepp: JWT, HTTPS, 2FA, RLS',
+        duration: 5,
+        content: `**JWT — JSON Web Token**
+En token som bevisar din identitet.
+När du loggar in får du ett JWT. Det innehåller (krypterat): vem du är, vilka rättigheter du har, när token upphör.
+Du skickar JWT med varje API-request — servern verifierar den utan att fråga databasen varje gång.
+
+**HTTPS**
+HTTP + kryptering (TLS).
+All trafik mellan din browser och servern är krypterad. Ingen i mitten kan läsa vad som skickas.
+Alla Wavults tjänster kör HTTPS. Aldrig HTTP i produktion.
+
+**2FA — Tvåfaktorsautentisering**
+Inloggning kräver två bevis på identitet:
+• Något du vet (lösenord)
+• Något du har (SMS-kod, autentisieringsapp, hardware-key)
+Wavults admin-gränssnitt kräver 2FA för alla. Inga undantag.
+
+**RLS — Row Level Security**
+Databassäkerhet: varje rad i databasen är skyddad med regler.
+Exempel: "En kund får bara se sina egna ärenden." Även om ett API-anrop försöker hämta annan kunds data — RLS blockerar det på databasnivå.`,
+      },
+      {
+        title: 'Skalbarhet och prestanda',
+        duration: 5,
+        content: `**Skalbarhet**
+Förmågan att hantera ökad belastning utan att systemet kraschar eller saktar ner.
+
+**Horisontell skalning**
+Lägg till fler servrar (instanser) för att fördela belastningen.
+Wavult kör ECS-tjänster med auto-scaling: om CPU > 70% startar AWS automatiskt fler containrar.
+
+**Vertikal skalning**
+Uppgradera en server till kraftigare hårdvara (mer CPU, mer RAM).
+Enkelt men har ett tak — du kan inte ha en oändligt stor server.
+
+**Latency vs Throughput**
+• Latency: Tid för en request att få svar (millisekunder). Låg latency = snabb respons.
+• Throughput: Antal requests systemet kan hantera per sekund. Högt throughput = kapacitet.
+
+**CDN — Content Delivery Network**
+Distribuerar statiska filer (bilder, JS, CSS) från servrar nära slutanvändaren.
+Wavult använder Cloudflare som CDN. En kund i Göteborg hämtar filer från Cloudflares Stockholm-nod, inte från vår origin-server.
+
+**Caching**
+Spara resultatet av en tung operation för att svara snabbt nästa gång.
+Exempel: En databas-query som tar 200ms cachas i Redis — nästa anrop svarar på 1ms.
+
+**Wavults arkitektur och 100x-design**
+Vi designar för att klara 100x mer trafik utan ombyggnad. Det kostar lite mer nu men undviker katastrofala omskrivningar när vi växer.`,
+      },
+    ],
+  },
+
+  // ── Code of Conduct & Företagspolicies ─────────────────────────────────────
+  {
+    id: 'code-of-conduct',
+    title: 'Code of Conduct & Företagspolicies',
+    description: 'Beteendekod, kommunikationspolicy, GDPR i vardagen, expenses, intressekonflikt och IP-äganderätt.',
+    icon: '🏛️',
+    color: '#DC2626',
+    lessons: [
+      {
+        title: 'Code of Conduct — Wavults beteendekod',
+        duration: 5,
+        content: `**Varför det finns**
+En Code of Conduct (CoC) sätter tydliga förväntningar på beteende. Det skyddar individer, bolaget och kulturen.
+
+**Vad det täcker**
+• Respekt: Behandla alla kollegor, kunder och partners med respekt oavsett bakgrund, roll eller åsikt
+• Ärlighet: Kommunicera sanningsenligt. Inga dolda agendor, inga halvsanningar.
+• Ägandeskap: Ta ansvar för dina uppgifter. Inga fingerpekar, inga bortförklaringar.
+
+**Vad som är oacceptabelt**
+• Diskriminering baserad på kön, etnicitet, religion, sexuell läggning, ålder eller funktionsförmåga
+• Trakasserier (inklusive subtil underminerande av kollegor)
+• Oärlighet mot kunder, partners eller kollegor
+• Missbruk av bolagets resurser (tid, pengar, data)
+
+**Rapporteringsvägar**
+Upplever du brott mot CoC: rapportera till Erik eller Dennis direkt. Anonymitet respekteras i möjligaste mån.
+
+**Konsekvenser**
+Varning → formell reprimand → avslutad samarbetsrelation. Allvarliga brott (diskriminering, bedrägeri) leder till omedelbar avslutning.`,
+      },
+      {
+        title: 'Kommunikationspolicy — vem pratar med vem',
+        duration: 4,
+        content: `**Intern kommunikation**
+Fritt och öppet — men respektfullt. Telegram för löpande dialog, Wavult OS för strukturerad information.
+
+**Extern kommunikation**
+Mer reglerad. Wavult Group kommunicerar med en röst utåt.
+
+**Vem får uttala sig till media?**
+Bara Erik. Ingen annan i teamet pratar med journalister, podcasts, branschmedia eller investerare utan Eriks explicita godkännande.
+
+**Social media-regler för anställda**
+• OK: Dela generell kunskap om branschen, din yrkesroll, din personliga utveckling
+• OK: Nämna att du jobbar på Wavult/QuiXzoom/Landvex
+• INTE OK: Dela icke-offentlig information om produkter, kunder eller strategi
+• INTE OK: Kritisera bolaget, kollegor eller kunder offentligt
+
+**Vad man inte delar offentligt om Wavult**
+• Finansiell information
+• Pågående upphandlingar eller partnerskapsförhandlingar
+• Intern strategi eller produktroadmap
+• Information om team-konflikter eller interna processer`,
+      },
+      {
+        title: 'Dataskydd i vardagen — praktisk GDPR',
+        duration: 5,
+        content: `**GDPR i din vardag**
+GDPR är inte bara ett juridiskt dokument — det påverkar hur vi hanterar information varje dag.
+
+**Vad du INTE skickar på Telegram**
+• Lösenord eller access tokens (använd Wavult OS Secrets-modulen)
+• Kunddata (namn + e-post + telefon = personuppgifter)
+• Känslig intern information som kan identifiera individer
+
+**Vad som kräver kryptering**
+• Filer med personuppgifter (zoomer-data, kundregister) ska krypteras vid överföring och lagring
+• E-postbilagor med personuppgifter ska skickas krypterat eller via säker delning
+
+**Clean desk policy för remote work**
+• Lämna inte känsliga dokument synliga på skärmen om du sitter på offentlig plats
+• Använd VPN vid arbete på okänt nätverk
+• Lås skärmen när du lämnar datorn (Windows: Win+L, Mac: Cmd+Ctrl+Q)
+
+**Hur man hanterar en dataincidens**
+Om du misstänker att personuppgifter har läckt eller kommit åt av obehörig:
+1. Meddela Dennis och Erik OMEDELBART
+2. Dokumentera: vad hände, när, vilken data
+3. Dennis hanterar rapportering till Datainspektionen (krav inom 72 timmar)`,
+      },
+      {
+        title: 'Travel & Expense Policy',
+        duration: 4,
+        content: `**Vad som ersätts**
+• Flygbiljetter: Economy class. Business kräver L2-godkännande.
+• Hotell: Rimlig standard (max 1 500 SEK/natt i Stockholm, 2 500 SEK i internationella städer)
+• Måltider: Max 500 SEK/dag vid tjänsteresa (frukost ingår normalt i hotell)
+• Transport: Taxi/Uber vid sen ankomst eller tung packning. Annars kollektivtrafik.
+
+**Vad som INTE ersätts**
+• Alkohol (oavsett om det är på middag med kund)
+• Personliga shopping under resa
+• Uppgradering av flyg eller hotell utan godkännande
+• Familjemedlemmars kostnader
+
+**Godkännandeprocess**
+• Under 1 000 SEK (L1): Godkänn själv, dokumentera med kvitto
+• 1 000 – 10 000 SEK (L2): Godkänns av Leon eller Dennis
+• Över 10 000 SEK (L3): Kräver Eriks godkännande
+
+**Kvitto är obligatoriskt**
+Inga kvitton = ingen ersättning. Ladda upp kvitton i Finance-modulen under Expenses samma dag.
+
+**Rapportering till Winston**
+Winston sammanställer expenses månadsvis och stämmer av mot budget.`,
+      },
+      {
+        title: 'Intressekonflikt och sidointressen',
+        duration: 4,
+        content: `**Vad är en intressekonflikt?**
+En situation där dina privata intressen kan påverka (eller verka påverka) dina beslut i Wavult Group.
+
+**Vad som ska deklareras**
+• Ägande eller styrelsepost i ett bolag som är kund, leverantör eller konkurrent till Wavult
+• Familjemedlem med affärsrelation till Wavult
+• Personlig vinning av ett beslut du är involverad i på Wavult
+
+**Ingen konkurrens utan godkännande**
+Du får inte driva eller ha substantiellt ägande i ett bolag som konkurrerar med QuiXzoom, Landvex eller Quixom Ads — utan Eriks skriftliga godkännande.
+
+**Vad som händer vid ej deklarerad konflikt**
+Om en odeklarerad intressekonflikt upptäcks: formell varning. Vid allvarliga fall (finansiell skada för Wavult): omedelbar avslutning och potentiellt skadeståndskrav.
+
+**Hur man anmäler**
+Kontakta Dennis skriftligt (e-post). Beskriv situationen neutralt. Dennis bedömer om det är en intressekonflikt och hur den hanteras.`,
+      },
+      {
+        title: 'IP och äganderätt till arbete',
+        duration: 5,
+        content: `**Grundregeln**
+Allt du skapar i Wavults tjänst ägs av Wavult Group — via holding-bolaget i Dubai. Det gäller kod, design, affärsidéer, dokument och processer.
+
+**Vad som regleras i ditt avtal**
+Ditt anställnings- eller konsultavtal innehåller en IP-klausul som bekräftar att allt du producerar för Wavult ägs av Wavult. Läs den.
+
+**Vad som gäller för sidoprojekt**
+• Sidoprojekt som INTE konkurrerar med Wavult och som görs på din fritid med egna resurser: du äger det
+• Sidoprojekt som är relaterade till Wavults verksamhetsområde: deklarera till Erik och Dennis innan du börjar
+• Om du använder Wavults resurser (tid, AWS, kod, data) för sidoprojekt: Wavult äger resultatet
+
+**Hur open source-bidrag hanteras**
+Om du vill bidra till ett open source-projekt med kod du skrivit för Wavult: be om skriftligt godkännande från Erik.
+Bidrag till open source-projekt med din privata kod (ej relaterad till Wavult): fritt.
+
+**Varför Dubai-holdingen äger all IP**
+Vid en framtida exit (försäljning av bolaget) säljs holdingen med all IP. Det maximerar värdet och förenklar strukturen för köparen.`,
+      },
+    ],
+  },
+
+  // ── Varumärkesguide & Kommunikation ────────────────────────────────────────
+  {
+    id: 'brand-guide',
+    title: 'Varumärkesguide & Kommunikation',
+    description: 'Varumärkeshierarki, ton och identitet för QuiXzoom och Landvex, förbjudna fraser och kommunikationsstandard.',
+    icon: '🎨',
+    color: '#F97316',
+    lessons: [
+      {
+        title: 'Wavult Groups varumärkeshierarki',
+        duration: 4,
+        content: `**Fyra separata varumärken — ett holding**
+
+**Wavult Group**
+Holding-entiteten. Kommunicerar B-to-investor (investerare, styrelsemedlemmar, media om struktur).
+Ton: professionell, strategisk, koncis. Inte konsumentvänlig.
+
+**QuiXzoom**
+B2C-produkten. Kommunicerar direkt med Zoomers och potentiella Zoomers.
+Ton: ung, fri, lite rebellisk, visuell.
+
+**Landvex**
+Enterprise B2G-produkten. Kommunicerar med kommuner och offentliga aktörer.
+Ton: kompetent, metodisk, seriös, lösningsorienterad.
+
+**Quixom Ads**
+B2B-dataplattformen. Kommunicerar med annonsörer och dataköpare.
+Ton: analytisk, affärsmässig, datadrivet.
+
+**Varför de aldrig blandas**
+Varje varumärke talar till en specifik målgrupp med specifika behov. En Zoomer responderar inte på Landvex-ton. En kommuntjänsteman responderar inte på QuiXzoom-ton. Blandning skadar båda.
+
+**Regel**
+Fråga alltid: "Vilket varumärke är det här?" och kommunicera konsekvent under det varumärket.`,
+      },
+      {
+        title: 'QuiXzoom — ton och identitet',
+        duration: 5,
+        content: `**QuiXzoom-identiteten**
+"Uber Eats möter ett socialt uppdrag." Frihet, rörlighet, tjäna pengar med din smartphone.
+
+**Ton**
+• Ung och energisk — men inte barnslig
+• Lite rebellisk — du äger din tid, du bestämmer när du jobbar
+• Direkt — inga långa meningar, ingen corporate-speak
+• Visuell — bilder och video berättar historien bättre än text
+
+**Aldrig "fotografer" — alltid "Zoomers"**
+"Fotografer" låter som ett yrke som kräver utbildning. "Zoomers" är vem som helst med en smartphone och driv. Viktig distinktion — använd konsekvent.
+
+**Taglines**
+• "See the world. Get paid."
+• "Your lens. Your rules. Your income."
+• "Every street is a job opportunity."
+
+**Förbjudet i QuiXzoom-kommunikation**
+• "Fotograferingsuppdrag" (for formellt)
+• "AI-övervakningssystem" (skrämmer bort Zoomers)
+• Bilderna kallas "foto-data" internt men "uppdrag" externt
+• Aldrig omnämna kopplingen till Landvex (B2G-sidan ska hållas separat)`,
+      },
+      {
+        title: 'Landvex — ton och identitet',
+        duration: 5,
+        content: `**Landvex-identiteten**
+En lösning för offentliga aktörer som vill ha rätt information vid rätt tidpunkt — till rätt kostnad.
+
+**Ton**
+• Kompetent — vi förstår kommuners utmaningar
+• Metodisk — vi har en beprövad process
+• B2G-seriös — kommunala beslutsfattare vill ha fakta, inte hype
+• Lösningsorienterad — fokus på problem vi löser, inte tekniken i sig
+
+**Aldrig "AI-övervakning" — alternativ**
+• "Optisk analys"
+• "Händelsebaserade larm"
+• "Automatisk tillståndskontroll"
+AI-övervakning väcker GDPR-farhågor och politisk motreaktion. Fokusera på vad systemet GÖR, inte hur.
+
+**Kärnbudskapet**
+"Right control. Right cost. Right interval."
+Kommuner betalar i dag för antingen för lite tillsyn (incidenter händer) eller för mycket (dyr personal på plats hela tiden). Landvex hittar optimum.
+
+**Vad kommuner vill höra**
+• Kostnadsbesparingar i kronor och ören
+• Minskad personalbörda
+• Compliance med tillsynskrav
+• Inga tekniska buzzwords — tala kommunalt`,
+      },
+      {
+        title: 'Förbjudna ord och fraser (hela bolaget)',
+        duration: 4,
+        content: `**Ord och fraser vi ALDRIG använder**
+
+• "AI-driven" eller "AI-powered" — Det är tomt. Beskriv istället vad AI:n faktiskt gör.
+  Istället: "Systemet identifierar automatiskt avvikelser i realtid"
+
+• "Fotografer" eller "fältpersonal" — Se QuiXzoom-lektionen. Alltid "Zoomers".
+
+• "Disruptivt" eller "game-changer" — Alla säger det, ingen tror det. Visa istället konkreta resultat.
+  Istället: "Kommuner i piloten sparade i snitt 40% på tillsynskostnader"
+
+• "Vi är glada att kunna meddela" — Passivt och byråkratiskt. Säg bara vad det är.
+  Istället: "QuiXzoom lanseras i Sverige 15 juni."
+
+• "Lösung" (på svenska: solution) som substantiv — "Vi levererar en lösning" säger ingenting.
+  Istället: Beskriv exakt vad du levererar.
+
+**Varför konkret alltid slår abstrakt**
+Abstrakta påståenden ("vi är bäst", "vi är unika") är obevisade. Konkreta påståenden ("50% kostnadsminskning i 3 kommuner") är trovärdiga och minnesvärda.
+
+**Regel**
+Om du kan ersätta en mening med ett konkret faktum — gör det.`,
+      },
+      {
+        title: 'E-postkommunikation — professionell standard',
+        duration: 5,
+        content: `**Ämnesrad-formeln**
+[Bolag/Projekt] — [Vad gäller det] — [Eventuell deadline]
+Exempel: "Landvex — Offertförfrågan Nacka Kommun — Svar önskas 30 mars"
+
+**Cold e-post: max 4 meningar**
+1. Vem du är och varför du skriver
+2. Problemet du löser (ur mottagarens perspektiv)
+3. Hur du löser det
+4. En tydlig call-to-action ("Har du 20 minuter för ett samtal nästa vecka?")
+
+**Hur man följer upp**
+Om inget svar efter 5 dagar: ett kort follow-up-mail. Lägg till nytt värde — en fallstudie, en ny insikt.
+Aldrig: "Bara kollar om du fick mitt förra mail." Det är irriterande.
+
+**Signatur-standard**
+[Namn]
+[Roll], [Bolag]
+[Direktnummer]
+[E-postadress]
+Inget mer. Inga citat, inga långa signaturer.
+
+**Vad som aldrig skickas i e-post**
+• Lösenord eller access tokens — använd Secrets-modulen
+• Personnummer eller känsliga personuppgifter — använd krypterad kanal
+• Konfidentiella avtalstexter till externa parter utan Denniss godkännande`,
+      },
+      {
+        title: 'Social media och extern närvaro',
+        duration: 4,
+        content: `**LinkedIn — Wavult Group-perspektiv**
+Primär kanal för B2B och investerarkommunikation.
+• Posta om: milstolpar (lansering, nya kunder), insikter från branschen, teamets expertis
+• Ton: professionell, strategisk, trovärdig
+• Frekvens: 1-2 inlägg per vecka från bolagssidan
+• Erik är primär röst — personliga inlägg från Erik > bolagsposter
+
+**Instagram/TikTok — QuiXzoom**
+Primär kanal för Zoomer-rekrytering och varumärkesbyggande.
+• Innehåll: visuellt, autentiskt, behind-the-scenes, Zoomer-stories
+• Ton: energisk, fri, inspirerande
+• Format: Reels och Stories dominerar, statiska bilder som komplement
+
+**Vad anställda får posta om Wavult**
+• Din personliga erfarenhet och tillväxt i rollen
+• Generella insikter från arbete i ett startup
+• Glädjeämnen och milstolpar (efter att de offentliggjorts officiellt)
+
+**Vad anställda INTE får posta**
+• Finansiell information
+• Produktplaner som ej offentliggjorts
+• Information om pågående förhandlingar
+
+**Hur man hanterar negativa kommentarer**
+Svara aldrig defensivt offentligt. Om det är en legitim klagomål: "Tack för din feedback, kontakta oss på [e-post] så hjälper vi dig." Eskalera sedan internt.`,
+      },
+    ],
+  },
 ]
 
 type ProgressMap = Record<string, number> // courseId → lessons completed
