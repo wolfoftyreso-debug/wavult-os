@@ -1,978 +1,1118 @@
-// ─── People Intelligence Hub ───────────────────────────────────────────────
-// DISC-profiler, energitracking, beslutsarkitektur & rollrekommendationer
-// Baserad på certified-spark-engine/DISCPlus + Wavult OS teamdata
+// ─── People Intelligence Hub ─────────────────────────────────────────────────
+// Drill-down org-träd: Enterprise → Bolag → Team → Individ
+// 4 lager med animerade transitions och WHOOP-integration
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { useAuth } from '../../shared/auth/AuthContext'
+import { useApi } from '../../shared/auth/useApi'
+import {
+  TEAM_MEMBERS,
+  ENTITIES,
+  MOCK_TASKS,
+  type TeamMember,
+  type Entity,
+} from './peopleData'
 
-// ─── SVG Icons ────────────────────────────────────────────────────────────────
-function BrainIcon() {
-  return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>
-}
-function ZapIcon() {
-  return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-}
-function TargetIcon() {
-  return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-}
-function ShieldIcon() {
-  return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-}
-function AlertIcon() {
-  return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-}
-function CheckIcon() {
-  return <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-}
+// ─── Layer type ───────────────────────────────────────────────────────────────
+type Layer = 'enterprise' | 'entity' | 'team' | 'person'
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-type DiscType = 'D' | 'I' | 'S' | 'C' | 'D/I' | 'C/S' | 'I/S' | 'D/C'
-
-interface DiscScore {
-  D: number
-  I: number
-  S: number
-  C: number
+// ─── WHOOP types ─────────────────────────────────────────────────────────────
+interface WhoopMyData {
+  connected: boolean
+  recovery: { score: number | null; hrv: number | null; restingHr: number | null } | null
+  sleep: { performancePercent: number | null; durationHours: number | null } | null
+  strain: { score: number | null; kilojoules: number | null } | null
+  cached: boolean
 }
 
-interface Responsibility {
-  id: string
-  title: string
-  description: string
-  expectations: string[]
-  tools: string[]
-  collaboratesWith: string[]
-  frequency: 'daily' | 'weekly' | 'monthly' | 'ongoing'
+interface WhoopTeamMember {
+  user_id: string
+  full_name: string | null
+  email: string | null
+  recovery_score: number | null
+  sleep_performance: number | null
+  strain_score: number | null
+  snapshot_at: string | null
 }
 
-interface TeamMember {
-  id: string
-  name: string
-  initials: string
-  role: string
-  discType: DiscType
-  discScore: DiscScore
-  color: string
-  archetypeLabel: string
-  archetypeEmoji: string
-  description: string
-  strengths: string[]
-  watchouts: string[]
-  decisionStyle: string
-  decisionAuthority: string[]
-  idealTasks: string[]
-  responsibilities: Responsibility[]
-  energyLevel: number   // 0-100 (mock)
-  focusScore: number    // 0-100 (mock)
-  currentPriority: string
+interface WhoopTeamData {
+  team: WhoopTeamMember[]
+  total_connected: number
 }
 
-// ─── Team Data (DISC baserad på riktiga profiler) ─────────────────────────────
-
-const TEAM_MEMBERS: TeamMember[] = [
-  {
-    id: 'erik',
-    name: 'Erik Svensson',
-    initials: 'ES',
-    role: 'Group CEO & Chairman',
-    discType: 'D',
-    discScore: { D: 92, I: 65, S: 20, C: 38 },
-    color: '#8B5CF6',
-    archetypeLabel: 'Dominant — Visionären',
-    archetypeEmoji: '⚡',
-    description:
-      'Hög D-profil — drivs av resultat, fattar snabba beslut och trivs med utmaningar. Visionär ledare som sätter riktning med hög hastighet. Risk: kan underinformera teamet vid snabba vändningar.',
-    strengths: [
-      'Strategisk riktning & vision',
-      'Snabba beslut under tryck',
-      'Kapitalallokering & prioritering',
-      'Motiverar team mot mål',
-    ],
-    watchouts: [
-      'Kan gå för snabbt utan att involvera teamet',
-      'Lyssnar inte alltid på detaljer (C-perspektiv)',
-      'Riskerar att skifta fokus för ofta',
-    ],
-    decisionStyle: 'Fattar snabbt, delegerar gärna genomförande. Vill ha slutsatser — inte process.',
-    decisionAuthority: [
-      'Bolagsstruktur (Dubai/EU/US)',
-      'Kapitalallokering & funding',
-      'Produktvision & strategisk riktning',
-      'Partnerships & externa relationer',
-      'Go/no-go på nya ventures',
-    ],
-    idealTasks: [
-      'Strategimöten & pitches',
-      'Investerarrelationer',
-      'Produktriktning & roadmap',
-      'Godkänna stora beslut',
-      'Teamvision & inspiration',
-    ],
-    responsibilities: [
-      {
-        id: 'erik-strategy',
-        title: 'Strategisk riktning & vision',
-        description: 'Sätter den övergripande riktningen för Wavult Group — vilka marknader vi går in i, vilka produkter vi bygger och i vilken ordning. Ansvarar för att hela organisationen rör sig mot samma mål.',
-        expectations: ['Kvartalsvis strategirevision med teamet', 'Tydlig product roadmap per bolag', 'Go/no-go-beslut inom 48h', 'Kommunicera pivots till teamet omedelbart'],
-        tools: ['Wavult OS Strategy', 'Milestones', 'Morning Brief'],
-        collaboratesWith: ['LR', 'DB', 'WB', 'JB'],
-        frequency: 'ongoing',
-      },
-      {
-        id: 'erik-capital',
-        title: 'Kapitalallokering & funding',
-        description: 'Bestämmer hur kapital fördelas mellan bolag, produkter och team. Ansvarar för externa relationer med investerare och finansiärer. Tar slutbeslut om stora utgifter.',
-        expectations: ['Månadsvis P&L-genomgång med Winston', 'Budget-godkännanden >50k SEK', 'Investor updates kvartalsvis', 'Intercompany-flöden optimerade'],
-        tools: ['Finance Hub', 'Wavult OS', 'Revolut Business'],
-        collaboratesWith: ['WB', 'DB'],
-        frequency: 'monthly',
-      },
-      {
-        id: 'erik-partnerships',
-        title: 'Partnerships & externa relationer',
-        description: 'Representerar Wavult Group externt mot partners, myndigheter och strategiska kunder. Öppnar dörrar som kräver CEO-nivå. Ansvarar för att NDA:er och LOI:er signeras.',
-        expectations: ['Minst 2 strategiska möten/vecka', 'Pipeline uppdaterad i CRM', 'Alla avtal >100k SEK via Legal'],
-        tools: ['CRM', 'Legal Hub', 'Wavult OS'],
-        collaboratesWith: ['LR', 'DB'],
-        frequency: 'weekly',
-      },
-      {
-        id: 'erik-bolagstruktur',
-        title: 'Bolagsstruktur & expansion',
-        description: 'Driver etableringen av nya juridiska enheter (Dubai FZCO, Texas LLC, Litauisk UAB). Ansvarar för att strukturen är skatteeffektiv och operativt korrekt.',
-        expectations: ['Dubai FZCO klar Q2 2026', 'Texas LLC registrerad', 'Holding-struktur dokumenterad', 'Intercompany-avtal på plats'],
-        tools: ['Legal Hub', 'Entities', 'Wavult OS'],
-        collaboratesWith: ['DB', 'WB'],
-        frequency: 'monthly',
-      },
-    ],
-    energyLevel: 88,
-    focusScore: 82,
-    currentPriority: 'Thailand workcamp + Dubai-struktur',
-  },
-  {
-    id: 'leon',
-    name: 'Leon Russo De Cerame',
-    initials: 'LR',
-    role: 'CEO – Wavult Operations',
-    discType: 'I',
-    discScore: { D: 55, I: 88, S: 45, C: 30 },
-    color: '#F59E0B',
-    archetypeLabel: 'Influential — Säljaren',
-    archetypeEmoji: '🔥',
-    description:
-      'Hög I-profil — drivs av relationer, entusiasm och att påverka andra. Naturlig säljare och kulturbärare. Excellent på att skapa energi och öppna dörrar. Risk: kan missa uppföljning och detaljer.',
-    strengths: [
-      'Relationsbyggande & nätverk',
-      'Sälja in idéer och produkter',
-      'Skapa teamenergi & motivation',
-      'Externa möten & representera bolaget',
-    ],
-    watchouts: [
-      'Uppföljning och dokumentation kan falla bort',
-      'Kan lova för mycket i stunden',
-      'Strukturerade processer är inte naturliga',
-    ],
-    decisionStyle: 'Intuitiv och relationsdriven. Konsulterar folk verbalt, fattar beslut snabbt i rätt social energi.',
-    decisionAuthority: [
-      'Operativ teamkoordination',
-      'Säljstrategi & leads',
-      'Externa partnerskap (operativt)',
-      'Rekrytering av säljprofiler',
-      'Daglig drift & leverans',
-    ],
-    idealTasks: [
-      'Kundmöten & demos',
-      'Sales pipeline management',
-      'Teambuilding & event',
-      'Partnerdialoger',
-      'Rekrytering & onboarding',
-    ],
-    responsibilities: [
-      {
-        id: 'leon-gtm',
-        title: 'Go-to-market & försäljning',
-        description: 'Driver quiXzoom och LandveX mot marknaden. Ansvarar för att leads genereras, demos bokas och affärer stängs. Primär kontakt för nya kunder.',
-        expectations: ['5 kvalificerade leads/vecka', 'Demo-rate >60%', 'Pipeline uppdaterad dagligen i CRM', 'Månadsvis säljrapport till Erik'],
-        tools: ['CRM', 'quiXzoom App', 'Wavult OS'],
-        collaboratesWith: ['ES', 'JB'],
-        frequency: 'daily',
-      },
-      {
-        id: 'leon-ops',
-        title: 'Daglig operativ drift',
-        description: 'Koordinerar det dagliga arbetet i Wavult Operations. Säkerställer att uppdrag levereras, deadlines hålls och teamet vet vad som prioriteras.',
-        expectations: ['Daglig standup med ops-teamet', 'Blockers eskaleras samma dag', 'Milestones uppdaterade veckovis', 'Inga leveranser missas utan varning'],
-        tools: ['Milestones', 'Tasks', 'Wavult OS'],
-        collaboratesWith: ['ES', 'DB', 'WB', 'JB'],
-        frequency: 'daily',
-      },
-      {
-        id: 'leon-team',
-        title: 'Teambuilding & kultur',
-        description: 'Ansvarar för att teamets energi och sammanhållning är hög. Driver onboarding av nya teammedlemmar och säkerställer att kulturen lever.',
-        expectations: ['Thailand workcamp genomfört april 2026', 'WHOOP-data följs upp veckovis', 'En teamaktivitet per månad', 'Ny teammedlem onboardad inom 1 vecka'],
-        tools: ['WHOOP', 'People Intelligence', 'Wavult OS'],
-        collaboratesWith: ['ES', 'DB'],
-        frequency: 'weekly',
-      },
-    ],
-    energyLevel: 91,
-    focusScore: 68,
-    currentPriority: 'QuiXzoom GTM & leads',
-  },
-  {
-    id: 'dennis',
-    name: 'Dennis Bjarnemark',
-    initials: 'DB',
-    role: 'Chief Legal & Operations (Interim)',
-    discType: 'C',
-    discScore: { D: 40, I: 35, S: 55, C: 85 },
-    color: '#10B981',
-    archetypeLabel: 'Conscientious — Analytikern',
-    archetypeEmoji: '⚖️',
-    description:
-      'Hög C-profil — noggrann, systematisk och kvalitetsfokuserad. Legal-hjärnan i teamet. Funderar igenom konsekvenser och undviker risker. Risk: kan bli för försiktig och långsam i tidskritiska situationer.',
-    strengths: [
-      'Legal precision & compliance',
-      'Riskanalys & due diligence',
-      'Process- och systemdesign',
-      'Dokumentation & avtal',
-    ],
-    watchouts: [
-      'Kan dra ut på beslut pga perfektionism',
-      'Diskomfort med otydlighet',
-      'Kan underskatta timing i affärer',
-    ],
-    decisionStyle: 'Datadrivet och metodiskt. Vill ha alla fakta innan beslut. Bra bollplank för komplexa juridiska frågor.',
-    decisionAuthority: [
-      'Legal granskning & avtal',
-      'Compliance & bolagsformaliteter',
-      'Operativa processer & SOP:er',
-      'Riskbedömningar',
-      'Styrelsedokument',
-    ],
-    idealTasks: [
-      'Avtalsgenomgång & förhandling',
-      'Bolagsadmin (Dubai/SE/US)',
-      'Process-dokumentation',
-      'Legal due diligence',
-      'Compliance-checklistor',
-    ],
-    responsibilities: [
-      {
-        id: 'dennis-legal',
-        title: 'Legal granskning & avtal',
-        description: 'Granskar och förhandlar alla juridiska dokument för koncernen. Säkerställer att inga avtal signeras utan legal review. Primär kontakt för externa jurister.',
-        expectations: ['Alla avtal granskade inom 48h', 'Standardmallar för vanliga avtalssituationer', 'NDA-process automatiserad i Wavult OS', 'Noll unsigned compliance-deadlines'],
-        tools: ['Legal Hub', 'Wavult OS', 'Supabase'],
-        collaboratesWith: ['ES', 'WB'],
-        frequency: 'daily',
-      },
-      {
-        id: 'dennis-bolagsadmin',
-        title: 'Bolagsadmin (Dubai/SE/US)',
-        description: 'Hanterar alla formalia för bolagen — registreringar, årsredovisningar, styrelsemöten, aktiebok och bolagsordning. Säkerställer att alla deadlines till Bolagsverket, DIFC och IRS hålls.',
-        expectations: ['Dubai FZCO registrering koordinerad', 'Årsredovisningar inlämnade i tid', 'Styrelseprotokoll dokumenterade', 'Aktiebok uppdaterad'],
-        tools: ['Entities', 'Legal Hub', 'Wavult OS'],
-        collaboratesWith: ['ES', 'WB'],
-        frequency: 'monthly',
-      },
-      {
-        id: 'dennis-processer',
-        title: 'Process- och SOP-dokumentation',
-        description: 'Dokumenterar och standardiserar operativa processer i Wavult OS. Säkerställer att allt som händer en gång kan hanteras av vem som helst nästa gång.',
-        expectations: ['SOP för varje återkommande process', 'Knowledge base uppdaterad', 'Onboarding-checklista för nya medarbetare', 'ISO 27001-förberedelse påbörjad'],
-        tools: ['Knowledge Hub', 'Wavult OS', 'Legal Hub'],
-        collaboratesWith: ['JB', 'ES'],
-        frequency: 'weekly',
-      },
-    ],
-    energyLevel: 72,
-    focusScore: 88,
-    currentPriority: 'Bolagsstruktur Dubai + FZCO',
-  },
-  {
-    id: 'winston',
-    name: 'Winston Bjarnemark',
-    initials: 'WB',
-    role: 'CFO',
-    discType: 'C/S',
-    discScore: { D: 25, I: 30, S: 72, C: 80 },
-    color: '#3B82F6',
-    archetypeLabel: 'Conscientious/Steady — Analytisk Stabilisator',
-    archetypeEmoji: '📊',
-    description:
-      'Hög C/S-kombination — extrem pålitlighet, precision i siffror och stabilt lugn. CFO-arketypen: vill förstå helheten, skyddar bolaget från finansiella risker. Risk: kan dra i handbromsen när snabb expansion behövs.',
-    strengths: [
-      'Finansiell precision & modellering',
-      'Budgetuppföljning & prognos',
-      'Riskminimering i ekonomi',
-      'Stabil, förutsägbar leverans',
-    ],
-    watchouts: [
-      'Kan bromsa tillväxt-investeringar',
-      'Föredrar konservativa estimat',
-      'Tar lång tid på sig vid snabba finansbeslut',
-    ],
-    decisionStyle: 'Sifferdrivet och systematiskt. Vill ha underlag och historik. Fattar välgrundade men inte snabba beslut.',
-    decisionAuthority: [
-      'Finansiell rapportering & bokslut',
-      'Budgetar & forecasts',
-      'Löner & utbetalningar',
-      'Intercompany cash flow',
-      'Skatteplanering (operativt)',
-    ],
-    idealTasks: [
-      'Månadsrapporter & P&L',
-      'Budgetuppföljning',
-      'Ekonomisk prognos & scenario',
-      'Invoice & procurement review',
-      'Likviditethantering',
-    ],
-    responsibilities: [
-      {
-        id: 'winston-rapportering',
-        title: 'Finansiell rapportering & bokslut',
-        description: 'Ansvarar för månadsrapporter, kvartalsrapporter och årsredovisning. Säkerställer att siffrorna är korrekta och att Erik har underlag för strategiska beslut.',
-        expectations: ['Månadsrapport klar senast den 5:e', 'P&L per bolag månadsvis', 'Kvartalsvis konsoliderat bokslut', 'Avvikelser förklarade med åtgärdsplan'],
-        tools: ['Finance Hub', 'Transactions', 'Wavult OS'],
-        collaboratesWith: ['ES', 'DB'],
-        frequency: 'monthly',
-      },
-      {
-        id: 'winston-likviditet',
-        title: 'Likviditet & intercompany cashflow',
-        description: 'Hanterar kassaflödet mellan bolagen och säkerställer att varje bolag har tillräcklig likviditet. Optimerar när pengar ska flyttas mellan enheter för skatteeffektivitet.',
-        expectations: ['Likviditetsrapport veckovis', 'Intercompany-flöden dokumenterade', 'Minimalt 3 månaders runway per bolag', 'Betalningar processade inom 24h'],
-        tools: ['Finance Hub', 'Revolut Business', 'Stripe'],
-        collaboratesWith: ['ES', 'DB'],
-        frequency: 'weekly',
-      },
-      {
-        id: 'winston-payroll',
-        title: 'Lön & personalekonomin',
-        description: 'Ansvarar för att löner betalas korrekt och i tid. Hanterar ersättningar, utlägg och förmåner för hela koncernen.',
-        expectations: ['Löner utbetalda den 25:e varje månad', 'Utläggsredovisningar godkända inom 48h', 'Skattemässigt korrekta lönekörningar', 'Personalekonomisk rapport kvartalsvis'],
-        tools: ['Payroll', 'Finance Hub', 'Wavult OS'],
-        collaboratesWith: ['DB', 'ES'],
-        frequency: 'monthly',
-      },
-    ],
-    energyLevel: 78,
-    focusScore: 90,
-    currentPriority: 'Intercompany cashflow + löner',
-  },
-  {
-    id: 'johan',
-    name: 'Johan Berglund',
-    initials: 'JB',
-    role: 'Group CTO',
-    discType: 'C',
-    discScore: { D: 42, I: 28, S: 50, C: 88 },
-    color: '#EC4899',
-    archetypeLabel: 'Conscientious — Arkitekten',
-    archetypeEmoji: '🏗',
-    description:
-      'Hög C-profil med teknisk expertis. Djupanalytisk och systemorienterad. Bygger rätt — inte snabbt. Föredrar genomtänkta arkitekturlösningar framför snabba workarounds. Risk: kan bli en flaskhals om all teknisk riktning går igenom honom.',
-    strengths: [
-      'Systemarkitektur & teknisk vision',
-      'Kodkvalitet & best practices',
-      'Teknisk due diligence',
-      'Integration & API-design',
-    ],
-    watchouts: [
-      'Kan fastna i perfekta lösningar istf fungerande',
-      'Kommunicerar tekniskt — inte alltid affärsmässigt',
-      'Risk för single-point-of-failure i teknik',
-    ],
-    decisionStyle: 'Analytisk och metodisk. Vill förstå teknisk konsekvens fullt ut. Fattar välgrundade arkitekturval.',
-    decisionAuthority: [
-      'Teknisk stack & arkitektur',
-      'Plattformsval & infrastruktur',
-      'Säkerhet & data compliance',
-      'Developer onboarding & kodstandard',
-      'API & integration decisions',
-    ],
-    idealTasks: [
-      'System- och API-design',
-      'Tech debt review',
-      'Developer hiring & mentoring',
-      'CI/CD & deployment pipeline',
-      'Säkerhetsgranskningar',
-    ],
-    responsibilities: [
-      {
-        id: 'johan-arkitektur',
-        title: 'Systemarkitektur & teknisk vision',
-        description: 'Sätter den tekniska riktningen för hela Wavult Group. Bestämmer vilka teknologier som används, hur systemen integreras och hur vi skalerar. Ansvarar för att vi aldrig bygger teknisk skuld vi inte kan betala.',
-        expectations: ['Arkitekturdokument per system', 'Tech review veckovis', 'Inga produktionsdriftstörningar utan RCA', 'Ny developer onboardad på <1 vecka'],
-        tools: ['Wavult OS', 'GitHub', 'AWS ECS', 'Supabase'],
-        collaboratesWith: ['ES', 'LR'],
-        frequency: 'ongoing',
-      },
-      {
-        id: 'johan-infrastruktur',
-        title: 'Infrastruktur & driftsäkerhet',
-        description: 'Ansvarar för att alla system är uppe, säkra och presterande. Hanterar AWS, Cloudflare, Supabase och alla produktionsmiljöer. Sätter upp monitoring och alerting.',
-        expectations: ['99.9% uptime per system', 'Monitoring på alla kritiska endpoints', 'Backuper testade månadsvis', 'Säkerhetsuppdateringar inom 24h'],
-        tools: ['AWS ECS', 'Cloudflare', 'Supabase', 'System Status'],
-        collaboratesWith: ['ES'],
-        frequency: 'daily',
-      },
-      {
-        id: 'johan-kodstandard',
-        title: 'Kodkvalitet & developer standards',
-        description: 'Sätter och upprätthåller kodstandarder för hela tech-teamet. Ansvarar för code reviews, CI/CD-pipelines och att vi följer best practices konsekvent.',
-        expectations: ['Code review på alla PRs >100 rader', 'CI/CD pipeline för alla produkter', 'Testcoverage >80% på kritiska moduler', 'Tech debt loggad och prioriterad'],
-        tools: ['GitHub', 'GitHub Actions', 'Wavult OS'],
-        collaboratesWith: ['ES'],
-        frequency: 'weekly',
-      },
-    ],
-    energyLevel: 75,
-    focusScore: 92,
-    currentPriority: 'Wavult OS arkitektur + QuiXzoom backend',
-  },
-]
-
-// ─── DISC Bar ─────────────────────────────────────────────────────────────────
-
-function DiscBar({ label, value, color }: { label: string; value: number; color: string }) {
+// ─── Icons ────────────────────────────────────────────────────────────────────
+function ChevronRight() {
   return (
-    <div className="flex items-center gap-2 text-xs">
-      <span className="w-4 font-bold" style={{ color }}>{label}</span>
-      <div className="flex-1 bg-white/5 rounded-full h-2 overflow-hidden">
-        <div
-          className="h-full rounded-full transition-all duration-700"
-          style={{ width: `${value}%`, backgroundColor: color }}
-        />
-      </div>
-      <span className="w-8 text-right text-gray-400">{value}</span>
-    </div>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="9 18 15 12 9 6" />
+    </svg>
+  )
+}
+function ChevronLeft() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="15 18 9 12 15 6" />
+    </svg>
+  )
+}
+function UsersIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" />
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  )
+}
+function MailIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+    </svg>
+  )
+}
+function PhoneIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.1a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+    </svg>
+  )
+}
+function TelegramIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+    </svg>
+  )
+}
+function ActivityIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+    </svg>
+  )
+}
+function WatchIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="6" /><polyline points="12 10 12 12 13 13" />
+      <path d="m16.13 7.66-.81-4.05a2 2 0 0 0-2-1.61h-2.68a2 2 0 0 0-2 1.61l-.78 4.05" />
+      <path d="m7.88 16.36.8 4a2 2 0 0 0 2 1.61h2.72a2 2 0 0 0 2-1.61l.81-4.05" />
+    </svg>
   )
 }
 
-// ─── Energy Ring ──────────────────────────────────────────────────────────────
-
-function EnergyRing({ value, color, label }: { value: number; color: string; label: string }) {
-  const r = 22
-  const circ = 2 * Math.PI * r
-  const offset = circ - (value / 100) * circ
+// ─── Recovery badge ───────────────────────────────────────────────────────────
+function RecoveryBadge({ score }: { score: number | null }) {
+  if (score === null) return <div className="w-3 h-3 rounded-full bg-zinc-700 flex-shrink-0" title="Ej kopplat" />
+  const color = score >= 67 ? '#22C55E' : score >= 34 ? '#EAB308' : '#EF4444'
   return (
-    <div className="flex flex-col items-center gap-1">
-      <svg width="56" height="56" className="-rotate-90">
-        <circle cx="28" cy="28" r={r} stroke="#ffffff10" strokeWidth="4" fill="none" />
-        <circle
-          cx="28" cy="28" r={r}
-          stroke={color} strokeWidth="4" fill="none"
-          strokeDasharray={circ}
-          strokeDashoffset={offset}
-          strokeLinecap="round"
-        />
-        <text
-          x="28" y="28"
-          textAnchor="middle"
-          dominantBaseline="middle"
-          fill="white"
-          fontSize="11"
-          fontWeight="bold"
-          transform="rotate(90 28 28)"
-        >
-          {value}
-        </text>
-      </svg>
-      <span className="text-xs text-gray-400 uppercase tracking-wide">{label}</span>
-    </div>
+    <div
+      className="w-3 h-3 rounded-full flex-shrink-0 ring-2 ring-black/40"
+      style={{ backgroundColor: color }}
+      title={`Recovery ${score}%`}
+    />
   )
 }
 
-// ─── Member Card ──────────────────────────────────────────────────────────────
-
-function MemberCard({ member, selected, onClick }: {
-  member: TeamMember
-  selected: boolean
-  onClick: () => void
-}) {
+// ─── Avatar placeholder ───────────────────────────────────────────────────────
+function Avatar({ member, size = 'md' }: { member: TeamMember; size?: 'sm' | 'md' | 'lg' }) {
+  const sizeMap = { sm: 'w-8 h-8 text-sm', md: 'w-12 h-12 text-lg', lg: 'w-16 h-16 text-2xl' }
   return (
-    <button
-      onClick={onClick}
-      className={`w-full text-left rounded-xl p-4 border transition-all duration-200 ${
-        selected
-          ? 'border-white/30 bg-white/10'
-          : 'border-white/10 bg-white/5 hover:bg-white/8 hover:border-white/20'
-      }`}
+    <div
+      className={`${sizeMap[size]} rounded-full flex items-center justify-center font-bold flex-shrink-0`}
+      style={{ backgroundColor: member.color + '22', border: `2px solid ${member.color}55` }}
     >
-      <div className="flex items-center gap-3">
-        <div
-          className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm text-white flex-shrink-0"
-          style={{ backgroundColor: member.color + '33', border: `2px solid ${member.color}66` }}
-        >
-          <span style={{ color: member.color }}>{member.initials}</span>
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="font-semibold text-white text-sm truncate">{member.name}</div>
-          <div className="text-xs text-gray-400 truncate">{member.role}</div>
-        </div>
-        <div
-          className="text-xs font-bold px-2 py-0.5 rounded-full"
-          style={{ backgroundColor: member.color + '22', color: member.color }}
-        >
-          {member.discType}
-        </div>
-      </div>
-      {selected && (
-        <div className="mt-3 text-xs text-gray-400 italic truncate">
-          {member.archetypeEmoji} {member.archetypeLabel}
-        </div>
-      )}
-    </button>
+      <span>{member.emoji}</span>
+    </div>
   )
 }
 
-// ─── Responsibility Card ──────────────────────────────────────────────────────
+// ─── Breadcrumb ───────────────────────────────────────────────────────────────
+interface BreadcrumbItem {
+  label: string
+  layer: Layer
+}
 
-function ResponsibilityCard({ resp, memberColor, team }: {
-  resp: Responsibility
-  memberColor: string
-  team: TeamMember[]
+function Breadcrumb({
+  items,
+  onNavigate,
+}: {
+  items: BreadcrumbItem[]
+  onNavigate: (layer: Layer) => void
 }) {
-  const [open, setOpen] = useState(false)
-  const freqLabel: Record<Responsibility['frequency'], string> = {
-    daily: 'Dagligen',
-    weekly: 'Veckovis',
-    monthly: 'Månadsvis',
-    ongoing: 'Löpande',
+  return (
+    <div className="flex items-center gap-1 text-xs text-zinc-500 flex-wrap">
+      {items.map((item, idx) => (
+        <span key={item.layer} className="flex items-center gap-1">
+          {idx > 0 && <ChevronRight />}
+          {idx === items.length - 1 ? (
+            <span className="text-zinc-300 font-medium">{item.label}</span>
+          ) : (
+            <button
+              onClick={() => onNavigate(item.layer)}
+              className="hover:text-zinc-200 transition-colors"
+            >
+              {item.label}
+            </button>
+          )}
+        </span>
+      ))}
+    </div>
+  )
+}
+
+// ─── LAYER 1: Enterprise ──────────────────────────────────────────────────────
+function EnterpriseLayer({
+  onSelectEntity,
+  whoopTeam,
+}: {
+  onSelectEntity: (entity: Entity) => void
+  whoopTeam: WhoopTeamData | null
+}) {
+  const totalEmployees = TEAM_MEMBERS.length
+  const connectedCount = whoopTeam?.total_connected ?? 0
+
+  return (
+    <div className="flex flex-col gap-6 p-4 md:p-6 animate-in">
+      {/* Group header */}
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-2xl bg-purple-500/20 flex items-center justify-center text-2xl">🌐</div>
+          <div>
+            <h2 className="text-2xl font-bold text-white">Wavult Group</h2>
+            <p className="text-sm text-zinc-400">Next-generation infrastructure ventures</p>
+          </div>
+        </div>
+
+        {/* Stats strip */}
+        <div className="grid grid-cols-3 gap-3 mt-2">
+          <div className="rounded-xl bg-white/5 border border-white/10 p-3 text-center">
+            <div className="text-2xl font-bold text-white">{totalEmployees}</div>
+            <div className="text-xs text-zinc-400 mt-0.5">Teammedlemmar</div>
+          </div>
+          <div className="rounded-xl bg-white/5 border border-white/10 p-3 text-center">
+            <div className="text-2xl font-bold text-white">{ENTITIES.length}</div>
+            <div className="text-xs text-zinc-400 mt-0.5">Bolag/Enheter</div>
+          </div>
+          <div className="rounded-xl bg-white/5 border border-white/10 p-3 text-center">
+            <div className="text-2xl font-bold" style={{ color: connectedCount > 0 ? '#22C55E' : '#71717A' }}>
+              {connectedCount}
+            </div>
+            <div className="text-xs text-zinc-400 mt-0.5">WHOOP aktiva</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Bolagsstruktur */}
+      <div>
+        <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">Bolagsstruktur</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {ENTITIES.map(entity => (
+            <button
+              key={entity.id}
+              onClick={() => onSelectEntity(entity)}
+              className="text-left rounded-xl border border-white/10 p-4 hover:border-white/25 hover:bg-white/5 transition-all duration-200 group"
+              style={{ borderColor: entity.color + '33' }}
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-center gap-2.5">
+                  <div
+                    className="w-9 h-9 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
+                    style={{ backgroundColor: entity.color + '20' }}
+                  >
+                    {entity.emoji}
+                  </div>
+                  <div>
+                    <div className="font-semibold text-sm text-white">{entity.name}</div>
+                    <div className="text-xs text-zinc-400 mt-0.5">{entity.jurisdiction}</div>
+                  </div>
+                </div>
+                <span
+                  className={`text-[10px] px-2 py-0.5 rounded-full flex-shrink-0 font-medium ${
+                    entity.status === 'active'
+                      ? 'bg-green-500/20 text-green-400'
+                      : entity.status === 'forming'
+                      ? 'bg-amber-500/20 text-amber-400'
+                      : 'bg-zinc-500/20 text-zinc-400'
+                  }`}
+                >
+                  {entity.status === 'active' ? 'Aktiv' : entity.status === 'forming' ? 'Bildas' : 'Planerad'}
+                </span>
+              </div>
+              <p className="text-xs text-zinc-500 mt-2.5 leading-relaxed line-clamp-2">{entity.purpose}</p>
+              <div className="flex items-center justify-between mt-3">
+                <div className="flex -space-x-1.5">
+                  {entity.memberIds.slice(0, 4).map(id => {
+                    const m = TEAM_MEMBERS.find(t => t.id === id)
+                    if (!m) return null
+                    return (
+                      <div
+                        key={id}
+                        className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] ring-2 ring-zinc-900"
+                        style={{ backgroundColor: m.color + '33', color: m.color }}
+                        title={m.name}
+                      >
+                        {m.emoji}
+                      </div>
+                    )
+                  })}
+                </div>
+                <ChevronRight />
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── LAYER 2: Entity ──────────────────────────────────────────────────────────
+function EntityLayer({
+  entity,
+  onSelectPerson,
+  onViewTeam,
+  whoopTeam,
+}: {
+  entity: Entity
+  onSelectPerson: (member: TeamMember) => void
+  onViewTeam: () => void
+  whoopTeam: WhoopTeamData | null
+}) {
+  const members = TEAM_MEMBERS.filter(m => entity.memberIds.includes(m.id))
+
+  function getRecovery(email: string): number | null {
+    const wm = whoopTeam?.team.find(t => t.email === email)
+    return wm?.recovery_score ?? null
   }
 
   return (
-    <div className="rounded-xl border border-white/10 overflow-hidden transition-all">
-      {/* Header — alltid synlig, klickbar */}
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-4 py-3 hover:bg-white/5 transition-colors text-left"
-      >
-        <div className="flex items-center gap-3">
-          <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: memberColor }} />
-          <span className="text-sm font-medium text-white">{resp.title}</span>
-        </div>
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <span className="text-xs text-gray-500 uppercase tracking-wide">{freqLabel[resp.frequency]}</span>
-          <span className="text-gray-500 text-xs">{open ? '▲' : '▼'}</span>
-        </div>
-      </button>
-
-      {/* Expanded content */}
-      {open && (
-        <div className="px-4 pb-4 flex flex-col gap-4 border-t border-white/10 pt-4">
-          {/* Description */}
-          <p className="text-sm text-gray-300 leading-relaxed">{resp.description}</p>
-
-          {/* Expectations */}
-          <div>
-            <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Förväntningar & KPI</div>
-            <div className="flex flex-col gap-1.5">
-              {resp.expectations.map(e => (
-                <div key={e} className="flex items-start gap-2 text-sm text-gray-300">
-                  <span className="text-green-400 mt-0.5 flex-shrink-0">✓</span>
-                  {e}
-                </div>
-              ))}
-            </div>
+    <div className="flex flex-col gap-6 p-4 md:p-6 animate-in">
+      {/* Entity header */}
+      <div className="rounded-xl border p-5" style={{ borderColor: entity.color + '33', backgroundColor: entity.color + '08' }}>
+        <div className="flex items-start gap-3">
+          <div
+            className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0"
+            style={{ backgroundColor: entity.color + '20' }}
+          >
+            {entity.emoji}
           </div>
-
-          {/* Tools */}
-          <div>
-            <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Verktyg & System</div>
-            <div className="flex flex-wrap gap-1.5">
-              {resp.tools.map(t => (
-                <span key={t} className="text-xs px-2 py-0.5 rounded-full bg-white/10 text-gray-300">{t}</span>
-              ))}
+          <div className="flex-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h2 className="text-xl font-bold text-white">{entity.name}</h2>
+              <span
+                className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                  entity.status === 'active'
+                    ? 'bg-green-500/20 text-green-400'
+                    : entity.status === 'forming'
+                    ? 'bg-amber-500/20 text-amber-400'
+                    : 'bg-zinc-500/20 text-zinc-400'
+                }`}
+              >
+                {entity.status === 'active' ? 'Aktiv' : entity.status === 'forming' ? 'Bildas' : 'Planerad'}
+              </span>
             </div>
+            <div className="text-sm text-zinc-400 mt-1">{entity.jurisdiction}</div>
+            <p className="text-sm text-zinc-300 mt-2 leading-relaxed">{entity.purpose}</p>
           </div>
+        </div>
+      </div>
 
-          {/* Collaborates with */}
-          {resp.collaboratesWith.length > 0 && (
-            <div>
-              <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Samarbetar med</div>
-              <div className="flex gap-2 flex-wrap">
-                {resp.collaboratesWith.map(initials => {
-                  const collab = team.find(m => m.initials === initials)
-                  if (!collab) return null
-                  return (
-                    <div key={initials} className="flex items-center gap-1.5 text-xs text-gray-300">
-                      <div
-                        className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold"
-                        style={{ backgroundColor: collab.color + '33', color: collab.color }}
-                      >
-                        {initials}
-                      </div>
-                      {collab.name.split(' ')[0]}
-                    </div>
-                  )
-                })}
+      {/* Team list for this entity */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+            Team ({members.length} personer)
+          </div>
+          <button
+            onClick={onViewTeam}
+            className="text-xs text-zinc-400 hover:text-white transition-colors flex items-center gap-1"
+          >
+            <UsersIcon /> Visa org-träd
+          </button>
+        </div>
+        <div className="flex flex-col gap-2">
+          {members.map(member => (
+            <button
+              key={member.id}
+              onClick={() => onSelectPerson(member)}
+              className="flex items-center gap-3 text-left rounded-xl border border-white/10 p-3 hover:border-white/25 hover:bg-white/5 transition-all duration-200"
+            >
+              <Avatar member={member} size="sm" />
+              <div className="flex-1 min-w-0">
+                <div className="font-medium text-sm text-white truncate">{member.name}</div>
+                <div className="text-xs text-zinc-400 truncate">{member.title}</div>
               </div>
-            </div>
-          )}
+              <RecoveryBadge score={getRecovery(member.email)} />
+              <ChevronRight />
+            </button>
+          ))}
         </div>
-      )}
+      </div>
     </div>
   )
 }
 
-// ─── Detail Panel ─────────────────────────────────────────────────────────────
+// ─── LAYER 3: Team / Org tree ─────────────────────────────────────────────────
+function TeamLayer({
+  onSelectPerson,
+  whoopTeam,
+}: {
+  onSelectPerson: (member: TeamMember) => void
+  whoopTeam: WhoopTeamData | null
+}) {
+  const root = TEAM_MEMBERS.find(m => m.reportsTo === null)!
+  const reports = TEAM_MEMBERS.filter(m => m.reportsTo === root.id)
 
-type DetailTab = 'profil' | 'beslut' | 'uppgifter'
+  function getRecovery(email: string): number | null {
+    const wm = whoopTeam?.team.find(t => t.email === email)
+    return wm?.recovery_score ?? null
+  }
 
-function DetailPanel({ member }: { member: TeamMember }) {
-  const [tab, setTab] = useState<DetailTab>('profil')
-
-  const tabs: { id: DetailTab; label: string }[] = [
-    { id: 'profil', label: 'DISC Profil' },
-    { id: 'beslut', label: 'Beslut' },
-    { id: 'uppgifter', label: 'Uppgifter' },
-  ]
+  function PersonCard({ member, isRoot = false }: { member: TeamMember; isRoot?: boolean }) {
+    return (
+      <button
+        onClick={() => onSelectPerson(member)}
+        className={`flex flex-col items-center text-center gap-1.5 p-3 rounded-xl border transition-all duration-200 hover:bg-white/5 ${
+          isRoot ? 'border-white/20 min-w-[120px]' : 'border-white/10 min-w-[100px]'
+        }`}
+        style={{ borderColor: member.color + (isRoot ? '55' : '33') }}
+      >
+        <div className="relative">
+          <Avatar member={member} size={isRoot ? 'lg' : 'md'} />
+          <div className="absolute -bottom-0.5 -right-0.5">
+            <RecoveryBadge score={getRecovery(member.email)} />
+          </div>
+        </div>
+        <div>
+          <div className={`font-semibold text-white ${isRoot ? 'text-sm' : 'text-xs'} leading-tight`}>
+            {member.name.split(' ')[0]}
+          </div>
+          <div className="text-[10px] text-zinc-400 mt-0.5 leading-tight max-w-[90px]">
+            {member.title.split(' ').slice(0, 3).join(' ')}
+          </div>
+        </div>
+        {member.disc && (
+          <div
+            className="text-[10px] font-bold px-1.5 py-0.5 rounded-full"
+            style={{ backgroundColor: member.color + '22', color: member.color }}
+          >
+            {member.disc}
+          </div>
+        )}
+      </button>
+    )
+  }
 
   return (
-    <div className="flex flex-col gap-5">
-      {/* Header */}
-      <div className="flex items-start gap-4">
-        <div
-          className="w-14 h-14 rounded-2xl flex items-center justify-center font-bold text-lg flex-shrink-0"
-          style={{ backgroundColor: member.color + '22', border: `2px solid ${member.color}55` }}
-        >
-          <span style={{ color: member.color }}>{member.initials}</span>
-        </div>
-        <div className="flex-1">
-          <div className="flex items-center gap-2 flex-wrap">
-            <h2 className="text-xl font-bold text-white">{member.name}</h2>
-            <span
-              className="text-sm font-bold px-2.5 py-0.5 rounded-full"
-              style={{ backgroundColor: member.color + '22', color: member.color }}
-            >
-              {member.discType}
-            </span>
+    <div className="flex flex-col gap-6 p-4 md:p-6 animate-in">
+      <div>
+        <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-1">Wavult Group — Teamstruktur</div>
+        <p className="text-xs text-zinc-500">Klicka på en person för att öppna fullständig profil</p>
+      </div>
+
+      {/* Org tree visual */}
+      <div className="flex flex-col items-center gap-0">
+        {/* Root */}
+        <PersonCard member={root} isRoot />
+
+        {/* Connector lines */}
+        <div className="flex flex-col items-center">
+          {/* Vertical line down from root */}
+          <div className="w-px h-6 bg-zinc-700" />
+          {/* Horizontal bar */}
+          <div
+            className="h-px bg-zinc-700"
+            style={{ width: `${Math.min(reports.length * 110, 600)}px` }}
+          />
+          {/* Vertical lines down to reports */}
+          <div
+            className="flex items-start"
+            style={{ gap: '12px', width: `${Math.min(reports.length * 110, 600)}px` }}
+          >
+            {reports.map(() => (
+              <div key={Math.random()} className="flex-1 flex justify-center">
+                <div className="w-px h-5 bg-zinc-700" />
+              </div>
+            ))}
           </div>
-          <div className="text-sm text-gray-400 mt-0.5">{member.role}</div>
-          <div className="text-xs mt-1 font-medium" style={{ color: member.color }}>
-            {member.archetypeEmoji} {member.archetypeLabel}
-          </div>
         </div>
-        {/* Energy rings */}
-        <div className="flex gap-3 flex-shrink-0">
-          <EnergyRing value={member.energyLevel} color={member.color} label="Energi" />
-          <EnergyRing value={member.focusScore} color="#6EE7B7" label="Fokus" />
+
+        {/* Direct reports */}
+        <div className="flex flex-wrap justify-center gap-3">
+          {reports.map(member => (
+            <PersonCard key={member.id} member={member} />
+          ))}
         </div>
       </div>
 
-      {/* Current priority */}
-      <div className="rounded-lg bg-white/5 border border-white/10 px-4 py-2.5 flex items-center gap-2">
-        <TargetIcon />
-        <span className="text-xs text-gray-400">Aktuellt fokus:</span>
-        <span className="text-sm text-white font-medium">{member.currentPriority}</span>
+      {/* List view as alternative */}
+      <div>
+        <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">Alla teammedlemmar</div>
+        <div className="flex flex-col gap-2">
+          {TEAM_MEMBERS.map(member => {
+            const reportsToMember = member.reportsTo
+              ? TEAM_MEMBERS.find(m => m.id === member.reportsTo)
+              : null
+            return (
+              <button
+                key={member.id}
+                onClick={() => onSelectPerson(member)}
+                className="flex items-center gap-3 text-left rounded-xl border border-white/10 p-3 hover:border-white/25 hover:bg-white/5 transition-all duration-200"
+              >
+                <Avatar member={member} size="sm" />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-sm text-white truncate">{member.name}</span>
+                    {member.disc && (
+                      <span
+                        className="text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: member.color + '22', color: member.color }}
+                      >
+                        {member.disc}
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-xs text-zinc-400 truncate">{member.title}</div>
+                  {reportsToMember && (
+                    <div className="text-[10px] text-zinc-600 mt-0.5">
+                      Rapporterar till {reportsToMember.name.split(' ')[0]}
+                    </div>
+                  )}
+                </div>
+                <RecoveryBadge score={getRecovery(member.email)} />
+                <ChevronRight />
+              </button>
+            )
+          })}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── LAYER 4: Person profile ──────────────────────────────────────────────────
+type ProfileTab = 'roll' | 'arbete' | 'halsa' | 'uppgifter' | 'kontakt' | 'psyk'
+
+function PersonLayer({
+  member,
+  currentUserEmail,
+  whoopMy,
+  whoopTeam,
+}: {
+  member: TeamMember
+  currentUserEmail: string | null
+  whoopMy: WhoopMyData | null
+  whoopTeam: WhoopTeamData | null
+}) {
+  const [tab, setTab] = useState<ProfileTab>('roll')
+
+  const tabs: { id: ProfileTab; label: string; emoji: string }[] = [
+    { id: 'roll', label: 'Roll & Ansvar', emoji: '🎯' },
+    { id: 'arbete', label: 'Arbete', emoji: '📋' },
+    { id: 'halsa', label: 'Hälsa', emoji: '❤️' },
+    { id: 'uppgifter', label: 'Uppgifter', emoji: '✅' },
+    { id: 'kontakt', label: 'Kontakt', emoji: '📞' },
+    { id: 'psyk', label: 'Psykologi', emoji: '🧠' },
+  ]
+
+  const reportsToMember = member.reportsTo
+    ? TEAM_MEMBERS.find(m => m.id === member.reportsTo)
+    : null
+  const directReportMembers = TEAM_MEMBERS.filter(m => member.directReports.includes(m.id))
+  const tasks = MOCK_TASKS[member.id] ?? []
+  const isCurrentUser = currentUserEmail === member.email
+
+  // WHOOP data: live if current user, cached from team otherwise
+  let whoopData: {
+    connected: boolean
+    recovery: number | null
+    hrv: number | null
+    restingHr: number | null
+    sleepPerf: number | null
+    sleepHours: number | null
+    strain: number | null
+    cached: boolean
+  } | null = null
+
+  if (isCurrentUser && whoopMy) {
+    whoopData = {
+      connected: whoopMy.connected,
+      recovery: whoopMy.recovery?.score ?? null,
+      hrv: whoopMy.recovery?.hrv ?? null,
+      restingHr: whoopMy.recovery?.restingHr ?? null,
+      sleepPerf: whoopMy.sleep?.performancePercent ?? null,
+      sleepHours: whoopMy.sleep?.durationHours ?? null,
+      strain: whoopMy.strain?.score ?? null,
+      cached: whoopMy.cached,
+    }
+  } else if (whoopTeam) {
+    const wm = whoopTeam.team.find(t => t.email === member.email)
+    if (wm && wm.recovery_score !== null) {
+      whoopData = {
+        connected: true,
+        recovery: wm.recovery_score,
+        hrv: null,
+        restingHr: null,
+        sleepPerf: wm.sleep_performance,
+        sleepHours: null,
+        strain: wm.strain_score,
+        cached: true,
+      }
+    }
+  }
+
+  function RecoveryRing({ value, label, color }: { value: number; label: string; color: string }) {
+    const r = 24
+    const circ = 2 * Math.PI * r
+    const offset = circ - (value / 100) * circ
+    return (
+      <div className="flex flex-col items-center gap-1">
+        <svg width="60" height="60" className="-rotate-90">
+          <circle cx="30" cy="30" r={r} stroke="#ffffff10" strokeWidth="4" fill="none" />
+          <circle
+            cx="30" cy="30" r={r} stroke={color} strokeWidth="4" fill="none"
+            strokeDasharray={circ} strokeDashoffset={offset} strokeLinecap="round"
+          />
+          <text x="30" y="30" textAnchor="middle" dominantBaseline="middle" fill="white"
+            fontSize="11" fontWeight="bold" transform="rotate(90 30 30)">
+            {value}%
+          </text>
+        </svg>
+        <span className="text-[10px] text-zinc-400 uppercase tracking-wide">{label}</span>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-col gap-0 animate-in">
+      {/* Profile header */}
+      <div className="px-4 md:px-6 py-5 border-b border-white/10">
+        <div className="flex items-start gap-4">
+          <div className="relative">
+            <Avatar member={member} size="lg" />
+            {whoopData?.connected && (
+              <div className="absolute -bottom-1 -right-1">
+                <RecoveryBadge score={whoopData.recovery} />
+              </div>
+            )}
+          </div>
+          <div className="flex-1 min-w-0">
+            <h2 className="text-xl font-bold text-white">{member.name}</h2>
+            <div className="text-sm text-zinc-400 mt-0.5">{member.title}</div>
+            <div className="flex items-center gap-2 mt-2 flex-wrap">
+              {member.disc && (
+                <span
+                  className="text-xs font-bold px-2 py-0.5 rounded-full"
+                  style={{ backgroundColor: member.color + '22', color: member.color }}
+                >
+                  DISC: {member.disc}
+                </span>
+              )}
+              {member.mbti && (
+                <span className="text-xs px-2 py-0.5 rounded-full bg-white/10 text-zinc-300">
+                  {member.mbti}
+                </span>
+              )}
+              {whoopData?.connected && (
+                <span className="text-xs px-2 py-0.5 rounded-full bg-green-500/20 text-green-400 flex items-center gap-1">
+                  <WatchIcon /> WHOOP
+                </span>
+              )}
+            </div>
+          </div>
+          {/* Quick contact */}
+          <a
+            href={
+              member.contactPreference === 'email'
+                ? `mailto:${member.email}`
+                : member.contactPreference === 'phone'
+                ? `tel:${member.phone}`
+                : `https://t.me/${member.name.split(' ')[0].toLowerCase()}`
+            }
+            className="flex-shrink-0 text-xs px-3 py-1.5 rounded-lg border border-white/20 bg-white/5 hover:bg-white/10 transition-all text-zinc-300"
+            target={member.contactPreference === 'telegram' ? '_blank' : undefined}
+            rel="noreferrer"
+          >
+            Kontakta
+          </a>
+        </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-white/5 rounded-lg p-1">
+      <div className="flex gap-1 overflow-x-auto px-4 md:px-6 py-2 border-b border-white/10 scrollbar-hide">
         {tabs.map(t => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
-            className={`flex-1 text-xs py-1.5 rounded-md font-medium transition-all ${
-              tab === t.id ? 'bg-white/15 text-white' : 'text-gray-400 hover:text-white'
+            className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-medium whitespace-nowrap transition-all flex-shrink-0 ${
+              tab === t.id
+                ? 'bg-white/15 text-white'
+                : 'text-zinc-400 hover:text-zinc-200'
             }`}
           >
-            {t.label}
+            <span>{t.emoji}</span>
+            <span className="hidden sm:inline">{t.label}</span>
           </button>
         ))}
       </div>
 
       {/* Tab content */}
-      {tab === 'profil' && (
-        <div className="flex flex-col gap-5">
-          {/* DISC bars */}
-          <div className="flex flex-col gap-2.5">
-            <div className="text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">DISC-poäng</div>
-            <DiscBar label="D" value={member.discScore.D} color="#EF4444" />
-            <DiscBar label="I" value={member.discScore.I} color="#F59E0B" />
-            <DiscBar label="S" value={member.discScore.S} color="#10B981" />
-            <DiscBar label="C" value={member.discScore.C} color="#3B82F6" />
-          </div>
-
-          {/* Description */}
-          <p className="text-sm text-gray-300 leading-relaxed">{member.description}</p>
-
-          {/* Strengths */}
-          <div>
-            <div className="text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">Styrkor</div>
-            <div className="flex flex-col gap-1.5">
-              {member.strengths.map(s => (
-                <div key={s} className="flex items-start gap-2 text-sm text-gray-300">
-                  <span className="text-green-400 mt-0.5 flex-shrink-0"><CheckIcon /></span>
-                  {s}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Watch-outs */}
-          <div>
-            <div className="text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">Risker att bevaka</div>
-            <div className="flex flex-col gap-1.5">
-              {member.watchouts.map(w => (
-                <div key={w} className="flex items-start gap-2 text-sm text-gray-400">
-                  <span className="text-amber-400 mt-0.5 flex-shrink-0"><AlertIcon /></span>
-                  {w}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {tab === 'beslut' && (
-        <div className="flex flex-col gap-5">
-          {/* Decision style */}
-          <div className="rounded-lg bg-white/5 border border-white/10 p-4">
-            <div className="text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">Beslutsstil</div>
-            <p className="text-sm text-gray-300 leading-relaxed">{member.decisionStyle}</p>
-          </div>
-
-          {/* Decision authority */}
-          <div>
-            <div className="text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">Beslutsbefogenhet</div>
-            <div className="flex flex-col gap-1.5">
-              {member.decisionAuthority.map(a => (
-                <div key={a} className="flex items-start gap-2 text-sm text-gray-300">
-                  <span className="text-purple-400 mt-0.5 flex-shrink-0"><ShieldIcon /></span>
-                  {a}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* How to communicate with this person */}
-          <div className="rounded-lg bg-white/5 border border-white/10 p-4">
-            <div className="text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
-              Kommunicera rätt med {member.name.split(' ')[0]}
-            </div>
-            <CommunicationTips discType={member.discType} />
-          </div>
-        </div>
-      )}
-
-      {tab === 'uppgifter' && (
-        <div className="flex flex-col gap-3">
-          <div className="text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">
-            Ansvarsområden — klicka för att läsa mer
-          </div>
-          {member.responsibilities.map(resp => (
-            <ResponsibilityCard
-              key={resp.id}
-              resp={resp}
-              memberColor={member.color}
-              team={TEAM_MEMBERS}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
-
-// ─── Communication Tips ───────────────────────────────────────────────────────
-
-function CommunicationTips({ discType }: { discType: DiscType }) {
-  const tips: Record<string, string[]> = {
-    D: [
-      'Kom till poängen snabbt — skippa bakgrunden',
-      'Presentera alternativ, inte bara ett val',
-      'Visa vad resultatet är, inte hur det gjordes',
-      'Utmana gärna, men ha argument klara',
-    ],
-    I: [
-      'Börja med relation och energi, inte agenda',
-      'Håll det kortfattat — de tappar fokus på detaljer',
-      'Koppla till det stora, inspirerande målet',
-      'Följ upp skriftligt — de glömmer verbala detaljer',
-    ],
-    S: [
-      'Bygg förtroende innan förändring',
-      'Ge tid att processa — inte beslut i stunden',
-      'Visa hur det påverkar teamet positivt',
-      'Undvik konfrontation — använd dialog',
-    ],
-    C: [
-      'Ge komplett information och data',
-      'Ge tid att tänka — boka in uppföljning',
-      'Var exakt och precis — undvik vagt',
-      'Respektera deras processer och standarder',
-    ],
-    'D/I': [
-      'Snabb & entusiastisk kommunikation',
-      'Resultat + energi är nyckeln',
-      'Undvik för mycket detaljer',
-    ],
-    'C/S': [
-      'Systematisk och lugn kommunikation',
-      'Ge data och tid att reflektera',
-      'Undvik hastig förändring utan förklaring',
-    ],
-    'I/S': ['Relation och samarbete är nyckeln', 'Visa omtanke om teamet', 'Undvik hård konfrontation'],
-    'D/C': ['Data + resultat', 'Direkt och faktabaserat', 'Respektera deras standarder'],
-  }
-
-  const list = tips[discType] || tips['D']
-
-  return (
-    <ul className="flex flex-col gap-1.5">
-      {list.map(tip => (
-        <li key={tip} className="flex items-start gap-2 text-sm text-gray-300">
-          <span className="text-blue-400 mt-0.5 flex-shrink-0"><ZapIcon /></span>
-          {tip}
-        </li>
-      ))}
-    </ul>
-  )
-}
-
-// ─── Team Overview Grid ───────────────────────────────────────────────────────
-
-function TeamOverview() {
-  const discColors: Record<string, string> = { D: '#EF4444', I: '#F59E0B', S: '#10B981', C: '#3B82F6' }
-
-  return (
-    <div className="flex flex-col gap-4">
-      <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Teamöversikt — DISC-fördelning</div>
-
-      {/* DISC matrix visual */}
-      <div className="grid grid-cols-2 gap-3">
-        {(['D', 'I', 'S', 'C'] as const).map(type => {
-          const members = TEAM_MEMBERS.filter(m => m.discType.startsWith(type) || m.discType.endsWith(type))
-          const descriptions: Record<string, string> = {
-            D: 'Resultat & beslut',
-            I: 'Relation & inflytande',
-            S: 'Stabilitet & samarbete',
-            C: 'Kvalitet & analys',
-          }
-          return (
-            <div
-              key={type}
-              className="rounded-xl p-3 border"
-              style={{ backgroundColor: discColors[type] + '11', borderColor: discColors[type] + '33' }}
-            >
-              <div className="flex items-center justify-between mb-2">
-                <div className="font-bold text-lg" style={{ color: discColors[type] }}>{type}</div>
-                <div className="text-xs text-gray-400">{descriptions[type]}</div>
+      <div className="flex-1 overflow-auto p-4 md:p-6">
+        {tab === 'roll' && (
+          <div className="flex flex-col gap-5">
+            <div>
+              <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Befattning</div>
+              <div className="rounded-xl bg-white/5 border border-white/10 p-4">
+                <div className="text-white font-medium">{member.title}</div>
+                <div className="text-sm text-zinc-400 mt-1">{member.entity === 'wavult-group' ? 'Wavult Group' : member.entity}</div>
               </div>
-              <div className="flex flex-wrap gap-1.5">
-                {members.map(m => (
-                  <div
-                    key={m.id}
-                    className="text-xs px-2 py-0.5 rounded-full font-medium"
-                    style={{ backgroundColor: m.color + '22', color: m.color }}
-                  >
-                    {m.initials}
+            </div>
+
+            <div>
+              <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Ansvarsområden</div>
+              <div className="flex flex-col gap-1.5">
+                {member.responsibilities.map(r => (
+                  <div key={r} className="flex items-start gap-2 text-sm text-zinc-300">
+                    <span style={{ color: member.color }} className="mt-0.5 flex-shrink-0">▸</span>
+                    {r}
                   </div>
                 ))}
-                {members.length === 0 && (
-                  <span className="text-xs text-gray-500">Ingen</span>
+              </div>
+            </div>
+
+            {reportsToMember && (
+              <div>
+                <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Rapporterar till</div>
+                <div className="flex items-center gap-3 rounded-xl bg-white/5 border border-white/10 p-3">
+                  <Avatar member={reportsToMember} size="sm" />
+                  <div>
+                    <div className="text-sm font-medium text-white">{reportsToMember.name}</div>
+                    <div className="text-xs text-zinc-400">{reportsToMember.title}</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {directReportMembers.length > 0 && (
+              <div>
+                <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">
+                  Direkt underställda ({directReportMembers.length})
+                </div>
+                <div className="flex flex-col gap-2">
+                  {directReportMembers.map(m => (
+                    <div key={m.id} className="flex items-center gap-3 rounded-xl bg-white/5 border border-white/10 p-3">
+                      <Avatar member={m} size="sm" />
+                      <div>
+                        <div className="text-sm font-medium text-white">{m.name}</div>
+                        <div className="text-xs text-zinc-400">{m.title}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {tab === 'arbete' && (
+          <div className="flex flex-col gap-4">
+            <div>
+              <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Daglig arbetsbeskrivning</div>
+              <div className="rounded-xl bg-white/5 border border-white/10 p-4">
+                <p className="text-sm text-zinc-300 leading-relaxed">{member.workDescription}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {tab === 'halsa' && (
+          <div className="flex flex-col gap-5">
+            {!whoopData || !whoopData.connected ? (
+              <div className="rounded-xl border border-white/10 p-6 text-center">
+                <div className="text-3xl mb-2">⌚</div>
+                <div className="text-sm font-medium text-zinc-300">WHOOP ej kopplat</div>
+                <div className="text-xs text-zinc-500 mt-1">
+                  {member.name.split(' ')[0]} har inte kopplat sitt WHOOP-armband till Wavult OS
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center justify-between">
+                  <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+                    Hälsa & Kapacitet
+                  </div>
+                  {whoopData.cached && (
+                    <span className="text-[10px] text-zinc-500 px-2 py-0.5 rounded-full bg-white/5">
+                      Cachad data
+                    </span>
+                  )}
+                  {!whoopData.cached && isCurrentUser && (
+                    <span className="text-[10px] text-green-400 px-2 py-0.5 rounded-full bg-green-500/10">
+                      Live data
+                    </span>
+                  )}
+                </div>
+
+                {/* Rings */}
+                <div className="flex justify-around py-2">
+                  {whoopData.recovery !== null && (
+                    <RecoveryRing
+                      value={whoopData.recovery}
+                      label="Recovery"
+                      color={whoopData.recovery >= 67 ? '#22C55E' : whoopData.recovery >= 34 ? '#EAB308' : '#EF4444'}
+                    />
+                  )}
+                  {whoopData.sleepPerf !== null && (
+                    <RecoveryRing value={whoopData.sleepPerf} label="Sömn" color="#6366F1" />
+                  )}
+                  {whoopData.strain !== null && (
+                    <RecoveryRing value={Math.round((whoopData.strain / 21) * 100)} label="Strain" color="#F59E0B" />
+                  )}
+                </div>
+
+                {/* Details */}
+                <div className="grid grid-cols-2 gap-3">
+                  {whoopData.hrv !== null && (
+                    <div className="rounded-xl bg-white/5 border border-white/10 p-3">
+                      <div className="text-xs text-zinc-400">HRV</div>
+                      <div className="text-xl font-bold text-white mt-1">{whoopData.hrv} <span className="text-xs text-zinc-500">ms</span></div>
+                    </div>
+                  )}
+                  {whoopData.restingHr !== null && (
+                    <div className="rounded-xl bg-white/5 border border-white/10 p-3">
+                      <div className="text-xs text-zinc-400">Vilopuls</div>
+                      <div className="text-xl font-bold text-white mt-1">{whoopData.restingHr} <span className="text-xs text-zinc-500">bpm</span></div>
+                    </div>
+                  )}
+                  {whoopData.sleepHours !== null && (
+                    <div className="rounded-xl bg-white/5 border border-white/10 p-3">
+                      <div className="text-xs text-zinc-400">Sömntid</div>
+                      <div className="text-xl font-bold text-white mt-1">{whoopData.sleepHours.toFixed(1)} <span className="text-xs text-zinc-500">h</span></div>
+                    </div>
+                  )}
+                  {whoopData.strain !== null && (
+                    <div className="rounded-xl bg-white/5 border border-white/10 p-3">
+                      <div className="text-xs text-zinc-400">Strain</div>
+                      <div className="text-xl font-bold text-white mt-1">{whoopData.strain.toFixed(1)} <span className="text-xs text-zinc-500">/ 21</span></div>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
+        {tab === 'uppgifter' && (
+          <div className="flex flex-col gap-4">
+            <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+              Pågående uppgifter
+            </div>
+            {tasks.length === 0 ? (
+              <div className="text-sm text-zinc-500 p-4 text-center">Inga uppgifter registrerade</div>
+            ) : (
+              <div className="flex flex-col gap-2">
+                {tasks.map(task => (
+                  <div
+                    key={task.id}
+                    className={`flex items-center gap-3 rounded-xl border p-3 ${
+                      task.status === 'done' ? 'opacity-50 border-white/5' : 'border-white/10'
+                    }`}
+                  >
+                    <div
+                      className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                        task.status === 'done'
+                          ? 'bg-green-500'
+                          : task.status === 'active'
+                          ? 'bg-amber-400 animate-pulse'
+                          : 'bg-zinc-600'
+                      }`}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className={`text-sm ${task.status === 'done' ? 'line-through text-zinc-500' : 'text-white'}`}>
+                        {task.title}
+                      </div>
+                      <div className="text-[10px] text-zinc-500 mt-0.5 uppercase">
+                        {task.status === 'done' ? 'Klar' : task.status === 'active' ? 'Pågår' : 'Väntar'}
+                      </div>
+                    </div>
+                    <span
+                      className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium flex-shrink-0 ${
+                        task.priority === 'high'
+                          ? 'bg-red-500/20 text-red-400'
+                          : task.priority === 'medium'
+                          ? 'bg-amber-500/20 text-amber-400'
+                          : 'bg-zinc-500/20 text-zinc-400'
+                      }`}
+                    >
+                      {task.priority === 'high' ? 'Hög' : task.priority === 'medium' ? 'Medium' : 'Låg'}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {tab === 'kontakt' && (
+          <div className="flex flex-col gap-4">
+            <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Kontaktvägar</div>
+            <div className="flex flex-col gap-2">
+              <a
+                href={`mailto:${member.email}`}
+                className="flex items-center gap-3 rounded-xl border border-white/10 p-3 hover:bg-white/5 transition-all"
+              >
+                <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400">
+                  <MailIcon />
+                </div>
+                <div>
+                  <div className="text-xs text-zinc-400">E-post</div>
+                  <div className="text-sm text-white">{member.email}</div>
+                </div>
+                {member.contactPreference === 'email' && (
+                  <span className="ml-auto text-[10px] text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full">Föredrar</span>
+                )}
+              </a>
+
+              <a
+                href={`tel:${member.phone}`}
+                className="flex items-center gap-3 rounded-xl border border-white/10 p-3 hover:bg-white/5 transition-all"
+              >
+                <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center text-green-400">
+                  <PhoneIcon />
+                </div>
+                <div>
+                  <div className="text-xs text-zinc-400">Telefon</div>
+                  <div className="text-sm text-white">{member.phone}</div>
+                </div>
+                {member.contactPreference === 'phone' && (
+                  <span className="ml-auto text-[10px] text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full">Föredrar</span>
+                )}
+              </a>
+
+              <div className="flex items-center gap-3 rounded-xl border border-white/10 p-3">
+                <div className="w-8 h-8 rounded-lg bg-sky-500/20 flex items-center justify-center text-sky-400">
+                  <TelegramIcon />
+                </div>
+                <div>
+                  <div className="text-xs text-zinc-400">Telegram</div>
+                  <div className="text-sm text-white">@{member.name.split(' ')[0].toLowerCase()}</div>
+                </div>
+                {member.contactPreference === 'telegram' && (
+                  <span className="ml-auto text-[10px] text-green-400 bg-green-500/10 px-2 py-0.5 rounded-full">Föredrar</span>
                 )}
               </div>
             </div>
-          )
-        })}
-      </div>
 
-      {/* Balance insight */}
-      <div className="rounded-lg bg-amber-500/10 border border-amber-500/20 p-3">
-        <div className="text-xs font-semibold text-amber-400 mb-1 flex items-center gap-1.5">
-          <AlertIcon /> Teambalans-analys
-        </div>
-        <p className="text-xs text-gray-300 leading-relaxed">
-          Teamet är <strong className="text-white">C-tungt</strong> (Johan, Dennis, Winston = 3×C) med stark D-top (Erik) och I-kanal (Leon). 
-          Saknar S-stabilitet i mitten — risk för överanalys utan action. 
-          Rekommendation: sätt tydliga deadlines och ha Erik som beslutbrytare.
-        </p>
+            <div>
+              <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Feedback-stil</div>
+              <div className="rounded-xl bg-white/5 border border-white/10 p-4">
+                <p className="text-sm text-zinc-300 leading-relaxed">{member.feedbackStyle}</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {tab === 'psyk' && (
+          <div className="flex flex-col gap-5">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-xl bg-white/5 border border-white/10 p-4 text-center">
+                <div className="text-xs text-zinc-400 mb-1">Myers-Briggs</div>
+                <div className="text-2xl font-bold" style={{ color: member.color }}>{member.mbti ?? '–'}</div>
+                {!member.mbti && <div className="text-[10px] text-zinc-600 mt-1">Ej kartlagd</div>}
+              </div>
+              <div className="rounded-xl bg-white/5 border border-white/10 p-4 text-center">
+                <div className="text-xs text-zinc-400 mb-1">DISC</div>
+                <div className="text-2xl font-bold" style={{ color: member.color }}>{member.disc ?? '–'}</div>
+                {!member.disc && <div className="text-[10px] text-zinc-600 mt-1">Ej kartlagd</div>}
+              </div>
+            </div>
+
+            <div>
+              <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Styrkor</div>
+              <div className="flex flex-wrap gap-2">
+                {member.strengths.map(s => (
+                  <span
+                    key={s}
+                    className="text-xs px-2.5 py-1 rounded-full font-medium"
+                    style={{ backgroundColor: member.color + '20', color: member.color }}
+                  >
+                    {s}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">Feedback-stil</div>
+              <div className="rounded-xl bg-white/5 border border-white/10 p-4">
+                <p className="text-sm text-zinc-300 leading-relaxed">{member.feedbackStyle}</p>
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-white/10 p-4 text-center text-xs text-zinc-600">
+              <ActivityIcon />
+              <div className="mt-1">Mer psykologisk data läggs till i kommande version</div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
 }
 
-// ─── Main Component ───────────────────────────────────────────────────────────
-
+// ─── Main Hub ─────────────────────────────────────────────────────────────────
 export function PeopleIntelligenceHub() {
-  const [selectedId, setSelectedId] = useState<string>('')
-  const [showOverview, setShowOverview] = useState(false)
+  const { user } = useAuth()
+  const { apiFetch } = useApi()
 
-  const selectedMember = TEAM_MEMBERS.find(m => m.id === selectedId) ?? TEAM_MEMBERS[0]
+  const [layer, setLayer] = useState<Layer>('enterprise')
+  const [selectedEntity, setSelectedEntity] = useState<Entity | null>(null)
+  const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null)
+
+  const [whoopMy, setWhoopMy] = useState<WhoopMyData | null>(null)
+  const [whoopTeam, setWhoopTeam] = useState<WhoopTeamData | null>(null)
+
+  // Fetch WHOOP data on mount
+  const fetchWhoop = useCallback(async () => {
+    try {
+      const [myRes, teamRes] = await Promise.all([
+        apiFetch('/whoop/me'),
+        apiFetch('/whoop/team'),
+      ])
+      if (myRes.ok) setWhoopMy(await myRes.json() as WhoopMyData)
+      if (teamRes.ok) setWhoopTeam(await teamRes.json() as WhoopTeamData)
+    } catch {
+      // API unavailable — WHOOP data stays null
+    }
+  }, [apiFetch])
+
+  useEffect(() => { void fetchWhoop() }, [fetchWhoop])
+
+  // Navigation helpers
+  function navigateToEntity(entity: Entity) {
+    setSelectedEntity(entity)
+    setLayer('entity')
+  }
+
+  function navigateToTeam() {
+    setLayer('team')
+  }
+
+  function navigateToPerson(member: TeamMember) {
+    setSelectedMember(member)
+    setLayer('person')
+  }
+
+  function navigateToLayer(target: Layer) {
+    setLayer(target)
+    if (target === 'enterprise') {
+      setSelectedEntity(null)
+      setSelectedMember(null)
+    } else if (target === 'entity') {
+      setSelectedMember(null)
+    } else if (target === 'team') {
+      setSelectedMember(null)
+    }
+  }
+
+  // Breadcrumb items
+  const breadcrumbItems: BreadcrumbItem[] = [{ label: 'Wavult Group', layer: 'enterprise' }]
+  if (layer === 'entity' && selectedEntity) {
+    breadcrumbItems.push({ label: selectedEntity.shortName, layer: 'entity' })
+  }
+  if (layer === 'team') {
+    breadcrumbItems.push({ label: 'Team', layer: 'team' })
+  }
+  if (layer === 'person' && selectedMember) {
+    if (selectedEntity) {
+      breadcrumbItems.push({ label: selectedEntity.shortName, layer: 'entity' })
+    }
+    breadcrumbItems.push({ label: selectedMember.name.split(' ')[0], layer: 'person' })
+  }
+
+  // Back destination
+  function goBack() {
+    if (layer === 'person') {
+      if (selectedEntity) {
+        setLayer('entity')
+      } else {
+        setLayer('team')
+      }
+      setSelectedMember(null)
+    } else if (layer === 'team') {
+      setLayer('enterprise')
+    } else if (layer === 'entity') {
+      setLayer('enterprise')
+      setSelectedEntity(null)
+    }
+  }
 
   return (
-    <div className="h-full flex flex-col gap-0 bg-gray-950 text-white overflow-hidden">
+    <div className="h-full flex flex-col bg-[#07080F] text-white overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-white/10 flex-shrink-0">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-purple-500/20 flex items-center justify-center">
-            <BrainIcon />
+      <div className="flex-shrink-0 px-4 md:px-6 py-4 border-b border-white/[0.08]">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-purple-500/20 flex items-center justify-center flex-shrink-0">
+              <UsersIcon />
+            </div>
+            <div>
+              <h1 className="text-base font-bold text-white leading-tight">People Intelligence</h1>
+              <Breadcrumb items={breadcrumbItems} onNavigate={navigateToLayer} />
+            </div>
           </div>
-          <div>
-            <h1 className="text-lg font-bold text-white">People Intelligence</h1>
-            <p className="text-xs text-gray-400">DISC-profiler · Beslutsarkitektur · Rolloptimering</p>
+
+          <div className="flex items-center gap-2">
+            {/* WHOOP indicator */}
+            {whoopTeam && whoopTeam.total_connected > 0 && (
+              <div className="hidden sm:flex items-center gap-1.5 text-xs text-green-400 bg-green-500/10 px-2.5 py-1 rounded-full">
+                <WatchIcon />
+                <span>{whoopTeam.total_connected} WHOOP</span>
+              </div>
+            )}
+            {/* Back button */}
+            {layer !== 'enterprise' && (
+              <button
+                onClick={goBack}
+                className="flex items-center gap-1 text-xs text-zinc-400 hover:text-white transition-colors px-3 py-1.5 rounded-lg border border-white/10 hover:border-white/25"
+              >
+                <ChevronLeft /> Tillbaka
+              </button>
+            )}
           </div>
         </div>
-        <button
-          onClick={() => setShowOverview(!showOverview)}
-          className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${
-            showOverview
-              ? 'border-purple-500/50 bg-purple-500/20 text-purple-300'
-              : 'border-white/20 bg-white/5 text-gray-400 hover:text-white'
-          }`}
-        >
-          {showOverview ? '← Individuell vy' : '👥 Teamöversikt'}
-        </button>
       </div>
 
       {/* Body */}
-      <div className="flex-1 overflow-hidden flex">
-        {showOverview ? (
-          /* Overview mode */
-          <div className="flex-1 overflow-auto p-6">
-            <TeamOverview />
-          </div>
-        ) : (
-          /* Detail mode: sidebar + panel — mobile: master/detail toggle */
-          <>
-            {/* Sidebar — hidden on mobile when detail is shown */}
-            <div className={`${selectedId ? 'hidden md:flex' : 'flex'} w-full md:w-72 border-r border-white/10 flex-col overflow-hidden md:flex-shrink-0`}>
-              <div className="px-4 py-3 border-b border-white/10">
-                <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Team</div>
-              </div>
-              <div className="flex-1 overflow-auto p-3 flex flex-col gap-2">
-                {TEAM_MEMBERS.map(member => (
-                  <MemberCard
-                    key={member.id}
-                    member={member}
-                    selected={selectedId === member.id}
-                    onClick={() => setSelectedId(member.id === selectedId ? member.id : member.id)}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Detail panel — full screen on mobile */}
-            <div className={`${selectedId ? 'flex' : 'hidden md:flex'} flex-1 flex-col overflow-auto`}>
-              {/* Mobile back button */}
-              <button
-                className="md:hidden flex items-center gap-2 px-4 py-3 text-xs text-gray-500 border-b border-white/10"
-                onClick={() => setSelectedId('')}
-              >
-                ← Tillbaka
-              </button>
-              <div className="flex-1 overflow-auto p-4 md:p-6">
-                <DetailPanel member={selectedMember} />
-              </div>
-            </div>
-          </>
+      <div className="flex-1 overflow-auto">
+        {layer === 'enterprise' && (
+          <EnterpriseLayer
+            onSelectEntity={navigateToEntity}
+            whoopTeam={whoopTeam}
+          />
+        )}
+        {layer === 'entity' && selectedEntity && (
+          <EntityLayer
+            entity={selectedEntity}
+            onSelectPerson={navigateToPerson}
+            onViewTeam={navigateToTeam}
+            whoopTeam={whoopTeam}
+          />
+        )}
+        {layer === 'team' && (
+          <TeamLayer
+            onSelectPerson={navigateToPerson}
+            whoopTeam={whoopTeam}
+          />
+        )}
+        {layer === 'person' && selectedMember && (
+          <PersonLayer
+            member={selectedMember}
+            currentUserEmail={user?.email ?? null}
+            whoopMy={whoopMy}
+            whoopTeam={whoopTeam}
+          />
         )}
       </div>
     </div>
