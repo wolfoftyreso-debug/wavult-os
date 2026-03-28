@@ -77,6 +77,7 @@ import customerStateRouter from "./customer-state";
 import customerPortalRouter from "./customer-portal";
 import revolutRouter from "./revolut";
 import whoopRouter from "./whoop/whoop-api";
+import { commandsRouter } from "./routes/commands";
 
 // ---------------------------------------------------------------------------
 // Auth router
@@ -459,6 +460,7 @@ app.use(async (req: Request, _res: Response, next: NextFunction) => {
 // ---------------------------------------------------------------------------
 // WHOOP — registreras FÖRE prefixlösa routers för att undvika catch-all konflikter
 app.use('/whoop', whoopRouter);                       // WHOOP Biometrics — /whoop/auth (public), /whoop/callback, /whoop/status, /whoop/me, /whoop/team
+app.use('/v1/commands', commandsRouter);              // CCL: Command & Control Layer — POST /v1/commands, POST /v1/commands/:id/execute, GET /v1/commands
 
 app.use(executionRouter);
 app.use(capabilityRouter);
