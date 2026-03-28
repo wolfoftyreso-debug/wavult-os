@@ -80,6 +80,8 @@ const NAV_GROUPS: NavGroup[] = [
       { to: '/insurance', label: 'Insurance', icon: null },
       { to: '/people', label: 'Team', icon: null },
       { to: '/team-map', label: 'Team Map', icon: null },
+      { to: '/decisions', label: 'Beslutssystem', icon: null },
+      { to: '/governance', label: 'Governance Register', icon: null },
     ],
   },
   {
@@ -165,6 +167,8 @@ const ROUTE_LABELS: Record<string, string> = {
   '/insurance': 'Insurance Hub',
   '/team-map': 'Team Map',
   '/meeting-cadence': 'Möteshierarki',
+  '/decisions': 'Beslutssystem',
+  '/decisions/new': 'Nytt möte',
 }
 
 function getBreadcrumb(pathname: string): string {

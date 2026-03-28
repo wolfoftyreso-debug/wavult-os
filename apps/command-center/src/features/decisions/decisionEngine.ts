@@ -84,7 +84,6 @@ export function generateSystemActions(
   if (!chosen) return []
 
   const actions: SystemAction[] = []
-  const now = new Date().toISOString()
 
   // Alltid: uppdatera budget om det finns ekonomisk påverkan
   if (chosen.revenueImpact !== 0 || chosen.costImpact !== 0) {
@@ -158,7 +157,7 @@ export function generateSystemActions(
  * Kontrollerar om en användare kan göra CEO override på ett beslut.
  * Enbart Group CEO och Board-nivå har denna befogenhet.
  */
-export function canOverride(userId: string, userRole: string): boolean {
+export function canOverride(_userId: string, userRole: string): boolean {
   const overrideRoles = ['group-ceo', 'board-chair', 'chairman']
   return overrideRoles.includes(userRole.toLowerCase())
 }

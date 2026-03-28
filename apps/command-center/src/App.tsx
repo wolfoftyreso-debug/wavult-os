@@ -50,6 +50,10 @@ const WHOOPTeamDashboard     = lazy(() => import('./features/whoop/WHOOPTeamDash
 const InsuranceHub           = lazy(() => import('./features/insurance/InsuranceHub').then(m => ({ default: m.InsuranceHub })))
 const TeamMap                = lazy(() => import('./features/team-map/TeamMap').then(m => ({ default: m.TeamMap })))
 const MeetingCadenceView     = lazy(() => import('./features/milestones/MeetingCadenceView').then(m => ({ default: m.MeetingCadenceView })))
+const DecisionDashboard      = lazy(() => import('./features/decisions/DecisionDashboard').then(m => ({ default: m.DecisionDashboard })))
+const MeetingCreator         = lazy(() => import('./features/decisions/MeetingCreator').then(m => ({ default: m.MeetingCreator })))
+const MeetingView            = lazy(() => import('./features/decisions/MeetingView').then(m => ({ default: m.MeetingView })))
+const GovernanceDashboard    = lazy(() => import('./features/governance/GovernanceDashboard').then(m => ({ default: m.GovernanceDashboard })))
 
 // ─── Page loader fallback ───────────────────────────────────────────────────────
 function PageLoader() {
@@ -140,6 +144,10 @@ function AuthenticatedApp() {
               <Route path="/insurance" element={<InsuranceHub />} />
               <Route path="/team-map" element={<TeamMap />} />
               <Route path="/meeting-cadence" element={<MeetingCadenceView />} />
+              <Route path="/decisions" element={<DecisionDashboard />} />
+              <Route path="/decisions/new" element={<MeetingCreator />} />
+              <Route path="/decisions/:meetingId" element={<MeetingView />} />
+              <Route path="/governance" element={<GovernanceDashboard />} />
             </Routes>
           </Suspense>
         </Shell>
