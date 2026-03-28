@@ -6,13 +6,14 @@ import {
   AlertTriangle, Clock, CheckCircle, Lock, ArrowRight,
   Building2, DollarSign, Globe, Users, TrendingUp,
 } from 'lucide-react'
-import { TASKS, FLOWS, PERSONS } from '../../core/state/taskRegistry'
+import { FLOWS, PERSONS } from '../../core/state/taskRegistry'
 import {
   resolveTaskState,
   getSystemStatus,
   type Task,
   type Flow,
 } from '../../core/state/stateEngine'
+import { useBosTasks } from '../../core/state/useBosTasks'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -32,8 +33,8 @@ function getPersonName(ownerId: string): string {
 
 // ─── Task Card ────────────────────────────────────────────────────────────────
 
-function TaskCard({ task }: { task: Task }) {
-  const effectiveState = resolveTaskState(task, TASKS)
+function TaskCard({ task, allTasks }: { task: Task; allTasks: Task[] }) {
+  const effectiveState = resolveTaskState(task, allTasks)
   const isBlocked = effectiveState === 'BLOCKED'
   const isFailed = effectiveState === 'FAILED'
   const overdue = isOverdue(task.deadline)
@@ -44,7 +45,7 @@ function TaskCard({ task }: { task: Task }) {
     'border-gray-300'
 
   const blockerTasks = task.dependencies
-    .map(id => TASKS.find(t => t.id === id))
+    .map(id => allTasks.find(t => t.id === id))
     .filter(t => t && t.state !== 'DONE')
 
   return (
@@ -133,13 +134,13 @@ function TaskCard({ task }: { task: Task }) {
 
 // ─── Flow Progress Card ───────────────────────────────────────────────────────
 
-function FlowCard({ flow }: { flow: Flow }) {
-  const flowTasks = flow.tasks.map(id => TASKS.find(t => t.id === id)).filter(Boolean) as Task[]
+function FlowCard({ flow, allTasks }: { flow: Flow; allTasks: Task[] }) {
+  const flowTasks = flow.tasks.map(id => allTasks.find(t => t.id === id)).filter(Boolean) as Task[]
   const doneTasks = flowTasks.filter(t => t.state === 'DONE')
   const progress = flowTasks.length > 0 ? (doneTasks.length / flowTasks.length) * 100 : 0
 
   const nextTask = flowTasks.find(t => {
-    const effective = resolveTaskState(t, TASKS)
+    const effective = resolveTaskState(t, allTasks)
     return effective !== 'DONE' && effective !== 'BLOCKED'
   })
 
@@ -232,7 +233,9 @@ function HealthIndicator({ item }: { item: HealthItem }) {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function MissionControl() {
-  const systemStatus = useMemo(() => getSystemStatus(TASKS), [])
+  const { tasks: TASKS, loading } = useBosTasks()
+
+  const systemStatus = useMemo(() => getSystemStatus(TASKS), [TASKS])
 
   const criticalTasks = useMemo(() =>
     TASKS.filter(t => t.priority === 'critical' && t.state !== 'DONE')
@@ -244,7 +247,7 @@ export function MissionControl() {
         if (ae === 'BLOCKED' && be !== 'BLOCKED') return 1
         return 0
       }),
-    []
+    [TASKS]
   )
 
   const highTasks = useMemo(() =>
@@ -256,7 +259,7 @@ export function MissionControl() {
         if (ae === 'BLOCKED' && be !== 'BLOCKED') return 1
         return 0
       }),
-    []
+    [TASKS]
   )
 
   const criticalActionable = criticalTasks.filter(t => resolveTaskState(t, TASKS) !== 'BLOCKED')
@@ -265,6 +268,14 @@ export function MissionControl() {
   const hasBookkeeping = TASKS.find(t => t.id === 'finance-002')?.state === 'DONE'
   const hasWavultCom = TASKS.find(t => t.id === 'tech-001')?.state === 'DONE'
   const hasSupabasePro = TASKS.find(t => t.id === 'finance-001')?.state === 'DONE'
+
+  if (loading) {
+    return (
+      <div className="min-h-full bg-gray-50 flex items-center justify-center">
+        <div className="text-gray-500 font-mono text-sm">Laddar BOS data...</div>
+      </div>
+    )
+  }
 
   const healthItems: HealthItem[] = [
     {
@@ -359,7 +370,7 @@ export function MissionControl() {
               Inga kritiska uppgifter.
             </div>
           ) : (
-            criticalTasks.map(task => <TaskCard key={task.id} task={task} />)
+            criticalTasks.map(task => <TaskCard key={task.id} task={task} allTasks={TASKS} />)
           )}
         </div>
       </section>
@@ -381,7 +392,7 @@ export function MissionControl() {
               Inga höga prioriteter.
             </div>
           ) : (
-            highTasks.map(task => <TaskCard key={task.id} task={task} />)
+            highTasks.map(task => <TaskCard key={task.id} task={task} allTasks={TASKS} />)
           )}
         </div>
       </section>
@@ -395,7 +406,7 @@ export function MissionControl() {
           </h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {FLOWS.map(flow => <FlowCard key={flow.id} flow={flow} />)}
+          {FLOWS.map(flow => <FlowCard key={flow.id} flow={flow} allTasks={TASKS} />)}
         </div>
       </section>
 
