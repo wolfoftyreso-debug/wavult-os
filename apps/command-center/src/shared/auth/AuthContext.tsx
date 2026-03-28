@@ -54,7 +54,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function signIn(email: string, password: string): Promise<{ error: string | null }> {
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const normalizedEmail = email.trim().toLowerCase()
+    const { error } = await supabase.auth.signInWithPassword({ email: normalizedEmail, password })
     if (error) return { error: error.message }
     return { error: null }
   }

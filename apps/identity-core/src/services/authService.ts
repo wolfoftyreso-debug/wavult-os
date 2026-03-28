@@ -1,3 +1,4 @@
+import { normalizeEmail } from '../utils/normalizeEmail'
 import { db } from '../db/postgres'
 import { createSession, getSession, revokeSession, rotateSession, revokeAllUserSessions } from '../db/dynamo'
 import { verifyPassword, hashPassword } from '../crypto/password'
@@ -69,7 +70,7 @@ export async function login(
   // Always run argon2 equivalent work whether or not user exists to normalize timing.
   const { rows } = await db.query(
     'SELECT * FROM ic_users WHERE email = $1 AND is_active = true',
-    [email.toLowerCase()]
+    [normalizeEmail(email)]
   )
   const user = rows[0]
 
