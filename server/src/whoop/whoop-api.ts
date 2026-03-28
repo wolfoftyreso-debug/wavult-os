@@ -13,7 +13,7 @@
  *   DELETE /whoop/disconnect   → koppla bort WHOOP
  */
 
-import crypto from 'crypto';
+import { randomUUID } from 'crypto';
 import { Router, Request, Response } from 'express';
 import { getConfig } from '../config/env';
 import {
@@ -111,7 +111,7 @@ router.get('/auth', (req: Request, res: Response) => {
   }
 
   // Generera random state för CSRF-skydd
-  const state = crypto.randomUUID()
+  const state = randomUUID()
   oauthStateStore.set(state, { createdAt: Date.now() })
   cleanOldStates()
 
