@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard, AlertTriangle, GitBranch, Network,
-  Users, Target, Megaphone,
+  Users, Briefcase, Megaphone,
   DollarSign, Receipt, ShoppingCart, CreditCard,
   Scale, Flag, Layers,
   BookOpen, Server, Settings,
@@ -37,10 +37,9 @@ const NAV_GROUPS: NavGroup[] = [
   {
     labelKey: null,
     items: [
-      { to: '/',        labelKey: 'nav.command', icon: Target },
+      { to: '/',        labelKey: 'nav.command', icon: LayoutDashboard },
       { to: '/ops',     labelKey: 'nav.ops',     icon: LayoutGrid },
       { to: '/person',  labelKey: 'nav.person',  icon: User },
-      { to: '/command', labelKey: 'nav.command',  icon: LayoutDashboard },
       { to: '/alerts',  labelKey: 'nav.alerts',  icon: AlertTriangle },
     ],
   },
@@ -59,7 +58,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { to: '/people-governance', labelKey: 'nav.people',       icon: Users },
       { to: '/org',               labelKey: 'nav.organization', icon: Network },
-      { to: '/crm',               labelKey: 'nav.crm',          icon: Target },
+      { to: '/crm',               labelKey: 'nav.crm',          icon: Briefcase },
     ],
   },
   {
