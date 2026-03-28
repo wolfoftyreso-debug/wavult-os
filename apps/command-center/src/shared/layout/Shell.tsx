@@ -108,6 +108,7 @@ const NAV_GROUPS: NavGroup[] = [
   {
     label: 'SYSTEM',
     items: [
+      { to: '/causal-os', label: 'Causal OS', icon: null },
       { to: '/infrastructure', label: 'Infrastruktur & Drift', icon: null },
       { to: '/whoop', label: 'WHOOP', icon: null },
       { to: '/api-hub', label: 'API Hub', icon: null },
@@ -172,6 +173,7 @@ const ROUTE_LABELS: Record<string, string> = {
   '/decisions/new': 'Nytt möte',
   '/governance': 'Governance Register',
   '/infrastructure': 'Infrastruktur & Drift',
+  '/causal-os': 'Causal OS',
 }
 
 function getBreadcrumb(pathname: string): string {
