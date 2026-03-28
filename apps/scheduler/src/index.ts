@@ -62,8 +62,22 @@ async function tick() {
   )
 }
 
+// Recurring job IDs — these must NEVER be set to DONE
+const RECURRING_JOB_IDS = [
+  '00000000-0000-0000-0000-000000000001',
+  '00000000-0000-0000-0000-000000000002',
+  '00000000-0000-0000-0000-000000000003',
+]
+
+async function insertEvent(type: string, payload: Record<string, unknown>) {
+  await supabase.from('bos_events').insert({ type, payload })
+}
+
 async function executeJob(job: Job) {
   console.log(`[Executor] Running job ${job.id} (type: ${job.type})`)
+
+  // SINGLE SOURCE OF TRUTH: every state change creates an event
+  await insertEvent('JOB_STARTED', { jobId: job.id, type: job.type, workerId: WORKER_ID })
 
   try {
     let result: unknown
@@ -89,11 +103,13 @@ async function executeJob(job: Job) {
     }
 
     await completeJob(job.id, result)
+    await insertEvent('JOB_COMPLETED', { jobId: job.id, type: job.type, result: String(result) })
     await logAudit('job', job.id, 'COMPLETED', 'system', String(result))
   } catch (err) {
     const error = err instanceof Error ? err.message : String(err)
     console.error(`[Executor] Job ${job.id} failed:`, error)
     await failJob(job, error)
+    await insertEvent('JOB_FAILED', { jobId: job.id, type: job.type, error, retryCount: job.retry_count + 1 })
     await logAudit('job', job.id, 'FAILED', 'system', error)
   }
 }
@@ -216,6 +232,9 @@ async function callN8nWebhook(payload: Record<string, unknown>) {
 // ─── Job Lifecycle ────────────────────────────────────────────────────────────
 
 async function completeJob(jobId: string, result: unknown) {
+  // Recurring jobs requeue themselves — NEVER set to DONE
+  if (RECURRING_JOB_IDS.includes(jobId)) return
+
   await supabase
     .from('bos_jobs')
     .update({
@@ -254,11 +273,12 @@ async function requeueRecurringJob(jobId: string, intervalMs: number) {
   await supabase
     .from('bos_jobs')
     .update({
-      state: 'PENDING',
+      state: 'PENDING',           // PENDING direkt — inte DONE
       next_run_at: new Date(Date.now() + intervalMs).toISOString(),
       locked_at: null,
       locked_by: null,
       retry_count: 0,
+      last_error: null,           // rensa fel från föregående körning
       updated_at: new Date().toISOString(),
     })
     .eq('id', jobId)
@@ -287,6 +307,7 @@ async function watchdogLoop() {
 
       for (const job of stuckJobs as Job[]) {
         await failJob(job, `Watchdog timeout after ${JOB_TIMEOUT_SECONDS}s`)
+        await insertEvent('WATCHDOG_RESET', { jobId: job.id, reason: 'timeout', workerId: job.locked_by })
         await logAudit('job', job.id, 'WATCHDOG_RESET', 'watchdog', 'Timeout exceeded')
       }
     } catch (err) {

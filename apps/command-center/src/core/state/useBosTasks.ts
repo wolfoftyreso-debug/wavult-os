@@ -15,6 +15,17 @@ export function useBosTasks() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    async function init() {
+      // BLOCK 5 — AUTH GUARD: never fetch without authenticated session
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        setLoading(false)  // Stay empty — never show false "0 tasks" to unauthenticated user
+        return
+      }
+
+      fetchTasks()
+    }
+
     // Initial fetch
     async function fetchTasks() {
       const { data, error } = await supabase
@@ -30,39 +41,49 @@ export function useBosTasks() {
       setLoading(false)
     }
 
-    fetchTasks()
+    init()
 
-    // Realtime subscription
-    const channel = supabase
+    // BLOCK 1+4 — SINGLE SOURCE OF TRUTH: listen to bos_events (not bos_tasks) for refresh triggers
+    const eventsChannel = supabase
+      .channel('bos_events_stream')
+      .on('postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'bos_events' },
+        (payload) => {
+          // Any system event triggers task refresh
+          fetchTasks()
+          const eventType = (payload.new as { type?: string })?.type
+          const jobPayload = (payload.new as { payload?: Record<string, unknown> })?.payload
+          if (eventType && jobPayload) {
+            eventBus.publish({ type: 'TASK_UPDATED', taskId: String(jobPayload.taskId || jobPayload.jobId || '') })
+          }
+        }
+      )
+      .subscribe()
+
+    // Keep bos_tasks subscription for task-specific events
+    const tasksChannel = supabase
       .channel('bos_tasks_changes')
       .on('postgres_changes',
         { event: '*', schema: 'public', table: 'bos_tasks' },
         (payload) => {
-          fetchTasks()  // refetch on any change
-
-          // Publish event to bus
+          fetchTasks()
           const taskId = (payload.new as { id?: string })?.id || (payload.old as { id?: string })?.id
           if (taskId) {
-            if (payload.eventType === 'UPDATE') {
-              const newState = (payload.new as { state?: string })?.state
-              if (newState === 'DONE') {
-                eventBus.publish({
-                  type: 'TASK_COMPLETED',
-                  taskId,
-                  ownerId: (payload.new as { owner_id?: string })?.owner_id || '',
-                })
-              } else {
-                eventBus.publish({ type: 'TASK_UPDATED', taskId })
-              }
-            } else if (payload.eventType === 'INSERT') {
-              eventBus.publish({ type: 'TASK_CREATED', taskId })
+            const newState = (payload.new as { state?: string })?.state
+            if (newState === 'DONE') {
+              eventBus.publish({ type: 'TASK_COMPLETED', taskId, ownerId: (payload.new as { owner_id?: string })?.owner_id || '' })
+            } else {
+              eventBus.publish({ type: 'TASK_UPDATED', taskId })
             }
           }
         }
       )
       .subscribe()
 
-    return () => { supabase.removeChannel(channel) }
+    return () => {
+      supabase.removeChannel(eventsChannel)
+      supabase.removeChannel(tasksChannel)
+    }
   }, [])
 
   async function updateTaskState(
