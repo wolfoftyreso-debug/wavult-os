@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useApi } from "./useApi";
 import { useTranslation, LanguageSwitcher } from "@pixdrift/i18n";
 import { IntegrationsHub } from "./IntegrationsHub";
