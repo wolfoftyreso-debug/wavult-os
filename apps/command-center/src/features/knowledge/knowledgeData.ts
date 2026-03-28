@@ -3651,7 +3651,7 @@ Se doc-int-008 för fullständig dag 1–30 checklista. Kortversion:
 Wavult Group rekryterar utan diskriminering. Den bästa personen för rollen anställs, oavsett kön, ålder, etnisk bakgrund, religion, funktionsnedsättning eller annan personlig egenskap.
 
 Senast reviderat: 2026-03-28.`
-  },,
+  },
   {
     id: 'doc-arch-001',
     title: 'Identity Core — Sovereign Identity Layer',

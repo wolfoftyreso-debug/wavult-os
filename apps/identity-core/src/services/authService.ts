@@ -118,6 +118,15 @@ export async function login(
   // 5. Session fixation prevention — revoke all existing sessions before creating new one
   await forceNewSession(user.id as string)
 
+  // Increment session_epoch atomically — prevents concurrent login race
+  const epochResult = await db.query(
+    `UPDATE ic_users SET session_epoch = session_epoch + 1, updated_at = NOW()
+     WHERE id = $1 RETURNING session_epoch, token_version`,
+    [user.id]
+  )
+  const currentEpoch = epochResult.rows[0].session_epoch as number
+  const currentTv = epochResult.rows[0].token_version as number
+
   // 6. Create session
   const refreshToken = generateRefreshToken()
   const refreshTokenHash = hashToken(refreshToken)
@@ -148,14 +157,15 @@ export async function login(
     revoked: false,
   } as Parameters<typeof createSession>[0])
 
-  // 7. Sign access token with current token_version
+  // 7. Sign access token with current token_version and session_epoch
   const accessToken = await signAccessToken({
     sub: user.id as string,
     email: user.email as string,
     org: (user.org_id as string) || 'wavult',
     roles: (user.roles as string[]) || [],
     session_id: session.session_id,
-    tv: user.token_version as number,
+    tv: currentTv,
+    se: currentEpoch,  // session_epoch
   })
 
   await logAuthEvent(user.id as string, 'login.success', ipAddress, userAgent, session.session_id, undefined, requestId)

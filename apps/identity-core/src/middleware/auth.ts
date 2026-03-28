@@ -58,7 +58,7 @@ export function requireAuth(req: Request, res: Response, next: NextFunction): vo
               (SELECT value FROM ic_global_state WHERE key = 'token_epoch_changed_at') AS token_epoch_changed_at
        FROM ic_users u WHERE u.id = $1`,
       [payload.sub]
-    ).then((result) => {
+    ).then(async (result) => {
       if (!result.rows[0]) {
         res.status(401).json({ error: 'TOKEN_REVOKED' })
         return
@@ -75,6 +75,15 @@ export function requireAuth(req: Request, res: Response, next: NextFunction): vo
       if (token_epoch_changed_at && payload.iat < token_epoch_changed_at) {
         res.status(401).json({ error: 'TOKEN_REVOKED' })
         return
+      }
+
+      // Check session_epoch matches (concurrent login protection)
+      const { rows: epochRows } = await db.query(
+        'SELECT session_epoch FROM ic_users WHERE id = $1',
+        [payload.sub]
+      )
+      if (!epochRows[0] || epochRows[0].session_epoch !== payload.se) {
+        res.status(401).json({ error: 'SESSION_SUPERSEDED' }); return
       }
 
       req.user = payload

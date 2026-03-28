@@ -60,6 +60,7 @@ const CommandView            = lazy(() => import('./features/command-view/Comman
 const MissionControl         = lazy(() => import('./features/mission-control/MissionControl').then(m => ({ default: m.MissionControl })))
 const PersonView             = lazy(() => import('./features/mission-control/PersonView').then(m => ({ default: m.PersonView })))
 const OperationsCenter       = lazy(() => import('./features/operations-center/OperationsCenter').then(m => ({ default: m.OperationsCenter })))
+const SystemGraph            = lazy(() => import('./features/system-graph/SystemGraph').then(m => ({ default: m.SystemGraph })))
 
 // ─── Page loader fallback ───────────────────────────────────────────────────────
 function PageLoader() {
@@ -161,6 +162,7 @@ function AuthenticatedApp() {
               <Route path="/infrastructure" element={<InfrastructureDashboard />} />
               <Route path="/causal-os" element={<CausalOS />} />
               <Route path="/ops" element={<OperationsCenter />} />
+              <Route path="/system-graph" element={<SystemGraph />} />
             </Routes>
           </Suspense>
         </Shell>

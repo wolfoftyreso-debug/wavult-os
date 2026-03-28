@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS ic_users (
   failed_login_count INT DEFAULT 0,
   locked_until TIMESTAMPTZ,
   token_version INT DEFAULT 1,  -- Increment to invalidate all tokens immediately
+  session_epoch INT DEFAULT 1 NOT NULL,
   state_version INT DEFAULT 1,  -- Optimistic lock: always check before mutating
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),

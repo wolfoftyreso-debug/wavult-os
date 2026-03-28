@@ -76,6 +76,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { to: '/knowledge',       labelKey: 'nav.knowledge',      icon: BookOpen },
       { to: '/infrastructure',  labelKey: 'nav.infrastructure', icon: Server },
+      { to: '/system-graph',    labelKey: 'nav.systemGraph',    icon: Network },
       { to: '/settings',        labelKey: 'nav.settings',       icon: Settings },
     ],
   },

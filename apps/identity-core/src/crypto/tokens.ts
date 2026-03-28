@@ -10,6 +10,7 @@ export interface AccessTokenPayload {
   roles: string[]
   session_id: string
   tv: number            // token_version — must match ic_users.token_version
+  se?: number           // session_epoch — prevents concurrent login race condition
   iss: string
   aud: string[]
   iat: number
