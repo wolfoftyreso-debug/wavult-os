@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<title>HumanFigure Preview</title>
+<style>
+  body { font-family: Inter, sans-serif; background: #fff; padding: 40px; display: flex; flex-direction: column; gap: 40px; }
+  h2 { font-size: 11px; color: #8B949E; text-transform: uppercase; letter-spacing: .05em; margin: 0 0 16px; }
+  .row { display: flex; align-items: flex-end; gap: 24px; }
+  .label { font-size: 10px; color: #8B949E; text-align: center; margin-top: 8px; font-family: monospace; }
+  .col { display: flex; flex-direction: column; align-items: center; }
+  /* Group container helpers */
+  .group { position: relative; display: inline-flex; align-items: flex-end; }
+</style>
+</head>
+<body>
+
+<div>
+  <h2>Single — sizes sm / md / lg / xl</h2>
+  <div class="row">
+    <!-- sm = 16px -->
+    <div class="col">
+      <svg width="16" height="22" viewBox="0 0 20 28" fill="#0066CC">
+        <circle cx="10" cy="6" r="5"/>
+        <rect x="2" y="13" width="16" height="15" rx="4" ry="4"/>
+      </svg>
+      <div class="label">sm 16</div>
+    </div>
+    <!-- md = 24px -->
+    <div class="col">
+      <svg width="24" height="34" viewBox="0 0 20 28" fill="#0066CC">
+        <circle cx="10" cy="6" r="5"/>
+        <rect x="2" y="13" width="16" height="15" rx="4" ry="4"/>
+      </svg>
+      <div class="label">md 24</div>
+    </div>
+    <!-- lg = 40px -->
+    <div class="col">
+      <svg width="40" height="56" viewBox="0 0 20 28" fill="#0066CC">
+        <circle cx="10" cy="6" r="5"/>
+        <rect x="2" y="13" width="16" height="15" rx="4" ry="4"/>
+      </svg>
+      <div class="label">lg 40</div>
+    </div>
+    <!-- xl = 64px -->
+    <div class="col">
+      <svg width="64" height="90" viewBox="0 0 20 28" fill="#0066CC">
+        <circle cx="10" cy="6" r="5"/>
+        <rect x="2" y="13" width="16" height="15" rx="4" ry="4"/>
+      </svg>
+      <div class="label">xl 64</div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <h2>Group variant — 3, 4, 5 figures with overlap (md=24px)</h2>
+  <div class="row">
+    <!-- Group of 3 -->
+    <div class="col">
+      <div style="position:relative;width:58px;height:34px;display:inline-block;">
+        <svg style="position:absolute;left:0;bottom:0;opacity:1"    width="24" height="34" viewBox="0 0 20 28" fill="#0066CC"><circle cx="10" cy="6" r="5"/><rect x="2" y="13" width="16" height="15" rx="4"/></svg>
+        <svg style="position:absolute;left:17px;bottom:0;opacity:.85" width="24" height="34" viewBox="0 0 20 28" fill="#0066CC"><circle cx="10" cy="6" r="5"/><rect x="2" y="13" width="16" height="15" rx="4"/></svg>
+        <svg style="position:absolute;left:34px;bottom:0;opacity:.7"  width="24" height="34" viewBox="0 0 20 28" fill="#0066CC"><circle cx="10" cy="6" r="5"/><rect x="2" y="13" width="16" height="15" rx="4"/></svg>
+      </div>
+      <div class="label">group×3</div>
+    </div>
+    <!-- Group of 5 -->
+    <div class="col">
+      <div style="position:relative;width:92px;height:34px;display:inline-block;">
+        <svg style="position:absolute;left:0;bottom:0;opacity:1"    width="24" height="34" viewBox="0 0 20 28" fill="#0066CC"><circle cx="10" cy="6" r="5"/><rect x="2" y="13" width="16" height="15" rx="4"/></svg>
+        <svg style="position:absolute;left:17px;bottom:0;opacity:.85" width="24" height="34" viewBox="0 0 20 28" fill="#0066CC"><circle cx="10" cy="6" r="5"/><rect x="2" y="13" width="16" height="15" rx="4"/></svg>
+        <svg style="position:absolute;left:34px;bottom:0;opacity:.7"  width="24" height="34" viewBox="0 0 20 28" fill="#0066CC"><circle cx="10" cy="6" r="5"/><rect x="2" y="13" width="16" height="15" rx="4"/></svg>
+        <svg style="position:absolute;left:51px;bottom:0;opacity:.85" width="24" height="34" viewBox="0 0 20 28" fill="#0066CC"><circle cx="10" cy="6" r="5"/><rect x="2" y="13" width="16" height="15" rx="4"/></svg>
+        <svg style="position:absolute;left:68px;bottom:0;opacity:1"   width="24" height="34" viewBox="0 0 20 28" fill="#0066CC"><circle cx="10" cy="6" r="5"/><rect x="2" y="13" width="16" height="15" rx="4"/></svg>
+      </div>
+      <div class="label">group×5</div>
+    </div>
+    <!-- Large group lg -->
+    <div class="col">
+      <div style="position:relative;width:152px;height:56px;display:inline-block;">
+        <svg style="position:absolute;left:0;bottom:0;opacity:1"    width="40" height="56" viewBox="0 0 20 28" fill="#0066CC"><circle cx="10" cy="6" r="5"/><rect x="2" y="13" width="16" height="15" rx="4"/></svg>
+        <svg style="position:absolute;left:28px;bottom:0;opacity:.85" width="40" height="56" viewBox="0 0 20 28" fill="#0066CC"><circle cx="10" cy="6" r="5"/><rect x="2" y="13" width="16" height="15" rx="4"/></svg>
+        <svg style="position:absolute;left:56px;bottom:0;opacity:.7"  width="40" height="56" viewBox="0 0 20 28" fill="#0066CC"><circle cx="10" cy="6" r="5"/><rect x="2" y="13" width="16" height="15" rx="4"/></svg>
+        <svg style="position:absolute;left:84px;bottom:0;opacity:.85" width="40" height="56" viewBox="0 0 20 28" fill="#0066CC"><circle cx="10" cy="6" r="5"/><rect x="2" y="13" width="16" height="15" rx="4"/></svg>
+        <svg style="position:absolute;left:112px;bottom:0;opacity:1"  width="40" height="56" viewBox="0 0 20 28" fill="#0066CC"><circle cx="10" cy="6" r="5"/><rect x="2" y="13" width="16" height="15" rx="4"/></svg>
+      </div>
+      <div class="label">group×5 lg</div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <h2>Usage contexts</h2>
+  <div style="display:flex;flex-direction:column;gap:16px;max-width:400px;">
+    <!-- Meeting participant row -->
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid #E1E4E8;border-radius:8px;">
+      <div style="position:relative;width:58px;height:22px;display:inline-block;flex-shrink:0;">
+        <svg style="position:absolute;left:0;bottom:0"    width="16" height="22" viewBox="0 0 20 28" fill="#0066CC"><circle cx="10" cy="6" r="5"/><rect x="2" y="13" width="16" height="15" rx="4"/></svg>
+        <svg style="position:absolute;left:11px;bottom:0" width="16" height="22" viewBox="0 0 20 28" fill="#0066CC" opacity=".8"><circle cx="10" cy="6" r="5"/><rect x="2" y="13" width="16" height="15" rx="4"/></svg>
+        <svg style="position:absolute;left:22px;bottom:0" width="16" height="22" viewBox="0 0 20 28" fill="#0066CC" opacity=".65"><circle cx="10" cy="6" r="5"/><rect x="2" y="13" width="16" height="15" rx="4"/></svg>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#0D1117">Styrelsemöte — kv1</div>
+        <div style="font-size:11px;color:#8B949E">3 deltagare · 09:00</div>
+      </div>
+    </div>
+    <!-- Role row -->
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid #E1E4E8;border-radius:8px;">
+      <svg width="24" height="34" viewBox="0 0 20 28" fill="#0066CC"><circle cx="10" cy="6" r="5"/><rect x="2" y="13" width="16" height="15" rx="4"/></svg>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#0D1117">Erik Svensson</div>
+        <div style="font-size:11px;color:#8B949E">Group CEO · Wavult Group</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

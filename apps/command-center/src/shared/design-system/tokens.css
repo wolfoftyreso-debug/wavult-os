@@ -1,0 +1,73 @@
+/* ─── Wavult OS — Enterprise Design System Tokens ───────────────────────────── */
+/* Replaces dark startup/gaming theme with strict enterprise light theme        */
+
+:root {
+  /* ── Base ──────────────────────────────────────────────────────────────── */
+  --color-bg: #FFFFFF;
+  --color-bg-subtle: #F8F9FA;
+  --color-bg-muted: #F1F3F5;
+  --color-surface: #FFFFFF;
+  --color-surface-raised: #FFFFFF;
+  --color-border: #E1E4E8;
+  --color-border-strong: #C9CDD4;
+
+  /* ── Text ──────────────────────────────────────────────────────────────── */
+  --color-text-primary: #0D1117;
+  --color-text-secondary: #57606A;
+  --color-text-muted: #8B949E;
+  --color-text-inverse: #FFFFFF;
+
+  /* ── Brand ─────────────────────────────────────────────────────────────── */
+  --color-brand: #0066CC;
+  --color-brand-hover: #0052A3;
+  --color-brand-light: #E8F0FE;
+
+  /* ── Status (ONLY functional) ──────────────────────────────────────────── */
+  --color-success: #1A7F37;
+  --color-success-bg: #DCFFE4;
+  --color-warning: #9A6700;
+  --color-warning-bg: #FFF8C5;
+  --color-danger: #CF222E;
+  --color-danger-bg: #FFEBE9;
+  --color-neutral: #57606A;
+  --color-neutral-bg: #F6F8FA;
+  --color-info: #0066CC;
+  --color-info-bg: #E8F0FE;
+
+  /* ── Spacing ────────────────────────────────────────────────────────────── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* ── Typography ─────────────────────────────────────────────────────────── */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --text-xs: 11px;
+  --text-sm: 13px;
+  --text-base: 14px;
+  --text-md: 15px;
+  --text-lg: 17px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+  --text-3xl: 30px;
+  --font-regular: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+
+  /* ── Radius ─────────────────────────────────────────────────────────────── */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  /* ── Shadow ─────────────────────────────────────────────────────────────── */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.10);
+}

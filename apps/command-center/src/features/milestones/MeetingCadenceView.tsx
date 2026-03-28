@@ -24,8 +24,8 @@ function MeetingCard({ meeting }: { meeting: MeetingCadence }) {
             <div className="flex items-center gap-2 flex-wrap">
               <span className={`text-sm font-semibold ${meta.color}`}>{meeting.name}</span>
               {meeting.automate && (
-                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex-shrink-0">
-                  BERNT
+                <span className="text-[9px] font-medium px-1.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 flex-shrink-0">
+                  Fastställd i Ledningsgenomgång · 28 mar 2026
                 </span>
               )}
             </div>
@@ -163,9 +163,9 @@ function Legend() {
   return (
     <div className="flex items-center gap-4 flex-wrap text-[11px] text-gray-500">
       <span className="flex items-center gap-1.5">
-        <span className="text-[8px] text-emerald-400">●</span>
-        <span className="text-emerald-400 font-bold">BERNT</span>
-        = automatiserad av Bernt
+        <span className="text-[8px] text-blue-400">●</span>
+        <span className="text-blue-400 font-medium">Fastställd i Ledningsgenomgång · 28 mar 2026</span>
+        — automatisk exekvering via Wavult OS
       </span>
       <span className="flex items-center gap-1.5">
         <span>▾</span>
@@ -201,9 +201,9 @@ export function MeetingCadenceView() {
               <div className="text-lg font-bold text-white">{totalMeetings}</div>
               <div className="text-[10px] text-gray-500">Mötestyper</div>
             </div>
-            <div className="px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-center">
-              <div className="text-lg font-bold text-emerald-400">{automatedCount}</div>
-              <div className="text-[10px] text-gray-500">Bernt hanterar</div>
+            <div className="px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-center">
+              <div className="text-lg font-bold text-blue-400">{automatedCount}</div>
+              <div className="text-[10px] text-gray-500">Automatisk exekvering</div>
             </div>
             <div className="px-3 py-1.5 rounded-lg bg-purple-500/10 border border-purple-500/20 text-center">
               <div className="text-lg font-bold text-purple-400">6</div>
