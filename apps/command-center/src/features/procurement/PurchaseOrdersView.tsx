@@ -25,7 +25,8 @@ export function PurchaseOrdersView() {
 
   function handleCreate() {
     if (!form.supplierId || !form.description || !form.amount) return
-    const supplier = SUPPLIERS.find(s => s.id === form.supplierId)!
+    const supplier = SUPPLIERS.find(s => s.id === form.supplierId)
+    if (!supplier) return
     const newPO: PurchaseOrder = {
       id: `po${Date.now()}`,
       supplierId: form.supplierId,

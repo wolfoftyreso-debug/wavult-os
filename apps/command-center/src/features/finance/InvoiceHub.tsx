@@ -46,7 +46,7 @@ function InvoicePreview({ invoice }: { invoice: Invoice }) {
         </div>
         <div className="text-right">
           <p className="text-sm font-semibold" style={{ color: fe?.color }}>{fe?.name}</p>
-          {fe?.id === 'landvex-ab' && <p className="text-xs text-gray-400">Org.nr: 559141-7042</p>}
+          {fe?.orgNr && <p className="text-xs text-gray-400">Org.nr: {fe.orgNr}</p>}
           <p className="text-xs text-gray-400">{fe?.jurisdiction}</p>
         </div>
       </div>

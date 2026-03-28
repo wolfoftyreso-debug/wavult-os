@@ -281,6 +281,13 @@ export function PayrollRun() {
               </tr>
             </thead>
             <tbody>
+              {PAYROLL_HISTORY.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="px-5 py-8 text-center text-gray-600 text-xs italic">
+                    Inga lönekörningar genomförda ännu
+                  </td>
+                </tr>
+              )}
               {PAYROLL_HISTORY.map(run => (
                 <tr key={run.id} className="border-b border-surface-border/50">
                   <td className="px-5 py-3 text-xs text-white">{fmtPeriod(run.period)}</td>

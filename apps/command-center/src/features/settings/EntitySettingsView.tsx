@@ -33,11 +33,11 @@ const ENTITIES: EntityConfig[] = [
     country: '🇸🇪 Sverige',
     currency: 'SEK',
     jurisdiction: 'Sverige',
-    taxTable: '30 — Stockholms Tingsrätt',
-    orgNumber: '559XXX-XXXX',
-    address: 'Storgatan 1, 111 51 Stockholm',
-    vatNumber: 'SE559XXXXXXXX01',
-    bankAccount: '••••••7849',
+    taxTable: 'Ej konfigurerat',
+    orgNumber: '',
+    address: '',
+    vatNumber: '',
+    bankAccount: '',
     invoiceLogoUrl: '',
     contacts: [
       { name: 'Erik Svensson', role: 'Chairman / Group CEO', email: 'erik@hypbit.com', phone: '+46709123223' },
@@ -52,11 +52,11 @@ const ENTITIES: EntityConfig[] = [
     country: '🇸🇪 Sverige',
     currency: 'SEK',
     jurisdiction: 'Sverige',
-    taxTable: '30 — Bolagsverket',
-    orgNumber: '559XXX-YYYY',
-    address: 'Storgatan 1, 111 51 Stockholm',
-    vatNumber: 'SE559XXXXXXXX02',
-    bankAccount: '••••••3312',
+    taxTable: 'Ej konfigurerat',
+    orgNumber: '',
+    address: '',
+    vatNumber: '',
+    bankAccount: '',
     invoiceLogoUrl: '',
     contacts: [
       { name: 'Leon Russo De Cerame', role: 'CEO Operations', email: 'leon@hypbit.com', phone: '+46738968949' },
@@ -70,11 +70,11 @@ const ENTITIES: EntityConfig[] = [
     country: '🇺🇸 Texas, USA',
     currency: 'USD',
     jurisdiction: 'Texas',
-    taxTable: 'US Federal + Texas State',
-    orgNumber: 'EIN XX-XXXXXXX',
-    address: '123 Tech Blvd, Austin TX 78701',
-    vatNumber: 'N/A (USA)',
-    bankAccount: '••••••8801',
+    taxTable: 'Ej konfigurerat',
+    orgNumber: '',
+    address: '',
+    vatNumber: '',
+    bankAccount: '',
     invoiceLogoUrl: '',
     contacts: [
       { name: 'Johan Berglund', role: 'CTO', email: 'johan@hypbit.com', phone: '+46736977576' },
@@ -88,11 +88,11 @@ const ENTITIES: EntityConfig[] = [
     country: '🇱🇹 Litauen',
     currency: 'EUR',
     jurisdiction: 'Vilnius, Litauen',
-    taxTable: 'LT-Standard 15%',
-    orgNumber: '3XXXXXXX',
-    address: 'Gedimino pr. 1, Vilnius',
-    vatNumber: 'LT3XXXXXXXX',
-    bankAccount: '••••••5560',
+    taxTable: 'Ej konfigurerat',
+    orgNumber: '',
+    address: '',
+    vatNumber: '',
+    bankAccount: '',
     invoiceLogoUrl: '',
     contacts: [
       { name: 'Dennis Bjarnemark', role: 'CLO', email: 'dennis@hypbit.com', phone: '0761474243' },
@@ -121,7 +121,7 @@ function EntityCard({ entity }: { entity: EntityConfig }) {
         </div>
         <div className="flex-1 min-w-0">
           <div className="text-sm font-bold text-white">{entity.name}</div>
-          <div className="text-xs text-gray-600">{entity.country} · {entity.orgNumber}</div>
+          <div className="text-xs text-gray-600">{entity.country}{entity.orgNumber ? ` · ${entity.orgNumber}` : ' · Org.nr (ej registrerat)'}</div>
         </div>
         <button
           onClick={() => setEditing(e => !e)}
@@ -169,7 +169,7 @@ function EntityCard({ entity }: { entity: EntityConfig }) {
           {/* VAT */}
           <div className="space-y-1">
             <div className="text-[9px] text-gray-700 font-mono uppercase">Momsregistrering</div>
-            <div className="text-xs text-gray-400 font-mono">{entity.vatNumber}</div>
+            <div className="text-xs text-gray-400 font-mono">{entity.vatNumber || <span className="text-gray-600 italic">VAT-nummer (ej registrerat)</span>}</div>
           </div>
 
           {/* Address */}
@@ -182,7 +182,7 @@ function EntityCard({ entity }: { entity: EntityConfig }) {
                 className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none"
               />
             ) : (
-              <div className="text-xs text-gray-400">{address}</div>
+              <div className="text-xs text-gray-400">{address || <span className="text-gray-600 italic">Lägg till adress</span>}</div>
             )}
           </div>
 
@@ -198,7 +198,9 @@ function EntityCard({ entity }: { entity: EntityConfig }) {
               </button>
             </div>
             <div className="text-xs font-mono text-gray-400">
-              {showBank ? entity.bankAccount.replace(/•/g, '0') + ' (demo)' : entity.bankAccount}
+              {entity.bankAccount
+                ? (showBank ? entity.bankAccount.replace(/•/g, '0') : entity.bankAccount)
+                : <span className="italic text-gray-600">Bankkontonummer (ej registrerat)</span>}
             </div>
           </div>
         </div>
@@ -207,8 +209,8 @@ function EntityCard({ entity }: { entity: EntityConfig }) {
         <div className="rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-2 text-xs text-gray-600">
           <div className="font-mono uppercase text-gray-700 mb-1">Fakturamall</div>
           <div>Logotyp: <span className="text-gray-500">{entity.invoiceLogoUrl || 'ej uppladdad'}</span></div>
-          <div>Adress: <span className="text-gray-500">{address}</span></div>
-          <div>Org.nr: <span className="text-gray-500">{entity.orgNumber}</span></div>
+          <div>Adress: <span className="text-gray-500">{address || 'Lägg till adress'}</span></div>
+          <div>Org.nr: <span className="text-gray-500">{entity.orgNumber || 'Org.nr (ej registrerat)'}</span></div>
           {editing && (
             <button className="mt-2 text-xs text-blue-400 hover:text-blue-300 transition-colors">
               + Ladda upp logotyp

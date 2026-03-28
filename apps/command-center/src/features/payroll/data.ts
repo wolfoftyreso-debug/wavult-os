@@ -1,12 +1,12 @@
-// ─── Payroll Mock Data ────────────────────────────────────────────────────────
+// ─── Payroll Data Types ───────────────────────────────────────────────────────
+// Lönedata hämtas från Supabase (employees-tabellen).
+// Lönekörningar hanteras i usePayroll-hooken. Inga fejkade siffror.
 
 export const EMPLOYER_TAX_RATE = 0.3142 // Arbetsgivaravgift 31.42%
 export const TAX_TABLE = 33             // Skattetabell Stockholm
 
 // Swedish income tax approximation for table 33 (Stockholm, ~2026)
-// Monthly gross → estimated tax deduction
 export function calcTaxDeduction(grossMonthly: number): number {
-  // Simplified progressive table 33
   if (grossMonthly <= 20_000) return grossMonthly * 0.25
   if (grossMonthly <= 40_000) return grossMonthly * 0.30
   if (grossMonthly <= 60_000) return grossMonthly * 0.32
@@ -22,7 +22,7 @@ export interface Employee {
   email: string
   phone: string
   startDate: string
-  grossSalary: number       // SEK/month
+  grossSalary: number       // SEK/month — hämtas från Supabase
   employmentRate: number    // 1.0 = 100%
   status: 'active' | 'leave'
   taxTable: number
@@ -30,6 +30,8 @@ export interface Employee {
   location: string
 }
 
+// Anställda — struktur bevaras, löner hämtas från databasen
+// grossSalary = 0 tills registrerat i Supabase (employees.gross_salary)
 export const EMPLOYEES: Employee[] = [
   {
     id: 'erik',
@@ -38,8 +40,8 @@ export const EMPLOYEES: Employee[] = [
     role: 'Chairman & Group CEO',
     email: 'erik@hypbit.com',
     phone: '+46709123223',
-    startDate: '2024-01-01',
-    grossSalary: 85_000,
+    startDate: '',
+    grossSalary: 0,
     employmentRate: 1.0,
     status: 'active',
     taxTable: 33,
@@ -48,13 +50,13 @@ export const EMPLOYEES: Employee[] = [
   },
   {
     id: 'leon',
-    name: 'Leon Russo De Cerame',
+    name: 'Leon Russo De Cemare',
     initials: 'LR',
     role: 'CEO Wavult Operations',
     email: 'leon@hypbit.com',
     phone: '+46738968949',
-    startDate: '2024-03-01',
-    grossSalary: 65_000,
+    startDate: '',
+    grossSalary: 0,
     employmentRate: 1.0,
     status: 'active',
     taxTable: 33,
@@ -68,8 +70,8 @@ export const EMPLOYEES: Employee[] = [
     role: 'CFO',
     email: 'winston@hypbit.com',
     phone: '0768123548',
-    startDate: '2024-03-01',
-    grossSalary: 60_000,
+    startDate: '',
+    grossSalary: 0,
     employmentRate: 1.0,
     status: 'active',
     taxTable: 33,
@@ -83,8 +85,8 @@ export const EMPLOYEES: Employee[] = [
     role: 'Board / Chief Legal & Operations',
     email: 'dennis@hypbit.com',
     phone: '0761474243',
-    startDate: '2024-03-01',
-    grossSalary: 60_000,
+    startDate: '',
+    grossSalary: 0,
     employmentRate: 1.0,
     status: 'active',
     taxTable: 33,
@@ -98,8 +100,8 @@ export const EMPLOYEES: Employee[] = [
     role: 'Group CTO',
     email: 'johan@hypbit.com',
     phone: '+46736977576',
-    startDate: '2024-02-01',
-    grossSalary: 72_000,
+    startDate: '',
+    grossSalary: 0,
     employmentRate: 1.0,
     status: 'active',
     taxTable: 33,
@@ -125,7 +127,8 @@ export function calcSalary(gross: number): SalaryCalc {
   return { gross, taxDeduction, net, employerTax, totalCost }
 }
 
-// ─── Payroll run history ──────────────────────────────────────────────────────
+// ─── Payroll run history — tom tills konfigurerat ────────────────────────────
+// Lönekörningar hämtas från Supabase (payroll_runs-tabellen)
 export interface PayrollRun {
   id: string
   period: string       // "2026-02"
@@ -138,41 +141,7 @@ export interface PayrollRun {
   approvedBy: string
 }
 
-export const PAYROLL_HISTORY: PayrollRun[] = [
-  {
-    id: 'pr-2026-02',
-    period: '2026-02',
-    runDate: '2026-02-25',
-    totalGross: 342_000,
-    totalEmployerTax: 107_459,
-    totalNet: 231_240,
-    totalCost: 449_459,
-    status: 'completed',
-    approvedBy: 'Winston Bjarnemark',
-  },
-  {
-    id: 'pr-2026-01',
-    period: '2026-01',
-    runDate: '2026-01-25',
-    totalGross: 342_000,
-    totalEmployerTax: 107_459,
-    totalNet: 231_240,
-    totalCost: 449_459,
-    status: 'completed',
-    approvedBy: 'Winston Bjarnemark',
-  },
-  {
-    id: 'pr-2025-12',
-    period: '2025-12',
-    runDate: '2025-12-23',
-    totalGross: 342_000,
-    totalEmployerTax: 107_459,
-    totalNet: 231_240,
-    totalCost: 449_459,
-    status: 'completed',
-    approvedBy: 'Winston Bjarnemark',
-  },
-]
+export const PAYROLL_HISTORY: PayrollRun[] = []
 
 // ─── Swedish public holidays 2026 ────────────────────────────────────────────
 export const SWEDISH_HOLIDAYS_2026: { date: string; name: string }[] = [
@@ -194,7 +163,7 @@ export const SWEDISH_HOLIDAYS_2026: { date: string; name: string }[] = [
   { date: '2026-12-31', name: 'Nyårsafton' },
 ]
 
-// ─── Leave records ────────────────────────────────────────────────────────────
+// ─── Leave records — tomma tills konfigurerat ────────────────────────────────
 export interface LeaveRecord {
   employeeId: string
   year: number
@@ -203,53 +172,9 @@ export interface LeaveRecord {
   plannedLeave: { start: string; end: string; days: number; approved: boolean }[]
 }
 
-export const LEAVE_RECORDS: LeaveRecord[] = [
-  {
-    employeeId: 'erik',
-    year: 2026,
-    daysEntitled: 25,
-    daysUsed: 5,
-    plannedLeave: [
-      { start: '2026-06-22', end: '2026-06-26', days: 5, approved: true },
-    ],
-  },
-  {
-    employeeId: 'leon',
-    year: 2026,
-    daysEntitled: 25,
-    daysUsed: 0,
-    plannedLeave: [
-      { start: '2026-07-07', end: '2026-07-17', days: 9, approved: true },
-    ],
-  },
-  {
-    employeeId: 'winston',
-    year: 2026,
-    daysEntitled: 25,
-    daysUsed: 3,
-    plannedLeave: [
-      { start: '2026-07-14', end: '2026-07-24', days: 9, approved: false },
-    ],
-  },
-  {
-    employeeId: 'dennis',
-    year: 2026,
-    daysEntitled: 25,
-    daysUsed: 0,
-    plannedLeave: [],
-  },
-  {
-    employeeId: 'johan',
-    year: 2026,
-    daysEntitled: 25,
-    daysUsed: 2,
-    plannedLeave: [
-      { start: '2026-07-28', end: '2026-08-07', days: 9, approved: true },
-    ],
-  },
-]
+export const LEAVE_RECORDS: LeaveRecord[] = []
 
-// ─── Tax compliance ───────────────────────────────────────────────────────────
+// ─── Tax compliance — tomma tills konfigurerat ───────────────────────────────
 export interface TaxDeclaration {
   period: string
   deadline: string
@@ -257,13 +182,7 @@ export interface TaxDeclaration {
   amount: number
 }
 
-export const TAX_DECLARATIONS: TaxDeclaration[] = [
-  { period: '2026-03', deadline: '2026-04-12', status: 'not_filed', amount: 107_459 },
-  { period: '2026-02', deadline: '2026-03-12', status: 'paid',      amount: 107_459 },
-  { period: '2026-01', deadline: '2026-02-12', status: 'paid',      amount: 107_459 },
-  { period: '2025-12', deadline: '2026-01-12', status: 'paid',      amount: 107_459 },
-  { period: '2025-11', deadline: '2025-12-12', status: 'paid',      amount: 107_459 },
-]
+export const TAX_DECLARATIONS: TaxDeclaration[] = []
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 export function fmt(n: number): string {

@@ -148,7 +148,7 @@ export function FinanceOverview() {
           <h2 className="text-lg font-bold text-white">Finansiell Översikt</h2>
           <p className="text-xs text-gray-500 mt-0.5">
             {isRoot ? 'Wavult Group — konsoliderad vy' : `${activeEntity.name}`}
-            {useMock && <span className="ml-2 text-yellow-600 text-[9px] font-mono">[demo-data]</span>}
+            {useMock && <span className="ml-2 text-gray-600 text-[9px] font-mono">[ej konfigurerat]</span>}
           </p>
         </div>
         <div className="text-right flex-shrink-0">

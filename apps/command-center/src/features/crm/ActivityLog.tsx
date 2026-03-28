@@ -22,7 +22,7 @@ export function ActivityLog() {
 
   // New activity form state
   const [formType, setFormType] = useState<ActivityType>('Samtal')
-  const [formProspect, setFormProspect] = useState(PROSPECTS[0].id)
+  const [formProspect, setFormProspect] = useState(PROSPECTS[0]?.id ?? '')
   const [formBy, setFormBy] = useState<TeamMember>('Leon')
   const [formNote, setFormNote] = useState('')
 
@@ -34,7 +34,8 @@ export function ActivityLog() {
 
   function logActivity() {
     if (!formNote.trim()) return
-    const prospect = PROSPECTS.find(p => p.id === formProspect)!
+    const prospect = PROSPECTS.find(p => p.id === formProspect)
+    if (!prospect) return
     const newActivity: Activity = {
       id: `a${Date.now()}`,
       type: formType,

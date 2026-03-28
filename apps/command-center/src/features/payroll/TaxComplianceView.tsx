@@ -90,6 +90,13 @@ export function TaxComplianceView() {
               </tr>
             </thead>
             <tbody>
+              {TAX_DECLARATIONS.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-5 py-8 text-center text-gray-600 text-xs italic">
+                    Inga skattedeklarationer registrerade — konfigureras via lönesystemet
+                  </td>
+                </tr>
+              )}
               {TAX_DECLARATIONS.map(dec => {
                 const d = daysUntil(dec.deadline)
                 return (
