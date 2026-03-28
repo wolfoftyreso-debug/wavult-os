@@ -5,10 +5,32 @@
 import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { useEffect, useRef, useState, useCallback } from 'react'
+import { useApi } from '../../shared/auth/useApi'
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN ?? ''
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL ?? ''
 const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY ?? ''
+
+// ─── WHOOP Types ──────────────────────────────────────────────────────────────
+
+interface WhoopMember {
+  user_id: string
+  full_name: string | null
+  email: string | null
+  recovery_score: number | null
+  hrv: number | null
+  sleep_performance: number | null
+  strain_score: number | null
+  snapshot_at: string | null
+}
+
+function recoveryColor(score: number | null): string {
+  if (score == null) return '#6B7280'
+  if (score > 66) return '#10B981'
+  if (score > 33) return '#F59E0B'
+  return '#EF4444'
+}
+
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -140,6 +162,7 @@ function createMarkerElement(member: TeamLocation): HTMLElement {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function TeamMap() {
+  const { apiFetch } = useApi()
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<mapboxgl.Map | null>(null)
   const markersRef = useRef<Map<string, mapboxgl.Marker>>(new Map())
@@ -147,6 +170,7 @@ export function TeamMap() {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const [locations, setLocations] = useState<TeamLocation[]>([])
+  const [whoopData, setWhoopData] = useState<Map<string, WhoopMember>>(new Map())
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
   const [secondsAgo, setSecondsAgo] = useState(0)
   const [sharingLocation, setSharingLocation] = useState(false)
@@ -166,6 +190,26 @@ export function TeamMap() {
     `
     document.head.appendChild(style)
     return () => { document.head.removeChild(style) }
+  }, [])
+
+  // ── Hämta WHOOP-teamdata ─────────────────────────────────────────────────
+  useEffect(() => {
+    async function loadWhoop() {
+      try {
+        const res = await apiFetch('/whoop/team')
+        if (res.ok) {
+          const data = await res.json()
+          const map = new Map<string, WhoopMember>()
+          for (const m of data.team ?? []) {
+            map.set(m.full_name?.toLowerCase() ?? m.user_id, m)
+          }
+          setWhoopData(map)
+        }
+      } catch { /* WHOOP ej tillgängligt */ }
+    }
+    loadWhoop()
+    const interval = setInterval(loadWhoop, 5 * 60 * 1000)
+    return () => clearInterval(interval)
   }, [])
 
   // ── Init map ─────────────────────────────────────────────────────────────
@@ -217,6 +261,13 @@ export function TeamMap() {
     locs.forEach((member) => {
       const existing = markersRef.current.get(member.id)
 
+      // Hitta WHOOP-data för denna person (matcha på namn)
+      const whoopKey = member.full_name?.toLowerCase() ?? ''
+      const whoop = whoopData.get(whoopKey)
+      const recovery = whoop?.recovery_score ?? null
+      const rColor = recoveryColor(recovery)
+      // const rEmoji = recoveryEmoji(recovery)
+
       // Build popup content
       const popupHtml = `
         <div style="
@@ -224,7 +275,7 @@ export function TeamMap() {
           color: #f9fafb;
           border-radius: 10px;
           padding: 12px 14px;
-          min-width: 180px;
+          min-width: 200px;
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
           font-size: 13px;
         ">
@@ -243,6 +294,25 @@ export function TeamMap() {
               </div>
             </div>
           </div>
+          ${whoop ? `
+          <div style="border-top:1px solid #374151; padding-top:8px; margin-bottom:8px;">
+            <div style="font-size:10px; color:#6b7280; text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px;">⌚ WHOOP</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:4px; text-align:center;">
+              <div style="background:#111827; border-radius:6px; padding:5px 3px;">
+                <div style="font-size:15px; font-weight:700; color:${rColor};">${recovery != null ? Math.round(recovery)+'%' : '—'}</div>
+                <div style="font-size:9px; color:#6b7280; margin-top:1px;">Recovery</div>
+              </div>
+              <div style="background:#111827; border-radius:6px; padding:5px 3px;">
+                <div style="font-size:15px; font-weight:700; color:#818cf8;">${whoop.sleep_performance != null ? Math.round(whoop.sleep_performance)+'%' : '—'}</div>
+                <div style="font-size:9px; color:#6b7280; margin-top:1px;">Sömn</div>
+              </div>
+              <div style="background:#111827; border-radius:6px; padding:5px 3px;">
+                <div style="font-size:15px; font-weight:700; color:#f59e0b;">${whoop.strain_score != null ? Math.round(whoop.strain_score*10)/10 : '—'}</div>
+                <div style="font-size:9px; color:#6b7280; margin-top:1px;">Strain</div>
+              </div>
+            </div>
+          </div>
+          ` : ''}
           <div style="color:#9ca3af; font-size:11px; border-top:1px solid #374151; padding-top:8px;">
             Senast sedd: ${timeAgo(member.last_seen)}
           </div>

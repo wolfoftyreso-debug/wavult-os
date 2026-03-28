@@ -138,7 +138,7 @@ const ROLE_SUBORDINATES: Partial<Record<RoleId, SubNode[]>> = {
       sublabel: 'AWS · ECS · S3 · CloudFront', color: '#06B6D4', flag: '☁️',
       status: 'active', expandable: true,
       children: [
-        { id: 'sub-cto-i1', type: 'system', label: 'wavult-api · ECS eu-north-1 · api.hypbit.com', color: '#06B6D4', flag: '🟢', status: 'live', expandable: false },
+        { id: 'sub-cto-i1', type: 'system', label: 'wavult-api', sublabel: 'ECS eu-north-1 · api.hypbit.com', color: '#06B6D4', flag: '🟢', status: 'live', expandable: false },
         { id: 'sub-cto-i2', type: 'system', label: 'quixzoom-api', sublabel: 'ECS cluster hypbit · task :2', color: '#06B6D4', flag: '🟢', status: 'live', expandable: false },
         { id: 'sub-cto-i3', type: 'system', label: 'S3 multi-region', sublabel: 'EU + US primary + backup · CRR', color: '#06B6D4', flag: '🪣', status: 'live', expandable: false },
         { id: 'sub-cto-i4', type: 'system', label: 'CloudFront', sublabel: 'dewrtqzc20flx · quiXzoom frontend', color: '#06B6D4', flag: '🌐', status: 'live', expandable: false },
