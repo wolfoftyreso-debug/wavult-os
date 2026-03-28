@@ -181,9 +181,16 @@ async function runFlowConsistency() {
 
 async function runEscalation(payload: Record<string, unknown>) {
   const { taskId, ownerId, title } = payload
-  console.log(`[Escalation] Task ${taskId} (${title}) escalated. Owner: ${ownerId} → Erik`)
+  console.log(`[Escalation] Task ${taskId} (${title}) — owner: ${ownerId}`)
 
-  // Log escalation event
+  // Try n8n webhook
+  try {
+    await callN8nWebhook({ webhookPath: 'bos/escalation', data: payload })
+  } catch (err) {
+    console.warn('[Escalation] n8n webhook failed, logging directly:', err)
+  }
+
+  // Always log to audit regardless
   await supabase.from('bos_events').insert({
     type: 'ESCALATION',
     payload: { taskId, ownerId, escalatedTo: 'erik-svensson', title },

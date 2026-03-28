@@ -1,0 +1,70 @@
+{
+  "name": "BOS Deadline Escalation",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "bos/escalation",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://znmxtnxxjpmgtycmsqjv.supabase.co/rest/v1/bos_audit_log",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "={{ $env.SUPABASE_SERVICE_KEY }}" },
+            { "name": "Authorization", "value": "=Bearer {{ $env.SUPABASE_SERVICE_KEY }}" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "entity_type", "value": "task" },
+            { "name": "entity_id", "value": "={{ $json.taskId }}" },
+            { "name": "action", "value": "ESCALATED" },
+            { "name": "actor_id", "value": "system-n8n" },
+            { "name": "result", "value": "=Deadline passed for: {{ $json.title }}" }
+          ]
+        }
+      },
+      "id": "log-audit",
+      "name": "Log to Audit",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"jobId\": \"{{ $('Webhook').item.json.jobId }}\", \"status\": \"SUCCESS\", \"escalated\": true }"
+      },
+      "id": "respond",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [680, 300]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Log to Audit", "type": "main", "index": 0 }]]
+    },
+    "Log to Audit": {
+      "main": [[{ "node": "Respond", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
