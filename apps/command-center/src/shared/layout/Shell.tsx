@@ -12,69 +12,72 @@ import { useRole, ROLES } from '../auth/RoleContext'
 import { generateIncidents } from '../../features/incidents/incidentEngine'
 import { useEntityScope } from '../scope/EntityScopeContext'
 import { BerntWidget } from '../../features/bernt/BerntWidget'
+import { AgentCommandPanel } from '../../features/agent/AgentCommandPanel'
 import { OnboardingOverlay } from '../../features/onboarding'
 import { NotificationCenter } from '../../features/communications/NotificationCenter'
 import { GuidanceProvider } from '../guidance/GuidanceSystem'
 import { GuidanceToast } from '../guidance/GuidanceToast'
+import { useTranslation } from '../i18n/useTranslation'
+import { LanguageToggle } from '../i18n/LanguageToggle'
 
-// ─── Nav structure ────────────────────────────────────────────────────────────
+// ─── Nav item/group types ──────────────────────────────────────────────────────
 
 interface NavItem {
   to: string
-  label: string
+  labelKey: string
   icon: React.ComponentType<{ className?: string }>
 }
 
 interface NavGroup {
-  label: string | null
+  labelKey: string | null
   items: NavItem[]
 }
 
 const NAV_GROUPS: NavGroup[] = [
   {
-    label: null,
+    labelKey: null,
     items: [
-      { to: '/',        label: 'Mission Control',   icon: Target },
-      { to: '/ops',     label: 'Operations Center', icon: LayoutGrid },
-      { to: '/person',  label: 'Min vy',            icon: User },
-      { to: '/command', label: 'Command',            icon: LayoutDashboard },
-      { to: '/alerts',  label: 'Alerts',             icon: AlertTriangle },
+      { to: '/',        labelKey: 'nav.command', icon: Target },
+      { to: '/ops',     labelKey: 'nav.ops',     icon: LayoutGrid },
+      { to: '/person',  labelKey: 'nav.person',  icon: User },
+      { to: '/command', labelKey: 'nav.command',  icon: LayoutDashboard },
+      { to: '/alerts',  labelKey: 'nav.alerts',  icon: AlertTriangle },
     ],
   },
   {
-    label: 'MONEY',
+    labelKey: 'nav.money',
     items: [
-      { to: '/finance',       label: 'Finance',       icon: DollarSign },
-      { to: '/transactions',  label: 'Transactions',  icon: Receipt },
-      { to: '/causal-os',     label: 'Simulation',    icon: GitBranch },
-      { to: '/procurement',   label: 'Procurement',   icon: ShoppingCart },
-      { to: '/payroll',       label: 'Payroll',       icon: CreditCard },
+      { to: '/finance',       labelKey: 'nav.finance',      icon: DollarSign },
+      { to: '/transactions',  labelKey: 'nav.transactions', icon: Receipt },
+      { to: '/causal-os',     labelKey: 'nav.simulation',   icon: GitBranch },
+      { to: '/procurement',   labelKey: 'nav.procurement',  icon: ShoppingCart },
+      { to: '/payroll',       labelKey: 'nav.payroll',      icon: CreditCard },
     ],
   },
   {
-    label: 'PEOPLE',
+    labelKey: 'nav.people',
     items: [
-      { to: '/people-governance', label: 'People & Governance', icon: Users },
-      { to: '/org',               label: 'Organization',        icon: Network },
-      { to: '/crm',               label: 'CRM',                 icon: Target },
+      { to: '/people-governance', labelKey: 'nav.people',       icon: Users },
+      { to: '/org',               labelKey: 'nav.organization', icon: Network },
+      { to: '/crm',               labelKey: 'nav.crm',          icon: Target },
     ],
   },
   {
-    label: 'OPERATIONS',
+    labelKey: 'nav.operations',
     items: [
-      { to: '/milestones',  label: 'Milestones',   icon: Flag },
-      { to: '/campaigns',   label: 'Campaigns',    icon: Megaphone },
-      { to: '/submissions', label: 'Submissions',  icon: Inbox },
-      { to: '/decisions',   label: 'Decisions',    icon: Scale },
-      { to: '/projects',    label: 'Projects',     icon: Layers },
+      { to: '/milestones',  labelKey: 'nav.milestones',  icon: Flag },
+      { to: '/campaigns',   labelKey: 'nav.campaigns',   icon: Megaphone },
+      { to: '/submissions', labelKey: 'nav.submissions', icon: Inbox },
+      { to: '/decisions',   labelKey: 'nav.decisions',   icon: Scale },
+      { to: '/projects',    labelKey: 'nav.projects',    icon: Layers },
     ],
   },
   {
-    label: 'KNOWLEDGE',
+    labelKey: 'nav.knowledge',
     items: [
-      { to: '/knowledge',       label: 'Knowledge Hub',  icon: BookOpen },
-      { to: '/infrastructure',  label: 'Infrastructure', icon: Server },
-      { to: '/settings',        label: 'Settings',       icon: Settings },
+      { to: '/knowledge',       labelKey: 'nav.knowledge',      icon: BookOpen },
+      { to: '/infrastructure',  labelKey: 'nav.infrastructure', icon: Server },
+      { to: '/settings',        labelKey: 'nav.settings',       icon: Settings },
     ],
   },
 ]
@@ -90,19 +93,19 @@ function SidebarNav({ criticalAlertCount, onNavigate }: {
   onNavigate?: () => void
 }) {
   const { pathname } = useLocation()
+  const { t } = useTranslation()
 
   return (
     <nav className="flex-1 px-2 py-2 overflow-y-auto">
       {NAV_GROUPS.map((group, gi) => (
         <div key={gi} className={gi > 0 ? 'mt-4' : ''}>
-          {group.label && (
+          {group.labelKey && (
             <div className="px-3 py-1 text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
-              {group.label}
+              {t(group.labelKey)}
             </div>
           )}
           <div className="space-y-0.5">
             {group.items.map((item) => {
-              // Exact match for "/" to avoid matching everything
               const isActive = item.to === '/'
                 ? pathname === '/'
                 : pathname === item.to || pathname.startsWith(item.to + '/')
@@ -122,7 +125,7 @@ function SidebarNav({ criticalAlertCount, onNavigate }: {
                   end={item.to === '/'}
                 >
                   <item.icon className="w-4 h-4 flex-shrink-0" />
-                  <span className="flex-1 min-w-0 truncate">{item.label}</span>
+                  <span className="flex-1 min-w-0 truncate">{t(item.labelKey)}</span>
                   {item.to === '/alerts' && criticalAlertCount > 0 && (
                     <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-red-500 text-gray-900 flex-shrink-0">
                       {criticalAlertCount}
@@ -142,6 +145,7 @@ export function Shell({ children }: ShellProps) {
   const { role, setRole, isAdmin, viewAs, setViewAs, effectiveRole } = useRole()
   const { activeEntity: scopeEntity } = useEntityScope()
   const { pathname } = useLocation()
+  const { t } = useTranslation()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
 
@@ -203,8 +207,14 @@ export function Shell({ children }: ShellProps) {
           onNavigate={() => setSidebarOpen(false)}
         />
 
+        {/* Agent Claw — priority queue */}
+        <div className="border-t border-gray-100 pt-3 mt-2 px-2">
+          <p className="px-3 py-1 text-xs font-mono text-gray-400 uppercase tracking-wide mb-2">Agent Claw</p>
+          <AgentCommandPanel />
+        </div>
+
         {/* Footer */}
-        <div className="px-4 py-3 border-t border-gray-200">
+        <div className="px-4 py-3 border-t border-gray-200 mt-2">
           <p className="text-xs text-gray-500 font-mono">Wavult Group 2026</p>
         </div>
       </aside>
@@ -215,7 +225,7 @@ export function Shell({ children }: ShellProps) {
         {/* Topbar */}
         <header className="h-14 flex-shrink-0 bg-white border-b border-gray-200 flex items-center justify-between px-6">
 
-          {/* Left: hamburger + logo text */}
+          {/* Left: hamburger + entity pill */}
           <div className="flex items-center gap-3 min-w-0">
             {/* Hamburger — mobile only */}
             <button
@@ -237,8 +247,11 @@ export function Shell({ children }: ShellProps) {
             </div>
           </div>
 
-          {/* Right: role badge + bell + bernt */}
+          {/* Right: language toggle + role badge + bell + bernt */}
           <div className="flex items-center gap-2 flex-shrink-0">
+
+            {/* Language toggle */}
+            <LanguageToggle />
 
             {/* Role badge */}
             {role && effectiveRole && (
@@ -252,7 +265,7 @@ export function Shell({ children }: ShellProps) {
                     }}
                     className="hidden sm:block text-xs bg-purple-50 border border-purple-200 rounded-full px-3 py-1 font-medium text-purple-700 cursor-pointer focus:outline-none appearance-none"
                   >
-                    <option value="">Admin</option>
+                    <option value="">{t('auth.admin')}</option>
                     {ROLES.filter(r => r.id !== 'admin').map(r => (
                       <option key={r.id} value={r.id}>{r.title}</option>
                     ))}
@@ -269,7 +282,7 @@ export function Shell({ children }: ShellProps) {
                   onClick={() => { setRole(null); setViewAs(null) }}
                   className="text-xs text-gray-500 hover:text-gray-600 transition-colors font-medium"
                 >
-                  Exit
+                  {t('auth.exit')}
                 </button>
               </>
             )}

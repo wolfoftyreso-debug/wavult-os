@@ -6,6 +6,7 @@ import {
   TOURS, getOnboardingState, saveOnboardingState,
   type OnboardingStep,
 } from './onboardingData'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 // ─── Spotlight / tooltip card ─────────────────────────────────────────────────
 
@@ -115,6 +116,7 @@ function TourLauncherButton({ onClick }: { onClick: () => void }) {
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export function OnboardingOverlay() {
+  const { t: _t } = useTranslation() // ready for i18n
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const [active, setActive] = useState(false)

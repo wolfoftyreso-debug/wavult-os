@@ -19,6 +19,7 @@ import { ENTITIES } from '../org-graph/data'
 import { COMMAND_CHAIN } from '../org-graph/commandChain'
 import { MARKET_SITES } from '../market-sites/data'
 import { useEntityScope } from '../../shared/scope/EntityScopeContext'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -470,6 +471,7 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
 // ─── Main CampaignOS component ────────────────────────────────────────────────
 
 export function CampaignOS() {
+  const { t: _t } = useTranslation() // ready for i18n
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [filterBrand, setFilterBrand] = useState<string>('all')
   const [filterChannel, setFilterChannel] = useState<string>('all')

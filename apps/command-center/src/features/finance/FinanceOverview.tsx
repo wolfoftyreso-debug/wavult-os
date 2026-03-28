@@ -2,6 +2,7 @@ import { useEntityScope } from '../../shared/scope/EntityScopeContext'
 import { useFinanceKpis, useFinanceEntities, useFinanceLedger } from './hooks/useFinance'
 import { FINANCE_ENTITIES as MOCK_ENTITIES, KPI_DATA, LEDGER_ENTRIES as MOCK_LEDGER } from './mockData'
 import type { FinanceKpi } from '../../lib/supabase'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 function fmt(n: number, currency: string) {
   const abs = Math.abs(n)
@@ -54,6 +55,7 @@ function calcHealth(result: number, revenue: number, expenses: number): {
 }
 
 export function FinanceOverview() {
+  const { t: _t } = useTranslation() // ready for i18n
   const { activeEntity, scopedEntities } = useEntityScope()
   const isRoot = activeEntity.layer === 0
   const scopedIds = new Set(scopedEntities.map(e => e.id))

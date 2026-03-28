@@ -15,6 +15,7 @@ import { HumanFigure } from '../../shared/design-system/HumanFigure'
 import { mockMeetings } from './mockDecisions'
 import type { Meeting, DecisionBlock } from './decisionTypes'
 import { MEETING_LEVEL_LABELS } from './decisionTypes'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 // ─── Formatering ──────────────────────────────────────────────────────────────
 
@@ -290,6 +291,7 @@ function Section({
 // ─── Huvud-komponent ──────────────────────────────────────────────────────────
 
 export function DecisionDashboard() {
+  const { t: _t } = useTranslation() // ready for i18n
   const navigate = useNavigate()
   const [meetings] = useState<Meeting[]>(mockMeetings)
 

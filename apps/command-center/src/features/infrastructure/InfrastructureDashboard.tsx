@@ -26,6 +26,7 @@ import {
 import { SERVICE_REGISTRY, getTotalMonthlyCost, getAllActiveAlerts } from './serviceRegistry'
 import { useHealthChecks, mergeStatus, statusLabel } from './useHealthChecks'
 import type { ServiceDefinition, ServiceAlert, ServiceStatus, AlertSeverity } from './infraTypes'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 // ─── Hjälpfunktioner ─────────────────────────────────────────────────────────
 
@@ -831,6 +832,7 @@ function Tabs({ active, onChange }: { active: Tab; onChange: (t: Tab) => void })
 // ─── Main Dashboard ───────────────────────────────────────────────────────────
 
 export function InfrastructureDashboard() {
+  const { t: _t } = useTranslation() // ready for i18n
   const { results: checkResults, loading, lastRun, refresh } = useHealthChecks()
   const [selectedService, setSelectedService] = useState<ServiceDefinition | null>(null)
   const [acknowledgedAlerts, setAcknowledgedAlerts] = useState<Set<string>>(new Set())

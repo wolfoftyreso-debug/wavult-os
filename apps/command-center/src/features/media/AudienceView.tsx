@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { MOCK_AUDIENCES, MOCK_CAMPAIGNS } from './mockData'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 function NewAudienceModal({ onClose }: { onClose: () => void }) {
   const [form, setForm] = useState({
@@ -108,6 +109,7 @@ function NewAudienceModal({ onClose }: { onClose: () => void }) {
 }
 
 export function AudienceView() {
+  const { t: _t } = useTranslation() // ready for i18n
   const [showModal, setShowModal] = useState(false)
 
   return (

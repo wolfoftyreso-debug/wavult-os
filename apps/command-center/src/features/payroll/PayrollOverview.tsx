@@ -1,4 +1,5 @@
 import { usePayroll } from './hooks/usePayroll'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 function KpiCard({ label, value, sub, color }: { label: string; value: string; sub?: string; color: string }) {
   return (
@@ -11,6 +12,7 @@ function KpiCard({ label, value, sub, color }: { label: string; value: string; s
 }
 
 export function PayrollOverview() {
+  const { t: _t } = useTranslation() // ready for i18n
   const { activeEmployees: active, totalGrossPerMonth, loading, error, calcSalary, fmt, EMPLOYER_TAX_RATE } = usePayroll()
 
   if (loading) {

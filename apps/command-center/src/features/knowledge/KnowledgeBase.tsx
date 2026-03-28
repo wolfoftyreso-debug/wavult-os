@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import { KNOWLEDGE_DOCS, type DocCategory, type KnowledgeDoc } from './knowledgeData'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 const CATEGORIES: DocCategory[] = ['Wavult Group', 'QuiXzoom', 'Landvex', 'Internt', 'Juridik']
 
@@ -291,6 +292,7 @@ function DocModal({
 }
 
 export function KnowledgeBase() {
+  const { t: _t } = useTranslation() // ready for i18n
   const [search, setSearch] = useState('')
   const [activeCategory, setActiveCategory] = useState<DocCategory | 'Alla'>('Alla')
   const [selectedDoc, setSelectedDoc] = useState<KnowledgeDoc | null>(null)

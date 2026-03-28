@@ -15,6 +15,7 @@ import type {
   RiskLevel,
 } from './decisionTypes'
 import { MEETING_LEVEL_LABELS, MEETING_AUTHORITY } from './decisionTypes'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 // ─── Typer ────────────────────────────────────────────────────────────────────
 
@@ -755,6 +756,7 @@ function validateStep(step: number, draft: DraftMeeting): string | null {
 // ─── Huvud-komponent ──────────────────────────────────────────────────────────
 
 export function MeetingCreator() {
+  const { t: _t } = useTranslation() // ready for i18n
   const navigate = useNavigate()
   const [currentStep, setCurrentStep] = useState(1)
   const [draft, setDraft] = useState<DraftMeeting>({

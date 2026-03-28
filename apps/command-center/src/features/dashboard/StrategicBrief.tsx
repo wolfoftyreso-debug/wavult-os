@@ -4,6 +4,7 @@
 // Uppdaterad: 2026-03-28
 
 import { useState } from 'react'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -725,6 +726,7 @@ function ComplianceFramework() {
 type BriefTab = 'mission' | 'produkter' | 'konkurrenter' | 'marknad' | 'material' | 'compliance'
 
 export function StrategicBrief() {
+  const { t: _t } = useTranslation() // ready for i18n
   const [activeTab, setActiveTab] = useState<BriefTab>('mission')
 
   const tabs: { id: BriefTab; label: string; icon: string }[] = [

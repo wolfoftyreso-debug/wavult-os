@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { CONTACTS, PROSPECTS, PRODUCT_COLORS, STAGE_COLORS } from './data'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 export function ContactsView() {
+  const { t: _t } = useTranslation() // ready for i18n
   const [search, setSearch] = useState('')
 
   const filtered = CONTACTS.filter(c => {

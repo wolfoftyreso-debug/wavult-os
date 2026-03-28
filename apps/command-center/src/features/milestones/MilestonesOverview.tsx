@@ -12,6 +12,7 @@ import {
   type MilestoneStatus,
   type ProjectKey,
 } from './data'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 interface AggregatedMilestone {
   id: string
@@ -131,6 +132,7 @@ function KpiCard({ label, value, color, icon }: {
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 export function MilestonesOverview() {
+  const { t: _t } = useTranslation() // ready for i18n
   // Aggregate all milestones into a unified shape
   const allMilestones: AggregatedMilestone[] = [
     ...THAILAND_CHECKLIST.map(m => ({

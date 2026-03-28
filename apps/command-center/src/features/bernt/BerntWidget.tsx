@@ -3,6 +3,8 @@
 // Röstinput via Web Speech API. Ansluten till Bernt-tunnel.
 
 import { useState, useRef, useEffect, useCallback } from 'react'
+import { useTranslation } from '../../shared/i18n/useTranslation'
+import { validateAgentMessage, renderAgentMessage, type AgentMessage } from '../../shared/i18n/agentTypes'
 
 const BERNT_TUNNEL_KEY = 'bernt_tunnel_url'
 const DEFAULT_TUNNEL = 'https://bernt.wavult.com'
@@ -12,6 +14,7 @@ interface Message {
   role: 'user' | 'bernt'
   text: string
   ts: number
+  agentMsg?: AgentMessage
 }
 
 const BERNT_STARTERS = [
@@ -29,6 +32,7 @@ function useSpeechRecognition(onResult: (text: string) => void) {
   const [listening, setListening] = useState(false)
 
   const start = useCallback(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const SpeechRec = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
     if (!SpeechRec) return
 
@@ -61,6 +65,7 @@ function useSpeechRecognition(onResult: (text: string) => void) {
 // ─── Main Widget ──────────────────────────────────────────────────────────────
 
 export function BerntWidget() {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([
     { id: 'welcome', role: 'bernt', text: 'Hej Erik! Vad kan jag hjälpa dig med?', ts: Date.now() },
@@ -85,7 +90,7 @@ export function BerntWidget() {
     if (!tunnelUrl) {
       setMessages(prev => [...prev, {
         id: `b-${Date.now()}`, role: 'bernt',
-        text: 'Bernt-tunnel är inte konfigurerad. Tryck ⚙️ och klistra in tunnel-URL:en.',
+        text: t('bernt.tunnel_not_configured'),
         ts: Date.now()
       }])
       setLoading(false)
@@ -99,18 +104,60 @@ export function BerntWidget() {
         body: JSON.stringify({ transcript: text.trim(), user: 'Erik Svensson', source: 'wavult-os' }),
       })
       const data = await res.json()
-      const reply = data.reply || data.text || data.message || 'Inget svar.'
-      setMessages(prev => [...prev, { id: `b-${Date.now()}`, role: 'bernt', text: reply, ts: Date.now() }])
+      const rawReply = data.reply || data.text || data.message || null
+
+      // Try to parse as structured AgentMessage
+      let messageText: string
+      let agentMsg: AgentMessage | undefined
+
+      if (rawReply && typeof rawReply === 'object') {
+        // Already a JSON object — try to validate as AgentMessage
+        try {
+          const validated = validateAgentMessage(rawReply)
+          agentMsg = validated
+          messageText = renderAgentMessage(validated, t)
+        } catch {
+          console.warn('[Agent] Invalid AgentMessage structure:', rawReply)
+          messageText = JSON.stringify(rawReply)
+        }
+      } else if (typeof rawReply === 'string') {
+        // Try to parse as JSON first
+        if (rawReply.trim().startsWith('{')) {
+          try {
+            const parsed: unknown = JSON.parse(rawReply)
+            const validated = validateAgentMessage(parsed)
+            agentMsg = validated
+            messageText = renderAgentMessage(validated, t)
+          } catch {
+            // Not a valid AgentMessage — treat as raw text
+            console.warn('[Agent] Raw text detected — should use translation key:', rawReply.slice(0, 80))
+            messageText = rawReply
+          }
+        } else {
+          console.warn('[Agent] Raw text detected — should use translation key:', rawReply.slice(0, 80))
+          messageText = rawReply
+        }
+      } else {
+        messageText = t('status.no_reply')
+      }
+
+      setMessages(prev => [...prev, {
+        id: `b-${Date.now()}`,
+        role: 'bernt',
+        text: messageText,
+        ts: Date.now(),
+        agentMsg,
+      }])
     } catch {
       setMessages(prev => [...prev, {
         id: `b-${Date.now()}`, role: 'bernt',
-        text: 'Kunde inte nå Bernt-tunneln. Kontrollera att din dator är igång och tunneln aktiv.',
+        text: t('bernt.tunnel_unreachable'),
         ts: Date.now()
       }])
     } finally {
       setLoading(false)
     }
-  }, [tunnelUrl])
+  }, [tunnelUrl, t])
 
   const { listening, start: startListen, stop: stopListen } = useSpeechRecognition(sendMessage)
 
@@ -165,21 +212,21 @@ export function BerntWidget() {
               <div className="flex items-center gap-1">
                 <span className={`h-1.5 w-1.5 rounded-full ${connected ? 'bg-green-400' : 'bg-yellow-400'}`} />
                 <p className="text-[9px] font-mono" style={{ color: connected ? '#4ade80' : '#facc15' }}>
-                  {connected ? 'ANSLUTEN' : 'EJ KONFIGURERAD'}
+                  {connected ? t('status.connected') : t('status.not_configured')}
                 </p>
               </div>
             </div>
             <button
               onClick={() => setShowSettings(s => !s)}
               className="text-gray-500 hover:text-gray-600 transition-colors text-sm"
-              title="Inställningar"
+              title={t('nav.settings')}
             >⚙️</button>
           </div>
 
           {/* Settings panel */}
           {showSettings && (
             <div className="px-4 py-3 flex-shrink-0 border-b border-surface-border animate-fade-in">
-              <p className="text-xs text-gray-500 font-mono mb-1.5">TUNNEL URL</p>
+              <p className="text-xs text-gray-500 font-mono mb-1.5">{t('bernt.tunnel_url_label')}</p>
               <div className="flex gap-2">
                 <input
                   type="text"
@@ -194,10 +241,10 @@ export function BerntWidget() {
                   className="text-xs px-2.5 py-1.5 rounded-lg font-semibold"
                   style={{ background: '#8B5CF620', color: '#A78BFA', border: '1px solid #8B5CF630' }}
                 >
-                  Spara
+                  {t('action.save')}
                 </button>
               </div>
-              <p className="text-[9px] text-gray-600 mt-1.5">Hitta URL i /tmp/bernt-tunnel.log på din dator</p>
+              <p className="text-[9px] text-gray-600 mt-1.5">{t('bernt.tunnel_url_hint')}</p>
             </div>
           )}
 
@@ -265,7 +312,7 @@ export function BerntWidget() {
                 border: `1px solid ${listening ? '#EF444430' : '#8B5CF625'}`,
                 color: listening ? '#F87171' : '#A78BFA',
               }}
-              title={listening ? 'Stoppa' : 'Tala'}
+              title={listening ? t('action.stop') : t('action.speak')}
             >
               {listening ? '⏹' : '🎤'}
             </button>

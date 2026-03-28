@@ -3,6 +3,7 @@
 // "Vi gör aldrig något fel i våra system." — Erik Svensson
 
 import { useState, useRef, useEffect } from 'react'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -340,6 +341,7 @@ function PlaygroundTab() {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function LLMHub() {
+  const { t: _t } = useTranslation() // ready for i18n
   const [activeTab, setActiveTab] = useState<'chat' | 'playground'>('chat')
   const [status, setStatus] = useState<LLMStatus | null>(null)
   const [statusLoading, setStatusLoading] = useState(true)

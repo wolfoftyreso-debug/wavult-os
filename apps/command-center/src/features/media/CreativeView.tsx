@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Creative } from './types'
 import { MOCK_CREATIVES, MOCK_CAMPAIGNS } from './mockData'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 const STATUS_COLORS: Record<Creative['status'], string> = {
   draft: 'bg-gray-100 text-gray-600',
@@ -148,6 +149,7 @@ function NewCreativeModal({ onClose }: { onClose: () => void }) {
 }
 
 export function CreativeView() {
+  const { t: _t } = useTranslation() // ready for i18n
   const [showModal, setShowModal] = useState(false)
   const [expanded, setExpanded] = useState<string | null>(null)
 

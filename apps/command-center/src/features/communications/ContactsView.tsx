@@ -3,6 +3,7 @@
 // Single source of truth för mail, telefon, och kommunikationskanaler.
 
 import { useState } from 'react'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -331,6 +332,7 @@ function ContactCard({ contact, expanded, onToggle }: {
 // ─── Main View ────────────────────────────────────────────────────────────────
 
 export function ContactsView() {
+  const { t: _t } = useTranslation() // ready for i18n
   const [search, setSearch] = useState('')
   const [activeCategory, setActiveCategory] = useState<string>('all')
   const [expandedId, setExpandedId] = useState<string | null>(null)

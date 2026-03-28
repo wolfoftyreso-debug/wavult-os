@@ -17,6 +17,7 @@ import {
   validateGovernanceItem,
 } from '../../shared/governance/ownershipTypes'
 import type { GovernanceItem, RoleId, DomainCode } from '../../shared/governance/ownershipTypes'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 // ─── Status helpers ───────────────────────────────────────────────────────────
 
@@ -588,6 +589,7 @@ function OwnerChips({ onSelect }: { onSelect: (id: RoleId) => void }) {
 // ─── Main dashboard ───────────────────────────────────────────────────────────
 
 export function GovernanceDashboard() {
+  const { t: _t } = useTranslation() // ready for i18n
   const [filters, setFilters] = useState<Filters>({ domain: 'ALL', owner: 'ALL', status: 'ALL' })
   const [selectedOwner, setSelectedOwner] = useState<RoleId | null>(null)
 

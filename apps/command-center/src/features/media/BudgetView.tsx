@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { MOCK_CAMPAIGNS, MOCK_BUDGET_ALLOCATIONS, MOCK_CHANNELS } from './mockData'
 import type { Campaign } from './types'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 function BudgetBar({ value, max }: { value: number; max: number }) {
   const pct = max > 0 ? Math.min(100, (value / max) * 100) : 0
@@ -79,6 +80,7 @@ function CampaignBudgetPanel({ campaign }: { campaign: Campaign }) {
 }
 
 export function BudgetView() {
+  const { t: _t } = useTranslation() // ready for i18n
   return (
     <div className="space-y-4">
       <div>

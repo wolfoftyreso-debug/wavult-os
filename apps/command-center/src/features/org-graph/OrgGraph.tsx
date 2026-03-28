@@ -11,6 +11,7 @@ import { ROLE_PERMISSIONS, GraphPermissions } from './permissions'
 import { COMMAND_CHAIN, getDirectReports, getApexRole } from './commandChain'
 import { generateIncidents, computePropagation, getRoleKPIs, getKPIStatus, KPI_STATUS_COLOR } from '../incidents/incidentEngine'
 import { MARKET_SITES, SITE_STATUS_COLOR } from '../market-sites/data'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 // ─── Layout constants ──────────────────────────────────────────────────────────
 
@@ -999,6 +1000,7 @@ function CommandChainLayer({
 // ─── Main OrgGraph component ───────────────────────────────────────────────────
 
 export function OrgGraph() {
+  const { t: _t } = useTranslation() // ready for i18n
   const { effectiveRole } = useRole()
   const { scopedEntities, activeEntity: scopeEntity } = useEntityScope()
 

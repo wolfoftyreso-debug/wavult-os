@@ -1,4 +1,5 @@
 import { ENTITY_FINANCIALS, CRITICAL_ITEMS, NEXT_MILESTONES, PIPELINE_DEALS } from './data'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -52,6 +53,7 @@ function SectionHeader({ title, icon }: { title: string; icon: string }) {
 // ─── Main ────────────────────────────────────────────────────────────────────
 
 export function ExecutiveSummary() {
+  const { t: _t } = useTranslation() // ready for i18n
   const group    = ENTITY_FINANCIALS[0]
   const entities = ENTITY_FINANCIALS.slice(1)
   const pipelineTotal = PIPELINE_DEALS

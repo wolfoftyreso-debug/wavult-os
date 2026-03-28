@@ -12,6 +12,7 @@ import {
   type TeamMember,
   type Entity,
 } from './peopleData'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 // ─── Layer type ───────────────────────────────────────────────────────────────
 type Layer = 'enterprise' | 'entity' | 'team' | 'person'
@@ -963,6 +964,7 @@ function PersonLayer({
 
 // ─── Main Hub ─────────────────────────────────────────────────────────────────
 export function PeopleIntelligenceHub() {
+  const { t: _t } = useTranslation() // ready for i18n
   const { user } = useAuth()
   const { apiFetch } = useApi()
 

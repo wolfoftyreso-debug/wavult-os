@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { BOARD_MEETINGS, COMPANIES, BoardMeeting, MeetingType, MeetingStatus, CompanyId } from './data'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 const STATUS_STYLES: Record<MeetingStatus, string> = {
   'planerat':        'bg-blue-500/15 text-blue-400 border-blue-500/30',
@@ -110,6 +111,7 @@ const EMPTY_FORM: NewMeetingForm = {
 }
 
 export function BoardView() {
+  const { t: _t } = useTranslation() // ready for i18n
   const [selected, setSelected] = useState<BoardMeeting | null>(null)
   const [showForm, setShowForm] = useState(false)
   const [filterCompany, setFilterCompany] = useState<CompanyId | 'all'>('all')

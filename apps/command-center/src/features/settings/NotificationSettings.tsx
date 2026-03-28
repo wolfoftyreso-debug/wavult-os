@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 type Channel = 'email' | 'sms' | 'intern'
 
@@ -87,6 +88,7 @@ const CHANNEL_CONFIG: Record<Channel, { label: string; icon: string }> = {
 }
 
 export function NotificationSettings() {
+  const { t: _t } = useTranslation() // ready for i18n
   const [rules, setRules] = useState<NotificationRule[]>(INITIAL_RULES)
   const [saved, setSaved] = useState(false)
   const [thresholds, setThresholds] = useState<Record<string, string>>({})

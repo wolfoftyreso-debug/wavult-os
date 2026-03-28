@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { AlertTriangle, Clock, CheckCircle, Users, Activity, FileText, ChevronRight } from 'lucide-react'
 import { useBosTasks } from '../../core/state/useBosTasks'
-import { resolveTaskState, getSystemStatus } from '../../core/state/stateEngine'
+import { resolveTaskState, getSystemStatus, type Task } from '../../core/state/stateEngine'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 // Fallback data om Supabase ej är live
-const FALLBACK_TASKS = [
+const FALLBACK_TASKS: Task[] = [
   { id: 'legal-001', title: 'Bilda Wavult Group FZCO (Dubai)', owner: 'erik-svensson', module: 'legal', flow: 'dubai-structure', state: 'REQUIRED' as const, priority: 'critical' as const, deadline: '2026-04-10', dependencies: [], requiredInputs: ['Pass', 'UAE-adress'], outputValidation: 'Certificate of Incorporation', assignedAt: '2026-03-28', completedAt: null, description: '', validationRequired: false },
   { id: 'legal-002', title: 'Bilda Wavult DevOps FZCO', owner: 'erik-svensson', module: 'legal', flow: 'dubai-structure', state: 'BLOCKED' as const, priority: 'critical' as const, deadline: '2026-04-10', dependencies: ['legal-001'], requiredInputs: [], outputValidation: '', assignedAt: '2026-03-28', completedAt: null, description: '', blockedReason: 'Wavult Group FZCO måste bildas först', validationRequired: false },
   { id: 'legal-004', title: 'Välj bokföringsbyrå — Landvex AB', owner: 'dennis-bjarnemark', module: 'legal', flow: 'landvex-compliance', state: 'REQUIRED' as const, priority: 'critical' as const, deadline: '2026-04-01', dependencies: [], requiredInputs: [], outputValidation: '', assignedAt: '2026-03-28', completedAt: null, description: '', validationRequired: false },
@@ -21,10 +22,6 @@ const OWNER_NAMES: Record<string, string> = {
   'leon-russo': 'Leon',
 }
 
-const MODULE_LABELS: Record<string, string> = {
-  legal: 'Legal', finance: 'Finance', tech: 'Tech', operations: 'Operations', hr: 'HR'
-}
-
 function statusDot(color: 'red' | 'amber' | 'green') {
   const cls = { red: 'bg-red-500', amber: 'bg-amber-400', green: 'bg-emerald-500' }[color]
   return <span className={`inline-block w-2 h-2 rounded-full ${cls} mr-1.5`} />
@@ -32,70 +29,84 @@ function statusDot(color: 'red' | 'amber' | 'green') {
 
 export function OperationsCenter() {
   const { tasks: liveTasks, loading } = useBosTasks()
+  const { t } = useTranslation()
   const tasks = loading || liveTasks.length === 0 ? FALLBACK_TASKS : liveTasks
   const [now, setNow] = useState(new Date())
   const [activeModule, setActiveModule] = useState<string | null>(null)
 
   useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 60000)
-    return () => clearInterval(t)
+    const timer = setInterval(() => setNow(new Date()), 60000)
+    return () => clearInterval(timer)
   }, [])
 
-  const resolved = tasks.map(t => ({ ...t, resolvedState: resolveTaskState(t, tasks) }))
-  const blockers = resolved.filter(t => t.resolvedState === 'BLOCKED' || (t.priority === 'critical' && t.resolvedState !== 'DONE'))
-  const risks = resolved.filter(t => t.priority === 'high' && t.resolvedState === 'REQUIRED')
-  const ok = resolved.filter(t => t.resolvedState === 'DONE')
+  const resolved = tasks.map(task => ({ ...task, resolvedState: resolveTaskState(task, tasks) }))
+  const blockers = resolved.filter(task => task.resolvedState === 'BLOCKED' || (task.priority === 'critical' && task.resolvedState !== 'DONE'))
+  const risks = resolved.filter(task => task.priority === 'high' && task.resolvedState === 'REQUIRED')
+  const ok = resolved.filter(task => task.resolvedState === 'DONE')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // @ts-ignore
   void getSystemStatus(resolved)
 
   // Group by module
-  const modules = ['legal', 'finance', 'operations', 'tech', 'hr']
+  const modules = ['legal', 'finance', 'operations', 'tech', 'hr'] as const
   const moduleData = modules.map(mod => {
-    const modTasks = resolved.filter(t => t.module === mod)
-    const hasCritical = modTasks.some(t => t.priority === 'critical' && t.resolvedState !== 'DONE')
-    const hasHigh = modTasks.some(t => t.priority === 'high' && t.resolvedState !== 'DONE')
+    const modTasks = resolved.filter(task => task.module === mod)
+    const hasCritical = modTasks.some(task => task.priority === 'critical' && task.resolvedState !== 'DONE')
+    const hasHigh = modTasks.some(task => task.priority === 'high' && task.resolvedState !== 'DONE')
     const status: 'red' | 'amber' | 'green' = hasCritical ? 'red' : hasHigh ? 'amber' : 'green'
-    return { id: mod, label: MODULE_LABELS[mod], status, count: modTasks.length, openCount: modTasks.filter(t => t.resolvedState !== 'DONE').length }
+    const modLabelKey = `module.${mod}` as const
+    return {
+      id: mod,
+      label: t(modLabelKey),
+      status,
+      count: modTasks.length,
+      openCount: modTasks.filter(task => task.resolvedState !== 'DONE').length,
+    }
   })
 
   // Flows
   const flowMap = new Map<string, typeof resolved>()
-  resolved.forEach(t => {
-    if (!flowMap.has(t.flow)) flowMap.set(t.flow, [])
-    flowMap.get(t.flow)!.push(t)
+  resolved.forEach(task => {
+    if (!flowMap.has(task.flow)) flowMap.set(task.flow, [])
+    flowMap.get(task.flow)!.push(task)
   })
   const flows = Array.from(flowMap.entries()).map(([id, ftasks]) => {
-    const done = ftasks.filter(t => t.resolvedState === 'DONE').length
+    const done = ftasks.filter(task => task.resolvedState === 'DONE').length
     const pct = ftasks.length ? Math.round((done / ftasks.length) * 100) : 0
-    const hasCritical = ftasks.some(t => t.priority === 'critical' && t.resolvedState !== 'DONE')
-    return { id, label: id.replace(/-/g, ' '), pct, total: ftasks.length, done, status: hasCritical ? 'red' as const : pct < 50 ? 'amber' as const : 'green' as const }
+    const hasCritical = ftasks.some(task => task.priority === 'critical' && task.resolvedState !== 'DONE')
+    return {
+      id,
+      label: id.replace(/-/g, ' '),
+      pct,
+      total: ftasks.length,
+      done,
+      status: hasCritical ? 'red' as const : pct < 50 ? 'amber' as const : 'green' as const,
+    }
   }).sort((a, b) => a.pct - b.pct)
 
   // Team
   const owners = ['erik-svensson', 'dennis-bjarnemark', 'winston-bjarnemark', 'johan-berglund', 'leon-russo']
   const teamData = owners.map(owner => {
-    const ownerTasks = resolved.filter(t => t.owner === owner)
-    const open = ownerTasks.filter(t => t.resolvedState !== 'DONE')
-    const blocking = resolved.filter(t => t.resolvedState === 'BLOCKED' && t.dependencies.some(dep => {
+    const ownerTasks = resolved.filter(task => task.owner === owner)
+    const open = ownerTasks.filter(task => task.resolvedState !== 'DONE')
+    const blocking = resolved.filter(task => task.resolvedState === 'BLOCKED' && task.dependencies.some(dep => {
       const depTask = resolved.find(x => x.id === dep)
       return depTask?.owner === owner && depTask?.resolvedState !== 'DONE'
     }))
-    const status: 'red' | 'amber' | 'green' = open.some(t => t.priority === 'critical') ? 'red' : open.length > 0 ? 'amber' : 'green'
+    const status: 'red' | 'amber' | 'green' = open.some(task => task.priority === 'critical') ? 'red' : open.length > 0 ? 'amber' : 'green'
     return { owner, name: OWNER_NAMES[owner], open: open.length, blocking: blocking.length, status }
   })
 
-  // Alerts (critical + overdue — BLOCKED excluded: not actionable for owner)
+  // Alerts (critical + overdue — BLOCKED excluded)
   const alerts = resolved
-    .filter(t =>
-      t.priority === 'critical' &&
-      t.resolvedState !== 'DONE' &&
-      t.resolvedState !== 'BLOCKED'  // BLOCKED = inte actionable för ägaren
+    .filter(task =>
+      task.priority === 'critical' &&
+      task.resolvedState !== 'DONE' &&
+      task.resolvedState !== 'BLOCKED'
     )
     .sort((a, b) => (a.deadline || '').localeCompare(b.deadline || ''))
     .slice(0, 6)
 
-  // Audit log (mock — ersätts med bos_task_events när live)
+  // Audit log (mock)
   const auditLog = [
     { time: '15:10', actor: 'System', action: 'Audit genomförd', type: 'system' },
     { time: '14:55', actor: 'Bernt', action: 'Design uppdaterad — light theme', type: 'success' },
@@ -116,17 +127,17 @@ export function OperationsCenter() {
         >
           <AlertTriangle className="w-3.5 h-3.5" />
           <span className="font-mono">{blockers.length}</span>
-          <span>Blockers</span>
+          <span>{t('system.blockers')}</span>
         </button>
         <button className={`flex items-center gap-1.5 px-3 py-1 rounded-lg font-medium transition-colors ${risks.length > 0 ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'text-slate-400'}`}>
           <Clock className="w-3.5 h-3.5" />
           <span className="font-mono">{risks.length}</span>
-          <span>Risk</span>
+          <span>{t('ops.risk')}</span>
         </button>
         <button className="flex items-center gap-1.5 px-3 py-1 rounded-lg font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 transition-colors">
           <CheckCircle className="w-3.5 h-3.5" />
           <span className="font-mono">{ok.length}</span>
-          <span>OK</span>
+          <span>{t('ops.ok')}</span>
         </button>
         <div className="ml-auto font-mono text-slate-400 text-xs">
           {now.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })} · Wavult OS
@@ -141,7 +152,7 @@ export function OperationsCenter() {
         {/* MODULES */}
         <div className={`col-span-4 ${panelClass}`}>
           <div className={panelHeader}>
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Moduler</span>
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">{t('ops.modules')}</span>
           </div>
           <div className="p-2">
             {moduleData.map(mod => (
@@ -155,7 +166,7 @@ export function OperationsCenter() {
                   <span className="font-medium text-slate-800">{mod.label}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-xs text-slate-400">{mod.openCount} öppna</span>
+                  <span className="font-mono text-xs text-slate-400">{mod.openCount} {t('module.open_tasks')}</span>
                   <ChevronRight className="w-3.5 h-3.5 text-slate-300" />
                 </div>
               </button>
@@ -166,7 +177,7 @@ export function OperationsCenter() {
         {/* FLOWS */}
         <div className={`col-span-4 ${panelClass}`}>
           <div className={panelHeader}>
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Aktiva flöden</span>
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">{t('ops.flows')}</span>
           </div>
           <div className="p-3 space-y-3">
             {flows.slice(0, 5).map(flow => (
@@ -191,7 +202,7 @@ export function OperationsCenter() {
         {/* TEAM */}
         <div className={`col-span-4 ${panelClass}`}>
           <div className={panelHeader}>
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Team</span>
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">{t('ops.team')}</span>
             <Users className="w-3.5 h-3.5 text-slate-400" />
           </div>
           <div className="p-2">
@@ -203,9 +214,9 @@ export function OperationsCenter() {
                 </div>
                 <div className="flex items-center gap-3 text-xs font-mono">
                   {person.blocking > 0 && (
-                    <span className="text-red-600">blockerar {person.blocking}</span>
+                    <span className="text-red-600">{t('team.blocking')} {person.blocking}</span>
                   )}
-                  <span className="text-slate-400">{person.open} kvar</span>
+                  <span className="text-slate-400">{person.open} {t('team.tasks_left')}</span>
                 </div>
               </div>
             ))}
@@ -217,12 +228,12 @@ export function OperationsCenter() {
         {/* ALERTS */}
         <div className={`col-span-4 ${panelClass}`}>
           <div className={panelHeader}>
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Alerts</span>
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">{t('alerts.title')}</span>
             <AlertTriangle className="w-3.5 h-3.5 text-red-500" />
           </div>
           <div className="p-2 space-y-1">
             {alerts.length === 0 ? (
-              <p className="px-3 py-4 text-sm text-slate-400 text-center">Inga kritiska alerts</p>
+              <p className="px-3 py-4 text-sm text-slate-400 text-center">{t('alerts.none')}</p>
             ) : alerts.map(task => (
               <div key={task.id} className="flex items-start gap-2 px-3 py-2 rounded-lg bg-red-50 border border-red-100">
                 <span className="w-1.5 h-1.5 rounded-full bg-red-500 mt-1.5 flex-shrink-0" />
@@ -238,24 +249,24 @@ export function OperationsCenter() {
         {/* TASK PRESSURE */}
         <div className={`col-span-4 ${panelClass}`}>
           <div className={panelHeader}>
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Task pressure</span>
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">{t('ops.task_pressure')}</span>
             <Activity className="w-3.5 h-3.5 text-slate-400" />
           </div>
           <div className="p-4 space-y-4">
             <div className="flex justify-between items-baseline">
-              <span className="text-sm text-slate-600">Totalt öppna</span>
-              <span className="font-mono text-2xl font-bold text-slate-900">{resolved.filter(t => t.resolvedState !== 'DONE').length}</span>
+              <span className="text-sm text-slate-600">{t('ops.total_open')}</span>
+              <span className="font-mono text-2xl font-bold text-slate-900">{resolved.filter(task => task.resolvedState !== 'DONE').length}</span>
             </div>
             <div className="flex justify-between items-baseline">
-              <span className="text-sm text-slate-600">Kritiska</span>
-              <span className="font-mono text-lg font-semibold text-red-600">{resolved.filter(t => t.priority === 'critical' && t.resolvedState !== 'DONE').length}</span>
+              <span className="text-sm text-slate-600">{t('ops.critical')}</span>
+              <span className="font-mono text-lg font-semibold text-red-600">{resolved.filter(task => task.priority === 'critical' && task.resolvedState !== 'DONE').length}</span>
             </div>
             <div className="flex justify-between items-baseline">
-              <span className="text-sm text-slate-600">Blockerade</span>
-              <span className="font-mono text-lg font-semibold text-slate-500">{resolved.filter(t => t.resolvedState === 'BLOCKED').length}</span>
+              <span className="text-sm text-slate-600">{t('ops.blocked')}</span>
+              <span className="font-mono text-lg font-semibold text-slate-500">{resolved.filter(task => task.resolvedState === 'BLOCKED').length}</span>
             </div>
             <div className="flex justify-between items-baseline">
-              <span className="text-sm text-slate-600">Klara</span>
+              <span className="text-sm text-slate-600">{t('ops.done')}</span>
               <span className="font-mono text-lg font-semibold text-emerald-600">{ok.length}</span>
             </div>
           </div>
@@ -264,7 +275,7 @@ export function OperationsCenter() {
         {/* AUDIT LOG */}
         <div className={`col-span-4 ${panelClass}`}>
           <div className={panelHeader}>
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Audit log</span>
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">{t('ops.audit_log')}</span>
             <FileText className="w-3.5 h-3.5 text-slate-400" />
           </div>
           <div className="p-2 space-y-1">

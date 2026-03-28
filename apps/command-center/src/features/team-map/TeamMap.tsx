@@ -6,6 +6,7 @@ import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { useApi } from '../../shared/auth/useApi'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN ?? ''
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL ?? ''
@@ -162,6 +163,7 @@ function createMarkerElement(member: TeamLocation): HTMLElement {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function TeamMap() {
+  const { t: _t } = useTranslation() // ready for i18n
   const { apiFetch } = useApi()
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<mapboxgl.Map | null>(null)

@@ -13,12 +13,14 @@ import {
   type Prospect,
   type TeamMember,
 } from './data'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 const STAGES: Array<CRMStage | 'Alla'> = ['Alla', 'Lead', 'Kvalificerad', 'Demo/Möte', 'Offert', 'Förhandling', 'Vunnen', 'Förlorad']
 const PRODUCTS: Array<CRMProduct | 'Alla'> = ['Alla', 'quiXzoom', 'Landvex', 'Hypbit']
 const ASSIGNEES: Array<TeamMember | 'Alla'> = ['Alla', 'Leon', 'Dennis', 'Erik']
 
 export function ProspectList() {
+  const { t: _t } = useTranslation() // ready for i18n
   const [search, setSearch] = useState('')
   const [stageFilter, setStageFilter] = useState<CRMStage | 'Alla'>('Alla')
   const [productFilter, setProductFilter] = useState<CRMProduct | 'Alla'>('Alla')

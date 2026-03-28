@@ -1,6 +1,7 @@
 import { Crown, DollarSign, Cpu, Scale, User } from 'lucide-react'
 import type { LucideProps } from 'lucide-react'
 import { ROLES, RoleProfile, useRole } from './RoleContext'
+import { useTranslation } from '../i18n/useTranslation'
 
 function getRoleIcon(roleId: string): React.ComponentType<LucideProps> {
   switch (roleId) {
@@ -20,6 +21,7 @@ function getRoleIcon(roleId: string): React.ComponentType<LucideProps> {
 
 export function RoleLogin() {
   const { setRole } = useRole()
+  const { t } = useTranslation()
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6">
@@ -30,7 +32,7 @@ export function RoleLogin() {
         </div>
         <h1 className="text-xl font-semibold text-gray-900">Wavult OS</h1>
         <p className="text-xs text-gray-500 uppercase tracking-wide font-medium mt-1">Wavult Ecosystem</p>
-        <p className="text-sm text-gray-500 mt-2">Välj din roll för att fortsätta</p>
+        <p className="text-sm text-gray-500 mt-2">{t('auth.select_role')}</p>
       </div>
 
       {/* Role grid */}
@@ -50,6 +52,7 @@ export function RoleLogin() {
 }
 
 function RoleCard({ role, onSelect }: { role: RoleProfile; onSelect: () => void }) {
+  const { t } = useTranslation()
   const vacant = role.name.startsWith('—')
   const Icon = getRoleIcon(role.id)
 
@@ -99,7 +102,7 @@ function RoleCard({ role, onSelect }: { role: RoleProfile; onSelect: () => void 
           className="mt-3 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity"
           style={{ color: role.color }}
         >
-          Logga in
+          {t('auth.continue_as')}
         </div>
       )}
     </button>

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useEntityScope } from '../../shared/scope/EntityScopeContext'
 import { INVOICES, FINANCE_ENTITIES, type Invoice, type EntityId, type Currency } from './mockData'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 type InvoiceStatus = Invoice['status']
 
@@ -100,6 +101,7 @@ function InvoicePreview({ invoice }: { invoice: Invoice }) {
 }
 
 export function InvoiceHub() {
+  const { t: _t } = useTranslation() // ready for i18n
   const { activeEntity, scopedEntities } = useEntityScope()
   const isRoot = activeEntity.layer === 0
   const scopedIds = new Set(scopedEntities.map(e => e.id))

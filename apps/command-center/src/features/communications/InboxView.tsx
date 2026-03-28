@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 interface Message {
   id: string
@@ -118,6 +119,7 @@ const TEAM_MEMBERS = [
 ]
 
 export function InboxView() {
+  const { t: _t } = useTranslation() // ready for i18n
   const [messages, setMessages] = useState<Message[]>(MOCK_MESSAGES)
   const [selected, setSelected] = useState<Message | null>(null)
   const [showCompose, setShowCompose] = useState(false)

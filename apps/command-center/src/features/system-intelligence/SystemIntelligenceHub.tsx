@@ -3,6 +3,7 @@
 // Inspirerad av dissg/Lambda System — anpassad för Wavult Group
 
 import { useState } from 'react'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 // ─── SVG Icons ────────────────────────────────────────────────────────────────
 function ActivityIcon() {
@@ -836,6 +837,7 @@ function PixPhilosophy() {
 type ActiveTab = 'oscilloskop' | 'risker' | 'beslut' | 'marknad' | 'pix'
 
 export function SystemIntelligenceHub() {
+  const { t: _t } = useTranslation() // ready for i18n
   const [activeTab, setActiveTab] = useState<ActiveTab>('oscilloskop')
 
   const tabs: { id: ActiveTab; label: string; icon: string }[] = [

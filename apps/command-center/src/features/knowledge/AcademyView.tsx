@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 interface Lesson {
   title: string
@@ -4217,6 +4218,7 @@ const ONBOARDING_ORDER: { courseId: string; reason: string }[] = [
 ]
 
 export function AcademyView() {
+  const { t: _t } = useTranslation() // ready for i18n
   const [progress, setProgress] = useState<ProgressMap>(getProgress)
   const [openCourse, setOpenCourse] = useState<{ course: Course; lesson: number } | null>(null)
 

@@ -2,12 +2,14 @@ import { useState } from 'react'
 import { ENTITIES } from '../org-graph/data'
 import { useEntityScope } from '../../shared/scope/EntityScopeContext'
 import { Tooltip } from '../../shared/ui/Tooltip'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 const FLAG_MAP: Record<string, string> = {
   Dubai: '🇦🇪', 'EU-LT': '🇱🇹', 'US-DE': '🇺🇸', 'US-TX': '🇺🇸', SE: '🇸🇪', Global: '🌐',
 }
 
 export function EntitySwitcher() {
+  const { t: _t } = useTranslation() // ready for i18n
   const { activeEntity, setActiveEntity } = useEntityScope()
   const [open, setOpen] = useState(false)
 

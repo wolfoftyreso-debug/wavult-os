@@ -8,11 +8,13 @@ import {
   type ActivityType,
   type TeamMember,
 } from './data'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 const ACTIVITY_TYPES: ActivityType[] = ['Samtal', 'Email', 'Möte', 'Demo', 'Offert skickad', 'Follow-up']
 const TEAM_MEMBERS: TeamMember[] = ['Leon', 'Dennis', 'Erik']
 
 export function ActivityLog() {
+  const { t: _t } = useTranslation() // ready for i18n
   const [activities, setActivities] = useState<Activity[]>(
     [...ACTIVITIES].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   )

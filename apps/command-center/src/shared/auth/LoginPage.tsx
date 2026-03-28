@@ -4,9 +4,11 @@
 
 import { useState, FormEvent } from 'react'
 import { useAuth } from './AuthContext'
+import { useTranslation } from '../i18n/useTranslation'
 
 export function LoginPage() {
   const { signIn } = useAuth()
+  const { t } = useTranslation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -17,7 +19,7 @@ export function LoginPage() {
     setError(null)
     setLoading(true)
     const { error } = await signIn(email.trim(), password)
-    if (error) setError(translateError(error))
+    if (error) setError(translateError(error, t))
     setLoading(false)
   }
 
@@ -32,14 +34,14 @@ export function LoginPage() {
           </div>
           <h1 className="text-xl font-semibold text-gray-900">Wavult OS</h1>
           <p className="text-xs text-gray-500 uppercase tracking-wide font-medium mt-1">Wavult Group</p>
-          <p className="text-sm text-gray-500 mt-2">Logga in för att fortsätta</p>
+          <p className="text-sm text-gray-500 mt-2">{t('auth.login')}</p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">
-              E-post
+              {t('auth.email')}
             </label>
             <input
               type="email"
@@ -58,7 +60,7 @@ export function LoginPage() {
 
           <div>
             <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">
-              Lösenord
+              {t('auth.password')}
             </label>
             <input
               type="password"
@@ -84,7 +86,7 @@ export function LoginPage() {
             disabled={loading}
             className="w-full bg-purple-700 hover:bg-purple-800 text-gray-900 font-medium py-2.5 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm mt-2"
           >
-            {loading ? 'Loggar in...' : 'Logga in'}
+            {loading ? t('auth.logging_in') : t('auth.login')}
           </button>
         </form>
       </div>
@@ -96,11 +98,11 @@ export function LoginPage() {
   )
 }
 
-function translateError(msg: string): string {
-  if (msg.includes('Invalid login credentials')) return 'Fel e-post eller lösenord'
+function translateError(msg: string, t: (key: string) => string): string {
+  if (msg.includes('Invalid login credentials')) return t('auth.error.invalid')
   if (msg.includes('Email not confirmed')) return 'E-postadressen är inte bekräftad — kolla din inbox'
   if (msg.includes('Too many requests')) return 'För många försök — vänta en stund och försök igen'
   if (msg.includes('User not found')) return 'Ingen användare med den e-postadressen hittades'
-  if (msg.includes('network')) return 'Nätverksfel — kontrollera din internetanslutning'
+  if (msg.includes('network')) return t('agent.error.network')
   return msg
 }

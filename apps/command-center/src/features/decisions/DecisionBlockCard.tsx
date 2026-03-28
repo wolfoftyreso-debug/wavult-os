@@ -19,6 +19,7 @@ import {
   RISK_LEVEL_COLORS,
 } from './decisionTypes'
 import { calculateMajority, getVoteCounts, generateSystemActions } from './decisionEngine'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 // ─── Formatering ──────────────────────────────────────────────────────────────
 
@@ -283,6 +284,7 @@ export function DecisionBlockCard({
   onVote,
   readOnly = false,
 }: DecisionBlockCardProps) {
+  const { t: _t } = useTranslation() // ready for i18n
   const userVote = block.votes[currentUserId] as VoteChoice | undefined
   const hasVoted = !!userVote
 

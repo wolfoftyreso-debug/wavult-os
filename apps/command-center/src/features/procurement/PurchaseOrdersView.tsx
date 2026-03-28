@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { PURCHASE_ORDERS, SUPPLIERS } from './mockData'
 import { PurchaseOrder, POStatus, Currency } from './types'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 const STATUS_META: Record<POStatus, { label: string; color: string; bg: string }> = {
   utkast:   { label: 'Utkast',   color: '#9CA3AF', bg: 'rgba(107,114,128,0.12)' },
@@ -16,6 +17,7 @@ function formatAmount(amount: number, currency: Currency) {
 const EMPTY_PO = { supplierId: '', description: '', amount: '', currency: 'SEK' as Currency }
 
 export function PurchaseOrdersView() {
+  const { t: _t } = useTranslation() // ready for i18n
   const [orders, setOrders] = useState<PurchaseOrder[]>(PURCHASE_ORDERS)
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState(EMPTY_PO)

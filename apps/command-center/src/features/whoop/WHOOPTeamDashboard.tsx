@@ -16,6 +16,7 @@
 
 import { useEffect, useState } from 'react'
 import { useApi } from '../../shared/auth/useApi'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -667,6 +668,7 @@ function SetupAndConnectTab({ onConnected }: { onConnected: () => void }) {
 // ─── Huvud-komponent ──────────────────────────────────────────────────────────
 
 export function WHOOPTeamDashboard() {
+  const { t: _t } = useTranslation() // ready for i18n
   const { apiFetch } = useApi()
   const [data, setData] = useState<TeamData | null>(null)
   const [loading, setLoading] = useState(true)

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { SUPPLIERS } from './mockData'
 import { SupplierCategory, SupplierStatus } from './types'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 const CATEGORY_COLORS: Record<SupplierCategory, string> = {
   'Tech/SaaS':      '#6366f1',
@@ -20,6 +21,7 @@ const ALL_CATEGORIES: Array<SupplierCategory | 'Alla'> = [
 ]
 
 export function SuppliersView() {
+  const { t: _t } = useTranslation() // ready for i18n
   const [filterCategory, setFilterCategory] = useState<SupplierCategory | 'Alla'>('Alla')
   const [filterStatus, setFilterStatus] = useState<SupplierStatus | 'Alla'>('Alla')
   const [search, setSearch] = useState('')

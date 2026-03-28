@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useRole } from '../../shared/auth/RoleContext'
 import { CommandDashboard } from './CommandDashboard'
 import { useEntityScope } from '../../shared/scope/EntityScopeContext'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 // ─── Help banner for first-time users ────────────────────────────────────────
 function WelcomeBanner() {
@@ -401,6 +402,7 @@ function ScopeBanner() {
 
 // ─── Router ────────────────────────────────────────────────────────────────────
 export function RoleDashboard() {
+  const { t: _t } = useTranslation() // ready for i18n
   const { effectiveRole, isAdmin, viewAs } = useRole()
 
   // Admin utan viewAs → visa full Command Center

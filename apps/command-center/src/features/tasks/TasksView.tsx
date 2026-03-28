@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useEntityScope } from '../../shared/scope/EntityScopeContext'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -257,6 +258,7 @@ function TaskCard({
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 export function TasksView() {
+  const { t: _t } = useTranslation() // ready for i18n
   const [tasks, setTasks] = useState<Task[]>(INITIAL_TASKS)
   const [filter, setFilter] = useState<string>('all')
   const { activeEntity, isInScope } = useEntityScope()

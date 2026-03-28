@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useEntityScope } from '../../shared/scope/EntityScopeContext'
 import { useFinanceLedger, useFinanceEntities } from './hooks/useFinance'
 import type { FinanceLedgerEntry } from '../../lib/supabase'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 type Currency = 'SEK' | 'EUR' | 'USD' | 'AED'
 
@@ -26,6 +27,7 @@ function exportCSV(rows: FinanceLedgerEntry[]) {
 }
 
 export function LedgerView() {
+  const { t: _t } = useTranslation() // ready for i18n
   const { activeEntity, scopedEntities } = useEntityScope()
   const isRoot = activeEntity.layer === 0
   const scopedIds = new Set(scopedEntities.map(e => e.id))

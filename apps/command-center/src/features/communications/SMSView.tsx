@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 interface SMSLog {
   id: string
@@ -84,6 +85,7 @@ const TEAM_CONTACTS = [
 const ELKS_CONFIGURED = true // ✅ Konfigurerad — verifierad 2026-03-27. Kredit: 14 200 SEK. Avsändare: "Wavult"
 
 export function SMSView() {
+  const { t: _t } = useTranslation() // ready for i18n
   const [log, setLog] = useState<SMSLog[]>(MOCK_SMS_LOG)
   const [showForm, setShowForm] = useState(false)
   const [recipient, setRecipient] = useState('')

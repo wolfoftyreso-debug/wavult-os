@@ -11,6 +11,7 @@ import { TaxView } from './TaxView'
 import { IntercompanyView } from './IntercompanyView'
 import { PaymentProcessor } from './PaymentProcessor'
 import { CashFlowOptimizer } from './CashFlowOptimizer'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 // ─── Error Boundary ───────────────────────────────────────────────────────────
 class FinanceErrorBoundary extends Component<
@@ -107,6 +108,7 @@ const TABS: Array<{ id: Tab; label: string; tooltip: string; ingress: string }> 
 ]
 
 export function FinanceHub() {
+  const { t: _t } = useTranslation() // ready for i18n
   const [activeTab, setActiveTab] = useState<Tab>('overview')
   const [showIngress, setShowIngress] = useState(true)
   const prevTabRef = useRef<Tab>('overview')

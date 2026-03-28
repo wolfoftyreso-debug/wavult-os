@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 type Stage = 'intro' | 'quiz' | 'result' | 'certificate'
 
@@ -171,6 +172,7 @@ function CertificateView({ onReset }: { onReset: () => void }) {
 }
 
 export function ZoomerCert() {
+  const { t: _t } = useTranslation() // ready for i18n
   const [stage, setStage] = useState<Stage>(() => {
     const saved = localStorage.getItem('wavult_zoomer_cert')
     return saved === 'passed' ? 'certificate' : 'intro'

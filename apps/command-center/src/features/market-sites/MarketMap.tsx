@@ -6,6 +6,7 @@ import {
 } from './data'
 import { COMMAND_CHAIN } from '../org-graph/commandChain'
 import { useEntityScope } from '../../shared/scope/EntityScopeContext'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 // ─── Flag emoji helper ────────────────────────────────────────────────────────
 
@@ -527,6 +528,7 @@ function WorldSVG({
 // ─── Main MarketMap ───────────────────────────────────────────────────────────
 
 export function MarketMap() {
+  const { t: _t } = useTranslation() // ready for i18n
   const [selectedSite, setSelectedSite] = useState<MarketSite | null>(null)
   const [regionFilter, setRegionFilter] = useState<string>('all')
   const [statusFilter, setStatusFilter] = useState<string>('all')

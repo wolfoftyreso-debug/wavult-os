@@ -10,6 +10,7 @@ import {
   type APIIntegration,
   type ProviderNews,
 } from './data'
+import { useTranslation } from '../../shared/i18n/useTranslation'
 
 // ─── Status badge ─────────────────────────────────────────────────────────────
 function StatusBadge({ status }: { status: APIIntegration['status'] }) {
@@ -197,6 +198,7 @@ function NewsCard({ news }: { news: ProviderNews }) {
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 export function APIHub() {
+  const { t: _t } = useTranslation() // ready for i18n
   const [activeTab, setActiveTab] = useState<'catalog' | 'active' | 'news'>('catalog')
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState('')
