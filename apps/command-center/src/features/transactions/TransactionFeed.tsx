@@ -48,6 +48,44 @@ const TRANSACTIONS: Transaction[] = [
   { id: 'priv-006', date: '2026-03-25', title: 'Duix — AI-tjänst kvitto #2077-2547', counterparty: 'Duix', entity: 'Wavult Group', type: 'payment', amount: -59, currency: 'USD', status: 'paid', category: 'Mjukvara', reference: 'DUIX-2077-2547' },
   { id: 'priv-007', date: '2026-03-25', title: 'Northwest — Landvex Inc agent fee', counterparty: 'Northwest Registered Agent LLC', entity: 'Landvex Inc', type: 'payment', amount: -3060, currency: 'USD', status: 'paid', category: 'Juridik', reference: 'NW-LANDVEX-TX' },
 
+  // ── Gmail-kvitton (jan-mars 2026, wolfoftyreso@gmail.com) ─────────────────
+  // Totalt: ~99 000 SEK i utgifter — privatkortsutlägg mot bolaget
+  { id: 'gm-001', date: '2026-03-24', title: 'ElevenLabs — kvitto #2927-7762-7543', counterparty: 'Eleven Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -4331, currency: 'SEK', status: 'pending', category: 'AI-API', reference: 'EL-2927-7762-7543' },
+  { id: 'gm-002', date: '2026-03-24', title: 'Cloudflare — mars faktura', counterparty: 'Cloudflare Inc.', entity: 'Wavult Group', type: 'payment', amount: -52, currency: 'SEK', status: 'paid', category: 'Infrastruktur', reference: 'CF-2026-03' },
+  { id: 'gm-003', date: '2026-03-23', title: 'Resend — kvitto #2605-4700', counterparty: 'Resend Inc.', entity: 'Wavult Group', type: 'payment', amount: -210, currency: 'SEK', status: 'paid', category: 'Infrastruktur', reference: 'RESEND-2605-4700' },
+  { id: 'gm-004', date: '2026-03-22', title: 'Anthropic (Claude) — kvitto #2700-9920-2183', counterparty: 'Anthropic PBC', entity: 'Wavult Group', type: 'payment', amount: -575, currency: 'SEK', status: 'paid', category: 'AI-API', reference: 'ANT-2700-9920-2183' },
+  { id: 'gm-005', date: '2026-03-22', title: 'Anthropic (Claude) — kvitto #2977-4746-7231', counterparty: 'Anthropic PBC', entity: 'Wavult Group', type: 'payment', amount: -575, currency: 'SEK', status: 'paid', category: 'AI-API', reference: 'ANT-2977-4746-7231' },
+  { id: 'gm-006', date: '2026-03-18', title: 'Anthropic (Claude) — kvitto #2649-4019-8991 (€137.68)', counterparty: 'Anthropic PBC', entity: 'Wavult Group', type: 'payment', amount: -1583, currency: 'SEK', status: 'paid', category: 'AI-API', reference: 'ANT-2649-4019-8991' },
+  { id: 'gm-007', date: '2026-03-18', title: 'Anthropic (Claude) — kvitto #2414-0808-2047', counterparty: 'Anthropic PBC', entity: 'Wavult Group', type: 'payment', amount: -58, currency: 'SEK', status: 'paid', category: 'AI-API', reference: 'ANT-2414-0808-2047' },
+  { id: 'gm-008', date: '2026-03-17', title: 'Lovable Labs — prenumeration mars (€2250)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -25875, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2692-8249' },
+  { id: 'gm-009', date: '2026-03-13', title: 'Lovable Labs — kvitto #2059', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -1050, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2059' },
+  { id: 'gm-010', date: '2026-03-07', title: 'Lovable Labs — kvitto #2498-7560', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -1050, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2498-7560' },
+  { id: 'gm-011', date: '2026-03-05', title: 'Lovable Labs — kvitto #2336-2371 ($200)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -2100, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2336-2371' },
+  { id: 'gm-012', date: '2026-03-02', title: 'Anthropic (Claude) — kvitto #2516-6956-6564 (€90)', counterparty: 'Anthropic PBC', entity: 'Wavult Group', type: 'payment', amount: -1035, currency: 'SEK', status: 'paid', category: 'AI-API', reference: 'ANT-2516-6956-6564' },
+  { id: 'gm-013', date: '2026-03-03', title: 'Lovable Labs — kvitto #2321-9404', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -1050, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2321-9404' },
+  { id: 'gm-014', date: '2026-02-22', title: 'Lovable Labs — kvitto #2474-2121 ($500)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -5250, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2474-2121' },
+  { id: 'gm-015', date: '2026-02-17', title: 'Lovable Labs — kvitto #2492-0515 ($300)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -3150, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2492-0515' },
+  { id: 'gm-016', date: '2026-02-17', title: 'ElevenLabs — kvitto #2565-4316-6895 ($412.50)', counterparty: 'Eleven Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -4331, currency: 'SEK', status: 'pending', category: 'AI-API', reference: 'EL-2565-4316-6895' },
+  { id: 'gm-017', date: '2026-02-10', title: 'Lovable Labs — kvitto #2179-4046 ($200)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -2100, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2179-4046' },
+  { id: 'gm-018', date: '2026-02-09', title: 'Lovable Labs — kvitto #2061 (€300)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -3450, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2061' },
+  { id: 'gm-019', date: '2026-02-07', title: 'Lovable Labs — kvitto #2528 (€300)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -3450, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2528' },
+  { id: 'gm-020', date: '2026-02-07', title: 'Resend — kvitto #2185-1140', counterparty: 'Resend Inc.', entity: 'Wavult Group', type: 'payment', amount: -210, currency: 'SEK', status: 'paid', category: 'Infrastruktur', reference: 'RESEND-2185-1140' },
+  { id: 'gm-021', date: '2026-02-06', title: 'Lovable Labs — kvitto #2570 ($200)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -2100, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2570' },
+  { id: 'gm-022', date: '2026-02-01', title: 'Lovable Labs — kvitto #2047-8960 ($200)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -2100, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2047-8960' },
+  { id: 'gm-023', date: '2026-01-31', title: 'Lovable Labs — kvitto #2719 (€205)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -2358, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2719' },
+  { id: 'gm-024', date: '2026-01-29', title: 'ElevenLabs — kvitto #2230-6582-3448 ($123.75)', counterparty: 'Eleven Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -1299, currency: 'SEK', status: 'pending', category: 'AI-API', reference: 'EL-2230-6582-3448' },
+  { id: 'gm-025', date: '2026-01-29', title: 'Lovable Labs — kvitto #2814-5350 ($200)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -2100, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2814-5350' },
+  { id: 'gm-026', date: '2026-01-25', title: 'Lovable Labs — kvitto #2783-8231 ($100)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -1050, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2783-8231' },
+  { id: 'gm-027', date: '2026-01-24', title: 'ElevenLabs — kvitto #2951-9078-9997 ($13.75)', counterparty: 'Eleven Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -144, currency: 'SEK', status: 'pending', category: 'AI-API', reference: 'EL-2951-9078-9997' },
+  { id: 'gm-028', date: '2026-01-19', title: 'Lovable Labs — kvitto #2235 ($400)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -4200, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2235' },
+  { id: 'gm-029', date: '2026-01-18', title: 'Lovable Labs — kvitto #2827-1362 (€920)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -10580, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2827-1362' },
+  { id: 'gm-030', date: '2026-01-17', title: 'Lovable Labs — kvitto #2734 ($100)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -1050, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2734' },
+  { id: 'gm-031', date: '2026-01-14', title: 'Lovable Labs — kvitto #2074-0849 ($100)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -1050, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2074-0849' },
+  { id: 'gm-032', date: '2026-01-12', title: 'Lovable Labs — kvitto #2056 ($100)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -1050, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2056' },
+  { id: 'gm-033', date: '2026-01-11', title: 'Lovable Labs — kvitto #2833-8347 ($50)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -525, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2833-8347' },
+  { id: 'gm-034', date: '2026-01-09', title: 'Lovable Labs — kvitto #2072 ($100)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -1050, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2072' },
+  { id: 'gm-035', date: '2026-01-03', title: 'Lovable Labs — kvitto #2732 ($200)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -2100, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2732' },
+
 ]
 
 const STATUS_LABELS: Record<TxStatus, { label: string; color: string; bg: string }> = {
@@ -68,7 +106,7 @@ const TYPE_LABELS: Record<TxType, string> = {
 }
 
 const ENTITIES = ['Alla', 'Landvex AB', 'Landvex Inc', 'Wavult Group', 'QuiXzoom UAB', 'QuiXzoom Inc']
-const CATEGORIES = ['Alla', 'Intäkt', 'Lön', 'Infrastruktur', 'Mjukvara', 'Intercompany', 'Juridik', 'Resa & Event', 'Hårdvara']
+const CATEGORIES = ['Alla', 'Intäkt', 'Lön', 'Infrastruktur', 'Mjukvara', 'AI-API', 'Intercompany', 'Juridik', 'Resa & Event', 'Hårdvara']
 
 export function TransactionFeed() {
   const [search, setSearch] = useState('')
