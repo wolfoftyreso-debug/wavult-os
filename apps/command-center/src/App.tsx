@@ -86,11 +86,11 @@ function AuthenticatedApp() {
     if (!user || role) return
     const autoRole = ROLES.find(r =>
       r.name !== '—' && (
-        user.email === 'erik@hypbit.com'    ? r.id === 'group-ceo' :
-        user.email === 'winston@hypbit.com' ? r.id === 'cfo' :
-        user.email === 'leon@hypbit.com'    ? r.id === 'ceo-ops' :
-        user.email === 'dennis@hypbit.com'  ? r.id === 'clo' :
-        user.email === 'johan@hypbit.com'   ? r.id === 'cto' :
+        user.email === 'erik@wavult.com'    ? r.id === 'group-ceo' :
+        user.email === 'winston@wavult.com' ? r.id === 'cfo' :
+        user.email === 'leon@wavult.com'    ? r.id === 'ceo-ops' :
+        user.email === 'dennis@wavult.com'  ? r.id === 'clo' :
+        user.email === 'johan@wavult.com'   ? r.id === 'cto' :
         false
       )
     )

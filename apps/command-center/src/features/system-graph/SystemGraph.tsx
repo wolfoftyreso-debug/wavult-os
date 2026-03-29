@@ -201,14 +201,14 @@ const INITIAL_NODES: Node[] = [
   {
     id: 'alb', type: 'system',
     position: { x: 20, y: 280 },
-    data: { label: 'ALB', sublabel: 'hypbit-api-alb · eu-north-1', status: 'live', colorKey: 'core', owner: 'Johan', latency: '42ms', description: 'Application Load Balancer routing API traffic' },
+    data: { label: 'ALB', sublabel: 'wavult-api-alb · eu-north-1', status: 'live', colorKey: 'core', owner: 'Johan', latency: '42ms', description: 'Application Load Balancer routing API traffic' },
   },
 
   // ── COMPUTE LAYER ─────────────────────────────────────────────────────────
   {
     id: 'wavult-api', type: 'system',
     position: { x: 250, y: 20 },
-    data: { label: 'Wavult OS API', sublabel: 'hypbit-api · Node.js · port 3001', status: 'live', colorKey: 'core', owner: 'Johan', latency: '42ms', uptime: '99.8%', description: 'Main Wavult OS backend. BOS tasks, auth, WHOOP.' },
+    data: { label: 'Wavult OS API', sublabel: 'wavult-api · Node.js · port 3001', status: 'live', colorKey: 'core', owner: 'Johan', latency: '42ms', uptime: '99.8%', description: 'Main Wavult OS backend. BOS tasks, auth, WHOOP.' },
   },
   {
     id: 'quixzoom-api', type: 'system',

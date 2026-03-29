@@ -58,7 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // Try Identity Core (hybrid mode)
     try {
-      const icRes = await fetch('https://api.hypbit.com/v1/auth/login', {
+      const icRes = await fetch('https://api.wavult.com/v1/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: normalizedEmail, password }),

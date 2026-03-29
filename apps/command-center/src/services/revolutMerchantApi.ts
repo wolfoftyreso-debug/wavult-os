@@ -4,7 +4,7 @@
 // SETUP (du har redan ansökt):
 // 1. Merchant account approved → get API key from merchant.revolut.com
 // 2. Set REVOLUT_MERCHANT_API_KEY in SSM: /wavult/prod/REVOLUT_MERCHANT_API_KEY
-// 3. Webhook URL: https://api.hypbit.com/v1/webhooks/revolut-merchant
+// 3. Webhook URL: https://api.wavult.com/v1/webhooks/revolut-merchant
 // 4. Webhook events: ORDER_COMPLETED, ORDER_PAYMENT_DECLINED, REFUND_COMPLETED
 //
 // Use cases for Wavult Group:

@@ -13,7 +13,7 @@
 
 import { useAuth } from './AuthContext'
 
-const API_BASE = import.meta.env.VITE_API_URL ?? 'https://api.hypbit.com'
+const API_BASE = import.meta.env.VITE_API_URL ?? 'https://api.wavult.com'
 
 export function useApi() {
   const { getToken } = useAuth()

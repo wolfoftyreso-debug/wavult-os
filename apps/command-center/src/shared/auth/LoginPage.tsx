@@ -64,7 +64,7 @@ export function LoginPage() {
             <Input
               type="email"
               label={t('auth.email')}
-              placeholder="namn@hypbit.com"
+              placeholder="namn@wavult.com"
               value={email}
               onChange={setEmail}
             />

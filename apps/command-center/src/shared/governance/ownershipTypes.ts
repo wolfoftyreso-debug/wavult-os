@@ -22,31 +22,31 @@ export const OWNERS: Record<RoleId, Owner> = {
     roleId: 'chairman-ceo',
     roleName: 'Chairman & Group CEO',
     personName: 'Erik Svensson',
-    email: 'erik@hypbit.com',
+    email: 'erik@wavult.com',
   },
   'chief-legal-ops': {
     roleId: 'chief-legal-ops',
     roleName: 'Chief Legal & Operations',
     personName: 'Dennis Bjarnemark',
-    email: 'dennis@hypbit.com',
+    email: 'dennis@wavult.com',
   },
   'ceo-operations': {
     roleId: 'ceo-operations',
     roleName: 'CEO Wavult Operations',
     personName: 'Leon Russo De Cerame',
-    email: 'leon@hypbit.com',
+    email: 'leon@wavult.com',
   },
   'cfo': {
     roleId: 'cfo',
     roleName: 'CFO',
     personName: 'Winston Bjarnemark',
-    email: 'winston@hypbit.com',
+    email: 'winston@wavult.com',
   },
   'group-cto': {
     roleId: 'group-cto',
     roleName: 'Group CTO',
     personName: 'Johan Berglund',
-    email: 'johan@hypbit.com',
+    email: 'johan@wavult.com',
   },
 }
 
