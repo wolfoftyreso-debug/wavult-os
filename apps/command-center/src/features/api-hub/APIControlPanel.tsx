@@ -20,6 +20,20 @@ const API_CATALOG = [
   { id: 'revolut-merchant', name: 'Revolut Merchant',    category: 'Payments',        tier: 'financial', status: 'pending', cost_estimate: 'Per txn' },
   { id: 'stripe',           name: 'Stripe',              category: 'Payments',        tier: 'financial', status: 'active',  cost_estimate: '2.9% + 30¢' },
   { id: 'nordea',           name: 'Nordea Open Banking', category: 'Banking',         tier: 'financial', status: 'pending', cost_estimate: 'TBD' },
+  { id: 'namecheap', name: 'Namecheap', category: 'Domains', tier: 'general', status: 'active', cost_estimate: 'Per domain' },
+  { id: '46elks', name: '46elks', category: 'SMS/Voice SE', tier: 'general', status: 'active', cost_estimate: '~0.05 kr/SMS' },
+  { id: 'shotstack', name: 'Shotstack', category: 'Video Render', tier: 'general', status: 'active', cost_estimate: 'Per render' },
+  { id: 'gandi', name: 'Gandi', category: 'Domains', tier: 'general', status: 'active', cost_estimate: 'Per domain' },
+  { id: 'mapbox', name: 'Mapbox', category: 'Maps', tier: 'general', status: 'active', cost_estimate: 'Free tier' },
+  { id: 'supabase', name: 'Supabase', category: 'Database', tier: 'general', status: 'active', cost_estimate: 'Free tier' },
+  { id: 'cloudflare', name: 'Cloudflare', category: 'CDN/DNS/Edge', tier: 'general', status: 'active', cost_estimate: 'Free + Pro' },
+  { id: 'aws', name: 'AWS', category: 'Infrastructure', tier: 'general', status: 'active', cost_estimate: '~$150/mån' },
+  { id: 'github', name: 'GitHub', category: 'DevOps', tier: 'general', status: 'active', cost_estimate: 'Free/Pro' },
+  { id: 'resend', name: 'Resend', category: 'Email', tier: 'general', status: 'active', cost_estimate: '~$20/mån' },
+  { id: 'stripe-atlas', name: 'Stripe Atlas', category: 'Company Formation', tier: 'financial', status: 'active', cost_estimate: '$500/formation' },
+  { id: 'duffel', name: 'Duffel', category: 'Travel/Flights', tier: 'general', status: 'pending', cost_estimate: 'Per booking' },
+  { id: 'twilio', name: 'Twilio', category: 'SMS/Voice US', tier: 'general', status: 'pending', cost_estimate: '~$1/nr/mån' },
+  { id: 'openclaw', name: 'OpenClaw', category: 'AI Infrastructure', tier: 'general', status: 'active', cost_estimate: 'Subscription' },
 ]
 
 const STATUS_STYLE: Record<string, { bg: string; color: string; label: string }> = {
