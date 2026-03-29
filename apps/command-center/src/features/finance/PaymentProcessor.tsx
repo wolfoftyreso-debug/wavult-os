@@ -260,7 +260,7 @@ function PaymentIntentDetail({ intent, onClose, onRefund }: {
   const canRefund = intent.status === 'SETTLED' || intent.status === 'CAPTURED'
 
   return (
-    <div className="bg-white rounded-xl border border-brand-accent/20 p-4 space-y-3">
+    <div className="bg-white rounded-xl border border-purple-200 p-4 space-y-3">
       <div className="flex items-center justify-between">
         <h4 className="text-xs font-semibold text-gray-900">Payment Intent</h4>
         <button onClick={onClose} className="text-gray-500 hover:text-gray-600">×</button>
@@ -381,7 +381,7 @@ function PaymentIntentsSection() {
         <div className="flex items-center gap-1 p-0.5 bg-white rounded-lg border border-gray-200">
           <button
             onClick={() => setStatusFilter('all')}
-            className={`px-2 py-1 rounded-md text-xs font-medium transition-colors ${statusFilter === 'all' ? 'bg-brand-accent/20 text-brand-accent' : 'text-gray-500 hover:text-gray-600'}`}
+            className={`px-2 py-1 rounded-md text-xs font-medium transition-colors ${statusFilter === 'all' ? 'bg-purple-100 text-purple-700' : 'text-gray-500 hover:text-gray-600'}`}
           >
             Alla
           </button>
@@ -400,7 +400,7 @@ function PaymentIntentsSection() {
             <button
               key={p}
               onClick={() => setPspFilter(p)}
-              className={`px-2 py-1 rounded-md text-xs font-medium transition-colors ${pspFilter === p ? 'bg-brand-accent/20 text-brand-accent' : 'text-gray-500 hover:text-gray-600'}`}
+              className={`px-2 py-1 rounded-md text-xs font-medium transition-colors ${pspFilter === p ? 'bg-purple-100 text-purple-700' : 'text-gray-500 hover:text-gray-600'}`}
             >
               {p === 'all' ? 'Alla PSP' : p === 'revolut' ? '💳 Revolut' : '⚡ Stripe'}
             </button>
@@ -449,7 +449,7 @@ function PaymentIntentsSection() {
               <button
                 key={intent.id}
                 onClick={() => setSelected(selected?.id === intent.id ? null : intent)}
-                className={`w-full text-left grid grid-cols-[1fr_100px_120px_90px_80px] gap-3 px-4 py-3 hover:bg-white/[0.02] transition-colors ${selected?.id === intent.id ? 'bg-brand-accent/5' : ''}`}
+                className={`w-full text-left grid grid-cols-[1fr_100px_120px_90px_80px] gap-3 px-4 py-3 hover:bg-gray-50 transition-colors ${selected?.id === intent.id ? 'bg-purple-50' : ''}`}
               >
                 <div>
                   <div className="text-xs text-gray-800 truncate">{intent.description}</div>
@@ -706,7 +706,7 @@ export function PaymentProcessor() {
             onClick={() => setActiveSection(s.id)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
               activeSection === s.id
-                ? 'bg-brand-accent/15 text-brand-accent border border-brand-accent/30'
+                ? 'bg-purple-50 text-purple-700 border border-purple-200'
                 : 'text-gray-500 hover:text-gray-600 hover:bg-white/[0.04] border border-transparent'
             }`}
           >

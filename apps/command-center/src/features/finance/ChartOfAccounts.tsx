@@ -112,7 +112,7 @@ export function ChartOfAccounts() {
             {/* Group header */}
             <button
               onClick={() => toggleGroup(group)}
-              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/[0.02] transition-colors text-left"
+              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-left"
             >
               <span className="text-base">{isExpanded ? '▾' : '▸'}</span>
               <span className="text-sm font-semibold text-gray-900 flex-1">{group}</span>
@@ -142,7 +142,7 @@ export function ChartOfAccounts() {
                   return (
                     <div
                       key={account.id}
-                      className="grid grid-cols-12 px-4 py-2.5 items-center border-b border-white/[0.03] last:border-0 hover:bg-white/[0.02] transition-colors min-w-[500px]"
+                      className="grid grid-cols-12 px-4 py-2.5 items-center border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors min-w-[500px]"
                     >
                       <span className="col-span-1 text-xs font-mono text-gray-500">{account.account_nr}</span>
                       <span className="col-span-4 text-xs text-gray-900">{account.name}</span>

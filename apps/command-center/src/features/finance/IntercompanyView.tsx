@@ -359,7 +359,7 @@ export function IntercompanyView() {
             <div className="rounded-xl border border-gray-200 overflow-hidden">
               <div className="divide-y divide-gray-100">
                 {nettingEntries.map((pair, i) => (
-                  <div key={i} className="flex items-center gap-3 px-4 py-3 hover:bg-white/[0.02] transition-colors">
+                  <div key={i} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors">
                     <div className="flex items-center gap-1.5">
                       <span className="h-1.5 w-1.5 rounded-full" style={{ background: entityColor(pair.fromId) }} />
                       <span className="text-xs text-gray-900 font-semibold">{entityShortName(pair.fromId)}</span>
@@ -428,7 +428,7 @@ export function IntercompanyView() {
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {LICENSE_FEES.map(lf => (
-                    <tr key={lf.fromId} className="hover:bg-white/[0.02] transition-colors">
+                    <tr key={lf.fromId} className="hover:bg-gray-50 transition-colors">
                       <td className="px-4 py-3 font-semibold text-gray-900">{lf.from}</td>
                       <td className="px-4 py-3 text-gray-500">{lf.jurisdiction}</td>
                       <td className="px-4 py-3">
@@ -498,7 +498,7 @@ export function IntercompanyView() {
                   {entries.map(ic => {
                     const st = STATUS_CONFIG[ic.status]
                     return (
-                      <div key={ic.id} className="flex items-center gap-3 px-4 py-3 hover:bg-white/[0.02] transition-colors">
+                      <div key={ic.id} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors">
                         <div className="flex items-center gap-2 flex-1 min-w-0">
                           <div className="flex items-center gap-1.5">
                             <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: entityColor(ic.fromEntityId) }} />

@@ -141,7 +141,7 @@ export function InvoiceHub() {
         </div>
         <button
           onClick={() => setShowNewForm(s => !s)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-accent/20 hover:bg-brand-accent/30 text-brand-accent text-xs font-semibold transition-colors border border-brand-accent/30"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-100 hover:bg-purple-200 text-purple-700 text-xs font-semibold transition-colors border border-purple-200"
         >
           + Ny faktura
         </button>
@@ -240,7 +240,7 @@ export function InvoiceHub() {
               className="px-4 py-2 rounded-lg border border-gray-200 text-gray-500 text-xs hover:text-gray-900 transition-colors">
               Avbryt
             </button>
-            <button className="px-4 py-2 rounded-lg bg-brand-accent/20 border border-brand-accent/30 text-brand-accent text-xs font-semibold hover:bg-brand-accent/30 transition-colors">
+            <button className="px-4 py-2 rounded-lg bg-purple-100 border border-purple-200 text-purple-700 text-xs font-semibold hover:bg-purple-200 transition-colors">
               Spara utkast
             </button>
           </div>
@@ -264,7 +264,7 @@ export function InvoiceHub() {
           const st = STATUS_CONFIG[inv.status]
           return (
             <div key={inv.id}
-              className="grid grid-cols-12 px-4 py-3 items-center border-b border-white/[0.03] last:border-0 hover:bg-white/[0.02] transition-colors min-w-[560px]">
+              className="grid grid-cols-12 px-4 py-3 items-center border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors min-w-[560px]">
               <span className="col-span-2 text-xs font-mono text-gray-500">{inv.number}</span>
               <div className="col-span-3">
                 <p className="text-xs text-gray-900 truncate">{inv.recipient}</p>

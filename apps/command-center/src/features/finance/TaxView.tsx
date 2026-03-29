@@ -178,7 +178,7 @@ export function TaxView() {
             const isOverdue = tp.status === 'unreported' && tp.dueDate < new Date().toISOString().slice(0, 10)
             return (
               <div key={tp.id}
-                className={`grid grid-cols-12 px-4 py-3 items-center hover:bg-white/[0.02] transition-colors ${isUrgent ? 'border-l-2 border-red-500/50' : ''}`}
+                className={`grid grid-cols-12 px-4 py-3 items-center hover:bg-gray-50 transition-colors ${isUrgent ? 'border-l-2 border-red-500/50' : ''}`}
               >
                 <div className="col-span-2 flex items-center gap-1.5">
                   <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: fe?.color }} />

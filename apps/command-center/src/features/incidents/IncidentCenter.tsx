@@ -69,8 +69,8 @@ function ActionCard({
   return (
     <div className={`rounded-xl border transition-all ${isActive ? 'ring-1' : ''}`}
       style={{
-        borderColor: isActive ? '#F59E0B40' : '#ffffff0a',
-        background: isActive ? '#F59E0B08' : '#0A0C14'
+        borderColor: isActive ? '#FF950040' : 'rgba(0,0,0,0.10)',
+        background: isActive ? 'rgba(255,149,0,0.06)' : '#FFFFFF'
       }}>
       <div className="px-4 py-3">
         {/* Header */}
@@ -82,15 +82,15 @@ function ActionCard({
                 {stateStyle.label}
               </span>
               {action.state === 'requires_dual_approval' && (
-                <span className="text-xs text-gray-500">
+                <span className="text-xs" style={{ color: 'rgba(60,60,67,0.8)' }}>
                   Requires {roleName(action.owner_role_id)} + {roleName(action.approver_role_id)}
                 </span>
               )}
             </div>
-            <p className="text-sm font-medium text-gray-900 leading-relaxed">{action.text}</p>
+            <p className="text-sm font-medium leading-relaxed" style={{ color: '#1C1C1E' }}>{action.text}</p>
           </div>
           <button onClick={() => setExpanded(p => !p)}
-            className="text-gray-500 hover:text-gray-500 text-xs flex-shrink-0 mt-1">
+            className="text-xs flex-shrink-0 mt-1" style={{ color: 'rgba(60,60,67,0.8)' }}>
             {expanded ? '▲ less' : '▾ SMART'}
           </button>
         </div>
@@ -98,26 +98,26 @@ function ActionCard({
         {/* Roles */}
         <div className="flex items-center gap-4 mt-3 text-xs">
           <div className="flex items-center gap-1.5">
-            <span className="text-gray-500">Owner:</span>
+            <span style={{ color: 'rgba(60,60,67,0.8)' }}>Owner:</span>
             <span style={{ color: ownerColor }} className="font-semibold">{roleName(action.owner_role_id)}</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="text-gray-500">Approver:</span>
+            <span style={{ color: 'rgba(60,60,67,0.8)' }}>Approver:</span>
             <span style={{ color: approverColor }} className="font-semibold">{roleName(action.approver_role_id)}</span>
           </div>
           <div className="flex items-center gap-1.5 ml-auto">
-            <span className="text-gray-500">Deadline:</span>
-            <span className="text-yellow-400 font-mono">{action.deadline_days}d</span>
+            <span style={{ color: 'rgba(60,60,67,0.8)' }}>Deadline:</span>
+            <span className="font-mono" style={{ color: '#FF9500' }}>{action.deadline_days}d</span>
           </div>
         </div>
 
         {/* SMART criteria */}
         {expanded && (
-          <div className="mt-3 space-y-1.5 border-t border-gray-100 pt-3">
+          <div className="mt-3 space-y-1.5 border-t pt-3" style={{ borderColor: 'rgba(0,0,0,0.08)' }}>
             {Object.entries(action.smart_criteria).map(([k, v]) => (
               <div key={k} className="flex items-start gap-2 text-xs">
-                <span className="text-gray-500 font-mono w-20 flex-shrink-0 uppercase text-[9px] pt-0.5">{k}</span>
-                <span className="text-gray-600 leading-relaxed">{v}</span>
+                <span className="font-mono w-20 flex-shrink-0 uppercase text-[9px] pt-0.5" style={{ color: 'rgba(60,60,67,0.8)' }}>{k}</span>
+                <span className="leading-relaxed" style={{ color: '#1C1C1E' }}>{v}</span>
               </div>
             ))}
           </div>
@@ -125,7 +125,7 @@ function ActionCard({
 
         {/* Action buttons — only if proposed and this is active */}
         {action.state === 'proposed' && isActive && (
-          <div className="flex gap-3 mt-4 pt-3 border-t border-gray-100">
+          <div className="flex gap-3 mt-4 pt-3 border-t" style={{ borderColor: 'rgba(0,0,0,0.08)' }}>
             <button
               onClick={onAccept}
               className="flex-1 py-2 rounded-lg text-sm font-bold transition-colors"
@@ -145,17 +145,17 @@ function ActionCard({
 
         {action.state === 'rejected' && (
           <div className="mt-3 p-3 rounded-lg text-xs"
-            style={{ background: '#EF444410', border: '1px solid #EF444425' }}>
-            <p className="text-red-400 font-semibold">🔒 System locked — KPI remains red</p>
-            <p className="text-gray-500 mt-1">New corrective action requires dual approval from owner and superior.</p>
+            style={{ background: 'rgba(255,59,48,0.08)', border: '1px solid rgba(255,59,48,0.20)' }}>
+            <p className="font-semibold" style={{ color: '#FF3B30' }}>🔒 System locked — KPI remains red</p>
+            <p className="mt-1" style={{ color: 'rgba(60,60,67,0.8)' }}>New corrective action requires dual approval from owner and superior.</p>
           </div>
         )}
 
         {action.state === 'accepted' && (
           <div className="mt-3 p-3 rounded-lg text-xs"
             style={{ background: '#10B98110', border: '1px solid #10B98125' }}>
-            <p className="text-green-400 font-semibold">✅ Action in progress</p>
-            <p className="text-gray-500 mt-1">KPI will be re-evaluated at deadline. Failure to deliver triggers escalation.</p>
+            <p className="text-green-600 font-semibold">✅ Action in progress</p>
+            <p className="mt-1" style={{ color: 'rgba(60,60,67,0.8)' }}>KPI will be re-evaluated at deadline. Failure to deliver triggers escalation.</p>
           </div>
         )}
       </div>
@@ -179,12 +179,12 @@ function IncidentCard({
 
   return (
     <div className={`rounded-2xl border overflow-hidden transition-all ${incident.severity === 'critical' ? 'animate-pulse-border' : ''}`}
-      style={{ borderColor: borderColor + (open ? '50' : '20'), background: '#09090F' }}>
+      style={{ borderColor: open ? borderColor + '50' : 'rgba(0,0,0,0.10)', background: '#FFFFFF' }}>
 
       {/* Incident header — always visible */}
       <button
         onClick={() => setOpen(p => !p)}
-        className="w-full flex items-start gap-4 px-5 py-4 text-left hover:bg-white/[0.01] transition-colors"
+        className="w-full flex items-start gap-4 px-5 py-4 text-left hover:bg-black/[0.01] transition-colors"
       >
         {/* Status bar left edge */}
         <div className="w-1 self-stretch rounded-full flex-shrink-0"
@@ -198,54 +198,57 @@ function IncidentCard({
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm font-bold text-gray-900">{role?.person}</span>
-            <span className="text-xs text-gray-500">·</span>
-            <span className="text-xs text-gray-500">{role?.title}</span>
+            <span className="text-sm font-bold" style={{ color: '#1C1C1E' }}>{role?.person}</span>
+            <span className="text-xs" style={{ color: 'rgba(60,60,67,0.8)' }}>·</span>
+            <span className="text-xs" style={{ color: 'rgba(60,60,67,0.8)' }}>{role?.title}</span>
             <SeverityBadge severity={incident.severity} />
             {incident.escalated && (
-              <span className="text-xs px-2 py-0.5 rounded bg-red-500/15 text-red-400 border border-red-500/25 font-mono">
+              <span className="text-xs px-2 py-0.5 rounded font-mono"
+                style={{ background: 'rgba(255,59,48,0.08)', color: '#FF3B30', border: '1px solid rgba(255,59,48,0.20)' }}>
                 🚨 ESCALATED
               </span>
             )}
             {incident.locked && (
-              <span className="text-xs px-2 py-0.5 rounded bg-gray-500/15 text-gray-500 border border-gray-500/25 font-mono">
+              <span className="text-xs px-2 py-0.5 rounded font-mono"
+                style={{ background: 'rgba(0,0,0,0.06)', color: 'rgba(60,60,67,0.8)', border: '1px solid rgba(0,0,0,0.10)' }}>
                 🔒 LOCKED
               </span>
             )}
           </div>
-          <p className="text-xs text-gray-500 mt-0.5 truncate">{incident.rca.problem}</p>
+          <p className="text-xs mt-0.5 truncate" style={{ color: 'rgba(60,60,67,0.8)' }}>{incident.rca.problem}</p>
         </div>
 
-        <span className="text-gray-500 flex-shrink-0 mt-1">{open ? '▲' : '▾'}</span>
+        <span className="flex-shrink-0 mt-1" style={{ color: 'rgba(60,60,67,0.8)' }}>{open ? '▲' : '▾'}</span>
       </button>
 
       {/* Expanded content */}
       {open && (
-        <div className="px-5 pb-5 space-y-5 border-t border-gray-100">
+        <div className="px-5 pb-5 space-y-5 border-t" style={{ borderColor: 'rgba(0,0,0,0.08)' }}>
 
           {/* RCA */}
           <div className="space-y-3 pt-4">
-            <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider">Root Cause Analysis</h3>
+            <h3 className="text-xs font-bold uppercase tracking-wider" style={{ color: '#1C1C1E' }}>Root Cause Analysis</h3>
             <div className="grid grid-cols-2 gap-3">
               {([
                 { label: 'Problem',         value: incident.rca.problem },
                 { label: 'Root Cause',      value: incident.rca.root_cause },
                 { label: 'Impact',          value: incident.rca.impact },
               ] as const).map(({ label, value }) => (
-                <div key={label} className={`rounded-xl border border-gray-200 px-4 py-3 ${label === 'Root Cause' ? 'col-span-2' : ''}`}>
-                  <div className="text-xs text-gray-500 font-mono uppercase mb-1">{label}</div>
-                  <p className="text-xs text-gray-600 leading-relaxed">{value}</p>
+                <div key={label} className={`rounded-xl px-4 py-3 ${label === 'Root Cause' ? 'col-span-2' : ''}`}
+                  style={{ border: '1px solid rgba(0,0,0,0.10)', background: '#F2F2F7' }}>
+                  <div className="text-xs font-mono uppercase mb-1" style={{ color: 'rgba(60,60,67,0.8)' }}>{label}</div>
+                  <p className="text-xs leading-relaxed" style={{ color: '#1C1C1E' }}>{value}</p>
                 </div>
               ))}
             </div>
 
             {/* Dependency chain */}
-            <div className="rounded-xl border border-gray-200 px-4 py-3">
-              <div className="text-xs text-gray-500 font-mono uppercase mb-2">Dependency Chain</div>
+            <div className="rounded-xl px-4 py-3" style={{ border: '1px solid rgba(0,0,0,0.10)', background: '#F2F2F7' }}>
+              <div className="text-xs font-mono uppercase mb-2" style={{ color: 'rgba(60,60,67,0.8)' }}>Dependency Chain</div>
               <div className="flex items-center gap-0 flex-wrap">
                 {incident.rca.dependency_chain.map((dep, i) => (
                   <div key={i} className="flex items-center gap-0">
-                    <span className="text-xs px-2 py-1 rounded text-gray-500" style={{ background: '#ffffff05' }}>{dep}</span>
+                    <span className="text-xs px-2 py-1 rounded" style={{ color: '#1C1C1E', background: 'rgba(0,0,0,0.04)' }}>{dep}</span>
                     {i < incident.rca.dependency_chain.length - 1 && (
                       <span className="text-red-500 text-sm mx-1">→</span>
                     )}
@@ -256,7 +259,7 @@ function IncidentCard({
 
             {/* Affected roles */}
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs text-gray-500 font-mono uppercase">Affected:</span>
+              <span className="text-xs font-mono uppercase" style={{ color: 'rgba(60,60,67,0.8)' }}>Affected:</span>
               {incident.rca.affected_roles.map(rid => {
                 const r = COMMAND_CHAIN.find(x => x.id === rid)
                 if (!r) return null
@@ -273,16 +276,16 @@ function IncidentCard({
           {/* Escalation alert */}
           {incident.escalated && (
             <div className="rounded-xl border px-4 py-3"
-              style={{ borderColor: '#EF444430', background: '#EF444408' }}>
+              style={{ borderColor: 'rgba(255,59,48,0.25)', background: 'rgba(255,59,48,0.08)' }}>
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-sm">🚨</span>
-                <span className="text-xs font-bold text-red-400">Leadership Incident — Meeting Required</span>
+                <span className="text-xs font-bold" style={{ color: '#FF3B30' }}>Leadership Incident — Meeting Required</span>
               </div>
-              <p className="text-xs text-gray-500">{incident.escalation_trigger}</p>
-              <div className="mt-2 text-xs text-gray-500">
+              <p className="text-xs" style={{ color: 'rgba(60,60,67,0.8)' }}>{incident.escalation_trigger}</p>
+              <div className="mt-2 text-xs" style={{ color: 'rgba(60,60,67,0.8)' }}>
                 Required attendees: {incident.rca.affected_roles.map(roleName).join(', ')}
               </div>
-              <div className="mt-2 text-xs text-gray-600">
+              <div className="mt-2 text-xs" style={{ color: '#1C1C1E' }}>
                 Meeting must produce: Decision · Action plan · Timeline · Owner
               </div>
             </div>
@@ -290,7 +293,7 @@ function IncidentCard({
 
           {/* Actions */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider">
+            <h3 className="text-xs font-bold uppercase tracking-wider" style={{ color: '#1C1C1E' }}>
               Proposed Actions ({incident.proposed_actions.length})
             </h3>
             {incident.proposed_actions.map((action, idx) => (
@@ -318,15 +321,15 @@ function KPIRow({ kpi }: { kpi: KPIDefinition }) {
   const trendColor = kpi.trend === 'up' && status !== 'red' ? '#10B981' : kpi.trend === 'down' ? '#EF4444' : '#6B7280'
 
   return (
-    <div className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-white/[0.01] transition-colors">
+    <div className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-black/[0.02] transition-colors">
       <span className="h-2 w-2 rounded-full flex-shrink-0 transition-all"
         style={{ background: color, boxShadow: status === 'red' ? `0 0 8px ${color}` : 'none' }} />
-      <span className="flex-1 text-xs text-gray-600 truncate">{kpi.name}</span>
-      <span className="text-xs text-gray-500 flex-shrink-0">{kpi.target}</span>
+      <span className="flex-1 text-xs truncate" style={{ color: '#1C1C1E' }}>{kpi.name}</span>
+      <span className="text-xs flex-shrink-0" style={{ color: 'rgba(60,60,67,0.8)' }}>{kpi.target}</span>
       <span className="text-xs font-mono font-bold flex-shrink-0 w-20 text-right" style={{ color }}>
         {kpi.current} <span style={{ color: trendColor }}>{trendIcon}</span>
       </span>
-      <span className="text-[9px] text-gray-600 flex-shrink-0 font-mono">{kpi.deadline}</span>
+      <span className="text-[9px] flex-shrink-0 font-mono" style={{ color: 'rgba(60,60,67,0.8)' }}>{kpi.deadline}</span>
       <span className="text-xs px-1.5 py-0.5 rounded font-mono flex-shrink-0"
         style={{ background: color + '18', color }}>
         {status.toUpperCase()}
@@ -342,15 +345,15 @@ function RoleKPIBlock({ roleId }: { roleId: string }) {
   const kpis = getRoleKPIs(roleId)
 
   return (
-    <div className="rounded-2xl border border-gray-200 overflow-hidden">
-      <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100"
-        style={{ background: role.color + '08' }}>
+    <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(0,0,0,0.10)', background: '#FFFFFF' }}>
+      <div className="flex items-center gap-3 px-4 py-3 border-b"
+        style={{ background: role.color + '08', borderColor: 'rgba(0,0,0,0.08)' }}>
         <div className="h-8 w-8 rounded-lg flex items-center justify-center font-bold text-xs"
           style={{ background: role.color + '20', color: role.color }}>
           {role.initials}
         </div>
         <div>
-          <div className="text-sm font-semibold text-gray-900">{role.person}</div>
+          <div className="text-sm font-semibold" style={{ color: '#1C1C1E' }}>{role.person}</div>
           <div className="text-xs" style={{ color: role.color }}>{role.title}</div>
         </div>
       </div>
@@ -437,15 +440,15 @@ export function IncidentCenter() {
   })
 
   return (
-    <div className="flex flex-col h-full overflow-hidden bg-[#07090F]">
+    <div className="flex flex-col h-full overflow-hidden" style={{ background: 'var(--color-bg-secondary, #F2F2F7)' }}>
       {/* Header */}
-      <div className="flex-shrink-0 border-b border-gray-200 bg-[#08090F]">
+      <div className="flex-shrink-0 border-b" style={{ background: '#FFFFFF', borderColor: 'rgba(0,0,0,0.10)' }}>
         <div className="px-6 py-4">
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div>
               <div className="flex items-center gap-3 flex-wrap">
-                <h1 className="text-sm font-bold text-gray-900">Alerts</h1>
-                <span className="text-xs text-gray-500 font-mono">closed-loop control system</span>
+                <h1 className="text-sm font-bold uppercase tracking-wider" style={{ color: '#1C1C1E' }}>Alerts</h1>
+                <span className="text-xs font-mono" style={{ color: 'rgba(60,60,67,0.8)' }}>closed-loop control system</span>
                 {!isRoot && (
                   <span
                     className="text-xs px-2 py-0.5 rounded-lg font-medium"
@@ -459,31 +462,31 @@ export function IncidentCenter() {
                   </span>
                 )}
               </div>
-              <p className="text-xs text-gray-500 mt-0.5">
+              <p className="text-xs mt-0.5" style={{ color: 'rgba(60,60,67,0.8)' }}>
                 Every KPI deviation triggers: RCA → Action → Accept/Reject → Escalation
               </p>
             </div>
             <div className="flex items-center gap-2 flex-wrap">
               {criticalCount > 0 && (
                 <span className="text-xs px-3 py-1.5 rounded-full font-bold"
-                  style={{ background: '#EF444415', color: '#EF4444', border: '1px solid #EF444430' }}>
+                  style={{ background: 'rgba(255,59,48,0.08)', color: '#FF3B30', border: '1px solid rgba(255,59,48,0.20)' }}>
                   🔴 {criticalCount} critical
                 </span>
               )}
               {escalatedCount > 0 && (
                 <span className="text-xs px-3 py-1.5 rounded-full"
-                  style={{ background: '#EF444410', color: '#F87171', border: '1px solid #EF444420' }}>
+                  style={{ background: 'rgba(255,59,48,0.06)', color: '#FF3B30', border: '1px solid rgba(255,59,48,0.15)' }}>
                   🚨 {escalatedCount} escalated
                 </span>
               )}
               {lockedCount > 0 && (
                 <span className="text-xs px-3 py-1.5 rounded-full"
-                  style={{ background: '#6B728015', color: '#9CA3AF', border: '1px solid #6B728025' }}>
+                  style={{ background: 'rgba(0,0,0,0.06)', color: 'rgba(60,60,67,0.8)', border: '1px solid rgba(0,0,0,0.10)' }}>
                   🔒 {lockedCount} locked
                 </span>
               )}
               <span className="text-xs px-3 py-1.5 rounded-full"
-                style={{ background: '#F59E0B15', color: '#F59E0B', border: '1px solid #F59E0B25' }}>
+                style={{ background: 'rgba(255,149,0,0.10)', color: '#FF9500', border: '1px solid rgba(255,149,0,0.20)' }}>
                 {openCount} open
               </span>
             </div>
@@ -491,22 +494,23 @@ export function IncidentCenter() {
 
           {/* Propagation map */}
           {propagation.primary_failures.length > 0 && (
-            <div className="mt-3 p-3 rounded-xl border border-red-500/20 bg-red-500/5">
-              <div className="text-xs text-red-400 font-mono uppercase font-bold mb-1.5">
+            <div className="mt-3 p-3 rounded-xl"
+              style={{ border: '1px solid rgba(255,149,0,0.25)', background: 'rgba(255,149,0,0.08)' }}>
+              <div className="text-xs font-mono uppercase font-bold mb-1.5" style={{ color: '#FF9500' }}>
                 🔥 Cascade impact — failures propagating through org
               </div>
               <div className="flex items-center gap-2 flex-wrap text-xs">
-                <span className="text-gray-500">Failing:</span>
+                <span style={{ color: 'rgba(60,60,67,0.8)' }}>Failing:</span>
                 {propagation.primary_failures.map(rid => {
                   const r = COMMAND_CHAIN.find(x => x.id === rid)
-                  return r ? <span key={rid} className="text-red-400 font-semibold">{r.initials}</span> : null
+                  return r ? <span key={rid} className="font-semibold" style={{ color: '#FF3B30' }}>{r.initials}</span> : null
                 })}
                 {propagation.cascade_failures.length > 0 && (
                   <>
-                    <span className="text-red-500 mx-1">→ cascades to →</span>
+                    <span className="mx-1" style={{ color: '#FF3B30' }}>→ cascades to →</span>
                     {propagation.cascade_failures.map(rid => {
                       const r = COMMAND_CHAIN.find(x => x.id === rid)
-                      return r ? <span key={rid} className="text-yellow-400 font-semibold">{r.initials}</span> : null
+                      return r ? <span key={rid} className="font-semibold" style={{ color: '#FF9500' }}>{r.initials}</span> : null
                     })}
                   </>
                 )}
@@ -523,8 +527,8 @@ export function IncidentCenter() {
               <button key={t.id} onClick={() => setTab(t.id)}
                 className="text-xs pb-2 border-b-2 transition-colors font-medium"
                 style={{
-                  color: tab === t.id ? '#EF4444' : '#6B7280',
-                  borderColor: tab === t.id ? '#EF4444' : 'transparent',
+                  color: tab === t.id ? '#5856D6' : 'rgba(60,60,67,0.8)',
+                  borderColor: tab === t.id ? '#5856D6' : 'transparent',
                 }}>
                 {t.label}
               </button>
