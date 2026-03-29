@@ -64,3 +64,41 @@ main().catch((err) => {
 
 export default app
 // rds-ready Sun Mar 29 00:27:24 UTC 2026
+
+// ─── MIGRATION ENDPOINT (one-time use) ───────────────────────────────────────
+app.post('/v1/migrate/from-supabase', async (_req, res) => {
+  const authHeader = _req.headers.authorization
+  if (authHeader !== `Bearer ${process.env.MIGRATION_SECRET || 'wavult-migrate-2026'}`) {
+    return res.status(401).json({ error: 'UNAUTHORIZED' })
+  }
+  
+  try {
+    const { createClient } = await import('@supabase/supabase-js')
+    const { db } = await import('./db/postgres')
+    
+    const supabase = createClient(
+      process.env.SUPABASE_URL || '',
+      process.env.SUPABASE_SERVICE_KEY || ''
+    )
+    
+    const { data, error } = await supabase.auth.admin.listUsers({ perPage: 100 })
+    if (error) throw error
+    
+    let migrated = 0; let skipped = 0
+    for (const user of data.users) {
+      if (!user.email) { skipped++; continue }
+      await db.query(
+        `INSERT INTO ic_users (id, email, email_verified, full_name, org_id, roles, migrated_from, created_at)
+         VALUES ($1, $2, $3, $4, $5, $6, 'supabase', $7)
+         ON CONFLICT (email) DO NOTHING`,
+        [user.id, user.email.toLowerCase(), !!user.email_confirmed_at,
+         user.user_metadata?.name || null, 'wavult', [], user.created_at]
+      )
+      migrated++
+    }
+    
+    res.json({ migrated, skipped, total: data.users.length })
+  } catch (err) {
+    res.status(500).json({ error: String(err) })
+  }
+})
