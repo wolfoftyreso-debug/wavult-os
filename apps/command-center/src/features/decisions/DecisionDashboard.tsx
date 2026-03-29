@@ -353,25 +353,45 @@ export function DecisionDashboard() {
             Möten existerar enbart för att fatta strukturerade beslut kopplade till mål, budget och strategi.
           </p>
         </div>
-        <button
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 8,
-            padding: '10px 18px',
-            borderRadius: 6,
-            border: 'none',
-            background: 'var(--color-brand)',
-            color: '#fff',
-            fontWeight: 600,
-            fontSize: 'var(--text-sm)',
-            cursor: 'pointer',
-          }}
-          onClick={() => navigate('/decisions/new')}
-        >
-          <Plus size={16} />
-          Nytt möte
-        </button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '10px 18px',
+              borderRadius: 6,
+              border: '1px solid var(--color-brand)',
+              background: 'transparent',
+              color: 'var(--color-brand)',
+              fontWeight: 600,
+              fontSize: 'var(--text-sm)',
+              cursor: 'pointer',
+            }}
+            onClick={() => navigate('/decisions/live/meeting-001')}
+          >
+            ▶ Starta live-möte
+          </button>
+          <button
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '10px 18px',
+              borderRadius: 6,
+              border: 'none',
+              background: 'var(--color-brand)',
+              color: '#fff',
+              fontWeight: 600,
+              fontSize: 'var(--text-sm)',
+              cursor: 'pointer',
+            }}
+            onClick={() => navigate('/decisions/new')}
+          >
+            <Plus size={16} />
+            Nytt möte
+          </button>
+        </div>
       </div>
 
       {/* ── KPI-rad ── */}
