@@ -83,21 +83,42 @@ function AuthenticatedApp() {
   const { session, loading, user } = useAuth()
   const { role, setRole } = useRole()
 
-  // Auto-sätt roll baserat på inloggad user (email → RoleProfile)
+  // Auto-sätt roll baserat på inloggad user — synkront för att undvika RoleLogin-flash
   React.useEffect(() => {
     if (!user || role) return
-    const autoRole = ROLES.find(r =>
-      r.name !== '—' && (
-        user.email === 'erik@wavult.com'    ? r.id === 'group-ceo' :
-        user.email === 'winston@wavult.com' ? r.id === 'cfo' :
-        user.email === 'leon@wavult.com'    ? r.id === 'ceo-ops' :
-        user.email === 'dennis@wavult.com'  ? r.id === 'clo' :
-        user.email === 'johan@wavult.com'   ? r.id === 'cto' :
-        false
-      )
-    )
-    if (autoRole) setRole(autoRole)
+    const EMAIL_ROLE_MAP: Record<string, string> = {
+      'erik@wavult.com':    'group-ceo',
+      'erik@hypbit.com':    'group-ceo',
+      'winston@wavult.com': 'cfo',
+      'winston@hypbit.com': 'cfo',
+      'leon@wavult.com':    'ceo-ops',
+      'leon@hypbit.com':    'ceo-ops',
+      'dennis@wavult.com':  'clo',
+      'dennis@hypbit.com':  'clo',
+      'johan@wavult.com':   'cto',
+      'johan@hypbit.com':   'cto',
+    }
+    const roleId = user.email ? EMAIL_ROLE_MAP[user.email] : undefined
+    if (roleId) {
+      const autoRole = ROLES.find(r => r.id === roleId)
+      if (autoRole) setRole(autoRole)
+    }
   }, [user, role, setRole])
+
+  // Beräkna roll synkront för att slippa flash
+  const computedRole = React.useMemo(() => {
+    if (role) return role
+    if (!user?.email) return null
+    const EMAIL_ROLE_MAP: Record<string, string> = {
+      'erik@wavult.com': 'group-ceo', 'erik@hypbit.com': 'group-ceo',
+      'winston@wavult.com': 'cfo', 'winston@hypbit.com': 'cfo',
+      'leon@wavult.com': 'ceo-ops', 'leon@hypbit.com': 'ceo-ops',
+      'dennis@wavult.com': 'clo', 'dennis@hypbit.com': 'clo',
+      'johan@wavult.com': 'cto', 'johan@hypbit.com': 'cto',
+    }
+    const roleId = EMAIL_ROLE_MAP[user.email]
+    return roleId ? (ROLES.find(r => r.id === roleId) ?? null) : null
+  }, [user, role])
 
   // Vänta på att session-check är klar
   if (loading) {
@@ -112,7 +133,7 @@ function AuthenticatedApp() {
   if (!session) return <LoginPage />
 
   // Inloggad men okänd email → visa rollval som fallback
-  if (!role) return <RoleLogin />
+  if (!computedRole) return <RoleLogin />
 
   return (
     <OperatorProvider>
