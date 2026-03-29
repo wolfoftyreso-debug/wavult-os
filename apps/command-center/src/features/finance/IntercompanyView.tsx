@@ -164,7 +164,7 @@ export function IntercompanyView() {
         <p className="text-xs text-gray-500 leading-relaxed">
           <span className="font-semibold text-gray-900">Vad är intercompany?</span>{' '}
           Betalningar <em>inom</em> koncernen — t.ex. när ett dotterbolag betalar en licensavgift till holdingbolaget i Dubai.
-          Det är inte försäljning till kund — det är pengar som <span className="text-emerald-400">flyttas</span> mellan egna bolag.
+          Det är inte försäljning till kund — det är pengar som <span className="text-gray-500">flyttas</span> mellan egna bolag.
           Syftet kan vara skatteoptimering, koncernintern finansiering, eller fördelning av tjänster.
         </p>
       </div>
@@ -194,20 +194,20 @@ export function IntercompanyView() {
           {/* Arrow down */}
           <div className="flex flex-col items-center text-gray-500 text-xs gap-0.5">
             <div className="flex gap-8">
-              {['↓', '↓', '↓', '↓'].map((a, i) => <span key={i} className="text-emerald-600 text-lg font-bold">{a}</span>)}
+              {['↓', '↓', '↓', '↓'].map((a, i) => <span key={i} className="text-gray-500 text-lg font-bold">{a}</span>)}
             </div>
             <span className="text-[9px] text-gray-500 font-mono">Licensavgifter + Management fees</span>
           </div>
           {/* Dubai holding */}
           <div className="flex flex-col items-center px-6 py-3 rounded-xl border border-emerald-500/40 bg-emerald-500/10 text-center">
             <span className="text-2xl">🇦🇪</span>
-            <span className="text-xs font-bold text-emerald-300 mt-1">Dubai — 3 Bolag</span>
+            <span className="text-xs font-bold text-gray-700 mt-1">Dubai — 3 Bolag</span>
             <div className="flex flex-col gap-0.5 mt-1">
-              <span className="text-xs text-emerald-400 font-mono">Wavult Group FZCO — IP + Holding</span>
-              <span className="text-xs text-emerald-500 font-mono">DevOps FZCO — Tech & Operations</span>
-              <span className="text-xs text-emerald-600 font-mono">FinanceCo FZCO — Payments & Treasury</span>
+              <span className="text-xs text-gray-500 font-mono">Wavult Group FZCO — IP + Holding</span>
+              <span className="text-xs text-gray-500 font-mono">DevOps FZCO — Tech & Operations</span>
+              <span className="text-xs text-gray-500 font-mono">FinanceCo FZCO — Payments & Treasury</span>
             </div>
-            <span className="text-[14px] font-bold text-emerald-300 mt-1">≈ €{TOTAL_DUBAI_EUR.toLocaleString()}/mån</span>
+            <span className="text-[14px] font-bold text-gray-700 mt-1">≈ €{TOTAL_DUBAI_EUR.toLocaleString()}/mån</span>
           </div>
         </div>
       </div>
@@ -233,7 +233,7 @@ export function IntercompanyView() {
             onClick={() => setSection(tab.id)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap flex-shrink-0 ${
               section === tab.id
-                ? 'bg-blue-500/20 text-blue-300 border border-blue-500/40'
+                ? 'bg-gray-50 text-gray-600 border border-gray-200'
                 : 'text-gray-500 hover:text-gray-600 hover:bg-white/[0.04]'
             }`}
           >
@@ -249,9 +249,9 @@ export function IntercompanyView() {
           {/* Dubai total */}
           <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 flex items-center justify-between">
             <div>
-              <p className="text-xs text-emerald-400 font-mono uppercase tracking-widest">Total insamlat i Dubai / mån</p>
-              <p className="text-3xl font-bold text-emerald-300 mt-1">≈ €{TOTAL_DUBAI_EUR.toLocaleString()}</p>
-              <p className="text-xs text-emerald-600 mt-0.5">Wavult Group FZCO + DevOps FZCO + FinanceCo FZCO — 0% corporate tax</p>
+              <p className="text-xs text-gray-500 font-mono uppercase tracking-widest">Total insamlat i Dubai / mån</p>
+              <p className="text-3xl font-bold text-gray-700 mt-1">≈ €{TOTAL_DUBAI_EUR.toLocaleString()}</p>
+              <p className="text-xs text-gray-500 mt-0.5">Wavult Group FZCO + DevOps FZCO + FinanceCo FZCO — 0% corporate tax</p>
             </div>
             <div className="text-5xl opacity-30">🇦🇪</div>
           </div>
@@ -271,7 +271,7 @@ export function IntercompanyView() {
                         {lf.amount.toLocaleString()} {lf.currency}/mån
                       </span>
                       <span className="text-gray-500">→</span>
-                      <span className="text-xs font-semibold text-emerald-400">Dubai (3 FZCO bolag)</span>
+                      <span className="text-xs font-semibold text-gray-500">Dubai (3 FZCO bolag)</span>
                     </div>
                   </div>
                   <div className="text-right">
@@ -301,8 +301,8 @@ export function IntercompanyView() {
       {/* ── Sektion B — Management Fee Dashboard ──────────────────────── */}
       {section === 'mgmt' && (
         <div className="space-y-4">
-          <div className="rounded-xl border border-blue-500/20 bg-blue-500/05 p-4">
-            <p className="text-xs font-semibold text-blue-300 mb-1">🏛️ Management Services</p>
+          <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+            <p className="text-xs font-semibold text-gray-600 mb-1">🏛️ Management Services</p>
             <p className="text-xs text-gray-500 leading-relaxed">
               Wavult Group FZCO (Holding) äger IP och varumärken. 
 DevOps FZCO tillhandahåller tech-tjänster. 
@@ -333,7 +333,7 @@ Alla tre är 100% ägda av Wavult Group (Erik Svensson).
                     </div>
                     <div className="text-right">
                       <p className="text-xs text-gray-500">Management fee</p>
-                      <p className="text-[16px] font-bold text-blue-300 font-mono">
+                      <p className="text-[16px] font-bold text-gray-600 font-mono">
                         {fee.toLocaleString()} {row.currency}
                       </p>
                     </div>
@@ -388,7 +388,7 @@ Alla tre är 100% ägda av Wavult Group (Erik Svensson).
 
           {/* Dubai accumulation */}
           <div className="rounded-xl border border-emerald-500/20 bg-white p-4 space-y-2">
-            <p className="text-xs font-semibold text-emerald-300">🏦 Kvarvar i Dubai (Wavult Group + DevOps + FinanceCo FZCO)</p>
+            <p className="text-xs font-semibold text-gray-700">🏦 Kvarvar i Dubai (Wavult Group + DevOps + FinanceCo FZCO)</p>
             <div className="grid grid-cols-3 gap-3 mt-2">
               {[
                 { label: '/mån', value: TOTAL_DUBAI_EUR, suffix: '' },
@@ -396,8 +396,8 @@ Alla tre är 100% ägda av Wavult Group (Erik Svensson).
                 { label: '/år', value: TOTAL_DUBAI_EUR * 12, suffix: '' },
               ].map(col => (
                 <div key={col.label} className="text-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 p-3">
-                  <p className="text-[9px] text-emerald-600 font-mono uppercase">{col.label}</p>
-                  <p className="text-[15px] font-bold text-emerald-300 font-mono mt-1">
+                  <p className="text-[9px] text-gray-500 font-mono uppercase">{col.label}</p>
+                  <p className="text-[15px] font-bold text-gray-700 font-mono mt-1">
                     €{col.value.toLocaleString()}
                   </p>
                 </div>
@@ -447,25 +447,25 @@ Alla tre är 100% ägda av Wavult Group (Erik Svensson).
                       <td className="px-4 py-3 font-mono text-red-400">
                         {lf.localTax.toLocaleString()} {lf.currency}
                       </td>
-                      <td className="px-4 py-3 font-mono font-bold text-emerald-400">
+                      <td className="px-4 py-3 font-mono font-bold text-gray-500">
                         {lf.amount.toLocaleString()} {lf.currency}
                       </td>
                     </tr>
                   ))}
                   {/* Dubai row */}
                   <tr className="bg-emerald-500/05 border-t border-emerald-500/20">
-                    <td className="px-4 py-3 font-semibold text-emerald-300">
+                    <td className="px-4 py-3 font-semibold text-gray-700">
                       Wavult Group FZCO<br/>
-                      <span className="text-xs font-normal text-emerald-500">+ DevOps FZCO + FinanceCo FZCO</span>
+                      <span className="text-xs font-normal text-gray-500">+ DevOps FZCO + FinanceCo FZCO</span>
                     </td>
                     <td className="px-4 py-3 text-gray-500">Dubai, UAE (DMCC)</td>
                     <td className="px-4 py-3">
-                      <span className="font-mono text-emerald-400 font-bold">0%</span>
+                      <span className="font-mono text-gray-500 font-bold">0%</span>
                     </td>
-                    <td className="px-4 py-3 font-mono text-emerald-300">
+                    <td className="px-4 py-3 font-mono text-gray-700">
                       ≈ €{TOTAL_DUBAI_EUR.toLocaleString()}
                     </td>
-                    <td className="px-4 py-3 font-mono font-bold text-emerald-400">€0</td>
+                    <td className="px-4 py-3 font-mono font-bold text-gray-500">€0</td>
                     <td className="px-4 py-3 text-gray-500 font-mono">—</td>
                   </tr>
                 </tbody>
@@ -484,7 +484,7 @@ Alla tre är 100% ägda av Wavult Group (Erik Svensson).
             </div>
             <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/05 p-4 text-center">
               <p className="text-xs text-gray-500 font-mono uppercase">Skatt i Dubai</p>
-              <p className="text-[22px] font-bold text-emerald-400 font-mono mt-1">€0</p>
+              <p className="text-[22px] font-bold text-gray-500 font-mono mt-1">€0</p>
               <p className="text-[9px] text-gray-500 mt-0.5">0% corporate tax</p>
             </div>
           </div>

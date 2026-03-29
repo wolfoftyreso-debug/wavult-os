@@ -199,7 +199,7 @@ export function CashFlowOptimizer() {
         />
         <div className="flex justify-between text-[9px] text-gray-500 font-mono mt-1">
           <span>1%</span>
-          <span className="text-emerald-600">← Arm's length: 8–15% →</span>
+          <span className="text-gray-500">← Arm's length: 8–15% →</span>
           <span>30%</span>
         </div>
         {/* OECD markers */}
@@ -266,7 +266,7 @@ export function CashFlowOptimizer() {
                   ].map(row => (
                     <div key={row.label} className="flex justify-between gap-2">
                       <span className="text-gray-500">{row.label}</span>
-                      <span className={`font-mono font-semibold ${row.highlight ? 'text-emerald-400' : 'text-gray-900'}`}>
+                      <span className={`font-mono font-semibold ${row.highlight ? 'text-gray-500' : 'text-gray-900'}`}>
                         {row.value}
                       </span>
                     </div>
@@ -292,7 +292,7 @@ export function CashFlowOptimizer() {
               <p className="text-[9px] text-gray-500 font-mono uppercase">
                 {months === 1 ? '1 mån' : months === 12 ? '1 år' : `${months} mån`}
               </p>
-              <p className="text-[15px] font-bold text-emerald-300 font-mono mt-1">
+              <p className="text-[15px] font-bold text-gray-700 font-mono mt-1">
                 {fmtEur(totalDubaiMonthly * months)}
               </p>
             </div>
@@ -305,11 +305,11 @@ export function CashFlowOptimizer() {
           </div>
           <div className="flex justify-between text-xs mt-1">
             <span className="text-gray-500">Skattebesparning vs. ingen struktur/mån</span>
-            <span className="text-emerald-400 font-mono font-semibold">{fmtEur(totalTaxSavedMonthly)}</span>
+            <span className="text-gray-500 font-mono font-semibold">{fmtEur(totalTaxSavedMonthly)}</span>
           </div>
           <div className="flex justify-between text-xs mt-1">
             <span className="text-gray-500">Effektiv total skattebörda (grupp)</span>
-            <span className="text-blue-300 font-mono font-semibold">
+            <span className="text-gray-600 font-mono font-semibold">
               {(() => { const tot = entityCalcs.reduce((s, c) => s + c.revEur, 0); return tot > 0 ? ((totalTaxPaidMonthly / tot) * 100).toFixed(1) : '0.0' })()}%
             </span>
           </div>
@@ -317,8 +317,8 @@ export function CashFlowOptimizer() {
       </div>
 
       {/* Optimal rate recommendation */}
-      <div className="rounded-xl border border-blue-500/20 bg-blue-500/05 p-4">
-        <p className="text-xs font-semibold text-blue-300 mb-2">🎯 Optimal licensstruktur — rekommendation</p>
+      <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+        <p className="text-xs font-semibold text-gray-600 mb-2">🎯 Optimal licensstruktur — rekommendation</p>
         <div className="space-y-2">
           {ENTITIES.map(e => {
             const calc = entityCalcs.find(c => c.entity.id === e.id)!
@@ -330,15 +330,15 @@ export function CashFlowOptimizer() {
                 <span className="text-xs text-gray-500 font-mono">
                   {(calc.rev * OPTIMAL_RATE.recommended).toLocaleString(undefined, { maximumFractionDigits: 0 })} {e.currency}/mån
                 </span>
-                <span className="text-xs text-blue-300 font-mono">≈ {fmtEur(optimal)}</span>
+                <span className="text-xs text-gray-600 font-mono">≈ {fmtEur(optimal)}</span>
               </div>
             )
           })}
         </div>
-        <div className="mt-3 pt-3 border-t border-blue-500/15">
+        <div className="mt-3 pt-3 border-t border-gray-200">
           <div className="flex justify-between text-xs">
             <span className="text-gray-500">Total optimal license income till Dubai</span>
-            <span className="text-blue-300 font-mono font-bold">
+            <span className="text-gray-600 font-mono font-bold">
               {fmtEur(entityCalcs.reduce((s, c) => s + c.revEur * OPTIMAL_RATE.recommended, 0))}/mån
             </span>
           </div>

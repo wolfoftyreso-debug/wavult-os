@@ -75,8 +75,8 @@ function EntityCashFlow({ entityId, entityColor }: { entityId: EntityId; entityC
           </div>
           <div className="px-3 py-2 rounded-lg border text-center"
             style={{ background: '#3B82F608', borderColor: '#3B82F620' }}>
-            <p className="text-[9px] text-blue-400 font-mono uppercase">🛸 Runway</p>
-            <p className="text-[14px] font-bold text-blue-300 mt-1">{runwayText}</p>
+            <p className="text-[9px] text-gray-600 font-mono uppercase">🛸 Runway</p>
+            <p className="text-[14px] font-bold text-gray-600 mt-1">{runwayText}</p>
             <p className="text-[8px] text-gray-600 mt-0.5">burn: {fmt(burnRate)}/mån</p>
           </div>
         </div>

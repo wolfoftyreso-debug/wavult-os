@@ -54,12 +54,12 @@ export function TaxView() {
       </div>
 
       {/* Next VAT deadline reminder */}
-      <div className="rounded-xl border border-blue-500/30 bg-blue-500/08 px-4 py-3 flex items-start gap-3">
-        <span className="text-blue-400 text-lg flex-shrink-0">📅</span>
+      <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 flex items-start gap-3">
+        <span className="text-gray-700 text-lg flex-shrink-0">📅</span>
         <div>
-          <p className="text-xs font-semibold text-blue-300">Nästa momsdeadline (SE)</p>
-          <p className="text-xs text-blue-200/70 mt-0.5">
-            Nästa svenska momsdeklaration: <strong className="text-blue-300">{deadlineStr}</strong>
+          <p className="text-xs font-semibold text-gray-700">Nästa momsdeadline (SE)</p>
+          <p className="text-xs text-gray-700/70 mt-0.5">
+            Nästa svenska momsdeklaration: <strong className="text-gray-700">{deadlineStr}</strong>
             {' '}— gäller tvåmånadersperioder för mindre bolag. Missa inte — förseningsavgift tillkommer.
           </p>
         </div>

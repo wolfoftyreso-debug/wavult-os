@@ -133,7 +133,7 @@ export function LedgerView() {
         </div>
         <div className="px-3 py-1.5 rounded-lg bg-white/[0.04] border border-gray-200">
           <span className="text-[9px] text-gray-500 font-mono uppercase">Total Debet</span>
-          <span className="ml-2 text-xs font-bold text-blue-400">{fmt(totalDebit)}</span>
+          <span className="ml-2 text-xs font-bold text-gray-600">{fmt(totalDebit)}</span>
         </div>
         <div className="px-3 py-1.5 rounded-lg bg-white/[0.04] border border-gray-200">
           <span className="text-[9px] text-gray-500 font-mono uppercase">Total Kredit</span>
@@ -190,7 +190,7 @@ export function LedgerView() {
                     <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: fe?.color }} />
                     <span className="text-[9px] font-mono text-gray-500 truncate">{fe?.short_name?.split(' ')[0]}</span>
                   </div>
-                  <span className="col-span-1 text-right text-xs font-mono text-blue-400">
+                  <span className="col-span-1 text-right text-xs font-mono text-gray-600">
                     {entry.debit > 0 ? fmt(entry.debit) : ''}
                   </span>
                   <span className="col-span-1 text-right text-xs font-mono text-green-400">

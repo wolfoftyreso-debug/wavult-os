@@ -68,10 +68,10 @@ export function ChartOfAccounts() {
         <p className="text-xs text-gray-500 leading-relaxed">
           <span className="font-semibold text-gray-900">Vad är en kontoplan?</span>{' '}
           En kontoplan är bokföringens "adressbok" — varje konto har ett nummer och ett syfte.
-          Sverige använder <span className="text-blue-400 font-mono">BAS-kontoplanen</span>:{' '}
-          <span className="text-blue-400">1xxx</span> = tillgångar (vad bolaget äger),{' '}
+          Sverige använder <span className="text-gray-600 font-mono">BAS-kontoplanen</span>:{' '}
+          <span className="text-gray-600">1xxx</span> = tillgångar (vad bolaget äger),{' '}
           <span className="text-amber-400">2xxx</span> = skulder &amp; eget kapital (vad bolaget är skyldigt),{' '}
-          <span className="text-emerald-400">3xxx</span> = intäkter (försäljning),{' '}
+          <span className="text-gray-500">3xxx</span> = intäkter (försäljning),{' '}
           <span className="text-red-400">4–7xxx</span> = kostnader (löner, hyra, material m.m.).
         </p>
       </div>
