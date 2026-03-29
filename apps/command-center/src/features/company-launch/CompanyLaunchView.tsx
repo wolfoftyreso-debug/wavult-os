@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { COMPANY_LAUNCHES, CompanyLaunch, LaunchStep } from './data'
 import { CompanyLaunchWizard } from './CompanyLaunchWizard'
+import { CompanyFormation } from './CompanyFormation'
 
 // ─── Owner colours ────────────────────────────────────────────────────────────
 const OWNER_META: Record<string, { label: string; color: string; bg: string }> = {
@@ -197,7 +198,7 @@ function StepRow({
 
 // ─── Main view ────────────────────────────────────────────────────────────────
 export function CompanyLaunchView() {
-  const [activeTab, setActiveTab] = useState<'tracker' | 'wizard'>('tracker')
+  const [activeTab, setActiveTab] = useState<'tracker' | 'wizard' | 'formation'>('formation')
   const [companies, setCompanies] = useState<CompanyLaunch[]>(COMPANY_LAUNCHES)
   const [selectedId, setSelectedId] = useState<string>(COMPANY_LAUNCHES[0].id)
 
@@ -242,6 +243,16 @@ export function CompanyLaunchView() {
       {/* ── Tab bar ── */}
       <div className="flex items-center gap-1 px-4 pt-3 pb-0 border-b border-white/8 flex-shrink-0">
         <button
+          onClick={() => setActiveTab('formation')}
+          className={`px-4 py-2 text-xs font-semibold rounded-t-lg border-b-2 transition-colors ${
+            activeTab === 'formation'
+              ? 'border-purple-500 text-purple-600 bg-gray-50'
+              : 'border-transparent text-gray-9000 hover:text-gray-700'
+          }`}
+        >
+          🏢 Bilda bolag
+        </button>
+        <button
           onClick={() => setActiveTab('tracker')}
           className={`px-4 py-2 text-xs font-semibold rounded-t-lg border-b-2 transition-colors ${
             activeTab === 'tracker'
@@ -262,6 +273,13 @@ export function CompanyLaunchView() {
           🚀 Starta ny registrering
         </button>
       </div>
+
+      {/* ── Formation tab ── */}
+      {activeTab === 'formation' && (
+        <div className="flex-1 overflow-y-auto">
+          <CompanyFormation />
+        </div>
+      )}
 
       {/* ── Wizard tab ── */}
       {activeTab === 'wizard' && (

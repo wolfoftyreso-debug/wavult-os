@@ -84,6 +84,7 @@ const NAV_GROUPS: NavGroup[] = [
       { to: '/projects',       labelKey: 'nav.projects',       icon: Layers },
       { to: '/finance-flow',   labelKey: 'nav.finance_flow',   icon: ArrowRight },
       { to: '/flights',        labelKey: 'nav.flights',        icon: Plane },
+      { to: '/company-launch',  labelKey: 'nav.company_launch', icon: Building2 },
       { to: '/corporate',      labelKey: 'nav.corporate',      icon: Building2 },
       { to: '/legal',          labelKey: 'nav.legal',          icon: Scale },
       { to: '/reports',        labelKey: 'nav.reports',        icon: FileText },
