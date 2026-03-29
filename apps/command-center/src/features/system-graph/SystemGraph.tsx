@@ -354,6 +354,77 @@ const NODES: SystemNode[] = [
       dependedOnBy: [],
     },
   },
+,
+  // ─── NODES THAT SHOULD EXIST (Node Registry — MISSING state) ─────────────────
+  {
+    id: 'landvex-api',
+    label: 'Landvex API',
+    type: 'service' as const,
+    status: 'unknown' as const,
+    domainGroup: 'core' as const,
+    connects: ['supabase-wavult', 'alb'],
+
+    businessContext: {
+      domain: 'Core Services' as const,
+      capability: 'B2G Platform Backend',
+      ownerTeam: 'Johan (CTO)',
+      whatIsThis: 'The backend API for Landvex — the B2G platform selling to municipalities. Handles inspection data, alerts, and customer management.',
+      whyItExists: 'Without this, Landvex cannot serve municipalities or process optical insight data.',
+      dependedOnBy: ['alb'],
+    },
+    details: { 'Status': '⚫ NOT DEPLOYED', 'Priority': 'Required for Sverige-lansering Juni 2026', 'ECS Service': 'Not created yet' },
+  },
+  {
+    id: 'landvex-portal',
+    label: 'Landvex Portal',
+    type: 'cdn' as const,
+    status: 'unknown' as const,
+    domainGroup: 'customer' as const,
+    connects: ['landvex-api'],
+    businessContext: {
+      domain: 'Customer Experience' as const,
+      capability: 'B2G Customer Portal',
+      ownerTeam: 'Johan (CTO)',
+      whatIsThis: 'The Landvex web portal where municipalities log in to view infrastructure alerts, reports and inspection status.',
+      whyItExists: 'Without this, municipality customers have no interface to use Landvex.',
+      dependedOnBy: [],
+    },
+    details: { 'URL': 'landvex-eu.pages.dev', 'Status': 'Static site live, backend not connected', 'CF Pages': 'active' },
+  },
+  {
+    id: 'optical-insight',
+    label: 'Optical Insight Engine',
+    type: 'service' as const,
+    status: 'unknown' as const,
+    domainGroup: 'core' as const,
+    connects: ['s3-eu', 'supabase-quixzoom'],
+    businessContext: {
+      domain: 'Core Services' as const,
+      capability: 'Vision Analysis Engine',
+      ownerTeam: 'Johan (CTO)',
+      whatIsThis: 'The core AI analysis engine that processes QuiXzoom images, detects infrastructure anomalies, and generates alerts for Landvex customers.',
+      whyItExists: 'Without this, raw zoomer images are just images — no value to municipalities.',
+      dependedOnBy: ['landvex-api'],
+    },
+    details: { 'Status': '⚫ NOT BUILT', 'Planned': 'Thailand Workcamp Sprint', 'Blocks': 'Entire Landvex value chain' },
+  },
+  {
+    id: 'quixzoom-mobile',
+    label: 'QuiXzoom Mobile App',
+    type: 'cdn' as const,
+    status: 'unknown' as const,
+    domainGroup: 'customer' as const,
+    connects: ['quixzoom-api'],
+    businessContext: {
+      domain: 'Customer Experience' as const,
+      capability: 'Zoomer Field App (iOS/Android)',
+      ownerTeam: 'Johan (CTO)',
+      whatIsThis: 'The React Native mobile app used by Zoomers to receive assignments, capture geo-tagged images and submit to the QuiXzoom platform.',
+      whyItExists: 'Without this, there are no Zoomers and no data — the entire QuiXzoom business model fails.',
+      dependedOnBy: ['quixzoom-api'],
+    },
+    details: { 'Status': '⚫ NOT IN TESTFLIGHT', 'Code': 'Ready (Expo RN)', 'Blocker': 'Apple Developer Account + EAS Build needed' },
+  },
 ]
 
 // ─── LAYOUT ───────────────────────────────────────────────────────────────────
@@ -408,7 +479,7 @@ const STATUS_COLORS: Record<NodeStatus, { bg: string; border: string; text: stri
   healthy:  { bg: 'bg-emerald-50', border: 'border-emerald-300', text: 'text-emerald-800', dot: '#10B981' },
   degraded: { bg: 'bg-amber-50',   border: 'border-amber-300',   text: 'text-amber-800',   dot: '#F59E0B' },
   down:     { bg: 'bg-red-50',     border: 'border-red-300',     text: 'text-red-800',     dot: '#EF4444' },
-  unknown:  { bg: 'bg-gray-50',    border: 'border-gray-300',    text: 'text-gray-600',    dot: '#9CA3AF' },
+  unknown:  { bg: 'bg-gray-50',    border: 'border-gray-300',    text: 'text-gray-500',    dot: '#1C1C1E' }, // ⚫ MISSING/NOT DEPLOYED
 }
 
 const TYPE_COLORS: Record<NodeType, string> = {
@@ -517,6 +588,13 @@ export function SystemGraph() {
       <div className="flex items-center justify-between px-6 py-3 bg-white border-b border-gray-200">
         <div className="flex items-center gap-6 text-sm">
           <span className="font-semibold text-gray-900">System Graph</span>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-100 text-gray-600">
+            <span className="font-mono font-bold">{nodes.filter(n => n.status !== 'unknown').length}/{nodes.length}</span>
+            <span>deployed</span>
+            {nodes.filter(n => n.status === 'unknown').length > 0 && (
+              <span className="ml-1 text-gray-400">· {nodes.filter(n => n.status === 'unknown').length} missing</span>
+            )}
+          </div>
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5 text-emerald-700">
               <span className="w-2 h-2 rounded-full bg-emerald-500" />{statusCounts.healthy} live
