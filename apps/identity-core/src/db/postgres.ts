@@ -103,6 +103,135 @@ export async function initSchema(): Promise<void> {
     CREATE INDEX IF NOT EXISTS idx_ic_auth_events_user ON ic_auth_events(user_id);
     CREATE INDEX IF NOT EXISTS idx_ic_auth_audit_user ON ic_auth_audit(user_id, created_at DESC);
     CREATE INDEX IF NOT EXISTS idx_ic_auth_audit_event ON ic_auth_audit(event_type, created_at DESC);
+
+    -- ── wavult operational schema ─────────────────────────────────────────────
+    CREATE SCHEMA IF NOT EXISTS wavult;
+
+    -- quiXzoom tables
+    CREATE TABLE IF NOT EXISTS wavult.missions (
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      title TEXT NOT NULL,
+      description TEXT,
+      location TEXT NOT NULL,
+      lat DOUBLE PRECISION,
+      lng DOUBLE PRECISION,
+      reward INTEGER NOT NULL DEFAULT 85,
+      currency TEXT NOT NULL DEFAULT 'SEK',
+      category TEXT DEFAULT 'inspection',
+      status TEXT NOT NULL DEFAULT 'open'
+        CHECK (status IN ('open','accepted','in_progress','submitted','approved','rejected','cancelled')),
+      zoomer_id UUID,
+      client_id UUID,
+      entity TEXT DEFAULT 'QuiXzoom UAB',
+      images TEXT[],
+      notes TEXT,
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      updated_at TIMESTAMPTZ DEFAULT NOW(),
+      completed_at TIMESTAMPTZ
+    );
+
+    CREATE TABLE IF NOT EXISTS wavult.zoomers (
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      name TEXT,
+      email TEXT UNIQUE,
+      phone TEXT,
+      status TEXT NOT NULL DEFAULT 'pending'
+        CHECK (status IN ('active','inactive','pending','suspended')),
+      missions_completed INTEGER DEFAULT 0,
+      total_earnings INTEGER DEFAULT 0,
+      rating DOUBLE PRECISION,
+      bio TEXT,
+      profile_image TEXT,
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+    );
+
+    CREATE TABLE IF NOT EXISTS wavult.mission_submissions (
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      mission_id UUID REFERENCES wavult.missions(id),
+      zoomer_id UUID REFERENCES wavult.zoomers(id),
+      images TEXT[] NOT NULL,
+      notes TEXT,
+      status TEXT DEFAULT 'pending' CHECK (status IN ('pending','approved','rejected')),
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    );
+
+    -- Landvex tables
+    CREATE TABLE IF NOT EXISTS wavult.landvex_clients (
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      name TEXT NOT NULL,
+      org_nr TEXT,
+      type TEXT DEFAULT 'municipality',
+      contact_email TEXT,
+      contact_phone TEXT,
+      contract_start DATE,
+      contract_end DATE,
+      status TEXT DEFAULT 'active',
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    );
+
+    CREATE TABLE IF NOT EXISTS wavult.landvex_objects (
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      name TEXT NOT NULL,
+      type TEXT NOT NULL,
+      municipality TEXT NOT NULL,
+      lat DOUBLE PRECISION,
+      lng DOUBLE PRECISION,
+      status TEXT DEFAULT 'ok' CHECK (status IN ('ok','monitoring','alert','critical')),
+      client_id UUID REFERENCES wavult.landvex_clients(id),
+      last_inspected TIMESTAMPTZ,
+      inspection_count INTEGER DEFAULT 0,
+      metadata JSONB DEFAULT '{}'::jsonb,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    );
+
+    CREATE TABLE IF NOT EXISTS wavult.landvex_alerts (
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      object_id UUID REFERENCES wavult.landvex_objects(id),
+      severity TEXT NOT NULL CHECK (severity IN ('info','warning','critical')),
+      message TEXT NOT NULL,
+      source TEXT DEFAULT 'system',
+      acknowledged BOOLEAN DEFAULT false,
+      resolved BOOLEAN DEFAULT false,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    );
+
+    -- BOS tables
+    CREATE TABLE IF NOT EXISTS wavult.bos_tasks (
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      title TEXT NOT NULL,
+      description TEXT,
+      state TEXT DEFAULT 'PENDING',
+      priority TEXT DEFAULT 'medium',
+      owner TEXT,
+      deadline DATE,
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+    );
+
+    CREATE TABLE IF NOT EXISTS wavult.bos_events (
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      event_type TEXT NOT NULL,
+      job_id UUID,
+      payload JSONB DEFAULT '{}'::jsonb,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    );
+
+    CREATE TABLE IF NOT EXISTS wavult.bos_jobs (
+      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+      type TEXT NOT NULL,
+      status TEXT DEFAULT 'PENDING',
+      payload JSONB DEFAULT '{}'::jsonb,
+      created_at TIMESTAMPTZ DEFAULT NOW(),
+      updated_at TIMESTAMPTZ DEFAULT NOW()
+    );
+
+    -- Indexes for wavult schema
+    CREATE INDEX IF NOT EXISTS idx_wavult_missions_status ON wavult.missions(status);
+    CREATE INDEX IF NOT EXISTS idx_wavult_missions_created ON wavult.missions(created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_wavult_zoomers_email ON wavult.zoomers(email);
+    CREATE INDEX IF NOT EXISTS idx_wavult_landvex_objects_municipality ON wavult.landvex_objects(municipality);
+    CREATE INDEX IF NOT EXISTS idx_wavult_landvex_alerts_object ON wavult.landvex_alerts(object_id, created_at DESC);
   `
 
   try {
