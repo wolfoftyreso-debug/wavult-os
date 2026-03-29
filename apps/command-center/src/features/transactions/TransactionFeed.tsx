@@ -85,6 +85,23 @@ const TRANSACTIONS: Transaction[] = [
   { id: 'gm-033', date: '2026-01-11', title: 'Lovable Labs — kvitto #2833-8347 ($50)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -525, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2833-8347' },
   { id: 'gm-034', date: '2026-01-09', title: 'Lovable Labs — kvitto #2072 ($100)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -1050, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2072' },
   { id: 'gm-035', date: '2026-01-03', title: 'Lovable Labs — kvitto #2732 ($200)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -2100, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2732' },
+  // ── Historiska utgifter (maj 2025 – dec 2025, Gmail scan) ────────────────
+  // Apple — hårdvara och prenumerationer
+  { id: 'hist-001', date: '2025-09-22', title: 'Apple Watch Series 11 / Apple Watch', counterparty: 'Apple Inc.', entity: 'Wavult Group', type: 'expense', amount: -4995, currency: 'SEK', status: 'pending', category: 'Hårdvara', reference: 'APPLE-2025-09-22' },
+  { id: 'hist-002', date: '2025-09-24', title: 'Apple AirPods Pro 3', counterparty: 'Apple Inc.', entity: 'Wavult Group', type: 'expense', amount: -2995, currency: 'SEK', status: 'pending', category: 'Hårdvara', reference: 'APPLE-2025-09-24' },
+  { id: 'hist-003', date: '2025-10-22', title: 'MacBook Pro 14" M4', counterparty: 'Apple Inc.', entity: 'Wavult Group', type: 'expense', amount: -20995, currency: 'SEK', status: 'pending', category: 'Hårdvara', reference: 'APPLE-2025-10-22' },
+  { id: 'hist-004', date: '2026-03-11', title: 'Apple iCloud — prenumeration', counterparty: 'Apple Inc.', entity: 'Wavult Group', type: 'payment', amount: -129, currency: 'SEK', status: 'paid', category: 'Infrastruktur', reference: 'APPLE-ICLOUD-2026-03' },
+  // Lovable Labs — dec 2025
+  { id: 'hist-005', date: '2025-12-13', title: 'Lovable Labs — kvitto #2734 (€100)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -1150, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2734-DEC' },
+  { id: 'hist-006', date: '2025-12-14', title: 'Lovable Labs — kvitto #2083 (€380)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -4370, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2083-DEC' },
+  { id: 'hist-007', date: '2025-12-22', title: 'Lovable Labs — kvitto #2296 (€225)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -2588, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2296-DEC' },
+  { id: 'hist-008', date: '2025-12-26', title: 'Lovable Labs — kvitto #2098 (€215)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -2473, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2098-DEC' },
+  { id: 'hist-009', date: '2025-12-29', title: 'Lovable Labs — kvitto #2185 (€1330)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -15295, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2185-DEC' },
+  { id: 'hist-010', date: '2025-12-31', title: 'Lovable Labs — kvitto #2238 ($50)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -525, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2238-DEC' },
+  // Lovable Labs — feb 2026 extra (ej inlagda tidigare)
+  { id: 'hist-011', date: '2026-02-01', title: 'Lovable Labs — kvitto #2068 (€1125)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -12938, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2068-FEB' },
+  { id: 'hist-012', date: '2026-02-13', title: 'Lovable Labs — prenumeration feb (€2250)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -25875, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2494-FEB' },
+  { id: 'hist-013', date: '2026-02-15', title: 'Lovable Labs — kvitto #2605 ($100)', counterparty: 'Lovable Labs Inc.', entity: 'Wavult Group', type: 'expense', amount: -1050, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'LOV-2605-FEB' },
 
 ]
 
