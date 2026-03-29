@@ -62,6 +62,10 @@ const MissionControl         = lazy(() => import('./features/mission-control/Mis
 const PersonView             = lazy(() => import('./features/mission-control/PersonView').then(m => ({ default: m.PersonView })))
 const OperationsCenter       = lazy(() => import('./features/operations-center/OperationsCenter').then(m => ({ default: m.OperationsCenter })))
 const SystemGraph            = lazy(() => import('./features/system-graph/SystemGraph').then(m => ({ default: m.SystemGraph })))
+const QuixzoomApp            = lazy(() => import('./features/quixzoom-app/QuixzoomApp').then(m => ({ default: m.QuixzoomApp })))
+const LandvexPortal          = lazy(() => import('./features/landvex-portal/LandvexPortal').then(m => ({ default: m.LandvexPortal })))
+const QuixzoomAds            = lazy(() => import('./features/quixzoom-ads/QuixzoomAds').then(m => ({ default: m.QuixzoomAds })))
+const FinanceFlow            = lazy(() => import('./features/finance-flow/FinanceFlow').then(m => ({ default: m.FinanceFlow })))
 
 // ─── Page loader fallback ───────────────────────────────────────────────────────
 function PageLoader() {
@@ -164,6 +168,10 @@ function AuthenticatedApp() {
               <Route path="/causal-os" element={<CausalOS />} />
               <Route path="/ops" element={<OperationsCenter />} />
               <Route path="/system-graph" element={<SystemGraph />} />
+              <Route path="/quixzoom-app" element={<QuixzoomApp />} />
+              <Route path="/landvex-portal" element={<LandvexPortal />} />
+              <Route path="/quixzoom-ads" element={<QuixzoomAds />} />
+              <Route path="/finance-flow" element={<FinanceFlow />} />
             </Routes>
           </Suspense>
         </Shell>

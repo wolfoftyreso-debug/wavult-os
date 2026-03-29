@@ -241,5 +241,9 @@
   "agent.meta.recommendation": "Rekommenderad åtgärd",
   "agent.meta.priority_high": "Hög prioritet",
   "agent.meta.priority_medium": "Medel prioritet",
-  "agent.meta.priority_low": "Låg prioritet"
+  "agent.meta.priority_low": "Låg prioritet",
+  "nav.quixzoom_app": "Zoomer-app",
+  "nav.landvex_portal": "Landvex Portal",
+  "nav.quixzoom_ads": "Quixzoom Ads",
+  "nav.finance_flow": "Finance Flow"
 }

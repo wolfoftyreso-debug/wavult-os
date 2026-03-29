@@ -241,5 +241,9 @@
   "agent.meta.recommendation": "Recommended action",
   "agent.meta.priority_high": "High priority",
   "agent.meta.priority_medium": "Medium priority",
-  "agent.meta.priority_low": "Low priority"
+  "agent.meta.priority_low": "Low priority",
+  "nav.quixzoom_app": "Zoomer App",
+  "nav.landvex_portal": "Landvex Portal",
+  "nav.quixzoom_ads": "Quixzoom Ads",
+  "nav.finance_flow": "Finance Flow"
 }
