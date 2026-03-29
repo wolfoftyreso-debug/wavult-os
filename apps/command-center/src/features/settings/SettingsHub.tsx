@@ -4,10 +4,12 @@ import { RolesView } from './RolesView'
 import { EntitySettingsView } from './EntitySettingsView'
 import { NotificationSettings } from './NotificationSettings'
 import { SystemView } from './SystemView'
+import { ProfileSettings } from './ProfileSettings'
 
-type Tab = 'api-keys' | 'roles' | 'entities' | 'notifications' | 'system'
+type Tab = 'profile' | 'api-keys' | 'roles' | 'entities' | 'notifications' | 'system'
 
 const TABS: Array<{ id: Tab; label: string; icon: string }> = [
+  { id: 'profile',        label: 'Min profil',            icon: '👤' },
   { id: 'api-keys',       label: 'API-nycklar',           icon: '🔑' },
   { id: 'roles',          label: 'Roller & Behörigheter', icon: '🛡' },
   { id: 'entities',       label: 'Entitetsinställningar', icon: '🏢' },
@@ -16,7 +18,7 @@ const TABS: Array<{ id: Tab; label: string; icon: string }> = [
 ]
 
 export function SettingsHub() {
-  const [activeTab, setActiveTab] = useState<Tab>('api-keys')
+  const [activeTab, setActiveTab] = useState<Tab>('profile')
 
   return (
     <div className="flex flex-col h-full bg-gray-50 text-gray-900">
@@ -63,6 +65,7 @@ export function SettingsHub() {
 
       {/* Content */}
       <div className="flex-1 overflow-auto p-6">
+        {activeTab === 'profile'       && <ProfileSettings />}
         {activeTab === 'api-keys'      && <APIKeysView />}
         {activeTab === 'roles'         && <RolesView />}
         {activeTab === 'entities'      && <EntitySettingsView />}

@@ -4,7 +4,6 @@
 import { useState } from 'react'
 import { DISC_PROFILES, HEALTH_DATA } from './pgData'
 import { DISC_DESCRIPTIONS, type DISCType, type DISCProfile } from './pgTypes'
-import { PassportUpload } from '../onboarding/PassportUpload'
 
 // ─── Person type ──────────────────────────────────────────────────────────────
 
@@ -306,16 +305,18 @@ function PersonDetail({ person, discProfile, onClose }: {
 
 // ─── Person Card (Teamöversikt) ────────────────────────────────────────────────
 
-function PersonCard({ person, onClick, onPassportUpload }: { person: Person; onClick: () => void; onPassportUpload: () => void }) {
+function PersonCard({ person, onClick }: { person: Person; onClick: () => void }) {
   const disc = DISC_PROFILES.find(d => d.personId === person.id)
 
   return (
     <div
+      onClick={onClick}
       style={{
         background: '#FFFFFF',
         border: '1px solid rgba(0,0,0,0.08)',
         borderRadius: 14,
-        overflow: 'hidden',
+        padding: '16px 20px',
+        cursor: 'pointer',
         boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
         transition: 'box-shadow 0.15s, transform 0.1s',
       }}
@@ -328,53 +329,34 @@ function PersonCard({ person, onClick, onPassportUpload }: { person: Person; onC
         ;(e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)'
       }}
     >
-      {/* Header — clickable area */}
-      <div onClick={onClick} style={{ padding: '16px 20px', cursor: 'pointer' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{
+          width: 44, height: 44, borderRadius: 12,
+          background: person.color + '22',
+          border: `1px solid ${person.color}44`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: 13, fontWeight: 700, color: person.color, flexShrink: 0,
+        }}>
+          {person.initials}
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: '#1C1C1E' }}>{person.name}</div>
+          <div style={{ fontSize: 11, color: person.color, fontWeight: 600, marginTop: 1 }}>{person.role}</div>
+        </div>
+        {disc && (
           <div style={{
-            width: 44, height: 44, borderRadius: 12,
-            background: person.color + '22',
-            border: `1px solid ${person.color}44`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 13, fontWeight: 700, color: person.color, flexShrink: 0,
+            padding: '3px 8px', borderRadius: 20,
+            background: DISC_DESCRIPTIONS[disc.primary].color + '18',
+            border: `1px solid ${DISC_DESCRIPTIONS[disc.primary].color}30`,
+            fontSize: 11, fontWeight: 700,
+            color: DISC_DESCRIPTIONS[disc.primary].color,
           }}>
-            {person.initials}
+            {disc.primary}{disc.secondary ? `+${disc.secondary}` : ''}
           </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 14, fontWeight: 600, color: '#1C1C1E' }}>{person.name}</div>
-            <div style={{ fontSize: 11, color: person.color, fontWeight: 600, marginTop: 1 }}>{person.role}</div>
-          </div>
-          {disc && (
-            <div style={{
-              padding: '3px 8px', borderRadius: 20,
-              background: DISC_DESCRIPTIONS[disc.primary].color + '18',
-              border: `1px solid ${DISC_DESCRIPTIONS[disc.primary].color}30`,
-              fontSize: 11, fontWeight: 700,
-              color: DISC_DESCRIPTIONS[disc.primary].color,
-            }}>
-              {disc.primary}{disc.secondary ? `+${disc.secondary}` : ''}
-            </div>
-          )}
-        </div>
-
-        <div style={{ marginTop: 12, fontSize: 11, color: '#8E8E93' }}>
-          Klicka för att se all info →
-        </div>
+        )}
       </div>
-
-      {/* Footer — passport upload action */}
-      <div style={{ borderTop: '1px solid rgba(0,0,0,0.06)', padding: '10px 16px', display: 'flex', justifyContent: 'flex-end' }}>
-        <button
-          onClick={(e) => { e.stopPropagation(); onPassportUpload() }}
-          style={{
-            padding: '5px 12px', borderRadius: 8,
-            border: '1px solid #EDE9FE', background: '#F5F3FF',
-            fontSize: 11, fontWeight: 600, color: '#7C3AED',
-            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5,
-          }}
-        >
-          🛂 Ladda upp pass
-        </button>
+      <div style={{ marginTop: 12, fontSize: 11, color: '#8E8E93' }}>
+        Klicka för att se all info →
       </div>
     </div>
   )
@@ -591,7 +573,6 @@ function HalsaTab() {
 
 export function PeopleGovernance() {
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null)
-  const [passportUploadPerson, setPassportUploadPerson] = useState<Person | null>(null)
 
   const selectedDisc = selectedPerson
     ? DISC_PROFILES.find(d => d.personId === selectedPerson.id)
@@ -634,7 +615,6 @@ export function PeopleGovernance() {
               key={person.id}
               person={person}
               onClick={() => setSelectedPerson(person)}
-              onPassportUpload={() => setPassportUploadPerson(person)}
             />
           ))}
         </div>
@@ -670,43 +650,7 @@ export function PeopleGovernance() {
         </>
       )}
 
-      {/* Passport upload modal */}
-      {passportUploadPerson && (
-        <>
-          <div
-            onClick={() => setPassportUploadPerson(null)}
-            style={{
-              position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)',
-              zIndex: 200, backdropFilter: 'blur(3px)',
-            }}
-          />
-          <div style={{
-            position: 'fixed', top: '50%', left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: 420, maxWidth: '95vw', maxHeight: '90vh',
-            background: '#FFFFFF', borderRadius: 16,
-            boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
-            zIndex: 201, overflow: 'auto',
-          }}>
-            {/* Modal header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 24px', borderBottom: '1px solid rgba(0,0,0,0.08)' }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#1C1C1E' }}>KYC — Passverifiering</div>
-              <button
-                onClick={() => setPassportUploadPerson(null)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: '#9CA3AF', lineHeight: 1 }}
-              >
-                ×
-              </button>
-            </div>
-            <PassportUpload
-              personName={passportUploadPerson.name}
-              personId={passportUploadPerson.id}
-              onComplete={() => setPassportUploadPerson(null)}
-              onSkip={() => setPassportUploadPerson(null)}
-            />
-          </div>
-        </>
-      )}
+
     </div>
   )
 }
