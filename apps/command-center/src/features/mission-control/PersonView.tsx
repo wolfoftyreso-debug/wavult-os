@@ -63,7 +63,7 @@ function TaskRow({ task, variant }: { task: Task; variant: 'action' | 'blocking'
 
         {variant === 'action' && (
           <button className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white ${
-            task.priority === 'critical' ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-900 hover:bg-gray-800'
+            task.priority === 'critical' ? 'bg-red-600 hover:bg-red-700' : 'bg-white hover:bg-gray-50'
           } transition-colors`}>
             {effectiveState === 'IN_PROGRESS' ? t('task.continue') : t('task.start')}
             <ArrowRight className="w-3 h-3" />

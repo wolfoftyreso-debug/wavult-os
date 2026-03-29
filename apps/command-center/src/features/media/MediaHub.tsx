@@ -14,7 +14,7 @@ export function MediaHub() {
   const [activeTab, setActiveTab] = useState<Tab>('campaigns')
 
   return (
-    <div className="flex flex-col h-full bg-[#0D1117] text-gray-900">
+    <div className="flex flex-col h-full bg-white text-gray-900">
       <ModuleHeader moduleId="media" />
 
       {/* Tabs */}

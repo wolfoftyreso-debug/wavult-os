@@ -687,7 +687,7 @@ export function EntityView() {
       `}>
 
         {/* Header */}
-        <div className="flex-shrink-0 border-b border-gray-200 bg-[#08090F]">
+        <div className="flex-shrink-0 border-b border-gray-200 bg-white">
           <div className="px-4 md:px-6 py-4">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3 min-w-0">

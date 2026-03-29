@@ -217,7 +217,7 @@ function SendModal({ doc, onClose }: { doc: LegalDocument; onClose: () => void }
               value={email}
               onChange={e => setEmail(e.target.value)}
               placeholder={doc.sign_method === 'bankid' ? '19870926-1234' : 'motpart@företag.com'}
-              className="w-full bg-[#070709] border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 placeholder-gray-700 focus:outline-none focus:border-gray-300"
+              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 placeholder-gray-700 focus:outline-none focus:border-gray-300"
             />
             {doc.sign_method !== 'bankid' && (
               <p className="text-[9px] text-amber-500/70 mt-1.5">⚠️ BankID kräver svenskt personnummer. Internationella parter signerar via {SIGN_METHOD_LABELS[doc.sign_method]}.</p>
@@ -295,7 +295,7 @@ function NewDocModal({ onClose, onSave }: { onClose: () => void; onSave: (doc: P
           <select
             value={docType}
             onChange={e => setDocType(e.target.value as LegalDocType)}
-            className="w-full bg-[#070709] border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 focus:outline-none focus:border-gray-300"
+            className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 focus:outline-none focus:border-gray-300"
           >
             {ALL_DOC_TYPES.map(t => (
               <option key={t} value={t}>{DOC_TYPE_LABELS[t]}</option>
@@ -315,7 +315,7 @@ function NewDocModal({ onClose, onSave }: { onClose: () => void; onSave: (doc: P
             <select
               value={partyA}
               onChange={e => setPartyA(e.target.value)}
-              className="w-full bg-[#070709] border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 focus:outline-none focus:border-gray-300"
+              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 focus:outline-none focus:border-gray-300"
             >
               <option value="">Välj part…</option>
               {entityOptions.map(e => (
@@ -330,7 +330,7 @@ function NewDocModal({ onClose, onSave }: { onClose: () => void; onSave: (doc: P
             <select
               value={partyB}
               onChange={e => setPartyB(e.target.value)}
-              className="w-full bg-[#070709] border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 focus:outline-none focus:border-gray-300"
+              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 focus:outline-none focus:border-gray-300"
             >
               <option value="">Välj part…</option>
               {entityOptions.map(e => (
@@ -346,7 +346,7 @@ function NewDocModal({ onClose, onSave }: { onClose: () => void; onSave: (doc: P
           <select
             value={jurisdiction}
             onChange={e => setJurisdiction(e.target.value)}
-            className="w-full bg-[#070709] border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 focus:outline-none focus:border-gray-300"
+            className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 focus:outline-none focus:border-gray-300"
           >
             <option value="SE">🇸🇪 Sverige (BankID)</option>
             <option value="EU-LT">🇱🇹 Litauen (eIDAS)</option>
@@ -462,7 +462,7 @@ export function LegalHub() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-[#070709] text-gray-900">
+    <div className="flex flex-col h-full bg-white text-gray-900">
       {/* Header */}
       <div className="px-4 md:px-6 py-3 border-b border-gray-200">
         <div className="flex items-center gap-2 mb-3">

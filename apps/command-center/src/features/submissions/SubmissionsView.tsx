@@ -265,7 +265,7 @@ export function SubmissionsView() {
                         type="number"
                         value={payout}
                         onChange={e => setPayoutInputs(p => ({ ...p, [sub.id]: e.target.value }))}
-                        className="w-20 bg-[#070709] border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-gray-900 text-right focus:outline-none focus:border-emerald-500/50"
+                        className="w-20 bg-white border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-gray-900 text-right focus:outline-none focus:border-emerald-500/50"
                         placeholder="SEK"
                         min="0"
                         step="1"

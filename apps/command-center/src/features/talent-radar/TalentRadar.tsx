@@ -219,7 +219,7 @@ export function TalentRadar() {
     <div className="flex flex-col h-full overflow-hidden">
 
       {/* Header */}
-      <div className="flex-shrink-0 px-5 py-4 border-b border-gray-200 bg-[#08090F]">
+      <div className="flex-shrink-0 px-5 py-4 border-b border-gray-200 bg-white">
         <div className="flex items-center gap-3 mb-3">
           <span className="text-xl">🎯</span>
           <div>

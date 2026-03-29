@@ -133,7 +133,7 @@ function SitePanel({ site, onClose }: { site: MarketSite; onClose: () => void })
 
   return (
     <div className="w-[340px] flex-shrink-0 flex flex-col h-full overflow-hidden"
-      style={{ background: '#09090F', borderLeft: '1px solid rgba(255,255,255,0.06)' }}>
+      style={{ background: '#FFFFFF', borderLeft: '1px solid rgba(255,255,255,0.06)' }}>
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
         <div className="flex items-center gap-2">

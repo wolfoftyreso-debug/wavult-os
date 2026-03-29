@@ -56,7 +56,7 @@ function NewCampaignModal({ onClose }: { onClose: () => void }) {
               value={form.name}
               onChange={e => setForm({ ...form, name: e.target.value })}
               placeholder="t.ex. Landvex Höst 2026"
-              className="w-full bg-[#070912] border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none focus:border-brand-accent/40"
+              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none focus:border-brand-accent/40"
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -65,7 +65,7 @@ function NewCampaignModal({ onClose }: { onClose: () => void }) {
               <select
                 value={form.objective}
                 onChange={e => setForm({ ...form, objective: e.target.value as Campaign['objective'] })}
-                className="w-full bg-[#070912] border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none"
+                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none"
               >
                 <option value="awareness">Awareness</option>
                 <option value="conversion">Conversion</option>
@@ -78,7 +78,7 @@ function NewCampaignModal({ onClose }: { onClose: () => void }) {
               <select
                 value={form.geo_scope}
                 onChange={e => setForm({ ...form, geo_scope: e.target.value as Campaign['geo_scope'] })}
-                className="w-full bg-[#070912] border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none"
+                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none"
               >
                 <option value="local">Lokalt</option>
                 <option value="national">Nationellt</option>
@@ -94,7 +94,7 @@ function NewCampaignModal({ onClose }: { onClose: () => void }) {
                 value={form.budget_total}
                 onChange={e => setForm({ ...form, budget_total: e.target.value })}
                 placeholder="50000"
-                className="w-full bg-[#070912] border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none"
+                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none"
               />
             </div>
             <div>
@@ -102,7 +102,7 @@ function NewCampaignModal({ onClose }: { onClose: () => void }) {
               <select
                 value={form.currency}
                 onChange={e => setForm({ ...form, currency: e.target.value })}
-                className="w-full bg-[#070912] border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none"
+                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none"
               >
                 <option value="SEK">SEK</option>
                 <option value="EUR">EUR</option>
@@ -118,7 +118,7 @@ function NewCampaignModal({ onClose }: { onClose: () => void }) {
                 type="date"
                 value={form.start_date}
                 onChange={e => setForm({ ...form, start_date: e.target.value })}
-                className="w-full bg-[#070912] border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none"
+                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none"
               />
             </div>
             <div>
@@ -127,7 +127,7 @@ function NewCampaignModal({ onClose }: { onClose: () => void }) {
                 type="date"
                 value={form.end_date}
                 onChange={e => setForm({ ...form, end_date: e.target.value })}
-                className="w-full bg-[#070912] border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none"
+                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none"
               />
             </div>
           </div>

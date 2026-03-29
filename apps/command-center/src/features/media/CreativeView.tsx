@@ -46,7 +46,7 @@ function NewCreativeModal({ onClose }: { onClose: () => void }) {
               <select
                 value={form.campaign_id}
                 onChange={e => setForm({ ...form, campaign_id: e.target.value })}
-                className="w-full bg-[#070912] border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none"
+                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none"
               >
                 {MOCK_CAMPAIGNS.map(c => (
                   <option key={c.id} value={c.id}>{c.name}</option>
@@ -58,7 +58,7 @@ function NewCreativeModal({ onClose }: { onClose: () => void }) {
               <select
                 value={form.type}
                 onChange={e => setForm({ ...form, type: e.target.value as Creative['type'] })}
-                className="w-full bg-[#070912] border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none"
+                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none"
               >
                 <option value="audio">Audio</option>
                 <option value="video">Video</option>
@@ -74,7 +74,7 @@ function NewCreativeModal({ onClose }: { onClose: () => void }) {
               value={form.hook}
               onChange={e => setForm({ ...form, hook: e.target.value })}
               placeholder="t.ex. Sveriges infrastruktur behöver ögon."
-              className="w-full bg-[#070912] border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none"
+              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none"
             />
           </div>
 
@@ -85,7 +85,7 @@ function NewCreativeModal({ onClose }: { onClose: () => void }) {
               onChange={e => setForm({ ...form, message: e.target.value })}
               rows={3}
               placeholder="Beskriv erbjudandet eller varumärkesbudskapet..."
-              className="w-full bg-[#070912] border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none resize-none"
+              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none resize-none"
             />
           </div>
 
@@ -95,7 +95,7 @@ function NewCreativeModal({ onClose }: { onClose: () => void }) {
               value={form.cta}
               onChange={e => setForm({ ...form, cta: e.target.value })}
               placeholder="t.ex. Läs mer, Ansök nu, Se demo"
-              className="w-full bg-[#070912] border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none"
+              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none"
             />
           </div>
 
@@ -119,7 +119,7 @@ function NewCreativeModal({ onClose }: { onClose: () => void }) {
                       updated[i].label = e.target.value
                       setVariants(updated)
                     }}
-                    className="flex-1 bg-[#070912] border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-gray-900 focus:outline-none"
+                    className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-gray-900 focus:outline-none"
                   />
                   {variants.length > 1 && (
                     <button

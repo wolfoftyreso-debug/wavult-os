@@ -195,7 +195,7 @@ function NodeDetail({ node, onClose, onDashboard }: {
   const statusColor = node.status ? (STATUS[node.status] ?? '#6B7280') : '#6B7280'
 
   return (
-    <div className="h-full flex flex-col bg-[#08090F] border-l border-gray-200 overflow-hidden">
+    <div className="h-full flex flex-col bg-white border-l border-gray-200 overflow-hidden">
       <div className="flex-shrink-0 p-5 border-b border-gray-200">
         <div className="flex items-start justify-between">
           <div>
@@ -383,7 +383,7 @@ export function ContextView() {
       {/* ── Canvas ── */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Header */}
-        <div className="flex-shrink-0 flex items-center justify-between gap-4 px-5 py-3 border-b border-gray-200 bg-[#080A12]">
+        <div className="flex-shrink-0 flex items-center justify-between gap-4 px-5 py-3 border-b border-gray-200 bg-gray-50">
           <div>
             <div className="flex items-center gap-3">
               <h1 className="text-sm font-bold text-gray-900">My Position</h1>
@@ -411,7 +411,7 @@ export function ContextView() {
         </div>
 
         {/* Path breadcrumb */}
-        <div className="flex-shrink-0 flex items-center gap-1 px-5 py-2 border-b border-gray-100 bg-[#060810] overflow-x-auto">
+        <div className="flex-shrink-0 flex items-center gap-1 px-5 py-2 border-b border-gray-100 bg-gray-50 overflow-x-auto">
           {nodes.filter(n => n.isOnPath).map((n, i, arr) => (
             <span key={n.id} className="flex items-center gap-1 text-xs flex-shrink-0">
               <span
@@ -441,7 +441,7 @@ export function ContextView() {
         </div>
 
         {/* SVG */}
-        <div className="flex-1 overflow-auto bg-[#060810]">
+        <div className="flex-1 overflow-auto bg-gray-50">
           <svg
             ref={svgRef}
             viewBox={`0 0 ${CANVAS_W} ${maxY}`}
@@ -519,7 +519,7 @@ export function ContextView() {
         </div>
 
         {/* Footer */}
-        <div className="flex-shrink-0 px-5 py-2 border-t border-gray-200 bg-[#080A12]">
+        <div className="flex-shrink-0 px-5 py-2 border-t border-gray-200 bg-gray-50">
           <div className="flex items-center gap-6 text-xs text-gray-600">
             <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-white/20" />Above: governance chain</span>
             <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full" style={{ background: effectiveRole?.color ?? '#8B5CF6' }} />Self: your role</span>

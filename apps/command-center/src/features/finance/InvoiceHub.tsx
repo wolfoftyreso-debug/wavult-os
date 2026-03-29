@@ -173,19 +173,19 @@ export function InvoiceHub() {
             <div>
               <label className="text-[9px] text-gray-500 font-mono uppercase tracking-wider block mb-1">Mottagare</label>
               <input value={form.recipient} onChange={e => setForm(f => ({ ...f, recipient: e.target.value }))}
-                className="w-full bg-[#070709] border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 placeholder-gray-700 focus:outline-none focus:border-gray-300"
+                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 placeholder-gray-700 focus:outline-none focus:border-gray-300"
                 placeholder="Bolagsnamn..." />
             </div>
             <div>
               <label className="text-[9px] text-gray-500 font-mono uppercase tracking-wider block mb-1">E-post</label>
               <input value={form.recipientEmail} onChange={e => setForm(f => ({ ...f, recipientEmail: e.target.value }))}
-                className="w-full bg-[#070709] border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 placeholder-gray-700 focus:outline-none focus:border-gray-300"
+                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 placeholder-gray-700 focus:outline-none focus:border-gray-300"
                 placeholder="ekonomi@kund.se" />
             </div>
             <div>
               <label className="text-[9px] text-gray-500 font-mono uppercase tracking-wider block mb-1">Utfärdande bolag</label>
               <select value={form.entityId} onChange={e => setForm(f => ({ ...f, entityId: e.target.value as EntityId }))}
-                className="w-full bg-[#070709] border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 focus:outline-none">
+                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 focus:outline-none">
                 {FINANCE_ENTITIES.map(fe => <option key={fe.id} value={fe.id}>{fe.name}</option>)}
               </select>
             </div>
@@ -193,14 +193,14 @@ export function InvoiceHub() {
               <div>
                 <label className="text-[9px] text-gray-500 font-mono uppercase tracking-wider block mb-1">Valuta</label>
                 <select value={form.currency} onChange={e => setForm(f => ({ ...f, currency: e.target.value as Currency }))}
-                  className="w-full bg-[#070709] border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 focus:outline-none">
+                  className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 focus:outline-none">
                   {(['SEK', 'EUR', 'USD', 'AED'] as Currency[]).map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
               </div>
               <div>
                 <label className="text-[9px] text-gray-500 font-mono uppercase tracking-wider block mb-1">Förfallodatum</label>
                 <input type="date" value={form.dueDate} onChange={e => setForm(f => ({ ...f, dueDate: e.target.value }))}
-                  className="w-full bg-[#070709] border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 focus:outline-none" />
+                  className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 focus:outline-none" />
               </div>
             </div>
           </div>
@@ -210,14 +210,14 @@ export function InvoiceHub() {
             {form.lines.map((line, i) => (
               <div key={i} className="flex flex-col sm:flex-row gap-2 mb-2">
                 <input value={line.description} onChange={e => updateLine(i, 'description', e.target.value)}
-                  className="flex-1 bg-[#070709] border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 placeholder-gray-700 focus:outline-none"
+                  className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 placeholder-gray-700 focus:outline-none"
                   placeholder="Beskrivning..." />
                 <div className="flex gap-2">
                   <input type="number" value={line.qty} onChange={e => updateLine(i, 'qty', Number(e.target.value))}
-                    className="w-16 bg-[#070709] border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 focus:outline-none text-center"
+                    className="w-16 bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 focus:outline-none text-center"
                     placeholder="Antal" min={1} />
                   <input type="number" value={line.unitPrice} onChange={e => updateLine(i, 'unitPrice', Number(e.target.value))}
-                    className="w-24 bg-[#070709] border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 focus:outline-none"
+                    className="w-24 bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 focus:outline-none"
                     placeholder="À-pris" />
                   <div className="w-20 flex items-center justify-center text-xs font-mono text-green-400">
                     {(line.qty * line.unitPrice).toLocaleString()}

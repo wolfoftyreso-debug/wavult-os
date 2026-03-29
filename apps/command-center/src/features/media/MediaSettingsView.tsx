@@ -66,7 +66,7 @@ export function MediaSettingsView() {
                   onChange={e => setApiKeys({ ...apiKeys, [ch.id]: e.target.value })}
                   placeholder={ch.provider === 'manual' ? 'Ingen API-nyckel krävs' : 'API-nyckel (tom tills vidare)'}
                   disabled={ch.provider === 'manual'}
-                  className="flex-1 bg-[#070912] border border-gray-200 rounded-lg px-3 py-1.5 text-xs text-gray-900 placeholder-gray-700 focus:outline-none font-mono disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-xs text-gray-900 placeholder-gray-700 focus:outline-none font-mono disabled:opacity-40 disabled:cursor-not-allowed"
                 />
                 <button
                   disabled

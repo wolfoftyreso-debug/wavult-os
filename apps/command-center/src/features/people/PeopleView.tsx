@@ -275,7 +275,7 @@ function PersonCard({ person }: { person: typeof TEAM[0] }) {
 
       {/* Expanderbar befattningsbeskrivning */}
       {expanded && (
-        <div className="border-t border-surface-border bg-[#070709] p-5 flex flex-col gap-4">
+        <div className="border-t border-surface-border bg-white p-5 flex flex-col gap-4">
           {/* Syfte */}
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: person.color }}>

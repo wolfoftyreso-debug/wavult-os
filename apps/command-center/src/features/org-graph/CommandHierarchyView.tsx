@@ -384,7 +384,7 @@ export function CommandHierarchyView() {
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
 
         {/* Header bar */}
-        <div className="flex-shrink-0 border-b border-gray-200 px-6 py-3 flex items-center justify-between bg-[#08090F]">
+        <div className="flex-shrink-0 border-b border-gray-200 px-6 py-3 flex items-center justify-between bg-white">
           <div className="flex items-center gap-3">
             <h1 className="text-sm font-bold text-gray-900">Command Hierarchy</h1>
             <span className="text-xs text-gray-500 font-mono">reports_to chain · always visible</span>
@@ -444,7 +444,7 @@ export function CommandHierarchyView() {
                 className="w-full text-left rounded-xl border p-4 transition-all"
                 style={{
                   borderColor: selectedId === role.id ? role.color + '60' : sc + '30',
-                  background: selectedId === role.id ? role.color + '10' : '#0D1117',
+                  background: selectedId === role.id ? role.color + '10' : '#FFFFFF',
                 }}
               >
                 <div className="flex items-center gap-3">

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Activity, Server, Database, Globe, Zap, ChevronRight, X } from 'lucide-react'
 
 // ─── DATA MODEL ──────────────────────────────────────────────────────────────
@@ -354,7 +354,6 @@ const NODES: SystemNode[] = ([
       dependedOnBy: [],
     },
   },
-,
   // ─── NODES THAT SHOULD EXIST (Node Registry — MISSING state) ─────────────────
   {
     id: 'landvex-api',
@@ -518,9 +517,50 @@ function StatusDot({ status, pulse = false }: { status: NodeStatus; pulse?: bool
   )
 }
 
+// ─── ERROR BOUNDARY ───────────────────────────────────────────────────────────
+
+class SystemGraphErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props)
+    this.state = { hasError: false }
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true }
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex items-center justify-center h-full bg-gray-50">
+          <div className="text-center p-8">
+            <div className="text-gray-400 text-sm">System Graph unavailable</div>
+            <button
+              onClick={() => this.setState({ hasError: false })}
+              className="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg text-sm"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
+
 // ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 
 export function SystemGraph() {
+  return (
+    <SystemGraphErrorBoundary>
+      <SystemGraphInner />
+    </SystemGraphErrorBoundary>
+  )
+}
+
+function SystemGraphInner() {
   const [nodes, setNodes] = useState<SystemNode[]>(NODES)
   const [selected, setSelected] = useState<SystemNode | null>(null)
   const [lastUpdated, setLastUpdated] = useState(new Date())
@@ -555,11 +595,13 @@ export function SystemGraph() {
     return () => clearInterval(t)
   }, [])
 
-  const nodeMap = new Map(nodes.map(n => [n.id, n]))
+  // Filter to only nodes that have a defined position (guards against undefined nodes in array)
+  const renderableNodes = nodes.filter(n => n != null && POSITIONS[n.id] !== undefined)
+  const nodeMap = new Map(nodes.filter(n => n != null).map(n => [n.id, n]))
 
   // Build connections
   const connections: Connection[] = []
-  nodes.forEach(node => {
+  renderableNodes.forEach(node => {
     node.connects.forEach(targetId => {
       if (nodeMap.has(targetId) && POSITIONS[node.id] && POSITIONS[targetId]) {
         const fromNode = node
@@ -576,11 +618,12 @@ export function SystemGraph() {
     })
   })
 
+  const safeNodes = nodes.filter(n => n != null)
   const statusCounts = {
-    healthy:  nodes.filter(n => n.status === 'healthy').length,
-    degraded: nodes.filter(n => n.status === 'degraded').length,
-    down:     nodes.filter(n => n.status === 'down').length,
-    unknown:  nodes.filter(n => n.status === 'unknown').length,
+    healthy:  safeNodes.filter(n => n.status === 'healthy').length,
+    degraded: safeNodes.filter(n => n.status === 'degraded').length,
+    down:     safeNodes.filter(n => n.status === 'down').length,
+    unknown:  safeNodes.filter(n => n.status === 'unknown').length,
   }
 
   const viewW = 900
@@ -593,10 +636,10 @@ export function SystemGraph() {
         <div className="flex items-center gap-6 text-sm">
           <span className="font-semibold text-gray-900">System Graph</span>
           <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-100 text-gray-600">
-            <span className="font-mono font-bold">{nodes.filter(n => n.status !== 'unknown').length}/{nodes.length}</span>
+            <span className="font-mono font-bold">{safeNodes.filter(n => n.status !== 'unknown').length}/{safeNodes.length}</span>
             <span>deployed</span>
-            {nodes.filter(n => n.status === 'unknown').length > 0 && (
-              <span className="ml-1 text-gray-400">· {nodes.filter(n => n.status === 'unknown').length} missing</span>
+            {safeNodes.filter(n => n.status === 'unknown').length > 0 && (
+              <span className="ml-1 text-gray-400">· {safeNodes.filter(n => n.status === 'unknown').length} missing</span>
             )}
           </div>
           <div className="flex items-center gap-4">
@@ -705,11 +748,11 @@ export function SystemGraph() {
           })}
 
           {/* Nodes */}
-          {nodes.map(node => {
+          {renderableNodes.map(node => {
             const pos = POSITIONS[node.id]
             if (!pos) return null
-            const c = STATUS_COLORS[node.status]
-            const Icon = TYPE_ICONS[node.type]
+            const c = STATUS_COLORS[node.status] ?? STATUS_COLORS.unknown
+            const Icon = TYPE_ICONS[node.type] ?? Activity
             const isSelected = selected?.id === node.id
             const typeColor = TYPE_COLORS[node.type]
 

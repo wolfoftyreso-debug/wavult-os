@@ -371,9 +371,9 @@ export function LLMHub() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#080C10] text-gray-900">
+    <div className="min-h-screen bg-gray-50 text-gray-900">
       {/* Header */}
-      <div className="border-b border-gray-200 bg-[#0D1117]/80 backdrop-blur-sm sticky top-0 z-10">
+      <div className="border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-start justify-between flex-wrap gap-3">
             <div>

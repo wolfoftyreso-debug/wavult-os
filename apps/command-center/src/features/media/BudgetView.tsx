@@ -56,7 +56,7 @@ function CampaignBudgetPanel({ campaign }: { campaign: Campaign }) {
                 type="number"
                 value={dailyBudgets[alloc.id] ?? '0'}
                 onChange={e => setDailyBudgets({ ...dailyBudgets, [alloc.id]: e.target.value })}
-                className="w-20 bg-[#070912] border border-gray-200 rounded px-2 py-1 text-xs text-gray-900 font-mono text-right focus:outline-none focus:border-brand-accent/30"
+                className="w-20 bg-white border border-gray-200 rounded px-2 py-1 text-xs text-gray-900 font-mono text-right focus:outline-none focus:border-brand-accent/30"
               />
               <span className="text-xs text-gray-500 w-10">{campaign.currency}/d</span>
             </div>

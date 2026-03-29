@@ -870,8 +870,8 @@ function CommandChainNode({
       />
 
       {/* Name + title */}
-      <text x={56} y={28} fontSize={13} fontWeight="700" fill="#FFFFFF">{role.person}</text>
-      <text x={56} y={42} fontSize={11} fill={isPrimary ? '#FCA5A5' : '#D1D5DB'} fontWeight="500">{role.title}</text>
+      <text x={56} y={28} fontSize={13} fontWeight="700" fill="#1C1C1E">{role.person}</text>
+      <text x={56} y={42} fontSize={11} fill={isPrimary ? '#DC2626' : '#6B7280'} fontWeight="500">{role.title}</text>
 
       {/* reports_to */}
       {reports && (

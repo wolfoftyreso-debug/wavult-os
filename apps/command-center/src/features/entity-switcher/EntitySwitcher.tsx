@@ -46,7 +46,7 @@ export function EntitySwitcher() {
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-[#09090F] border border-gray-200 rounded-xl shadow-2xl z-50 overflow-hidden max-h-80 overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-2xl z-50 overflow-hidden max-h-80 overflow-y-auto">
           <div className="px-3 py-2 border-b border-gray-200">
             <p className="text-[9px] text-gray-600 font-bold uppercase tracking-[0.15em]">Wavult Group Entities</p>
           </div>

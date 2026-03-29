@@ -55,6 +55,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function signIn(email: string, password: string): Promise<{ error: string | null }> {
     const normalizedEmail = email.trim().toLowerCase()
+
+    // Try Identity Core first (hybrid mode)
+    const IC_URL = import.meta.env.VITE_API_URL ?? 'https://api.hypbit.com'
+
+    try {
+      const icRes = await fetch(`${IC_URL}/v1/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: normalizedEmail, password }),
+      })
+
+      if (icRes.ok) {
+        const { data } = await icRes.json()
+        // Store IC token in localStorage for hybrid use
+        if (data?.access_token) {
+          localStorage.setItem('ic_access_token', data.access_token)
+          localStorage.setItem('ic_session_id', data.session_id)
+          localStorage.setItem('ic_refresh_token', data.refresh_token)
+        }
+        // Still use Supabase for session management until full cutover
+      }
+    } catch {
+      // IC unavailable — fall through to Supabase
+    }
+
+    // Supabase login (still primary until cutover)
     const { error } = await supabase.auth.signInWithPassword({ email: normalizedEmail, password })
     if (error) return { error: error.message }
     return { error: null }

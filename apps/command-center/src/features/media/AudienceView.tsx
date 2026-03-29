@@ -25,7 +25,7 @@ function NewAudienceModal({ onClose }: { onClose: () => void }) {
             <select
               value={form.campaign_id}
               onChange={e => setForm({ ...form, campaign_id: e.target.value })}
-              className="w-full bg-[#070912] border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none"
+              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none"
             >
               {MOCK_CAMPAIGNS.map(c => (
                 <option key={c.id} value={c.id}>{c.name}</option>
@@ -39,7 +39,7 @@ function NewAudienceModal({ onClose }: { onClose: () => void }) {
               value={form.geo}
               onChange={e => setForm({ ...form, geo: e.target.value })}
               placeholder="t.ex. Sverige, Stockholm, Göteborg"
-              className="w-full bg-[#070912] border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none"
+              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none"
             />
           </div>
 
@@ -51,7 +51,7 @@ function NewAudienceModal({ onClose }: { onClose: () => void }) {
                 value={form.age_min}
                 onChange={e => setForm({ ...form, age_min: e.target.value })}
                 placeholder="18"
-                className="w-full bg-[#070912] border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none"
+                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none"
               />
             </div>
             <div>
@@ -61,7 +61,7 @@ function NewAudienceModal({ onClose }: { onClose: () => void }) {
                 value={form.age_max}
                 onChange={e => setForm({ ...form, age_max: e.target.value })}
                 placeholder="65"
-                className="w-full bg-[#070912] border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none"
+                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none"
               />
             </div>
           </div>
@@ -72,7 +72,7 @@ function NewAudienceModal({ onClose }: { onClose: () => void }) {
               value={form.interests}
               onChange={e => setForm({ ...form, interests: e.target.value })}
               placeholder="t.ex. infrastruktur, fastigheter, tech"
-              className="w-full bg-[#070912] border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none"
+              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none"
             />
           </div>
 
@@ -82,7 +82,7 @@ function NewAudienceModal({ onClose }: { onClose: () => void }) {
               value={form.custom_data}
               onChange={e => setForm({ ...form, custom_data: e.target.value })}
               placeholder="t.ex. CRM-segment: SE-kommuner"
-              className="w-full bg-[#070912] border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none"
+              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none"
             />
           </div>
 

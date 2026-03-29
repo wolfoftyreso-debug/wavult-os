@@ -514,7 +514,7 @@ export function TeamMap() {
             background: 'rgba(7,8,15,0.80)',
             backdropFilter: 'blur(12px)',
             border: '1px solid rgba(255,255,255,0.08)',
-            color: '#111827',
+            color: '#FFFFFF',
             padding: '5px 12px',
             borderRadius: 8,
             fontSize: 11,

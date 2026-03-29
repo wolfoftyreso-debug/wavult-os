@@ -90,7 +90,7 @@ function IntegrationModal({
       onClick={onClose}
     >
       <div
-        className="bg-[#0D1117] border border-gray-300 rounded-2xl p-6 w-full max-w-lg shadow-2xl"
+        className="bg-white border border-gray-300 rounded-2xl p-6 w-full max-w-lg shadow-2xl"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-start justify-between mb-4">
@@ -239,7 +239,7 @@ export function APIHub() {
   return (
     <div className="min-h-screen bg-[#080C10] text-gray-900">
       {/* Header */}
-      <div className="border-b border-gray-200 bg-[#0D1117]/80 backdrop-blur-sm sticky top-0 z-10">
+      <div className="border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div>
