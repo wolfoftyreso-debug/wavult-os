@@ -36,7 +36,7 @@ jobs:
         run: npm install --legacy-peer-deps
 
       - name: Build all frontends
-        run: npx turbo build
+        run: cd apps/command-center && npm run build
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -45,15 +45,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Ensure S3 buckets exist
-        run: |
-          for BUCKET in pixdrift-landing-prod pixdrift-bc-workstation-prod pixdrift-bc-admin-prod pixdrift-bc-crm-prod pixdrift-bc-sales-prod; do
-            if ! aws s3api head-bucket --bucket "$BUCKET" 2>/dev/null; then
-              echo "Creating $BUCKET..."
-              aws s3 mb "s3://$BUCKET" --region eu-north-1 || true
-            fi
-            echo "$BUCKET ready"
-          done
 
       - name: Configure landing bucket
         continue-on-error: true
