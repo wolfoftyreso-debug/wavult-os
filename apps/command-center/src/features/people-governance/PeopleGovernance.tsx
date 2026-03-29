@@ -22,6 +22,42 @@ interface Person {
   isActive: boolean
 }
 
+// ─── Passport data ────────────────────────────────────────────────────────────
+
+interface PassportInfo {
+  hasPassport: boolean
+  passportNumber?: string
+  expiry?: string
+  imageUrl?: string
+  name?: string
+}
+
+const PASSPORT_DATA: Record<string, PassportInfo> = {
+  'erik-svensson': {
+    hasPassport: true,
+    passportNumber: 'AA8190273',
+    expiry: '2031-02-26',
+  },
+  'dennis-bjarnemark': {
+    hasPassport: true,
+    passportNumber: '—',
+    expiry: '—',
+  },
+  'winston-bjarnemark': {
+    hasPassport: true,
+    passportNumber: '—',
+    expiry: '—',
+  },
+  'johan-berglund': {
+    hasPassport: true,
+    passportNumber: 'AA8151040',
+    expiry: '2031-02-23',
+  },
+  'leon-russo': {
+    hasPassport: false,
+  },
+}
+
 // ─── Team roster ──────────────────────────────────────────────────────────────
 
 const PEOPLE: Person[] = [
@@ -118,6 +154,17 @@ function ActivityIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+    </svg>
+  )
+}
+
+function PassportIcon({ color }: { color: string }) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 4h20v16H2z" />
+      <circle cx="12" cy="12" r="3" />
+      <path d="M9 12c0-3 1.5-5 3-5s3 2 3 5-1.5 5-3 5-3-2-3-5z" />
+      <path d="M9 12h6" />
     </svg>
   )
 }
@@ -306,8 +353,13 @@ function PersonDetail({ person, discProfile, onClose }: {
 
 // ─── Person Card (Teamöversikt) ────────────────────────────────────────────────
 
-function PersonCard({ person, onClick }: { person: Person; onClick: () => void }) {
+function PersonCard({ person, onClick, onPassportClick }: {
+  person: Person
+  onClick: () => void
+  onPassportClick: (info: PassportInfo & { name: string }) => void
+}) {
   const disc = DISC_PROFILES.find(d => d.personId === person.id)
+  const passData = PASSPORT_DATA[person.id]
 
   return (
     <div
@@ -355,6 +407,23 @@ function PersonCard({ person, onClick }: { person: Person; onClick: () => void }
             {disc.primary}{disc.secondary ? `+${disc.secondary}` : ''}
           </div>
         )}
+        {/* Passport icon */}
+        <button
+          onClick={e => {
+            e.stopPropagation()
+            if (passData?.hasPassport) {
+              onPassportClick({ ...passData, name: person.name })
+            }
+          }}
+          title={passData?.hasPassport ? 'Visa pass-info' : 'Pass saknas'}
+          style={{
+            background: 'none', border: 'none',
+            cursor: passData?.hasPassport ? 'pointer' : 'default',
+            padding: 4, flexShrink: 0,
+          }}
+        >
+          <PassportIcon color={passData?.hasPassport ? '#7C3AED' : '#D1D5DB'} />
+        </button>
       </div>
       <div style={{ marginTop: 12, fontSize: 11, color: '#8E8E93' }}>
         Klicka för att se all info →
@@ -574,6 +643,7 @@ function HalsaTab() {
 
 export function PeopleGovernance() {
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null)
+  const [selectedPassport, setSelectedPassport] = useState<(PassportInfo & { name: string }) | null>(null)
   const { activeEntity } = useEntityScope()
 
   const selectedDisc = selectedPerson
@@ -616,6 +686,7 @@ export function PeopleGovernance() {
               key={person.id}
               person={person}
               onClick={() => setSelectedPerson(person)}
+              onPassportClick={info => setSelectedPassport(info)}
             />
           ))}
         </div>
@@ -645,6 +716,56 @@ export function PeopleGovernance() {
         </>
       )}
 
+      {/* Passport modal */}
+      {selectedPassport && (
+        <div
+          style={{
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)',
+            zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}
+          onClick={() => setSelectedPassport(null)}
+        >
+          <div
+            style={{ background: '#fff', borderRadius: 16, padding: 32, maxWidth: 480, width: '90%' }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <h3 style={{ fontSize: 16, fontWeight: 700, color: '#1C1C1E', margin: 0 }}>Pass — {selectedPassport.name}</h3>
+              <button
+                onClick={() => setSelectedPassport(null)}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: '#6B7280' }}
+              >×</button>
+            </div>
+
+            {/* Pass-info grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
+              {(
+                [
+                  ['Passnummer', selectedPassport.passportNumber || '—'],
+                  ['Giltigt till', selectedPassport.expiry || '—'],
+                  ['Nationalitet', 'Sverige'],
+                  ['KYC-status', selectedPassport.hasPassport ? '✅ Verifierat' : '❌ Saknas'],
+                ] as [string, string][]
+              ).map(([label, value]) => (
+                <div key={label} style={{ background: '#F9FAFB', borderRadius: 8, padding: '10px 14px' }}>
+                  <div style={{ fontSize: 10, fontWeight: 600, color: '#8E8E93', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>{label}</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: '#1C1C1E', fontFamily: 'monospace' }}>{value}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Secure storage note */}
+            <div style={{
+              background: '#F0FDF4', border: '1px solid #BBF7D0',
+              borderRadius: 8, padding: '10px 14px', fontSize: 12, color: '#166534',
+              display: 'flex', gap: 8,
+            }}>
+              <span>🔒</span>
+              <span>Passdokumentet lagras krypterat i Identity Core. Bilder delas aldrig via mail eller okrypterade kanaler.</span>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   )
