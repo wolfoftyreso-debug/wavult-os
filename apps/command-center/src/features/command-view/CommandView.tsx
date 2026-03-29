@@ -119,7 +119,7 @@ const SYSTEMS: SystemService[] = [
 const NEXT_ACTIONS: NextAction[] = [
   { rank: 1, text: 'Välj bokföringsbyrå',                         owner: 'Dennis' },
   { rank: 2, text: 'Betala SOSDirect $325',                       owner: 'Dennis' },
-  { rank: 3, text: 'Uppgradera Supabase till Pro ($25/mån)',       owner: 'Johan' },
+  { rank: 3, text: 'Revolut Business API — aktivera live-synk',       owner: 'Johan' },
   { rank: 4, text: 'Boka DMCC-konsultation (Dubai FZCO)',          owner: 'Erik' },
   { rank: 5, text: 'Flytta Loopia NS till Cloudflare (wavult.com)', owner: 'Johan' },
 ]

@@ -113,7 +113,7 @@ export const TASKS: Task[] = [
   // ── FINANCE ─────────────────────────────────────────────────────────────────
   {
     id: 'finance-001',
-    title: 'Uppgradera Supabase till Pro ($50/mån)',
+    title: 'Identity Core på RDS — migration klar',
     description: 'Båda produktionsdatabaserna på Free tier — risk för auto-pause. supabase.com → Settings → Billing.',
     owner: 'winston-bjarnemark',
     module: 'finance',
