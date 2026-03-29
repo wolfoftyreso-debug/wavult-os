@@ -30,7 +30,47 @@ router.post('/v1/ai/complete', async (req: Request, res: Response) => {
         tokens: data.usage?.total_tokens,
         cost_estimate: (data.usage?.total_tokens || 0) * 0.00015 / 1000,
       }
-    } else {
+    } else if (provider === 'gemini') {
+      const apiKey = process.env.GEMINI_API_KEY || ''
+      const model_name = model || 'gemini-1.5-flash'
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model_name}:generateContent?key=${apiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: messages.map((m: any) => ({
+              role: m.role === 'assistant' ? 'model' : 'user',
+              parts: [{ text: m.content }]
+            }))
+          }),
+        }
+      )
+      const data = await response.json() as any
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || ''
+      const tokens = data.usageMetadata?.totalTokenCount || 0
+      result = {
+        provider: 'gemini',
+        model: model_name,
+        content: text,
+        tokens,
+        cost_estimate: tokens * 0.000075 / 1000,
+      }
+    } else if (provider === 'did') {
+      // D-ID video avatar generation
+      const apiKey = process.env.DID_API_KEY || ''
+      const { script, presenter_id = 'amy-jcwCkr1grs' } = req.body
+      const response = await fetch('https://api.d-id.com/talks', {
+        method: 'POST',
+        headers: { 'Authorization': `Basic ${apiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          source_url: `https://d-id-public-bucket.s3.amazonaws.com/presenters/${presenter_id}.jpg`,
+          script: { type: 'text', input: script || messages[messages.length-1]?.content || '', language: 'sv' }
+        }),
+      })
+      const data = await response.json() as any
+      result = { provider: 'did', id: data.id, status: data.status, cost_estimate: 0.01 }
+        } else {
       // Default: Anthropic
       const apiKey = process.env.ANTHROPIC_API_KEY || ''
       const response = await fetch('https://api.anthropic.com/v1/messages', {

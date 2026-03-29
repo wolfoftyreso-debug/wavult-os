@@ -15,7 +15,8 @@ const API_CATALOG = [
   { id: 'resend',           name: 'Resend',              category: 'Email',           tier: 'general',   status: 'active',  cost_estimate: '~$20/mån' },
   { id: 'pexels',           name: 'Pexels',              category: 'Media',           tier: 'general',   status: 'active',  cost_estimate: 'Free' },
   // Financial Core (isolated VPC)
-  { id: 'revolut-biz',      name: 'Revolut Business',    category: 'Banking',         tier: 'financial', status: 'active',  cost_estimate: 'Subscription' },
+  { id: 'financial-core',   name: 'Financial Core VPC',  category: 'Infrastructure',  tier: 'financial', status: 'active',  cost_estimate: 'AWS VPC cost' },
+  { id: 'revolut-biz',      name: 'Revolut Business',    category: 'Banking',         tier: 'financial', status: 'active',  cost_estimate: 'Per txn' },
   { id: 'revolut-merchant', name: 'Revolut Merchant',    category: 'Payments',        tier: 'financial', status: 'pending', cost_estimate: 'Per txn' },
   { id: 'stripe',           name: 'Stripe',              category: 'Payments',        tier: 'financial', status: 'active',  cost_estimate: '2.9% + 30¢' },
   { id: 'nordea',           name: 'Nordea Open Banking', category: 'Banking',         tier: 'financial', status: 'pending', cost_estimate: 'TBD' },
