@@ -1,0 +1,23 @@
+name: Deploy Wavult Core
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/wavult-core/**'
+      - '.github/workflows/deploy-wavult-core.yml'
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-north-1
+      - run: |
+          aws ecr get-login-password | docker login --username AWS --password-stdin 155407238699.dkr.ecr.eu-north-1.amazonaws.com
+          cd apps/wavult-core && npm ci && npm run build
+          docker build -t wavult-core .
+          docker tag wavult-core:latest 155407238699.dkr.ecr.eu-north-1.amazonaws.com/wavult-core:latest
+          docker push 155407238699.dkr.ecr.eu-north-1.amazonaws.com/wavult-core:latest
