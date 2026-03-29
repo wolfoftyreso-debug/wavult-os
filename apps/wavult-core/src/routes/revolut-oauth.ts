@@ -6,7 +6,7 @@ import * as crypto from 'crypto'
 const router = Router()
 
 const CLIENT_ID = process.env.REVOLUT_BUSINESS_CLIENT_ID || 'oTewVSHYqP-EZXpctxOM7v2GJO-qxt0s57e0g7GQFA'
-const REDIRECT_URI = 'https://api.wavult.com/v1/oauth/revolut/callback'
+const REDIRECT_URI = 'https://api.wavult.com/revolut/callback'
 const PRIVATE_KEY_PATH = process.env.REVOLUT_BUSINESS_PRIVATE_KEY || '/home/erikwsl/.openclaw/secrets/revolut_biz_private_v2.pem'
 
 function generateJWT(): string {
@@ -30,7 +30,7 @@ function generateJWT(): string {
 }
 
 // OAuth callback — Revolut redirects here after user authorizes
-router.get('/v1/oauth/revolut/callback', async (req: Request, res: Response) => {
+router.get('/revolut/callback', async (req: Request, res: Response) => {
   const { code, error } = req.query
 
   if (error) {
