@@ -39,7 +39,7 @@ interface Connection {
 
 // ─── SYSTEM MAP (canonical model) ────────────────────────────────────────────
 
-const NODES: SystemNode[] = [
+const NODES: SystemNode[] = ([
   // Edge / Customer Experience
   {
     id: 'cloudflare',
@@ -425,7 +425,7 @@ const NODES: SystemNode[] = [
     },
     details: { 'Status': '⚫ NOT IN TESTFLIGHT', 'Code': 'Ready (Expo RN)', 'Blocker': 'Apple Developer Account + EAS Build needed' },
   },
-]
+] as SystemNode[])
 
 // ─── LAYOUT ───────────────────────────────────────────────────────────────────
 
