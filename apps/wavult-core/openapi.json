@@ -1,0 +1,31 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Wavult Group Public API",
+    "version": "1.0.0",
+    "description": "Public API for quiXzoom missions, Landvex infrastructure intelligence, and system health.",
+    "contact": { "name": "Wavult Group", "email": "api@wavult.com", "url": "https://wavult.com" }
+  },
+  "servers": [{ "url": "https://api.wavult.com", "description": "Production" }],
+  "security": [{ "ApiKeyAuth": [] }],
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": { "type": "apiKey", "in": "header", "name": "X-Api-Key" }
+    },
+    "schemas": {
+      "Mission": { "type": "object", "properties": { "id": {"type":"string"}, "title": {"type":"string"}, "location": {"type":"string"}, "reward": {"type":"integer"}, "status": {"type":"string"}, "created_at": {"type":"string"} } },
+      "LandvexObject": { "type": "object", "properties": { "id": {"type":"string"}, "name": {"type":"string"}, "type": {"type":"string"}, "municipality": {"type":"string"}, "status": {"type":"string"} } },
+      "Error": { "type": "object", "properties": { "error": {"type":"string"}, "code": {"type":"string"} } }
+    }
+  },
+  "paths": {
+    "/health": { "get": { "summary": "Health check", "security": [], "tags": ["System"], "responses": { "200": { "description": "OK" } } } },
+    "/v1/missions": {
+      "get": { "summary": "List missions", "tags": ["quiXzoom"], "parameters": [{"name":"status","in":"query","schema":{"type":"string"}},{"name":"limit","in":"query","schema":{"type":"integer","default":100}}], "responses": { "200": { "description": "Missions list", "content": {"application/json": {"schema": {"type":"array","items":{"$ref":"#/components/schemas/Mission"}}}} } } },
+      "post": { "summary": "Create mission", "tags": ["quiXzoom"], "responses": {"201":{"description":"Created"}} }
+    },
+    "/v1/missions/{id}/approve": { "post": { "summary": "Approve mission", "tags": ["quiXzoom"], "parameters": [{"name":"id","in":"path","required":true,"schema":{"type":"string"}}], "responses": {"200":{"description":"Approved"}} } },
+    "/v1/objects": { "get": { "summary": "Infrastructure objects", "tags": ["Landvex"], "responses": {"200":{"description":"Objects list","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/LandvexObject"}}}}}} } },
+    "/v1/alerts": { "get": { "summary": "Active alerts", "tags": ["Landvex"], "responses": {"200":{"description":"Alerts"}} } }
+  }
+}
