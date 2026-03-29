@@ -3,16 +3,92 @@
 
 import { useState } from 'react'
 import { DISC_PROFILES, HEALTH_DATA } from './pgData'
-import { DISC_DESCRIPTIONS, type DISCType } from './pgTypes'
+import { DISC_DESCRIPTIONS, type DISCType, type DISCProfile } from './pgTypes'
 
-// ─── Team roster (mappar till DISC personId:s) ─────────────────────────────────
+// ─── Person type ──────────────────────────────────────────────────────────────
 
-const PEOPLE = [
-  { id: 'erik-svensson',    name: 'Erik Svensson',    initials: 'ES', role: 'Chairman & Group CEO',          color: '#8B5CF6' },
-  { id: 'leon-russo',       name: 'Leon Russo',        initials: 'LR', role: 'CEO Wavult Operations',         color: '#F59E0B' },
-  { id: 'dennis-bjarnemark',name: 'Dennis Bjarnemark', initials: 'DB', role: 'Board / Chief Legal',           color: '#10B981' },
-  { id: 'winston-bjarnemark',name:'Winston Bjarnemark', initials: 'WB', role: 'CFO',                          color: '#3B82F6' },
-  { id: 'johan-berglund',   name: 'Johan Berglund',    initials: 'JB', role: 'Group CTO',                     color: '#06B6D4' },
+interface Person {
+  id: string
+  name: string
+  initials: string
+  role: string
+  color: string
+  email: string
+  phone?: string
+  entityId: string
+  startDate: string
+  certifications: string[]
+  isActive: boolean
+}
+
+// ─── Team roster ──────────────────────────────────────────────────────────────
+
+const PEOPLE: Person[] = [
+  {
+    id: 'erik-svensson',
+    name: 'Erik Svensson',
+    initials: 'ES',
+    role: 'Chairman & Group CEO',
+    color: '#8B5CF6',
+    email: 'erik@hypbit.com',
+    phone: '+46709123223',
+    entityId: 'Wavult Group',
+    startDate: '2024-01-01',
+    certifications: [],
+    isActive: true,
+  },
+  {
+    id: 'leon-russo',
+    name: 'Leon Russo',
+    initials: 'LR',
+    role: 'CEO Wavult Operations',
+    color: '#F59E0B',
+    email: 'leon@hypbit.com',
+    phone: '+46738968949',
+    entityId: 'Wavult Operations',
+    startDate: '2024-03-01',
+    certifications: [],
+    isActive: true,
+  },
+  {
+    id: 'dennis-bjarnemark',
+    name: 'Dennis Bjarnemark',
+    initials: 'DB',
+    role: 'Board / Chief Legal',
+    color: '#10B981',
+    email: 'dennis@hypbit.com',
+    phone: '0761474243',
+    entityId: 'Wavult Group',
+    startDate: '2024-01-01',
+    certifications: [],
+    isActive: true,
+  },
+  {
+    id: 'winston-bjarnemark',
+    name: 'Winston Bjarnemark',
+    initials: 'WB',
+    role: 'CFO',
+    color: '#3B82F6',
+    email: 'winston@hypbit.com',
+    phone: '0768123548',
+    entityId: 'Wavult Group',
+    startDate: '2024-06-01',
+    certifications: [],
+    isActive: true,
+  },
+  {
+    id: 'johan-berglund',
+    name: 'Johan Berglund',
+    initials: 'JB',
+    role: 'Group CTO',
+    color: '#06B6D4',
+    email: 'johan@hypbit.com',
+    phone: '+46736977576',
+    entityId: 'Wavult Group',
+    startDate: '2024-02-01',
+    certifications: [],
+    isActive: true,
+  },
 ]
 
 // ─── Icons (inline SVG — no lucide-react dependency issues) ───────────────────
@@ -45,41 +121,152 @@ function ActivityIcon() {
   )
 }
 
-// ─── DISC Card ─────────────────────────────────────────────────────────────────
+// ─── Person Detail Panel ───────────────────────────────────────────────────────
 
-function DISCCard({ profile }: { profile: typeof DISC_PROFILES[0] }) {
-  const primary = DISC_DESCRIPTIONS[profile.primary]
-  const secondary = profile.secondary ? DISC_DESCRIPTIONS[profile.secondary] : null
-
+function PersonDetail({ person, discProfile, onClose }: {
+  person: Person
+  discProfile?: DISCProfile
+  onClose: () => void
+}) {
   return (
-    <div style={{ background: '#F9FAFB', borderRadius: 10, padding: '12px 16px', border: '1px solid rgba(0,0,0,0.08)' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-        <span style={{ fontSize: 18 }}>{primary.emoji}</span>
-        <div>
-          <div style={{ fontSize: 12, fontWeight: 700, color: primary.color }}>{primary.label}</div>
-          {secondary && <div style={{ fontSize: 10, color: '#8E8E93' }}>+ {secondary.label}</div>}
+    <div style={{
+      position: 'fixed', right: 0, top: 0, bottom: 0, width: 420,
+      background: '#FFFFFF', borderLeft: '1px solid rgba(0,0,0,0.1)',
+      boxShadow: '-4px 0 20px rgba(0,0,0,0.08)', zIndex: 100,
+      display: 'flex', flexDirection: 'column', overflowY: 'auto',
+    }}>
+      {/* Header */}
+      <div style={{ padding: '20px 24px', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+            <div style={{
+              width: 52, height: 52, borderRadius: '50%',
+              background: discProfile ? DISC_DESCRIPTIONS[discProfile.primary].color + '20' : '#F3F4F6',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 20, fontWeight: 700,
+              color: discProfile ? DISC_DESCRIPTIONS[discProfile.primary].color : '#6B7280',
+            }}>
+              {person.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
+            </div>
+            <div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: '#1C1C1E' }}>{person.name}</div>
+              <div style={{ fontSize: 13, color: '#6B7280' }}>{person.role}</div>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: '#9CA3AF', padding: 4 }}
+          >
+            ×
+          </button>
         </div>
       </div>
 
-      {/* Score bars */}
-      {(['D', 'I', 'S', 'C'] as DISCType[]).map(type => {
-        const d = DISC_DESCRIPTIONS[type]
-        const score = profile.scores[type]
-        return (
-          <div key={type} style={{ marginBottom: 4 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
-              <span style={{ fontSize: 9, fontWeight: 600, color: d.color }}>{type}</span>
-              <span style={{ fontSize: 9, fontFamily: 'monospace', color: '#8E8E93' }}>{score}</span>
-            </div>
-            <div style={{ height: 4, background: 'rgba(0,0,0,0.06)', borderRadius: 2 }}>
-              <div style={{ height: '100%', width: `${score}%`, background: d.color, borderRadius: 2, transition: 'width 0.5s ease' }} />
-            </div>
-          </div>
-        )
-      })}
+      <div style={{ flex: 1, padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
 
-      <div style={{ marginTop: 8, fontSize: 10, color: '#3C3C43CC', lineHeight: 1.5 }}>
-        {profile.communicationStyle}
+        {/* Kontaktinfo */}
+        <section>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#8E8E93', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 10 }}>Kontakt</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {(
+              [
+                ['📧', person.email],
+                ['📱', person.phone ?? '—'],
+                ['🏢', person.entityId],
+                ['📅', `Startdatum: ${person.startDate}`],
+              ] as [string, string][]
+            ).map(([icon, value]) => (
+              <div key={`${icon}-${value}`} style={{ display: 'flex', gap: 10, alignItems: 'center', fontSize: 13, color: '#374151' }}>
+                <span style={{ width: 18, textAlign: 'center' }}>{icon}</span>
+                <span style={{ fontFamily: value.includes('@') || value.includes('+') ? 'monospace' : 'inherit' }}>{value}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* DISC */}
+        {discProfile && (
+          <section>
+            <div style={{ fontSize: 11, fontWeight: 700, color: '#8E8E93', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 10 }}>DISC-profil</div>
+            <div style={{ background: '#F9FAFB', borderRadius: 12, padding: '16px' }}>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 12 }}>
+                <span style={{ fontSize: 24 }}>{DISC_DESCRIPTIONS[discProfile.primary].emoji}</span>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: DISC_DESCRIPTIONS[discProfile.primary].color }}>
+                    {DISC_DESCRIPTIONS[discProfile.primary].label}
+                    {discProfile.secondary && ` + ${DISC_DESCRIPTIONS[discProfile.secondary].label}`}
+                  </div>
+                  <div style={{ fontSize: 12, color: '#6B7280' }}>{discProfile.teamRole}</div>
+                </div>
+              </div>
+              {/* Score bars */}
+              {(['D', 'I', 'S', 'C'] as const).map(type => {
+                const d = DISC_DESCRIPTIONS[type]
+                const score = discProfile.scores[type]
+                return (
+                  <div key={type} style={{ marginBottom: 6 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
+                      <span style={{ fontSize: 10, fontWeight: 600, color: d.color }}>{type}</span>
+                      <span style={{ fontSize: 10, fontFamily: 'monospace', color: '#8E8E93' }}>{score}</span>
+                    </div>
+                    <div style={{ height: 5, background: 'rgba(0,0,0,0.06)', borderRadius: 3 }}>
+                      <div style={{ height: '100%', width: `${score}%`, background: d.color, borderRadius: 3 }} />
+                    </div>
+                  </div>
+                )
+              })}
+              <div style={{ marginTop: 10, fontSize: 11, color: '#6B7280', fontStyle: 'italic', lineHeight: 1.5 }}>
+                {discProfile.communicationStyle}
+              </div>
+              {/* Styrkor */}
+              <div style={{ marginTop: 10 }}>
+                <div style={{ fontSize: 10, fontWeight: 600, color: '#059669', marginBottom: 4 }}>STYRKOR</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                  {discProfile.strengths.map(s => (
+                    <span key={s} style={{ fontSize: 10, padding: '2px 7px', background: '#D1FAE5', color: '#065F46', borderRadius: 10 }}>{s}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* OKR / Prestationsdata */}
+        <section>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#8E8E93', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 10 }}>OKR Q2 2026</div>
+          <div style={{ background: '#F9FAFB', borderRadius: 12, padding: '14px 16px', fontSize: 13, color: '#6B7280' }}>
+            Se Performance-fliken för detaljerade OKR och delivery rate.
+          </div>
+        </section>
+
+        {/* Certifieringar */}
+        <section>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#8E8E93', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 10 }}>Certifieringar</div>
+          {person.certifications && person.certifications.length > 0 ? (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {person.certifications.map((c: string) => (
+                <span key={c} style={{ fontSize: 11, padding: '3px 10px', background: '#EDE9FE', color: '#5B21B6', borderRadius: 10, fontWeight: 500 }}>{c}</span>
+              ))}
+            </div>
+          ) : (
+            <div style={{ fontSize: 13, color: '#9CA3AF', fontStyle: 'italic' }}>Inga certifieringar ännu — se Academy</div>
+          )}
+        </section>
+
+        {/* Status */}
+        <section>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#8E8E93', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 10 }}>Status</div>
+          <div style={{ display: 'flex', gap: 6 }}>
+            <span style={{
+              padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 600,
+              background: person.isActive ? '#D1FAE5' : '#FEE2E2',
+              color: person.isActive ? '#065F46' : '#991B1B',
+            }}>
+              {person.isActive ? 'Aktiv' : 'Inaktiv'}
+            </span>
+          </div>
+        </section>
+
       </div>
     </div>
   )
@@ -87,21 +274,33 @@ function DISCCard({ profile }: { profile: typeof DISC_PROFILES[0] }) {
 
 // ─── Person Card (Teamöversikt) ────────────────────────────────────────────────
 
-function PersonCard({ person }: { person: typeof PEOPLE[0] }) {
-  const [expanded, setExpanded] = useState(false)
+function PersonCard({ person, onClick }: { person: Person; onClick: () => void }) {
   const disc = DISC_PROFILES.find(d => d.personId === person.id)
 
   return (
-    <div style={{
-      background: '#FFFFFF',
-      border: '1px solid rgba(0,0,0,0.08)',
-      borderRadius: 14,
-      overflow: 'hidden',
-      boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-    }}>
+    <div
+      onClick={onClick}
+      style={{
+        background: '#FFFFFF',
+        border: '1px solid rgba(0,0,0,0.08)',
+        borderRadius: 14,
+        overflow: 'hidden',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+        cursor: 'pointer',
+        transition: 'box-shadow 0.15s, transform 0.1s',
+      }}
+      onMouseEnter={e => {
+        (e.currentTarget as HTMLDivElement).style.boxShadow = '0 4px 12px rgba(0,0,0,0.12)'
+        ;(e.currentTarget as HTMLDivElement).style.transform = 'translateY(-1px)'
+      }}
+      onMouseLeave={e => {
+        (e.currentTarget as HTMLDivElement).style.boxShadow = '0 1px 3px rgba(0,0,0,0.06)'
+        ;(e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)'
+      }}
+    >
       {/* Header */}
       <div style={{ padding: '16px 20px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={{
             width: 44, height: 44, borderRadius: 12,
             background: person.color + '22',
@@ -128,29 +327,10 @@ function PersonCard({ person }: { person: typeof PEOPLE[0] }) {
           )}
         </div>
 
-        {/* Toggle */}
-        <button
-          onClick={() => setExpanded(s => !s)}
-          style={{
-            display: 'flex', alignItems: 'center', gap: 6,
-            fontSize: 11, fontWeight: 500, color: expanded ? person.color : '#8E8E93',
-            background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-          }}
-        >
-          <span style={{ fontSize: 9 }}>{expanded ? '▲' : '▼'}</span>
-          {expanded ? 'Dölj DISC-profil' : 'Visa DISC-profil'}
-        </button>
-      </div>
-
-      {/* Expanded DISC section */}
-      {expanded && disc && (
-        <div style={{ borderTop: '1px solid rgba(0,0,0,0.06)', padding: '16px 20px', background: '#FAFAFA' }}>
-          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#8E8E93', marginBottom: 8 }}>
-            DISC-profil
-          </div>
-          <DISCCard profile={disc} />
+        <div style={{ marginTop: 12, fontSize: 11, color: '#8E8E93' }}>
+          Klicka för att se all info →
         </div>
-      )}
+      </div>
     </div>
   )
 }
@@ -374,6 +554,11 @@ const TABS: { id: Tab; icon: React.ReactNode }[] = [
 
 export function PeopleGovernance() {
   const [activeTab, setActiveTab] = useState<Tab>('Teamöversikt')
+  const [selectedPerson, setSelectedPerson] = useState<Person | null>(null)
+
+  const selectedDisc = selectedPerson
+    ? DISC_PROFILES.find(d => d.personId === selectedPerson.id)
+    : undefined
 
   return (
     <div style={{ maxWidth: 1100, margin: '0 auto' }}>
@@ -417,7 +602,7 @@ export function PeopleGovernance() {
           <div style={{ marginBottom: 20 }}>
             <h2 style={{ fontSize: 16, fontWeight: 700, color: '#1C1C1E', margin: 0 }}>Core Team</h2>
             <p style={{ fontSize: 12, color: '#8E8E93', marginTop: 4 }}>
-              {PEOPLE.length} teammedlemmar — klicka på ett kort för att se DISC-profil.
+              {PEOPLE.length} teammedlemmar — klicka på ett kort för att se all information.
             </p>
           </div>
 
@@ -441,7 +626,11 @@ export function PeopleGovernance() {
           {/* Person cards */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
             {PEOPLE.map(person => (
-              <PersonCard key={person.id} person={person} />
+              <PersonCard
+                key={person.id}
+                person={person}
+                onClick={() => setSelectedPerson(person)}
+              />
             ))}
           </div>
         </div>
@@ -450,6 +639,24 @@ export function PeopleGovernance() {
       {activeTab === 'Profiler' && <ProfilerTab />}
 
       {activeTab === 'Hälsa' && <HalsaTab />}
+
+      {/* Overlay — stänger panelen vid klick utanför */}
+      {selectedPerson && (
+        <>
+          <div
+            onClick={() => setSelectedPerson(null)}
+            style={{
+              position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.25)',
+              zIndex: 99, backdropFilter: 'blur(2px)',
+            }}
+          />
+          <PersonDetail
+            person={selectedPerson}
+            discProfile={selectedDisc}
+            onClose={() => setSelectedPerson(null)}
+          />
+        </>
+      )}
     </div>
   )
 }

@@ -54,6 +54,7 @@ const MeetingCadenceView     = lazy(() => import('./features/milestones/MeetingC
 const DecisionDashboard      = lazy(() => import('./features/decisions/DecisionDashboard').then(m => ({ default: m.DecisionDashboard })))
 const MeetingCreator         = lazy(() => import('./features/decisions/MeetingCreator').then(m => ({ default: m.MeetingCreator })))
 const MeetingView            = lazy(() => import('./features/decisions/MeetingView').then(m => ({ default: m.MeetingView })))
+const LiveMeetingRoom        = lazy(() => import('./features/decisions/LiveMeetingRoom').then(m => ({ default: m.LiveMeetingRoom })))
 const GovernanceDashboard    = lazy(() => import('./features/governance/GovernanceDashboard').then(m => ({ default: m.GovernanceDashboard })))
 const InfrastructureDashboard = lazy(() => import('./features/infrastructure/InfrastructureDashboard').then(m => ({ default: m.InfrastructureDashboard })))
 const CausalOS               = lazy(() => import('./features/causal-os/CausalOS').then(m => ({ default: m.CausalOS })))
@@ -162,6 +163,7 @@ function AuthenticatedApp() {
               <Route path="/meeting-cadence" element={<MeetingCadenceView />} />
               <Route path="/decisions" element={<DecisionDashboard />} />
               <Route path="/decisions/new" element={<MeetingCreator />} />
+              <Route path="/decisions/live/:id" element={<LiveMeetingRoom />} />
               <Route path="/decisions/:meetingId" element={<MeetingView />} />
               <Route path="/governance" element={<GovernanceDashboard />} />
               <Route path="/infrastructure" element={<InfrastructureDashboard />} />

@@ -3946,6 +3946,38 @@ Efter registrering: skicka 83(b) election till IRS inom **30 dagar**.
 - Zip: 135 48
 - Country: Sweden
 
+### EIN Filing — Inskickad 2026-03-28
+
+**Status:** Pending State Formation (Texas måste godkänna bolaget först)
+
+**Inskickad data (exakt):**
+- Company: Landvex Inc.
+- Type: Filing
+- Jurisdiction: Federal
+- Completion Date: Mar 28, 2026
+- Status: Pending State Formation
+
+**Formulärdata som inskickades:**
+- First Name: Erik
+- Last Name: Svensson  
+- Phone: 0709123223
+- Company Purpose: Infrastructure monitoring and optical insight
+- Start Date: 04/01/2026
+- Fiscal Year End: December 31
+- W-2 employees: Nej
+- Form 720 (Excise Tax): Nej
+- Gambling: Nej
+- Alcohol/tobacco/firearms: Nej
+- Highway vehicle 55k+ lbs: Nej
+
+**Adress (Northwest - privat):**
+- 5900 Balcones Drive, Ste 100, Austin TX 78731
+- County: Travis County
+
+**Signatur:** Erik Svensson, 2026-03-29
+
+**Sekvens:** Texas godkänner bolaget → EIN utfärdas automatiskt → Certificate of Formation + EIN kommer via email
+
 ### Steg efter registrering
 1. Certificate of Formation mottas (1-2 dagar expedited)
 2. Ansök om EIN (SS-4 form, IRS.gov) — gratis, tar 1-2 veckor
