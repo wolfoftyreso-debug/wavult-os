@@ -120,7 +120,7 @@ function AuthenticatedApp() {
         <Shell>
           <Suspense fallback={<PageLoader />}>
             <Routes>
-              <Route path="/" element={<MissionControl />} />
+              <Route path="/" element={<RoleDashboard />} />
               <Route path="/person" element={<PersonView />} />
               <Route path="/command" element={<CommandView />} />
               <Route path="/dashboard" element={<RoleDashboard />} />
