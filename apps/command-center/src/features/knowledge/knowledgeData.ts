@@ -3636,7 +3636,7 @@ Whistleblower-kanalen är till för allvarliga oegentligheter — inte för vard
 
 **Alternativ 1:** Direkt till Dennis Bjarnemark (CLO) — dennis@hypbit.com  
 **Alternativ 2:** Direkt till Erik Svensson (CEO) — erik@hypbit.com  
-**Alternativ 3 (planerat Q2 2026):** Anonymt via conduct@hypbit.com  
+**Alternativ 3:** Anonymt via conduct@hypbit.com — vidarebefordras automatiskt till Dennis (CLO) och Erik (CEO)  
 **Alternativ 4 (externt):** Integritetsskyddsmyndigheten (IMY) för GDPR-relaterade brott — imy.se
 
 Om din rapport rör Erik eller Dennis direkt, kontakta det styrelsemedlem du känner mest förtroende för.
