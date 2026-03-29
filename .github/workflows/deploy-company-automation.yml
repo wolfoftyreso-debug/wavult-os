@@ -1,0 +1,23 @@
+name: Deploy Company Automation
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/company-automation/**'
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-north-1
+      - run: |
+          aws ecr get-login-password | docker login --username AWS --password-stdin 155407238699.dkr.ecr.eu-north-1.amazonaws.com
+          cd apps/company-automation && npm install
+          docker build -t company-automation .
+          docker tag company-automation:latest 155407238699.dkr.ecr.eu-north-1.amazonaws.com/company-automation:latest
+          docker push 155407238699.dkr.ecr.eu-north-1.amazonaws.com/company-automation:latest

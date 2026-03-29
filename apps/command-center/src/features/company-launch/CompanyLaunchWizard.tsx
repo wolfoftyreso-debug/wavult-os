@@ -125,6 +125,8 @@ interface CompanyFormData {
 
 export function CompanyLaunchWizard() {
   const [step, setStep] = useState(0)
+  const [launching, setLaunching] = useState(false)
+  const [launchResult, setLaunchResult] = useState<{ jobId: string; status: string } | null>(null)
   const [form, setForm] = useState<CompanyFormData>({
     jurisdiction: null,
     companyName: '',
@@ -153,6 +155,34 @@ export function CompanyLaunchWizard() {
     navigator.clipboard.writeText(text)
     setCopied(key)
     setTimeout(() => setCopied(null), 2000)
+  }
+
+  async function launchAutomation() {
+    setLaunching(true)
+    try {
+      const res = await fetch('https://api.hypbit.com/v1/company/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jurisdiction: form.jurisdiction,
+          companyName: form.companyName,
+          companyPurpose: form.companyPurpose || WAVULT_PREFILL.company_purpose_landvex.default,
+          organizer: {
+            name: form.ownerName,
+            email: form.ownerEmail,
+            phone: form.ownerPhone,
+          },
+          useRegisteredAgent: form.useRegisteredAgent,
+        })
+      })
+      const data = await res.json()
+      setLaunchResult(data)
+      if (data.jobId) setTimeout(() => setStep(4), 1500)
+    } catch (err) {
+      console.error('Launch failed:', err)
+    } finally {
+      setLaunching(false)
+    }
   }
 
   function CopyButton({ text, label }: { text: string; label: string }) {
@@ -371,10 +401,23 @@ export function CompanyLaunchWizard() {
           <div style={{ background: '#5856D608', border: '2px solid #5856D6', borderRadius: 14, padding: '20px', marginBottom: 20, textAlign: 'center' }}>
             <div style={{ fontSize: 32, marginBottom: 8 }}>{selectedJurisdiction.flag}</div>
             <div style={{ fontSize: 16, fontWeight: 700, color: '#1C1C1E', marginBottom: 4 }}>{selectedJurisdiction.provider}</div>
-            <a href={selectedJurisdiction.providerUrl} target="_blank" rel="noopener noreferrer"
-              style={{ display: 'inline-block', marginTop: 12, padding: '12px 28px', background: '#5856D6', color: '#FFFFFF', borderRadius: 10, fontSize: 15, fontWeight: 600, textDecoration: 'none' }}>
-              Öppna {selectedJurisdiction.provider} →
-            </a>
+            <button
+              onClick={launchAutomation}
+              disabled={launching}
+              style={{
+                display: 'inline-block', marginTop: 12, padding: '12px 28px',
+                background: launching ? '#9CA3AF' : '#5856D6',
+                color: '#FFFFFF', borderRadius: 10, fontSize: 15, fontWeight: 600,
+                border: 'none', cursor: launching ? 'not-allowed' : 'pointer',
+              }}
+            >
+              {launching ? 'Startar automation...' : '🚀 Starta automatisk registrering'}
+            </button>
+            {launchResult && (
+              <div style={{ marginTop: 12, fontSize: 12, color: '#059669', fontWeight: 500 }}>
+                Job ID: {launchResult.jobId} — Monitorera i BOS Events
+              </div>
+            )}
           </div>
 
           <div style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: 10, padding: '14px 16px', marginBottom: 16 }}>
