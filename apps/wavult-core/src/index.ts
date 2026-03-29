@@ -5,6 +5,7 @@ import { paymentRouter } from './routes/payments'
 import { payoutRouter } from './routes/payouts'
 import revolutOAuthRouter from './routes/revolut-oauth'
 import healthMonitor from './routes/health-monitor'
+import quixzoomRouter from './routes/quixzoom'
 
 const app = express()
 
@@ -46,6 +47,7 @@ app.use('/v1/payment', paymentRouter)
 app.use('/v1/payout', payoutRouter)
 app.use('/', revolutOAuthRouter)
 app.use('/', healthMonitor)
+app.use('/', quixzoomRouter)
 
 // Health — rate limited
 app.get('/health', healthLimiter, (_req, res) => {
