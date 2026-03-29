@@ -39,6 +39,15 @@ const TRANSACTIONS: Transaction[] = [
   // USD
   { id: 'usd-001', date: '2026-03-20', title: 'Northwest Agent Fee', counterparty: 'Northwest Registered Agent', entity: 'Landvex Inc', type: 'payment', amount: -3060, currency: 'USD', status: 'paid', category: 'Juridik' },
   { id: 'usd-002', date: '2026-03-28', title: 'Texas LLC Filing Fee', counterparty: 'Texas SOS / Northwest', entity: 'Landvex Inc', type: 'payment', amount: -3250, currency: 'USD', status: 'paid', category: 'Juridik', reference: 'TX-LLC-2026' },
+  // ── Privatkortsutlägg (Erik) — ska redovisas och återbetalas av bolaget ──────
+  { id: 'priv-001', date: '2026-03-14', title: 'Lovable Labs — kvitto #2784-4176', counterparty: 'Lovable Labs Inc', entity: 'Wavult Group', type: 'expense', amount: -1050, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'PRIV-KORT-001' },
+  { id: 'priv-002', date: '2026-03-15', title: 'Lovable Labs — kvitto #2483-1641', counterparty: 'Lovable Labs Inc', entity: 'Wavult Group', type: 'expense', amount: -525, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'PRIV-KORT-002' },
+  { id: 'priv-003', date: '2026-03-17', title: 'Lovable Labs — kvitto #2227-1266', counterparty: 'Lovable Labs Inc', entity: 'Wavult Group', type: 'expense', amount: -525, currency: 'SEK', status: 'pending', category: 'Mjukvara', reference: 'PRIV-KORT-003' },
+  { id: 'priv-004', date: '2026-03-25', title: 'Stripe Atlas — QuiXzoom Inc bildningsavgift', counterparty: 'Stripe Atlas', entity: 'QuiXzoom Inc', type: 'payment', amount: -500, currency: 'USD', status: 'paid', category: 'Juridik', reference: 'STRIPE-ATLAS-1296-9493' },
+  { id: 'priv-005', date: '2026-03-25', title: 'refurbed — Hårdvara/utrustning', counterparty: 'refurbed GmbH', entity: 'Wavult Group', type: 'expense', amount: -6500, currency: 'SEK', status: 'paid', category: 'Hårdvara', reference: 'REFURBED-17332832' },
+  { id: 'priv-006', date: '2026-03-25', title: 'Duix — AI-tjänst kvitto #2077-2547', counterparty: 'Duix', entity: 'Wavult Group', type: 'payment', amount: -59, currency: 'USD', status: 'paid', category: 'Mjukvara', reference: 'DUIX-2077-2547' },
+  { id: 'priv-007', date: '2026-03-25', title: 'Northwest — Landvex Inc agent fee', counterparty: 'Northwest Registered Agent LLC', entity: 'Landvex Inc', type: 'payment', amount: -3060, currency: 'USD', status: 'paid', category: 'Juridik', reference: 'NW-LANDVEX-TX' },
+
 ]
 
 const STATUS_LABELS: Record<TxStatus, { label: string; color: string; bg: string }> = {
@@ -59,7 +68,7 @@ const TYPE_LABELS: Record<TxType, string> = {
 }
 
 const ENTITIES = ['Alla', 'Landvex AB', 'Landvex Inc', 'Wavult Group', 'QuiXzoom UAB', 'QuiXzoom Inc']
-const CATEGORIES = ['Alla', 'Intäkt', 'Lön', 'Infrastruktur', 'Mjukvara', 'Intercompany', 'Juridik', 'Resa & Event']
+const CATEGORIES = ['Alla', 'Intäkt', 'Lön', 'Infrastruktur', 'Mjukvara', 'Intercompany', 'Juridik', 'Resa & Event', 'Hårdvara']
 
 export function TransactionFeed() {
   const [search, setSearch] = useState('')
