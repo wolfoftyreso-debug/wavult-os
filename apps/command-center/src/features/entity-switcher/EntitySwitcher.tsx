@@ -23,7 +23,7 @@ export function EntitySwitcher() {
       {/* Trigger button */}
       <button
         onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg bg-white hover:bg-[#111420] border border-gray-200 transition-colors text-left"
+        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg bg-white hover:bg-gray-100 border border-gray-200 transition-colors text-left"
       >
         <div
           className="h-6 w-6 rounded-md flex items-center justify-center text-xs font-bold text-gray-900 flex-shrink-0"
@@ -33,9 +33,9 @@ export function EntitySwitcher() {
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-xs font-semibold text-gray-900 truncate">{activeEntity.shortName}</p>
-          <p className="text-[9px] text-gray-9000 font-mono">{activeEntity.jurisdiction} · L{activeEntity.layer}</p>
+          <p className="text-[9px] text-gray-500 font-mono">{activeEntity.jurisdiction} · L{activeEntity.layer}</p>
         </div>
-        <span className="text-gray-9000 text-[9px]">{open ? '▲' : '▼'}</span>
+        <span className="text-gray-500 text-[9px]">{open ? '▲' : '▼'}</span>
         <Tooltip
           content="Välj vilket bolag du vill titta på. 'Group' visar hela koncernen samlat. Alla moduler — Finance, Legal, People — filtreras automatiskt per valt bolag."
           title="Bolagsväxlaren"
@@ -76,7 +76,7 @@ export function EntitySwitcher() {
                     <p className="text-xs font-semibold text-gray-900 truncate">{entity.shortName}</p>
                     <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: dot }} />
                   </div>
-                  <p className="text-[9px] text-gray-9000 font-mono truncate">
+                  <p className="text-[9px] text-gray-500 font-mono truncate">
                     {FLAG_MAP[entity.jurisdiction] ?? ''} {entity.jurisdiction}
                   </p>
                 </div>

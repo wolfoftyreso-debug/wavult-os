@@ -68,26 +68,6 @@ export const ENTITIES: Entity[] = [
       'Bank': 'ENBD / Emirates NBD',
     },
   },
-  // Layer 1 — Operations hub
-  {
-    id: 'wavult-operations',
-    name: 'Wavult Operations',
-    shortName: 'WOP',
-    type: 'operations',
-    jurisdiction: 'Dubai',
-    parent_entity_id: 'wavult-group',
-    description: 'Internal operations hub. Employs core team globally, runs Hypbit OS, handles billing and service delivery to all subsidiaries.',
-    active_status: 'forming',
-    color: '#0EA5E9',
-    flag: '🇦🇪',
-    layer: 1,
-    metadata: {
-      'Function': 'Internal service provider',
-      'Revenue model': 'Service fee from subsidiaries',
-      'Systems': 'Hypbit OS',
-      'Team': 'All core team members',
-    },
-  },
   // Layer 1 — Dubai FZCOs (Finance + DevOps)
   {
     id: 'financo-fzco',
@@ -212,33 +192,12 @@ export const ENTITIES: Entity[] = [
       'Lansering': 'Juni 2026 — svenska skärgården',
     },
   },
-  // Layer 3 — Systems
-  {
-    id: 'hypbit-system',
-    name: 'Hypbit OS',
-    shortName: 'HYP',
-    type: 'system',
-    jurisdiction: 'Global',
-    parent_entity_id: 'wavult-operations',
-    description: 'Internal operating system for all Wavult entities. Quest engine, role-based access, financial flows, compliance tracking. NOT a legal entity.',
-    active_status: 'live',
-    color: '#A78BFA',
-    flag: '⚙️',
-    layer: 3,
-    metadata: {
-      'Type': 'Internal software system',
-      'Deployed': 'AWS ECS eu-north-1 + CloudFront',
-      'Modules': 'Dashboard, Projects, People, Finance, Tasks, Org Graph',
-      'Auth': 'Role-based (admin → C-suite → operations)',
-    },
-  },
 ]
 
 // ─── RELATIONSHIPS ─────────────────────────────────────────────────────────────
 
 export const RELATIONSHIPS: EntityRelationship[] = [
   // Ownership
-  { id: 'r1', from_entity_id: 'wavult-group', to_entity_id: 'wavult-operations', type: 'ownership', label: 'Owns 100%' },
   { id: 'r2', from_entity_id: 'wavult-group', to_entity_id: 'quixzoom-uab', type: 'ownership', label: 'Owns 100%' },
   { id: 'r3', from_entity_id: 'wavult-group', to_entity_id: 'quixzoom-inc', type: 'ownership', label: 'Owns 100%' },
   { id: 'r4', from_entity_id: 'wavult-group', to_entity_id: 'landvex-inc', type: 'ownership', label: 'Owns 100%' },
@@ -251,10 +210,9 @@ export const RELATIONSHIPS: EntityRelationship[] = [
   { id: 'r9', from_entity_id: 'wavult-group', to_entity_id: 'landvex-ab', type: 'licensing', label: 'IP license 5–15%' },
 
   // Service
-  { id: 'r10', from_entity_id: 'wavult-operations', to_entity_id: 'quixzoom-uab', type: 'service', label: 'Service fee' },
-  { id: 'r11', from_entity_id: 'wavult-operations', to_entity_id: 'quixzoom-inc', type: 'service', label: 'Service fee' },
-  { id: 'r12', from_entity_id: 'wavult-operations', to_entity_id: 'landvex-inc', type: 'service', label: 'Service fee' },
-  { id: 'r13', from_entity_id: 'wavult-operations', to_entity_id: 'landvex-ab', type: 'service', label: 'Service fee' },
+
+
+
 
   // Financial flows (subsidiaries → Dubai)
   { id: 'r14', from_entity_id: 'quixzoom-uab', to_entity_id: 'wavult-group', type: 'financial_flow', label: 'Royalty + dividends' },
@@ -283,7 +241,6 @@ export const RELATIONSHIPS: EntityRelationship[] = [
   { id: 'r32', from_entity_id: 'devops-fzco', to_entity_id: 'landvex-ab', type: 'service', label: 'Tech services' },
 
   // Hypbit serves all
-  { id: 'r18', from_entity_id: 'hypbit-system', to_entity_id: 'wavult-operations', type: 'service', label: 'Powers operations' },
   { id: 'r19', from_entity_id: 'hypbit-system', to_entity_id: 'quixzoom-uab', type: 'service', label: 'Ops system' },
   { id: 'r20', from_entity_id: 'hypbit-system', to_entity_id: 'landvex-ab', type: 'service', label: 'Ops system' },
 ]
@@ -297,7 +254,7 @@ export const ROLE_MAPPINGS: RoleMapping[] = [
     color: '#8B5CF6',
     role_type: 'Chairman & Group CEO',
     scope: 'group',
-    entity_ids: ['wavult-group', 'wavult-operations', 'quixzoom-uab', 'quixzoom-inc', 'landvex-inc', 'landvex-ab'],
+    entity_ids: ['wavult-group', 'devops-fzco', 'quixzoom-uab', 'quixzoom-inc', 'landvex-inc', 'landvex-ab'],
     permissions: ['full'],
   },
   {
@@ -306,7 +263,7 @@ export const ROLE_MAPPINGS: RoleMapping[] = [
     color: '#10B981',
     role_type: 'CEO – Operations',
     scope: 'operations',
-    entity_ids: ['wavult-operations'],
+    entity_ids: ['devops-fzco'],
     permissions: ['execution', 'strategy'],
   },
   {
@@ -315,7 +272,7 @@ export const ROLE_MAPPINGS: RoleMapping[] = [
     color: '#3B82F6',
     role_type: 'CFO',
     scope: 'group',
-    entity_ids: ['wavult-group', 'wavult-operations'],
+    entity_ids: ['wavult-group', 'devops-fzco'],
     permissions: ['finance'],
   },
   {
@@ -333,7 +290,7 @@ export const ROLE_MAPPINGS: RoleMapping[] = [
     color: '#06B6D4',
     role_type: 'Group CTO',
     scope: 'group',
-    entity_ids: ['wavult-operations', 'hypbit-system'],
+    entity_ids: ['devops-fzco', 'hypbit-system'],
     permissions: ['tech'],
   },
 ]
