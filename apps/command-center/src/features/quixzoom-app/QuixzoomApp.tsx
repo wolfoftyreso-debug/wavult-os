@@ -1,237 +1,293 @@
-import { useState } from 'react'
-import { MapPin, Clock, Camera, CheckCircle, ArrowRight, ChevronLeft } from 'lucide-react'
+import { useState, useEffect, useCallback } from 'react'
+import { MapPin, Camera, Users, Package, RefreshCw, CheckCircle, Clock, TrendingUp } from 'lucide-react'
 
-type TaskStatus = 'available' | 'accepted' | 'started' | 'uploading' | 'reviewing' | 'approved' | 'rejected'
+// API base — quiXzoom API på ECS via ALB
+const QZ_API = 'https://api.wavult.com'
 
-interface ZoomerTask {
+interface Mission {
   id: string
+  title: string
   location: string
-  distance: string
+  lat?: number
+  lng?: number
   reward: number
   currency: string
-  timeEstimate: string
-  description: string
-  instructions: string
-  status: TaskStatus
+  status: 'open' | 'accepted' | 'in_progress' | 'submitted' | 'approved' | 'rejected'
+  created_at: string
+  zoomer_id?: string
+  description?: string
+  category?: string
 }
 
-const DEMO_TASKS: ZoomerTask[] = [
-  { id: 't1', location: 'Brygga Värmdö Hamn', distance: '0.8 km', reward: 85, currency: 'SEK', timeEstimate: '15 min', description: 'Fotografera hela bryggan från 4 vinklar', instructions: 'Börja vid land-änden. Foto bakifrån, framifrån och båda sidor.', status: 'available' },
-  { id: 't2', location: 'Kajanläggning Nacka', distance: '1.2 km', reward: 120, currency: 'SEK', timeEstimate: '20 min', description: 'Dokumentera kajanläggningens skick', instructions: 'Fokusera på räcken, plankor och bärande konstruktion.', status: 'available' },
-  { id: 't3', location: 'Parkbrygga Vaxholm', distance: '2.1 km', reward: 65, currency: 'SEK', timeEstimate: '10 min', description: 'Snabbinspektion parkbrygga', instructions: 'Tre foton: hela bryggan, räcke, och ändplatta.', status: 'available' },
-]
+interface Zoomer {
+  id: string
+  name?: string
+  email?: string
+  status: 'active' | 'inactive' | 'pending'
+  missions_completed?: number
+  total_earnings?: number
+  created_at: string
+}
+
+interface QZStats {
+  total_missions: number
+  open_missions: number
+  completed_missions: number
+  total_zoomers: number
+  active_zoomers: number
+  total_payouts: number
+}
+
+async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
+  const res = await fetch(`${QZ_API}${path}`, {
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    ...options,
+  })
+  if (!res.ok) throw new Error(`API error ${res.status}: ${await res.text()}`)
+  return res.json()
+}
+
+const STATUS_CONFIG = {
+  open:        { label: 'Öppen',       bg: '#DBEAFE', color: '#1D4ED8' },
+  accepted:    { label: 'Accepterad',  bg: '#FEF3C7', color: '#92400E' },
+  in_progress: { label: 'Pågår',       bg: '#FEF3C7', color: '#92400E' },
+  submitted:   { label: 'Inskickad',   bg: '#EDE9FE', color: '#5B21B6' },
+  approved:    { label: 'Godkänd',     bg: '#DCFCE7', color: '#166534' },
+  rejected:    { label: 'Avvisad',     bg: '#FEE2E2', color: '#991B1B' },
+}
+
+type Tab = 'overview' | 'missions' | 'zoomers' | 'create'
 
 export function QuixzoomApp() {
-  const [screen, setScreen] = useState<'home' | 'task' | 'camera' | 'status'>('home')
-  const [activeTask, setActiveTask] = useState<ZoomerTask | null>(null)
-  const [taskStatus, setTaskStatus] = useState<TaskStatus>('available')
+  const [tab, setTab] = useState<Tab>('overview')
+  const [missions, setMissions] = useState<Mission[]>([])
+  const [zoomers, setZoomers] = useState<Zoomer[]>([])
+  const [stats, setStats] = useState<QZStats | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [creating, setCreating] = useState(false)
 
-  function acceptTask(task: ZoomerTask) {
-    setActiveTask(task)
-    setTaskStatus('accepted')
-    setScreen('task')
+  // New mission form state
+  const [newMission, setNewMission] = useState({
+    title: '', location: '', reward: 85, currency: 'SEK', description: '', category: 'inspection'
+  })
+
+  const fetchData = useCallback(async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const [missionsData, zoomersData] = await Promise.all([
+        apiFetch<Mission[]>('/v1/missions?limit=100'),
+        apiFetch<Zoomer[]>('/v1/zoomers?limit=100'),
+      ])
+      setMissions(missionsData)
+      setZoomers(zoomersData)
+      setStats({
+        total_missions: missionsData.length,
+        open_missions: missionsData.filter(m => m.status === 'open').length,
+        completed_missions: missionsData.filter(m => m.status === 'approved').length,
+        total_zoomers: zoomersData.length,
+        active_zoomers: zoomersData.filter(z => z.status === 'active').length,
+        total_payouts: zoomersData.reduce((s, z) => s + (z.total_earnings || 0), 0),
+      })
+    } catch (err) {
+      setError(String(err))
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => { fetchData() }, [fetchData])
+
+  async function createMission() {
+    setCreating(true)
+    try {
+      await apiFetch('/v1/missions', {
+        method: 'POST',
+        body: JSON.stringify(newMission),
+      })
+      setNewMission({ title: '', location: '', reward: 85, currency: 'SEK', description: '', category: 'inspection' })
+      setTab('missions')
+      await fetchData()
+    } catch (err) {
+      setError(String(err))
+    } finally {
+      setCreating(false)
+    }
   }
 
-  function startTask() {
-    setTaskStatus('started')
-    setScreen('camera')
+  async function approveSubmission(missionId: string) {
+    await apiFetch(`/v1/missions/${missionId}/approve`, { method: 'POST' })
+    await fetchData()
   }
 
-  function uploadPhoto() {
-    setTaskStatus('uploading')
-    setTimeout(() => {
-      setTaskStatus('reviewing')
-      setScreen('status')
-    }, 1500)
-    setTimeout(() => setTaskStatus('approved'), 4000)
+  async function rejectSubmission(missionId: string) {
+    await apiFetch(`/v1/missions/${missionId}/reject`, { method: 'POST' })
+    await fetchData()
+  }
+
+  const inputStyle: React.CSSProperties = {
+    width: '100%', padding: '8px 12px', borderRadius: 8,
+    border: '1px solid #E5E7EB', fontSize: 13, fontFamily: 'system-ui',
+    outline: 'none',
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-8">
-      <div style={{
-        width: 390,
-        height: 844,
-        background: '#FFFFFF',
-        borderRadius: 48,
-        overflow: 'hidden',
-        boxShadow: '0 40px 80px rgba(0,0,0,0.3), 0 0 0 2px #1C1C1E',
-        display: 'flex',
-        flexDirection: 'column',
-        position: 'relative',
-      }}>
-        {/* Status bar */}
-        <div style={{ height: 50, background: '#FFFFFF', display: 'flex', alignItems: 'flex-end', paddingBottom: 10, paddingLeft: 20, paddingRight: 20 }}>
-          <span style={{ fontSize: 14, fontWeight: 600, fontFamily: 'system-ui', color: '#1C1C1E' }}>9:41</span>
-          <div style={{ marginLeft: 'auto', display: 'flex', gap: 6, alignItems: 'center' }}>
-            <div style={{ width: 18, height: 12, border: '2px solid #1C1C1E', borderRadius: 3, position: 'relative' }}>
-              <div style={{ position: 'absolute', left: 1, top: 1, width: 10, height: 6, background: '#34C759', borderRadius: 1 }} />
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#F2F2F7', fontFamily: '-apple-system, sans-serif' }}>
+      {/* Header */}
+      <div style={{ background: '#FFFFFF', borderBottom: '1px solid rgba(0,0,0,0.08)', padding: '16px 24px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <h1 style={{ fontSize: 20, fontWeight: 700, color: '#1C1C1E', margin: 0 }}>quiXzoom Admin</h1>
+            <div style={{ fontSize: 13, color: '#6B7280', marginTop: 2 }}>
+              {loading ? 'Laddar...' : error ? '⚠️ API-fel — kör i offline-läge' : `${stats?.total_missions || 0} uppdrag · ${stats?.total_zoomers || 0} zoomers`}
             </div>
           </div>
+          <button onClick={fetchData} style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid #E5E7EB', background: '#F9FAFB', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, fontSize: 13 }}>
+            <RefreshCw size={14} /> Uppdatera
+          </button>
         </div>
 
-        {/* Screen content */}
-        <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+        {/* Tabs */}
+        <div style={{ display: 'flex', gap: 0, marginTop: 16, borderBottom: '1px solid #E5E7EB' }}>
+          {([['overview', 'Översikt'], ['missions', 'Uppdrag'], ['zoomers', 'Zoomers'], ['create', 'Nytt uppdrag']] as const).map(([id, label]) => (
+            <button key={id} onClick={() => setTab(id)}
+              style={{ padding: '8px 16px', fontSize: 13, fontWeight: tab === id ? 600 : 400, color: tab === id ? '#7C3AED' : '#6B7280', background: 'none', border: 'none', borderBottom: tab === id ? '2px solid #7C3AED' : '2px solid transparent', cursor: 'pointer', marginBottom: -1 }}>
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
 
-          {/* HOME */}
-          {screen === 'home' && (
-            <div style={{ flex: 1, overflowY: 'auto', background: '#F2F2F7' }}>
-              <div style={{ padding: '16px 20px', background: '#FFFFFF' }}>
-                <div style={{ fontSize: 28, fontWeight: 700, color: '#1C1C1E', fontFamily: 'system-ui' }}>Uppdrag nära dig</div>
-                <div style={{ fontSize: 14, color: '#8E8E93', marginTop: 2 }}>3 tillgängliga · Stockholm</div>
+      {/* Content */}
+      <div style={{ flex: 1, overflow: 'auto', padding: 24 }}>
+        {error && (
+          <div style={{ background: '#FEF3C7', border: '1px solid #FDE68A', borderRadius: 8, padding: '10px 14px', marginBottom: 16, fontSize: 13, color: '#92400E' }}>
+            ⚠️ {error} — quiXzoom API svarar inte. Kontrollera ECS-tjänsten.
+          </div>
+        )}
+
+        {/* Overview */}
+        {tab === 'overview' && stats && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+            {[
+              { label: 'Totala uppdrag', value: stats.total_missions, icon: <Package size={18} />, color: '#7C3AED' },
+              { label: 'Öppna uppdrag', value: stats.open_missions, icon: <Clock size={18} />, color: '#D97706' },
+              { label: 'Godkända', value: stats.completed_missions, icon: <CheckCircle size={18} />, color: '#16A34A' },
+              { label: 'Zoomers totalt', value: stats.total_zoomers, icon: <Users size={18} />, color: '#2563EB' },
+              { label: 'Aktiva zoomers', value: stats.active_zoomers, icon: <TrendingUp size={18} />, color: '#0891B2' },
+              { label: 'Totala utbetalningar', value: `${stats.total_payouts.toLocaleString('sv-SE')} kr`, icon: <Camera size={18} />, color: '#DC2626' },
+            ].map(card => (
+              <div key={card.label} style={{ background: '#FFFFFF', borderRadius: 12, padding: '16px 20px', border: '1px solid rgba(0,0,0,0.08)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <div>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: '#8E8E93', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>{card.label}</div>
+                    <div style={{ fontSize: 26, fontWeight: 700, color: '#1C1C1E', fontVariantNumeric: 'tabular-nums' }}>{card.value}</div>
+                  </div>
+                  <div style={{ color: card.color }}>{card.icon}</div>
+                </div>
               </div>
+            ))}
+          </div>
+        )}
 
-              <div style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {DEMO_TASKS.map(task => (
-                  <div key={task.id} style={{
-                    background: '#FFFFFF',
-                    borderRadius: 16,
-                    padding: '16px',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
-                      <div>
-                        <div style={{ fontSize: 15, fontWeight: 600, color: '#1C1C1E' }}>{task.location}</div>
-                        <div style={{ display: 'flex', gap: 12, marginTop: 4 }}>
-                          <span style={{ fontSize: 12, color: '#8E8E93', display: 'flex', alignItems: 'center', gap: 3 }}>
-                            <MapPin style={{ width: 11, height: 11 }} />{task.distance}
-                          </span>
-                          <span style={{ fontSize: 12, color: '#8E8E93', display: 'flex', alignItems: 'center', gap: 3 }}>
-                            <Clock style={{ width: 11, height: 11 }} />{task.timeEstimate}
-                          </span>
-                        </div>
-                      </div>
-                      <div style={{ textAlign: 'right' }}>
-                        <div style={{ fontSize: 20, fontWeight: 700, color: '#34C759' }}>{task.reward}</div>
-                        <div style={{ fontSize: 11, color: '#8E8E93' }}>{task.currency}</div>
+        {/* Missions */}
+        {tab === 'missions' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {missions.length === 0 && !loading && (
+              <div style={{ textAlign: 'center', padding: '60px 24px', color: '#9CA3AF' }}>
+                Inga uppdrag ännu — skapa det första under "Nytt uppdrag"
+              </div>
+            )}
+            {missions.map(m => {
+              const sc = STATUS_CONFIG[m.status] || STATUS_CONFIG.open
+              return (
+                <div key={m.id} style={{ background: '#FFFFFF', borderRadius: 10, padding: '14px 16px', border: '1px solid rgba(0,0,0,0.06)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: '#1C1C1E', marginBottom: 3 }}>{m.title}</div>
+                      <div style={{ display: 'flex', gap: 12, fontSize: 12, color: '#6B7280' }}>
+                        <span><MapPin size={11} style={{ marginRight: 3 }} />{m.location}</span>
+                        <span style={{ fontFamily: 'monospace', fontWeight: 600, color: '#374151' }}>{m.reward} {m.currency}</span>
+                        <span style={{ fontFamily: 'monospace' }}>{m.id.slice(0,8)}</span>
                       </div>
                     </div>
-                    <div style={{ fontSize: 13, color: '#3C3C43CC', marginBottom: 12 }}>{task.description}</div>
-                    <button
-                      onClick={() => acceptTask(task)}
-                      style={{
-                        width: '100%',
-                        padding: '12px',
-                        background: '#5856D6',
-                        color: '#FFFFFF',
-                        border: 'none',
-                        borderRadius: 12,
-                        fontSize: 15,
-                        fontWeight: 600,
-                        fontFamily: 'system-ui',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: 6,
-                      }}
-                    >
-                      Ta uppdrag <ArrowRight style={{ width: 16, height: 16 }} />
-                    </button>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ fontSize: 11, padding: '3px 8px', borderRadius: 20, background: sc.bg, color: sc.color, fontWeight: 600 }}>{sc.label}</span>
+                      {m.status === 'submitted' && (
+                        <>
+                          <button onClick={() => approveSubmission(m.id)} style={{ padding: '4px 10px', borderRadius: 6, border: 'none', background: '#DCFCE7', color: '#166534', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>Godkänn</button>
+                          <button onClick={() => rejectSubmission(m.id)} style={{ padding: '4px 10px', borderRadius: 6, border: 'none', background: '#FEE2E2', color: '#991B1B', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>Avvisa</button>
+                        </>
+                      )}
+                    </div>
                   </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* TASK DETAIL */}
-          {screen === 'task' && activeTask && (
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#FFFFFF' }}>
-              <div style={{ padding: '8px 20px', display: 'flex', alignItems: 'center', gap: 8, borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
-                <button onClick={() => setScreen('home')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
-                  <ChevronLeft style={{ width: 20, height: 20, color: '#5856D6' }} />
-                </button>
-                <span style={{ fontSize: 15, fontWeight: 600 }}>Uppdrag</span>
-              </div>
-
-              {/* Map placeholder */}
-              <div style={{ height: 200, background: 'linear-gradient(135deg, #E8F0FE 0%, #D2E3FC 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                <MapPin style={{ width: 32, height: 32, color: '#FF3B30' }} />
-                <div style={{ position: 'absolute', bottom: 12, left: 12, background: 'white', borderRadius: 8, padding: '4px 10px', fontSize: 12, fontWeight: 600, boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>
-                  {activeTask.distance} bort
                 </div>
-              </div>
+              )
+            })}
+          </div>
+        )}
 
-              <div style={{ flex: 1, padding: '20px', overflowY: 'auto' }}>
-                <div style={{ fontSize: 22, fontWeight: 700, color: '#1C1C1E', marginBottom: 4 }}>{activeTask.location}</div>
-                <div style={{ display: 'flex', gap: 16, marginBottom: 20 }}>
-                  <span style={{ fontSize: 24, fontWeight: 700, color: '#34C759' }}>{activeTask.reward} {activeTask.currency}</span>
-                  <span style={{ fontSize: 14, color: '#8E8E93', alignSelf: 'flex-end', marginBottom: 4 }}>• {activeTask.timeEstimate}</span>
-                </div>
-
-                <div style={{ background: '#F2F2F7', borderRadius: 12, padding: '14px 16px', marginBottom: 20 }}>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: '#8E8E93', marginBottom: 6, letterSpacing: '0.06em', textTransform: 'uppercase' }}>Instruktioner</div>
-                  <div style={{ fontSize: 14, color: '#1C1C1E', lineHeight: 1.6 }}>{activeTask.instructions}</div>
-                </div>
+        {/* Zoomers */}
+        {tab === 'zoomers' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {zoomers.length === 0 && !loading && (
+              <div style={{ textAlign: 'center', padding: '60px 24px', color: '#9CA3AF' }}>
+                Inga zoomers registrerade ännu
               </div>
-
-              <div style={{ padding: '16px 20px', paddingBottom: 34 }}>
-                <button onClick={startTask} style={{
-                  width: '100%', padding: '16px', background: '#5856D6', color: '#FFFFFF',
-                  border: 'none', borderRadius: 14, fontSize: 17, fontWeight: 600, fontFamily: 'system-ui', cursor: 'pointer',
-                }}>
-                  Starta uppdrag
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* CAMERA */}
-          {screen === 'camera' && (
-            <div style={{ flex: 1, background: '#000000', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
-                <Camera style={{ width: 64, height: 64, color: 'rgba(255,255,255,0.6)' }} />
-                <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: 16, fontWeight: 500 }}>Kameran är redo</div>
-                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 13, textAlign: 'center', maxWidth: 260, lineHeight: 1.5 }}>
-                  Se till att bryggan syns tydligt. GPS registreras automatiskt.
-                </div>
-              </div>
-              <div style={{ padding: '24px', paddingBottom: 40 }}>
-                <button onClick={uploadPhoto} style={{
-                  width: 72, height: 72, borderRadius: '50%', background: '#FFFFFF', border: '4px solid rgba(255,255,255,0.3)',
-                  cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
-                  <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#FFFFFF', border: '2px solid rgba(0,0,0,0.1)' }} />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* STATUS */}
-          {screen === 'status' && (
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 40, gap: 20 }}>
-              {taskStatus === 'reviewing' && (
-                <>
-                  <div style={{ width: 80, height: 80, borderRadius: '50%', background: '#FF950015', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Clock style={{ width: 40, height: 40, color: '#FF9500' }} />
+            )}
+            {zoomers.map(z => (
+              <div key={z.id} style={{ background: '#FFFFFF', borderRadius: 10, padding: '14px 16px', border: '1px solid rgba(0,0,0,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: '#1C1C1E' }}>{z.name || z.email || z.id.slice(0,12)}</div>
+                  <div style={{ fontSize: 12, color: '#6B7280', marginTop: 2 }}>
+                    {z.missions_completed || 0} uppdrag · {(z.total_earnings || 0).toLocaleString('sv-SE')} kr totalt
                   </div>
-                  <div style={{ fontSize: 22, fontWeight: 700, color: '#1C1C1E', textAlign: 'center' }}>Vi granskar din bild</div>
-                  <div style={{ fontSize: 15, color: '#8E8E93', textAlign: 'center', lineHeight: 1.6 }}>Vanligtvis klart inom 2 minuter.</div>
-                </>
-              )}
-              {taskStatus === 'approved' && (
-                <>
-                  <div style={{ width: 80, height: 80, borderRadius: '50%', background: '#34C75915', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <CheckCircle style={{ width: 40, height: 40, color: '#34C759' }} />
-                  </div>
-                  <div style={{ fontSize: 22, fontWeight: 700, color: '#1C1C1E', textAlign: 'center' }}>Godkänt! Pengar på väg</div>
-                  <div style={{ fontSize: 28, fontWeight: 700, color: '#34C759' }}>+85 SEK</div>
-                  <div style={{ fontSize: 14, color: '#8E8E93', textAlign: 'center' }}>Utbetalning inom 24 timmar</div>
-                  <button onClick={() => { setScreen('home'); setTaskStatus('available') }} style={{
-                    marginTop: 16, padding: '14px 32px', background: '#5856D6', color: '#FFFFFF',
-                    border: 'none', borderRadius: 14, fontSize: 16, fontWeight: 600, cursor: 'pointer',
-                  }}>
-                    Fler uppdrag
-                  </button>
-                </>
-              )}
-            </div>
-          )}
-        </div>
+                </div>
+                <span style={{ fontSize: 11, padding: '3px 10px', borderRadius: 20, background: z.status === 'active' ? '#DCFCE7' : '#F3F4F6', color: z.status === 'active' ? '#166534' : '#6B7280', fontWeight: 600 }}>
+                  {z.status === 'active' ? 'Aktiv' : z.status === 'pending' ? 'Väntande' : 'Inaktiv'}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
 
-        {/* Home indicator */}
-        {screen !== 'camera' && (
-          <div style={{ height: 34, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FFFFFF' }}>
-            <div style={{ width: 134, height: 5, background: '#1C1C1E', borderRadius: 3, opacity: 0.15 }} />
+        {/* Create mission */}
+        {tab === 'create' && (
+          <div style={{ maxWidth: 560 }}>
+            <div style={{ background: '#FFFFFF', borderRadius: 12, padding: 24, border: '1px solid rgba(0,0,0,0.08)' }}>
+              <h2 style={{ fontSize: 16, fontWeight: 700, color: '#1C1C1E', margin: '0 0 20px' }}>Skapa nytt uppdrag</h2>
+              {[
+                { label: 'Titel', key: 'title', placeholder: 'Fotografera brygga vid Värmdö hamn' },
+                { label: 'Plats', key: 'location', placeholder: 'Värmdö, Stockholm' },
+                { label: 'Beskrivning', key: 'description', placeholder: 'Instruktioner till zoomern...' },
+              ].map(field => (
+                <div key={field.key} style={{ marginBottom: 14 }}>
+                  <label style={{ fontSize: 12, fontWeight: 600, color: '#374151', display: 'block', marginBottom: 5 }}>{field.label}</label>
+                  <input value={(newMission as any)[field.key]} onChange={e => setNewMission(p => ({ ...p, [field.key]: e.target.value }))}
+                    placeholder={field.placeholder} style={inputStyle} />
+                </div>
+              ))}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
+                <div>
+                  <label style={{ fontSize: 12, fontWeight: 600, color: '#374151', display: 'block', marginBottom: 5 }}>Belöning (SEK)</label>
+                  <input type="number" value={newMission.reward} onChange={e => setNewMission(p => ({ ...p, reward: Number(e.target.value) }))} style={inputStyle} />
+                </div>
+                <div>
+                  <label style={{ fontSize: 12, fontWeight: 600, color: '#374151', display: 'block', marginBottom: 5 }}>Kategori</label>
+                  <select value={newMission.category} onChange={e => setNewMission(p => ({ ...p, category: e.target.value }))} style={inputStyle}>
+                    <option value="inspection">Inspektion</option>
+                    <option value="documentation">Dokumentation</option>
+                    <option value="survey">Inventering</option>
+                    <option value="monitoring">Övervakning</option>
+                  </select>
+                </div>
+              </div>
+              <button onClick={createMission} disabled={creating || !newMission.title || !newMission.location}
+                style={{ width: '100%', padding: '12px 0', borderRadius: 10, border: 'none', background: '#7C3AED', color: '#fff', fontSize: 14, fontWeight: 600, cursor: creating ? 'wait' : 'pointer', opacity: (!newMission.title || !newMission.location) ? 0.5 : 1 }}>
+                {creating ? 'Skapar...' : 'Skapa uppdrag'}
+              </button>
+            </div>
           </div>
         )}
       </div>
