@@ -13,7 +13,7 @@ const FILE_ICONS: Record<string, string> = {
   xlsx: '📊',
 }
 
-const CATEGORIES: DocumentCategory[] = ['Bolagsordning', 'Aktiebok', 'Styrelsebeslut', 'Avtal', 'Registreringsbevis']
+const CATEGORIES: DocumentCategory[] = ['Bolagsordning', 'Aktiebok', 'Styrelsebeslut', 'Avtal', 'Registreringsbevis', 'Kvittens']
 
 function formatDate(d: string) {
   return new Date(d).toLocaleDateString('sv-SE', { year: 'numeric', month: 'short', day: 'numeric' })

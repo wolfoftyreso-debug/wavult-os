@@ -352,7 +352,7 @@ export const JURISDICTION_REQUIREMENTS: JurisdictionRequirement[] = [
 
 // ─── Documents ───────────────────────────────────────────────────────────────
 
-export type DocumentCategory = 'Bolagsordning' | 'Aktiebok' | 'Styrelsebeslut' | 'Avtal' | 'Registreringsbevis'
+export type DocumentCategory = 'Bolagsordning' | 'Aktiebok' | 'Styrelsebeslut' | 'Avtal' | 'Registreringsbevis' | 'Kvittens'
 export type DocumentStatus = 'utkast' | 'signerat' | 'arkiverat'
 
 export interface Document {
@@ -390,6 +390,18 @@ export const DOCUMENTS: Document[] = [
   { id: 'doc-016', companyId: 'wavult-group', name: 'DMCC Trade License', category: 'Registreringsbevis', date: '2025-06-01', status: 'arkiverat', fileType: 'pdf', size: '110 KB' },
   { id: 'doc-017', companyId: 'wavult-group', name: 'Memorandum of Association DMCC', category: 'Bolagsordning', date: '2025-06-01', status: 'arkiverat', fileType: 'pdf', size: '290 KB' },
   { id: 'doc-018', companyId: 'wavult-group', name: 'Intercompany Loan Agreement — WG → Landvex AB', category: 'Avtal', date: '2025-11-01', status: 'signerat', fileType: 'pdf', size: '148 KB' },
+  // ── Kvittenser (automatiskt importerade från e-post 2026-03-29) ───────────
+  // Bolagsverket — Sommarliden Holding AB
+  { id: 'doc-019', companyId: 'landvex-ab', name: 'Kvittens Bolagsverket — Sommarliden Holding AB 559141-7042', category: 'Kvittens', date: '2026-03-25', status: 'arkiverat', fileType: 'pdf', size: '—', },
+  { id: 'doc-020', companyId: 'landvex-ab', name: 'Bolagsverket ärende inkommet — 559141-7042', category: 'Kvittens', date: '2026-03-25', status: 'arkiverat', fileType: 'pdf', size: '—', },
+  // Stripe Atlas — QuiXzoom Inc
+  { id: 'doc-021', companyId: 'quixzoom-inc', name: 'Stripe Atlas kvitto #1296-9493 — Incorporation fee', category: 'Kvittens', date: '2026-03-25', status: 'arkiverat', fileType: 'pdf', size: '—', },
+  { id: 'doc-022', companyId: 'quixzoom-inc', name: 'Stripe Atlas — quiXzoom Inc. bildad (Delaware)', category: 'Registreringsbevis', date: '2026-03-27', status: 'signerat', fileType: 'pdf', size: '—', },
+  { id: 'doc-023', companyId: 'quixzoom-inc', name: 'Stripe Atlas — 83(b) election filed', category: 'Kvittens', date: '2026-03-27', status: 'arkiverat', fileType: 'pdf', size: '—', },
+  // Northwest — Landvex Inc (Texas LLC)
+  { id: 'doc-024', companyId: 'landvex-inc', name: 'Northwest — Landvex Inc. formation documents submitted (TX)', category: 'Kvittens', date: '2026-03-26', status: 'arkiverat', fileType: 'pdf', size: '—', },
+  { id: 'doc-025', companyId: 'landvex-inc', name: 'Northwest — EIN filing initiated (Non-US Citizens)', category: 'Kvittens', date: '2026-03-29', status: 'utkast', fileType: 'pdf', size: '—', },
+
 ]
 
 // ─── Compliance ──────────────────────────────────────────────────────────────

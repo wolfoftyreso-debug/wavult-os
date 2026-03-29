@@ -3229,10 +3229,21 @@ Tveka aldrig att klassificera uppåt om du är osäker.
 
 ---
 
+### ⚠️ KRITISK REGEL — Passdata
+
+**Passkopior och identitetshandlingar skickas ALDRIG via e-post.**
+E-post är okrypterat och klassas som säkerhetsrisk nivå 1.
+All KYC-data hanteras UTESLUTANDE via Wavult ID i Wavult OS.
+
+Använd alltid PassportUpload-funktionen i People & Governance för att hantera pass och identitetshandlingar för teammedlemmar. Datan krypteras med AES-256 och lagras i Identity Core — ingen kopia skickas via mail eller tredjepartstjänster.
+
+---
+
 ### Vad som ALDRIG Skickas Okrypterat
 
 Följande information skickas ALDRIG via okrypterade kanaler (inklusive vanlig e-post utan kryptering, Telegram, SMS):
 
+- **Passkopior och identitetshandlingar** (KYC via Wavult ID — se ovan)
 - API-nycklar och access tokens
 - Lösenord (skicka via 1Password eller liknande)
 - Kunddata och personnummer
