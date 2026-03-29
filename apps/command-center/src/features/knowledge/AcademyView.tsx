@@ -1411,7 +1411,7 @@ invoice.payment_failed → notification-service skickar e-post
 
 **Infrastruktur:**
 • AWS ECS (4 services): ~$150/mån
-• Supabase Pro: $25/mån × 2 projekt = $50/mån
+• Supabase: BOS + quiXzoom-data (EU West)
 • Cloudflare Pro: $20/mån
 • GitHub: $19/mån (Team)
 • Totalt: ~$240/mån (~2 500 SEK)

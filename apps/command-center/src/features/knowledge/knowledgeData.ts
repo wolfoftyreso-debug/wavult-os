@@ -1041,7 +1041,7 @@ Landvex kombinerar QuiXzoom-data (zoomers som zoomar infrastruktur) med en optis
 **Status:** Ej byggt ännu  
 **Kräver:** Nytt Supabase-projekt (us-east-1), ny ECS-service (us-east-1)  
 **Frontend:** optical-insight-us.pages.dev (separat CF Pages-projekt)  
-**Databas:** Supabase US East (ska skapas, kräver Pro-uppgradering)  
+**Databas:** Supabase US East (planerat för OI US-expansion)  
 **Juridik:** Data stannar i USA (FedRAMP-förberedelse på sikt)
 
 **Isolation:** OI EU och OI US delar ALDRIG data, databas eller backend. Separata instanser, samma kodbas.
@@ -1292,7 +1292,7 @@ Wavult Groups infrastruktur bygger på fyra grundprinciper:
 | znmxtnxxjpmgtycmsqjv | wavult-os | eu-west-1 | Wavult OS command center |
 
 **Org:** wqicazplbdsactxkpdkg (wolfoftyreso-debug)  
-**US-instans:** Behöver nytt Supabase-projekt (us-east-1) — kräver Pro-uppgradering
+**US-instans:** Supabase US East (planerat för OI US-expansion)
 
 ---
 

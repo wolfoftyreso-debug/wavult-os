@@ -107,7 +107,7 @@ function EntityCard({ entity }: { entity: EntityConfig }) {
   const [address, setAddress] = useState(entity.address)
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-[#0A0C14] overflow-hidden">
+    <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
       {/* Header */}
       <div
         className="flex items-center gap-3 px-5 py-4 border-b border-gray-100"
@@ -212,7 +212,7 @@ function EntityCard({ entity }: { entity: EntityConfig }) {
           <div>Adress: <span className="text-gray-500">{address || 'Lägg till adress'}</span></div>
           <div>Org.nr: <span className="text-gray-500">{entity.orgNumber || 'Org.nr (ej registrerat)'}</span></div>
           {editing && (
-            <button className="mt-2 text-xs text-blue-400 hover:text-blue-300 transition-colors">
+            <button className="mt-2 text-xs text-blue-700 hover:text-blue-300 transition-colors">
               + Ladda upp logotyp
             </button>
           )}

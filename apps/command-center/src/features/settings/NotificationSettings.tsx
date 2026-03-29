@@ -128,7 +128,7 @@ export function NotificationSettings() {
       </div>
 
       {/* Channel header */}
-      <div className="rounded-xl border border-gray-200 bg-[#0A0C14] overflow-hidden">
+      <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
         {/* Column headers */}
         <div className="flex items-center gap-2 px-5 py-2 border-b border-gray-100 bg-white/[0.02]">
           <div className="flex-1 text-[9px] text-gray-600 font-mono uppercase">Händelse</div>

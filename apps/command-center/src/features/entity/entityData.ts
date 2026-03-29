@@ -435,7 +435,7 @@ export const ENTITY_SYSTEMS: EntitySystem[] = [
       { name: 'quixzoom-landing / CF Pages', status: 'passing', last_run: '5h ago' },
     ],
     open_items: [
-      { label: 'Supabase US East — Pro upgrade needed', status: 'watch' },
+      { label: 'Supabase US East — planerat (OI US)', status: 'watch' },
     ],
   },
   {
@@ -448,7 +448,7 @@ export const ENTITY_SYSTEMS: EntitySystem[] = [
     pipelines: [],
     open_items: [
       { label: 'ECS us-east-1 service creation', status: 'watch' },
-      { label: 'Supabase US East project (Pro plan)', status: 'watch' },
+      { label: 'Supabase US East project (planerat)', status: 'watch' },
     ],
   },
   {

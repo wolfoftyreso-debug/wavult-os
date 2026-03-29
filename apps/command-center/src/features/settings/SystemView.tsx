@@ -74,7 +74,7 @@ export function SystemView() {
   return (
     <div className="space-y-5">
       {/* System overview card */}
-      <div className="rounded-xl border border-gray-200 bg-[#0A0C14] px-5 py-4 space-y-3">
+      <div className="rounded-xl border border-gray-200 bg-white px-5 py-4 space-y-3">
         <div className="text-[9px] text-gray-600 font-mono uppercase">System Info</div>
         <div className="grid grid-cols-1 gap-2">
           {SYSTEM_INFO.map(row => (
@@ -92,7 +92,7 @@ export function SystemView() {
       </div>
 
       {/* Service uptime */}
-      <div className="rounded-xl border border-gray-200 bg-[#0A0C14] overflow-hidden">
+      <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-100">
           <div className="text-[9px] text-gray-600 font-mono uppercase">Uptime per tjänst</div>
           <div className="flex items-center gap-2">

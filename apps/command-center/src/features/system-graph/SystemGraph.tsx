@@ -247,12 +247,12 @@ const INITIAL_NODES: Node[] = [
   {
     id: 'supabase-wavult', type: 'system',
     position: { x: 500, y: 240 },
-    data: { label: 'Supabase (Wavult OS)', sublabel: 'znmxtnxx · eu-west-1 · FREE', status: 'degraded', colorKey: 'data', description: 'BOS tasks, events, audit log, team_locations. Upgrade to Pro.' },
+    data: { label: 'Supabase (Wavult OS)', sublabel: 'znmxtnxx · eu-west-1', status: 'live', colorKey: 'data', description: 'BOS tasks, events, audit log, team_locations.' },
   },
   {
     id: 'supabase-quixzoom', type: 'system',
     position: { x: 500, y: 380 },
-    data: { label: 'Supabase (QuiXzoom)', sublabel: 'lpeipzdm · eu-west-1 · FREE', status: 'degraded', colorKey: 'data', description: 'Missions, assignments, submissions, payouts.' },
+    data: { label: 'Supabase (QuiXzoom)', sublabel: 'lpeipzdm · eu-west-1', status: 'live', colorKey: 'data', description: 'Missions, assignments, submissions, payouts.' },
   },
   {
     id: 's3-eu', type: 'system',

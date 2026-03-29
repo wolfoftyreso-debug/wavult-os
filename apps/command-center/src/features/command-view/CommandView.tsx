@@ -111,8 +111,8 @@ const METRICS: MetricCard[] = [
 const SYSTEMS: SystemService[] = [
   { id: 'wavult-os-api',     name: 'wavult-os-api',     status: 'green' },
   { id: 'quixzoom-api',      name: 'quixzoom-api',      status: 'green' },
-  { id: 'supabase-wavult',   name: 'supabase-wavult',   status: 'yellow', note: 'FREE tier — risk för auto-pause' },
-  { id: 'supabase-quixzoom', name: 'supabase-quixzoom', status: 'yellow', note: 'FREE tier — risk för auto-pause' },
+  { id: 'supabase-wavult',   name: 'supabase-wavult',   status: 'green', note: 'BOS tasks + events (EU West)' },
+  { id: 'supabase-quixzoom', name: 'supabase-quixzoom', status: 'green', note: 'quiXzoom-data (EU West)' },
   { id: 'github-actions',    name: 'github-actions',    status: 'green' },
 ]
 

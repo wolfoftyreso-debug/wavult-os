@@ -164,7 +164,7 @@ function CfoDashboard() {
             { text: 'IP-royalty — Wavult Group tar 5–15% på omsättning', status: 'planned' },
             { text: 'Transfer pricing-policy — kräver CLO + extern rådgivare', status: 'blocked' },
             { text: 'Separat bankkonto per bolag — storbank varje jurisdiktion', status: 'planned' },
-            { text: 'Supabase US East — kräver Pro-uppgradering', status: 'planned' },
+            { text: 'Supabase US East — planerat (OI US expansion)', status: 'planned' },
           ]}
         </Section>
         <Section title="Infrastrukturkostnader (aktiva)">
@@ -218,7 +218,7 @@ function CtoDashboard() {
         <Section title="Öppna tekniska TODO">
           {[
             { text: 'CF Pages-slots: ta bort landvex-fr/nl/de/fi/be/it (6 projekt)', status: 'blocked' },
-            { text: 'Supabase US East — nytt projekt, kräver Pro-plan', status: 'planned' },
+            { text: 'Supabase US East — planerat (OI US expansion)', status: 'planned' },
             { text: 'ECS us-east-1 — ny service för OI US API', status: 'planned' },
             { text: 'optical-insight-eu + optical-insight-us — CF Pages deploy', status: 'planned' },
             { text: 'CF Pages API-token — Erik skapar på dash.cloudflare.com', status: 'blocked' },

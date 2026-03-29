@@ -53,8 +53,8 @@ export function SettingsHub() {
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap flex-shrink-0 ${
               activeTab === tab.id
-                ? 'bg-brand-accent/15 text-brand-accent border border-brand-accent/30'
-                : 'text-gray-500 hover:text-gray-600 hover:bg-white/[0.04]'
+                ? 'bg-purple-50 text-purple-700 border border-purple-200'
+                : 'text-gray-500 hover:text-gray-600 hover:bg-gray-50'
             }`}
           >
             <span className="text-sm leading-none">{tab.icon}</span>

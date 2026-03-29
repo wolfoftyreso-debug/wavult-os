@@ -116,7 +116,7 @@ function IntegrationRow({ integration }: { integration: Integration }) {
   }
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-[#0A0C14] px-5 py-4 flex items-center gap-4">
+    <div className="rounded-xl border border-gray-200 bg-white px-5 py-4 flex items-center gap-4">
       {/* Status dot */}
       <div
         className="h-2.5 w-2.5 rounded-full flex-shrink-0"

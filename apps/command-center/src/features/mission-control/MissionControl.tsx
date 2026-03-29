@@ -165,7 +165,7 @@ export function MissionControl() {
 
   const hasBookkeeping = TASKS.find(t => t.id === 'finance-002')?.state === 'DONE'
   const hasWavultCom = TASKS.find(t => t.id === 'tech-001')?.state === 'DONE'
-  const hasSupabasePro = TASKS.find(t => t.id === 'finance-001')?.state === 'DONE'
+  const hasIdentityCore = TASKS.find(t => t.id === 'finance-001')?.state === 'DONE'
   const legalDone = TASKS.filter(t => t.module === 'legal' && t.state === 'DONE').length
   const legalTotal = TASKS.filter(t => t.module === 'legal').length
 
@@ -198,8 +198,8 @@ export function MissionControl() {
     },
     {
       label: t('module.operations'),
-      value: hasSupabasePro ? 'Supabase Pro' : 'Supabase Free (risk)',
-      status: hasSupabasePro ? 'green' : 'red',
+      value: hasIdentityCore ? 'Identity Core (RDS)' : 'Identity Core (konfigureras)',
+      status: hasIdentityCore ? 'green' : 'yellow',
       icon: Users,
     },
     {

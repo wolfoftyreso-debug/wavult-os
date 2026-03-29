@@ -133,7 +133,7 @@ export function RolesView() {
         </div>
 
         {/* Module toggles */}
-        <div className="rounded-xl border border-gray-200 bg-[#0A0C14] divide-y divide-gray-100 overflow-hidden">
+        <div className="rounded-xl border border-gray-200 bg-white divide-y divide-gray-100 overflow-hidden">
           {ALL_MODULES.map(mod => {
             const enabled = modules.includes(mod.id)
             const isAdminLocked = selectedRole === 'admin'
@@ -183,7 +183,7 @@ export function RolesView() {
         )}
 
         {selectedRole === 'admin' && (
-          <div className="rounded-xl border border-purple-500/20 bg-purple-500/5 px-4 py-3 text-xs text-gray-500">
+          <div className="rounded-xl border border-purple-200 bg-purple-50 px-4 py-3 text-xs text-gray-500">
             🔐 Admin har alltid full tillgång och kan inte begränsas.
           </div>
         )}
@@ -203,7 +203,7 @@ export function RolesView() {
           <button
             key={r.id}
             onClick={() => setSelectedRole(r.id)}
-            className="w-full text-left rounded-xl border border-gray-200 bg-[#0A0C14] px-5 py-4 hover:border-white/[0.12] transition-all group"
+            className="w-full text-left rounded-xl border border-gray-200 bg-white px-5 py-4 hover:border-gray-200 transition-all group"
           >
             <div className="flex items-center gap-3">
               {/* Avatar */}
