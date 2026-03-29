@@ -585,7 +585,7 @@ export function PeopleGovernance() {
       <div>
         <h1 style={{ fontSize: 24, fontWeight: 700, color: '#1C1C1E', margin: 0 }}>People & Governance</h1>
         <p style={{ fontSize: 13, color: '#8E8E93', marginTop: 4 }}>
-          Team, DISC-profiler och hälsodata för Wavult Group core-team.
+          Teamöversikt och hälsodata för Wavult Group core-team. Klicka på en person för fullständig profil.
         </p>
       </div>
 
@@ -593,7 +593,6 @@ export function PeopleGovernance() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
         {[
           { label: 'Teamstorlek', value: String(PEOPLE.length) },
-          { label: 'DISC-profiler', value: String(DISC_PROFILES.length) },
           { label: 'Hälsosnaps', value: String(HEALTH_DATA.length) },
         ].map(stat => (
           <div key={stat.label} style={{
@@ -618,12 +617,6 @@ export function PeopleGovernance() {
             />
           ))}
         </div>
-      </section>
-
-      {/* Section: DISC-profiler */}
-      <section>
-        <h2 style={{ fontSize: 14, fontWeight: 700, color: '#374151', margin: '0 0 16px', textTransform: 'uppercase', letterSpacing: '0.07em' }}>DISC-profiler</h2>
-        <ProfilerTab />
       </section>
 
       {/* Section: Hälsa */}
