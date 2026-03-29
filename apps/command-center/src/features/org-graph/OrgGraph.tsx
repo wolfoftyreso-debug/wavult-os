@@ -281,7 +281,7 @@ function NodeCard({
         width={CARD_W}
         height={CARD_H}
         rx={10}
-        fill={stressed ? '#110808' : cascadeStressed ? '#0F0D06' : '#0C0E16'}
+        fill={stressed ? '#FEF2F2' : cascadeStressed ? '#FEF9C3' : '#FFFFFF'}
         stroke={stressed ? '#EF4444' : cascadeStressed ? '#F59E0B55' : selected ? entity.color : entity.color + '45'}
         strokeWidth={stressed ? 2 : selected ? 2 : 1}
       />
@@ -309,7 +309,7 @@ function NodeCard({
         <text
           x={CARD_W - 8} y={CARD_H - 8}
           fontSize={7}
-          fill="#10B981"
+          fill="#F2F2F7"
           textAnchor="middle"
           fontFamily="monospace"
           fontWeight="700"
@@ -397,7 +397,7 @@ function NodeCard({
       {/* Children / expand indicator */}
       {childCount > 0 && (
         <g transform={`translate(${CARD_W - 24}, ${CARD_H - 18})`}>
-          <rect width={18} height={12} rx={3} fill={expanded ? entity.color + '30' : '#1F2937'} />
+          <rect width={18} height={12} rx={3} fill={expanded ? entity.color + '30' : '#F3F4F6'} />
           <text x={9} y={9} textAnchor="middle" fontSize={8} fill={expanded ? entity.color : '#6B7280'} fontWeight="700">
             {expanded ? '▲' : `+${childCount}`}
           </text>
@@ -470,7 +470,7 @@ function DrillPanel({
   }[nextAction.urgency]
 
   return (
-    <div className="h-full flex flex-col bg-[#09090F] border-l border-gray-200 overflow-hidden" style={{ width: 340 }}>
+    <div className="h-full flex flex-col bg-white border-l border-gray-200 overflow-hidden" style={{ width: 340 }}>
 
       {/* ── SNAPSHOT ─────────────────────────────────────────────── */}
       <div className="flex-shrink-0 px-5 pt-5 pb-4 border-b border-gray-200">
@@ -498,7 +498,7 @@ function DrillPanel({
               OPEN
             </button>
             <button onClick={onClose}
-              className="text-gray-500 hover:text-gray-600 transition-colors w-6 h-6 flex items-center justify-center rounded hover:bg-white/[0.05]">
+              className="text-gray-500 hover:text-gray-600 transition-colors w-6 h-6 flex items-center justify-center rounded hover:bg-gray-100">
               ✕
             </button>
           </div>
@@ -570,7 +570,7 @@ function DrillPanel({
                   const c  = KPI_STATUS_COLOR[st]
                   const pct = Math.min(100, Math.round((kpi.current_value / kpi.target_value) * 100))
                   return (
-                    <div key={kpi.id} className="rounded-lg px-3 py-2 border border-gray-100 bg-white/[0.01]">
+                    <div key={kpi.id} className="rounded-lg px-3 py-2 border border-gray-100 bg-gray-50">
                       <div className="flex items-center justify-between mb-1.5">
                         <span className="text-xs text-gray-600">{kpi.name}</span>
                         <div className="flex items-center gap-1.5">
@@ -580,7 +580,7 @@ function DrillPanel({
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <div className="flex-1 h-1 rounded-full bg-white/[0.06]">
+                        <div className="flex-1 h-1 rounded-full bg-gray-200">
                           <div className="h-1 rounded-full transition-all" style={{ width: `${pct}%`, background: c }} />
                         </div>
                         <span className="text-[9px] text-gray-600 font-mono w-12 text-right">→ {kpi.target}</span>
@@ -660,7 +660,7 @@ function DrillPanel({
                 const s = REL_STYLE[r.type]
                 const source = ENTITIES.find(e => e.id === r.from_entity_id)
                 return (
-                  <div key={r.id} className="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-gray-100 bg-white/[0.005]">
+                  <div key={r.id} className="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-gray-100 bg-gray-50">
                     <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: s.stroke }} />
                     <span className="text-xs font-semibold" style={{ color: source?.color ?? '#fff' }}>
                       {source?.shortName}
@@ -841,7 +841,7 @@ function CommandChainNode({
 
       {/* Card bg — clean dark background, neutral border */}
       <rect width={CMD_NODE_W} height={CMD_NODE_H} rx={9}
-        fill="#0D0F1A"
+        fill="#FFFFFF"
         stroke="#ffffff0f"
         strokeWidth={1}
       />
@@ -931,7 +931,7 @@ function CommandChainLayer({
         width={CMD_NODE_W + 32}
         height={CMD_APEX_Y + CMD_NODE_H + CMD_GAP + reportTotalH + 48}
         rx={14}
-        fill="#0A0C18"
+        fill="#F9FAFB"
         stroke="#ffffff06"
         strokeWidth={1}
       />
@@ -1158,7 +1158,7 @@ export function OrgGraph() {
             </select>
 
             {/* Divider */}
-            <div className="w-px h-5 bg-white/[0.06]" />
+            <div className="w-px h-5 bg-gray-200" />
 
             {/* 2. Overlay toggle: Org Hierarchy */}
             <button
@@ -1183,7 +1183,7 @@ export function OrgGraph() {
             {/* Clear — only when entity selected */}
             {selectedEntity && (
               <>
-                <div className="w-px h-5 bg-white/[0.06]" />
+                <div className="w-px h-5 bg-gray-200" />
                 <button
                   onClick={() => setSelectedEntity(null)}
                   className="text-xs text-gray-500 hover:text-gray-500 px-2 py-1.5 transition-colors font-mono"
@@ -1196,7 +1196,7 @@ export function OrgGraph() {
         </div>
 
         {/* SVG canvas */}
-        <div className="flex-1 overflow-auto bg-[#060810]">
+        <div className="flex-1 overflow-auto bg-gray-50">
           <svg
             viewBox={`0 0 ${svgW} ${svgHeight}`}
             style={{ minWidth: showCommandChain ? TOTAL_W : 700, width: '100%', minHeight: svgHeight }}
@@ -1277,7 +1277,7 @@ export function OrgGraph() {
         </div>
 
         {/* Legend */}
-        <div className="flex-shrink-0 px-5 py-2 border-t border-gray-200 bg-[#080A12]">
+        <div className="flex-shrink-0 px-5 py-2 border-t border-gray-200 bg-white">
           <Legend visibleTypes={perms.visibleRelTypes} />
         </div>
       </div>
