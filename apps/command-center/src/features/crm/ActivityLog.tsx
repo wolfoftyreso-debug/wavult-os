@@ -58,7 +58,7 @@ export function ActivityLog() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h2 className="text-sm font-semibold text-gray-900">Aktivitetslogg</h2>
-          <p className="text-sm text-gray-9000 mt-0.5">{activities.length} aktiviteter loggade</p>
+          <p className="text-sm text-gray-500 mt-0.5">{activities.length} aktiviteter loggade</p>
         </div>
         <button
           onClick={() => setShowForm(v => !v)}
@@ -74,7 +74,7 @@ export function ActivityLog() {
           <p className="text-sm font-semibold text-gray-900">Ny aktivitet</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
-              <label className="text-xs text-gray-9000 mb-1 block">Typ</label>
+              <label className="text-xs text-gray-500 mb-1 block">Typ</label>
               <select
                 value={formType}
                 onChange={e => setFormType(e.target.value as ActivityType)}
@@ -86,7 +86,7 @@ export function ActivityLog() {
               </select>
             </div>
             <div>
-              <label className="text-xs text-gray-9000 mb-1 block">Prospect</label>
+              <label className="text-xs text-gray-500 mb-1 block">Prospect</label>
               <select
                 value={formProspect}
                 onChange={e => setFormProspect(e.target.value)}
@@ -98,7 +98,7 @@ export function ActivityLog() {
               </select>
             </div>
             <div>
-              <label className="text-xs text-gray-9000 mb-1 block">Utförd av</label>
+              <label className="text-xs text-gray-500 mb-1 block">Utförd av</label>
               <select
                 value={formBy}
                 onChange={e => setFormBy(e.target.value as TeamMember)}
@@ -111,7 +111,7 @@ export function ActivityLog() {
             </div>
           </div>
           <div>
-            <label className="text-xs text-gray-9000 mb-1 block">Anteckning</label>
+            <label className="text-xs text-gray-500 mb-1 block">Anteckning</label>
             <textarea
               value={formNote}
               onChange={e => setFormNote(e.target.value)}
@@ -130,7 +130,7 @@ export function ActivityLog() {
             </button>
             <button
               onClick={() => setShowForm(false)}
-              className="text-sm px-4 py-2 rounded-lg bg-surface-overlay border border-surface-border text-gray-9000 hover:text-gray-900 transition-colors"
+              className="text-sm px-4 py-2 rounded-lg bg-surface-overlay border border-surface-border text-gray-500 hover:text-gray-900 transition-colors"
             >
               Avbryt
             </button>
@@ -145,7 +145,7 @@ export function ActivityLog() {
           className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${
             filter === 'Alla'
               ? 'bg-purple-50 text-purple-700 font-medium'
-              : 'bg-surface-raised border border-surface-border text-gray-9000 hover:text-gray-900'
+              : 'bg-surface-raised border border-surface-border text-gray-500 hover:text-gray-900'
           }`}
         >
           Alla typer
@@ -157,7 +157,7 @@ export function ActivityLog() {
             className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${
               filter === t
                 ? 'bg-purple-50 text-purple-700 font-medium'
-                : 'bg-surface-raised border border-surface-border text-gray-9000 hover:text-gray-900'
+                : 'bg-surface-raised border border-surface-border text-gray-500 hover:text-gray-900'
             }`}
           >
             {ACTIVITY_ICONS[t]} {t}
@@ -193,28 +193,28 @@ export function ActivityLog() {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-sm font-medium text-gray-900">{a.type}</span>
-                <span className="text-xs text-gray-9000">·</span>
-                <span className="text-xs text-gray-9000">{a.company}</span>
-                <span className="text-xs text-gray-9000">·</span>
+                <span className="text-xs text-gray-500">·</span>
+                <span className="text-xs text-gray-500">{a.company}</span>
+                <span className="text-xs text-gray-500">·</span>
                 <span
                   className="text-xs px-1.5 py-0.5 rounded"
                   style={{ background: TEAM_COLORS[a.by] + '20', color: TEAM_COLORS[a.by] }}
                 >
                   {a.by}
                 </span>
-                <span className="text-xs text-gray-9000 ml-auto flex-shrink-0">
+                <span className="text-xs text-gray-500 ml-auto flex-shrink-0">
                   {new Date(a.date).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short', year: 'numeric' })}
                   {' · '}
                   {new Date(a.date).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })}
                 </span>
               </div>
-              <p className="text-sm text-gray-9000 mt-1 leading-relaxed">{a.note}</p>
+              <p className="text-sm text-gray-500 mt-1 leading-relaxed">{a.note}</p>
             </div>
           </div>
         ))}
 
         {filtered.length === 0 && (
-          <div className="py-12 text-center text-gray-9000 text-sm">
+          <div className="py-12 text-center text-gray-500 text-sm">
             Inga aktiviteter matchar filter
           </div>
         )}

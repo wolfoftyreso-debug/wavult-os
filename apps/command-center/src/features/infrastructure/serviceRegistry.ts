@@ -29,7 +29,7 @@ export const SERVICE_REGISTRY: ServiceDefinition[] = [
     criticalityLevel: 1,
     owner: 'group-cto',
     refCode: 'WG-TECH-2026-001',
-    status: 'operational',
+    status: 'unknown',
     lastChecked: null,
     uptime30d: 99.2,
     billing: {
@@ -66,7 +66,7 @@ export const SERVICE_REGISTRY: ServiceDefinition[] = [
     criticalityLevel: 1,
     owner: 'group-cto',
     refCode: 'WG-TECH-2026-004',
-    status: 'operational',
+    status: 'unknown',
     lastChecked: null,
     billing: {
       provider: 'aws',
@@ -92,7 +92,7 @@ export const SERVICE_REGISTRY: ServiceDefinition[] = [
     criticalityLevel: 1,
     owner: 'group-cto',
     refCode: 'WG-TECH-2026-005',
-    status: 'operational',
+    status: 'unknown',
     lastChecked: null,
     billing: {
       provider: 'supabase',
@@ -116,7 +116,7 @@ export const SERVICE_REGISTRY: ServiceDefinition[] = [
     criticalityLevel: 1,
     owner: 'group-cto',
     refCode: 'WG-TECH-2026-006',
-    status: 'operational',
+    status: 'unknown',
     lastChecked: null,
     billing: {
       provider: 'supabase',
@@ -142,7 +142,7 @@ export const SERVICE_REGISTRY: ServiceDefinition[] = [
     criticalityLevel: 1,
     owner: 'group-cto',
     refCode: 'WG-TECH-2026-007',
-    status: 'operational',
+    status: 'unknown',
     lastChecked: null,
     failover: {
       primary: 's3-eu-primary',
@@ -174,7 +174,7 @@ export const SERVICE_REGISTRY: ServiceDefinition[] = [
     criticalityLevel: 2,
     owner: 'group-cto',
     refCode: 'WG-TECH-2026-008',
-    status: 'operational',
+    status: 'unknown',
     lastChecked: null,
     alerts: [],
     billing: {
@@ -198,7 +198,7 @@ export const SERVICE_REGISTRY: ServiceDefinition[] = [
     criticalityLevel: 1,
     owner: 'group-cto',
     refCode: 'WG-TECH-2026-009',
-    status: 'operational',
+    status: 'unknown',
     lastChecked: null,
     alerts: [],
     billing: {
@@ -221,7 +221,7 @@ export const SERVICE_REGISTRY: ServiceDefinition[] = [
     criticalityLevel: 2,
     owner: 'group-cto',
     refCode: 'WG-TECH-2026-014',
-    status: 'operational',
+    status: 'unknown',
     lastChecked: null,
     alerts: [],
     billing: {
@@ -247,7 +247,7 @@ export const SERVICE_REGISTRY: ServiceDefinition[] = [
     criticalityLevel: 1,
     owner: 'group-cto',
     refCode: 'WG-TECH-2026-010',
-    status: 'operational',
+    status: 'unknown',
     lastChecked: null,
     billing: {
       provider: 'cloudflare',
@@ -270,7 +270,7 @@ export const SERVICE_REGISTRY: ServiceDefinition[] = [
     criticalityLevel: 2,
     owner: 'group-cto',
     refCode: 'WG-TECH-2026-015',
-    status: 'operational',
+    status: 'unknown',
     lastChecked: null,
     billing: {
       provider: 'cloudflare',
@@ -290,7 +290,7 @@ export const SERVICE_REGISTRY: ServiceDefinition[] = [
     criticalityLevel: 2,
     owner: 'group-cto',
     refCode: 'WG-TECH-2026-016',
-    status: 'operational',
+    status: 'unknown',
     lastChecked: null,
     billing: {
       provider: 'cloudflare',
@@ -312,7 +312,7 @@ export const SERVICE_REGISTRY: ServiceDefinition[] = [
     criticalityLevel: 2,
     owner: 'group-cto',
     refCode: 'WG-TECH-2026-011',
-    status: 'operational',
+    status: 'unknown',
     lastChecked: null,
     alerts: [],
     billing: {
@@ -336,7 +336,7 @@ export const SERVICE_REGISTRY: ServiceDefinition[] = [
     criticalityLevel: 2,
     owner: 'group-cto',
     refCode: 'WG-TECH-2026-012',
-    status: 'operational',
+    status: 'unknown',
     lastChecked: null,
     alerts: [],
     billing: {
@@ -391,7 +391,7 @@ export const SERVICE_REGISTRY: ServiceDefinition[] = [
     criticalityLevel: 2,
     owner: 'group-cto',
     refCode: 'WG-TECH-2026-013',
-    status: 'operational',
+    status: 'unknown',
     lastChecked: null,
     alerts: [],
     billing: {

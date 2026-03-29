@@ -58,7 +58,7 @@ function TargetCard({ member }: { member: PersonTarget }) {
           </div>
           <div>
             <p className="font-bold text-gray-900">{member.member}</p>
-            <p className="text-xs text-gray-9000">Säljmål Thailand</p>
+            <p className="text-xs text-gray-500">Säljmål Thailand</p>
           </div>
         </div>
         <div
@@ -74,10 +74,10 @@ function TargetCard({ member }: { member: PersonTarget }) {
         {member.targets.map((t, i) => (
           <div key={i} className="space-y-1.5">
             <div className="flex items-center justify-between text-xs">
-              <span className="text-gray-9000">{t.label}</span>
+              <span className="text-gray-500">{t.label}</span>
               <span className="text-gray-900 font-semibold tabular-nums">
                 {t.unit === 'SEK' ? formatSEK(t.current) : t.current}
-                <span className="text-gray-9000 font-normal"> / {t.unit === 'SEK' ? formatSEK(t.goal) : `${t.goal} ${t.unit}`}</span>
+                <span className="text-gray-500 font-normal"> / {t.unit === 'SEK' ? formatSEK(t.goal) : `${t.goal} ${t.unit}`}</span>
               </span>
             </div>
             <ProgressBar current={t.current} goal={t.goal} color={t.color} />
@@ -153,13 +153,13 @@ export function TargetsView() {
             <span className="text-2xl">🏖️</span>
             <h2 className="text-sm font-semibold text-gray-900">Thailand Workcamp</h2>
           </div>
-          <p className="text-sm text-gray-9000">
+          <p className="text-sm text-gray-500">
             11 april 2026 — Teambuilding + projektlansering. Säljmålen ska vara uppfyllda.
           </p>
         </div>
         <div className="text-center flex-shrink-0">
           <p className="text-4xl font-bold text-gray-900 tabular-nums">{daysLeft}</p>
-          <p className="text-sm text-gray-9000">dagar kvar</p>
+          <p className="text-sm text-gray-500">dagar kvar</p>
         </div>
       </div>
 
@@ -167,21 +167,21 @@ export function TargetsView() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         <div className="bg-surface-raised border border-surface-border rounded-xl px-5 py-4 text-center">
           <p className="text-3xl font-bold text-gray-900">{totalSignedCustomers}</p>
-          <p className="text-sm text-gray-9000 mt-1">Signerade kunder</p>
+          <p className="text-sm text-gray-500 mt-1">Signerade kunder</p>
           <ProgressBar current={totalSignedCustomers} goal={8} color="#10B981" />
-          <p className="text-xs text-gray-9000 mt-1">Mål: 8</p>
+          <p className="text-xs text-gray-500 mt-1">Mål: 8</p>
         </div>
         <div className="bg-surface-raised border border-surface-border rounded-xl px-5 py-4 text-center">
           <p className="text-2xl font-bold text-gray-900">{formatSEK(totalSignedARR)}</p>
-          <p className="text-sm text-gray-9000 mt-1">Total signerad ARR</p>
+          <p className="text-sm text-gray-500 mt-1">Total signerad ARR</p>
           <ProgressBar current={totalSignedARR} goal={totalGoalARR} color="#3B82F6" />
-          <p className="text-xs text-gray-9000 mt-1">Mål: {formatSEK(totalGoalARR)}</p>
+          <p className="text-xs text-gray-500 mt-1">Mål: {formatSEK(totalGoalARR)}</p>
         </div>
         <div className="bg-surface-raised border border-surface-border rounded-xl px-5 py-4 text-center">
           <p className="text-3xl font-bold text-gray-900">{totalDemos}</p>
-          <p className="text-sm text-gray-9000 mt-1">Demos utförda</p>
+          <p className="text-sm text-gray-500 mt-1">Demos utförda</p>
           <ProgressBar current={totalDemos} goal={15} color="#8B5CF6" />
-          <p className="text-xs text-gray-9000 mt-1">Mål: 15</p>
+          <p className="text-xs text-gray-500 mt-1">Mål: 15</p>
         </div>
       </div>
 

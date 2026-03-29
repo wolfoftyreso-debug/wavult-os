@@ -410,6 +410,7 @@ export function SystemGraph() {
           ))}
         </div>
 
+        <div style={{ width: '100%', height: '100%', minHeight: 600 }}>
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -436,6 +437,7 @@ export function SystemGraph() {
             maskColor="rgba(255,255,255,0.7)"
           />
         </ReactFlow>
+        </div>
       </div>
 
       {/* Detail panel */}

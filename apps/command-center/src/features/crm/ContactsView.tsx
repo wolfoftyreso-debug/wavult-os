@@ -27,7 +27,7 @@ export function ContactsView() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h2 className="text-sm font-semibold text-gray-900">Kontakter</h2>
-          <p className="text-sm text-gray-9000 mt-0.5">{CONTACTS.length} kontakter i registret</p>
+          <p className="text-sm text-gray-500 mt-0.5">{CONTACTS.length} kontakter i registret</p>
         </div>
         <input
           value={search}
@@ -56,8 +56,8 @@ export function ContactsView() {
                 </div>
                 <div className="min-w-0">
                   <p className="font-semibold text-gray-900 text-sm">{c.name}</p>
-                  <p className="text-xs text-gray-9000 mt-0.5">{c.role}</p>
-                  <p className="text-xs text-gray-9000">{c.company}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{c.role}</p>
+                  <p className="text-xs text-gray-500">{c.company}</p>
                 </div>
               </div>
 
@@ -65,16 +65,16 @@ export function ContactsView() {
               <div className="space-y-1.5">
                 <a
                   href={`mailto:${c.email}`}
-                  className="flex items-center gap-2 text-xs text-gray-9000 hover:text-gray-900 transition-colors group"
+                  className="flex items-center gap-2 text-xs text-gray-500 hover:text-gray-900 transition-colors group"
                 >
-                  <span className="text-gray-9000 group-hover:text-gray-9000">📧</span>
+                  <span className="text-gray-500 group-hover:text-gray-500">📧</span>
                   <span className="truncate">{c.email}</span>
                 </a>
                 <a
                   href={`tel:${c.phone}`}
-                  className="flex items-center gap-2 text-xs text-gray-9000 hover:text-gray-900 transition-colors group"
+                  className="flex items-center gap-2 text-xs text-gray-500 hover:text-gray-900 transition-colors group"
                 >
-                  <span className="text-gray-9000 group-hover:text-gray-9000">📞</span>
+                  <span className="text-gray-500 group-hover:text-gray-500">📞</span>
                   <span>{c.phone}</span>
                 </a>
               </div>
@@ -91,7 +91,7 @@ export function ContactsView() {
                     >
                       {prospect.product}
                     </span>
-                    <span className="text-xs text-gray-9000">{prospect.company}</span>
+                    <span className="text-xs text-gray-500">{prospect.company}</span>
                   </div>
                   <span
                     className="text-xs px-1.5 py-0.5 rounded"
@@ -106,7 +106,7 @@ export function ContactsView() {
         })}
 
         {filtered.length === 0 && (
-          <div className="col-span-3 py-12 text-center text-gray-9000 text-sm">
+          <div className="col-span-3 py-12 text-center text-gray-500 text-sm">
             Inga kontakter matchar sökningen
           </div>
         )}

@@ -33,7 +33,7 @@ export function DealsView() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h2 className="text-sm font-semibold text-gray-900">Avtal</h2>
-          <p className="text-sm text-gray-9000 mt-0.5">
+          <p className="text-sm text-gray-500 mt-0.5">
             Signerat: <span className="text-green-700 font-semibold">{formatSEK(totalValue)}</span>
             <span className="mx-2 text-gray-600">·</span>
             Pågående förhandling: <span className="text-yellow-700 font-semibold">{formatSEK(pendingValue)}</span>
@@ -41,7 +41,7 @@ export function DealsView() {
         </div>
         <NavLink
           to="/legal"
-          className="text-xs px-3 py-1.5 rounded-lg bg-surface-raised border border-surface-border text-gray-9000 hover:text-gray-900 transition-colors flex items-center gap-1.5"
+          className="text-xs px-3 py-1.5 rounded-lg bg-surface-raised border border-surface-border text-gray-500 hover:text-gray-900 transition-colors flex items-center gap-1.5"
         >
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 3v18M3 9h18M5 9l3-6 3 6M13 9l3-6 3 6M5 9c0 2.21 1.34 4 3 4s3-1.79 3-4M13 9c0 2.21 1.34 4 3 4s3-1.79 3-4M5 21h14" />
@@ -59,7 +59,7 @@ export function DealsView() {
             className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${
               statusFilter === s
                 ? 'bg-purple-50 text-purple-700 font-medium'
-                : 'bg-surface-raised border border-surface-border text-gray-9000 hover:text-gray-900'
+                : 'bg-surface-raised border border-surface-border text-gray-500 hover:text-gray-900'
             }`}
           >
             {s}
@@ -73,7 +73,7 @@ export function DealsView() {
           <thead>
             <tr className="border-b border-surface-border bg-surface-raised">
               {['Företag', 'Produkt', 'Status', 'Värde/år', 'Startdatum', 'Löptid', 'Ansvarig', 'Åtgärd'].map(h => (
-                <th key={h} className="text-left px-4 py-2.5 text-xs font-semibold text-gray-9000 uppercase tracking-wider whitespace-nowrap">
+                <th key={h} className="text-left px-4 py-2.5 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
                   {h}
                 </th>
               ))}
@@ -100,8 +100,8 @@ export function DealsView() {
                   </span>
                 </td>
                 <td className="px-4 py-3 font-bold text-gray-900 tabular-nums">{formatSEK(d.valueSEK)}</td>
-                <td className="px-4 py-3 text-gray-9000 text-xs">{d.startDate}</td>
-                <td className="px-4 py-3 text-gray-9000 text-xs">{d.durationMonths} mån</td>
+                <td className="px-4 py-3 text-gray-500 text-xs">{d.startDate}</td>
+                <td className="px-4 py-3 text-gray-500 text-xs">{d.durationMonths} mån</td>
                 <td className="px-4 py-3">
                   <span
                     className="text-xs px-2 py-0.5 rounded-full"
@@ -125,7 +125,7 @@ export function DealsView() {
             ))}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={8} className="px-4 py-8 text-center text-gray-9000 text-sm">
+                <td colSpan={8} className="px-4 py-8 text-center text-gray-500 text-sm">
                   Inga avtal matchar filter
                 </td>
               </tr>
@@ -146,10 +146,10 @@ export function DealsView() {
             >
               <div className="flex items-center gap-2 mb-1">
                 <span className="h-1.5 w-1.5 rounded-full" style={{ background: DEAL_STATUS_COLORS[s as DealStatus] }} />
-                <span className="text-xs text-gray-9000">{s}</span>
+                <span className="text-xs text-gray-500">{s}</span>
               </div>
               <p className="text-xl font-bold text-gray-900">{count}</p>
-              {val > 0 && <p className="text-xs text-gray-9000 mt-0.5">{formatSEK(val)}</p>}
+              {val > 0 && <p className="text-xs text-gray-500 mt-0.5">{formatSEK(val)}</p>}
             </div>
           )
         })}

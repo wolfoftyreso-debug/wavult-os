@@ -4,6 +4,7 @@ import { taskRouter } from './routes/tasks'
 import { paymentRouter } from './routes/payments'
 import { payoutRouter } from './routes/payouts'
 import revolutOAuthRouter from './routes/revolut-oauth'
+import healthMonitor from './routes/health-monitor'
 
 const app = express()
 
@@ -44,6 +45,7 @@ app.use('/v1/task', taskRouter)
 app.use('/v1/payment', paymentRouter)
 app.use('/v1/payout', payoutRouter)
 app.use('/', revolutOAuthRouter)
+app.use('/', healthMonitor)
 
 // Health — rate limited
 app.get('/health', healthLimiter, (_req, res) => {

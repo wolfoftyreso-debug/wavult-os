@@ -56,7 +56,7 @@ export function ProspectList() {
               placeholder="Sök företag eller kontakt..."
               className="bg-surface-raised border border-surface-border rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none focus:border-gray-300 w-60"
             />
-            <span className="text-xs text-gray-9000 ml-auto">
+            <span className="text-xs text-gray-500 ml-auto">
               {filtered.length} prospects · {formatSEK(filtered.reduce((s, p) => s + p.valueSEK, 0))} total
             </span>
           </div>
@@ -68,7 +68,7 @@ export function ProspectList() {
                 className={`text-xs px-2.5 py-1 rounded-lg transition-colors ${
                   stageFilter === s
                     ? 'bg-purple-50 text-purple-700 font-medium'
-                    : 'bg-surface-raised border border-surface-border text-gray-9000 hover:text-gray-900'
+                    : 'bg-surface-raised border border-surface-border text-gray-500 hover:text-gray-900'
                 }`}
               >
                 {s}
@@ -113,7 +113,7 @@ export function ProspectList() {
             <thead>
               <tr className="border-b border-surface-border bg-surface-raised">
                 {['Företag', 'Kontakt', 'Produkt', 'Stage', 'Värde/år', 'Senaste aktivitet', 'Ansvarig'].map(h => (
-                  <th key={h} className="text-left px-4 py-2.5 text-xs font-semibold text-gray-9000 uppercase tracking-wider whitespace-nowrap">
+                  <th key={h} className="text-left px-4 py-2.5 text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
                     {h}
                   </th>
                 ))}
@@ -131,7 +131,7 @@ export function ProspectList() {
                   <td className="px-4 py-3">
                     <span className="font-medium text-gray-900">{p.company}</span>
                   </td>
-                  <td className="px-4 py-3 text-gray-9000">{p.contactName}</td>
+                  <td className="px-4 py-3 text-gray-500">{p.contactName}</td>
                   <td className="px-4 py-3">
                     <span
                       className="text-xs px-2 py-0.5 rounded-full font-medium"
@@ -149,7 +149,7 @@ export function ProspectList() {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-gray-900 font-semibold tabular-nums">{formatSEK(p.valueSEK)}</td>
-                  <td className="px-4 py-3 text-gray-9000 text-xs">
+                  <td className="px-4 py-3 text-gray-500 text-xs">
                     {daysSince(p.lastActivity) === 0 ? 'Idag' : `${daysSince(p.lastActivity)}d sedan`}
                   </td>
                   <td className="px-4 py-3">
@@ -164,7 +164,7 @@ export function ProspectList() {
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="px-4 py-8 text-center text-gray-9000 text-sm">
+                  <td colSpan={7} className="px-4 py-8 text-center text-gray-500 text-sm">
                     Inga prospects matchar filter
                   </td>
                 </tr>
@@ -182,11 +182,11 @@ export function ProspectList() {
             <div className="flex items-start justify-between gap-2">
               <div>
                 <h3 className="font-bold text-gray-900">{selected.company}</h3>
-                <p className="text-sm text-gray-9000 mt-0.5">{selected.contactName}</p>
+                <p className="text-sm text-gray-500 mt-0.5">{selected.contactName}</p>
               </div>
               <button
                 onClick={() => setSelected(null)}
-                className="text-gray-9000 hover:text-gray-900 transition-colors text-lg leading-none"
+                className="text-gray-500 hover:text-gray-900 transition-colors text-lg leading-none"
               >
                 ×
               </button>
@@ -216,33 +216,33 @@ export function ProspectList() {
           {/* Details */}
           <div className="px-4 py-3 border-b border-surface-border space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-9000">Värde</span>
+              <span className="text-gray-500">Värde</span>
               <span className="text-gray-900 font-bold">{formatSEK(selected.valueSEK)}/år</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-9000">Dagar i stage</span>
+              <span className="text-gray-500">Dagar i stage</span>
               <span className="text-gray-900">{selected.daysInStage}d</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-9000">Senaste aktivitet</span>
+              <span className="text-gray-500">Senaste aktivitet</span>
               <span className="text-gray-900">{daysSince(selected.lastActivity)}d sedan</span>
             </div>
             {selected.notes && (
-              <p className="text-xs text-gray-9000 italic pt-1">{selected.notes}</p>
+              <p className="text-xs text-gray-500 italic pt-1">{selected.notes}</p>
             )}
             <div className="pt-1">
-              <p className="text-xs text-gray-9000">Nästa steg</p>
+              <p className="text-xs text-gray-500">Nästa steg</p>
               <p className="text-xs text-gray-900 mt-0.5">{selected.nextStep}</p>
             </div>
           </div>
 
           {/* Activity log */}
           <div className="flex-1 overflow-auto px-4 py-3">
-            <p className="text-xs font-semibold text-gray-9000 uppercase tracking-wider mb-3">
+            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
               Aktivitetslogg ({prospectActivities.length})
             </p>
             {prospectActivities.length === 0 ? (
-              <p className="text-xs text-gray-9000 italic">Inga aktiviteter loggade</p>
+              <p className="text-xs text-gray-500 italic">Inga aktiviteter loggade</p>
             ) : (
               <div className="space-y-3">
                 {prospectActivities.map(a => (
@@ -251,11 +251,11 @@ export function ProspectList() {
                     <div className="min-w-0">
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs font-medium text-gray-900">{a.type}</span>
-                        <span className="text-xs text-gray-9000">·</span>
-                        <span className="text-xs text-gray-9000">{a.by}</span>
+                        <span className="text-xs text-gray-500">·</span>
+                        <span className="text-xs text-gray-500">{a.by}</span>
                         <span className="text-xs text-gray-600 ml-auto">{new Date(a.date).toLocaleDateString('sv-SE')}</span>
                       </div>
-                      <p className="text-xs text-gray-9000 mt-0.5 leading-relaxed">{a.note}</p>
+                      <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{a.note}</p>
                     </div>
                   </div>
                 ))}

@@ -30,7 +30,6 @@ const BRAND_COLOR: Record<CampaignActivity['brand'], string> = {
   quixzoom: '#10B981',
   'quixom-ads': '#0EA5E9',
   landvex: '#F59E0B',
-  wavult: '#A78BFA',
   wavult: '#8B5CF6',
 }
 
@@ -38,7 +37,6 @@ const BRAND_ABBR: Record<CampaignActivity['brand'], string> = {
   quixzoom: 'QZ',
   'quixom-ads': 'QA',
   landvex: 'LV',
-  wavult: 'WG',
   wavult: 'WG',
 }
 

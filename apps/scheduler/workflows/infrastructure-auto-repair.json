@@ -1,0 +1,64 @@
+{
+  "name": "Infrastructure Auto-Repair",
+  "nodes": [
+    {
+      "name": "Every 5 minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "parameters": {
+        "rule": {
+          "interval": [{"field": "minutes", "minutesInterval": 5}]
+        }
+      },
+      "position": [240, 300]
+    },
+    {
+      "name": "Check Health",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "url": "https://api.wavult.com/v1/infrastructure/health",
+        "method": "GET"
+      },
+      "position": [460, 300]
+    },
+    {
+      "name": "Filter Down Services",
+      "type": "n8n-nodes-base.code",
+      "parameters": {
+        "jsCode": "const health = $input.first().json;\nconst down = health.services.filter(s => s.status === 'down');\nif (down.length === 0) return [];\nreturn down.map(s => ({ json: s }));"
+      },
+      "position": [680, 300]
+    },
+    {
+      "name": "Restart ECS Service",
+      "type": "n8n-nodes-base.awsEcs",
+      "parameters": {
+        "operation": "update",
+        "cluster": "hypbit",
+        "service": "={{ $json.name }}",
+        "forceNewDeployment": true
+      },
+      "position": [900, 200]
+    },
+    {
+      "name": "Notify Slack/Telegram",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "url": "https://api.hypbit.com/v1/notifications/alert",
+        "method": "POST",
+        "body": "={{ JSON.stringify({ service: $json.name, status: 'down', action: 'restarted', time: new Date().toISOString() }) }}"
+      },
+      "position": [900, 400]
+    }
+  ],
+  "connections": {
+    "Every 5 minutes": {
+      "main": [[{ "node": "Check Health" }]]
+    },
+    "Check Health": {
+      "main": [[{ "node": "Filter Down Services" }]]
+    },
+    "Filter Down Services": {
+      "main": [[{ "node": "Restart ECS Service" }, { "node": "Notify Slack/Telegram" }]]
+    }
+  }
+}

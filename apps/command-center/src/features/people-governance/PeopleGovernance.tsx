@@ -607,7 +607,7 @@ export function PeopleGovernance() {
 
       {/* Section: Core Team */}
       <section>
-        <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1C1C1E', margin: '0 0 16px', textTransform: 'uppercase', letterSpacing: '0.07em', color: '#374151' }}>Core Team</h2>
+        <h2 style={{ fontSize: 14, fontWeight: 700, margin: '0 0 16px', textTransform: 'uppercase', letterSpacing: '0.07em', color: '#374151' }}>Core Team</h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
           {PEOPLE.map(person => (
             <PersonCard
