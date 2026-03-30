@@ -57,6 +57,7 @@ const MeetingView            = lazy(() => import('./features/decisions/MeetingVi
 const LiveMeetingRoom        = lazy(() => import('./features/decisions/LiveMeetingRoom').then(m => ({ default: m.LiveMeetingRoom })))
 const GovernanceDashboard    = lazy(() => import('./features/governance/GovernanceDashboard').then(m => ({ default: m.GovernanceDashboard })))
 const InfrastructureDashboard = lazy(() => import('./features/infrastructure/InfrastructureDashboard').then(m => ({ default: m.InfrastructureDashboard })))
+const WavultIDView           = lazy(() => import('./features/identity/WavultIDView').then(m => ({ default: m.WavultIDView })))
 const CausalOS               = lazy(() => import('./features/causal-os/CausalOS').then(m => ({ default: m.CausalOS })))
 const CommandView            = lazy(() => import('./features/command-view/CommandView').then(m => ({ default: m.CommandView })))
 const MissionControl         = lazy(() => import('./features/mission-control/MissionControl').then(m => ({ default: m.MissionControl })))
@@ -190,6 +191,7 @@ function AuthenticatedApp() {
               <Route path="/decisions/:meetingId" element={<MeetingView />} />
               <Route path="/governance" element={<GovernanceDashboard />} />
               <Route path="/infrastructure" element={<InfrastructureDashboard />} />
+              <Route path="/wavult-id" element={<WavultIDView />} />
               <Route path="/causal-os" element={<CausalOS />} />
               <Route path="/ops" element={<OperationsCenter />} />
               <Route path="/system-graph" element={<SystemGraph />} />

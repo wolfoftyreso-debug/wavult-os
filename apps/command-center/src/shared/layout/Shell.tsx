@@ -5,7 +5,7 @@ import {
   Users, Briefcase, Megaphone,
   DollarSign, Receipt, ShoppingCart, CreditCard,
   Scale, Flag, Layers,
-  BookOpen, Server, Settings,
+  BookOpen, Server, Settings, ShieldCheck,
   Bell, Inbox, User, LayoutGrid,
   Smartphone, MapPin, Package, ArrowRight,
   Building2, MessageSquare, FileText, Activity,
@@ -98,6 +98,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { to: '/knowledge',       labelKey: 'nav.knowledge',      icon: BookOpen },
       { to: '/infrastructure',  labelKey: 'nav.infrastructure', icon: Server },
+      { to: '/wavult-id',       labelKey: 'nav.wavultId',       icon: ShieldCheck },
       { to: '/system-graph',    labelKey: 'nav.systemGraph',    icon: Network },
       { to: '/system-status',   labelKey: 'nav.systemStatus',   icon: Activity },
       { to: '/settings',        labelKey: 'nav.settings',       icon: Settings },
