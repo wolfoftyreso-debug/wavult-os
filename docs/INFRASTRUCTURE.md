@@ -221,3 +221,44 @@ Internet
 
 ## Skapad av
 Bernt (OpenClaw AI-assistent) — 2026-03-21
+
+---
+
+## Backup & Disaster Recovery — aktiverat 2026-03-30
+
+### RDS
+- wavult-identity-core + wavult-identity-ecs
+- Multi-AZ: ✅ (standby replica i annan AZ)
+- Backup retention: 14 dagar
+- Backup window: 02:00-03:00 UTC
+
+### DynamoDB
+- ic-sessions + ic-refresh-tokens
+- Point-in-Time Recovery (PITR): ✅
+- Återställning möjlig till valfri sekund, 35 dagars fönster
+
+### EFS
+- n8n-data + wavult-kafka-efs
+- AWS Backup: ✅ ENABLED
+
+### AWS Backup Plan: wavult-backup-plan
+- Vault primär: wavult-primary-vault (eu-north-1)
+- Vault DR: wavult-dr-vault (eu-west-1)
+- Daily backup kl 01:00 UTC → retention 14 dagar
+- Weekly backup söndagar 02:00 UTC → retention 90 dagar
+- Cross-region copy: eu-north-1 → eu-west-1 auto
+
+### S3 Versioning
+Aktiverat på: quixzoom-app-prod, quixzoom-landing-prod, quixzoom-media-prod,
+landvex-prod, wavult-ops-dashboard, wavult-assets, wavult-receipts,
+wavult-group-web, hypbit-morning-brief
+
+### S3 Cross-Region Replication → eu-west-1 (STANDARD_IA)
+- quixzoom-media-prod → quixzoom-media-prod-dr-eu-west
+- landvex-prod → landvex-prod-dr-eu-west
+- wavult-ops-dashboard → wavult-ops-dashboard-dr-eu-west
+- wavult-receipts → wavult-receipts-dr-eu-west
+
+### Bilder (pre-existing)
+- wavult-images-eu-primary → wavult-images-eu-backup (eu-west-1)
+- wavult-images-us-primary → wavult-images-us-backup (us-west-2)
