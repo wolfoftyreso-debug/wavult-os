@@ -1,6 +1,8 @@
 import { Router, Request, Response } from 'express'
+import { requireAuth } from '../middleware/requireAuth'
 
 const router = Router()
+router.use(requireAuth)
 
 // Unified AI completion endpoint
 // POST /v1/ai/complete

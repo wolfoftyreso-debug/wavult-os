@@ -78,7 +78,7 @@ router.post('/v1/flights/search', async (req: Request, res: Response) => {
 
     return res.json({ flights, total: flights.length })
   } catch (err) {
-    return res.status(500).json({ error: String(err) })
+    return res.status(500).json({ error: 'INTERNAL_ERROR' })
   }
 })
 
@@ -118,7 +118,7 @@ router.post('/v1/flights/book', async (req: Request, res: Response) => {
         : 'confirmed',
     })
   } catch (err) {
-    return res.status(500).json({ error: String(err) })
+    return res.status(500).json({ error: 'INTERNAL_ERROR' })
   }
 })
 
@@ -128,7 +128,7 @@ router.get('/v1/flights/booking/:orderId', async (req: Request, res: Response) =
     const order = await duffelFetch(`/air/orders/${req.params.orderId}`)
     return res.json(order.data)
   } catch (err) {
-    return res.status(500).json({ error: String(err) })
+    return res.status(500).json({ error: 'INTERNAL_ERROR' })
   }
 })
 

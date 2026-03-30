@@ -1,8 +1,10 @@
 import { Router } from 'express'
 import { ECSClient, DescribeServicesCommand } from '@aws-sdk/client-ecs'
 import { ElasticLoadBalancingV2Client } from '@aws-sdk/client-elastic-load-balancing-v2'
+import { requireAuth, requireRole } from '../middleware/requireAuth'
 
 const router = Router()
+router.use(requireAuth, requireRole('admin'))
 const ecs = new ECSClient({ region: 'eu-north-1' })
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const elb = new ElasticLoadBalancingV2Client({ region: 'eu-north-1' })

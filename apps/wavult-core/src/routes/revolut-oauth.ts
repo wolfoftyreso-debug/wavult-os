@@ -2,9 +2,10 @@ import { Router, Request, Response } from 'express'
 import * as https from 'https'
 import * as fs from 'fs'
 import * as crypto from 'crypto'
+import { requireAuth, requireRole } from '../middleware/requireAuth'
 
 const router = Router()
-
+// OAuth callback is public (Revolut redirects here) — other routes require admin
 const CLIENT_ID = process.env.REVOLUT_BUSINESS_CLIENT_ID || 'oTewVSHYqP-EZXpctxOM7v2GJO-qxt0s57e0g7GQFA'
 const REDIRECT_URI = 'https://api.wavult.com/revolut/callback'
 const PRIVATE_KEY_PATH = process.env.REVOLUT_BUSINESS_PRIVATE_KEY || '/home/erikwsl/.openclaw/secrets/revolut_biz_private_v2.pem'
@@ -88,8 +89,8 @@ router.get('/revolut/callback', async (req: Request, res: Response) => {
   }
 })
 
-// Refresh token endpoint
-router.post('/v1/oauth/revolut/refresh', async (req: Request, res: Response) => {
+// Refresh token endpoint — admin only
+router.post('/v1/oauth/revolut/refresh', requireAuth, requireRole('admin'), async (req: Request, res: Response) => {
   const refreshToken = process.env.REVOLUT_REFRESH_TOKEN
   if (!refreshToken) {
     return res.status(400).json({ error: 'No refresh token stored' })

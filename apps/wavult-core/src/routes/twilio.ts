@@ -1,6 +1,8 @@
 import { Router, Request, Response } from 'express'
+import { requireAuth, requireRole } from '../middleware/requireAuth'
 
 const router = Router()
+router.use(requireAuth, requireRole('admin'))
 
 function getTwilioClient() {
   const accountSid = process.env.TWILIO_ACCOUNT_SID || ''
@@ -29,7 +31,7 @@ router.get('/v1/twilio/numbers/available', async (req: Request, res: Response) =
       capabilities: n.capabilities,
     })))
   } catch (err) {
-    return res.status(500).json({ error: String(err) })
+    return res.status(500).json({ error: 'INTERNAL_ERROR' })
   }
 })
 
@@ -51,7 +53,7 @@ router.post('/v1/twilio/numbers/purchase', async (req: Request, res: Response) =
       friendly_name: number.friendlyName,
     })
   } catch (err) {
-    return res.status(500).json({ error: String(err) })
+    return res.status(500).json({ error: 'INTERNAL_ERROR' })
   }
 })
 
@@ -67,7 +69,7 @@ router.get('/v1/twilio/numbers', async (_req: Request, res: Response) => {
       capabilities: n.capabilities,
     })))
   } catch (err) {
-    return res.status(500).json({ error: String(err) })
+    return res.status(500).json({ error: 'INTERNAL_ERROR' })
   }
 })
 
@@ -82,7 +84,7 @@ router.post('/v1/twilio/sms/send', async (req: Request, res: Response) => {
     const msg = await client.messages.create({ to, from, body })
     return res.json({ sid: msg.sid, status: msg.status })
   } catch (err) {
-    return res.status(500).json({ error: String(err) })
+    return res.status(500).json({ error: 'INTERNAL_ERROR' })
   }
 })
 

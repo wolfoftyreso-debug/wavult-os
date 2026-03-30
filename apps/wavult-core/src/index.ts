@@ -10,6 +10,7 @@ import flightsRouter from './routes/flights'
 import twilioRouter from './routes/twilio'
 import aiApiRouter from './routes/ai-api'
 import mediaApiRouter from './routes/media-api'
+import berntRouter from './routes/bernt'
 
 const app = express()
 
@@ -49,6 +50,7 @@ const healthLimiter = rateLimit({
 app.use('/v1/task', taskRouter)
 app.use('/v1/payment', paymentRouter)
 app.use('/v1/payout', payoutRouter)
+app.use('/v1/bernt', berntRouter)       // OpenClaw/Bernt integration
 app.use('/', revolutOAuthRouter)
 app.use('/', healthMonitor)
 app.use('/', quixzoomRouter)
@@ -62,8 +64,9 @@ app.get('/health', healthLimiter, (_req, res) => {
   res.json({
     status: 'ok',
     service: 'wavult-core',
-    version: '1.0.0',
+    version: '2.0.0',
     engines: ['state', 'financial', 'fraud', 'event'],
+    integrations: ['identity-core', 'revolut', 's3', 'rekognition', 'bernt'],
   })
 })
 
