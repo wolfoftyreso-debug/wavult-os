@@ -245,5 +245,6 @@
     "landvex_portal": "Landvex",
     "quixzoom_ads": "Quixom Ads"
   },
-  "nav.openclaw": "OpenClaw"
+  "nav.openclaw": "OpenClaw",
+  "nav.networkMap": "Network Map"
 }

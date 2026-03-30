@@ -71,6 +71,7 @@ const QuixzoomAds            = lazy(() => import('./features/quixzoom-ads/Quixzo
 const FinanceFlow            = lazy(() => import('./features/finance-flow/FinanceFlow').then(m => ({ default: m.FinanceFlow })))
 const FlightSearch           = lazy(() => import('./features/travel/FlightSearch').then(m => ({ default: m.FlightSearch })))
 const OpenClawHub            = lazy(() => import('./features/openclaw/OpenClawHub').then(m => ({ default: m.OpenClawHub })))
+const NetworkMap             = lazy(() => import('./features/network-map/NetworkMap').then(m => ({ default: m.NetworkMap })))
 const TeamPhones             = lazy(() => import('./features/communications/TeamPhones').then(m => ({ default: m.TeamPhones })))
 
 // ─── Page loader fallback ───────────────────────────────────────────────────────
@@ -204,6 +205,7 @@ function AuthenticatedApp() {
               <Route path="/flights" element={<FlightSearch />} />
               <Route path="/phones" element={<TeamPhones />} />
               <Route path="/openclaw" element={<OpenClawHub />} />
+              <Route path="/network-map" element={<NetworkMap />} />
             </Routes>
           </Suspense>
         </Shell>

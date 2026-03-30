@@ -104,6 +104,7 @@ const NAV_GROUPS: NavGroup[] = [
       { to: '/system-graph',    labelKey: 'nav.systemGraph',    icon: Network },
       { to: '/system-status',   labelKey: 'nav.systemStatus',   icon: Activity },
       { to: '/openclaw',        labelKey: 'nav.openclaw',        icon: Terminal },
+      { to: '/network-map',    labelKey: 'nav.networkMap',      icon: Globe },
       { to: '/settings',        labelKey: 'nav.settings',       icon: Settings },
     ],
   },
