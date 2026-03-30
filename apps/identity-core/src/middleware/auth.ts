@@ -44,9 +44,16 @@ export function requireAuth(req: Request, res: Response, next: NextFunction): vo
 
   const issuer = decoded?.iss as string | undefined
   if (issuer && (issuer === 'supabase' || issuer.includes('supabase'))) {
-    // Legacy path — log warning, pass through during hybrid phase
-    // TODO: Remove when AUTH_MODE=identity-core-only
-    console.warn('[Auth] Legacy Supabase token detected', { requestId: req.requestId })
+    // Legacy Supabase token path — only active during hybrid migration phase.
+    // DISABLED by default. Enable via AUTH_MODE=hybrid ONLY for temporary migration windows.
+    // NEVER enable in identity-core-only mode.
+    if (config.authMode !== 'hybrid') {
+      console.warn('[Auth] Legacy Supabase token rejected — not in hybrid mode', { requestId: req.requestId })
+      res.status(401).json({ error: 'LEGACY_TOKEN_NOT_ACCEPTED' })
+      return
+    }
+    // WARNING: No signature verification on legacy tokens. Temporary hybrid path only.
+    console.warn('[Auth] Legacy Supabase token accepted (hybrid mode)', { requestId: req.requestId })
     req.user = decoded as unknown as AccessTokenPayload
     next()
     return

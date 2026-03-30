@@ -223,10 +223,12 @@ export async function refreshAccessToken(
   if (!rows[0]) throw new Error('USER_NOT_FOUND')
   const user = rows[0]
 
-  // INVARIANT 3: token_version must match (logout/password reset invalidates all tokens)
+  // INVARIANT 3: token_version must match (logout/password reset invalidates all tokens).
+  // refresh_count carries the token_version at session creation time.
+  // If token_version has been incremented (logout/password reset), deny immediately.
   if ((user.token_version as number) !== session.refresh_count) {
-    // Note: we embed token_version at session creation via refresh_count field
-    // Full tv check happens in middleware against JWT tv claim vs DB
+    await logAuthEvent(session.user_id, 'token.version_mismatch', undefined, undefined, sessionId, undefined, requestId)
+    throw new Error('TOKEN_VERSION_MISMATCH')
   }
 
   // Rotate session atomically — DOUBLE SPEND protection

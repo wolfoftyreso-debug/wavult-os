@@ -55,6 +55,9 @@ authRouter.post('/refresh', asyncHandler(async (req, res) => {
     if (msg === 'CONFLICT') {
       res.status(409).json({ error: 'SESSION_CONFLICT' }); return
     }
+    if (msg === 'TOKEN_VERSION_MISMATCH') {
+      res.status(401).json({ error: 'TOKEN_REVOKED' }); return
+    }
     throw err
   }
 }))
@@ -75,26 +78,4 @@ authRouter.use((err: Error, _req: Request, res: Response, _next: NextFunction) =
   }
   console.error('[Auth] Unhandled error', { name: err.name })
   res.status(500).json({ error: 'INTERNAL_ERROR' })
-})
-
-// TEMP: Set initial password for migrated users (one-time setup)
-authRouter.post('/set-initial-password', async (req: Request, res: Response) => {
-  const secret = req.headers['x-migration-secret']
-  if (secret !== 'wavult-migrate-2026') return res.status(401).json({ error: 'UNAUTHORIZED' })
-  
-  const { email, password } = req.body
-  if (!email || !password) return res.status(400).json({ error: 'MISSING_PARAMS' })
-  
-  const normalizedEmail = email.trim().toLowerCase()
-  const { hashPassword } = await import('../crypto/password')
-  const { db } = await import('../db/postgres')
-  
-  const hash = await hashPassword(password)
-  const result = await db.query(
-    'UPDATE ic_users SET password_hash = $1, updated_at = NOW() WHERE email = $2 RETURNING id',
-    [hash, normalizedEmail]
-  )
-  
-  if (!result.rows.length) return res.status(404).json({ error: 'USER_NOT_FOUND' })
-  return res.json({ success: true, email: normalizedEmail })
 })
