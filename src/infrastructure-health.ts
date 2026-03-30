@@ -8,10 +8,7 @@ import {
   DescribeServicesCommand,
   ListServicesCommand,
 } from '@aws-sdk/client-ecs'
-import {
-  CloudFrontClient,
-  ListDistributionsCommand,
-} from '@aws-sdk/client-cloudfront'
+// @aws-sdk/client-cloudfront not installed — CloudFront status via ELB health only
 
 const router = Router()
 
@@ -27,13 +24,12 @@ const ECS_SERVICES = [
   { id: 'team-pulse',     name: 'Team Pulse',      serviceName: 'team-pulse'     },
 ]
 
+// CloudFront distributions — status via HTTP probe (no SDK needed)
 const CF_DISTRIBUTIONS = [
-  { id: 'E2QUO7HIHWWP18', name: 'app.quixzoom.com'  },
-  { id: 'EE30B9WM5ZYM7',  name: 'quixzoom.com'      },
-  { id: 'ETV50TP333Y17',  name: 'Optical Insight'   },
-  { id: 'EOET6P2FWF98O',  name: 'LandveX'           },
-  { id: 'E2JOYHG1LYOXGM', name: 'hypbit.com'        },
-  { id: 'E2Z3B93KJXH71F', name: 'app.hypbit.com'    },
+  { id: 'E2QUO7HIHWWP18', name: 'app.quixzoom.com',  url: 'https://app.quixzoom.com'  },
+  { id: 'EE30B9WM5ZYM7',  name: 'quixzoom.com',      url: 'https://quixzoom.com'      },
+  { id: 'E2JOYHG1LYOXGM', name: 'hypbit.com',        url: 'https://hypbit.com'        },
+  { id: 'E2Z3B93KJXH71F', name: 'app.hypbit.com',    url: 'https://app.hypbit.com'    },
 ]
 
 // ─── Status helpers ───────────────────────────────────────────────────────────
@@ -116,43 +112,43 @@ async function fetchECSServices() {
   })
 }
 
-// ─── Fetch CloudFront distributions ──────────────────────────────────────────
+// ─── Probe CloudFront distributions via HTTP HEAD ────────────────────────────
 
 async function fetchCloudFrontDistributions() {
-  const client = new CloudFrontClient({ region: 'us-east-1' }) // CF is always us-east-1
-
-  const cmd = new ListDistributionsCommand({})
-  const res = await client.send(cmd)
-
-  const items = res.DistributionList?.Items ?? []
-
-  return CF_DISTRIBUTIONS.map(def => {
-    const dist = items.find(d => d.Id === def.id)
-    const cfStatus = dist?.Status // 'Deployed' | 'InProgress'
-    const enabled = dist?.Enabled ?? false
-
-    let status: ServiceStatus = 'unknown'
-    if (dist) {
-      if (!enabled) status = 'down'
-      else if (cfStatus === 'Deployed') status = 'operational'
-      else if (cfStatus === 'InProgress') status = 'degraded'
-      else status = 'unknown'
-    }
-
-    return {
-      id: def.id,
-      name: def.name,
-      provider: 'cloudflare' as const, // display as CF in UI (it's CF CDN layer)
-      category: 'cdn' as const,
-      status,
-      domainName: dist?.DomainName ?? null,
-      aliases: dist?.Aliases?.Items ?? [],
-      cfStatus: cfStatus ?? null,
-      enabled,
-      region: 'global',
-      lastEvent: dist ? `Status: ${cfStatus ?? 'unknown'}, Enabled: ${enabled}` : 'Distribution not found',
+  const probes = CF_DISTRIBUTIONS.map(async def => {
+    const start = Date.now()
+    try {
+      const controller = new AbortController()
+      const timeout = setTimeout(() => controller.abort(), 5_000)
+      const res = await fetch(def.url, {
+        method: 'HEAD',
+        signal: controller.signal,
+        redirect: 'follow',
+      })
+      clearTimeout(timeout)
+      const latency = Date.now() - start
+      const status: ServiceStatus = res.ok || res.status < 500 ? 'operational' : 'degraded'
+      return {
+        id: def.id, name: def.name,
+        provider: 'cloudflare' as const,
+        category: 'cdn' as const,
+        status, latency,
+        region: 'global',
+        lastEvent: `HTTP ${res.status} in ${latency}ms`,
+      }
+    } catch {
+      return {
+        id: def.id, name: def.name,
+        provider: 'cloudflare' as const,
+        category: 'cdn' as const,
+        status: 'down' as ServiceStatus,
+        latency: null,
+        region: 'global',
+        lastEvent: 'Probe timeout or unreachable',
+      }
     }
   })
+  return Promise.all(probes)
 }
 
 // ─── Endpoint ─────────────────────────────────────────────────────────────────
