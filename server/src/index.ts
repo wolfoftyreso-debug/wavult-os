@@ -178,6 +178,16 @@ const DEFAULT_ORIGINS = [
   // Wavult OS frontend — Cloudflare Pages
   "https://wavult-os.pages.dev",
   "https://wavult.com",
+  // UAPIX — API marketplace
+  "https://uapix.com",
+  "https://www.uapix.com",
+  "https://uapix.pages.dev",
+  // Apifly — consumer API platform
+  "https://apifly.com",
+  "https://www.apifly.com",
+  "https://apifly.pages.dev",
+  // Builder API Cloud — developer/builder layer
+  "https://builder-api-cloud.pages.dev",
 ];
 const allowedOrigins = corsOrigins.length > 0
   ? [...new Set([...corsOrigins, ...DEFAULT_ORIGINS])]
@@ -535,7 +545,17 @@ app.use("/api/spatial", spatialRouter);   // Spatial Flow Intelligence — zones
 app.use("/api/consumables", consumablesRouter); // Consumables Management — operational cost control
 app.use("/api/culture", cultureRouter);       // Culture & Event Automation — birthdays, breakfast, events
 app.use("/api/people", peopleOSRouter);       // People OS (ERM) — pulse surveys, engagement, feedback, warnings, 1-on-1s
-app.use(bankingRouter); // Banking: /api/banking/* + /api/integrations/fortnox/* + /api/integrations/visma/*
+app.use(bankingRouter); // Banking: /api/banking/* (Open Banking/Tink, BGC, SEPA, Swish, Autogiro)
+import { smsQuickRouter } from './sms-router';
+app.use(smsQuickRouter); // SMS: POST /api/sms/send → 46elks
+import { uapixOrdersRouter } from './uapix-orders';
+app.use(uapixOrdersRouter); // UAPIX Orders — /api/uapix/orders
+
+import { uapixPortalRouter } from './uapix-portal';
+app.use('/api/uapix/portal', uapixPortalRouter); // UAPIX Portal — magic-link, /me, /keys
+
+import { builderLeadsRouter } from './builder-leads';
+app.use('/api/builder/leads', builderLeadsRouter); // Builder API Cloud investor applications
 
 // ---------------------------------------------------------------------------
 // Customer Interaction Engine — Brand Layer, Payment Orchestration, Customer State
