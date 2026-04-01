@@ -20,6 +20,7 @@ import {
 // ---------------------------------------------------------------------------
 // Router imports - each module exposes an Express Router
 // ---------------------------------------------------------------------------
+import v1Router from "./routes/v1";
 import executionRouter from "./execution";
 import capabilityRouter from "./capability";
 import processRouter from "./process";
@@ -154,6 +155,9 @@ app.use((_req, res, next) => {
   res.setHeader('Referrer-Policy', 'no-referrer');
   res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
   res.removeHeader('X-Powered-By');
+  // Version headers
+  res.setHeader('X-API-Version', '1.0');
+  res.setHeader('X-Supported-Versions', '1.0, 2.0-preview');
   next();
 });
 // CORS — support both legacy pixdrift.com origins and the live *.bc.pixdrift.com subdomains.
@@ -293,6 +297,29 @@ const healthLimiter = rateLimit({
 });
 
 // Eva bot (public — no auth required for Telegram webhook)
+// ─── API Version Routing ──────────────────────────────────────────────────────
+app.use('/api/v1', v1Router);  // All v1 routes (proxy to existing)
+
+// GET /api/version — version manifest
+app.get('/api/version', (_req, res) => {
+  res.json({
+    api: {
+      current: 'v1',
+      supported: ['v1'],
+      preview: ['v2'],
+    },
+    services: {
+      'wavult-api': { version: '1.0', status: 'ok', build: process.env.BUILD_SHA || 'local' },
+    },
+    policy: {
+      supportWindow: '12 months',
+      breakingChanges: 'major version only',
+      deprecationNotice: '90 days',
+    },
+    timestamp: new Date().toISOString(),
+  });
+});
+
 app.use('/api/eva-bot', evaBotRouter);
 
 // Request logging
@@ -1107,3 +1134,25 @@ app.post('/migrate-to-ic', async (req: import('express').Request, res: import('e
     return res.status(500).json({ error: String(e) });
   }
 });
+
+// ─── Perplexity AI Research endpoint ─────────────────────────────────────────
+app.post('/api/research', async (req, res) => {
+  const { query, focus = 'internet' } = req.body
+  if (!query) return res.status(400).json({ error: 'query required' })
+  try {
+    const resp = await fetch('https://api.perplexity.ai/chat/completions', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${process.env.PERPLEXITY_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'sonar-pro',
+        messages: [{ role: 'user', content: query }],
+        search_recency_filter: 'month',
+        return_citations: true
+      })
+    })
+    const data = await resp.json()
+    res.json({ ok: true, answer: data.choices?.[0]?.message?.content, citations: data.citations || [] })
+  } catch (e: any) {
+    res.status(500).json({ error: e.message })
+  }
+})

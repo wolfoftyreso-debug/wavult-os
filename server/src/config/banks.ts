@@ -68,25 +68,6 @@ export interface AccountingProvider {
 }
 
 export const ACCOUNTING_PROVIDERS: AccountingProvider[] = [
-  {
-    id: 'fortnox',
-    name: 'Fortnox',
-    country: 'SE',
-    market: 'SMB',
-    color: '#1A73E8',
-    description: 'Marknadsledande bokföringssystem för svenska SMB',
-    authType: 'oauth2',
-    docsUrl: 'https://developer.fortnox.se/documentation/',
-  },
-  {
-    id: 'visma',
-    name: 'Visma e-conomic',
-    country: 'SE',
-    market: 'SMB',
-    color: '#0033A0',
-    description: 'Nordisk standard för bokföring och ekonomihantering',
-    authType: 'oauth2',
-    docsUrl: 'https://restdocs.e-conomic.com/',
   },
   {
     id: 'pe_accounting',

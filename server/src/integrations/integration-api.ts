@@ -303,16 +303,6 @@ router.get('/api/integrations/:id/mappings/suggest', requireAdmin, async (req: R
 
 // Predefined mapping templates per system type
 const PREDEFINED_MAPPINGS: Record<string, any[]> = {
-  FORTNOX: [
-    { entity_type: 'customer', external_entity_type: 'Customer', internal_field: 'name', external_field: 'Name', direction: 'BOTH' },
-    { entity_type: 'customer', external_entity_type: 'Customer', internal_field: 'email', external_field: 'Email', direction: 'BOTH' },
-    { entity_type: 'customer', external_entity_type: 'Customer', internal_field: 'external_ref', external_field: 'CustomerNumber', direction: 'INBOUND' },
-    { entity_type: 'invoice', external_entity_type: 'Invoice', internal_field: 'amount', external_field: 'Total', direction: 'INBOUND' },
-    { entity_type: 'invoice', external_entity_type: 'Invoice', internal_field: 'external_ref', external_field: 'DocumentNumber', direction: 'INBOUND' },
-    { entity_type: 'supplier', external_entity_type: 'Supplier', internal_field: 'name', external_field: 'Name', direction: 'BOTH' },
-    { entity_type: 'product', external_entity_type: 'Article', internal_field: 'name', external_field: 'Description', direction: 'BOTH' },
-    { entity_type: 'product', external_entity_type: 'Article', internal_field: 'sku', external_field: 'ArticleNumber', direction: 'BOTH' },
-  ],
   SAP: [
     { entity_type: 'customer', external_entity_type: 'BusinessPartner', internal_field: 'name', external_field: 'BusinessPartnerFullName', direction: 'BOTH' },
     { entity_type: 'customer', external_entity_type: 'BusinessPartner', internal_field: 'external_ref', external_field: 'BusinessPartner', direction: 'INBOUND' },

@@ -353,7 +353,7 @@ const STATIC_CHANGELOG: ChangelogEntry[] = [
     date: '2026-03-01',
     category: 'feature',
     title: 'SIE4-export',
-    description: 'Exportera verifikationer i SIE4-format. Kompatibelt med Fortnox och Visma.',
+    description: 'Exportera verifikationer i SIE4-format. Kompatibelt med svenska redovisningssystem.',
     docs_url: '/docs/sie4',
   },
   {

@@ -164,7 +164,7 @@ router.post("/create-intent", async (req: Request, res: Response) => {
 });
 
 // ---------------------------------------------------------------------------
-// POST /api/payments/create-invoice — Faktura (Fortnox/intern)
+// POST /api/payments/create-invoice — Faktura
 // ---------------------------------------------------------------------------
 router.post("/create-invoice", auth, async (req: Request, res: Response) => {
   const {

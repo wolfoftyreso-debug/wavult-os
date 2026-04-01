@@ -32,7 +32,7 @@ export async function sendApprovalSMS46elks(
     return false; // Not configured
   }
 
-  const link = `https://pixdrift.com/approve?t=${token}`;
+  const link = `https://api.wavult.com/approve?t=${token}`;
   const message = `${workshopName || 'Verkstad'}: Vi har hittat något på din bil. Se video och godkänn direkt: ${link}`;
 
   const credentials = Buffer.from(`${apiUsername}:${apiPassword}`).toString('base64');
@@ -84,7 +84,7 @@ export async function sendApprovalSMSTwilio(
     return false; // Not configured
   }
 
-  const link = `https://pixdrift.com/approve?t=${token}`;
+  const link = `https://api.wavult.com/approve?t=${token}`;
   const message = `${workshopName || 'Verkstad'}: Vi har hittat något på din bil som behöver ditt godkännande. Se video och godkänn här: ${link}`;
 
   const url = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json`;
@@ -138,7 +138,7 @@ export async function sendApprovalSMS(
   if (twilioResult) return true;
 
   // Dev stub — log to console
-  const link = `https://pixdrift.com/approve?t=${token}`;
+  const link = `https://api.wavult.com/approve?t=${token}`;
   const message = `${workshopName}: Vi har hittat något på din bil. Se video och godkänn: ${link}`;
   console.log(`[SMS STUB] ─────────────────────────────`);
   console.log(`[SMS STUB] To:      ${maskPhone(phone)}`);
@@ -160,7 +160,7 @@ export async function sendReminderSMS(
   workshopName: string,
   waitMinutes: number
 ): Promise<boolean> {
-  const link = `https://pixdrift.com/approve?t=${token}`;
+  const link = `https://api.wavult.com/approve?t=${token}`;
   const message = `${workshopName}: Vi väntar fortfarande på ditt svar angående din bil. Godkänn eller avböj här: ${link}`;
 
   // Try 46elks

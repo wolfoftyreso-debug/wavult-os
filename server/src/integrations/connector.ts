@@ -49,11 +49,6 @@ export function createConnector(config: any): ERPConnector {
   const systemType: string = (config.system_type ?? '').toUpperCase();
 
   switch (systemType) {
-    case 'FORTNOX': {
-      // Lazy import to avoid circular deps at module level
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { FortnoxConnector } = require('./fortnox');
-      return new FortnoxConnector(config);
     }
     case 'SAP':
     case 'SAP_B1':
