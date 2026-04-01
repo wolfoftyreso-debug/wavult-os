@@ -50,7 +50,7 @@ export function KnowledgeHub() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-hidden p-4 md:p-6" style={{ minHeight: 0 }}>
+      <div className="flex-1 overflow-y-auto p-4 md:p-6" style={{ minHeight: 0 }}>
         {activeTab === 'systemskola'    && <AcademyView />}
         {activeTab === 'kunskapsbas'    && <KnowledgeBase />}
         {activeTab === 'zoomer-cert'    && <ZoomerCert />}
