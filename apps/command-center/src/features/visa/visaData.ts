@@ -141,6 +141,10 @@ const UAE_INVESTOR_STEPS: VisaApplication['steps'] = [
 ]
 
 // ─── Thailand Tourist — genererar steg per person ────────────────────────────
+// TDAC = Thailand Digital Arrival Card (obligatorisk sedan 1 maj 2025)
+// Ersätter gamla pappersblanketten TM6. Gratis, fylls i max 72h innan ankomst.
+// Officiell sida: https://tdac.immigration.go.th
+// OBS: Många bluffesidor tar betalt — använd BARA den officiella URL:en
 function thaiSteps(owner: string, hotelOwner: string): VisaApplication['steps'] {
   return [
     {
@@ -183,6 +187,34 @@ function thaiSteps(owner: string, hotelOwner: string): VisaApplication['steps'] 
           status: owner === 'erik' ? 'gathering' : 'needed',
           notes: 'Leon förhandlar — Nysa Hotel Bangkok',
         },
+      ],
+    },
+    {
+      id: `th-04-${owner}`,
+      phase: 'Inresa',
+      title: 'TDAC — Thailand Digital Arrival Card (obligatorisk)',
+      owner,
+      status: 'todo',
+      est_days: 1,
+      deadline: '2026-04-11', // Senast 72h innan ankomst = 8 april
+      notes: [
+        'Obligatorisk sedan 1 maj 2025. Ersätter gamla TM6-pappersblanketten.',
+        'Fylls i MAX 72 timmar (3 dagar) före ankomst till Thailand.',
+        'Gratis — använd BARA officiell sajt: https://tdac.immigration.go.th',
+        'VARNING: Många bluffesidor tar betalt och stjäl passdata. Inga tredjepartssajter!',
+        'Kräver: passinfo, personuppgifter, ekonomisk info, resplan, boende i Thailand, nyligen besökta länder, hälsostatus.',
+        'Inresedatum: 11 april 2026 → fyll i TDAC 8–10 april.'
+      ].join(' | '),
+      documents: [
+        {
+          id: `th-04-${owner}-tdac`,
+          name: 'TDAC-bekräftelse (QR-kod / referensnummer)',
+          required: true,
+          status: 'needed',
+          notes: 'Spara QR-koden / referensnumret från tdac.immigration.go.th. Visa vid gränskontroll.',
+        },
+        doc(`th-04-${owner}`, 'Pass (för TDAC-ifyllning)', true, 'Passnummer, giltighetstid, utfärdat land'),
+        doc(`th-04-${owner}`, 'Hotellbokning (för TDAC)', true, 'Adress till boende i Thailand krävs i formuläret'),
       ],
     },
   ]

@@ -475,6 +475,61 @@ export function VisaHub() {
           </div>
         )}
 
+        {/* TDAC — Thailand Digital Arrival Card alert */}
+        {thDays >= 0 && thDays <= 10 && (
+          <div className="rounded-xl border border-red-500/50 bg-red-950/30 px-5 py-4">
+            <div className="flex items-start gap-3">
+              <AlertTriangle size={18} className="text-red-400 shrink-0 mt-0.5" />
+              <div className="flex-1 min-w-0">
+                <p className="text-red-300 font-semibold text-sm">
+                  ⚠️ TDAC krävs — Thailand Digital Arrival Card
+                </p>
+                <p className="text-red-400/80 text-xs mt-1 leading-relaxed">
+                  Obligatorisk sedan 1 maj 2025. Ersätter TM6-pappersblanketten. <strong>Måste fyllas i max 72h före ankomst</strong> — alltså senast <strong>8 april kl 23:59</strong> för inresa 11 april.
+                </p>
+                <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                  <div className="bg-gray-900/60 rounded-lg p-2.5 space-y-1">
+                    <p className="text-gray-400 font-medium uppercase tracking-wide text-[10px]">Officiell sajt (gratis)</p>
+                    <a
+                      href="https://tdac.immigration.go.th"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-400 hover:text-blue-300 transition-colors font-mono"
+                    >
+                      tdac.immigration.go.th →
+                    </a>
+                  </div>
+                  <div className="bg-gray-900/60 rounded-lg p-2.5 space-y-1">
+                    <p className="text-gray-400 font-medium uppercase tracking-wide text-[10px]">Krävs i formuläret</p>
+                    <p className="text-gray-300 text-[11px]">Pass · Personuppgifter · Ekonomisk info · Resplan · Boende · Hälsostatus</p>
+                  </div>
+                </div>
+                <div className="mt-2 flex items-center gap-2 bg-amber-900/30 rounded-lg px-3 py-1.5">
+                  <AlertTriangle size={11} className="text-amber-400 shrink-0" />
+                  <p className="text-amber-400/90 text-[11px]">
+                    Bluffesidor tar betalt och stjäl passdata. Använd <span className="font-semibold">BARA</span> den officiella URL:en ovan.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TDAC info banner — om mer än 10 dagar kvar men reser till Thailand */}
+        {thDays > 10 && thDays < 30 && (
+          <div className="rounded-xl border border-blue-800/40 bg-blue-950/20 px-5 py-3 flex items-start gap-3">
+            <Globe size={15} className="text-blue-400 shrink-0 mt-0.5" />
+            <div>
+              <p className="text-blue-300 text-xs font-medium">
+                TDAC — Thailand Digital Arrival Card krävs (sedan maj 2025)
+              </p>
+              <p className="text-blue-400/60 text-[11px] mt-0.5">
+                Fyll i max 72h före ankomst på <span className="font-mono">tdac.immigration.go.th</span> (gratis, officiell sajt). Ersätter TM6-blanketten.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* [B] Stats */}
         <StatsRow apps={VISA_APPLICATIONS} />
 
@@ -508,7 +563,7 @@ export function VisaHub() {
         <div className="rounded-xl border border-gray-800 bg-gray-900/50 p-4">
           <p className="text-xs text-gray-600 flex items-center gap-2">
             <CheckCircle2 size={12} className="text-blue-600" />
-            UAE DIFC/GDRFA har inga publika API:er — all inlämning sker via PRO-agent (Virtuzone). Systemet spårar process och dokumentstatus.
+            UAE: DIFC/GDRFA har inga publika API:er — all inlämning via PRO-agent (Virtuzone). Thailand: TDAC fylls i manuellt på tdac.immigration.go.th (gratis, obligatorisk sedan maj 2025).
           </p>
         </div>
 
