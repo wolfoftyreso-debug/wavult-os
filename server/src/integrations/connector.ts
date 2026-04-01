@@ -49,7 +49,6 @@ export function createConnector(config: any): ERPConnector {
   const systemType: string = (config.system_type ?? '').toUpperCase();
 
   switch (systemType) {
-    }
     case 'SAP':
     case 'SAP_B1':
     case 'SAP_S4': {
