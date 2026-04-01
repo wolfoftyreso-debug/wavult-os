@@ -136,7 +136,7 @@ function CertificateView({ onReset }: { onReset: () => void }) {
 
         <p className="text-xs text-amber-700/60 font-mono tracking-[0.3em] mb-2">WAVULT GROUP — QUIXZOOM</p>
 
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">Certifikat</h1>
+        <h1 className="text-2xl font-bold text-text-primary mb-1">Certifikat</h1>
         <h2 className="text-lg text-amber-300 mb-6">Standard Zoomer</h2>
 
         <p className="text-sm text-gray-9000 leading-relaxed mb-6">
@@ -147,7 +147,7 @@ function CertificateView({ onReset }: { onReset: () => void }) {
 
         <div className="border-t border-amber-400/20 pt-4 mb-6">
           <p className="text-xs text-gray-9000 font-mono">UTFÄRDAT AV</p>
-          <p className="text-sm text-gray-900 font-semibold mt-0.5">Wavult Group</p>
+          <p className="text-sm text-text-primary font-semibold mt-0.5">Wavult Group</p>
           <p className="text-xs text-gray-9000 mt-0.5">QuiXzoom UAB</p>
         </div>
 
@@ -230,7 +230,7 @@ export function ZoomerCert() {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <div className="text-5xl mb-4">📸</div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Zoomer-certifiering</h1>
+            <h1 className="text-2xl font-bold text-text-primary mb-2">Zoomer-certifiering</h1>
             <p className="text-gray-9000 text-sm leading-relaxed">
               Bli en certifierad Zoomer i QuiXzoom-plattformen.
               Certifieringen testar din kunskap om plattformen,
@@ -239,7 +239,7 @@ export function ZoomerCert() {
           </div>
 
           <div className="bg-white border border-surface-border rounded-xl p-5 mb-6">
-            <h3 className="text-sm font-semibold text-gray-900 mb-4">Vad du behöver veta</h3>
+            <h3 className="text-sm font-semibold text-text-primary mb-4">Vad du behöver veta</h3>
             <div className="space-y-3">
               {[
                 { icon: '❓', text: '10 frågor om plattform, etik, juridik och kvalitet' },
@@ -273,11 +273,11 @@ export function ZoomerCert() {
       <div className="flex flex-col items-center justify-center h-full py-8">
         <div className="w-full max-w-md text-center">
           <div className="text-5xl mb-4">{passed ? '🎉' : '😔'}</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <h1 className="text-2xl font-bold text-text-primary mb-2">
             {passed ? 'Godkänt!' : 'Inte godkänt'}
           </h1>
           <p className="text-gray-9000 text-sm mb-6">
-            Du fick <span className="text-gray-900 font-semibold">{score} av {QUESTIONS.length}</span> rätt.
+            Du fick <span className="text-text-primary font-semibold">{score} av {QUESTIONS.length}</span> rätt.
             {!passed && ` Kräver ${PASS_THRESHOLD} av ${QUESTIONS.length} rätt. Läs "QuiXzoom Plattformsguide" och försök igen!`}
           </p>
 
@@ -326,7 +326,7 @@ export function ZoomerCert() {
               className={`flex-1 h-1.5 rounded-full transition-all ${
                 i < currentQ ? 'bg-amber-400' :
                 i === currentQ ? 'bg-amber-400/50' :
-                'bg-gray-100'
+                'bg-muted'
               }`}
             />
           ))}
@@ -336,7 +336,7 @@ export function ZoomerCert() {
         {/* Question */}
         <div className="bg-white border border-surface-border rounded-xl p-6 mb-4">
           <p className="text-xs text-amber-700/60 font-mono mb-3">FRÅGA {currentQ + 1}</p>
-          <h2 className="text-base font-semibold text-gray-900 leading-snug">{question.text}</h2>
+          <h2 className="text-base font-semibold text-text-primary leading-snug">{question.text}</h2>
         </div>
 
         {/* Options */}
@@ -346,7 +346,7 @@ export function ZoomerCert() {
             if (!showFeedback) {
               cls += selectedOption === i
                 ? 'bg-amber-500/10 border-amber-400 text-gray-900'
-                : 'bg-white border-surface-border text-gray-9000 hover:text-gray-900 hover:border-gray-300'
+                : 'bg-white border-surface-border text-gray-9000 hover:text-text-primary hover:border-gray-300'
             } else {
               if (i === question.correct) {
                 cls += 'bg-green-500/10 border-green-400/50 text-green-300'

@@ -25,7 +25,7 @@ export function KnowledgeHub() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-xl font-semibold text-text-primary">Knowledge Hub</h1>
-            <p className="text-sm text-gray-9000 mt-0.5">
+            <p className="text-sm text-gray-900 dark:text-gray-300 mt-0.5">
               Wavult Groups samlade kunskap, strukturer och utbildningsmaterial —{' '}
               <button
                 onClick={() => setActiveTab('utbildning')}
@@ -46,7 +46,7 @@ export function KnowledgeHub() {
               className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors flex-shrink-0 ${
                 activeTab === tab.id
                   ? 'bg-[#2563EB]/15 text-[#2563EB] border border-[#2563EB]/30'
-                  : 'text-gray-9000 hover:text-gray-600 hover:bg-muted/30'
+                  : 'text-gray-900 dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-muted/30 dark:hover:bg-gray-800/50'
               }`}
             >
               {tab.label}

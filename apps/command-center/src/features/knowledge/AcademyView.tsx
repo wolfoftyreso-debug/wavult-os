@@ -815,7 +815,7 @@ Närmaste: traditionella inspektionsföretag, drone-survey-bolag (dyra, sällan,
     title: 'Dubai-strukturen',
     description: 'Wavult Groups juridiska och skattemässiga struktur: Dubai Free Zone, IP-ägande, pengaflöden.',
     icon: '🏙️',
-    color: '#8B5CF6',
+    color: '#2563EB',
     lessons: [
       {
         title: 'Varför Dubai? Skatt, IP, kontroll',
@@ -2818,7 +2818,7 @@ Juridiska misstag är dyra och ibland oåterkalleliga. Det kostar mer att undo e
     title: 'Communications & Morning Brief',
     description: 'Kommunikationsmodulen, Morning Brief, Telegram som primär kanal och extern kommunikationspolicy.',
     icon: '📡',
-    color: '#8B5CF6',
+    color: '#2563EB',
     lessons: [
       {
         title: 'Communications-modulen — översikt',
@@ -4044,7 +4044,7 @@ function saveProgress(p: ProgressMap) {
 function ProgressBar({ value, max, color }: { value: number; max: number; color: string }) {
   const pct = max === 0 ? 0 : Math.round((value / max) * 100)
   return (
-    <div className="w-full bg-gray-50 rounded-full h-1.5 overflow-hidden">
+    <div className="w-full bg-muted/30 dark:bg-gray-800/50 rounded-full h-1.5 overflow-hidden">
       <div
         className="h-full rounded-full transition-all duration-500"
         style={{ width: `${pct}%`, background: color }}
@@ -4074,20 +4074,20 @@ function LessonModal({ course, lessonIndex, progress, onUpdate, onClose }: {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/70 backdrop-blur-sm" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="bg-white border border-surface-border rounded-xl w-full max-w-2xl mx-4 flex flex-col max-h-[90vh]"
+        className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl w-full max-w-2xl mx-4 flex flex-col max-h-[90vh]"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex-shrink-0 p-5 pb-3 border-b border-gray-200">
+        <div className="flex-shrink-0 p-5 pb-3 border-b border-surface-border dark:border-gray-700">
           <div className="flex items-center gap-3 mb-3">
             <span className="text-2xl">{course.icon}</span>
             <div className="flex-1">
-              <p className="text-xs text-gray-9000 font-mono uppercase">{course.title}</p>
-              <h2 className="text-sm font-semibold text-gray-900">{lesson.title}</h2>
+              <p className="text-xs text-gray-900 dark:text-gray-100 font-mono uppercase">{course.title}</p>
+              <h2 className="text-sm font-semibold text-text-primary dark:text-white">{lesson.title}</h2>
             </div>
-            <button onClick={onClose} className="text-gray-9000 hover:text-gray-600 text-xl leading-none">×</button>
+            <button onClick={onClose} className="text-gray-900 dark:text-gray-100 hover:text-gray-600 dark:hover:text-gray-300 text-xl leading-none">×</button>
           </div>
 
           {/* Lesson selector */}
@@ -4101,7 +4101,7 @@ function LessonModal({ course, lessonIndex, progress, onUpdate, onClose }: {
                     ? 'text-gray-900'
                     : i < progress
                     ? 'text-green-500 bg-green-500/10'
-                    : 'text-gray-9000 bg-gray-50 hover:text-gray-9000'
+                    : 'text-gray-900 dark:text-gray-100 bg-muted/30 dark:bg-gray-800/50 hover:text-gray-600 dark:hover:text-gray-300'
                 }`}
                 style={i === currentLesson ? { background: course.color + '25', color: course.color } : {}}
               >
@@ -4120,7 +4120,7 @@ function LessonModal({ course, lessonIndex, progress, onUpdate, onClose }: {
             >
               Lektion {currentLesson + 1} av {course.lessons.length}
             </div>
-            <span className="text-xs text-gray-9000 font-mono">~{lesson.duration} min</span>
+            <span className="text-xs text-gray-900 dark:text-gray-100 font-mono">~{lesson.duration} min</span>
             {isCompleted && (
               <span className="text-xs text-green-500 font-mono ml-auto">✓ Avklarad</span>
             )}
@@ -4131,23 +4131,23 @@ function LessonModal({ course, lessonIndex, progress, onUpdate, onClose }: {
             {lesson.content.split('\n').map((line, i) => {
               if (line.startsWith('**') && line.endsWith('**')) {
                 return (
-                  <h3 key={i} className="text-sm font-semibold text-gray-900 mt-4 mb-1">
+                  <h3 key={i} className="text-sm font-semibold text-text-primary mt-4 mb-1">
                     {line.replace(/\*\*/g, '')}
                   </h3>
                 )
               }
               if (line.startsWith('• ')) {
                 return (
-                  <div key={i} className="flex gap-2 text-xs text-gray-600 leading-relaxed pl-2">
-                    <span className="text-gray-9000 flex-shrink-0">•</span>
-                    <span dangerouslySetInnerHTML={{ __html: line.slice(2).replace(/\*\*(.+?)\*\*/g, '<strong class="text-gray-900">$1</strong>') }} />
+                  <div key={i} className="flex gap-2 text-xs text-gray-600 dark:text-gray-400 leading-relaxed pl-2">
+                    <span className="text-gray-900 dark:text-gray-100 flex-shrink-0">•</span>
+                    <span dangerouslySetInnerHTML={{ __html: line.slice(2).replace(/\*\*(.+?)\*\*/g, '<strong class="text-text-primary">$1</strong>') }} />
                   </div>
                 )
               }
               if (line.trim() === '') return <div key={i} className="h-1.5" />
               return (
-                <p key={i} className="text-xs text-gray-600 leading-relaxed"
-                  dangerouslySetInnerHTML={{ __html: line.replace(/\*\*(.+?)\*\*/g, '<strong class="text-gray-900">$1</strong>') }}
+                <p key={i} className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed"
+                  dangerouslySetInnerHTML={{ __html: line.replace(/\*\*(.+?)\*\*/g, '<strong class="text-text-primary">$1</strong>') }}
                 />
               )
             })}
@@ -4155,9 +4155,9 @@ function LessonModal({ course, lessonIndex, progress, onUpdate, onClose }: {
         </div>
 
         {/* Footer */}
-        <div className="flex-shrink-0 p-4 border-t border-gray-200">
+        <div className="flex-shrink-0 p-4 border-t border-surface-border dark:border-gray-700">
           <ProgressBar value={progress} max={course.lessons.length} color={course.color} />
-          <p className="text-xs text-gray-9000 font-mono mt-1 mb-3">
+          <p className="text-xs text-gray-900 dark:text-gray-100 font-mono mt-1 mb-3">
             {progress}/{course.lessons.length} lektioner avklarade
           </p>
 
@@ -4165,21 +4165,21 @@ function LessonModal({ course, lessonIndex, progress, onUpdate, onClose }: {
             <button
               onClick={() => setCurrentLesson(Math.max(0, currentLesson - 1))}
               disabled={currentLesson === 0}
-              className="px-3 py-1.5 rounded-lg text-xs text-gray-9000 border border-surface-border hover:text-gray-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              className="px-3 py-1.5 rounded-lg text-xs text-gray-900 dark:text-gray-100 border border-surface-border dark:border-gray-700 hover:text-gray-600 dark:hover:text-gray-300 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             >
               ← Föregående
             </button>
 
             <div className="flex-1" />
 
-            <button onClick={onClose} className="px-3 py-1.5 rounded-lg text-xs text-gray-9000 border border-surface-border hover:text-gray-600 transition-colors">
+            <button onClick={onClose} className="px-3 py-1.5 rounded-lg text-xs text-gray-900 dark:text-gray-100 border border-surface-border dark:border-gray-700 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
               Stäng
             </button>
 
             {currentLesson < course.lessons.length - 1 ? (
               <button
                 onClick={markAndNext}
-                className="px-4 py-1.5 rounded-lg text-xs font-medium text-gray-900 transition-colors"
+                className="px-4 py-1.5 rounded-lg text-xs font-medium text-text-primary transition-colors"
                 style={{ background: course.color }}
               >
                 {isCompleted || isNextUp ? 'Markera & Nästa →' : 'Nästa →'}
@@ -4190,7 +4190,7 @@ function LessonModal({ course, lessonIndex, progress, onUpdate, onClose }: {
                   onUpdate(Math.max(progress, currentLesson + 1))
                   onClose()
                 }}
-                className="px-4 py-1.5 rounded-lg text-xs font-medium text-gray-900 transition-colors"
+                className="px-4 py-1.5 rounded-lg text-xs font-medium text-text-primary transition-colors"
                 style={{ background: '#10B981' }}
               >
                 🎓 Avsluta kurs
@@ -4239,11 +4239,11 @@ export function AcademyView() {
     <div className="h-full flex flex-col">
       {/* Onboarding "Var börjar jag?" — visas tills 2 kurser är klara */}
       {showOnboarding && (
-        <div className="mb-4 bg-white border border-purple-200 rounded-xl p-4">
+        <div className="mb-4 bg-white dark:bg-gray-900 border border-blue-200 dark:border-blue-900/50 rounded-xl p-4">
           <div className="flex items-center gap-2 mb-2">
             <span className="text-base">🧭</span>
-            <h3 className="text-sm font-semibold text-gray-900">Ny här? Börja i den här ordningen</h3>
-            <span className="ml-auto text-xs text-gray-9000 font-mono">Försvinner när 2 kurser är klara</span>
+            <h3 className="text-sm font-semibold text-text-primary dark:text-white">Ny här? Börja i den här ordningen</h3>
+            <span className="ml-auto text-xs text-gray-900 dark:text-gray-100 font-mono">Försvinner när 2 kurser är klara</span>
           </div>
           <div className="flex flex-wrap gap-2">
             {ONBOARDING_ORDER.map((item, idx) => {
@@ -4260,14 +4260,14 @@ export function AcademyView() {
                   className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs border transition-all ${
                     done
                       ? 'border-green-500/20 bg-green-500/5 text-green-700'
-                      : 'border-purple-200 bg-purple-50 text-gray-600 hover:text-gray-900 hover:border-brand-accent/40'
+                      : 'border-blue-200 dark:border-blue-900/50 bg-blue-50 dark:bg-blue-950/30 text-gray-600 dark:text-gray-400 hover:text-text-primary dark:hover:text-white hover:border-brand-accent/40'
                   }`}
                 >
-                  <span className="font-mono text-gray-9000">{idx + 1}.</span>
+                  <span className="font-mono text-gray-900 dark:text-gray-100">{idx + 1}.</span>
                   <span>{course.icon}</span>
                   <span>{course.title}</span>
                   {done && <span className="text-green-500">✓</span>}
-                  {!done && <span className="text-gray-9000 text-xs">— {item.reason}</span>}
+                  {!done && <span className="text-gray-900 dark:text-gray-100 text-xs">— {item.reason}</span>}
                 </button>
               )
             })}
@@ -4277,25 +4277,25 @@ export function AcademyView() {
 
       {/* Header stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-        <div className="bg-white border border-surface-border rounded-xl p-4">
-          <p className="text-xs text-gray-9000 font-mono mb-1">TOTAL PROGRESS</p>
-          <p className="text-2xl font-bold text-gray-900">{overallPct}%</p>
+        <div className="bg-white dark:bg-gray-900 border border-surface-border dark:border-gray-700 rounded-xl p-4">
+          <p className="text-xs text-gray-900 dark:text-gray-100 font-mono mb-1">TOTAL PROGRESS</p>
+          <p className="text-2xl font-bold text-text-primary dark:text-white">{overallPct}%</p>
           <div className="mt-2">
-            <ProgressBar value={completedLessons} max={totalLessons} color="#8B5CF6" />
+            <ProgressBar value={completedLessons} max={totalLessons} color="#2563EB" />
           </div>
         </div>
-        <div className="bg-white border border-surface-border rounded-xl p-4">
-          <p className="text-xs text-gray-9000 font-mono mb-1">KURSER KLARA</p>
-          <p className="text-2xl font-bold text-gray-900">
+        <div className="bg-white dark:bg-gray-900 border border-surface-border dark:border-gray-700 rounded-xl p-4">
+          <p className="text-xs text-gray-900 dark:text-gray-100 font-mono mb-1">KURSER KLARA</p>
+          <p className="text-2xl font-bold text-text-primary dark:text-white">
             {COURSES.filter(c => (progress[c.id] ?? 0) >= c.lessons.length).length}
-            <span className="text-base text-gray-9000">/{COURSES.length}</span>
+            <span className="text-base text-gray-900 dark:text-gray-100">/{COURSES.length}</span>
           </p>
         </div>
-        <div className="bg-white border border-surface-border rounded-xl p-4">
-          <p className="text-xs text-gray-9000 font-mono mb-1">LEKTIONER KLARA</p>
-          <p className="text-2xl font-bold text-gray-900">
+        <div className="bg-white dark:bg-gray-900 border border-surface-border dark:border-gray-700 rounded-xl p-4">
+          <p className="text-xs text-gray-900 dark:text-gray-100 font-mono mb-1">LEKTIONER KLARA</p>
+          <p className="text-2xl font-bold text-text-primary dark:text-white">
             {completedLessons}
-            <span className="text-base text-gray-9000">/{totalLessons}</span>
+            <span className="text-base text-gray-900 dark:text-gray-100">/{totalLessons}</span>
           </p>
         </div>
       </div>
@@ -4313,7 +4313,7 @@ export function AcademyView() {
             <button
               key={course.id}
               onClick={() => setOpenCourse({ course, lesson: nextLessonIndex })}
-              className="text-left p-5 bg-white border border-surface-border rounded-xl hover:border-gray-300 transition-all group"
+              className="text-left p-5 bg-white dark:bg-gray-900 border border-surface-border dark:border-gray-700 rounded-xl hover:border-gray-300 dark:hover:border-gray-600 transition-all group"
             >
               <div className="flex items-start justify-between mb-3">
                 <span className="text-3xl">{course.icon}</span>
@@ -4331,16 +4331,16 @@ export function AcademyView() {
                       {pct}%
                     </span>
                   )}
-                  <span className="text-xs text-gray-600 font-mono">
+                  <span className="text-xs text-gray-600 dark:text-gray-400 font-mono">
                     {total} lektioner
                   </span>
                 </div>
               </div>
 
-              <h3 className="text-sm font-semibold text-gray-900 mb-1.5 group-hover:text-purple-700 transition-colors">
+              <h3 className="text-sm font-semibold text-text-primary mb-1.5 group-hover:text-blue-700 transition-colors">
                 {course.title}
               </h3>
-              <p className="text-xs text-gray-9000 leading-relaxed mb-4">{course.description}</p>
+              <p className="text-xs text-gray-900 dark:text-gray-100 leading-relaxed mb-4">{course.description}</p>
 
               {/* Next lesson preview */}
               {!isComplete && (
@@ -4355,8 +4355,8 @@ export function AcademyView() {
               <div className="space-y-2">
                 <ProgressBar value={done} max={total} color={course.color} />
                 <div className="flex justify-between text-xs font-mono">
-                  <span className="text-gray-9000">{done}/{total} lektioner</span>
-                  <span className="text-gray-9000">
+                  <span className="text-gray-900 dark:text-gray-100">{done}/{total} lektioner</span>
+                  <span className="text-gray-900 dark:text-gray-100">
                     ~{course.lessons.reduce((s, l) => s + l.duration, 0)} min totalt
                   </span>
                 </div>
