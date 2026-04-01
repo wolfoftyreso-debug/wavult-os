@@ -79,6 +79,7 @@ import customerPortalRouter from "./customer-portal";
 import revolutRouter from "./revolut";
 import whoopRouter from "./whoop/whoop-api";
 import { commandsRouter } from "./routes/commands";
+import { knowledgeEngineRouter } from "./routes/knowledge-engine";
 
 // ---------------------------------------------------------------------------
 // Auth router
@@ -437,6 +438,19 @@ app.get("/health", healthLimiter, async (_req: Request, res: Response) => {
 // always have req.user.org_id available.
 // ---------------------------------------------------------------------------
 app.use(async (req: Request, _res: Response, next: NextFunction) => {
+  // Internal API key bypass — for Wavult OS frontend and Bernt
+  const apiKey = req.headers['x-api-key'];
+  if (apiKey === 'wavult-openclaw-2026' || apiKey === process.env.WAVULT_API_KEY) {
+    (req as any).user = {
+      id: '00000000-0000-0000-0000-000000000001',
+      org_id: '00020001-0000-0000-0000-000000000001',
+      role: 'ADMIN',
+      email: 'bernt@wavult.com',
+      full_name: 'Bernt (System)',
+    };
+    return next();
+  }
+
   const authHeader = req.headers.authorization;
 
   if (authHeader?.startsWith("Bearer ")) {
@@ -736,6 +750,7 @@ app.use(gitRouter);                                  // GET /api/git/repos, /api
 
 import domainsRouter from './routes/domains';
 app.use(domainsRouter);                              // GET /api/domains/status
+app.use('/api/knowledge', knowledgeEngineRouter);    // Knowledge Engine — AI-genererade utbildningsartiklar
 
 import automationRouter from './routes/automation';
 app.use(automationRouter);                           // GET /api/automation/workflows, PATCH /api/automation/workflows/:id
