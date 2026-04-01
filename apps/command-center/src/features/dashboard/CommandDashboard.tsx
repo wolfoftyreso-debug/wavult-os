@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import {
   Server, Globe, GitBranch, Activity, RefreshCw, CheckCircle,
-  AlertTriangle, XCircle, Clock, TrendingUp, Zap, Database,
+  AlertTriangle, XCircle, TrendingUp, Zap, Database,
 } from 'lucide-react'
 import { ThailandCountdown } from '../thailand/ThailandCountdown'
 import { TeamStatusWidget } from '../team/TeamStatusWidget'
@@ -10,7 +10,7 @@ import { QuickLinksWidget } from '../quicklinks/QuickLinksWidget'
 import { HealthOverviewWidget } from '../entity/HealthOverviewWidget'
 import { RevenueDashboard } from './RevenueDashboard'
 
-const API_BASE = (import.meta as Record<string, unknown> & { env?: Record<string, string> }).env?.VITE_API_URL ?? 'https://api.wavult.com'
+const API_BASE = (import.meta.env.VITE_API_URL as string | undefined) ?? 'https://api.wavult.com'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

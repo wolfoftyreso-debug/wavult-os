@@ -133,7 +133,7 @@ const ENTITIES: EntityConfig[] = [
     contacts: [
       { name: 'Dennis Bjarnemark', role: 'Chief Legal & Operations', email: 'dennis@wavult.com', phone: '+46761474243' },
     ],
-  },,
+  },
   {
     id: 'devops-fzco',
     name: 'DevOps FZCO',

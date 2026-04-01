@@ -168,7 +168,7 @@ export function AcademyView() {
                       : 'hover:bg-surface-primary/60'
                   }
                 `}
-                style={isSelected ? { ringColor: l.color } : {}}
+                style={isSelected ? { outlineColor: l.color } : {}}
               >
                 <span className="text-[10px] text-gray-500 leading-none">{l.day}</span>
                 <StatusIcon status={status} />

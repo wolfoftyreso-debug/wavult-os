@@ -16,8 +16,8 @@
 import { useState, useCallback } from 'react'
 import {
   Search, Users, Building2, Zap, Plus, ChevronDown, ChevronUp,
-  ExternalLink, Mail, Phone, Linkedin, RefreshCw, Newspaper,
-  Briefcase, Star, Upload, Download, Settings
+  ExternalLink, Mail, Phone, RefreshCw,
+  Upload, Download
 } from 'lucide-react'
 
 // ─── Types ────────────────────────────────────────────────────────────────────

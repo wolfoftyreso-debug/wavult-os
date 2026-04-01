@@ -66,7 +66,7 @@ function emptyBlock(_meetingId: string): DraftBlock {
   }
 }
 
-const LEVEL_ICONS: Record<MeetingLevel, string> = {
+const LEVEL_ICONS: Partial<Record<MeetingLevel, string>> = {
   annual: '🏛️',
   qbr: '📊',
   monthly: '📅',

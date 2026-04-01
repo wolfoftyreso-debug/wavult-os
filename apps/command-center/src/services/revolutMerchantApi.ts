@@ -107,6 +107,8 @@ export async function createOrder(params: {
 }
 
 export async function getOrder(orderId: string, sandbox = false): Promise<RevolutOrder> {
+  const base = sandbox ? REVOLUT_MERCHANT_SANDBOX : REVOLUT_MERCHANT_BASE
+  const apiKey = import.meta.env.VITE_REVOLUT_MERCHANT_API_KEY || ''
   const res = await fetch(`${base}/orders/${orderId}`, {
     headers: { 'Authorization': `Bearer ${apiKey}` },
   })

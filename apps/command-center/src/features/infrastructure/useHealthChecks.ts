@@ -6,8 +6,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import type { HealthCheckResult, ServiceStatus } from './infraTypes'
 
 const API_BASE =
-  (import.meta as Record<string, unknown> & { env?: Record<string, string> }).env
-    ?.VITE_API_URL ?? 'https://api.wavult.com'
+  (import.meta.env.VITE_API_URL as string | undefined) ?? 'https://api.wavult.com'
 
 const ENDPOINT = `${API_BASE}/v1/infrastructure/health`
 const POLL_INTERVAL_MS = 30_000

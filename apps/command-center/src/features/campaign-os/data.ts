@@ -164,5 +164,5 @@ export function getActivityAlerts(a: CampaignActivity): CampaignActivity['alerts
 // ─── Campaign Activities ──────────────────────────────────────────────────────
 // Tom tills kampanjer konfigureras. Koppla Revolut och CRM för live-data.
 
-export const CAMPAIGN_ACTIVITIES: Activity[] = []
+export const CAMPAIGN_ACTIVITIES: CampaignActivity[] = []
 

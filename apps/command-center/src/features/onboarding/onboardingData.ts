@@ -5,16 +5,16 @@ import { ENTITIES } from '../entity/entityData'
 
 // ─── Reactive entity summary ──────────────────────────────────────────────────
 function getEntitySummary(): string {
-  const count = ENTITIES.filter(e => e.active_status !== 'archived').length
+  const count = ENTITIES.filter(e => e.status !== 'pending').length
   const jurisdictions = [...new Set(ENTITIES.map(e => e.jurisdiction))].length
   return `Wavult Group opererar via ${count} juridiska entiteter i ${jurisdictions} jurisdiktioner.`
 }
 
 function getEntityKeyPoints(): string[] {
   return ENTITIES
-    .filter(e => e.active_status !== 'archived')
+    .filter(e => e.status !== 'pending')
     .slice(0, 7)
-    .map(e => `${e.flag} ${e.name} — ${e.description?.split('.')[0] || e.jurisdiction}`)
+    .map(e => `${e.name} — ${e.role || e.jurisdiction}`)
 }
 
 export interface OnboardingStep {

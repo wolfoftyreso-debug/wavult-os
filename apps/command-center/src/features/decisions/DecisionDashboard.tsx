@@ -15,7 +15,7 @@ import {
 } from 'lucide-react'
 import { HumanFigure } from '../../shared/design-system/HumanFigure'
 import { mockMeetings } from './mockDecisions'
-import type { Meeting, DecisionBlock, EntityId } from './decisionTypes'
+import type { Meeting, DecisionBlock } from './decisionTypes'
 import { MEETING_LEVEL_LABELS, MEETING_ISO_REF, ENTITY_LABELS, ENTITY_COLORS } from './decisionTypes'
 import { useTranslation } from '../../shared/i18n/useTranslation'
 

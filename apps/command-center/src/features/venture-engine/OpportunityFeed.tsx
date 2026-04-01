@@ -133,7 +133,7 @@ export const OpportunityFeed = forwardRef<{ reload: () => void }, Props>(
             )}
             {opportunities.map(opp => {
               const ic = INDUSTRY_COLORS[opp.industry]
-              const costEur = opp.cost_saving_potential_eur ?? opp.cost_saving_potential ?? 0
+              const costEur = opp.cost_saving_potential ?? 0
               const costLabel = costEur >= 1_000_000
                 ? `€${(costEur / 1_000_000).toFixed(1)}M`
                 : `€${(costEur / 1_000).toFixed(0)}k`

@@ -357,7 +357,7 @@ export function NetworkMap() {
           const active = filter === z
           return (
             <button key={z} onClick={() => setFilter(z)} style={{
-              padding: '4px 10px', borderRadius: 4, border: 'none', cursor: 'pointer',
+              padding: '4px 10px', borderRadius: 4, cursor: 'pointer',
               fontSize: 9, fontWeight: 700, letterSpacing: '0.06em',
               background: active ? (cfg?.color ?? 'var(--color-text-primary)') + '20' : 'transparent',
               color: active ? (cfg?.color ?? 'var(--color-text-primary)') : 'var(--color-text-muted)',

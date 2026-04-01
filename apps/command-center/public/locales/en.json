@@ -271,5 +271,6 @@
   "nav.domains": "Domains",
   "nav.automation": "Automation",
   "nav.infraMonitor": "Infra Monitor",
-  "nav.terraform": "Terraform"
+  "nav.terraform": "Terraform",
+  "nav.mediaPipeline": "Media Pipeline"
 }

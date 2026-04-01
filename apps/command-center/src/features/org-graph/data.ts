@@ -18,6 +18,8 @@ export interface Entity {
   flag: string
   layer: number // 0 = root, 1 = group, 2 = regional, 3 = product
   metadata: Record<string, string>
+  wg_id?: string
+  parent_wg_id?: string | null
 }
 
 export type RelationshipType = 'ownership' | 'control' | 'service' | 'licensing' | 'financial_flow'
@@ -29,6 +31,8 @@ export interface EntityRelationship {
   type: RelationshipType
   label: string
   bidirectional?: boolean
+  wg_id?: string
+  parent_wg_id?: string | null
 }
 
 export type RoleScope = 'group' | 'operations' | 'entity'
@@ -80,10 +84,8 @@ export const ENTITIES: Entity[] = [
     type: 'financial',
     jurisdiction: 'Dubai',
     parent_entity_id: 'wavult-group',
-    wg_id: 'WG-AE-HOLD-001',
-    parent_wg_id: null,
     description: 'Dubai FZCO handling all payment processing, treasury management, intercompany settlements and zoomer payouts. All revenue flows through FinanceCo before distribution.',
-    active_status: 'active',
+    active_status: 'live',
     color: '#10B981',
     flag: '🇦🇪',
     layer: 1,
@@ -104,10 +106,8 @@ export const ENTITIES: Entity[] = [
     type: 'operations',
     jurisdiction: 'Dubai',
     parent_entity_id: 'wavult-group',
-    wg_id: 'WG-AE-HOLD-001',
-    parent_wg_id: null,
     description: 'Dubai FZCO for tech infrastructure and operations. Manages cloud services, CI/CD, and provides technical services to all product entities via management fee.',
-    active_status: 'active',
+    active_status: 'live',
     color: '#1E40AF',
     flag: '🇦🇪',
     layer: 1,
@@ -129,8 +129,6 @@ export const ENTITIES: Entity[] = [
     type: 'product',
     jurisdiction: 'EU-LT',
     parent_entity_id: 'wavult-group',
-    wg_id: 'WG-AE-HOLD-001',
-    parent_wg_id: null,
     description: 'EU entity for quiXzoom and Quixom Ads platform. EU data residency. GDPR-compliant. Operates in all EU markets.',
     active_status: 'planned',
     color: '#10B981',
@@ -152,8 +150,6 @@ export const ENTITIES: Entity[] = [
     type: 'product',
     jurisdiction: 'US-DE',
     parent_entity_id: 'wavult-group',
-    wg_id: 'WG-AE-HOLD-001',
-    parent_wg_id: null,
     description: 'US entity for quiXzoom platform. Delaware C-Corp, optimized for US investment and capital raising.',
     active_status: 'planned',
     color: '#22D3EE',
@@ -175,8 +171,6 @@ export const ENTITIES: Entity[] = [
     type: 'product',
     jurisdiction: 'US-TX',
     parent_entity_id: 'wavult-group',
-    wg_id: 'WG-AE-HOLD-001',
-    parent_wg_id: null,
     description: 'US entity for Landvex. Texas LLC, targeting US municipalities, port authorities, federal infrastructure operators.',
     active_status: 'forming',
     color: '#F59E0B',
@@ -198,8 +192,6 @@ export const ENTITIES: Entity[] = [
     type: 'holding',
     jurisdiction: 'SE',
     parent_entity_id: 'wavult-group',
-    wg_id: 'WG-AE-HOLD-001',
-    parent_wg_id: null,
     description: 'Operativt SE-bolag (Landvex AB, org. 559141-7042). Hanterar EU/SE-försäljning av Landvex-plattformen. Äger INTE IP — licensierar från Dubai-holdingen.',
     active_status: 'forming',
     color: '#EC4899',
@@ -223,152 +215,47 @@ export const ENTITIES: Entity[] = [
 // ─── RELATIONSHIPS ─────────────────────────────────────────────────────────────
 
 export const RELATIONSHIPS: EntityRelationship[] = [
-  // Ownership
-  { id: 'r2', from_entity_id: 'wavult-group',
-    wg_id: 'WG-AE-HOLD-001',
-    parent_wg_id: null, to_entity_id: 'quixzoom-uab',
-    wg_id: 'WG-LT-PROD-001',
-    parent_wg_id: 'WG-AE-HOLD-001', type: 'ownership', label: 'Owns 100%' },
-  { id: 'r3', from_entity_id: 'wavult-group',
-    wg_id: 'WG-AE-HOLD-001',
-    parent_wg_id: null, to_entity_id: 'quixzoom-inc',
-    wg_id: 'WG-US-DE-PROD-001',
-    parent_wg_id: 'WG-AE-HOLD-001', type: 'ownership', label: 'Owns 100%' },
-  { id: 'r4', from_entity_id: 'wavult-group',
-    wg_id: 'WG-AE-HOLD-001',
-    parent_wg_id: null, to_entity_id: 'landvex-inc',
-    wg_id: 'WG-US-TX-PROD-001',
-    parent_wg_id: 'WG-AE-HOLD-001', type: 'ownership', label: 'Owns 100%' },
-  { id: 'r5', from_entity_id: 'wavult-group',
-    wg_id: 'WG-AE-HOLD-001',
-    parent_wg_id: null, to_entity_id: 'landvex-ab',
-    wg_id: 'WG-SE-PROD-001',
-    parent_wg_id: 'WG-AE-HOLD-001', type: 'ownership', label: 'Owns 100%' },
+  // Ownership — WGH → Product entities
+  { id: 'r2', from_entity_id: 'wavult-group', to_entity_id: 'quixzoom-uab', type: 'ownership', label: 'Owns 100%' },
+  { id: 'r3', from_entity_id: 'wavult-group', to_entity_id: 'quixzoom-inc', type: 'ownership', label: 'Owns 100%' },
+  { id: 'r4', from_entity_id: 'wavult-group', to_entity_id: 'landvex-inc', type: 'ownership', label: 'Owns 100%' },
+  { id: 'r5', from_entity_id: 'wavult-group', to_entity_id: 'landvex-ab', type: 'ownership', label: 'Owns 100%' },
 
-  // IP licensing
-  { id: 'r6', from_entity_id: 'wavult-group',
-    wg_id: 'WG-AE-HOLD-001',
-    parent_wg_id: null, to_entity_id: 'quixzoom-uab',
-    wg_id: 'WG-LT-PROD-001',
-    parent_wg_id: 'WG-AE-HOLD-001', type: 'licensing', label: 'IP license 5–15%' },
-  { id: 'r7', from_entity_id: 'wavult-group',
-    wg_id: 'WG-AE-HOLD-001',
-    parent_wg_id: null, to_entity_id: 'quixzoom-inc',
-    wg_id: 'WG-US-DE-PROD-001',
-    parent_wg_id: 'WG-AE-HOLD-001', type: 'licensing', label: 'IP license 5–15%' },
-  { id: 'r8', from_entity_id: 'wavult-group',
-    wg_id: 'WG-AE-HOLD-001',
-    parent_wg_id: null, to_entity_id: 'landvex-inc',
-    wg_id: 'WG-US-TX-PROD-001',
-    parent_wg_id: 'WG-AE-HOLD-001', type: 'licensing', label: 'IP license 5–15%' },
-  { id: 'r9', from_entity_id: 'wavult-group',
-    wg_id: 'WG-AE-HOLD-001',
-    parent_wg_id: null, to_entity_id: 'landvex-ab',
-    wg_id: 'WG-SE-PROD-001',
-    parent_wg_id: 'WG-AE-HOLD-001', type: 'licensing', label: 'IP license 5–15%' },
+  // IP licensing — WGH → all product entities
+  { id: 'r6', from_entity_id: 'wavult-group', to_entity_id: 'quixzoom-uab', type: 'licensing', label: 'IP license 5–15%' },
+  { id: 'r7', from_entity_id: 'wavult-group', to_entity_id: 'quixzoom-inc', type: 'licensing', label: 'IP license 5–15%' },
+  { id: 'r8', from_entity_id: 'wavult-group', to_entity_id: 'landvex-inc', type: 'licensing', label: 'IP license 5–15%' },
+  { id: 'r9', from_entity_id: 'wavult-group', to_entity_id: 'landvex-ab', type: 'licensing', label: 'IP license 5–15%' },
 
-  // Service
+  // Financial flows — subsidiaries → WGH
+  { id: 'r14', from_entity_id: 'quixzoom-uab', to_entity_id: 'wavult-group', type: 'financial_flow', label: 'Royalty payment' },
+  { id: 'r15', from_entity_id: 'quixzoom-inc', to_entity_id: 'wavult-group', type: 'financial_flow', label: 'Royalty payment' },
+  { id: 'r16', from_entity_id: 'landvex-inc', to_entity_id: 'wavult-group', type: 'financial_flow', label: 'Royalty payment' },
+  { id: 'r17', from_entity_id: 'landvex-ab', to_entity_id: 'wavult-group', type: 'financial_flow', label: 'Royalty payment' },
 
+  // WGH owns FZCOs
+  { id: 'r21', from_entity_id: 'wavult-group', to_entity_id: 'financo-fzco', type: 'ownership', label: 'Owns 100%' },
+  { id: 'r22', from_entity_id: 'wavult-group', to_entity_id: 'devops-fzco', type: 'ownership', label: 'Owns 100%' },
 
-
-
-  // Financial flows (subsidiaries → Dubai)
-  { id: 'r14', from_entity_id: 'quixzoom-uab',
-    wg_id: 'WG-LT-PROD-001',
-    parent_wg_id: 'WG-AE-HOLD-001', to_entity_id: 'wavult-group',
-    wg_id: 'WG-AE-HOLD-001',
-    parent_wg_id: null, type: 'financial_flow', label: 'Royalty + dividends' },
-  { id: 'r15', from_entity_id: 'quixzoom-inc',
-    wg_id: 'WG-US-DE-PROD-001',
-    parent_wg_id: 'WG-AE-HOLD-001', to_entity_id: 'wavult-group',
-    wg_id: 'WG-AE-HOLD-001',
-    parent_wg_id: null, type: 'financial_flow', label: 'Royalty + dividends' },
-  { id: 'r16', from_entity_id: 'landvex-inc',
-    wg_id: 'WG-US-TX-PROD-001',
-    parent_wg_id: 'WG-AE-HOLD-001', to_entity_id: 'wavult-group',
-    wg_id: 'WG-AE-HOLD-001',
-    parent_wg_id: null, type: 'financial_flow', label: 'Royalty + dividends' },
-  { id: 'r17', from_entity_id: 'landvex-ab',
-    wg_id: 'WG-SE-PROD-001',
-    parent_wg_id: 'WG-AE-HOLD-001', to_entity_id: 'wavult-group',
-    wg_id: 'WG-AE-HOLD-001',
-    parent_wg_id: null, type: 'financial_flow', label: 'Royalty + dividends' },
-
-  // WGH owns FCO + DVO
-  { id: 'r21', from_entity_id: 'wavult-group',
-    wg_id: 'WG-AE-HOLD-001',
-    parent_wg_id: null, to_entity_id: 'financo-fzco',
-    wg_id: 'WG-AE-FIN-001',
-    parent_wg_id: 'WG-AE-HOLD-001', type: 'ownership', label: 'Owns 100%' },
-  { id: 'r22', from_entity_id: 'wavult-group',
-    wg_id: 'WG-AE-HOLD-001',
-    parent_wg_id: null, to_entity_id: 'devops-fzco',
-    wg_id: 'WG-AE-OPS-001',
-    parent_wg_id: 'WG-AE-HOLD-001', type: 'ownership', label: 'Owns 100%' },
-
-  // WGH → FCO + DVO intercompany flows
-  { id: 'r23', from_entity_id: 'wavult-group',
-    wg_id: 'WG-AE-HOLD-001',
-    parent_wg_id: null, to_entity_id: 'financo-fzco',
-    wg_id: 'WG-AE-FIN-001',
-    parent_wg_id: 'WG-AE-HOLD-001', type: 'financial_flow', label: 'Intercompany financial flow' },
-  { id: 'r24', from_entity_id: 'wavult-group',
-    wg_id: 'WG-AE-HOLD-001',
-    parent_wg_id: null, to_entity_id: 'devops-fzco',
-    wg_id: 'WG-AE-OPS-001',
-    parent_wg_id: 'WG-AE-HOLD-001', type: 'service', label: 'Management fee' },
+  // Intercompany flows
+  { id: 'r23', from_entity_id: 'wavult-group', to_entity_id: 'financo-fzco', type: 'financial_flow', label: 'Capital allocation' },
+  { id: 'r24', from_entity_id: 'wavult-group', to_entity_id: 'devops-fzco', type: 'financial_flow', label: 'Service fee' },
 
   // FCO → Product Entities (payouts/splits)
-  { id: 'r25', from_entity_id: 'financo-fzco',
-    wg_id: 'WG-AE-FIN-001',
-    parent_wg_id: 'WG-AE-HOLD-001', to_entity_id: 'quixzoom-uab',
-    wg_id: 'WG-LT-PROD-001',
-    parent_wg_id: 'WG-AE-HOLD-001', type: 'financial_flow', label: 'Payouts & splits' },
-  { id: 'r26', from_entity_id: 'financo-fzco',
-    wg_id: 'WG-AE-FIN-001',
-    parent_wg_id: 'WG-AE-HOLD-001', to_entity_id: 'quixzoom-inc',
-    wg_id: 'WG-US-DE-PROD-001',
-    parent_wg_id: 'WG-AE-HOLD-001', type: 'financial_flow', label: 'Payouts & splits' },
-  { id: 'r27', from_entity_id: 'financo-fzco',
-    wg_id: 'WG-AE-FIN-001',
-    parent_wg_id: 'WG-AE-HOLD-001', to_entity_id: 'landvex-inc',
-    wg_id: 'WG-US-TX-PROD-001',
-    parent_wg_id: 'WG-AE-HOLD-001', type: 'financial_flow', label: 'Payouts & splits' },
-  { id: 'r28', from_entity_id: 'financo-fzco',
-    wg_id: 'WG-AE-FIN-001',
-    parent_wg_id: 'WG-AE-HOLD-001', to_entity_id: 'landvex-ab',
-    wg_id: 'WG-SE-PROD-001',
-    parent_wg_id: 'WG-AE-HOLD-001', type: 'financial_flow', label: 'Payouts & splits' },
+  { id: 'r25', from_entity_id: 'financo-fzco', to_entity_id: 'quixzoom-uab', type: 'financial_flow', label: 'Zoomer payouts' },
+  { id: 'r26', from_entity_id: 'financo-fzco', to_entity_id: 'quixzoom-inc', type: 'financial_flow', label: 'Zoomer payouts' },
+  { id: 'r27', from_entity_id: 'financo-fzco', to_entity_id: 'landvex-inc', type: 'financial_flow', label: 'Revenue distribution' },
+  { id: 'r28', from_entity_id: 'financo-fzco', to_entity_id: 'landvex-ab', type: 'financial_flow', label: 'Revenue distribution' },
 
   // DVO → Product Entities (tech services)
-  { id: 'r29', from_entity_id: 'devops-fzco',
-    wg_id: 'WG-AE-OPS-001',
-    parent_wg_id: 'WG-AE-HOLD-001', to_entity_id: 'quixzoom-uab',
-    wg_id: 'WG-LT-PROD-001',
-    parent_wg_id: 'WG-AE-HOLD-001', type: 'service', label: 'Tech services' },
-  { id: 'r30', from_entity_id: 'devops-fzco',
-    wg_id: 'WG-AE-OPS-001',
-    parent_wg_id: 'WG-AE-HOLD-001', to_entity_id: 'quixzoom-inc',
-    wg_id: 'WG-US-DE-PROD-001',
-    parent_wg_id: 'WG-AE-HOLD-001', type: 'service', label: 'Tech services' },
-  { id: 'r31', from_entity_id: 'devops-fzco',
-    wg_id: 'WG-AE-OPS-001',
-    parent_wg_id: 'WG-AE-HOLD-001', to_entity_id: 'landvex-inc',
-    wg_id: 'WG-US-TX-PROD-001',
-    parent_wg_id: 'WG-AE-HOLD-001', type: 'service', label: 'Tech services' },
-  { id: 'r32', from_entity_id: 'devops-fzco',
-    wg_id: 'WG-AE-OPS-001',
-    parent_wg_id: 'WG-AE-HOLD-001', to_entity_id: 'landvex-ab',
-    wg_id: 'WG-SE-PROD-001',
-    parent_wg_id: 'WG-AE-HOLD-001', type: 'service', label: 'Tech services' },
+  { id: 'r29', from_entity_id: 'devops-fzco', to_entity_id: 'quixzoom-uab', type: 'service', label: 'Tech services' },
+  { id: 'r30', from_entity_id: 'devops-fzco', to_entity_id: 'quixzoom-inc', type: 'service', label: 'Tech services' },
+  { id: 'r31', from_entity_id: 'devops-fzco', to_entity_id: 'landvex-inc', type: 'service', label: 'Tech services' },
+  { id: 'r32', from_entity_id: 'devops-fzco', to_entity_id: 'landvex-ab', type: 'service', label: 'Tech services' },
 
   // Hypbit serves all
-  { id: 'r19', from_entity_id: 'hypbit-system', to_entity_id: 'quixzoom-uab',
-    wg_id: 'WG-LT-PROD-001',
-    parent_wg_id: 'WG-AE-HOLD-001', type: 'service', label: 'Ops system' },
-  { id: 'r20', from_entity_id: 'hypbit-system', to_entity_id: 'landvex-ab',
-    wg_id: 'WG-SE-PROD-001',
-    parent_wg_id: 'WG-AE-HOLD-001', type: 'service', label: 'Ops system' },
+  { id: 'r19', from_entity_id: 'hypbit-system', to_entity_id: 'quixzoom-uab', type: 'service', label: 'Ops system' },
+  { id: 'r20', from_entity_id: 'hypbit-system', to_entity_id: 'landvex-ab', type: 'service', label: 'Ops system' },
 ]
 
 // ─── ROLE MAPPINGS ─────────────────────────────────────────────────────────────

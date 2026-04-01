@@ -42,7 +42,11 @@ interface QZStats {
 
 async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${QZ_API}${path}`, {
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': 'wavult-openclaw-2026',
+      ...options?.headers,
+    },
     ...options,
   })
   if (!res.ok) throw new Error(`API error ${res.status}: ${await res.text()}`)

@@ -79,7 +79,6 @@ export const MEETING_AUTHORITY: Record<MeetingLevel, string[]> = {
 // Obligatoriska dokument per mötestyp
 export const MEETING_REQUIRED_DOCS: Partial<Record<MeetingLevel, string[]>> = {
   'management-review': ['Protokoll', 'KPI-rapport', 'Kundnöjdhetsdata'],
-  'board-meeting': ['Protokoll', 'Beslutslog', 'Signaturlista'],
   qbr: ['OKR-rapport', 'Financial Summary', 'Action Items'],
   'capa-review': ['CAPA-rapport', 'Rotorsaksanalys', 'Åtgärdsplan'],
   'risk-assessment': ['Riskmatris', 'Mitigationsplan', 'Riskregister'],

@@ -157,7 +157,8 @@ function statusLabel(status: StepStatus): string {
 
 const STEPS: Array<{
   key: keyof Trip['steps']
-  icon: React.ComponentType<{ size?: number }>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  icon: React.ComponentType<any>
   label: string
   actionLabel: string
 }> = [

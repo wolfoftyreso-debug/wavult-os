@@ -148,7 +148,7 @@ const ACTIVE_TRIPS: Trip[] = [
 // ─── SMS helper ──────────────────────────────────────────────────────────────
 
 async function sendVisaReminder(person: TeamMember, trip: Trip, visa: VisaInfo) {
-  const API = (import.meta as Record<string, unknown> & { env: Record<string, string> }).env?.VITE_API_URL || 'https://api.wavult.com'
+  const API = import.meta.env.VITE_API_URL || 'https://api.wavult.com'
   try {
     await fetch(`${API}/api/sms/send`, {
       method: 'POST',

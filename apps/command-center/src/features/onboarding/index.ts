@@ -1,1 +1,1 @@
-export { OnboardingOverlay, resetOnboarding } from './OnboardingOverlay'
+export { OnboardingOverlay } from './OnboardingOverlay'

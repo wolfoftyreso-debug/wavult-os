@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, useCallback } from 'react'
 import { COMPANY_LAUNCHES, CompanyLaunch, LaunchStep } from './data'
 
 // ─── API base ─────────────────────────────────────────────────────────────────
-const API_BASE = (import.meta.env.VITE_API_URL as string | undefined) ?? 'https://api.hypbit.com'
+const API_BASE = (import.meta.env.VITE_API_URL as string | undefined) ?? 'https://api.wavult.com'
 
 // ─── DB shape from API (flat, no steps array) ─────────────────────────────────
 interface ApiCompany {

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { MessageSquare, Send, CheckCircle, XCircle, Clock } from 'lucide-react'
 
-const API_BASE = (import.meta as Record<string, unknown> & { env?: Record<string, string> }).env?.VITE_API_URL ?? 'https://api.wavult.com'
+const API_BASE = (import.meta.env.VITE_API_URL as string | undefined) ?? 'https://api.wavult.com'
 
 interface SMSLog {
   id: string

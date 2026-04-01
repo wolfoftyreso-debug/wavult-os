@@ -4,7 +4,6 @@
 
 import mapboxgl from 'mapbox-gl'
 // mapbox CSS loaded conditionally
-import { useEffect } from "react"
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { useApi } from '../../shared/auth/useApi'
 import { useTranslation } from '../../shared/i18n/useTranslation'
