@@ -14,6 +14,9 @@ import {
   Terminal,
   Globe,
   Rocket,
+  GitMerge,
+  Database,
+  Zap,
 } from 'lucide-react'
 import { useRole, ROLES } from '../auth/RoleContext'
 import { useTheme } from '../theme/ThemeContext'
@@ -99,6 +102,16 @@ const NAV_GROUPS: NavGroup[] = [
       { to: '/reports',        labelKey: 'nav.reports',        icon: FileText },
       { to: '/communications', labelKey: 'nav.communications', icon: MessageSquare },
       { to: '/phones', labelKey: 'nav.phones', icon: Phone },
+    ],
+  },
+  {
+    labelKey: 'nav.dev_ops',
+    items: [
+      { to: '/git',         labelKey: 'nav.git',         icon: GitMerge },
+      { to: '/database',    labelKey: 'nav.database',    icon: Database },
+      { to: '/domains',     labelKey: 'nav.domains',     icon: Globe },
+      { to: '/automation',  labelKey: 'nav.automation',  icon: Zap },
+      { to: '/infra-monitor', labelKey: 'nav.infraMonitor', icon: Server },
     ],
   },
   {

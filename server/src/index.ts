@@ -727,6 +727,25 @@ app.use('/api', ventureEngineRouter); // /api/venture-engine/*
 import { ventureEngineRouter as veRouter } from './routes/venture-engine';
 app.use('/api/venture-engine', auth, veRouter);
 
+// ─── New modules: Git, Database, Domains, Automation, Infra ──────────────────
+import adminDbRouter from './routes/admin-db';
+app.use(adminDbRouter);                              // GET /api/admin/databases, POST /api/admin/query
+
+import gitRouter from './routes/git';
+app.use(gitRouter);                                  // GET /api/git/repos, /api/git/repos/:owner/:repo/commits, /api/git/actions/:owner/:repo
+
+import domainsRouter from './routes/domains';
+app.use(domainsRouter);                              // GET /api/domains/status
+
+import automationRouter from './routes/automation';
+app.use(automationRouter);                           // GET /api/automation/workflows, PATCH /api/automation/workflows/:id
+
+import infraRouter from './routes/infra';
+app.use(infraRouter);                                // GET /api/infra/status, /api/infra/logs/:service, POST /api/infra/restart/:service
+
+import communicationsRouter from './routes/communications';
+app.use(communicationsRouter);                       // GET /api/communications/inbox, POST /api/communications/sms
+
 // ============================================================
 // CERTIFIED OMS: Task Catalog API
 // ============================================================

@@ -264,5 +264,12 @@
   },
   "nav.openclaw": "OpenClaw",
   "nav.networkMap": "Network Map",
-  "nav.uber": "🚗 Uber"
+  "nav.uber": "🚗 Uber",
+  "nav.dev_ops": "Dev & Ops",
+  "nav.git": "Git",
+  "nav.database": "Databaser",
+  "nav.domains": "Domäner",
+  "nav.automation": "Automation",
+  "nav.infraMonitor": "Infra Monitor",
+  "nav.terraform": "Terraform"
 }

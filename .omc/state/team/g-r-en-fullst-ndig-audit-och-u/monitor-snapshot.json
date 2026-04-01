@@ -1,0 +1,46 @@
+{
+  "taskStatusById": {
+    "1": "pending",
+    "2": "pending",
+    "3": "pending",
+    "4": "pending",
+    "5": "pending"
+  },
+  "workerAliveByName": {
+    "worker-1": true,
+    "worker-2": true,
+    "worker-3": true,
+    "worker-4": true,
+    "worker-5": true
+  },
+  "workerStateByName": {
+    "worker-1": "unknown",
+    "worker-2": "unknown",
+    "worker-3": "unknown",
+    "worker-4": "unknown",
+    "worker-5": "unknown"
+  },
+  "workerTurnCountByName": {
+    "worker-1": 0,
+    "worker-2": 0,
+    "worker-3": 0,
+    "worker-4": 0,
+    "worker-5": 0
+  },
+  "workerTaskIdByName": {
+    "worker-1": "",
+    "worker-2": "",
+    "worker-3": "",
+    "worker-4": "",
+    "worker-5": ""
+  },
+  "mailboxNotifiedByMessageId": {},
+  "completedEventTaskIds": {},
+  "monitorTimings": {
+    "list_tasks_ms": 39.08,
+    "worker_scan_ms": 57.48,
+    "mailbox_delivery_ms": 0,
+    "total_ms": 126.33,
+    "updated_at": "2026-04-01T21:29:50.308Z"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "id": "4",
+  "subject": "Worker 4: Gör en fullständig audit och uppgradering av hela Wavult OS command-ce",
+  "description": "Gör en fullständig audit och uppgradering av hela Wavult OS command-center.\n\nGå igenom ALLA feature-moduler i apps/command-center/src/features/. För varje modul:\n1. Läs källkoden\n2. Bedöm: fungerar den? Har den mock/placeholder data? Saknar den något?\n3. Fixa det som är trasigt eller tomt — koppla till riktiga API-endpoints\n\nAPI BASE: https://api.wavult.com — API key header: x-api-key: wavult-openclaw-2026\nquiXzoom API: https://api.quixzoom.com\n\nPRIORITET: dashboard, infrastructure, communications, git, database, company-launch, venture-engine, quixzoom-app, finance, team, tasks, projects — sedan övriga.\n\nTa bort ALL mock/placeholder-data. Lägg till loading states och error handling. Inga nya npm-paket. Befintligt mörkt tema.\n\nCommitta och pusha när klart: git add -A && git commit -m \"feat: full OS audit — alla moduler produktionsklara\" && git push origin main",
+  "status": "pending",
+  "owner": null,
+  "result": null,
+  "created_at": "2026-04-01T21:28:58.366Z"
+}

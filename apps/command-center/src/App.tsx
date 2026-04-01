@@ -79,6 +79,11 @@ const OpenClawHub            = lazy(() => import('./features/openclaw/OpenClawHu
 const NetworkMap             = lazy(() => import('./features/network-map/NetworkMap').then(m => ({ default: m.NetworkMap })))
 const VentureEngine          = lazy(() => import('./features/venture-engine').then(m => ({ default: m.VentureEngine })))
 const TeamPhones             = lazy(() => import('./features/communications/TeamPhones').then(m => ({ default: m.TeamPhones })))
+const GitHubView             = lazy(() => import('./features/git/GitHub').then(m => ({ default: m.GitHub })))
+const DatabaseManager        = lazy(() => import('./features/database/DatabaseManager').then(m => ({ default: m.DatabaseManager })))
+const DomainManager          = lazy(() => import('./features/domains/DomainManager').then(m => ({ default: m.DomainManager })))
+const N8NManager             = lazy(() => import('./features/automation/N8NManager').then(m => ({ default: m.N8NManager })))
+const InfraMonitor           = lazy(() => import('./features/infrastructure/InfraMonitor').then(m => ({ default: m.InfraMonitor })))
 
 // ─── Page loader fallback ───────────────────────────────────────────────────────
 function PageLoader() {
@@ -209,6 +214,11 @@ function AuthenticatedApp() {
               <Route path="/openclaw" element={<OpenClawHub />} />
               <Route path="/network-map" element={<NetworkMap />} />
               <Route path="/venture-engine" element={<VentureEngine />} />
+              <Route path="/git" element={<GitHubView />} />
+              <Route path="/database" element={<DatabaseManager />} />
+              <Route path="/domains" element={<DomainManager />} />
+              <Route path="/automation" element={<N8NManager />} />
+              <Route path="/infra-monitor" element={<InfraMonitor />} />
             </Routes>
           </Suspense>
         </Shell>
