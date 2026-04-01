@@ -57,12 +57,12 @@ export function ActivityLog() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h2 className="text-sm font-semibold text-gray-900">Aktivitetslogg</h2>
-          <p className="text-sm text-gray-500 mt-0.5">{activities.length} aktiviteter loggade</p>
+          <h2 className="text-sm font-semibold text-text-primary">Aktivitetslogg</h2>
+          <p className="text-sm text-text-muted mt-0.5">{activities.length} aktiviteter loggade</p>
         </div>
         <button
           onClick={() => setShowForm(v => !v)}
-          className="text-sm px-4 py-2 rounded-lg bg-purple-50 border border-purple-200 text-purple-700 hover:bg-brand-accent/20 transition-colors font-medium"
+          className="text-sm px-4 py-2 rounded-lg bg-blue-50 border border-blue-200 text-blue-700 hover:bg-brand-accent/20 transition-colors font-medium"
         >
           + Logga aktivitet
         </button>
@@ -70,15 +70,15 @@ export function ActivityLog() {
 
       {/* New activity form */}
       {showForm && (
-        <div className="bg-white border border-gray-200 rounded-xl p-4 space-y-4">
-          <p className="text-sm font-semibold text-gray-900">Ny aktivitet</p>
+        <div className="bg-white border border-surface-border rounded-xl p-4 space-y-4">
+          <p className="text-sm font-semibold text-text-primary">Ny aktivitet</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
-              <label className="text-xs text-gray-500 mb-1 block">Typ</label>
+              <label className="text-xs text-text-muted mb-1 block">Typ</label>
               <select
                 value={formType}
                 onChange={e => setFormType(e.target.value as ActivityType)}
-                className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none appearance-none"
+                className="w-full bg-muted/30 border border-surface-border rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none appearance-none"
               >
                 {ACTIVITY_TYPES.map(t => (
                   <option key={t} value={t}>{ACTIVITY_ICONS[t]} {t}</option>
@@ -86,11 +86,11 @@ export function ActivityLog() {
               </select>
             </div>
             <div>
-              <label className="text-xs text-gray-500 mb-1 block">Prospect</label>
+              <label className="text-xs text-text-muted mb-1 block">Prospect</label>
               <select
                 value={formProspect}
                 onChange={e => setFormProspect(e.target.value)}
-                className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none appearance-none"
+                className="w-full bg-muted/30 border border-surface-border rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none appearance-none"
               >
                 {PROSPECTS.map(p => (
                   <option key={p.id} value={p.id}>{p.company}</option>
@@ -98,11 +98,11 @@ export function ActivityLog() {
               </select>
             </div>
             <div>
-              <label className="text-xs text-gray-500 mb-1 block">Utförd av</label>
+              <label className="text-xs text-text-muted mb-1 block">Utförd av</label>
               <select
                 value={formBy}
                 onChange={e => setFormBy(e.target.value as TeamMember)}
-                className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none appearance-none"
+                className="w-full bg-muted/30 border border-surface-border rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none appearance-none"
               >
                 {TEAM_MEMBERS.map(m => (
                   <option key={m} value={m}>{m}</option>
@@ -111,26 +111,26 @@ export function ActivityLog() {
             </div>
           </div>
           <div>
-            <label className="text-xs text-gray-500 mb-1 block">Anteckning</label>
+            <label className="text-xs text-text-muted mb-1 block">Anteckning</label>
             <textarea
               value={formNote}
               onChange={e => setFormNote(e.target.value)}
               placeholder="Vad hände? Vad bestämdes?"
               rows={3}
-              className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none focus:border-gray-300 resize-none"
+              className="w-full bg-muted/30 border border-surface-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder-gray-600 focus:outline-none focus:border-gray-300 resize-none"
             />
           </div>
           <div className="flex gap-3">
             <button
               onClick={logActivity}
               disabled={!formNote.trim()}
-              className="text-sm px-4 py-2 rounded-lg bg-brand-accent text-gray-900 hover:opacity-90 transition-opacity font-medium disabled:opacity-40 disabled:cursor-not-allowed"
+              className="text-sm px-4 py-2 rounded-lg bg-brand-accent text-text-primary hover:opacity-90 transition-opacity font-medium disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Logga
             </button>
             <button
               onClick={() => setShowForm(false)}
-              className="text-sm px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-500 hover:text-gray-900 transition-colors"
+              className="text-sm px-4 py-2 rounded-lg bg-muted/30 border border-surface-border text-text-muted hover:text-text-primary transition-colors"
             >
               Avbryt
             </button>
@@ -144,8 +144,8 @@ export function ActivityLog() {
           onClick={() => setFilter('Alla')}
           className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${
             filter === 'Alla'
-              ? 'bg-purple-50 text-purple-700 font-medium'
-              : 'bg-white border border-gray-200 text-gray-500 hover:text-gray-900'
+              ? 'bg-blue-50 text-blue-700 font-medium'
+              : 'bg-white border border-surface-border text-text-muted hover:text-gray-900'
           }`}
         >
           Alla typer
@@ -156,8 +156,8 @@ export function ActivityLog() {
             onClick={() => setFilter(prev => prev === t ? 'Alla' : t)}
             className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${
               filter === t
-                ? 'bg-purple-50 text-purple-700 font-medium'
-                : 'bg-white border border-gray-200 text-gray-500 hover:text-gray-900'
+                ? 'bg-blue-50 text-blue-700 font-medium'
+                : 'bg-white border border-surface-border text-text-muted hover:text-gray-900'
             }`}
           >
             {ACTIVITY_ICONS[t]} {t}
@@ -187,34 +187,34 @@ export function ActivityLog() {
         {filtered.map(a => (
           <div
             key={a.id}
-            className="bg-white border border-gray-200 rounded-xl px-4 py-3 flex gap-3 hover:border-gray-200 transition-colors"
+            className="bg-white border border-surface-border rounded-xl px-4 py-3 flex gap-3 hover:border-surface-border transition-colors"
           >
             <div className="text-xl leading-none mt-0.5 flex-shrink-0">{ACTIVITY_ICONS[a.type]}</div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-sm font-medium text-gray-900">{a.type}</span>
-                <span className="text-xs text-gray-500">·</span>
-                <span className="text-xs text-gray-500">{a.company}</span>
-                <span className="text-xs text-gray-500">·</span>
+                <span className="text-sm font-medium text-text-primary">{a.type}</span>
+                <span className="text-xs text-text-muted">·</span>
+                <span className="text-xs text-text-muted">{a.company}</span>
+                <span className="text-xs text-text-muted">·</span>
                 <span
                   className="text-xs px-1.5 py-0.5 rounded"
                   style={{ background: TEAM_COLORS[a.by] + '20', color: TEAM_COLORS[a.by] }}
                 >
                   {a.by}
                 </span>
-                <span className="text-xs text-gray-500 ml-auto flex-shrink-0">
+                <span className="text-xs text-text-muted ml-auto flex-shrink-0">
                   {new Date(a.date).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short', year: 'numeric' })}
                   {' · '}
                   {new Date(a.date).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })}
                 </span>
               </div>
-              <p className="text-sm text-gray-500 mt-1 leading-relaxed">{a.note}</p>
+              <p className="text-sm text-text-muted mt-1 leading-relaxed">{a.note}</p>
             </div>
           </div>
         ))}
 
         {filtered.length === 0 && (
-          <div className="py-12 text-center text-gray-500 text-sm">
+          <div className="py-12 text-center text-text-muted text-sm">
             Inga aktiviteter matchar filter
           </div>
         )}

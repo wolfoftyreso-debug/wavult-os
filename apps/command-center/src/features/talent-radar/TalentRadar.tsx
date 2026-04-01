@@ -41,7 +41,7 @@ function TargetCard({ target, onClick, selected }: {
   return (
     <button
       onClick={onClick}
-      className="w-full text-left px-4 py-3.5 border-b border-gray-100 transition-colors hover:bg-gray-50"
+      className="w-full text-left px-4 py-3.5 border-b border-surface-border/50 transition-colors hover:bg-muted/30"
       style={{ background: selected ? '#1a1d2e' : undefined }}
     >
       <div className="flex items-start gap-3">
@@ -50,7 +50,7 @@ function TargetCard({ target, onClick, selected }: {
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm font-semibold text-gray-900 truncate">{target.handle}</span>
+            <span className="text-sm font-semibold text-text-primary truncate">{target.handle}</span>
             {target.repoStars && <Stars n={target.repoStars} />}
           </div>
           <div className="text-xs text-gray-9000 mt-0.5 truncate">
@@ -83,7 +83,7 @@ function TargetDetail({ target }: { target: TalentTarget }) {
       <div className="flex items-start gap-4">
         <div className="text-4xl">{SOURCE_ICONS[target.source]}</div>
         <div className="flex-1 min-w-0">
-          <h2 className="text-xl font-bold text-gray-900">{target.handle}</h2>
+          <h2 className="text-xl font-bold text-text-primary">{target.handle}</h2>
           {target.name && <p className="text-sm text-gray-9000">{target.name}</p>}
           {target.location && (
             <p className="text-xs text-gray-9000 mt-0.5">📍 {target.location}</p>
@@ -97,7 +97,7 @@ function TargetDetail({ target }: { target: TalentTarget }) {
 
       {/* Repo */}
       {target.repoUrl && (
-        <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+        <div className="rounded-xl border border-surface-border bg-muted/30 p-4">
           <div className="text-xs text-gray-9000 font-mono mb-1">REPO</div>
           <p className="text-sm text-gray-600 mb-2">{target.repoDescription}</p>
           <a
@@ -116,7 +116,7 @@ function TargetDetail({ target }: { target: TalentTarget }) {
         <div className="text-xs text-gray-9000 font-mono mb-2">SPECIALTIES</div>
         <div className="flex flex-wrap gap-1.5">
           {target.specialty.map(s => (
-            <span key={s} className="text-xs px-2.5 py-1 rounded-lg bg-gray-50 text-gray-600 border border-gray-200">
+            <span key={s} className="text-xs px-2.5 py-1 rounded-lg bg-muted/30 text-gray-600 border border-surface-border">
               {s}
             </span>
           ))}
@@ -152,7 +152,7 @@ function TargetDetail({ target }: { target: TalentTarget }) {
           href={target.profileUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs px-3 py-2 rounded-lg bg-gray-50 text-gray-600 hover:bg-white/[0.1] transition-colors border border-gray-200"
+          className="text-xs px-3 py-2 rounded-lg bg-muted/30 text-gray-600 hover:bg-white/[0.1] transition-colors border border-surface-border"
         >
           View Profile →
         </a>
@@ -161,7 +161,7 @@ function TargetDetail({ target }: { target: TalentTarget }) {
             href={target.repoUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs px-3 py-2 rounded-lg bg-gray-50 text-gray-600 hover:bg-white/[0.1] transition-colors border border-gray-200"
+            className="text-xs px-3 py-2 rounded-lg bg-muted/30 text-gray-600 hover:bg-white/[0.1] transition-colors border border-surface-border"
           >
             View Repo →
           </a>
@@ -184,9 +184,9 @@ function StatsBar({ targets }: { targets: TalentTarget[] }) {
   }, {} as Record<string, number>)
 
   return (
-    <div className="flex items-center gap-4 px-5 py-3 border-b border-gray-200 bg-[#07090F] flex-wrap">
+    <div className="flex items-center gap-4 px-5 py-3 border-b border-surface-border bg-[#07090F] flex-wrap">
       <div className="text-xs text-gray-9000 font-mono">
-        <span className="text-gray-900 font-semibold">{targets.length}</span> targets
+        <span className="text-text-primary font-semibold">{targets.length}</span> targets
       </div>
       <div className="text-xs text-gray-9000 font-mono">
         <span className="text-amber-700 font-semibold">⭐ {(totalStars / 1000).toFixed(0)}k</span> combined stars
@@ -219,11 +219,11 @@ export function TalentRadar() {
     <div className="flex flex-col h-full overflow-hidden">
 
       {/* Header */}
-      <div className="flex-shrink-0 px-5 py-4 border-b border-gray-200 bg-white">
+      <div className="flex-shrink-0 px-5 py-4 border-b border-surface-border bg-white">
         <div className="flex items-center gap-3 mb-3">
           <span className="text-xl">🎯</span>
           <div>
-            <h1 className="text-base font-bold text-gray-900">Talent Radar</h1>
+            <h1 className="text-base font-bold text-text-primary">Talent Radar</h1>
             <p className="text-xs text-gray-9000">OpenClaw Elite — Global Recruitment Pipeline</p>
           </div>
         </div>
@@ -261,7 +261,7 @@ export function TalentRadar() {
         <div className={`
           ${mobileShowDetail ? 'hidden md:flex' : 'flex'}
           w-full md:w-72 flex-shrink-0 flex-col
-          border-r border-gray-200 overflow-y-auto
+          border-r border-surface-border overflow-y-auto
         `}>
           {filtered.length === 0 ? (
             <div className="p-6 text-sm text-gray-9000 text-center">No targets in this stage.</div>
@@ -287,7 +287,7 @@ export function TalentRadar() {
           {/* Mobile back */}
           {mobileShowDetail && (
             <button
-              className="md:hidden flex items-center gap-2 px-4 py-3 text-xs text-gray-9000 border-b border-gray-200"
+              className="md:hidden flex items-center gap-2 px-4 py-3 text-xs text-gray-9000 border-b border-surface-border"
               onClick={() => setMobileShowDetail(false)}
             >
               ← Back to list

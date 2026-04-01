@@ -13,6 +13,7 @@ import {
   Phone,
   Terminal,
   Globe,
+  Rocket,
 } from 'lucide-react'
 import { useRole, ROLES } from '../auth/RoleContext'
 import { useTheme } from '../theme/ThemeContext'
@@ -63,11 +64,12 @@ const NAV_GROUPS: NavGroup[] = [
   {
     labelKey: 'nav.money',
     items: [
-      { to: '/finance',       labelKey: 'nav.finance',      icon: DollarSign },
-      { to: '/transactions',  labelKey: 'nav.transactions', icon: Receipt },
-      { to: '/causal-os',     labelKey: 'nav.simulation',   icon: GitBranch },
-      { to: '/procurement',   labelKey: 'nav.procurement',  icon: ShoppingCart },
-      { to: '/payroll',       labelKey: 'nav.payroll',      icon: CreditCard },
+      { to: '/finance',         labelKey: 'nav.finance',         icon: DollarSign },
+      { to: '/venture-engine',  labelKey: 'nav.venture_engine',  icon: Rocket },
+      { to: '/transactions',    labelKey: 'nav.transactions',    icon: Receipt },
+      { to: '/causal-os',       labelKey: 'nav.simulation',      icon: GitBranch },
+      { to: '/procurement',     labelKey: 'nav.procurement',     icon: ShoppingCart },
+      { to: '/payroll',         labelKey: 'nav.payroll',         icon: CreditCard },
     ],
   },
   {

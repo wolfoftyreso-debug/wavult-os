@@ -41,7 +41,7 @@ const ROLES: RoleDef[] = [
     id: 'admin',
     title: 'Admin',
     person: 'Erik',
-    color: '#8B5CF6',
+    color: '#2563EB',
     emoji: '🔐',
     description: 'Full systemtillgång — alla moduler, alla bolag, alla behörigheter.',
     modules: ALL_MODULES.map(m => m.id),
@@ -127,13 +127,13 @@ export function RolesView() {
             {role.emoji}
           </div>
           <div>
-            <h2 className="text-sm font-bold text-gray-900">{role.person} — {role.title}</h2>
+            <h2 className="text-sm font-bold text-text-primary">{role.person} — {role.title}</h2>
             <p className="text-xs text-gray-9000">{role.description}</p>
           </div>
         </div>
 
         {/* Module toggles */}
-        <div className="rounded-xl border border-gray-200 bg-white divide-y divide-gray-100 overflow-hidden">
+        <div className="rounded-xl border border-surface-border bg-white divide-y divide-gray-100 overflow-hidden">
           {ALL_MODULES.map(mod => {
             const enabled = modules.includes(mod.id)
             const isAdminLocked = selectedRole === 'admin'
@@ -183,7 +183,7 @@ export function RolesView() {
         )}
 
         {selectedRole === 'admin' && (
-          <div className="rounded-xl border border-purple-200 bg-purple-50 px-4 py-3 text-xs text-gray-9000">
+          <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-xs text-gray-9000">
             🔐 Admin har alltid full tillgång och kan inte begränsas.
           </div>
         )}
@@ -203,7 +203,7 @@ export function RolesView() {
           <button
             key={r.id}
             onClick={() => setSelectedRole(r.id)}
-            className="w-full text-left rounded-xl border border-gray-200 bg-white px-5 py-4 hover:border-gray-200 transition-all group"
+            className="w-full text-left rounded-xl border border-surface-border bg-white px-5 py-4 hover:border-surface-border transition-all group"
           >
             <div className="flex items-center gap-3">
               {/* Avatar */}
@@ -217,7 +217,7 @@ export function RolesView() {
               {/* Info */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold text-gray-900">{r.person}</span>
+                  <span className="text-sm font-semibold text-text-primary">{r.person}</span>
                   <span
                     className="text-xs px-1.5 py-0.5 rounded font-mono"
                     style={{ background: r.color + '15', color: r.color }}

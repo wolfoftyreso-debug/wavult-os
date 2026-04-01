@@ -5,7 +5,7 @@ export function AttributionView() {
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-gray-900 font-semibold">Attribution</h2>
+        <h2 className="text-text-primary font-semibold">Attribution</h2>
         <p className="text-xs text-gray-9000 mt-0.5">Konverteringsspårning och touchpoint-analys</p>
       </div>
 
@@ -17,10 +17,10 @@ export function AttributionView() {
         </p>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+      <div className="bg-white border border-surface-border rounded-xl overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-gray-200">
+            <tr className="border-b border-surface-border">
               {COLUMNS.map(col => (
                 <th key={col} className="px-4 py-3 text-left text-xs font-medium text-gray-9000 uppercase tracking-wider">
                   {col}
@@ -45,7 +45,7 @@ export function AttributionView() {
           { label: 'Klick', value: '0' },
           { label: 'Konverteringar', value: '0' },
         ].map(stat => (
-          <div key={stat.label} className="bg-white border border-gray-200 rounded-xl p-4 text-center">
+          <div key={stat.label} className="bg-white border border-surface-border rounded-xl p-4 text-center">
             <div className="text-2xl font-mono text-gray-600">{stat.value}</div>
             <div className="text-xs text-gray-9000 mt-1">{stat.label}</div>
           </div>

@@ -26,35 +26,71 @@ interface EntityConfig {
 
 const ENTITIES: EntityConfig[] = [
   {
-    id: 'wavult-group',
-    name: 'Wavult Group AB',
+    id: 'wavult-group-dmcc',
+    name: 'Wavult Group DMCC',
     shortName: 'WG',
-    color: '#8B5CF6',
-    country: '🇸🇪 Sverige',
-    currency: 'SEK',
-    jurisdiction: 'Sverige',
-    taxTable: 'Ej konfigurerat',
-    orgNumber: '',
-    address: '',
+    color: '#1E40AF',
+    country: '🇦🇪 Dubai, UAE',
+    currency: 'USD',
+    jurisdiction: 'DMCC Free Zone',
+    taxTable: '0% (UAE FZCO)',
+    orgNumber: 'WG-AE-HOLD-001',
+    address: 'DMCC Free Zone, Dubai, UAE',
     vatNumber: '',
     bankAccount: '',
     invoiceLogoUrl: '',
     contacts: [
-      { name: 'Erik Svensson', role: 'Chairman / Group CEO', email: 'erik@wavult.com', phone: '+46709123223' },
-      { name: 'Winston Bjarnemark', role: 'CFO', email: 'winston@wavult.com', phone: '0768123548' },
+      { name: 'Erik Svensson', role: 'Chairman & Group CEO', email: 'erik@wavult.com', phone: '+46709123223' },
+      { name: 'Dennis Bjarnemark', role: 'Chief Legal & Operations', email: 'dennis@wavult.com', phone: '+46761474243' },
     ],
   },
   {
-    id: 'wavult-ops',
-    name: 'Wavult Operations AB',
-    shortName: 'WO',
-    color: '#3B82F6',
-    country: '🇸🇪 Sverige',
-    currency: 'SEK',
-    jurisdiction: 'Sverige',
-    taxTable: 'Ej konfigurerat',
-    orgNumber: '',
-    address: '',
+    id: 'financo-fzco',
+    name: 'FinanceCo FZCO',
+    shortName: 'FCO',
+    color: '#16A34A',
+    country: '🇦🇪 Dubai, UAE',
+    currency: 'USD',
+    jurisdiction: 'DMCC Free Zone',
+    taxTable: '0% (UAE FZCO)',
+    orgNumber: 'WG-AE-FIN-001',
+    address: 'DMCC Free Zone, Dubai, UAE',
+    vatNumber: '',
+    bankAccount: '',
+    invoiceLogoUrl: '',
+    contacts: [
+      { name: 'Winston Bjarnemark', role: 'CFO', email: 'winston@wavult.com', phone: '+46768123548' },
+    ],
+  },
+  {
+    id: 'quixzoom-inc',
+    name: 'quiXzoom Inc.',
+    shortName: 'QZ-US',
+    color: '#0284C7',
+    country: '🇺🇸 Delaware, USA',
+    currency: 'USD',
+    jurisdiction: 'Delaware C-Corp',
+    taxTable: 'US Federal',
+    orgNumber: 'WG-US-DE-PROD-001',
+    address: 'Delaware, USA (Stripe Atlas)',
+    vatNumber: '',
+    bankAccount: '',
+    invoiceLogoUrl: '',
+    contacts: [
+      { name: 'Erik Svensson', role: 'Chairman & Group CEO', email: 'erik@wavult.com', phone: '+46709123223' },
+    ],
+  },
+  {
+    id: 'quixzoom-uab',
+    name: 'QuiXzoom UAB',
+    shortName: 'QZ-EU',
+    color: '#10B981',
+    country: '🇱🇹 Litauen, EU',
+    currency: 'EUR',
+    jurisdiction: 'UAB (Lithuania)',
+    taxTable: '15% (Lithuania)',
+    orgNumber: 'WG-LT-PROD-001',
+    address: 'Vilnius, Lithuania (planned)',
     vatNumber: '',
     bankAccount: '',
     invoiceLogoUrl: '',
@@ -63,41 +99,59 @@ const ENTITIES: EntityConfig[] = [
     ],
   },
   {
-    id: 'wavult-tech',
-    name: 'Wavult Tech LLC',
-    shortName: 'WT',
-    color: '#EF4444',
-    country: '🇺🇸 Texas, USA',
-    currency: 'USD',
-    jurisdiction: 'Texas',
-    taxTable: 'Ej konfigurerat',
-    orgNumber: '',
-    address: '',
+    id: 'landvex-ab',
+    name: 'Landvex AB',
+    shortName: 'LNDVX',
+    color: '#D97706',
+    country: '🇸🇪 Sverige',
+    currency: 'SEK',
+    jurisdiction: 'Aktiebolag (SE)',
+    taxTable: '20,6%',
+    orgNumber: '559141-7042',
+    address: 'Sverige',
     vatNumber: '',
     bankAccount: '',
     invoiceLogoUrl: '',
     contacts: [
-      { name: 'Johan Berglund', role: 'CTO', email: 'johan@wavult.com', phone: '+46736977576' },
+      { name: 'Dennis Bjarnemark', role: 'Chief Legal & Operations', email: 'dennis@wavult.com', phone: '+46761474243' },
     ],
   },
   {
-    id: 'wavult-legal',
-    name: 'Wavult Legal UAB',
-    shortName: 'WL',
+    id: 'landvex-inc',
+    name: 'Landvex Inc.',
+    shortName: 'LVX-US',
     color: '#F59E0B',
-    country: '🇱🇹 Litauen',
-    currency: 'EUR',
-    jurisdiction: 'Vilnius, Litauen',
-    taxTable: 'Ej konfigurerat',
-    orgNumber: '',
-    address: '',
+    country: '🇺🇸 Texas, USA',
+    currency: 'USD',
+    jurisdiction: 'Texas LLC',
+    taxTable: 'US Federal + Texas',
+    orgNumber: 'WG-US-TX-PROD-001',
+    address: 'Houston, Texas, USA (forming)',
     vatNumber: '',
     bankAccount: '',
     invoiceLogoUrl: '',
     contacts: [
-      { name: 'Dennis Bjarnemark', role: 'CLO', email: 'dennis@wavult.com', phone: '0761474243' },
+      { name: 'Dennis Bjarnemark', role: 'Chief Legal & Operations', email: 'dennis@wavult.com', phone: '+46761474243' },
     ],
-  },
+  },,
+  {
+    id: 'devops-fzco',
+    name: 'DevOps FZCO',
+    shortName: 'DVO',
+    color: '#7C3AED',
+    country: '🇦🇪 Dubai, UAE',
+    currency: 'USD',
+    jurisdiction: 'DMCC Free Zone',
+    taxTable: '0% (UAE FZCO)',
+    orgNumber: 'WG-AE-OPS-001',
+    address: 'DMCC Free Zone, Dubai, UAE',
+    vatNumber: '',
+    bankAccount: '',
+    invoiceLogoUrl: '',
+    contacts: [
+      { name: 'Johan Berglund', role: 'Group CTO', email: 'johan@wavult.com', phone: '+46736977576' },
+    ],
+  }
 ]
 
 function EntityCard({ entity }: { entity: EntityConfig }) {
@@ -107,7 +161,7 @@ function EntityCard({ entity }: { entity: EntityConfig }) {
   const [address, setAddress] = useState(entity.address)
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
+    <div className="rounded-xl border border-surface-border bg-white overflow-hidden">
       {/* Header */}
       <div
         className="flex items-center gap-3 px-5 py-4 border-b border-gray-100"
@@ -120,7 +174,7 @@ function EntityCard({ entity }: { entity: EntityConfig }) {
           {entity.shortName}
         </div>
         <div className="flex-1 min-w-0">
-          <div className="text-sm font-bold text-gray-900">{entity.name}</div>
+          <div className="text-sm font-bold text-text-primary">{entity.name}</div>
           <div className="text-xs text-gray-9000">{entity.country}{entity.orgNumber ? ` · ${entity.orgNumber}` : ' · Org.nr (ej registrerat)'}</div>
         </div>
         <button
@@ -141,7 +195,7 @@ function EntityCard({ entity }: { entity: EntityConfig }) {
               <select
                 value={currency}
                 onChange={e => setCurrency(e.target.value)}
-                className="w-full bg-gray-50 border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-gray-900 focus:outline-none"
+                className="w-full bg-muted/30 border border-surface-border rounded-lg px-2 py-1.5 text-xs text-text-primary focus:outline-none"
               >
                 <option>SEK</option>
                 <option>EUR</option>
@@ -150,14 +204,14 @@ function EntityCard({ entity }: { entity: EntityConfig }) {
                 <option>AED</option>
               </select>
             ) : (
-              <div className="text-sm text-gray-900 font-semibold">{currency}</div>
+              <div className="text-sm text-text-primary font-semibold">{currency}</div>
             )}
           </div>
 
           {/* Jurisdiction */}
           <div className="space-y-1">
             <div className="text-[9px] text-gray-600 font-mono uppercase">Jurisdiktion</div>
-            <div className="text-sm text-gray-900">{entity.jurisdiction}</div>
+            <div className="text-sm text-text-primary">{entity.jurisdiction}</div>
           </div>
 
           {/* Tax table */}
@@ -179,7 +233,7 @@ function EntityCard({ entity }: { entity: EntityConfig }) {
               <input
                 value={address}
                 onChange={e => setAddress(e.target.value)}
-                className="w-full bg-gray-50 border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-gray-900 focus:outline-none"
+                className="w-full bg-muted/30 border border-surface-border rounded-lg px-2 py-1.5 text-xs text-text-primary focus:outline-none"
               />
             ) : (
               <div className="text-xs text-gray-9000">{address || <span className="text-gray-9000 italic">Lägg till adress</span>}</div>
@@ -206,7 +260,7 @@ function EntityCard({ entity }: { entity: EntityConfig }) {
         </div>
 
         {/* Invoice template preview */}
-        <div className="rounded-lg border border-gray-100 bg-gray-50 px-3 py-2 text-xs text-gray-9000">
+        <div className="rounded-lg border border-surface-border/50 bg-muted/30 px-3 py-2 text-xs text-gray-9000">
           <div className="font-mono uppercase text-gray-600 mb-1">Fakturamall</div>
           <div>Logotyp: <span className="text-gray-9000">{entity.invoiceLogoUrl || 'ej uppladdad'}</span></div>
           <div>Adress: <span className="text-gray-9000">{address || 'Lägg till adress'}</span></div>
@@ -225,7 +279,7 @@ function EntityCard({ entity }: { entity: EntityConfig }) {
             {entity.contacts.map((c, i) => (
               <div
                 key={i}
-                className="flex items-center gap-3 px-3 py-2 rounded-lg bg-gray-50 border border-gray-100"
+                className="flex items-center gap-3 px-3 py-2 rounded-lg bg-muted/30 border border-gray-100"
               >
                 <div
                   className="h-7 w-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0"
@@ -234,7 +288,7 @@ function EntityCard({ entity }: { entity: EntityConfig }) {
                   {c.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-xs font-semibold text-gray-900">{c.name}</div>
+                  <div className="text-xs font-semibold text-text-primary">{c.name}</div>
                   <div className="text-xs text-gray-9000">{c.role}</div>
                 </div>
                 <div className="text-right text-xs text-gray-9000">

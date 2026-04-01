@@ -63,7 +63,7 @@ function ActionCard({
     proposed: { color: '#F59E0B', bg: '#F59E0B15', label: 'AWAITING DECISION' },
     accepted: { color: '#10B981', bg: '#10B98115', label: 'ACCEPTED' },
     rejected: { color: '#EF4444', bg: '#EF444415', label: 'REJECTED — LOCKED' },
-    requires_dual_approval: { color: '#8B5CF6', bg: '#8B5CF615', label: 'DUAL APPROVAL REQUIRED' },
+    requires_dual_approval: { color: '#2563EB', bg: '#2563EB15', label: 'DUAL APPROVAL REQUIRED' },
   }[action.state]
 
   return (
@@ -179,7 +179,7 @@ function IncidentCard({
 
   return (
     <div className={`rounded-2xl border overflow-hidden transition-all ${incident.severity === 'critical' ? 'animate-pulse-border' : ''}`}
-      style={{ borderColor: open ? borderColor + '50' : 'rgba(0,0,0,0.10)', background: '#FFFFFF' }}>
+      style={{ borderColor: open ? borderColor + '50' : 'rgba(0,0,0,0.10)', background: 'var(--color-surface)' }}>
 
       {/* Incident header — always visible */}
       <button
@@ -210,7 +210,7 @@ function IncidentCard({
             )}
             {incident.locked && (
               <span className="text-xs px-2 py-0.5 rounded font-mono"
-                style={{ background: 'rgba(0,0,0,0.06)', color: 'rgba(60,60,67,0.8)', border: '1px solid rgba(0,0,0,0.10)' }}>
+                style={{ background: 'rgba(0,0,0,0.06)', color: 'rgba(60,60,67,0.8)', border: '1px solid var(--color-border)' }}>
                 🔒 LOCKED
               </span>
             )}
@@ -235,7 +235,7 @@ function IncidentCard({
                 { label: 'Impact',          value: incident.rca.impact },
               ] as const).map(({ label, value }) => (
                 <div key={label} className={`rounded-xl px-4 py-3 ${label === 'Root Cause' ? 'col-span-2' : ''}`}
-                  style={{ border: '1px solid rgba(0,0,0,0.10)', background: '#F2F2F7' }}>
+                  style={{ border: '1px solid var(--color-border)', background: 'var(--color-bg-muted)' }}>
                   <div className="text-xs font-mono uppercase mb-1" style={{ color: 'rgba(60,60,67,0.8)' }}>{label}</div>
                   <p className="text-xs leading-relaxed" style={{ color: '#1C1C1E' }}>{value}</p>
                 </div>
@@ -243,7 +243,7 @@ function IncidentCard({
             </div>
 
             {/* Dependency chain */}
-            <div className="rounded-xl px-4 py-3" style={{ border: '1px solid rgba(0,0,0,0.10)', background: '#F2F2F7' }}>
+            <div className="rounded-xl px-4 py-3" style={{ border: '1px solid var(--color-border)', background: 'var(--color-bg-muted)' }}>
               <div className="text-xs font-mono uppercase mb-2" style={{ color: 'rgba(60,60,67,0.8)' }}>Dependency Chain</div>
               <div className="flex items-center gap-0 flex-wrap">
                 {incident.rca.dependency_chain.map((dep, i) => (
@@ -321,7 +321,7 @@ function KPIRow({ kpi }: { kpi: KPIDefinition }) {
   const trendColor = kpi.trend === 'up' && status !== 'red' ? '#10B981' : kpi.trend === 'down' ? '#EF4444' : '#6B7280'
 
   return (
-    <div className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-50 transition-colors">
+    <div className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-muted/30 transition-colors">
       <span className="h-2 w-2 rounded-full flex-shrink-0 transition-all"
         style={{ background: color, boxShadow: status === 'red' ? `0 0 8px ${color}` : 'none' }} />
       <span className="flex-1 text-xs truncate" style={{ color: '#1C1C1E' }}>{kpi.name}</span>
@@ -345,7 +345,7 @@ function RoleKPIBlock({ roleId }: { roleId: string }) {
   const kpis = getRoleKPIs(roleId)
 
   return (
-    <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(0,0,0,0.10)', background: '#FFFFFF' }}>
+    <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid var(--color-border)', background: 'var(--color-surface)' }}>
       <div className="flex items-center gap-3 px-4 py-3 border-b"
         style={{ background: role.color + '08', borderColor: 'rgba(0,0,0,0.08)' }}>
         <div className="h-8 w-8 rounded-lg flex items-center justify-center font-bold text-xs"
@@ -440,9 +440,9 @@ export function IncidentCenter() {
   })
 
   return (
-    <div className="flex flex-col h-full overflow-hidden" style={{ background: 'var(--color-bg-secondary, #F2F2F7)' }}>
+    <div className="flex flex-col h-full overflow-hidden" style={{ background: 'var(--color-bg)' }}>
       {/* Header */}
-      <div className="flex-shrink-0 border-b" style={{ background: '#FFFFFF', borderColor: 'rgba(0,0,0,0.10)' }}>
+      <div className="flex-shrink-0 border-b" style={{ background: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
         <div className="px-6 py-4">
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div>
@@ -481,7 +481,7 @@ export function IncidentCenter() {
               )}
               {lockedCount > 0 && (
                 <span className="text-xs px-3 py-1.5 rounded-full"
-                  style={{ background: 'rgba(0,0,0,0.06)', color: 'rgba(60,60,67,0.8)', border: '1px solid rgba(0,0,0,0.10)' }}>
+                  style={{ background: 'rgba(0,0,0,0.06)', color: 'rgba(60,60,67,0.8)', border: '1px solid var(--color-border)' }}>
                   🔒 {lockedCount} locked
                 </span>
               )}
@@ -527,8 +527,8 @@ export function IncidentCenter() {
               <button key={t.id} onClick={() => setTab(t.id)}
                 className="text-xs pb-2 border-b-2 transition-colors font-medium"
                 style={{
-                  color: tab === t.id ? '#5856D6' : 'rgba(60,60,67,0.8)',
-                  borderColor: tab === t.id ? '#5856D6' : 'transparent',
+                  color: tab === t.id ? '#2563EB' : 'rgba(60,60,67,0.8)',
+                  borderColor: tab === t.id ? '#2563EB' : 'transparent',
                 }}>
                 {t.label}
               </button>

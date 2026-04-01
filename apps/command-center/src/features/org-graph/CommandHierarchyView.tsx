@@ -208,7 +208,7 @@ function CommandNode({
                 {role.initials}
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-xs font-bold text-gray-900 leading-tight truncate">
+                <div className="text-xs font-bold text-text-primary leading-tight truncate">
                   {role.person}
                 </div>
                 <div
@@ -259,7 +259,7 @@ function DetailPanel({ role, onClose, onNavigate }: {
   return (
     <div className="h-full flex flex-col bg-white border-l border-white/[0.07] w-80 flex-shrink-0 overflow-y-auto">
       {/* Header */}
-      <div className="flex-shrink-0 border-b border-gray-200 p-5">
+      <div className="flex-shrink-0 border-b border-surface-border p-5">
         <div className="flex items-start gap-3">
           <div
             className="h-12 w-12 rounded-xl flex items-center justify-center font-bold text-sm flex-shrink-0"
@@ -268,7 +268,7 @@ function DetailPanel({ role, onClose, onNavigate }: {
             {role.initials}
           </div>
           <div className="flex-1 min-w-0">
-            <div className="font-bold text-gray-900">{role.person}</div>
+            <div className="font-bold text-text-primary">{role.person}</div>
             <div className="text-sm font-semibold" style={{ color: role.color }}>{role.title}</div>
             <div className="flex items-center gap-1.5 mt-1">
               <span className="h-1.5 w-1.5 rounded-full" style={{ background: statusColor }} />
@@ -295,7 +295,7 @@ function DetailPanel({ role, onClose, onNavigate }: {
       </div>
 
       {/* Owns */}
-      <div className="px-5 py-4 border-b border-gray-200">
+      <div className="px-5 py-4 border-b border-surface-border">
         <div className="text-xs font-semibold text-gray-9000 uppercase tracking-wider mb-3">Owns</div>
         <div className="space-y-1.5">
           {role.owns.map(o => (
@@ -307,7 +307,7 @@ function DetailPanel({ role, onClose, onNavigate }: {
       </div>
 
       {/* KPIs */}
-      <div className="px-5 py-4 border-b border-gray-200">
+      <div className="px-5 py-4 border-b border-surface-border">
         <div className="text-xs font-semibold text-gray-9000 uppercase tracking-wider mb-3">KPIs</div>
         <div className="space-y-4">
           {role.kpis.map(kpi => {
@@ -315,7 +315,7 @@ function DetailPanel({ role, onClose, onNavigate }: {
             const trendIcon  = kpi.trend === 'up' ? '↑' : kpi.trend === 'down' ? '↓' : '–'
             const isIssue = !kpi.good
             return (
-              <div key={kpi.label} className={`rounded-xl p-3 border ${isIssue ? 'bg-red-500/5 border-red-500/15' : 'bg-gray-50 border-gray-200'}`}>
+              <div key={kpi.label} className={`rounded-xl p-3 border ${isIssue ? 'bg-red-500/5 border-red-500/15' : 'bg-muted/30 border-gray-200'}`}>
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-xs text-gray-9000 font-medium">{kpi.label}</span>
                   <span className="text-sm font-bold font-mono" style={{ color: trendColor }}>
@@ -348,7 +348,7 @@ function DetailPanel({ role, onClose, onNavigate }: {
               <button
                 key={e.id}
                 onClick={() => onNavigate(e.id)}
-                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl border text-left transition-colors hover:bg-gray-50"
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl border text-left transition-colors hover:bg-muted/30"
                 style={{ borderColor: e.color + '25', background: e.color + '08' }}
               >
                 <span>{e.flag}</span>
@@ -384,9 +384,9 @@ export function CommandHierarchyView() {
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
 
         {/* Header bar */}
-        <div className="flex-shrink-0 border-b border-gray-200 px-6 py-3 flex items-center justify-between bg-white">
+        <div className="flex-shrink-0 border-b border-surface-border px-6 py-3 flex items-center justify-between bg-white">
           <div className="flex items-center gap-3">
-            <h1 className="text-sm font-bold text-gray-900">Command Hierarchy</h1>
+            <h1 className="text-sm font-bold text-text-primary">Command Hierarchy</h1>
             <span className="text-xs text-gray-9000 font-mono">reports_to chain · always visible</span>
             {criticalCount > 0 && (
               <span className="text-xs px-2 py-0.5 rounded font-mono bg-red-500/15 text-red-700 border border-red-500/20">
@@ -402,7 +402,7 @@ export function CommandHierarchyView() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => navigate('/org')}
-              className="text-xs text-gray-9000 hover:text-gray-600 transition-colors px-2.5 py-1.5 rounded-lg border border-gray-200"
+              className="text-xs text-gray-9000 hover:text-gray-600 transition-colors px-2.5 py-1.5 rounded-lg border border-surface-border"
             >
               Corporate Graph →
             </button>
@@ -453,7 +453,7 @@ export function CommandHierarchyView() {
                     {role.initials}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-gray-900 truncate">{role.person}</p>
+                    <p className="text-sm font-semibold text-text-primary truncate">{role.person}</p>
                     <p className="text-xs font-medium truncate" style={{ color: role.color }}>{role.title}</p>
                   </div>
                   <div className="flex flex-col items-end gap-1 flex-shrink-0">
@@ -464,11 +464,11 @@ export function CommandHierarchyView() {
                   </div>
                 </div>
                 {selectedId === role.id && (
-                  <div className="mt-3 pt-3 border-t border-gray-200 space-y-2">
+                  <div className="mt-3 pt-3 border-t border-surface-border space-y-2">
                     {role.kpis.map(kpi => {
                       const tc = kpi.good ? '#10B981' : '#EF4444'
                       return (
-                        <div key={kpi.label} className={`rounded-lg p-2.5 ${!kpi.good ? 'bg-red-500/5 border border-red-500/15' : 'bg-gray-50'}`}>
+                        <div key={kpi.label} className={`rounded-lg p-2.5 ${!kpi.good ? 'bg-red-500/5 border border-red-500/15' : 'bg-muted/30'}`}>
                           <div className="flex justify-between items-center">
                             <span className="text-xs text-gray-9000">{kpi.label}</span>
                             <span className="text-xs font-bold font-mono" style={{ color: tc }}>{kpi.value}</span>
@@ -490,7 +490,7 @@ export function CommandHierarchyView() {
         </div>
 
         {/* Legend */}
-        <div className="flex-shrink-0 border-t border-gray-100 px-6 py-2 flex items-center gap-6">
+        <div className="flex-shrink-0 border-t border-surface-border/50 px-6 py-2 flex items-center gap-6">
           {(['green', 'yellow', 'red'] as const).map(s => (
             <div key={s} className="flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full" style={{ background: STATUS_COLOR[s] }} />

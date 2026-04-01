@@ -77,6 +77,7 @@ const TravelAutomationHub    = lazy(() => import('./features/travel/TravelAutoma
 const UberHub                = lazy(() => import('./features/travel/UberHub').then(m => ({ default: m.UberHub })))
 const OpenClawHub            = lazy(() => import('./features/openclaw/OpenClawHub').then(m => ({ default: m.OpenClawHub })))
 const NetworkMap             = lazy(() => import('./features/network-map/NetworkMap').then(m => ({ default: m.NetworkMap })))
+const VentureEngine          = lazy(() => import('./features/venture-engine').then(m => ({ default: m.VentureEngine })))
 const TeamPhones             = lazy(() => import('./features/communications/TeamPhones').then(m => ({ default: m.TeamPhones })))
 
 // ─── Page loader fallback ───────────────────────────────────────────────────────
@@ -207,6 +208,7 @@ function AuthenticatedApp() {
               <Route path="/phones" element={<TeamPhones />} />
               <Route path="/openclaw" element={<OpenClawHub />} />
               <Route path="/network-map" element={<NetworkMap />} />
+              <Route path="/venture-engine" element={<VentureEngine />} />
             </Routes>
           </Suspense>
         </Shell>

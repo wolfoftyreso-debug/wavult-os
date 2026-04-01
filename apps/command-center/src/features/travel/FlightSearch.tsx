@@ -94,7 +94,7 @@ export function FlightSearch() {
                 padding: '5px 12px',
                 borderRadius: 20,
                 border: '1px solid #E5E7EB',
-                background: origin === r.from && destination === r.to ? '#7C3AED' : '#F9FAFB',
+                background: origin === r.from && destination === r.to ? '#1E40AF' : '#F9FAFB',
                 color:      origin === r.from && destination === r.to ? '#fff'    : '#374151',
                 fontSize: 12,
                 cursor: 'pointer',
@@ -163,7 +163,7 @@ export function FlightSearch() {
               padding: '8px 20px',
               borderRadius: 8,
               border: 'none',
-              background: loading ? '#A78BFA' : '#7C3AED',
+              background: loading ? '#60A5FA' : '#1E40AF',
               color: '#fff',
               fontSize: 13,
               fontWeight: 600,
@@ -234,7 +234,7 @@ export function FlightSearch() {
                 <span style={{ fontFamily: 'monospace', fontWeight: 600, fontSize: 15 }}>
                   {formatTime(f.departure)}
                 </span>
-                <span style={{ color: '#C4B5FD' }}>──✈──</span>
+                <span style={{ color: '#93C5FD' }}>──✈──</span>
                 <span style={{ fontFamily: 'monospace', fontWeight: 600, fontSize: 15 }}>
                   {formatTime(f.arrival)}
                 </span>
@@ -274,7 +274,7 @@ export function FlightSearch() {
                   padding: '7px 16px',
                   borderRadius: 7,
                   border: 'none',
-                  background: '#7C3AED',
+                  background: '#1E40AF',
                   color: '#fff',
                   fontSize: 12,
                   fontWeight: 600,

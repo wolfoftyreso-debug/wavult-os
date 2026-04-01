@@ -62,7 +62,7 @@ export function CompanyFormation() {
 
   if (step === 'processing') return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 24px', gap: 16 }}>
-      <Loader size={32} style={{ color: '#7C3AED', animation: 'spin 1s linear infinite' }} />
+      <Loader size={32} style={{ color: '#1E40AF', animation: 'spin 1s linear infinite' }} />
       <div style={{ fontSize: 16, fontWeight: 600, color: '#1C1C1E' }}>Bildningsansökan skickas...</div>
       <div style={{ fontSize: 13, color: '#6B7280' }}>{jur.label} via {jur.method}</div>
     </div>
@@ -119,7 +119,7 @@ export function CompanyFormation() {
         <button onClick={() => setStep('form')} style={{ flex: 1, padding: '10px 0', borderRadius: 8, border: '1px solid #E5E7EB', background: '#F9FAFB', cursor: 'pointer', fontSize: 13 }}>
           Tillbaka
         </button>
-        <button onClick={startFormation} style={{ flex: 2, padding: '10px 0', borderRadius: 8, border: 'none', background: '#7C3AED', color: '#fff', fontWeight: 700, cursor: 'pointer', fontSize: 14 }}>
+        <button onClick={startFormation} style={{ flex: 2, padding: '10px 0', borderRadius: 8, border: 'none', background: '#1E40AF', color: '#fff', fontWeight: 700, cursor: 'pointer', fontSize: 14 }}>
           Starta bildning
         </button>
       </div>
@@ -132,7 +132,7 @@ export function CompanyFormation() {
       <div style={{ background: '#fff', border: '1px solid rgba(0,0,0,0.08)', borderRadius: 12, padding: 32 }}>
         <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 24 }}>
           <div style={{ width: 44, height: 44, borderRadius: 10, background: '#EDE9FE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Building2 size={22} style={{ color: '#7C3AED' }} />
+            <Building2 size={22} style={{ color: '#1E40AF' }} />
           </div>
           <div>
             <h2 style={{ fontSize: 18, fontWeight: 700, color: '#1C1C1E', margin: 0 }}>Bilda bolag</h2>
@@ -146,10 +146,10 @@ export function CompanyFormation() {
             <label style={{ fontSize: 12, fontWeight: 600, color: '#374151', display: 'block', marginBottom: 8 }}>Jurisdiktion</label>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               {Object.entries(JURISDICTIONS).map(([key, j]) => (
-                <label key={key} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', border: `1px solid ${config.jurisdiction === key ? '#7C3AED' : '#E5E7EB'}`, borderRadius: 8, cursor: j.available ? 'pointer' : 'not-allowed', opacity: j.available ? 1 : 0.5, background: config.jurisdiction === key ? '#F5F3FF' : '#fff' }}>
+                <label key={key} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', border: `1px solid ${config.jurisdiction === key ? '#1E40AF' : '#E5E7EB'}`, borderRadius: 8, cursor: j.available ? 'pointer' : 'not-allowed', opacity: j.available ? 1 : 0.5, background: config.jurisdiction === key ? '#F5F3FF' : '#fff' }}>
                   <input type="radio" value={key} checked={config.jurisdiction === key} disabled={!j.available}
                     onChange={() => j.available && setConfig(c => ({ ...c, jurisdiction: key as Jurisdiction }))}
-                    style={{ accentColor: '#7C3AED' }} />
+                    style={{ accentColor: '#1E40AF' }} />
                   <span style={{ fontSize: 16 }}>{j.flag}</span>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 13, fontWeight: 600, color: '#1C1C1E' }}>{j.label}</div>
@@ -170,7 +170,7 @@ export function CompanyFormation() {
           </div>
 
           <button onClick={() => config.name && setStep('confirm')} disabled={!config.name}
-            style={{ padding: '14px 0', borderRadius: 10, border: 'none', background: config.name ? '#7C3AED' : '#E5E7EB', color: '#fff', fontWeight: 700, cursor: config.name ? 'pointer' : 'not-allowed', fontSize: 15 }}>
+            style={{ padding: '14px 0', borderRadius: 10, border: 'none', background: config.name ? '#1E40AF' : '#E5E7EB', color: '#fff', fontWeight: 700, cursor: config.name ? 'pointer' : 'not-allowed', fontSize: 15 }}>
             Nästa →
           </button>
         </div>

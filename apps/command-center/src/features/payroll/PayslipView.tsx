@@ -19,16 +19,16 @@ function PayslipDetail({ emp, period, calcSalary, fmt, fmtPeriod, EMPLOYER_TAX_R
   const payDate = `${y}-${m}-25`
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+    <div className="bg-white border border-surface-border rounded-xl overflow-hidden">
       {/* Print header */}
-      <div className="px-4 md:px-6 py-4 border-b border-gray-200 flex items-center justify-between flex-wrap gap-2">
+      <div className="px-4 md:px-6 py-4 border-b border-surface-border flex items-center justify-between flex-wrap gap-2">
         <div>
-          <div className="text-xs text-gray-500 uppercase tracking-wider mb-1">Lönespecifikation</div>
-          <div className="text-sm font-bold text-gray-900">{fmtPeriod(period)}</div>
+          <div className="text-xs text-text-muted uppercase tracking-wider mb-1">Lönespecifikation</div>
+          <div className="text-sm font-bold text-text-primary">{fmtPeriod(period)}</div>
         </div>
         <button
           onClick={() => window.print()}
-          className="text-xs px-3 py-1.5 rounded-lg bg-gray-50 hover:bg-gray-50/80 text-gray-600 border border-gray-200 transition-colors"
+          className="text-xs px-3 py-1.5 rounded-lg bg-muted/30 hover:bg-gray-50/80 text-gray-600 border border-surface-border transition-colors"
         >
           🖨 Skriv ut
         </button>
@@ -38,32 +38,32 @@ function PayslipDetail({ emp, period, calcSalary, fmt, fmtPeriod, EMPLOYER_TAX_R
         {/* Employee info */}
         <div className="flex items-start justify-between">
           <div>
-            <div className="text-base font-bold text-gray-900">{emp.name}</div>
+            <div className="text-base font-bold text-text-primary">{emp.name}</div>
             <div className="text-xs" style={{ color: emp.color }}>{emp.role}</div>
-            <div className="text-xs text-gray-500 mt-1">{emp.email}</div>
+            <div className="text-xs text-text-muted mt-1">{emp.email}</div>
           </div>
           <div className="text-right">
-            <div className="text-xs text-gray-500">Utbetalningsdatum</div>
-            <div className="text-sm font-semibold text-gray-900">{payDate}</div>
-            <div className="text-xs text-gray-500 mt-1">Skattetabell {emp.tax_table} ({emp.location})</div>
+            <div className="text-xs text-text-muted">Utbetalningsdatum</div>
+            <div className="text-sm font-semibold text-text-primary">{payDate}</div>
+            <div className="text-xs text-text-muted mt-1">Skattetabell {emp.tax_table} ({emp.location})</div>
           </div>
         </div>
 
         {/* Payslip rows */}
         <div className="space-y-1">
-          <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Ersättningar</div>
+          <div className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">Ersättningar</div>
           <div className="flex justify-between items-center py-2 border-b border-gray-200/50">
             <span className="text-xs text-gray-600">Grundlön</span>
-            <span className="text-xs text-gray-900 tabular-nums font-medium">{fmt(calc.gross)}</span>
+            <span className="text-xs text-text-primary tabular-nums font-medium">{fmt(calc.gross)}</span>
           </div>
           <div className="flex justify-between items-center py-2 border-b border-gray-200/50">
-            <span className="text-xs font-bold text-gray-900">Summa ersättningar</span>
-            <span className="text-xs font-bold text-gray-900 tabular-nums">{fmt(calc.gross)}</span>
+            <span className="text-xs font-bold text-text-primary">Summa ersättningar</span>
+            <span className="text-xs font-bold text-text-primary tabular-nums">{fmt(calc.gross)}</span>
           </div>
         </div>
 
         <div className="space-y-1">
-          <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Avdrag</div>
+          <div className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">Avdrag</div>
           <div className="flex justify-between items-center py-2 border-b border-gray-200/50">
             <span className="text-xs text-gray-600">
               Preliminärskatt (tabell {TAX_TABLE})
@@ -71,34 +71,34 @@ function PayslipDetail({ emp, period, calcSalary, fmt, fmtPeriod, EMPLOYER_TAX_R
             <span className="text-xs text-red-700 tabular-nums">−{fmt(calc.taxDeduction)}</span>
           </div>
           <div className="flex justify-between items-center py-2 border-b border-gray-200/50">
-            <span className="text-xs font-bold text-gray-900">Summa avdrag</span>
+            <span className="text-xs font-bold text-text-primary">Summa avdrag</span>
             <span className="text-xs font-bold text-red-700 tabular-nums">−{fmt(calc.taxDeduction)}</span>
           </div>
         </div>
 
         {/* Net */}
         <div className="bg-green-500/10 border border-green-500/20 rounded-xl px-5 py-4 flex justify-between items-center">
-          <span className="text-sm font-bold text-gray-900">Att utbetala (nettolön)</span>
+          <span className="text-sm font-bold text-text-primary">Att utbetala (nettolön)</span>
           <span className="text-xl font-bold text-green-700 tabular-nums">{fmt(calc.net)}</span>
         </div>
 
         {/* Employer cost (informational) */}
         <div className="space-y-1">
-          <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Arbetsgivarkostnader (ej avdrag för dig)</div>
+          <div className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">Arbetsgivarkostnader (ej avdrag för dig)</div>
           <div className="flex justify-between items-center py-2 border-b border-gray-200/50">
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-text-muted">
               Arbetsgivaravgift ({(EMPLOYER_TAX_RATE * 100).toFixed(2)}%)
             </span>
             <span className="text-xs text-amber-700 tabular-nums">{fmt(calc.employerTax)}</span>
           </div>
           <div className="flex justify-between items-center py-2">
-            <span className="text-xs text-gray-500">Total kostnad för arbetsgivare</span>
-            <span className="text-xs text-purple-700 tabular-nums font-semibold">{fmt(calc.totalCost)}</span>
+            <span className="text-xs text-text-muted">Total kostnad för arbetsgivare</span>
+            <span className="text-xs text-blue-700 tabular-nums font-semibold">{fmt(calc.totalCost)}</span>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="text-xs text-gray-500 border-t border-gray-200 pt-4">
+        <div className="text-xs text-text-muted border-t border-surface-border pt-4">
           Wavult Group · Org.nr: 559XXX-XXXX · Utfärdad: {new Date().toLocaleDateString('sv-SE')} · Skattetabell {TAX_TABLE}, kolumn 1
         </div>
       </div>
@@ -117,7 +117,7 @@ export function PayslipView() {
   }
 
   if (loading) {
-    return <div className="flex items-center justify-center h-64 text-gray-500">Laddar lönedata...</div>
+    return <div className="flex items-center justify-center h-64 text-text-muted">Laddar lönedata...</div>
   }
 
   if (error) {
@@ -125,14 +125,14 @@ export function PayslipView() {
   }
 
   if (!selectedEmp) {
-    return <div className="flex items-center justify-center h-64 text-gray-500">Inga anställda hittades</div>
+    return <div className="flex items-center justify-center h-64 text-text-muted">Inga anställda hittades</div>
   }
 
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-sm font-semibold text-gray-900">Lönespecifikationer</h2>
-        <p className="text-xs text-gray-500 mt-0.5">Välj anställd och period</p>
+        <h2 className="text-sm font-semibold text-text-primary">Lönespecifikationer</h2>
+        <p className="text-xs text-text-muted mt-0.5">Välj anställd och period</p>
       </div>
 
       {/* Selectors */}
@@ -162,7 +162,7 @@ export function PayslipView() {
         <select
           value={selectedPeriod}
           onChange={e => setSelectedPeriod(e.target.value)}
-          className="text-xs bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-gray-600 focus:outline-none"
+          className="text-xs bg-white border border-surface-border rounded-lg px-3 py-1.5 text-gray-600 focus:outline-none"
         >
           {MONTHS.map(m => (
             <option key={m} value={m}>{fmtPeriod(m)}</option>

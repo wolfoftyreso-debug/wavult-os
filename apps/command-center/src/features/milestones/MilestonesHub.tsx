@@ -30,37 +30,44 @@ export function MilestonesHub() {
   const [activeTab, setActiveTab] = useState<Tab>('overview')
 
   return (
-    <div className="flex flex-col h-full bg-gray-50 text-gray-900">
+    <div className="flex flex-col h-full" style={{ background: 'var(--color-bg-secondary)', color: 'var(--color-text-primary)' }}>
       {/* Header */}
-      <div className="px-4 md:px-6 py-4 border-b border-gray-200 flex-shrink-0">
+      <div className="px-4 md:px-6 py-4 border-b flex-shrink-0" style={{ borderColor: 'var(--color-border)' }}>
         <div className="flex items-center gap-3">
           <span className="text-xl">🚀</span>
           <div>
-            <h1 className="text-[16px] font-bold text-gray-900">Milestones</h1>
-            <p className="text-xs text-gray-9000 font-mono">Wavult Group — Thailand · quiXzoom · Bolag · Roadmap</p>
+            <h1 className="text-[16px] font-bold" style={{ color: 'var(--color-text-primary)' }}>Milestones</h1>
+            <p className="text-xs font-mono" style={{ color: 'var(--color-text-tertiary)' }}>Wavult Group — Thailand · quiXzoom · Bolag · Roadmap</p>
           </div>
         </div>
       </div>
 
       {/* Tab navigation */}
-      <div className="flex gap-1 px-4 md:px-6 py-2 border-b border-gray-200 flex-shrink-0 overflow-x-auto">
+      <div className="flex gap-1 px-4 md:px-6 py-2 border-b flex-shrink-0 overflow-x-auto" style={{ borderColor: 'var(--color-border)' }}>
         {TABS.map(tab => {
           const badge = tab.badge?.()
+          const isActive = activeTab === tab.id
           return (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap flex-shrink-0 ${
-                activeTab === tab.id
-                  ? 'bg-purple-50 text-purple-700 border border-purple-200'
-                  : 'text-gray-9000 hover:text-gray-600 hover:bg-gray-50'
-              }`}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap flex-shrink-0"
+              style={isActive ? {
+                background: 'var(--color-accent-light)',
+                color: 'var(--color-accent)',
+                border: '1px solid var(--color-accent)',
+              } : {
+                background: 'transparent',
+                color: 'var(--color-text-secondary)',
+                border: '1px solid transparent',
+              }}
             >
               <span className="text-sm leading-none">{tab.icon}</span>
               {tab.label}
               {badge && (
                 <span
-                  className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-red-500 text-gray-900 leading-none"
+                  className="text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none"
+                  style={{ background: 'var(--color-danger)', color: '#fff' }}
                 >
                   {badge}
                 </span>

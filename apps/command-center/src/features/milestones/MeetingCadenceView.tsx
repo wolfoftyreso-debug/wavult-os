@@ -50,7 +50,7 @@ function MeetingCard({ meeting }: { meeting: MeetingCadence }) {
       {/* Expanded content */}
       {expanded && (
         <div
-          className="border-t border-gray-200 p-3 space-y-3"
+          className="border-t border-surface-border p-3 space-y-3"
           onClick={e => e.stopPropagation()}
         >
           {/* Deltagare */}
@@ -58,7 +58,7 @@ function MeetingCard({ meeting }: { meeting: MeetingCadence }) {
             <p className="text-[10px] font-bold uppercase tracking-wider text-gray-9000 mb-1">👥 Deltagare</p>
             <div className="flex flex-wrap gap-1">
               {meeting.participants.map(p => (
-                <span key={p} className="text-[11px] px-2 py-0.5 rounded-full bg-gray-50 text-gray-600 border border-gray-200">
+                <span key={p} className="text-[11px] px-2 py-0.5 rounded-full bg-muted/30 text-gray-600 border border-surface-border">
                   {p}
                 </span>
               ))}
@@ -97,7 +97,7 @@ function MeetingCard({ meeting }: { meeting: MeetingCadence }) {
               <p className="text-[10px] font-bold uppercase tracking-wider text-gray-9000 mb-1">🛠 Verktyg</p>
               <div className="flex flex-wrap gap-1">
                 {meeting.tools.map(t => (
-                  <span key={t} className="text-[11px] px-2 py-0.5 rounded-full bg-gray-50 text-gray-9000 border border-gray-200 font-mono">
+                  <span key={t} className="text-[11px] px-2 py-0.5 rounded-full bg-muted/30 text-gray-9000 border border-surface-border font-mono">
                     {t}
                   </span>
                 ))}
@@ -133,7 +133,7 @@ function LevelSection({ level }: { level: (typeof LEVEL_META)[0] }) {
           <span>{level.icon}</span>
           <span>Nivå {level.level} — {level.label}</span>
         </div>
-        <div className="flex-1 h-px bg-gray-50" />
+        <div className="flex-1 h-px bg-muted/30" />
         <span className="text-[11px] text-gray-9000">{level.description}</span>
       </div>
 
@@ -182,14 +182,14 @@ export function MeetingCadenceView() {
   const automatedCount = MEETING_CADENCE.filter(m => m.automate).length
 
   return (
-    <div className="min-h-full bg-gray-50 text-gray-900">
+    <div className="min-h-full bg-muted/30 text-text-primary">
       {/* Header */}
-      <div className="px-4 md:px-6 py-4 border-b border-gray-200">
+      <div className="px-4 md:px-6 py-4 border-b border-surface-border">
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-3">
             <span className="text-xl">🗓️</span>
             <div>
-              <h1 className="text-[16px] font-bold text-gray-900">Möteshierarki</h1>
+              <h1 className="text-[16px] font-bold text-text-primary">Möteshierarki</h1>
               <p className="text-xs text-gray-9000 font-mono">
                 Wavult Group — OKR · EOS · Agile · {totalMeetings} möten definierade
               </p>
@@ -197,16 +197,16 @@ export function MeetingCadenceView() {
           </div>
           {/* Stats */}
           <div className="flex items-center gap-3 flex-wrap">
-            <div className="px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-center">
-              <div className="text-lg font-bold text-gray-900">{totalMeetings}</div>
+            <div className="px-3 py-1.5 rounded-lg bg-muted/30 border border-surface-border text-center">
+              <div className="text-lg font-bold text-text-primary">{totalMeetings}</div>
               <div className="text-[10px] text-gray-9000">Mötestyper</div>
             </div>
             <div className="px-3 py-1.5 rounded-lg bg-blue-500/10 border border-blue-500/20 text-center">
               <div className="text-lg font-bold text-blue-700">{automatedCount}</div>
               <div className="text-[10px] text-gray-9000">Automatisk exekvering</div>
             </div>
-            <div className="px-3 py-1.5 rounded-lg bg-purple-500/10 border border-purple-500/20 text-center">
-              <div className="text-lg font-bold text-purple-700">6</div>
+            <div className="px-3 py-1.5 rounded-lg bg-blue-600/10 border border-blue-600/20 text-center">
+              <div className="text-lg font-bold text-blue-700">6</div>
               <div className="text-[10px] text-gray-9000">Nivåer</div>
             </div>
           </div>
@@ -214,7 +214,7 @@ export function MeetingCadenceView() {
       </div>
 
       {/* Legend */}
-      <div className="px-4 md:px-6 py-2 border-b border-gray-100 bg-white/[0.01]">
+      <div className="px-4 md:px-6 py-2 border-b border-surface-border/50 bg-white/[0.01]">
         <Legend />
       </div>
 
@@ -243,7 +243,7 @@ export function MeetingCadenceView() {
       </div>
 
       {/* Footer info */}
-      <div className="px-4 md:px-6 py-4 border-t border-gray-200 mt-4">
+      <div className="px-4 md:px-6 py-4 border-t border-surface-border mt-4">
         <p className="text-[11px] text-gray-9000 text-center">
           Möteshierarkin följer EOS (Entrepreneurial Operating System) + OKR-metodologi.
           Bernt hanterar Morning Brief (08:00), WHOOP-check och automatiserade rapporter.

@@ -333,7 +333,7 @@ function NodeCard({
       <text x={14} y={64} fontSize={10} fill="#9CA3AF">
         {entity.jurisdiction} · {entity.type.toUpperCase()}
               {(entity as any).wg_id && (
-                <div style={{ fontFamily: 'monospace', fontSize: 11, color: '#7C3AED', background: '#F5F3FF', padding: '2px 8px', borderRadius: 4, display: 'inline-block', marginTop: 4 }}>
+                <div style={{ fontFamily: 'monospace', fontSize: 11, color: '#1E40AF', background: '#F5F3FF', padding: '2px 8px', borderRadius: 4, display: 'inline-block', marginTop: 4 }}>
                   {(entity as any).wg_id}
                 </div>
               )}
@@ -475,17 +475,17 @@ function DrillPanel({
   }[nextAction.urgency]
 
   return (
-    <div className="h-full flex flex-col bg-white border-l border-gray-200 overflow-hidden" style={{ width: 340 }}>
+    <div className="h-full flex flex-col bg-white border-l border-surface-border overflow-hidden" style={{ width: 340 }}>
 
       {/* ── SNAPSHOT ─────────────────────────────────────────────── */}
-      <div className="flex-shrink-0 px-5 pt-5 pb-4 border-b border-gray-200">
+      <div className="flex-shrink-0 px-5 pt-5 pb-4 border-b border-surface-border">
         {/* Identity row */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <span className="text-2xl flex-shrink-0">{entity.flag}</span>
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-bold text-gray-900 text-[15px] leading-tight">{entity.shortName}</span>
+                <span className="font-bold text-text-primary text-[15px] leading-tight">{entity.shortName}</span>
                 <span className="text-xs font-mono px-1.5 py-0.5 rounded"
                   style={{ background: statusColor + '18', color: statusColor }}>
                   {entity.active_status.toUpperCase()}
@@ -503,7 +503,7 @@ function DrillPanel({
               OPEN
             </button>
             <button onClick={onClose}
-              className="text-gray-9000 hover:text-gray-600 transition-colors w-6 h-6 flex items-center justify-center rounded hover:bg-gray-100">
+              className="text-gray-9000 hover:text-gray-600 transition-colors w-6 h-6 flex items-center justify-center rounded hover:bg-muted">
               ✕
             </button>
           </div>
@@ -550,7 +550,7 @@ function DrillPanel({
         {/* 3. HOW IT WORKS — key facts */}
         {metaEntries.length > 0 && (
           <PanelSection label="How it works">
-            <div className="rounded-xl border border-gray-200 overflow-hidden">
+            <div className="rounded-xl border border-surface-border overflow-hidden">
               {metaEntries.map(([k, v], i) => (
                 <div key={k}
                   className={`flex gap-3 px-3 py-2 ${i < metaEntries.length - 1 ? 'border-b border-gray-100' : ''}`}>
@@ -575,7 +575,7 @@ function DrillPanel({
                   const c  = KPI_STATUS_COLOR[st]
                   const pct = Math.min(100, Math.round((kpi.current_value / kpi.target_value) * 100))
                   return (
-                    <div key={kpi.id} className="rounded-lg px-3 py-2 border border-gray-100 bg-gray-50">
+                    <div key={kpi.id} className="rounded-lg px-3 py-2 border border-surface-border/50 bg-muted/30">
                       <div className="flex items-center justify-between mb-1.5">
                         <span className="text-xs text-gray-600">{kpi.name}</span>
                         <div className="flex items-center gap-1.5">
@@ -623,7 +623,7 @@ function DrillPanel({
                       )
                     })()}
                     <div className="flex-1 min-w-0">
-                      <div className="text-xs font-semibold text-gray-900">{r.person}</div>
+                      <div className="text-xs font-semibold text-text-primary">{r.person}</div>
                       <div className="text-xs text-gray-9000">{r.role_type}</div>
                     </div>
                     <div className="flex items-center gap-1.5 flex-shrink-0">
@@ -665,7 +665,7 @@ function DrillPanel({
                 const s = REL_STYLE[r.type]
                 const source = ENTITIES.find(e => e.id === r.from_entity_id)
                 return (
-                  <div key={r.id} className="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-gray-100 bg-gray-50">
+                  <div key={r.id} className="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-surface-border/50 bg-muted/30">
                     <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: s.stroke }} />
                     <span className="text-xs font-semibold" style={{ color: source?.color ?? '#fff' }}>
                       {source?.shortName}
@@ -699,7 +699,7 @@ function DrillPanel({
 
         {/* 8. TARGET STATE */}
         <PanelSection label="Target state">
-          <div className="rounded-xl border border-gray-200 px-3 py-3">
+          <div className="rounded-xl border border-surface-border px-3 py-3">
             <div className="space-y-2">
               {[
                 entity.active_status === 'planned'  && { label: 'Incorporated', status: 'pending' },
@@ -712,8 +712,8 @@ function DrillPanel({
                 <div key={i} className="flex items-center gap-2">
                   <span className="text-[9px] font-mono px-1.5 py-0.5 rounded"
                     style={{
-                      background: typedItem.status === 'pending' ? '#F59E0B15' : '#8B5CF615',
-                      color: typedItem.status === 'pending' ? '#F59E0B' : '#8B5CF6',
+                      background: typedItem.status === 'pending' ? '#F59E0B15' : '#2563EB15',
+                      color: typedItem.status === 'pending' ? '#F59E0B' : '#2563EB',
                     }}>
                     {typedItem.status === 'pending' ? 'PENDING' : 'TARGET'}
                   </span>
@@ -754,11 +754,11 @@ function DrillPanel({
                   const sc = SITE_STATUS_COLOR[site.status]
                   return (
                     <div key={site.id}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-gray-100 cursor-pointer hover:border-gray-200 transition-colors"
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-surface-border/50 cursor-pointer hover:border-surface-border transition-colors"
                       onClick={() => navigate('/markets')}
                     >
                       <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: sc }} />
-                      <span className="text-xs font-semibold text-gray-900 flex-1">{site.name}</span>
+                      <span className="text-xs font-semibold text-text-primary flex-1">{site.name}</span>
                       <span className="text-[9px] font-mono" style={{ color: sc }}>{site.status}</span>
                     </div>
                   )
@@ -791,7 +791,7 @@ function Legend({ visibleTypes }: { visibleTypes: RelationshipType[] }) {
             <span style={{ color: s.stroke }}>{s.label}</span>
           </div>
         ))}
-      <div className="flex items-center gap-1.5 ml-4 pl-4 border-l border-gray-200">
+      <div className="flex items-center gap-1.5 ml-4 pl-4 border-l border-surface-border">
         <span className="h-2 w-2 rounded-full bg-[#10B981]" />
         <span>Live</span>
         <span className="h-2 w-2 rounded-full bg-[#F59E0B] ml-2" />
@@ -799,12 +799,12 @@ function Legend({ visibleTypes }: { visibleTypes: RelationshipType[] }) {
         <span className="h-2 w-2 rounded-full bg-[#6B7280] ml-2" />
         <span>Planned</span>
       </div>
-      <div className="flex items-center gap-1.5 ml-4 pl-4 border-l border-gray-200">
+      <div className="flex items-center gap-1.5 ml-4 pl-4 border-l border-surface-border">
         <svg width={20} height={10}>
-          <line x1={0} y1={5} x2={14} y2={5} stroke="#8B5CF6" strokeWidth={2.5} />
-          <polygon points="12,2 17,5 12,8" fill="#8B5CF6" />
+          <line x1={0} y1={5} x2={14} y2={5} stroke="#2563EB" strokeWidth={2.5} />
+          <polygon points="12,2 17,5 12,8" fill="#2563EB" />
         </svg>
-        <span style={{ color: '#8B5CF6' }}>reports_to</span>
+        <span style={{ color: '#2563EB' }}>reports_to</span>
         <span className="h-2 w-2 rounded-full bg-[#10B981] ml-2" />
         <span>On track</span>
         <span className="h-2 w-2 rounded-full bg-[#F59E0B] ml-1" />
@@ -965,7 +965,7 @@ function CommandChainLayer({
 
         return (
           <g>
-            <line x1={apexCx} y1={apexBot} x2={apexCx} y2={busY} stroke="#8B5CF680" strokeWidth={3} />
+            <line x1={apexCx} y1={apexBot} x2={apexCx} y2={busY} stroke="#2563EB80" strokeWidth={3} />
             <text x={apexCx + 6} y={busY - 3} fontSize={7} fill="#374151" fontFamily="monospace">reports_to</text>
             {/* Vertical line down the whole stack */}
             <line
@@ -1133,10 +1133,10 @@ export function OrgGraph() {
       {/* ── Graph area ── */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden md:pt-0 pt-8">
         {/* ── Toolbar — precision control bar ── */}
-        <div className="flex-shrink-0 flex items-center justify-between gap-4 px-5 py-2.5 border-b border-gray-200 bg-gray-50">
+        <div className="flex-shrink-0 flex items-center justify-between gap-4 px-5 py-2.5 border-b border-surface-border bg-muted/30">
           {/* Left: title + count */}
           <div className="flex items-center gap-3 min-w-0">
-            <h1 className="text-sm font-bold text-gray-900 tracking-tight">Corporate Graph</h1>
+            <h1 className="text-sm font-bold text-text-primary tracking-tight">Corporate Graph</h1>
             <span className="text-xs text-gray-600 font-mono">
               {visibleEntities.length}e · {visibleRels.length}r
             </span>
@@ -1156,7 +1156,7 @@ export function OrgGraph() {
             <select
               value={perms.overlayMode}
               disabled
-              className="text-xs bg-white border border-gray-200 text-gray-9000 rounded-lg px-2.5 py-1.5 font-mono cursor-default focus:outline-none appearance-none"
+              className="text-xs bg-white border border-surface-border text-gray-9000 rounded-lg px-2.5 py-1.5 font-mono cursor-default focus:outline-none appearance-none"
               title="Viewing context — determined by your role"
             >
               <option>👁 {perms.overlayMode === 'full' ? 'Full view' : perms.overlayMode === 'financial' ? 'Financial view' : perms.overlayMode === 'legal' ? 'Legal view' : 'Technical view'}</option>
@@ -1170,7 +1170,7 @@ export function OrgGraph() {
               onClick={() => setShowCommandChain(p => !p)}
               className="text-xs px-3 py-1.5 rounded-lg border font-medium transition-all"
               style={showCommandChain
-                ? { background: '#8B5CF618', color: '#A78BFA', borderColor: '#8B5CF635' }
+                ? { background: '#2563EB18', color: '#60A5FA', borderColor: '#2563EB35' }
                 : { background: 'transparent', color: '#4B5563', borderColor: '#ffffff0a' }
               }
             >
@@ -1180,7 +1180,7 @@ export function OrgGraph() {
             {/* 5. Show all relationships toggle */}
             <button
               onClick={() => setShowAllEdges(s => !s)}
-              className={`px-2 py-1 text-xs rounded font-mono border transition-colors ${showAllEdges ? 'bg-gray-100 border-white/30 text-gray-900' : 'border-gray-200 text-gray-9000 hover:text-gray-9000'}`}
+              className={`px-2 py-1 text-xs rounded font-mono border transition-colors ${showAllEdges ? 'bg-muted border-white/30 text-gray-900' : 'border-surface-border text-gray-9000 hover:text-gray-9000'}`}
             >
               {showAllEdges ? '← Enkel vy' : '+ Visa alla relationer'}
             </button>
@@ -1201,7 +1201,7 @@ export function OrgGraph() {
         </div>
 
         {/* SVG canvas */}
-        <div className="flex-1 overflow-auto bg-gray-50">
+        <div className="flex-1 overflow-auto bg-muted/30">
           <svg
             viewBox={`0 0 ${svgW} ${svgHeight}`}
             style={{ minWidth: showCommandChain ? TOTAL_W : 700, width: '100%', minHeight: svgHeight }}
@@ -1282,7 +1282,7 @@ export function OrgGraph() {
         </div>
 
         {/* Legend */}
-        <div className="flex-shrink-0 px-5 py-2 border-t border-gray-200 bg-white">
+        <div className="flex-shrink-0 px-5 py-2 border-t border-surface-border bg-white">
           <Legend visibleTypes={perms.visibleRelTypes} />
         </div>
       </div>

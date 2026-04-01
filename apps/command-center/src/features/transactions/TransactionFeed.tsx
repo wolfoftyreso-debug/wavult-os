@@ -132,8 +132,9 @@ export function TransactionFeed() {
   const [categoryFilter, setCategoryFilter] = useState('Alla')
   const [selectedTx, setSelectedTx] = useState<string | null>(null)
   const [exportMenuOpen, setExportMenuOpen] = useState(false)
-  const { activeEntity } = useEntityScope()
+  const { activeEntity, viewScope, setViewScope } = useEntityScope()
   const isGroup = activeEntity.layer === 0
+  const isGroupView = isGroup || viewScope === 'group'
 
   const filtered = TRANSACTIONS.filter(tx => {
     const matchSearch = !search ||
@@ -142,8 +143,8 @@ export function TransactionFeed() {
       tx.reference?.toLowerCase().includes(search.toLowerCase())
     const matchEntity = entityFilter === 'Alla' || tx.entity === entityFilter
     const matchCat = categoryFilter === 'Alla' || tx.category === categoryFilter
-    // EntityScope filter: if not group, only show transactions for active entity
-    const matchScope = isGroup || tx.entity === activeEntity.shortName || tx.entity === activeEntity.name
+    // EntityScope filter: if group view, show all; otherwise filter to active entity
+    const matchScope = isGroupView || tx.entity === activeEntity.shortName || tx.entity === activeEntity.name
     return matchSearch && matchEntity && matchCat && matchScope
   })
 
@@ -205,10 +206,36 @@ export function TransactionFeed() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
           <div>
             <h2 style={{ fontSize: 20, fontWeight: 700, color: '#1C1C1E', margin: 0 }}>Transaktioner</h2>
-            <div style={{ fontSize: 13, color: '#6B7280', marginTop: 2 }}>
-              {isGroup ? 'Koncernredovisning — alla bolag' : `${activeEntity.name} — filtrerat`}
+            <div style={{ fontSize: 13, color: '#6B7280', marginTop: 2, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 15 }}>{activeEntity.flag}</span>
+              {isGroupView ? 'Koncernredovisning — alla bolag' : `${activeEntity.name} · ${activeEntity.jurisdiction}`}
             </div>
           </div>
+          {/* Group / Entity toggle — only show if not root */}
+          {!isGroup && (
+            <div style={{ display: 'flex', borderRadius: 8, overflow: 'hidden', border: `1px solid ${activeEntity.color}40`, marginLeft: 12 }}>
+              <button
+                onClick={() => setViewScope('group')}
+                style={{
+                  padding: '6px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer', border: 'none',
+                  background: viewScope === 'group' ? activeEntity.color : 'transparent',
+                  color: viewScope === 'group' ? '#fff' : activeEntity.color,
+                }}
+              >
+                Koncern
+              </button>
+              <button
+                onClick={() => setViewScope('entity')}
+                style={{
+                  padding: '6px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer', border: 'none',
+                  background: viewScope === 'entity' ? activeEntity.color : 'transparent',
+                  color: viewScope === 'entity' ? '#fff' : activeEntity.color,
+                }}
+              >
+                {activeEntity.shortName}
+              </button>
+            </div>
+          )}
           <div style={{ position: 'relative' }}>
             <button onClick={() => setExportMenuOpen(!exportMenuOpen)}
               style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 10, border: '1px solid rgba(0,0,0,0.1)', background: '#F9FAFB', color: '#374151', fontSize: 13, fontWeight: 500, cursor: 'pointer' }}>

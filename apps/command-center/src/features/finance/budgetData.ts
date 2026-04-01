@@ -487,7 +487,7 @@ export const BUDGET_CATEGORY_META: Record<
   infrastruktur: {
     label: 'Infrastruktur',
     icon: '☁️',
-    color: '#A78BFA',
+    color: '#60A5FA',
     budgetSEK: 200000,
   },
   juridik: {

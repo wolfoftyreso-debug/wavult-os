@@ -159,10 +159,10 @@ export function CommandView() {
       {/* ── Header ──────────────────────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
-          <h1 className="text-lg font-semibold text-gray-900">Command Center</h1>
+          <h1 className="text-lg font-semibold text-text-primary">Command Center</h1>
           <p className="text-xs font-mono text-gray-9000 mt-0.5">{dateStr}</p>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-gray-200 bg-white shadow-sm self-start">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-surface-border bg-white shadow-sm self-start">
           <span className="text-xs font-mono text-gray-9000">System Score</span>
           <span className={`text-sm font-mono font-bold ${
             systemScore >= 80 ? 'text-emerald-600' :
@@ -255,7 +255,7 @@ export function CommandView() {
       {/* ── SYSTEMS ─────────────────────────────────────────────────────────── */}
       <section>
         <SectionLabel>Systems — service status</SectionLabel>
-        <div className="rounded-xl border border-gray-200 bg-white shadow-sm divide-y divide-gray-100">
+        <div className="rounded-xl border border-surface-border bg-white shadow-sm divide-y divide-gray-100">
           {SYSTEMS.map(svc => (
             <div key={svc.id} className="flex items-center gap-3 px-4 py-3">
               <StatusDot status={svc.status} />
@@ -274,7 +274,7 @@ export function CommandView() {
       {/* ── NEXT ACTIONS ────────────────────────────────────────────────────── */}
       <section>
         <SectionLabel>Next actions — denna vecka</SectionLabel>
-        <div className="rounded-xl border border-gray-200 bg-white shadow-sm divide-y divide-gray-100">
+        <div className="rounded-xl border border-surface-border bg-white shadow-sm divide-y divide-gray-100">
           {NEXT_ACTIONS.map(action => (
             <div key={action.rank} className="flex items-center gap-4 px-4 py-3">
               <span className="text-xs font-mono text-gray-9000 w-4 flex-shrink-0">

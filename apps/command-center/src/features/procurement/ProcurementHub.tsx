@@ -29,20 +29,20 @@ export function ProcurementHub() {
   const { activeEntity } = useEntityScope()
 
   return (
-    <div className="flex flex-col h-full bg-gray-50 text-gray-900">
+    <div className="flex flex-col h-full bg-muted/30 text-text-primary">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-200 flex-shrink-0">
+      <div className="px-6 py-4 border-b border-surface-border flex-shrink-0">
         <div className="flex items-center gap-3">
           <span className="text-xl">🛒</span>
           <div>
-            <h1 className="text-[16px] font-bold text-gray-900">Inköp & Leverantörer</h1>
+            <h1 className="text-[16px] font-bold text-text-primary">Inköp & Leverantörer</h1>
             <p className="text-xs text-gray-9000 font-mono">Procurement — {activeEntity.shortName}</p>
           </div>
         </div>
       </div>
 
       {/* Tab navigation */}
-      <div className="flex gap-1 px-6 py-2 border-b border-gray-200 flex-shrink-0 overflow-x-auto">
+      <div className="flex gap-1 px-6 py-2 border-b border-surface-border flex-shrink-0 overflow-x-auto">
         {TABS.map(tab => (
           <button
             key={tab.id}
@@ -50,7 +50,7 @@ export function ProcurementHub() {
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap flex-shrink-0 relative ${
               activeTab === tab.id
                 ? 'bg-white/[0.08] text-gray-900'
-                : 'text-gray-9000 hover:text-gray-600 hover:bg-gray-50'
+                : 'text-gray-9000 hover:text-gray-600 hover:bg-muted/30'
             }`}
           >
             <span className="text-sm leading-none">{tab.icon}</span>

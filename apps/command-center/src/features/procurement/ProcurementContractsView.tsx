@@ -67,7 +67,7 @@ export function ProcurementContractsView() {
         <div className="overflow-x-auto">
         <table className="w-full min-w-[500px]">
           <thead>
-            <tr className="text-left border-b border-gray-200">
+            <tr className="text-left border-b border-surface-border">
               {['Leverantör', 'Beskrivning', 'Start', 'Slutar', 'Status', 'Auto-förlängning', 'Värde/år'].map(h => (
                 <th key={h} className="pb-2 text-xs font-semibold text-gray-9000 uppercase tracking-wider pr-5">{h}</th>
               ))}
@@ -79,12 +79,12 @@ export function ProcurementContractsView() {
               return (
                 <tr
                   key={c.id}
-                  className={`border-b border-white/[0.03] hover:bg-gray-50 transition-colors ${
+                  className={`border-b border-white/[0.03] hover:bg-muted/30 transition-colors ${
                     days <= 90 ? 'bg-amber-500/[0.02]' : ''
                   }`}
                 >
                   <td className="py-3 pr-5">
-                    <span className="text-sm font-semibold text-gray-900">{c.supplierName}</span>
+                    <span className="text-sm font-semibold text-text-primary">{c.supplierName}</span>
                   </td>
                   <td className="py-3 pr-5">
                     <span className="text-xs text-gray-9000">{c.description}</span>
@@ -106,7 +106,7 @@ export function ProcurementContractsView() {
                     </span>
                   </td>
                   <td className="py-3">
-                    <span className="text-xs font-mono text-gray-900">
+                    <span className="text-xs font-mono text-text-primary">
                       {formatAmount(c.annualValue, c.currency)}
                     </span>
                   </td>

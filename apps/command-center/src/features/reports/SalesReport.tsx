@@ -14,7 +14,7 @@ const STAGE_COLOR: Record<string, string> = {
   'Prospekt':          '#6B7280',
   'Kvalificerad':      '#3B82F6',
   'Demo':              '#F59E0B',
-  'Förhandling':       '#8B5CF6',
+  'Förhandling':       '#2563EB',
   'Stängd-Vann':       '#10B981',
   'Stängd-Förlorad':   '#EF4444',
 }
@@ -74,7 +74,7 @@ function WinRateCard() {
   const rate  = total > 0 ? Math.round((won / total) * 100) : 0
 
   return (
-    <div className="bg-gray-50 border border-white/[0.07] rounded-xl p-5 text-center">
+    <div className="bg-muted/30 border border-white/[0.07] rounded-xl p-5 text-center">
       <p className="text-xs text-gray-9000 font-mono uppercase tracking-wider mb-2">Win Rate</p>
       <div className="relative w-20 h-20 mx-auto mb-2">
         <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
@@ -90,7 +90,7 @@ function WinRateCard() {
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-xl font-black text-gray-900">{rate}%</span>
+          <span className="text-xl font-black text-text-primary">{rate}%</span>
         </div>
       </div>
       <p className="text-xs text-gray-9000">{won} vann / {lost} förlorade</p>
@@ -107,7 +107,7 @@ function ARRByProduct() {
   const max = Math.max(...Object.values(products), 1)
 
   return (
-    <div className="bg-gray-50 border border-white/[0.07] rounded-xl p-4">
+    <div className="bg-muted/30 border border-white/[0.07] rounded-xl p-4">
       <p className="text-xs font-bold text-gray-600 mb-3 uppercase tracking-widest">ARR per produkt (stängda)</p>
       <div className="space-y-2.5">
         {Object.entries(products).map(([prod, val]) => (
@@ -116,7 +116,7 @@ function ARRByProduct() {
               <span className="text-gray-600">{prod}</span>
               <span className="font-mono" style={{ color: PRODUCT_COLOR[prod] ?? '#6B7280' }}>{fmt(val)}</span>
             </div>
-            <div className="h-1.5 bg-gray-50 rounded-full overflow-hidden">
+            <div className="h-1.5 bg-muted/30 rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-500"
                 style={{ width: `${(val / max) * 100}%`, background: PRODUCT_COLOR[prod] ?? '#6B7280' }}
@@ -134,14 +134,14 @@ function ARRByProduct() {
 
 function ActivityTable() {
   return (
-    <div className="bg-gray-50 border border-white/[0.07] rounded-xl overflow-hidden">
-      <div className="px-4 py-3 border-b border-gray-200">
+    <div className="bg-muted/30 border border-white/[0.07] rounded-xl overflow-hidden">
+      <div className="px-4 py-3 border-b border-surface-border">
         <p className="text-xs font-bold text-gray-600 uppercase tracking-widest">Aktiviteter per säljare</p>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-xs">
           <thead>
-            <tr className="border-b border-gray-200">
+            <tr className="border-b border-surface-border">
               {['Säljare','Samtal','Mail','Möten','Demos','Vann','Förlorade','Pipeline'].map(h => (
                 <th key={h} className="px-3 py-2 text-left text-xs text-gray-9000 font-mono">{h}</th>
               ))}
@@ -149,8 +149,8 @@ function ActivityTable() {
           </thead>
           <tbody>
             {SALES_ACTIVITIES.map((a, i) => (
-              <tr key={i} className="border-b border-white/[0.03] hover:bg-gray-50 transition-colors">
-                <td className="px-3 py-2.5 text-gray-900 font-medium">{a.owner}</td>
+              <tr key={i} className="border-b border-white/[0.03] hover:bg-muted/30 transition-colors">
+                <td className="px-3 py-2.5 text-text-primary font-medium">{a.owner}</td>
                 <td className="px-3 py-2.5 text-gray-9000 font-mono">{a.calls}</td>
                 <td className="px-3 py-2.5 text-gray-9000 font-mono">{a.emails}</td>
                 <td className="px-3 py-2.5 text-gray-9000 font-mono">{a.meetings}</td>
@@ -175,11 +175,11 @@ function DealsTable({ filter }: { filter: string }) {
     : PIPELINE_DEALS.filter(d => d.stage === filter)
 
   return (
-    <div className="bg-gray-50 border border-white/[0.07] rounded-xl overflow-hidden">
+    <div className="bg-muted/30 border border-white/[0.07] rounded-xl overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-xs">
           <thead>
-            <tr className="border-b border-gray-200">
+            <tr className="border-b border-surface-border">
               {['Deal','Produkt','Värde','Sannolikhet','Ansvarig','Stängs'].map(h => (
                 <th key={h} className="px-3 py-2 text-left text-xs text-gray-9000 font-mono">{h}</th>
               ))}
@@ -187,12 +187,12 @@ function DealsTable({ filter }: { filter: string }) {
           </thead>
           <tbody>
             {deals.map(d => (
-              <tr key={d.id} className="border-b border-white/[0.03] hover:bg-gray-50 transition-colors">
+              <tr key={d.id} className="border-b border-white/[0.03] hover:bg-muted/30 transition-colors">
                 <td className="px-3 py-2.5">
                   <div className="flex items-center gap-2">
                     <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: STAGE_COLOR[d.stage] }} />
                     <div>
-                      <p className="text-gray-900 font-medium leading-tight">{d.name}</p>
+                      <p className="text-text-primary font-medium leading-tight">{d.name}</p>
                       <p className="text-[9px] text-gray-9000">{d.stage}</p>
                     </div>
                   </div>
@@ -203,7 +203,7 @@ function DealsTable({ filter }: { filter: string }) {
                     {d.product}
                   </span>
                 </td>
-                <td className="px-3 py-2.5 text-gray-900 font-mono font-bold">{fmt(d.value)}</td>
+                <td className="px-3 py-2.5 text-text-primary font-mono font-bold">{fmt(d.value)}</td>
                 <td className="px-3 py-2.5">
                   <div className="flex items-center gap-1.5">
                     <div className="h-1 w-16 bg-white/[0.08] rounded-full overflow-hidden">
@@ -242,26 +242,26 @@ export function SalesReport() {
 
       {/* Top KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="bg-gray-50 border border-white/[0.07] rounded-xl p-4 text-center">
+        <div className="bg-muted/30 border border-white/[0.07] rounded-xl p-4 text-center">
           <p className="text-xs text-gray-9000 font-mono uppercase mb-1">Total pipeline</p>
-          <p className="text-xl font-black text-gray-900">{fmt(totalPipeline)}</p>
+          <p className="text-xl font-black text-text-primary">{fmt(totalPipeline)}</p>
         </div>
-        <div className="bg-gray-50 border border-white/[0.07] rounded-xl p-4 text-center">
+        <div className="bg-muted/30 border border-white/[0.07] rounded-xl p-4 text-center">
           <p className="text-xs text-gray-9000 font-mono uppercase mb-1">Viktat värde</p>
           <p className="text-xl font-black text-[#6C63FF]">{fmt(weightedPipeline)}</p>
         </div>
-        <div className="bg-gray-50 border border-white/[0.07] rounded-xl p-4 text-center">
+        <div className="bg-muted/30 border border-white/[0.07] rounded-xl p-4 text-center">
           <p className="text-xs text-gray-9000 font-mono uppercase mb-1">Aktiva deals</p>
-          <p className="text-xl font-black text-gray-900">{PIPELINE_DEALS.filter(d => d.stage !== 'Stängd-Vann' && d.stage !== 'Stängd-Förlorad').length}</p>
+          <p className="text-xl font-black text-text-primary">{PIPELINE_DEALS.filter(d => d.stage !== 'Stängd-Vann' && d.stage !== 'Stängd-Förlorad').length}</p>
         </div>
-        <div className="bg-gray-50 border border-white/[0.07] rounded-xl p-4 text-center">
+        <div className="bg-muted/30 border border-white/[0.07] rounded-xl p-4 text-center">
           <p className="text-xs text-gray-9000 font-mono uppercase mb-1">Stängda (vann)</p>
           <p className="text-xl font-black text-green-700">{PIPELINE_DEALS.filter(d => d.stage === 'Stängd-Vann').length}</p>
         </div>
       </div>
 
       {/* Pipeline bar */}
-      <div className="bg-gray-50 border border-white/[0.07] rounded-xl p-4">
+      <div className="bg-muted/30 border border-white/[0.07] rounded-xl p-4">
         <p className="text-xs font-bold text-gray-600 uppercase tracking-widest mb-3">Pipeline-konvertering</p>
         <PipelineBar />
       </div>
@@ -288,7 +288,7 @@ export function SalesReport() {
                 onClick={() => setStageFilter(s)}
                 className={`text-xs px-2.5 py-1 rounded-lg transition-colors ${
                   stageFilter === s
-                    ? 'bg-gray-100 text-gray-900'
+                    ? 'bg-muted text-gray-900'
                     : 'text-gray-9000 hover:text-gray-9000'
                 }`}
                 style={stageFilter === s && s !== 'all' ? { background: STAGE_COLOR[s] + '25', color: STAGE_COLOR[s] } : {}}

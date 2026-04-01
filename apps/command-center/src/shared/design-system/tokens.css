@@ -1,4 +1,4 @@
-/* ─── Wavult OS — Enterprise Design System Tokens ───────────────────────────── */
+/* ─── Wavult OS — Industrial Enterprise Design System ─────── */
 
 /* ── Shell layout ─────────────────────────────────────────────────────────── */
 html, body, #root {
@@ -8,39 +8,45 @@ html, body, #root {
 }
 
 :root {
-  /* ── Base ──────────────────────────────────────────────────────────────── */
-  --color-bg: #FFFFFF;
-  --color-bg-subtle: #F8F9FA;
-  --color-bg-muted: #F1F3F5;
-  --color-surface: #FFFFFF;
-  --color-surface-raised: #FFFFFF;
-  --color-border: #E1E4E8;
-  --color-border-strong: #C9CDD4;
+  /* ── Backgrounds ─────────────────────────────────────────── */
+  --color-bg:              #F8FAFC;
+  --color-bg-subtle:       #F1F5F9;
+  --color-bg-muted:        #E2E8F0;
+  --color-surface:         #FFFFFF;
+  --color-surface-raised:  #FFFFFF;
+  --color-border:          #E2E8F0;
+  --color-border-strong:   #CBD5E1;
 
-  /* ── Text ──────────────────────────────────────────────────────────────── */
-  --color-text-primary: #0D1117;
-  --color-text-secondary: #57606A;
-  --color-text-muted: #8B949E;
-  --color-text-inverse: #FFFFFF;
+  /* ── Text ────────────────────────────────────────────────── */
+  --color-text-primary:    #0F172A;
+  --color-text-secondary:  #475569;
+  --color-text-muted:      #94A3B8;
+  --color-text-inverse:    #FFFFFF;
 
-  /* ── Brand ─────────────────────────────────────────────────────────────── */
-  --color-brand: #0066CC;
-  --color-brand-hover: #0052A3;
-  --color-brand-light: #E8F0FE;
+  /* ── Brand / Accent — Steel Blue ─────────────────────────── */
+  --color-brand:           #1E40AF;
+  --color-brand-hover:     #1E3A8A;
+  --color-brand-light:     #DBEAFE;
+  --color-brand-subtle:    #EFF6FF;
 
-  /* ── Status (ONLY functional) ──────────────────────────────────────────── */
-  --color-success: #1A7F37;
-  --color-success-bg: #DCFFE4;
-  --color-warning: #9A6700;
-  --color-warning-bg: #FFF8C5;
-  --color-danger: #CF222E;
-  --color-danger-bg: #FFEBE9;
-  --color-neutral: #57606A;
-  --color-neutral-bg: #F6F8FA;
-  --color-info: #0066CC;
-  --color-info-bg: #E8F0FE;
+  /* ── Interactive — Cool Blue ──────────────────────────────── */
+  --color-accent:          #2563EB;
+  --color-accent-hover:    #1D4ED8;
+  --color-accent-light:    #DBEAFE;
 
-  /* ── Spacing ────────────────────────────────────────────────────────────── */
+  /* ── Status ──────────────────────────────────────────────── */
+  --color-success:         #16A34A;
+  --color-success-bg:      #DCFCE7;
+  --color-warning:         #D97706;
+  --color-warning-bg:      #FEF3C7;
+  --color-danger:          #DC2626;
+  --color-danger-bg:       #FEE2E2;
+  --color-neutral:         #64748B;
+  --color-neutral-bg:      #F8FAFC;
+  --color-info:            #0284C7;
+  --color-info-bg:         #E0F2FE;
+
+  /* ── Spacing (4px grid) ──────────────────────────────────── */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -51,9 +57,9 @@ html, body, #root {
   --space-10: 40px;
   --space-12: 48px;
 
-  /* ── Typography ─────────────────────────────────────────────────────────── */
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  /* ── Typography ──────────────────────────────────────────── */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
   --text-xs: 11px;
   --text-sm: 13px;
   --text-base: 14px;
@@ -67,61 +73,78 @@ html, body, #root {
   --font-semibold: 600;
   --font-bold: 700;
 
-  /* ── Radius ─────────────────────────────────────────────────────────────── */
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
+  /* ── Radii — sharp, not friendly ─────────────────────────── */
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+  --radius-full: 9999px;
 
-  /* ── Shadow ─────────────────────────────────────────────────────────────── */
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-  --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
-  --shadow-lg: 0 4px 16px rgba(0,0,0,0.10);
-}
+  /* ── Shadows — precise, not fluffy ───────────────────────── */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.04);
+  --shadow-md: 0 2px 4px rgba(0,0,0,.06), 0 4px 8px rgba(0,0,0,.04);
+  --shadow-lg: 0 4px 8px rgba(0,0,0,.06), 0 8px 16px rgba(0,0,0,.04);
 
-/* ── Alias tokens (used by Shell + components) ───────────────────────────── */
-:root {
-  --color-bg-primary: var(--color-bg);
+  /* ── Transitions — fast ──────────────────────────────────── */
+  --transition-fast: 80ms ease;
+  --transition-base: 120ms ease;
+  --transition-slow: 200ms ease;
+
+  /* ── Aliases ─────────────────────────────────────────────── */
+  --color-bg-primary:   var(--color-bg);
   --color-bg-secondary: var(--color-bg-subtle);
-  --color-accent: var(--color-brand);
-  --color-accent-light: var(--color-brand-light);
+  --color-accent-text:  var(--color-text-inverse);
+
+  /* ── Legacy compat ────────────────────────────────────────── */
+  --color-bg-grouped:    var(--color-bg-subtle);
+  --color-topbar-bg:     rgba(248,250,252,0.92);
+  --color-text-tertiary: var(--color-text-muted);
 }
 
-/* ── Dark mode ──────────────────────────────────────────────────────────── */
+/* ── Dark mode ──────────────────────────────────────────────── */
 [data-theme="dark"] {
-  --color-bg:              #0A0A0A;
-  --color-bg-subtle:       #111111;
-  --color-bg-muted:        #161616;
-  --color-surface:         #111111;
-  --color-surface-raised:  #1A1A1A;
-  --color-border:          #222222;
-  --color-border-strong:   #2A2A2A;
+  --color-bg:              #0A0F1E;
+  --color-bg-subtle:       #0D1526;
+  --color-bg-muted:        #111929;
+  --color-surface:         #111929;
+  --color-surface-raised:  #162035;
+  --color-border:          #1E2D45;
+  --color-border-strong:   #2A3F5F;
 
-  --color-text-primary:    #F4F4F5;
-  --color-text-secondary:  #A1A1AA;
-  --color-text-muted:      #52525B;
-  --color-text-inverse:    #0A0A0A;
+  --color-text-primary:    #E2E8F0;
+  --color-text-secondary:  #94A3B8;
+  --color-text-muted:      #475569;
+  --color-text-inverse:    #0F172A;
 
   --color-brand:           #3B82F6;
   --color-brand-hover:     #60A5FA;
   --color-brand-light:     #1E3A5F;
+  --color-brand-subtle:    #0F2444;
 
-  --color-success:         #10B981;
-  --color-success-bg:      #052e16;
+  --color-accent:          #3B82F6;
+  --color-accent-hover:    #60A5FA;
+  --color-accent-light:    #1E3A5F;
+
+  --color-success:         #22C55E;
+  --color-success-bg:      #052E16;
   --color-warning:         #F59E0B;
   --color-warning-bg:      #1C1107;
   --color-danger:          #EF4444;
   --color-danger-bg:       #1C0606;
-  --color-neutral:         #71717A;
-  --color-neutral-bg:      #161616;
-  --color-info:            #3B82F6;
-  --color-info-bg:         #0D1B3E;
+  --color-info:            #38BDF8;
+  --color-info-bg:         #0C1A2E;
+  --color-neutral:         #64748B;
+  --color-neutral-bg:      #0D1526;
 
-  --color-bg-primary:      #0A0A0A;
-  --color-bg-secondary:    #111111;
-  --color-accent:          #3B82F6;
-  --color-accent-light:    #1E3A5F;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
+  --shadow-md: 0 2px 8px rgba(0,0,0,.5);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,.6);
 
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
-  --shadow-md: 0 2px 8px rgba(0,0,0,0.5);
-  --shadow-lg: 0 4px 16px rgba(0,0,0,0.6);
+  --color-bg-primary:   #0A0F1E;
+  --color-bg-secondary: #0D1526;
+  --color-accent-text:  #0F172A;
+
+  --color-bg-grouped:    #0D1526;
+  --color-topbar-bg:     rgba(10,15,30,0.92);
+  --color-text-tertiary: #475569;
 }

@@ -54,14 +54,14 @@ function IntegrationCard({
   return (
     <button
       onClick={onClick}
-      className="flex flex-col gap-2 p-4 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 hover:border-gray-300 transition-all text-left w-full group"
+      className="flex flex-col gap-2 p-4 rounded-xl border border-surface-border bg-muted/30 hover:bg-muted hover:border-gray-300 transition-all text-left w-full group"
     >
       <div className="flex items-start justify-between gap-2">
         <span className="text-2xl leading-none">{integration.icon}</span>
         <StatusBadge status={integration.status} />
       </div>
       <div>
-        <div className="font-semibold text-gray-900 text-sm group-hover:text-blue-300 transition-colors">{integration.name}</div>
+        <div className="font-semibold text-text-primary text-sm group-hover:text-blue-300 transition-colors">{integration.name}</div>
         <div className="text-xs text-gray-900/50 mt-0.5">{integration.provider}</div>
       </div>
       <p className="text-xs text-gray-900/60 leading-relaxed line-clamp-2">{integration.description}</p>
@@ -98,11 +98,11 @@ function IntegrationModal({
           <div className="flex items-center gap-3">
             <span className="text-4xl">{integration.icon}</span>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">{integration.name}</h2>
+              <h2 className="text-xl font-bold text-text-primary">{integration.name}</h2>
               <p className="text-sm text-gray-900/50">{integration.provider} · {integration.category}</p>
             </div>
           </div>
-          <button onClick={onClose} className="text-gray-900/40 hover:text-gray-900 text-2xl leading-none">✕</button>
+          <button onClick={onClose} className="text-gray-900/40 hover:text-text-primary text-2xl leading-none">✕</button>
         </div>
 
         <div className="flex items-center gap-2 mb-4">
@@ -124,7 +124,7 @@ function IntegrationModal({
             href={integration.docsUrl}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-gray-900 text-sm rounded-lg transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-text-primary text-sm rounded-lg transition-colors"
           >
             📖 Öppna dokumentation
           </a>
@@ -141,7 +141,7 @@ function LiveIntegrationRow({ integration }: { integration: APIIntegration }) {
       <span className="text-2xl">{integration.icon}</span>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-semibold text-gray-900">{integration.name}</span>
+          <span className="font-semibold text-text-primary">{integration.name}</span>
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
           <span className="text-xs font-mono text-emerald-700">LIVE</span>
         </div>
@@ -177,12 +177,12 @@ function NewsCard({ news }: { news: ProviderNews }) {
   }[news.type]
 
   return (
-    <div className="p-4 rounded-xl border border-gray-200 bg-gray-50 hover:bg-white/8 transition-colors">
+    <div className="p-4 rounded-xl border border-surface-border bg-muted/30 hover:bg-white/8 transition-colors">
       <div className="flex items-start gap-3 mb-2">
         <span className="text-xl mt-0.5">{news.icon}</span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap mb-1">
-            <span className="font-semibold text-gray-900 text-sm">{news.provider}</span>
+            <span className="font-semibold text-text-primary text-sm">{news.provider}</span>
             <span className={`text-xs px-1.5 py-0.5 rounded font-mono ${typeConfig.color}`}>{typeConfig.label}</span>
             <span className="text-xs text-gray-900/40 ml-auto">{news.date}</span>
           </div>
@@ -191,7 +191,7 @@ function NewsCard({ news }: { news: ProviderNews }) {
         </div>
       </div>
       <div className="mt-2">
-        <span className="text-xs text-gray-900/40 bg-gray-50 px-2 py-0.5 rounded">{news.category}</span>
+        <span className="text-xs text-gray-900/40 bg-muted/30 px-2 py-0.5 rounded">{news.category}</span>
       </div>
     </div>
   )
@@ -239,13 +239,13 @@ export function APIHub() {
   ] as const
 
   return (
-    <div className="min-h-screen bg-[#080C10] text-gray-900">
+    <div className="min-h-screen bg-[#080C10] text-text-primary">
       {/* Header */}
-      <div className="border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-10">
+      <div className="border-b border-surface-border bg-white/80 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div>
-              <h1 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+              <h1 className="text-xl font-bold text-text-primary flex items-center gap-2">
                 🔌 API Hub
               </h1>
               <p className="text-sm text-gray-900/50 mt-0.5">
@@ -267,13 +267,13 @@ export function APIHub() {
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                   activeTab === tab.id
                     ? 'bg-blue-600 text-gray-900'
-                    : 'text-gray-900/60 hover:text-gray-900 hover:bg-gray-100'
+                    : 'text-gray-900/60 hover:text-text-primary hover:bg-muted'
                 }`}
               >
                 <span>{tab.icon}</span>
                 <span>{tab.label}</span>
                 <span className={`text-xs px-1.5 py-0.5 rounded-full ${
-                  activeTab === tab.id ? 'bg-white/20' : 'bg-gray-100'
+                  activeTab === tab.id ? 'bg-white/20' : 'bg-muted'
                 }`}>
                   {tab.count}
                 </span>
@@ -295,7 +295,7 @@ export function APIHub() {
                 placeholder="Sök API, provider, kategori..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-900/30 focus:outline-none focus:border-blue-500 focus:bg-white/8"
+                className="flex-1 bg-muted/30 border border-surface-border rounded-xl px-4 py-2.5 text-sm text-text-primary placeholder:text-gray-900/30 focus:outline-none focus:border-blue-500 focus:bg-white/8"
               />
               <div className="text-sm text-gray-900/40 flex items-center px-2">
                 {filteredIntegrations.length} integrationer
@@ -311,7 +311,7 @@ export function APIHub() {
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
                     selectedCategory === cat.id
                       ? 'bg-blue-600 border-blue-600 text-gray-900'
-                      : 'border-gray-300 text-gray-900/60 hover:border-white/40 hover:text-gray-900 bg-gray-50'
+                      : 'border-gray-300 text-gray-900/60 hover:border-white/40 hover:text-text-primary bg-muted/30'
                   }`}
                 >
                   <span>{cat.icon}</span>
@@ -352,7 +352,7 @@ export function APIHub() {
                 { label: 'Paid', value: LIVE_INTEGRATIONS.filter(i => i.price === 'paid' || i.price === 'usage-based').length, color: 'text-orange-700', icon: '💳' },
                 { label: 'Free', value: LIVE_INTEGRATIONS.filter(i => i.price === 'free').length, color: 'text-emerald-700', icon: '✅' },
               ].map(stat => (
-                <div key={stat.label} className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-center">
+                <div key={stat.label} className="bg-muted/30 border border-surface-border rounded-xl p-4 text-center">
                   <div className="text-2xl mb-1">{stat.icon}</div>
                   <div className={`text-2xl font-bold ${stat.color}`}>{stat.value}</div>
                   <div className="text-xs text-gray-900/40 mt-0.5">{stat.label}</div>
@@ -391,7 +391,7 @@ export function APIHub() {
               <h2 className="text-sm font-semibold text-gray-900/60 uppercase tracking-wider">
                 Provider Updates
               </h2>
-              <span className="text-xs text-gray-900/30 bg-gray-50 px-2 py-1 rounded">
+              <span className="text-xs text-gray-900/30 bg-muted/30 px-2 py-1 rounded">
                 Statisk demo — uapix live-data planeras
               </span>
             </div>

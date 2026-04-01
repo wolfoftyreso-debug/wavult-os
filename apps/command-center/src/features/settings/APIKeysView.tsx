@@ -116,7 +116,7 @@ function IntegrationRow({ integration }: { integration: Integration }) {
   }
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white px-5 py-4 flex items-center gap-4">
+    <div className="rounded-xl border border-surface-border bg-white px-5 py-4 flex items-center gap-4">
       {/* Status dot */}
       <div
         className="h-2.5 w-2.5 rounded-full flex-shrink-0"
@@ -126,8 +126,8 @@ function IntegrationRow({ integration }: { integration: Integration }) {
       {/* Name + env */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-sm font-semibold text-gray-900">{integration.name}</span>
-          <span className="text-xs text-gray-9000 font-mono bg-gray-50 px-1.5 py-0.5 rounded">
+          <span className="text-sm font-semibold text-text-primary">{integration.name}</span>
+          <span className="text-xs text-gray-9000 font-mono bg-muted/30 px-1.5 py-0.5 rounded">
             {integration.env}
           </span>
         </div>
@@ -205,7 +205,7 @@ export function APIKeysView() {
       </div>
 
       {/* Footer note */}
-      <div className="rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 text-xs text-gray-600 font-mono">
+      <div className="rounded-xl border border-surface-border/50 bg-muted/30 px-4 py-3 text-xs text-gray-600 font-mono">
         🔒 Nycklar lagras krypterat i miljövariabler. Sista 4 tecken visas för identifiering. Kontakta CTO för rotation.
       </div>
     </div>

@@ -10,11 +10,11 @@ const OBJECTIVE_LABELS: Record<Campaign['objective'], string> = {
 }
 
 const STATUS_COLORS: Record<Campaign['status'], string> = {
-  draft: 'bg-gray-50 text-gray-9000 border border-gray-200',
+  draft: 'bg-muted/30 text-gray-9000 border border-gray-200',
   active: 'bg-emerald-500/15 text-emerald-700 border border-emerald-500/25',
   paused: 'bg-amber-500/15 text-amber-700 border border-amber-500/25',
   completed: 'bg-blue-500/15 text-blue-700 border border-blue-500/25',
-  archived: 'bg-gray-50 text-gray-9000 border border-gray-200',
+  archived: 'bg-muted/30 text-gray-9000 border border-gray-200',
 }
 
 const STATUS_DOT: Record<Campaign['status'], string> = {
@@ -22,7 +22,7 @@ const STATUS_DOT: Record<Campaign['status'], string> = {
   active: 'bg-emerald-400',
   paused: 'bg-amber-400',
   completed: 'bg-blue-400',
-  archived: 'bg-gray-100',
+  archived: 'bg-muted',
 }
 
 const GEO_SCOPE_LABELS: Record<Campaign['geo_scope'], string> = {
@@ -44,10 +44,10 @@ function NewCampaignModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 bg-white/70 z-50 flex items-center justify-center p-4">
-      <div className="bg-white border border-gray-200 rounded-xl w-full max-w-lg">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-          <h2 className="text-gray-900 font-semibold">Ny kampanj</h2>
-          <button onClick={onClose} className="text-gray-9000 hover:text-gray-900 text-lg leading-none">×</button>
+      <div className="bg-white border border-surface-border rounded-xl w-full max-w-lg">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-surface-border">
+          <h2 className="text-text-primary font-semibold">Ny kampanj</h2>
+          <button onClick={onClose} className="text-gray-9000 hover:text-text-primary text-lg leading-none">×</button>
         </div>
         <div className="px-6 py-5 space-y-4">
           <div>
@@ -56,7 +56,7 @@ function NewCampaignModal({ onClose }: { onClose: () => void }) {
               value={form.name}
               onChange={e => setForm({ ...form, name: e.target.value })}
               placeholder="t.ex. Landvex Höst 2026"
-              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none focus:border-brand-accent/40"
+              className="w-full bg-white border border-surface-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder-gray-600 focus:outline-none focus:border-brand-accent/40"
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -65,7 +65,7 @@ function NewCampaignModal({ onClose }: { onClose: () => void }) {
               <select
                 value={form.objective}
                 onChange={e => setForm({ ...form, objective: e.target.value as Campaign['objective'] })}
-                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none"
+                className="w-full bg-white border border-surface-border rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none"
               >
                 <option value="awareness">Awareness</option>
                 <option value="conversion">Conversion</option>
@@ -78,7 +78,7 @@ function NewCampaignModal({ onClose }: { onClose: () => void }) {
               <select
                 value={form.geo_scope}
                 onChange={e => setForm({ ...form, geo_scope: e.target.value as Campaign['geo_scope'] })}
-                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none"
+                className="w-full bg-white border border-surface-border rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none"
               >
                 <option value="local">Lokalt</option>
                 <option value="national">Nationellt</option>
@@ -94,7 +94,7 @@ function NewCampaignModal({ onClose }: { onClose: () => void }) {
                 value={form.budget_total}
                 onChange={e => setForm({ ...form, budget_total: e.target.value })}
                 placeholder="50000"
-                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none"
+                className="w-full bg-white border border-surface-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder-gray-600 focus:outline-none"
               />
             </div>
             <div>
@@ -102,7 +102,7 @@ function NewCampaignModal({ onClose }: { onClose: () => void }) {
               <select
                 value={form.currency}
                 onChange={e => setForm({ ...form, currency: e.target.value })}
-                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none"
+                className="w-full bg-white border border-surface-border rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none"
               >
                 <option value="SEK">SEK</option>
                 <option value="EUR">EUR</option>
@@ -118,7 +118,7 @@ function NewCampaignModal({ onClose }: { onClose: () => void }) {
                 type="date"
                 value={form.start_date}
                 onChange={e => setForm({ ...form, start_date: e.target.value })}
-                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none"
+                className="w-full bg-white border border-surface-border rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none"
               />
             </div>
             <div>
@@ -127,7 +127,7 @@ function NewCampaignModal({ onClose }: { onClose: () => void }) {
                 type="date"
                 value={form.end_date}
                 onChange={e => setForm({ ...form, end_date: e.target.value })}
-                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none"
+                className="w-full bg-white border border-surface-border rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none"
               />
             </div>
           </div>
@@ -136,11 +136,11 @@ function NewCampaignModal({ onClose }: { onClose: () => void }) {
             ℹ️ Fas 1 — Manuell drift. Integrationer aktiveras i Fas 2.
           </div>
         </div>
-        <div className="px-6 py-4 border-t border-gray-200 flex justify-end gap-3">
-          <button onClick={onClose} className="px-4 py-2 text-sm text-gray-9000 hover:text-gray-900 transition-colors">Avbryt</button>
+        <div className="px-6 py-4 border-t border-surface-border flex justify-end gap-3">
+          <button onClick={onClose} className="px-4 py-2 text-sm text-gray-9000 hover:text-text-primary transition-colors">Avbryt</button>
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm bg-brand-accent/20 text-purple-700 border border-purple-200 rounded-lg hover:bg-brand-accent/30 transition-colors"
+            className="px-4 py-2 text-sm bg-brand-accent/20 text-blue-700 border border-blue-200 rounded-lg hover:bg-brand-accent/30 transition-colors"
           >
             Spara kampanj
           </button>
@@ -156,9 +156,9 @@ function CampaignDetail({ campaign, onBack }: { campaign: Campaign; onBack: () =
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <button onClick={onBack} className="text-gray-9000 hover:text-gray-900 text-sm transition-colors">← Tillbaka</button>
+        <button onClick={onBack} className="text-gray-9000 hover:text-text-primary text-sm transition-colors">← Tillbaka</button>
         <span className="text-gray-600">/</span>
-        <span className="text-gray-900 font-medium">{campaign.name}</span>
+        <span className="text-text-primary font-medium">{campaign.name}</span>
         <span className={`text-xs px-2 py-0.5 rounded-full font-mono ${STATUS_COLORS[campaign.status]}`}>
           {campaign.status}
         </span>
@@ -171,15 +171,15 @@ function CampaignDetail({ campaign, onBack }: { campaign: Campaign; onBack: () =
           { label: 'ROI', value: '—' },
           { label: 'Mål', value: OBJECTIVE_LABELS[campaign.objective] },
         ].map(stat => (
-          <div key={stat.label} className="bg-white border border-gray-200 rounded-xl p-4">
+          <div key={stat.label} className="bg-white border border-surface-border rounded-xl p-4">
             <div className="text-xs text-gray-9000 mb-1">{stat.label}</div>
-            <div className="text-xl font-mono text-gray-900">{stat.value}</div>
+            <div className="text-xl font-mono text-text-primary">{stat.value}</div>
           </div>
         ))}
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-xl p-5">
-        <h3 className="text-sm font-semibold text-gray-900 mb-4">Kanal-allokering</h3>
+      <div className="bg-white border border-surface-border rounded-xl p-5">
+        <h3 className="text-sm font-semibold text-text-primary mb-4">Kanal-allokering</h3>
         {allocations.length === 0 ? (
           <p className="text-sm text-gray-9000">Inga kanalallokationer konfigurerade.</p>
         ) : (
@@ -220,12 +220,12 @@ export function CampaignView() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-gray-900 font-semibold">Kampanjer</h2>
+          <h2 className="text-text-primary font-semibold">Kampanjer</h2>
           <p className="text-xs text-gray-9000 mt-0.5">{MOCK_CAMPAIGNS.length} kampanjer totalt</p>
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="px-3 py-1.5 text-sm bg-brand-accent/20 text-purple-700 border border-purple-200 rounded-lg hover:bg-brand-accent/30 transition-colors"
+          className="px-3 py-1.5 text-sm bg-brand-accent/20 text-blue-700 border border-blue-200 rounded-lg hover:bg-brand-accent/30 transition-colors"
         >
           + Ny kampanj
         </button>
@@ -236,21 +236,21 @@ export function CampaignView() {
           <div
             key={campaign.id}
             onClick={() => setSelected(campaign)}
-            className="rounded-xl border border-gray-200 bg-[#161B22] p-5 cursor-pointer hover:border-white/[0.16] hover:bg-[#1C2129] transition-all"
+            className="rounded-xl border border-surface-border bg-[#161B22] p-5 cursor-pointer hover:border-white/[0.16] hover:bg-[#1C2129] transition-all"
           >
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0">
                 {/* Status + Namn */}
                 <div className="flex items-center gap-2.5 mb-2">
                   <div className={`h-2 w-2 rounded-full flex-shrink-0 ${STATUS_DOT[campaign.status]}`} />
-                  <span className="text-gray-900 font-semibold text-sm truncate">{campaign.name}</span>
+                  <span className="text-text-primary font-semibold text-sm truncate">{campaign.name}</span>
                   <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium flex-shrink-0 ${STATUS_COLORS[campaign.status]}`}>
                     {campaign.status}
                   </span>
                 </div>
                 {/* Metadata */}
                 <div className="flex items-center gap-2 text-xs text-gray-9000 flex-wrap">
-                  <span className="px-1.5 py-0.5 rounded bg-gray-50 text-gray-9000">{OBJECTIVE_LABELS[campaign.objective]}</span>
+                  <span className="px-1.5 py-0.5 rounded bg-muted/30 text-gray-9000">{OBJECTIVE_LABELS[campaign.objective]}</span>
                   <span>·</span>
                   <span>{GEO_SCOPE_LABELS[campaign.geo_scope]}</span>
                   <span>·</span>
@@ -259,7 +259,7 @@ export function CampaignView() {
               </div>
               {/* Budget */}
               <div className="text-right flex-shrink-0">
-                <div className="text-gray-900 font-semibold text-sm font-mono">
+                <div className="text-text-primary font-semibold text-sm font-mono">
                   {campaign.budget_total.toLocaleString()} <span className="text-gray-9000 text-xs font-sans">{campaign.currency}</span>
                 </div>
                 <div className="text-xs text-gray-9000 mt-0.5">0 spenderat</div>

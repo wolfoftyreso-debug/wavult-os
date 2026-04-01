@@ -243,7 +243,7 @@ export const BOLAG_LIST: Bolag[] = [
     name: 'Wavult Group FZCO',
     jurisdiction: 'UAE — Dubai (IFZA Freezone)',
     flag: '🇦🇪',
-    color: '#8B5CF6',
+    color: '#2563EB',
     currentStep: 'registrering',
     estimatedDate: '2026-04-10',
     owner: 'Erik Svensson',
@@ -368,7 +368,7 @@ export function getStatusLabel(status: MilestoneStatus): string {
 export const PROJECT_META: Record<ProjectKey, { label: string; color: string; icon: string }> = {
   quixzoom: { label: 'quiXzoom', color: '#3B82F6', icon: '📷' },
   landvex: { label: 'Landvex', color: '#10B981', icon: '🌍' },
-  hypbit: { label: 'Wavult OS', color: '#A78BFA', icon: '⚙️' },
+  hypbit: { label: 'Wavult OS', color: '#60A5FA', icon: '⚙️' },
   bolagsstruktur: { label: 'Bolagsstruktur', color: '#F59E0B', icon: '🏛️' },
   thailand: { label: 'Thailand Workcamp', color: '#EF4444', icon: '🇹🇭' },
 }

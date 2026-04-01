@@ -14,8 +14,8 @@ export function HealthOverviewWidget() {
   const watching = scores.filter(s => s.level === 'watch').length
 
   return (
-    <div className="bg-gray-50 border border-gray-200 rounded-2xl overflow-hidden">
-      <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+    <div className="bg-muted/30 border border-surface-border rounded-2xl overflow-hidden">
+      <div className="px-4 py-3 border-b border-surface-border flex items-center justify-between">
         <div className="flex items-center gap-2">
           <p className="text-sm font-medium text-gray-900/70">Entity Health</p>
           {critical > 0 && (
@@ -50,7 +50,7 @@ export function HealthOverviewWidget() {
             <button
               key={hs.entity_id}
               onClick={() => navigate(`/entities/${hs.entity_id}`)}
-              className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors text-left"
+              className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-muted/30 transition-colors text-left"
             >
               {/* Gauge */}
               <div className="flex-shrink-0">
@@ -61,7 +61,7 @@ export function HealthOverviewWidget() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5">
                   <span className="text-sm">{entity.flag}</span>
-                  <span className="text-xs font-semibold text-gray-900">{entity.shortName}</span>
+                  <span className="text-xs font-semibold text-text-primary">{entity.shortName}</span>
                   <span className="text-xs px-1 py-0.5 rounded font-mono"
                     style={{ color, background: color + '18' }}>
                     {LEVEL_LABEL[hs.level]}

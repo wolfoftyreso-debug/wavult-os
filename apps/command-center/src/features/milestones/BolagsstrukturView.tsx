@@ -84,7 +84,7 @@ function BolagCard({ bolag }: { bolag: Bolag }) {
       >
         <span className="text-2xl">{bolag.flag}</span>
         <div className="flex-1 min-w-0">
-          <p className="text-[14px] font-bold text-gray-900 truncate">{bolag.name}</p>
+          <p className="text-[14px] font-bold text-text-primary truncate">{bolag.name}</p>
           <p className="text-xs text-gray-9000 font-mono">{bolag.jurisdiction}</p>
         </div>
         <div className="text-right flex-shrink-0">
@@ -117,7 +117,7 @@ function BolagCard({ bolag }: { bolag: Bolag }) {
           <span className="text-[9px] text-gray-9000 font-mono">Progress</span>
           <span className="text-[9px] font-mono" style={{ color: bolag.color }}>{bolag.progress}%</span>
         </div>
-        <div className="bg-gray-50 rounded-full h-1.5">
+        <div className="bg-muted/30 rounded-full h-1.5">
           <div
             className="h-1.5 rounded-full transition-all"
             style={{ width: `${bolag.progress}%`, background: bolag.color }}
@@ -171,7 +171,7 @@ export function BolagsstrukturView() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-lg font-bold text-gray-900">Bolagsstruktur</h2>
+        <h2 className="text-lg font-bold text-text-primary">Bolagsstruktur</h2>
         <p className="text-xs text-gray-9000 mt-0.5">Wavult Group — {BOLAG_LIST.length} bolag · Global expansion</p>
       </div>
 
@@ -192,7 +192,7 @@ export function BolagsstrukturView() {
       </div>
 
       {/* Step legend */}
-      <div className="rounded-xl border border-gray-200 bg-white p-3">
+      <div className="rounded-xl border border-surface-border bg-white p-3">
         <p className="text-[9px] text-gray-9000 font-mono uppercase tracking-wider mb-2">Registreringssteg</p>
         <div className="flex items-center gap-3 flex-wrap">
           {STEPS.map((step, i) => (

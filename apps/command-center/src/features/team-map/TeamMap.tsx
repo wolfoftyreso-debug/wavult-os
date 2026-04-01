@@ -3,7 +3,8 @@
 // Visar teammedlemmar som avatar-bubblor på kartan
 
 import mapboxgl from 'mapbox-gl'
-import 'mapbox-gl/dist/mapbox-gl.css'
+// mapbox CSS loaded conditionally
+import { useEffect } from "react"
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { useApi } from '../../shared/auth/useApi'
 import { useTranslation } from '../../shared/i18n/useTranslation'
@@ -433,7 +434,7 @@ export function TeamMap() {
               body: JSON.stringify({
                 full_name: 'Min position',
                 avatar_initials: 'ME',
-                avatar_color: '#8B5CF6',
+                avatar_color: '#2563EB',
                 lat: latitude,
                 lng: longitude,
                 accuracy,
@@ -473,7 +474,7 @@ export function TeamMap() {
       `}</style>
 
       {error && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
+        <div className="absolute inset-0 flex items-center justify-center bg-muted/30">
           <div className="rounded-xl bg-red-950/60 border border-red-800/40 p-6 max-w-sm text-center">
             <p className="text-red-700 text-sm font-mono">{error}</p>
           </div>
@@ -558,7 +559,7 @@ export function TeamMap() {
       >
         {/* Status info */}
         <div className="flex items-center gap-3 text-xs font-mono text-gray-9000 shrink-0">
-          <span className="text-gray-900 font-semibold">{locations.length}</span>
+          <span className="text-text-primary font-semibold">{locations.length}</span>
           <span>online</span>
           <span className="text-gray-600">·</span>
           <span style={{ color: '#22c55e' }}>{locations.filter((l) => l.status === 'active').length} aktiva</span>

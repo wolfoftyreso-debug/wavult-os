@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
 import Map, { Marker, Popup } from 'react-map-gl/mapbox'
-import 'mapbox-gl/dist/mapbox-gl.css'
 import { Building2, AlertTriangle, Users, MapPin, RefreshCw, CheckCircle, Eye, Plus, Shield, Map as MapIcon } from 'lucide-react'
 
 const LANDVEX_API = 'https://api.wavult.com'
@@ -66,7 +65,7 @@ const OBJECT_STATUS: Record<string, { label: string; bg: string; color: string; 
   ok:         { label: 'OK',          bg: '#DCFCE7', color: '#166534', mapColor: '#16A34A' },
   monitoring: { label: 'Bevakning',   bg: '#FEF3C7', color: '#92400E', mapColor: '#D97706' },
   alert:      { label: 'Larm',        bg: '#FEE2E2', color: '#991B1B', mapColor: '#DC2626' },
-  critical:   { label: 'Kritisk',     bg: '#7F1D1D', color: '#FCA5A5', mapColor: '#7C3AED' },
+  critical:   { label: 'Kritisk',     bg: '#7F1D1D', color: '#FCA5A5', mapColor: '#1E40AF' },
 }
 
 const SEVERITY: Record<string, { label: string; bg: string; color: string; icon: string }> = {
@@ -200,13 +199,13 @@ export function LandvexPortal() {
       <div style={{ padding: '20px 24px 0', flexShrink: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ width: '40px', height: '40px', background: 'linear-gradient(135deg, #1E3A5F, #2563EB)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>
-              🏗️
+            <div style={{ width: '40px', height: '40px', background: '#2563EB', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ fontSize: '13px', fontWeight: 800, color: '#fff', letterSpacing: '-0.5px' }}>LX</span>
             </div>
             <div>
               <h1 style={{ margin: 0, fontSize: '20px', fontWeight: 700, color: '#F1F5F9' }}>Landvex Admin</h1>
               <p style={{ margin: 0, fontSize: '12px', color: '#64748B' }}>
-                {loading ? 'Laddar...' : error ? '⚠️ API-fel' : `${objects.length} objekt · ${activeAlerts.length} aktiva larm`}
+                {loading ? 'Laddar...' : `${objects.length} objekt · ${activeAlerts.length} aktiva larm`}
               </p>
             </div>
           </div>
@@ -229,27 +228,20 @@ export function LandvexPortal() {
       </div>
 
       {/* Alerts */}
-      {(error || successMsg) && (
+      {successMsg && (
         <div style={{ padding: '8px 24px', flexShrink: 0 }}>
-          {error && (
-            <div style={{ background: '#7F1D1D', border: '1px solid #991B1B', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', color: '#FCA5A5' }}>
-              ⚠️ {error}
-            </div>
-          )}
-          {successMsg && (
-            <div style={{ background: '#14532D', border: '1px solid #166534', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', color: '#86EFAC' }}>
-              ✅ {successMsg}
-            </div>
-          )}
+          <div style={{ background: '#14532D', border: '1px solid #166534', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', color: '#86EFAC' }}>
+            ✅ {successMsg}
+          </div>
         </div>
       )}
 
       {/* Content */}
-      <div style={{ flex: 1, overflow: tab === 'map' ? 'hidden' : 'auto', padding: tab === 'map' ? 0 : '16px 24px 24px', position: 'relative' }}>
+      <div style={{ flex: 1, minHeight: 0, overflow: tab === 'map' ? 'hidden' : 'auto', padding: tab === 'map' ? 0 : '16px 24px 24px', position: 'relative' }}>
 
         {/* MAP TAB */}
         {tab === 'map' && (
-          <div style={{ height: '100%', position: 'relative' }}>
+          <div style={{ height: 'calc(100vh - 200px)', width: '100%', position: 'relative' }}>
             {MAPBOX_TOKEN ? (
               <Map
                 mapboxAccessToken={MAPBOX_TOKEN}
@@ -357,7 +349,7 @@ export function LandvexPortal() {
               {[
                 { label: 'Totalt objekt',  value: stats?.objects.total ?? objects.length, icon: '🏗️', color: '#2563EB' },
                 { label: 'Aktiva larm',    value: stats?.alerts.active ?? activeAlerts.length, icon: '🚨', color: '#DC2626' },
-                { label: 'Kunder',         value: stats?.clients.total ?? clients.length, icon: '🏛️', color: '#7C3AED' },
+                { label: 'Kunder',         value: stats?.clients.total ?? clients.length, icon: '🏛️', color: '#1E40AF' },
                 { label: 'Kritiska',       value: stats?.objects.by_status?.critical ?? objects.filter(o => o.status === 'critical').length, icon: '⛔', color: '#DC2626' },
                 { label: 'Bevakning',      value: stats?.objects.by_status?.monitoring ?? objects.filter(o => o.status === 'monitoring').length, icon: '👁️', color: '#D97706' },
                 { label: 'Okej',           value: stats?.objects.by_status?.ok ?? objects.filter(o => o.status === 'ok').length, icon: '✅', color: '#16A34A' },

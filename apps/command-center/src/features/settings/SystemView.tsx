@@ -30,7 +30,7 @@ interface InfoRow {
 }
 
 const SYSTEM_INFO: InfoRow[] = [
-  { label: 'Version',       value: 'Wavult OS v2.4.1',                  highlight: '#8B5CF6' },
+  { label: 'Version',       value: 'Wavult OS v2.4.1',                  highlight: '#2563EB' },
   { label: 'Environment',   value: 'production',                         mono: true },
   { label: 'Senaste deploy',value: '2026-03-26 06:15 UTC',               mono: true },
   { label: 'Commit',        value: 'a3f8c2d — feat: payroll module',      mono: true },
@@ -74,7 +74,7 @@ export function SystemView() {
   return (
     <div className="space-y-5">
       {/* System overview card */}
-      <div className="rounded-xl border border-gray-200 bg-white px-5 py-4 space-y-3">
+      <div className="rounded-xl border border-surface-border bg-white px-5 py-4 space-y-3">
         <div className="text-[9px] text-gray-600 font-mono uppercase">System Info</div>
         <div className="grid grid-cols-1 gap-2">
           {SYSTEM_INFO.map(row => (
@@ -92,7 +92,7 @@ export function SystemView() {
       </div>
 
       {/* Service uptime */}
-      <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
+      <div className="rounded-xl border border-surface-border bg-white overflow-hidden">
         <div className="flex items-center justify-between px-5 py-3 border-b border-gray-100">
           <div className="text-[9px] text-gray-600 font-mono uppercase">Uptime per tjänst</div>
           <div className="flex items-center gap-2">
@@ -156,7 +156,7 @@ export function SystemView() {
               : 'Triggar GitHub Actions deploy pipeline'}
           </p>
           {deploying && (
-            <div className="mt-2 h-1 rounded-full bg-gray-50 overflow-hidden">
+            <div className="mt-2 h-1 rounded-full bg-muted/30 overflow-hidden">
               <div
                 className="h-full rounded-full bg-red-500 animate-pulse"
                 style={{ width: '60%', transition: 'width 2.5s ease' }}
@@ -197,7 +197,7 @@ export function SystemView() {
       </div>
 
       {/* Footer note */}
-      <div className="rounded-xl border border-gray-100 bg-white/[0.01] px-4 py-3 text-xs text-gray-600 font-mono">
+      <div className="rounded-xl border border-surface-border/50 bg-white/[0.01] px-4 py-3 text-xs text-gray-600 font-mono">
         ⚙️ Wavult OS — all system data är live från ECS, Supabase & GitHub Actions. Force deploy triggar wolfoftyreso-debug/wavult-os CI/CD pipeline.
       </div>
     </div>

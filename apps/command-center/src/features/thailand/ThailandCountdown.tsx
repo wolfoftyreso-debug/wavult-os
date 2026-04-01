@@ -29,7 +29,7 @@ export function ThailandCountdown() {
         style={{ background: 'linear-gradient(135deg, #1a0a2e 0%, #0D0F1A 100%)' }}
       >
         <div className="text-5xl mb-3">🇹🇭</div>
-        <p className="text-gray-900 font-bold text-2xl">Vi är i Thailand!</p>
+        <p className="text-text-primary font-bold text-2xl">Vi är i Thailand!</p>
         <p className="text-gray-900/50 text-sm mt-1">Workcamp pågår</p>
       </div>
     )
@@ -37,14 +37,14 @@ export function ThailandCountdown() {
 
   return (
     <div
-      className="rounded-xl border border-purple-500/20 overflow-hidden"
+      className="rounded-xl border border-blue-600/20 overflow-hidden"
       style={{ background: 'linear-gradient(135deg, #1a0a2e 0%, #0D0F1A 100%)' }}
     >
       {/* Header */}
-      <div className="px-5 pt-5 pb-4 border-b border-gray-200 flex items-center gap-3">
+      <div className="px-5 pt-5 pb-4 border-b border-surface-border flex items-center gap-3">
         <span className="text-3xl">🇹🇭</span>
         <div>
-          <h3 className="text-sm font-semibold text-gray-900">Thailand Workcamp</h3>
+          <h3 className="text-sm font-semibold text-text-primary">Thailand Workcamp</h3>
           <p className="text-xs text-gray-9000 mt-0.5">11 April 2026 — Projektstart</p>
         </div>
       </div>

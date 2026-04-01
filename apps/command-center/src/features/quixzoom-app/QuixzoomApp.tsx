@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
 import Map, { Marker, Popup } from 'react-map-gl/mapbox'
-import 'mapbox-gl/dist/mapbox-gl.css'
 import { MapPin, Camera, Users, Package, RefreshCw, CheckCircle, Clock, TrendingUp, Map as MapIcon } from 'lucide-react'
 
 // API base — quiXzoom API på ECS via ALB
@@ -144,7 +143,7 @@ export function QuixzoomApp() {
           <div>
             <h1 style={{ fontSize: 20, fontWeight: 700, color: '#1C1C1E', margin: 0 }}>quiXzoom Admin</h1>
             <div style={{ fontSize: 13, color: '#6B7280', marginTop: 2 }}>
-              {loading ? 'Laddar...' : error ? '⚠️ API-fel — kör i offline-läge' : `${stats?.total_missions || 0} uppdrag · ${stats?.total_zoomers || 0} zoomers`}
+              {loading ? 'Laddar...' : `${stats?.total_missions || 0} uppdrag · ${stats?.total_zoomers || 0} zoomers`}
             </div>
           </div>
           <button onClick={fetchData} style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid #E5E7EB', background: '#F9FAFB', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, fontSize: 13 }}>
@@ -156,7 +155,7 @@ export function QuixzoomApp() {
         <div style={{ display: 'flex', gap: 0, marginTop: 16, borderBottom: '1px solid #E5E7EB', overflowX: 'auto' }}>
           {([['map', 'Karta'], ['overview', 'Översikt'], ['missions', 'Uppdrag'], ['zoomers', 'Zoomers'], ['create', 'Nytt uppdrag']] as const).map(([id, label]) => (
             <button key={id} onClick={() => setTab(id)}
-              style={{ padding: '8px 16px', fontSize: 13, fontWeight: tab === id ? 600 : 400, color: tab === id ? '#7C3AED' : '#6B7280', background: 'none', border: 'none', borderBottom: tab === id ? '2px solid #7C3AED' : '2px solid transparent', cursor: 'pointer', marginBottom: -1, whiteSpace: 'nowrap' }}>
+              style={{ padding: '8px 16px', fontSize: 13, fontWeight: tab === id ? 600 : 400, color: tab === id ? '#1E40AF' : '#6B7280', background: 'none', border: 'none', borderBottom: tab === id ? '2px solid #1E40AF' : '2px solid transparent', cursor: 'pointer', marginBottom: -1, whiteSpace: 'nowrap' }}>
               {label}
             </button>
           ))}
@@ -164,16 +163,16 @@ export function QuixzoomApp() {
       </div>
 
       {/* Content */}
-      <div style={{ flex: 1, overflow: tab === 'map' ? 'hidden' : 'auto', padding: tab === 'map' ? 0 : 24, position: 'relative' }}>
-        {error && tab !== 'map' && (
+      <div style={{ flex: 1, minHeight: 0, overflow: tab === 'map' ? 'hidden' : 'auto', padding: tab === 'map' ? 0 : 24, position: 'relative' }}>
+        {error && tab !== 'map' && tab !== 'overview' && tab !== 'missions' && tab !== 'zoomers' && (
           <div style={{ background: '#FEF3C7', border: '1px solid #FDE68A', borderRadius: 8, padding: '10px 14px', marginBottom: 16, fontSize: 13, color: '#92400E' }}>
-            ⚠️ {error} — quiXzoom API svarar inte. Kontrollera ECS-tjänsten.
+            ⚠️ quiXzoom API svarar inte. Kontrollera ECS-tjänsten.
           </div>
         )}
 
         {/* Map tab */}
         {tab === 'map' && (
-          <div style={{ height: '100%', position: 'relative' }}>
+          <div style={{ height: 'calc(100vh - 200px)', width: '100%', position: 'relative' }}>
             {MAPBOX_TOKEN ? (
               <Map
                 mapboxAccessToken={MAPBOX_TOKEN}
@@ -262,7 +261,7 @@ export function QuixzoomApp() {
         {tab === 'overview' && stats && (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
             {[
-              { label: 'Totala uppdrag', value: stats.total_missions, icon: <Package size={18} />, color: '#7C3AED' },
+              { label: 'Totala uppdrag', value: stats.total_missions, icon: <Package size={18} />, color: '#1E40AF' },
               { label: 'Öppna uppdrag', value: stats.open_missions, icon: <Clock size={18} />, color: '#D97706' },
               { label: 'Godkända', value: stats.completed_missions, icon: <CheckCircle size={18} />, color: '#16A34A' },
               { label: 'Zoomers totalt', value: stats.total_zoomers, icon: <Users size={18} />, color: '#2563EB' },
@@ -375,7 +374,7 @@ export function QuixzoomApp() {
                 </div>
               </div>
               <button onClick={createMission} disabled={creating || !newMission.title || !newMission.location}
-                style={{ width: '100%', padding: '12px 0', borderRadius: 10, border: 'none', background: '#7C3AED', color: '#fff', fontSize: 14, fontWeight: 600, cursor: creating ? 'wait' : 'pointer', opacity: (!newMission.title || !newMission.location) ? 0.5 : 1 }}>
+                style={{ width: '100%', padding: '12px 0', borderRadius: 10, border: 'none', background: '#1E40AF', color: '#fff', fontSize: 14, fontWeight: 600, cursor: creating ? 'wait' : 'pointer', opacity: (!newMission.title || !newMission.location) ? 0.5 : 1 }}>
                 {creating ? 'Skapar...' : 'Skapa uppdrag'}
               </button>
             </div>

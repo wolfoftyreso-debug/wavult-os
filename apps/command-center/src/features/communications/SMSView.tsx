@@ -138,13 +138,6 @@ export function SMSView() {
 
   return (
     <div className="space-y-4">
-      {/* MOCKDATA BANNER for log */}
-      <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-yellow-500/10 border border-yellow-500/25 text-yellow-700 text-xs font-medium">
-        <span>⚠️</span>
-        <span>SMS-loggen visar mockdata — utgående SMS via "Skicka SMS"-knappen är live (46elks API)</span>
-        <span className="ml-auto text-yellow-600 font-mono text-xs">LOG: MOCK · SEND: LIVE</span>
-      </div>
-
       {/* Status bar */}
       <div className="flex items-center gap-3 flex-wrap">
         <div className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-medium ${
@@ -163,7 +156,7 @@ export function SMSView() {
           <span className="text-xs text-gray-9000">{sentCount} skickade · {failedCount} misslyckade</span>
           <button
             onClick={() => setShowForm(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-purple-50 text-purple-700 border border-purple-200 hover:bg-brand-accent/25 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 transition-colors"
           >
             📱 Skicka SMS
           </button>
@@ -172,9 +165,9 @@ export function SMSView() {
 
       {/* Compose form */}
       {showForm && (
-        <div className="bg-white rounded-xl border border-purple-200 p-4 space-y-3">
+        <div className="bg-white rounded-xl border border-blue-200 p-4 space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-semibold text-gray-900">Nytt SMS</h3>
+            <h3 className="text-xs font-semibold text-text-primary">Nytt SMS</h3>
             <button onClick={() => setShowForm(false)} className="text-gray-9000 hover:text-gray-600">×</button>
           </div>
           <div>
@@ -182,7 +175,7 @@ export function SMSView() {
             <select
               value={recipient}
               onChange={e => setRecipient(e.target.value)}
-              className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 focus:outline-none focus:border-brand-accent/50"
+              className="w-full bg-muted/30 border border-surface-border rounded-lg px-3 py-2 text-xs text-text-primary focus:outline-none focus:border-brand-accent/50"
             >
               <option value="">Välj kontakt…</option>
               {TEAM_CONTACTS.map(c => (
@@ -198,7 +191,7 @@ export function SMSView() {
                 value={customNumber}
                 onChange={e => setCustomNumber(e.target.value)}
                 placeholder="+46…"
-                className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 placeholder-gray-600 focus:outline-none focus:border-brand-accent/50"
+                className="w-full bg-muted/30 border border-surface-border rounded-lg px-3 py-2 text-xs text-text-primary placeholder-gray-600 focus:outline-none focus:border-brand-accent/50"
               />
             </div>
           )}
@@ -211,7 +204,7 @@ export function SMSView() {
               onChange={e => setMessage(e.target.value.slice(0, 160))}
               placeholder="Skriv SMS…"
               rows={3}
-              className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 placeholder-gray-600 focus:outline-none focus:border-brand-accent/50 resize-none"
+              className="w-full bg-muted/30 border border-surface-border rounded-lg px-3 py-2 text-xs text-text-primary placeholder-gray-600 focus:outline-none focus:border-brand-accent/50 resize-none"
             />
           </div>
           <div className="flex items-center justify-between">
@@ -220,7 +213,7 @@ export function SMSView() {
             </span>
             <button
               onClick={sendSMS}
-              className="px-4 py-1.5 rounded-lg text-xs font-medium bg-brand-accent text-gray-900 hover:bg-brand-accent/90 transition-colors"
+              className="px-4 py-1.5 rounded-lg text-xs font-medium bg-brand-accent text-text-primary hover:bg-brand-accent/90 transition-colors"
             >
               Skicka →
             </button>
@@ -229,9 +222,9 @@ export function SMSView() {
       )}
 
       {/* SMS log */}
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <div className="px-4 py-3 border-b border-gray-200">
-          <h3 className="text-xs font-semibold text-gray-900">SMS-logg</h3>
+      <div className="bg-white rounded-xl border border-surface-border overflow-hidden">
+        <div className="px-4 py-3 border-b border-surface-border">
+          <h3 className="text-xs font-semibold text-text-primary">SMS-logg</h3>
         </div>
         <div className="divide-y divide-gray-100">
           {log.map(sms => (

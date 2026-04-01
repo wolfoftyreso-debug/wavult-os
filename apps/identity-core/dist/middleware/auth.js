@@ -5,6 +5,9 @@ exports.requireRole = requireRole;
 const tokens_1 = require("../crypto/tokens");
 const config_1 = require("../config");
 const postgres_1 = require("../db/postgres");
+// Forced session timeout constants
+const SESSION_MAX_AGE_SECONDS = 8 * 60 * 60; // 8 hours hard limit
+const SESSION_IDLE_SECONDS = 30 * 60; // 30 minutes idle limit
 function requireAuth(req, res, next) {
     // Kill switch: FORCE_LOGOUT_ALL → 401 SYSTEM_LOCKDOWN immediately
     if (config_1.config.forceLogoutAll) {
@@ -30,9 +33,16 @@ function requireAuth(req, res, next) {
     }
     const issuer = decoded?.iss;
     if (issuer && (issuer === 'supabase' || issuer.includes('supabase'))) {
-        // Legacy path — log warning, pass through during hybrid phase
-        // TODO: Remove when AUTH_MODE=identity-core-only
-        console.warn('[Auth] Legacy Supabase token detected', { requestId: req.requestId });
+        // Legacy Supabase token path — only active during hybrid migration phase.
+        // DISABLED by default. Enable via AUTH_MODE=hybrid ONLY for temporary migration windows.
+        // NEVER enable in identity-core-only mode.
+        if (config_1.config.authMode !== 'hybrid') {
+            console.warn('[Auth] Legacy Supabase token rejected — not in hybrid mode', { requestId: req.requestId });
+            res.status(401).json({ error: 'LEGACY_TOKEN_NOT_ACCEPTED' });
+            return;
+        }
+        // WARNING: No signature verification on legacy tokens. Temporary hybrid path only.
+        console.warn('[Auth] Legacy Supabase token accepted (hybrid mode)', { requestId: req.requestId });
         req.user = decoded;
         next();
         return;
@@ -63,6 +73,21 @@ function requireAuth(req, res, next) {
             const { rows: epochRows } = await postgres_1.db.query('SELECT session_epoch FROM ic_users WHERE id = $1', [payload.sub]);
             if (!epochRows[0] || epochRows[0].session_epoch !== payload.se) {
                 res.status(401).json({ error: 'SESSION_SUPERSEDED' });
+                return;
+            }
+            // Idle timeout: reject if token hasn't been refreshed within 30 minutes
+            // iat reflects last token issue — access tokens are 10min TTL, so idle check
+            // effectively fires when refresh token hasn't been used within SESSION_IDLE_SECONDS
+            const now = Math.floor(Date.now() / 1000);
+            const idleTime = now - payload.iat;
+            if (idleTime > SESSION_IDLE_SECONDS) {
+                res.status(401).json({ error: 'SESSION_EXPIRED', code: 'SESSION_IDLE' });
+                return;
+            }
+            // Hard max-age check (defense in depth — exp already covers this but explicit)
+            const sessionAge = now - payload.iat;
+            if (sessionAge > SESSION_MAX_AGE_SECONDS) {
+                res.status(401).json({ error: 'SESSION_EXPIRED', code: 'SESSION_MAX_AGE' });
                 return;
             }
             req.user = payload;

@@ -26,7 +26,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   })
 
   useEffect(() => {
+    // Set both data-theme (for CSS vars in tokens.css) and .dark class (for Tailwind)
     document.documentElement.setAttribute('data-theme', theme)
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
     try { localStorage.setItem('wavult_theme', theme) } catch {}
   }, [theme])
 

@@ -231,20 +231,20 @@ const PAYOUTS: Payout[] = [
 
 const PAYMENT_STATUS_CONFIG: Record<PaymentStatus, { color: string; bg: string; label: string }> = {
   CREATED:    { color: 'text-gray-9000',   bg: 'bg-gray-500/10 border-gray-500/20',   label: 'Skapad' },
-  PROCESSING: { color: 'text-gray-600',   bg: 'bg-gray-50 border-gray-200',   label: 'Behandlar' },
+  PROCESSING: { color: 'text-gray-600',   bg: 'bg-muted/30 border-gray-200',   label: 'Behandlar' },
   AUTHORIZED: { color: 'text-yellow-700', bg: 'bg-yellow-500/10 border-yellow-500/20', label: 'Auktoriserad' },
   CAPTURED:   { color: 'text-cyan-700',   bg: 'bg-cyan-500/10 border-cyan-500/20',   label: 'Captured' },
-  SETTLED:    { color: 'text-gray-700',  bg: 'bg-gray-50 border-green-500/20', label: 'Avvecklad' },
+  SETTLED:    { color: 'text-gray-700',  bg: 'bg-muted/30 border-green-500/20', label: 'Avvecklad' },
   FAILED:     { color: 'text-red-700',    bg: 'bg-red-500/10 border-red-500/20',     label: 'Misslyckad' },
   CANCELLED:  { color: 'text-gray-9000',   bg: 'bg-gray-500/10 border-gray-500/20',   label: 'Avbruten' },
-  REFUNDED:   { color: 'text-purple-700', bg: 'bg-purple-500/10 border-purple-500/20', label: 'Återbetald' },
+  REFUNDED:   { color: 'text-blue-700', bg: 'bg-blue-600/10 border-blue-600/20', label: 'Återbetald' },
 }
 
 const PAYOUT_STATUS_CONFIG: Record<PayoutStatus, { color: string; bg: string; label: string }> = {
   pending:   { color: 'text-yellow-700', bg: 'bg-yellow-500/10 border-yellow-500/20', label: 'Väntande' },
-  approved:  { color: 'text-gray-600',   bg: 'bg-gray-50 border-gray-200',   label: 'Godkänd' },
+  approved:  { color: 'text-gray-600',   bg: 'bg-muted/30 border-gray-200',   label: 'Godkänd' },
   sent:      { color: 'text-cyan-700',   bg: 'bg-cyan-500/10 border-cyan-500/20',   label: 'Skickad' },
-  confirmed: { color: 'text-gray-700',  bg: 'bg-gray-50 border-green-500/20', label: 'Bekräftad' },
+  confirmed: { color: 'text-gray-700',  bg: 'bg-muted/30 border-green-500/20', label: 'Bekräftad' },
 }
 
 const STATUS_ORDER: PaymentStatus[] = ['CREATED', 'PROCESSING', 'AUTHORIZED', 'CAPTURED', 'SETTLED']
@@ -260,9 +260,9 @@ function PaymentIntentDetail({ intent, onClose, onRefund }: {
   const canRefund = intent.status === 'SETTLED' || intent.status === 'CAPTURED'
 
   return (
-    <div className="bg-white rounded-xl border border-purple-200 p-4 space-y-3">
+    <div className="bg-white rounded-xl border border-blue-200 p-4 space-y-3">
       <div className="flex items-center justify-between">
-        <h4 className="text-xs font-semibold text-gray-900">Payment Intent</h4>
+        <h4 className="text-xs font-semibold text-text-primary">Payment Intent</h4>
         <button onClick={onClose} className="text-gray-9000 hover:text-gray-600">×</button>
       </div>
       <div className="grid grid-cols-2 gap-3 text-xs">
@@ -276,7 +276,7 @@ function PaymentIntentDetail({ intent, onClose, onRefund }: {
         </div>
         <div>
           <span className="text-gray-9000 block mb-0.5">Belopp</span>
-          <span className="text-gray-900 font-semibold">
+          <span className="text-text-primary font-semibold">
             {new Intl.NumberFormat('sv-SE').format(intent.amount / 100)} {intent.currency}
           </span>
         </div>
@@ -310,7 +310,7 @@ function PaymentIntentDetail({ intent, onClose, onRefund }: {
       {intent.metadata && (
         <div>
           <span className="text-xs text-gray-9000 font-mono uppercase tracking-wider block mb-1">Metadata</span>
-          <div className="bg-gray-50 rounded-lg p-2 space-y-1">
+          <div className="bg-muted/30 rounded-lg p-2 space-y-1">
             {Object.entries(intent.metadata).map(([k, v]) => (
               <div key={k} className="flex items-center gap-2 text-xs">
                 <span className="text-gray-9000 font-mono">{k}:</span>
@@ -358,13 +358,13 @@ function PaymentIntentsSection() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="bg-white rounded-xl border border-green-500/20 p-3">
           <div className="text-xs text-gray-9000 mb-1">Avvecklat (SEK)</div>
-          <div className="text-sm font-semibold text-gray-700 font-mono">
+          <div className="text-sm font-semibold text-text-secondary font-mono">
             {new Intl.NumberFormat('sv-SE', { notation: 'compact' }).format(totalSettled / 100)}
           </div>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-3">
+        <div className="bg-white rounded-xl border border-surface-border p-3">
           <div className="text-xs text-gray-9000 mb-1">Under behandling</div>
-          <div className="text-sm font-semibold text-gray-700 font-mono">
+          <div className="text-sm font-semibold text-text-secondary font-mono">
             {new Intl.NumberFormat('sv-SE', { notation: 'compact' }).format(totalProcessing / 100)}
           </div>
         </div>
@@ -378,10 +378,10 @@ function PaymentIntentsSection() {
 
       {/* Filters */}
       <div className="flex gap-2 flex-wrap">
-        <div className="flex items-center gap-1 p-0.5 bg-white rounded-lg border border-gray-200">
+        <div className="flex items-center gap-1 p-0.5 bg-white rounded-lg border border-surface-border">
           <button
             onClick={() => setStatusFilter('all')}
-            className={`px-2 py-1 rounded-md text-xs font-medium transition-colors ${statusFilter === 'all' ? 'bg-purple-100 text-purple-700' : 'text-gray-9000 hover:text-gray-600'}`}
+            className={`px-2 py-1 rounded-md text-xs font-medium transition-colors ${statusFilter === 'all' ? 'bg-blue-100 text-blue-700' : 'text-gray-9000 hover:text-gray-600'}`}
           >
             Alla
           </button>
@@ -395,12 +395,12 @@ function PaymentIntentsSection() {
             </button>
           ))}
         </div>
-        <div className="flex items-center gap-1 p-0.5 bg-white rounded-lg border border-gray-200">
+        <div className="flex items-center gap-1 p-0.5 bg-white rounded-lg border border-surface-border">
           {(['all', 'revolut', 'stripe'] as const).map(p => (
             <button
               key={p}
               onClick={() => setPspFilter(p)}
-              className={`px-2 py-1 rounded-md text-xs font-medium transition-colors ${pspFilter === p ? 'bg-purple-100 text-purple-700' : 'text-gray-9000 hover:text-gray-600'}`}
+              className={`px-2 py-1 rounded-md text-xs font-medium transition-colors ${pspFilter === p ? 'bg-blue-100 text-blue-700' : 'text-gray-9000 hover:text-gray-600'}`}
             >
               {p === 'all' ? 'Alla PSP' : p === 'revolut' ? 'Revolut' : 'Stripe'}
             </button>
@@ -434,8 +434,8 @@ function PaymentIntentsSection() {
       )}
 
       {/* Table */}
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <div className="grid grid-cols-[1fr_100px_120px_90px_80px] gap-3 px-4 py-2.5 border-b border-gray-200 text-xs text-gray-9000 font-mono uppercase tracking-wider">
+      <div className="bg-white rounded-xl border border-surface-border overflow-hidden">
+        <div className="grid grid-cols-[1fr_100px_120px_90px_80px] gap-3 px-4 py-2.5 border-b border-surface-border text-xs text-gray-9000 font-mono uppercase tracking-wider">
           <span>Beskrivning</span>
           <span>Belopp</span>
           <span>Status</span>
@@ -449,14 +449,14 @@ function PaymentIntentsSection() {
               <button
                 key={intent.id}
                 onClick={() => setSelected(selected?.id === intent.id ? null : intent)}
-                className={`w-full text-left grid grid-cols-[1fr_100px_120px_90px_80px] gap-3 px-4 py-3 hover:bg-gray-50 transition-colors ${selected?.id === intent.id ? 'bg-purple-50' : ''}`}
+                className={`w-full text-left grid grid-cols-[1fr_100px_120px_90px_80px] gap-3 px-4 py-3 hover:bg-muted/30 transition-colors ${selected?.id === intent.id ? 'bg-blue-50' : ''}`}
               >
                 <div>
                   <div className="text-xs text-gray-800 truncate">{intent.description}</div>
                   <div className="text-xs text-gray-9000">{intent.entity}</div>
                 </div>
                 <div className="flex flex-col justify-center">
-                  <span className="text-xs font-semibold text-gray-900">
+                  <span className="text-xs font-semibold text-text-primary">
                     {new Intl.NumberFormat('sv-SE').format(intent.amount / 100)}
                   </span>
                   <span className="text-xs text-gray-9000">{intent.currency}</span>
@@ -486,26 +486,26 @@ function PSPRouterSection() {
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         {/* Revolut card */}
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
+        <div className="bg-white rounded-xl border border-surface-border p-4">
           <div className="flex items-center gap-2 mb-3">
             <span className="text-xl">💳</span>
             <div>
-              <h4 className="text-sm font-bold text-gray-900">Revolut Business</h4>
+              <h4 className="text-sm font-bold text-text-primary">Revolut Business</h4>
               <p className="text-xs text-gray-9000">Intercompany + EUR/AED</p>
             </div>
-            <div className="ml-auto flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gray-50 border border-green-500/20 text-xs text-gray-700">
+            <div className="ml-auto flex items-center gap-1.5 px-2 py-1 rounded-lg bg-muted/30 border border-green-500/20 text-xs text-text-secondary">
               <span className="h-1.5 w-1.5 rounded-full bg-gray-400" />
               Aktiv
             </div>
           </div>
           <div className="space-y-2">
             {PSP_RULES.filter(r => r.psp === 'revolut').map((rule, i) => (
-              <div key={i} className="bg-gray-50 rounded-lg p-2.5">
+              <div key={i} className="bg-muted/30 rounded-lg p-2.5">
                 <div className="text-xs font-medium text-gray-600 mb-1">{rule.condition}</div>
                 <div className="text-xs text-gray-9000 mb-1.5">{rule.reason}</div>
                 <div className="flex flex-wrap gap-1">
                   {rule.examples.map(ex => (
-                    <span key={ex} className="text-[9px] px-1.5 py-0.5 rounded bg-gray-50 text-gray-600 border border-gray-200">
+                    <span key={ex} className="text-[9px] px-1.5 py-0.5 rounded bg-muted/30 text-gray-600 border border-surface-border">
                       {ex}
                     </span>
                   ))}
@@ -516,26 +516,26 @@ function PSPRouterSection() {
         </div>
 
         {/* Stripe card */}
-        <div className="bg-white rounded-xl border border-purple-500/20 p-4">
+        <div className="bg-white rounded-xl border border-blue-600/20 p-4">
           <div className="flex items-center gap-2 mb-3">
             <span className="text-xl">⚡</span>
             <div>
-              <h4 className="text-sm font-bold text-gray-900">Stripe</h4>
+              <h4 className="text-sm font-bold text-text-primary">Stripe</h4>
               <p className="text-xs text-gray-9000">Kundbetalningar + fakturering</p>
             </div>
-            <div className="ml-auto flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gray-50 border border-green-500/20 text-xs text-gray-700">
+            <div className="ml-auto flex items-center gap-1.5 px-2 py-1 rounded-lg bg-muted/30 border border-green-500/20 text-xs text-text-secondary">
               <span className="h-1.5 w-1.5 rounded-full bg-gray-400" />
               Aktiv
             </div>
           </div>
           <div className="space-y-2">
             {PSP_RULES.filter(r => r.psp === 'stripe').map((rule, i) => (
-              <div key={i} className="bg-gray-50 rounded-lg p-2.5">
-                <div className="text-xs font-medium text-purple-300 mb-1">{rule.condition}</div>
+              <div key={i} className="bg-muted/30 rounded-lg p-2.5">
+                <div className="text-xs font-medium text-blue-400 mb-1">{rule.condition}</div>
                 <div className="text-xs text-gray-9000 mb-1.5">{rule.reason}</div>
                 <div className="flex flex-wrap gap-1">
                   {rule.examples.map(ex => (
-                    <span key={ex} className="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-700 border border-purple-500/20">
+                    <span key={ex} className="text-[9px] px-1.5 py-0.5 rounded bg-blue-600/10 text-blue-700 border border-blue-600/20">
                       {ex}
                     </span>
                   ))}
@@ -547,15 +547,15 @@ function PSPRouterSection() {
       </div>
 
       {/* Rule matrix */}
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <div className="px-4 py-3 border-b border-gray-200">
-          <h4 className="text-xs font-semibold text-gray-900">Regelmatris — Belopp / Valuta / Typ → PSP</h4>
+      <div className="bg-white rounded-xl border border-surface-border overflow-hidden">
+        <div className="px-4 py-3 border-b border-surface-border">
+          <h4 className="text-xs font-semibold text-text-primary">Regelmatris — Belopp / Valuta / Typ → PSP</h4>
         </div>
         <div className="grid grid-cols-[1fr_80px_1fr_80px] gap-0">
-          <div className="px-4 py-2 bg-gray-50 text-xs text-gray-9000 font-mono uppercase tracking-wider border-b border-gray-200">Typ</div>
-          <div className="px-4 py-2 bg-gray-50 text-xs text-gray-9000 font-mono uppercase tracking-wider border-b border-gray-200">Valuta</div>
-          <div className="px-4 py-2 bg-gray-50 text-xs text-gray-9000 font-mono uppercase tracking-wider border-b border-gray-200">Belopp</div>
-          <div className="px-4 py-2 bg-gray-50 text-xs text-gray-9000 font-mono uppercase tracking-wider border-b border-gray-200">PSP</div>
+          <div className="px-4 py-2 bg-muted/30 text-xs text-gray-9000 font-mono uppercase tracking-wider border-b border-surface-border">Typ</div>
+          <div className="px-4 py-2 bg-muted/30 text-xs text-gray-9000 font-mono uppercase tracking-wider border-b border-surface-border">Valuta</div>
+          <div className="px-4 py-2 bg-muted/30 text-xs text-gray-9000 font-mono uppercase tracking-wider border-b border-surface-border">Belopp</div>
+          <div className="px-4 py-2 bg-muted/30 text-xs text-gray-9000 font-mono uppercase tracking-wider border-b border-surface-border">PSP</div>
           {[
             { typ: 'Intercompany', valuta: 'EUR / SEK', belopp: 'Alla', psp: 'revolut' as PSP },
             { typ: 'Leverantör', valuta: 'EUR / AED', belopp: 'Alla', psp: 'revolut' as PSP },
@@ -565,14 +565,14 @@ function PSPRouterSection() {
             { typ: 'Faktura', valuta: 'SEK', belopp: 'Alla', psp: 'stripe' as PSP },
           ].map((row, i) => (
             <>
-              <div key={`${i}-typ`} className={`px-4 py-2.5 text-xs text-gray-600 border-b border-gray-100 ${i % 2 === 0 ? '' : 'bg-white/[0.01]'}`}>{row.typ}</div>
-              <div key={`${i}-val`} className={`px-4 py-2.5 text-xs text-gray-9000 font-mono border-b border-gray-100 ${i % 2 === 0 ? '' : 'bg-white/[0.01]'}`}>{row.valuta}</div>
-              <div key={`${i}-bel`} className={`px-4 py-2.5 text-xs text-gray-9000 border-b border-gray-100 ${i % 2 === 0 ? '' : 'bg-white/[0.01]'}`}>{row.belopp}</div>
-              <div key={`${i}-psp`} className={`px-4 py-2.5 border-b border-gray-100 ${i % 2 === 0 ? '' : 'bg-white/[0.01]'}`}>
+              <div key={`${i}-typ`} className={`px-4 py-2.5 text-xs text-gray-600 border-b border-surface-border/50 ${i % 2 === 0 ? '' : 'bg-white/[0.01]'}`}>{row.typ}</div>
+              <div key={`${i}-val`} className={`px-4 py-2.5 text-xs text-gray-9000 font-mono border-b border-surface-border/50 ${i % 2 === 0 ? '' : 'bg-white/[0.01]'}`}>{row.valuta}</div>
+              <div key={`${i}-bel`} className={`px-4 py-2.5 text-xs text-gray-9000 border-b border-surface-border/50 ${i % 2 === 0 ? '' : 'bg-white/[0.01]'}`}>{row.belopp}</div>
+              <div key={`${i}-psp`} className={`px-4 py-2.5 border-b border-surface-border/50 ${i % 2 === 0 ? '' : 'bg-white/[0.01]'}`}>
                 <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
                   row.psp === 'revolut'
-                    ? 'bg-gray-50 text-gray-600 border border-gray-200'
-                    : 'bg-purple-500/15 text-purple-700 border border-purple-500/20'
+                    ? 'bg-muted/30 text-gray-600 border border-gray-200'
+                    : 'bg-blue-600/15 text-blue-700 border border-blue-600/20'
                 }`}>
                   {row.psp === 'revolut' ? 'Revolut' : 'Stripe'}
                 </span>
@@ -604,7 +604,7 @@ function PayoutsSection() {
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-xs text-yellow-700">
           Att betala ut: {new Intl.NumberFormat('sv-SE').format(totalPending)} SEK/EUR
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white border border-gray-200 text-xs text-gray-9000">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white border border-surface-border text-xs text-gray-9000">
           {payouts.filter(p => p.status === 'pending').length} väntar godkännande
         </div>
         {!isAdmin && (
@@ -634,7 +634,7 @@ function PayoutsSection() {
                   </div>
                   <p className="text-xs text-gray-9000 mb-2">{payout.description}</p>
                   <div className="flex items-center gap-4">
-                    <span className="text-sm font-bold text-gray-900">
+                    <span className="text-sm font-bold text-text-primary">
                       {new Intl.NumberFormat('sv-SE').format(payout.amount)} {payout.currency}
                     </span>
                     <span className="text-xs text-gray-9000 font-mono">
@@ -650,13 +650,13 @@ function PayoutsSection() {
                 {payout.status === 'pending' && isAdmin && (
                   <button
                     onClick={() => approvePayout(payout.id)}
-                    className="flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-50 border border-green-500/30 text-gray-700 hover:bg-gray-50 transition-colors"
+                    className="flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium bg-muted/30 border border-green-500/30 text-text-secondary hover:bg-muted/30 transition-colors"
                   >
                     ✓ Godkänn
                   </button>
                 )}
                 {payout.status === 'pending' && !isAdmin && (
-                  <div className="flex-shrink-0 px-3 py-1.5 rounded-lg text-xs text-gray-9000 bg-gray-50 border border-gray-200">
+                  <div className="flex-shrink-0 px-3 py-1.5 rounded-lg text-xs text-gray-9000 bg-muted/30 border border-surface-border">
                     🔒 Admin krävs
                   </div>
                 )}
@@ -706,8 +706,8 @@ export function PaymentProcessor() {
             onClick={() => setActiveSection(s.id)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
               activeSection === s.id
-                ? 'bg-purple-50 text-purple-700 border border-purple-200'
-                : 'text-gray-9000 hover:text-gray-600 hover:bg-gray-50 border border-transparent'
+                ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                : 'text-gray-9000 hover:text-gray-600 hover:bg-muted/30 border border-transparent'
             }`}
           >
             <span>{s.icon}</span>

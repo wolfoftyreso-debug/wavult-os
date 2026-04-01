@@ -8,7 +8,7 @@ const GROUPS = ['1xxx Tillgångar', '2xxx Skulder & Eget kapital', '3xxx Intäkt
 const TYPE_COLOR: Record<FinanceAccount['type'], string> = {
   asset: '#3B82F6',
   liability: '#F59E0B',
-  equity: '#8B5CF6',
+  equity: '#2563EB',
   revenue: '#10B981',
   expense: '#EF4444',
 }
@@ -64,9 +64,9 @@ export function ChartOfAccounts() {
   return (
     <div className="space-y-4">
       {/* Explanatory ingress */}
-      <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+      <div className="rounded-xl border border-surface-border bg-muted/30 px-4 py-3">
         <p className="text-xs text-gray-9000 leading-relaxed">
-          <span className="font-semibold text-gray-900">Vad är en kontoplan?</span>{' '}
+          <span className="font-semibold text-text-primary">Vad är en kontoplan?</span>{' '}
           En kontoplan är bokföringens "adressbok" — varje konto har ett nummer och ett syfte.
           Sverige använder <span className="text-gray-600 font-mono">BAS-kontoplanen</span>:{' '}
           <span className="text-gray-600">1xxx</span> = tillgångar (vad bolaget äger),{' '}
@@ -78,14 +78,14 @@ export function ChartOfAccounts() {
 
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-bold text-gray-900">Kontoplan</h2>
+          <h2 className="text-lg font-bold text-text-primary">Kontoplan</h2>
           <p className="text-xs text-gray-9000 mt-0.5">BAS-kontoplan — Wavult Group</p>
         </div>
         {/* Entity filter */}
         <select
           value={entityFilter}
           onChange={e => setEntityFilter(e.target.value)}
-          className="text-xs bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-gray-900 font-mono focus:outline-none"
+          className="text-xs bg-white border border-surface-border rounded-lg px-3 py-1.5 text-text-primary font-mono focus:outline-none"
         >
           <option value="all">Alla bolag</option>
           {availableEntities.map(fe => (
@@ -108,14 +108,14 @@ export function ChartOfAccounts() {
         const total = groupAccounts.reduce((s, a) => s + a.balance, 0)
 
         return (
-          <div key={group} className="rounded-xl border border-gray-200 bg-white overflow-hidden">
+          <div key={group} className="rounded-xl border border-surface-border bg-white overflow-hidden">
             {/* Group header */}
             <button
               onClick={() => toggleGroup(group)}
-              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-left"
+              className="w-full flex items-center gap-3 px-4 py-3 hover:bg-muted/30 transition-colors text-left"
             >
               <span className="text-base">{isExpanded ? '▾' : '▸'}</span>
-              <span className="text-sm font-semibold text-gray-900 flex-1">{group}</span>
+              <span className="text-sm font-semibold text-text-primary flex-1">{group}</span>
               <span className="text-xs font-mono text-gray-9000">{groupAccounts.length} konton</span>
               <span className="text-xs font-mono ml-4"
                 style={{ color: total < 0 ? '#EF4444' : '#10B981' }}>
@@ -125,9 +125,9 @@ export function ChartOfAccounts() {
 
             {/* Accounts */}
             {isExpanded && (
-              <div className="border-t border-gray-200 overflow-x-auto">
+              <div className="border-t border-surface-border overflow-x-auto">
                 {/* Table header */}
-                <div className="grid grid-cols-12 px-4 py-2 text-[9px] font-mono text-gray-9000 uppercase tracking-wider border-b border-gray-100 min-w-[500px]">
+                <div className="grid grid-cols-12 px-4 py-2 text-[9px] font-mono text-gray-9000 uppercase tracking-wider border-b border-surface-border/50 min-w-[500px]">
                   <span className="col-span-1">Konto</span>
                   <span className="col-span-4">Benämning</span>
                   <span className="col-span-2">Typ</span>
@@ -142,10 +142,10 @@ export function ChartOfAccounts() {
                   return (
                     <div
                       key={account.id}
-                      className="grid grid-cols-12 px-4 py-2.5 items-center border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors min-w-[500px]"
+                      className="grid grid-cols-12 px-4 py-2.5 items-center border-b border-surface-border/50 last:border-0 hover:bg-muted/30 transition-colors min-w-[500px]"
                     >
                       <span className="col-span-1 text-xs font-mono text-gray-9000">{account.account_nr}</span>
-                      <span className="col-span-4 text-xs text-gray-900">{account.name}</span>
+                      <span className="col-span-4 text-xs text-text-primary">{account.name}</span>
                       <span className="col-span-2">
                         <span className="text-[9px] font-mono px-1.5 py-0.5 rounded"
                           style={{ color: typeColor, background: typeColor + '15' }}>

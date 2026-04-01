@@ -364,8 +364,8 @@ export const LEVEL_META: LevelMeta[] = [
     level: 1,
     label: 'Vision & Strategi',
     description: 'Långsiktig riktning, OKRs och bolagsstruktur',
-    color: 'text-purple-400',
-    bgColor: 'bg-purple-500/10 border-purple-500/20',
+    color: 'text-blue-500',
+    bgColor: 'bg-blue-600/10 border-blue-600/20',
     icon: '🏔️',
   },
   {

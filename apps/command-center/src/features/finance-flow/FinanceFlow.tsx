@@ -58,7 +58,7 @@ export function FinanceFlow() {
           </div>
 
           {/* FinanceCo hub */}
-          <div style={{ background: '#5856D6', borderRadius: 16, padding: '16px 20px', marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ background: '#2563EB', borderRadius: 16, padding: '16px 20px', marginBottom: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
               <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)', marginBottom: 2 }}>FinanceCo — Central hub</div>
               <div style={{ fontSize: 15, fontWeight: 700, color: '#FFFFFF' }}>Beräknar splits →</div>
@@ -84,7 +84,7 @@ export function FinanceFlow() {
                   <div style={{ fontSize: 12, color: '#8E8E93' }}>{split.type}</div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: i === tx.splits.length - 1 ? '#5856D6' : '#1C1C1E' }}>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: i === tx.splits.length - 1 ? '#2563EB' : '#1C1C1E' }}>
                     {split.amount.toLocaleString('sv-SE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </div>
                   <div style={{ fontSize: 11, color: '#8E8E93' }}>{split.percentage}%</div>

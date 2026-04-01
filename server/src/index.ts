@@ -712,6 +712,12 @@ app.use('/api/payment-intents', auth, paymentRouter);
 import { governanceRouter } from './governance-api';
 app.use('/api/governance', auth, governanceRouter);
 
+// ---------------------------------------------------------------------------
+// Venture Engine — FinanceCO module: opportunity detection, ventures, capital
+// ---------------------------------------------------------------------------
+import ventureEngineRouter from './venture-engine';
+app.use('/api', ventureEngineRouter); // /api/venture-engine/*
+
 // ============================================================
 // CERTIFIED OMS: Task Catalog API
 // ============================================================

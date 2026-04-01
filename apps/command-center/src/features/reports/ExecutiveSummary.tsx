@@ -33,7 +33,7 @@ const TYPE_ICON: Record<string, string> = {
 
 function KPICard({ label, value, sub, color }: { label: string; value: string; sub?: string; color?: string }) {
   return (
-    <div className="bg-gray-50 border border-white/[0.07] rounded-xl p-4">
+    <div className="bg-muted/30 border border-white/[0.07] rounded-xl p-4">
       <p className="text-xs text-gray-9000 font-mono uppercase tracking-wider mb-1">{label}</p>
       <p className="text-xl font-bold" style={{ color: color ?? '#fff' }}>{value}</p>
       {sub && <p className="text-xs text-gray-9000 mt-0.5">{sub}</p>}
@@ -82,7 +82,7 @@ export function ExecutiveSummary() {
         <SectionHeader title="ARR per bolag" icon="📈" />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {entities.map(e => (
-            <div key={e.id} className="bg-gray-50 border border-white/[0.07] rounded-xl p-4">
+            <div key={e.id} className="bg-muted/30 border border-white/[0.07] rounded-xl p-4">
               <div className="flex items-center gap-2 mb-2">
                 <span className="h-2 w-2 rounded-full flex-shrink-0" style={{ background: e.color }} />
                 <span className="text-xs font-semibold text-gray-600">{e.shortName}</span>
@@ -121,11 +121,11 @@ export function ExecutiveSummary() {
             }).map(item => {
               const days = item.deadline ? daysUntil(item.deadline) : null
               return (
-                <div key={item.id} className="bg-gray-50 border border-white/[0.07] rounded-xl p-3 flex gap-3">
+                <div key={item.id} className="bg-muted/30 border border-white/[0.07] rounded-xl p-3 flex gap-3">
                   <span className="text-base flex-shrink-0 mt-0.5">{TYPE_ICON[item.type]}</span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <p className="text-xs font-semibold text-gray-900">{item.title}</p>
+                      <p className="text-xs font-semibold text-text-primary">{item.title}</p>
                       <span
                         className="text-[9px] font-bold px-1.5 py-0.5 rounded-full"
                         style={{ background: SEVERITY_COLOR[item.severity] + '25', color: SEVERITY_COLOR[item.severity] }}
@@ -158,7 +158,7 @@ export function ExecutiveSummary() {
           <div>
             <SectionHeader title="Thailand Workcamp" icon="🇹🇭" />
             <div className="bg-gradient-to-br from-[#6C63FF]/10 to-[#00C2FF]/10 border border-[#6C63FF]/20 rounded-xl p-5 text-center">
-              <div className="text-5xl font-black text-gray-900 mb-1">{thailandDays}</div>
+              <div className="text-5xl font-black text-text-primary mb-1">{thailandDays}</div>
               <div className="text-xs text-gray-9000">dagar kvar</div>
               <div className="text-xs text-gray-9000 font-mono mt-2">{THAILAND_DATE}</div>
               <div className="mt-3 space-y-1 text-left">
@@ -179,7 +179,7 @@ export function ExecutiveSummary() {
                   <div
                     key={i}
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs ${
-                      i === 0 && !isPast ? 'bg-[#6C63FF]/10 border border-[#6C63FF]/20' : 'bg-gray-50'
+                      i === 0 && !isPast ? 'bg-[#6C63FF]/10 border border-[#6C63FF]/20' : 'bg-muted/30'
                     }`}
                   >
                     <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: i === 0 ? '#6C63FF' : '#F3F4F6' }} />
@@ -195,11 +195,11 @@ export function ExecutiveSummary() {
 
       {/* Next Milestone highlight */}
       {nextMilestone && (
-        <div className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 flex items-center gap-3">
+        <div className="bg-muted/30 border border-surface-border rounded-xl px-4 py-3 flex items-center gap-3">
           <span className="text-lg">🎯</span>
           <div>
             <p className="text-xs text-gray-9000 font-mono uppercase tracking-wider">Nästa milestone</p>
-            <p className="text-sm font-semibold text-gray-900">{nextMilestone.label}</p>
+            <p className="text-sm font-semibold text-text-primary">{nextMilestone.label}</p>
           </div>
           <div className="ml-auto text-right">
             <p className="text-xs text-gray-9000 font-mono">{nextMilestone.date}</p>

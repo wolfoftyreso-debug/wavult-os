@@ -17,7 +17,7 @@ function UptimeBar({ value }: { value: number }) {
   const pct = Math.max(0, Math.min(100, value))
   const color = pct >= 99.9 ? '#10B981' : pct >= 99 ? '#F59E0B' : '#EF4444'
   return (
-    <div className="h-1.5 bg-gray-50 rounded-full overflow-hidden w-24">
+    <div className="h-1.5 bg-muted/30 rounded-full overflow-hidden w-24">
       <div
         className="h-full rounded-full transition-all duration-700"
         style={{ width: `${pct}%`, background: color }}
@@ -32,7 +32,7 @@ const DEPLOY_LABELS  = ['Mar W1','Mar W2','Mar W3','Mar W4','Apr W1','Apr W2','A
 function DeployChart() {
   const max = Math.max(...WEEKLY_DEPLOYS, 1)
   return (
-    <div className="bg-gray-50 border border-white/[0.07] rounded-xl p-4">
+    <div className="bg-muted/30 border border-white/[0.07] rounded-xl p-4">
       <p className="text-xs font-bold text-gray-600 uppercase tracking-widest mb-3">Deploys per vecka (alla tjänster)</p>
       <div className="flex items-end gap-1 h-24">
         {WEEKLY_DEPLOYS.map((d, i) => {
@@ -68,7 +68,7 @@ const ERROR_HISTORY = [0.8, 0.5, 0.3, 0.7, 0.4, 0.2, 0.6, 0.3, 0.4, 0.3, 0.2, 0.
 function ErrorRateChart() {
   const max = Math.max(...ERROR_HISTORY, 0.01)
   return (
-    <div className="bg-gray-50 border border-white/[0.07] rounded-xl p-4">
+    <div className="bg-muted/30 border border-white/[0.07] rounded-xl p-4">
       <p className="text-xs font-bold text-gray-600 uppercase tracking-widest mb-3">API-felfrekvens (%) — 12 veckor</p>
       <div className="flex items-end gap-1 h-20">
         {ERROR_HISTORY.map((v, i) => {
@@ -106,22 +106,22 @@ export function OperationalReport() {
 
       {/* Top KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="bg-gray-50 border border-white/[0.07] rounded-xl p-4 text-center">
+        <div className="bg-muted/30 border border-white/[0.07] rounded-xl p-4 text-center">
           <p className="text-xs text-gray-9000 font-mono uppercase mb-1">Avg. Uptime</p>
           <p className="text-xl font-black text-green-700">{avgUptime.toFixed(2)}%</p>
           <p className="text-[9px] text-gray-9000 mt-0.5">alla tjänster</p>
         </div>
-        <div className="bg-gray-50 border border-white/[0.07] rounded-xl p-4 text-center">
+        <div className="bg-muted/30 border border-white/[0.07] rounded-xl p-4 text-center">
           <p className="text-xs text-gray-9000 font-mono uppercase mb-1">Deploys/vecka</p>
           <p className="text-xl font-black text-[#6C63FF]">{totalDeploys}</p>
           <p className="text-[9px] text-gray-9000 mt-0.5">denna vecka</p>
         </div>
-        <div className="bg-gray-50 border border-white/[0.07] rounded-xl p-4 text-center">
+        <div className="bg-muted/30 border border-white/[0.07] rounded-xl p-4 text-center">
           <p className="text-xs text-gray-9000 font-mono uppercase mb-1">Aktiva Zoomers</p>
           <p className="text-xl font-black text-[#00C2FF]">{ZOOMER_COUNT}</p>
           <p className="text-[9px] text-gray-9000 mt-0.5">fotografer</p>
         </div>
-        <div className="bg-gray-50 border border-white/[0.07] rounded-xl p-4 text-center">
+        <div className="bg-muted/30 border border-white/[0.07] rounded-xl p-4 text-center">
           <p className="text-xs text-gray-9000 font-mono uppercase mb-1">API-felfrekvens</p>
           <p className="text-xl font-black" style={{ color: avgError > 0.5 ? '#F59E0B' : '#10B981' }}>
             {avgError.toFixed(2)}%
@@ -131,14 +131,14 @@ export function OperationalReport() {
       </div>
 
       {/* Service table */}
-      <div className="bg-gray-50 border border-white/[0.07] rounded-xl overflow-hidden">
-        <div className="px-4 py-3 border-b border-gray-200">
+      <div className="bg-muted/30 border border-white/[0.07] rounded-xl overflow-hidden">
+        <div className="px-4 py-3 border-b border-surface-border">
           <p className="text-xs font-bold text-gray-600 uppercase tracking-widest">Tjänster — systemstatus</p>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
             <thead>
-              <tr className="border-b border-gray-200">
+              <tr className="border-b border-surface-border">
                 {['Tjänst','Uptime','Status','Deploys/v','API-fel','Resp. tid'].map(h => (
                   <th key={h} className="px-4 py-2 text-left text-xs text-gray-9000 font-mono">{h}</th>
                 ))}
@@ -146,8 +146,8 @@ export function OperationalReport() {
             </thead>
             <tbody>
               {SYSTEM_METRICS.map((m, i) => (
-                <tr key={i} className="border-b border-white/[0.03] hover:bg-gray-50 transition-colors">
-                  <td className="px-4 py-3 text-gray-900 font-medium">{m.service}</td>
+                <tr key={i} className="border-b border-white/[0.03] hover:bg-muted/30 transition-colors">
+                  <td className="px-4 py-3 text-text-primary font-medium">{m.service}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       <UptimeBar value={m.uptime} />
@@ -174,7 +174,7 @@ export function OperationalReport() {
       </div>
 
       {/* Zoomer breakdown */}
-      <div className="bg-gray-50 border border-white/[0.07] rounded-xl p-4">
+      <div className="bg-muted/30 border border-white/[0.07] rounded-xl p-4">
         <p className="text-xs font-bold text-gray-600 uppercase tracking-widest mb-4">QuixZoom — Photographer Network</p>
         <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
           {[

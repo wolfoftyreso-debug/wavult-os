@@ -19,3 +19,8 @@ server/dist/
 .turbo/
 .env.local
 *.env.local
+
+# Secrets
+apps/**/.env.production
+apps/**/.env.local
+apps/**/.env

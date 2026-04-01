@@ -35,7 +35,7 @@ function FlowCard({ flow, allTasks }: { flow: Flow; allTasks: Task[] }) {
   })
 
   const moduleColors: Record<string, string> = {
-    legal: 'bg-purple-50 text-purple-700',
+    legal: 'bg-blue-50 text-blue-700',
     finance: 'bg-emerald-50 text-emerald-700',
     tech: 'bg-blue-50 text-blue-700',
     operations: 'bg-amber-50 text-amber-700',
@@ -43,11 +43,11 @@ function FlowCard({ flow, allTasks }: { flow: Flow; allTasks: Task[] }) {
   }
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-4">
+    <div className="bg-white border border-surface-border rounded-xl shadow-sm p-4">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <span className="font-semibold text-gray-900 text-sm">{flow.title}</span>
-          <span className={`text-xs font-mono px-2 py-0.5 rounded ${moduleColors[flow.module] ?? 'bg-gray-100 text-gray-600'}`}>
+          <span className="font-semibold text-text-primary text-sm">{flow.title}</span>
+          <span className={`text-xs font-mono px-2 py-0.5 rounded ${moduleColors[flow.module] ?? 'bg-muted text-gray-600'}`}>
             {flow.module.toUpperCase()}
           </span>
         </div>
@@ -59,7 +59,7 @@ function FlowCard({ flow, allTasks }: { flow: Flow; allTasks: Task[] }) {
       <p className="text-xs text-gray-9000 mb-3">{flow.description}</p>
 
       {/* Progress bar */}
-      <div className="w-full bg-gray-100 rounded-full h-1.5 mb-3">
+      <div className="w-full bg-muted rounded-full h-1.5 mb-3">
         <div
           className={`h-1.5 rounded-full transition-all ${
             progress === 100 ? 'bg-emerald-500' :
@@ -171,7 +171,7 @@ export function MissionControl() {
 
   if (loading) {
     return (
-      <div className="min-h-full bg-gray-50 flex items-center justify-center">
+      <div className="min-h-full bg-muted/30 flex items-center justify-center">
         <div className="text-gray-9000 font-mono text-sm">{t('system.loading')}</div>
       </div>
     )
@@ -235,7 +235,7 @@ export function MissionControl() {
   const escalations = checkEscalations(TASKS)
 
   return (
-    <div className="min-h-full bg-gray-50 space-y-6">
+    <div className="min-h-full bg-muted/30 space-y-6">
 
       {/* ── System Status Header ─────────────────────────────────────────── */}
       <div className={`${statusConfig.bg} ${statusConfig.text} rounded-xl p-5 shadow-sm`}>
@@ -256,7 +256,7 @@ export function MissionControl() {
 
       {/* ── Escalation Banner ────────────────────────────────────────────── */}
       {escalations.length > 0 && (
-        <div className="mb-4 p-3 bg-red-600 text-gray-900 rounded-xl flex items-center gap-3">
+        <div className="mb-4 p-3 bg-red-600 text-text-primary rounded-xl flex items-center gap-3">
           <AlertTriangle className="w-4 h-4 flex-shrink-0" />
           <span className="text-sm font-medium">
             {t('alerts.critical_count', { count: escalations.length })}
@@ -298,7 +298,7 @@ export function MissionControl() {
       <section>
         <div className="flex items-center gap-2 mb-3">
           <AlertTriangle className="w-4 h-4 text-red-500" />
-          <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+          <h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
             {t('task.priority.critical')} — {t('agent.command.action_required')}
           </h2>
           <span className="text-xs font-mono bg-red-100 text-red-700 px-2 py-0.5 rounded">
@@ -307,7 +307,7 @@ export function MissionControl() {
         </div>
         <div className="space-y-3">
           {criticalVMs.length === 0 ? (
-            <div className="bg-white border border-gray-200 rounded-xl p-4 text-sm text-gray-9000">
+            <div className="bg-white border border-surface-border rounded-xl p-4 text-sm text-gray-9000">
               {t('task.no_critical')}
             </div>
           ) : (
@@ -322,7 +322,7 @@ export function MissionControl() {
       <section>
         <div className="flex items-center gap-2 mb-3">
           <Clock className="w-4 h-4 text-amber-500" />
-          <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+          <h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
             {t('task.priority.high')}
           </h2>
           <span className="text-xs font-mono bg-amber-100 text-amber-700 px-2 py-0.5 rounded">
@@ -331,7 +331,7 @@ export function MissionControl() {
         </div>
         <div className="space-y-3">
           {highVMs.length === 0 ? (
-            <div className="bg-white border border-gray-200 rounded-xl p-4 text-sm text-gray-9000">
+            <div className="bg-white border border-surface-border rounded-xl p-4 text-sm text-gray-9000">
               {t('task.no_high')}
             </div>
           ) : (
@@ -346,7 +346,7 @@ export function MissionControl() {
       <section>
         <div className="flex items-center gap-2 mb-3">
           <CheckCircle className="w-4 h-4 text-blue-500" />
-          <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+          <h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
             {t('flow.ongoing')}
           </h2>
         </div>
@@ -359,7 +359,7 @@ export function MissionControl() {
       <section>
         <div className="flex items-center gap-2 mb-3">
           <TrendingUp className="w-4 h-4 text-gray-9000" />
-          <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+          <h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
             {t('agent.web.system_overview')}
           </h2>
         </div>

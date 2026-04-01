@@ -182,7 +182,7 @@ export const STATUS_COLORS: Record<TalentStatus, string> = {
   spotted: '#6B7280',
   watching: '#3B82F6',
   contacted: '#F59E0B',
-  responded: '#8B5CF6',
+  responded: '#2563EB',
   interested: '#10B981',
   'in-talks': '#06B6D4',
   passed: '#EF4444',

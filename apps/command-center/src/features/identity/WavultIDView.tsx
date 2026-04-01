@@ -133,7 +133,7 @@ function IdentityDrawer({ v, onClose }: { v: IdentityVerification; onClose: () =
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded hover:bg-gray-100 transition-colors"
+            className="p-1.5 rounded hover:bg-muted transition-colors"
             style={{ color: 'var(--color-text-muted)' }}
           >
             <X size={16} />
@@ -486,7 +486,7 @@ export function WavultIDView() {
         {/* Table */}
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-surface-border border-t-blue-600" />
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 gap-2">

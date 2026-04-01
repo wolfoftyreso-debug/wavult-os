@@ -23,19 +23,19 @@ export function EntitySwitcher() {
       {/* Trigger button */}
       <button
         onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg bg-white hover:bg-gray-100 border border-gray-200 transition-colors text-left"
+        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg bg-white hover:bg-muted border border-surface-border transition-colors text-left"
       >
         <div
-          className="h-6 w-6 rounded-md flex items-center justify-center text-xs font-bold text-gray-900 flex-shrink-0"
+          className="h-6 w-6 rounded-md flex items-center justify-center text-xs font-bold text-text-primary flex-shrink-0"
           style={{ backgroundColor: activeEntity.color }}
         >
           {activeEntity.flag}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-semibold text-gray-900 truncate">{activeEntity.shortName}</p>
-          <p className="text-[9px] text-gray-500 font-mono">{activeEntity.jurisdiction} · L{activeEntity.layer}</p>
+          <p className="text-xs font-semibold text-text-primary truncate">{activeEntity.shortName}</p>
+          <p className="text-[9px] text-text-muted font-mono">{activeEntity.jurisdiction} · L{activeEntity.layer}</p>
         </div>
-        <span className="text-gray-500 text-[9px]">{open ? '▲' : '▼'}</span>
+        <span className="text-text-muted text-[9px]">{open ? '▲' : '▼'}</span>
         <Tooltip
           content="Välj vilket bolag du vill titta på. 'Group' visar hela koncernen samlat. Alla moduler — Finance, Legal, People — filtreras automatiskt per valt bolag."
           title="Bolagsväxlaren"
@@ -46,8 +46,8 @@ export function EntitySwitcher() {
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden max-h-80 overflow-y-auto">
-          <div className="px-3 py-2 border-b border-gray-200">
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-surface-border rounded-xl shadow-lg z-50 overflow-hidden max-h-80 overflow-y-auto">
+          <div className="px-3 py-2 border-b border-surface-border">
             <p className="text-[9px] text-gray-600 font-bold uppercase tracking-[0.15em]">Wavult Group Entities</p>
           </div>
           {sorted.map((entity) => {
@@ -57,8 +57,8 @@ export function EntitySwitcher() {
               <button
                 key={entity.id}
                 onClick={() => { setActiveEntity(entity); setOpen(false) }}
-                className={`w-full flex items-center gap-2.5 px-3 py-2 hover:bg-gray-50 transition-colors text-left ${
-                  isActive ? 'bg-gray-50' : ''
+                className={`w-full flex items-center gap-2.5 px-3 py-2 hover:bg-muted/30 transition-colors text-left ${
+                  isActive ? 'bg-muted/30' : ''
                 }`}
               >
                 {/* Layer indent as left padding */}
@@ -73,10 +73,10 @@ export function EntitySwitcher() {
                 <span className="text-sm flex-shrink-0">{entity.flag}</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <p className="text-xs font-semibold text-gray-900 truncate">{entity.shortName}</p>
+                    <p className="text-xs font-semibold text-text-primary truncate">{entity.shortName}</p>
                     <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: dot }} />
                   </div>
-                  <p className="text-[9px] text-gray-500 font-mono truncate">
+                  <p className="text-[9px] text-text-muted font-mono truncate">
                     {FLAG_MAP[entity.jurisdiction] ?? ''} {entity.jurisdiction}
                   </p>
                 </div>

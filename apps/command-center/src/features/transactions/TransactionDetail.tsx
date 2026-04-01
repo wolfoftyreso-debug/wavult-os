@@ -112,7 +112,7 @@ const DEMO_TRANSACTIONS: Record<string, TransactionDetailData> = {
 type LogType = TransactionLogEntry['type']
 
 const LOG_COLORS: Record<LogType, { color: string; bg: string }> = {
-  created:  { color: '#5856D6', bg: '#5856D610' },
+  created:  { color: '#2563EB', bg: '#2563EB10' },
   approved: { color: '#34C759', bg: '#34C75910' },
   paid:     { color: '#007AFF', bg: '#007AFF10' },
   rejected: { color: '#FF3B30', bg: '#FF3B3010' },
@@ -292,7 +292,7 @@ export function TransactionDetail({ transactionId, onClose }: { transactionId: s
                     padding: '10px 14px', background: '#F9FAFB', borderRadius: 10,
                     border: '1px solid rgba(0,0,0,0.06)', cursor: 'pointer',
                   }}>
-                    <FileText style={{ width: 16, height: 16, color: '#5856D6', flexShrink: 0 }} />
+                    <FileText style={{ width: 16, height: 16, color: '#2563EB', flexShrink: 0 }} />
                     <span style={{ fontSize: 13, color: '#1C1C1E', flex: 1 }}>{doc.name}</span>
                     <span style={{ fontSize: 11, color: '#8E8E93' }}>{doc.type}</span>
                     <Download style={{ width: 14, height: 14, color: '#8E8E93' }} />

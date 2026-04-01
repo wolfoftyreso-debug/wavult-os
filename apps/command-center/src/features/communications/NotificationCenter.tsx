@@ -141,27 +141,27 @@ export function NotificationCenter() {
       {/* Header row */}
       <div className="flex items-center gap-3 flex-wrap">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-gray-900">System-notifikationer</span>
+          <span className="text-sm font-semibold text-text-primary">System-notifikationer</span>
           {unreadCount > 0 && (
-            <span className="text-xs font-bold px-1.5 py-0.5 rounded-full bg-blue-500 text-gray-900">
+            <span className="text-xs font-bold px-1.5 py-0.5 rounded-full bg-blue-500 text-text-primary">
               {unreadCount}
             </span>
           )}
           {criticalCount > 0 && (
-            <span className="text-xs font-bold px-1.5 py-0.5 rounded-full bg-red-500 text-gray-900 animate-pulse">
+            <span className="text-xs font-bold px-1.5 py-0.5 rounded-full bg-red-500 text-text-primary animate-pulse">
               {criticalCount} kritisk
             </span>
           )}
         </div>
         <div className="ml-auto flex items-center gap-2">
-          <div className="flex items-center gap-1 p-0.5 bg-white rounded-lg border border-gray-200">
+          <div className="flex items-center gap-1 p-0.5 bg-white rounded-lg border border-surface-border">
             {(['all', 'info', 'warning', 'critical'] as const).map(f => (
               <button
                 key={f}
                 onClick={() => setFilter(f)}
                 className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
                   filter === f
-                    ? f === 'all' ? 'bg-brand-accent/20 text-purple-700' :
+                    ? f === 'all' ? 'bg-blue-500/20 text-blue-700' :
                       f === 'critical' ? 'bg-red-500/20 text-red-700' :
                       f === 'warning' ? 'bg-yellow-500/20 text-yellow-700' :
                       'bg-blue-500/20 text-blue-700'

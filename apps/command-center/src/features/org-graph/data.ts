@@ -58,7 +58,7 @@ export const ENTITIES: Entity[] = [
     parent_entity_id: null,
     description: 'Dubai Free Zone IP Holding. Owns ALL software, trademarks, code and patents for the entire group. Licenses IP to operating entities via royalty agreements (5–15%). No direct operations.',
     active_status: 'forming',
-    color: '#8B5CF6',
+    color: '#2563EB',
     flag: '🇦🇪',
     layer: 0,
     metadata: {
@@ -108,7 +108,7 @@ export const ENTITIES: Entity[] = [
     parent_wg_id: null,
     description: 'Dubai FZCO for tech infrastructure and operations. Manages cloud services, CI/CD, and provides technical services to all product entities via management fee.',
     active_status: 'active',
-    color: '#7C3AED',
+    color: '#1E40AF',
     flag: '🇦🇪',
     layer: 1,
     metadata: {
@@ -377,7 +377,7 @@ export const ROLE_MAPPINGS: RoleMapping[] = [
   {
     person: 'Erik Svensson',
     initials: 'ES',
-    color: '#8B5CF6',
+    color: '#2563EB',
     role_type: 'Chairman & Group CEO',
     scope: 'group',
     entity_ids: ['wavult-group', 'devops-fzco', 'quixzoom-uab', 'quixzoom-inc', 'landvex-inc', 'landvex-ab'],

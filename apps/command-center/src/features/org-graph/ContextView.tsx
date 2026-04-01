@@ -195,25 +195,25 @@ function NodeDetail({ node, onClose, onDashboard }: {
   const statusColor = node.status ? (STATUS[node.status] ?? '#6B7280') : '#6B7280'
 
   return (
-    <div className="h-full flex flex-col bg-white border-l border-gray-200 overflow-hidden">
-      <div className="flex-shrink-0 p-5 border-b border-gray-200">
+    <div className="h-full flex flex-col bg-white border-l border-surface-border overflow-hidden">
+      <div className="flex-shrink-0 p-5 border-b border-surface-border">
         <div className="flex items-start justify-between">
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <span className="text-xl">{node.flag}</span>
-              <span className="font-bold text-gray-900 text-base">{node.label}</span>
+              <span className="font-bold text-text-primary text-base">{node.label}</span>
               {node.status && (
                 <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: statusColor + '18', color: statusColor }}>
                   {node.status}
                 </span>
               )}
-              <span className="text-xs px-2 py-0.5 rounded-full bg-gray-50 text-gray-9000 font-mono">
+              <span className="text-xs px-2 py-0.5 rounded-full bg-muted/30 text-gray-9000 font-mono">
                 {node.type}
               </span>
             </div>
             <div className="text-sm text-gray-600 mt-1">{node.sublabel}</div>
           </div>
-          <button onClick={onClose} className="text-gray-9000 hover:text-gray-900 transition-colors text-lg ml-3">✕</button>
+          <button onClick={onClose} className="text-gray-9000 hover:text-text-primary transition-colors text-lg ml-3">✕</button>
         </div>
 
         {/* Actions */}
@@ -227,7 +227,7 @@ function NodeDetail({ node, onClose, onDashboard }: {
               Open Dashboard →
             </button>
           )}
-          <span className="text-xs px-2 py-1.5 rounded-lg bg-gray-50 text-gray-9000 border border-gray-200">
+          <span className="text-xs px-2 py-1.5 rounded-lg bg-muted/30 text-gray-9000 border border-surface-border">
             {node.position === 'above' ? '▲ Above you' : node.position === 'self' ? '🎯 Your role' : '▼ Below you'}
           </span>
         </div>
@@ -260,13 +260,13 @@ function NodeDetail({ node, onClose, onDashboard }: {
                   {node.roleMapping.initials}
                 </div>
                 <div>
-                  <div className="text-sm font-semibold text-gray-900">{node.roleMapping.person}</div>
+                  <div className="text-sm font-semibold text-text-primary">{node.roleMapping.person}</div>
                   <div className="text-xs text-gray-9000">{node.roleMapping.role_type} · {node.roleMapping.scope}</div>
                 </div>
               </div>
               <div className="flex flex-wrap gap-1.5 mt-3 pl-12">
                 {node.roleMapping.permissions.map(p => (
-                  <span key={p} className="text-xs px-2 py-0.5 rounded bg-gray-50 text-gray-9000 font-mono">{p}</span>
+                  <span key={p} className="text-xs px-2 py-0.5 rounded bg-muted/30 text-gray-9000 font-mono">{p}</span>
                 ))}
               </div>
             </div>
@@ -300,7 +300,7 @@ function NodeDetail({ node, onClose, onDashboard }: {
         )}
 
         {/* Position explanation */}
-        <div className="text-xs text-gray-600 border border-gray-100 rounded-lg p-3 bg-white/[0.01]">
+        <div className="text-xs text-gray-600 border border-surface-border/50 rounded-lg p-3 bg-white/[0.01]">
           {node.position === 'above' && '▲ This node is above you in the hierarchy. You have visibility but not control.'}
           {node.position === 'self' && '🎯 This is your role or entity. You have full control over this domain.'}
           {node.position === 'below' && '▼ This is under your authority. You have full visibility and control.'}
@@ -383,10 +383,10 @@ export function ContextView() {
       {/* ── Canvas ── */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Header */}
-        <div className="flex-shrink-0 flex items-center justify-between gap-4 px-5 py-3 border-b border-gray-200 bg-gray-50">
+        <div className="flex-shrink-0 flex items-center justify-between gap-4 px-5 py-3 border-b border-surface-border bg-muted/30">
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-sm font-bold text-gray-900">My Position</h1>
+              <h1 className="text-sm font-bold text-text-primary">My Position</h1>
               <div
                 className="text-xs px-2.5 py-1 rounded-full border flex items-center gap-1.5"
                 style={{ background: overlayInfo.color + '12', color: overlayInfo.color, borderColor: overlayInfo.color + '30' }}
@@ -403,7 +403,7 @@ export function ContextView() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => navigate('/org')}
-              className="text-xs text-gray-9000 hover:text-gray-600 px-2.5 py-1.5 rounded-lg border border-gray-200 transition-colors"
+              className="text-xs text-gray-9000 hover:text-gray-600 px-2.5 py-1.5 rounded-lg border border-surface-border transition-colors"
             >
               ← Corporate Graph
             </button>
@@ -411,7 +411,7 @@ export function ContextView() {
         </div>
 
         {/* Path breadcrumb */}
-        <div className="flex-shrink-0 flex items-center gap-1 px-5 py-2 border-b border-gray-100 bg-gray-50 overflow-x-auto">
+        <div className="flex-shrink-0 flex items-center gap-1 px-5 py-2 border-b border-surface-border/50 bg-muted/30 overflow-x-auto">
           {nodes.filter(n => n.isOnPath).map((n, i, arr) => (
             <span key={n.id} className="flex items-center gap-1 text-xs flex-shrink-0">
               <span
@@ -441,7 +441,7 @@ export function ContextView() {
         </div>
 
         {/* SVG */}
-        <div className="flex-1 overflow-auto bg-gray-50">
+        <div className="flex-1 overflow-auto bg-muted/30">
           <svg
             ref={svgRef}
             viewBox={`0 0 ${CANVAS_W} ${maxY}`}
@@ -465,7 +465,7 @@ export function ContextView() {
                   key={lvl}
                   x={0} y={y - 16}
                   width={CANVAS_W} height={NODE_H + 32}
-                  fill={isAboveZone ? '#ffffff01' : isBelowZone ? '#ffffff02' : '#8B5CF608'}
+                  fill={isAboveZone ? '#ffffff01' : isBelowZone ? '#ffffff02' : '#2563EB08'}
                   rx={0}
                 />
               )
@@ -479,8 +479,8 @@ export function ContextView() {
               const selfLi = levels.indexOf(selfLvl)
               const selfY = selfLi * (NODE_H + V_GAP) + 40
               return <>
-                <text x={18} y={selfY - 4} fontSize={8} fill="#8B5CF640" fontWeight="700" letterSpacing="2.5">YOUR ROLE</text>
-                <line x1={0} y1={selfY - 12} x2={CANVAS_W} y2={selfY - 12} stroke="#8B5CF620" strokeWidth={1} strokeDasharray="4 4" />
+                <text x={18} y={selfY - 4} fontSize={8} fill="#2563EB40" fontWeight="700" letterSpacing="2.5">YOUR ROLE</text>
+                <line x1={0} y1={selfY - 12} x2={CANVAS_W} y2={selfY - 12} stroke="#2563EB20" strokeWidth={1} strokeDasharray="4 4" />
               </>
             })()}
 
@@ -519,10 +519,10 @@ export function ContextView() {
         </div>
 
         {/* Footer */}
-        <div className="flex-shrink-0 px-5 py-2 border-t border-gray-200 bg-gray-50">
+        <div className="flex-shrink-0 px-5 py-2 border-t border-surface-border bg-muted/30">
           <div className="flex items-center gap-6 text-xs text-gray-600">
             <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-white/20" />Above: governance chain</span>
-            <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full" style={{ background: effectiveRole?.color ?? '#8B5CF6' }} />Self: your role</span>
+            <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full" style={{ background: effectiveRole?.color ?? '#2563EB' }} />Self: your role</span>
             <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-[#10B981]" />Below: your authority</span>
             <span className="ml-auto">Click any node to inspect · Click self node to open dashboard</span>
           </div>

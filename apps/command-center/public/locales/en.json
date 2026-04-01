@@ -12,6 +12,7 @@
   "nav.ops": "Operations Center",
   "nav.money": "Money",
   "nav.finance": "Finance",
+  "nav.venture_engine": "Venture Engine",
   "nav.transactions": "Transactions",
   "nav.simulation": "Simulation",
   "nav.procurement": "Procurement",
@@ -232,6 +233,8 @@
   "nav.quixzoom_ads": "Quixzoom Ads",
   "nav.finance_flow": "Finance Flow",
   "nav.flights": "Flights & Travel",
+  "nav.visa": "Visa & Permits",
+  "nav.travel_hub": "Travel Plans",
   "nav.company_launch": "Form Company",
   "nav.corporate": "Corporate",
   "nav.legal": "Legal",
@@ -243,8 +246,23 @@
     "platforms": "Platforms",
     "quixzoom_app": "quiXzoom",
     "landvex_portal": "Landvex",
-    "quixzoom_ads": "Quixom Ads"
+    "quixzoom_ads": "Quixom Ads",
+    "dashboard": "Dashboard",
+    "tasks": "Tasks",
+    "entities": "Entities",
+    "travel": "Travel & Mobility",
+    "incidents": "Incidents",
+    "communications": "Communications",
+    "core": "Core Operations",
+    "execution": "Execution",
+    "infrastructure": "Infrastructure",
+    "support_systems": "Support Systems",
+    "system": "System",
+    "uber": "Uber",
+    "visa": "Visa & Permits",
+    "operations": "Operations"
   },
   "nav.openclaw": "OpenClaw",
-  "nav.networkMap": "Network Map"
+  "nav.networkMap": "Network Map",
+  "nav.uber": "🚗 Uber"
 }

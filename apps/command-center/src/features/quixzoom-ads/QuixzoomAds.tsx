@@ -53,7 +53,7 @@ export function QuixzoomAds() {
 
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 8 }}>
           {cart.length > 0 && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', background: '#5856D6', color: '#FFFFFF', borderRadius: 10, fontSize: 13, fontWeight: 600 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', background: '#2563EB', color: '#FFFFFF', borderRadius: 10, fontSize: 13, fontWeight: 600 }}>
               <ShoppingCart style={{ width: 14, height: 14 }} />
               {cart.length} i varukorg
             </div>
@@ -68,7 +68,7 @@ export function QuixzoomAds() {
             {DEMO_PACKAGES.map(pkg => (
               <div key={pkg.id} style={{ background: '#FFFFFF', borderRadius: 16, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.06)', display: 'flex', flexDirection: 'column' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
-                  <div style={{ padding: '3px 10px', background: '#5856D610', color: '#5856D6', borderRadius: 20, fontSize: 11, fontWeight: 600 }}>
+                  <div style={{ padding: '3px 10px', background: '#2563EB10', color: '#2563EB', borderRadius: 20, fontSize: 11, fontWeight: 600 }}>
                     {TYPE_LABELS[pkg.dataType]}
                   </div>
                   {pkg.verified && (
@@ -102,7 +102,7 @@ export function QuixzoomAds() {
                     onClick={() => setCart(c => c.includes(pkg.id) ? c.filter(id => id !== pkg.id) : [...c, pkg.id])}
                     style={{
                       padding: '10px 18px', borderRadius: 10, border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 600,
-                      background: cart.includes(pkg.id) ? '#34C759' : '#5856D6',
+                      background: cart.includes(pkg.id) ? '#34C759' : '#2563EB',
                       color: '#FFFFFF',
                     }}
                   >
@@ -117,9 +117,64 @@ export function QuixzoomAds() {
 
       {/* Builder */}
       {activeTab === 'builder' && (
-        <div style={{ flex: 1, overflow: 'auto', padding: 24, maxWidth: 600 }}>
+        <div style={{ flex: 1, overflow: 'auto', padding: 24 }}>
+          {/* Package templates */}
+          <div style={{ marginBottom: 28 }}>
+            <div style={{ fontSize: 16, fontWeight: 700, color: '#1C1C1E', marginBottom: 6 }}>Välj mall</div>
+            <div style={{ fontSize: 13, color: '#8E8E93', marginBottom: 16 }}>Starta med ett färdigt paket eller bygg eget</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 14, marginBottom: 14 }}>
+              {[
+                {
+                  icon: '🪟',
+                  name: 'Fönsterputsare-paket',
+                  description: 'Identifiera fastigheter med smutsiga fönster i ett specifikt område. Perfekt för fönsterputsföretag som söker nya kunder.',
+                  contacts: 50,
+                  price: 990,
+                },
+                {
+                  icon: '🅿️',
+                  name: 'Parkeringsbolag-paket',
+                  description: 'Parkerade fordon kartlagda med logotyp på kartnålar. Underlag för parkeringsförvaltning och analys av parkeringsmönster.',
+                  contacts: null,
+                  price: 1490,
+                },
+                {
+                  icon: '🏪',
+                  name: 'Butikslead-paket',
+                  description: 'Fotgängartrafik nära butiker och handelsplatser. Identifiera potentiella kunder baserat på rörelsedata.',
+                  contacts: 200,
+                  price: 2490,
+                },
+              ].map(tmpl => (
+                <div key={tmpl.name} style={{
+                  background: '#FFFFFF', borderRadius: 14, padding: 20,
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.06)', border: '1px solid rgba(0,0,0,0.06)',
+                  display: 'flex', flexDirection: 'column', gap: 10,
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <span style={{ fontSize: 28 }}>{tmpl.icon}</span>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: '#1C1C1E' }}>{tmpl.name}</div>
+                  </div>
+                  <div style={{ fontSize: 12, color: '#6B7280', lineHeight: 1.5, flex: 1 }}>{tmpl.description}</div>
+                  <div style={{ display: 'flex', gap: 12, fontSize: 12, color: '#8E8E93' }}>
+                    {tmpl.contacts && <span>👥 {tmpl.contacts} kontakter</span>}
+                    <span style={{ marginLeft: 'auto', fontWeight: 700, color: '#1C1C1E', fontSize: 15 }}>{tmpl.price.toLocaleString()} SEK</span>
+                  </div>
+                  <button style={{
+                    width: '100%', padding: '10px', background: '#2563EB', color: '#FFFFFF',
+                    border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                  }}>
+                    Välj mall →
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Custom package form */}
           <div style={{ background: '#FFFFFF', borderRadius: 16, padding: 24, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-            <div style={{ fontSize: 18, fontWeight: 700, color: '#1C1C1E', marginBottom: 20 }}>Skapa datapaket</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: '#1C1C1E', marginBottom: 4 }}>🛠 Skapa anpassat paket</div>
+            <div style={{ fontSize: 12, color: '#8E8E93', marginBottom: 20 }}>Bygg ett paket från grunden med dina egna parametrar</div>
 
             {[
               { label: 'Pakettitel', placeholder: 'Ex: Bryggägare Nacka 2026' },
@@ -159,7 +214,7 @@ export function QuixzoomAds() {
               }} />
             </div>
 
-            <button style={{ width: '100%', padding: '14px', background: '#5856D6', color: '#FFFFFF', border: 'none', borderRadius: 12, fontSize: 16, fontWeight: 600, cursor: 'pointer' }}>
+            <button style={{ width: '100%', padding: '14px', background: '#2563EB', color: '#FFFFFF', border: 'none', borderRadius: 12, fontSize: 16, fontWeight: 600, cursor: 'pointer' }}>
               Skicka för granskning
             </button>
           </div>

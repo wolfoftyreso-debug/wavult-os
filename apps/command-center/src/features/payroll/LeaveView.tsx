@@ -8,7 +8,7 @@ function LeaveBar({ used, planned, entitled }: { used: number; planned: number; 
   const plannedPct = (planned / entitled) * 100
   const remaining = Math.max(0, 100 - usedPct - plannedPct)
   return (
-    <div className="h-2 rounded-full bg-gray-50 overflow-hidden flex">
+    <div className="h-2 rounded-full bg-muted/30 overflow-hidden flex">
       <div className="h-full bg-amber-400 transition-all" style={{ width: `${usedPct}%` }} />
       <div className="h-full bg-blue-400/60 transition-all" style={{ width: `${plannedPct}%` }} />
       <div className="h-full bg-surface-border transition-all" style={{ width: `${remaining}%` }} />
@@ -54,9 +54,9 @@ function SimpleCalendar({ month, year, employees }: { month: number; year: numbe
   const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-4">
-      <div className="text-xs font-semibold text-gray-900 mb-3">{MONTH_NAMES_LONG[month]} {year}</div>
-      <div className="grid grid-cols-7 gap-px text-center text-xs text-gray-500 mb-1">
+    <div className="bg-white border border-surface-border rounded-xl p-4">
+      <div className="text-xs font-semibold text-text-primary mb-3">{MONTH_NAMES_LONG[month]} {year}</div>
+      <div className="grid grid-cols-7 gap-px text-center text-xs text-text-muted mb-1">
         {['Mån','Tis','Ons','Tor','Fre','Lör','Sön'].map(d => <div key={d}>{d}</div>)}
       </div>
       <div className="grid grid-cols-7 gap-px">
@@ -70,8 +70,8 @@ function SimpleCalendar({ month, year, employees }: { month: number; year: numbe
               key={i}
               title={isHoliday ? SWEDISH_HOLIDAYS_2026.find(h => new Date(h.date).getDate() === day && new Date(h.date).getMonth() === month)?.name : undefined}
               className={`relative flex flex-col items-center justify-start py-1 rounded text-xs min-h-[28px] ${
-                isHoliday ? 'text-red-700' : isToday ? 'font-bold text-purple-300' : 'text-gray-500'
-              } ${isToday ? 'ring-1 ring-purple-500/60 bg-purple-500/10' : ''}`}
+                isHoliday ? 'text-red-700' : isToday ? 'font-bold text-blue-400' : 'text-gray-500'
+              } ${isToday ? 'ring-1 ring-blue-600/60 bg-blue-600/10' : ''}`}
             >
               <span>{day}</span>
               {leaveEmps.length > 0 && (
@@ -99,7 +99,7 @@ export function LeaveView() {
   const { employees, loading, error } = usePayroll()
 
   if (loading) {
-    return <div className="flex items-center justify-center h-64 text-gray-500">Laddar semesterdata...</div>
+    return <div className="flex items-center justify-center h-64 text-text-muted">Laddar semesterdata...</div>
   }
 
   if (error) {
@@ -109,24 +109,24 @@ export function LeaveView() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-sm font-semibold text-gray-900">Semester & Ledighet</h2>
-        <p className="text-xs text-gray-500 mt-0.5">25 semesterdagar/år (semesterlagen) · Röda dagar markerade i rött</p>
+        <h2 className="text-sm font-semibold text-text-primary">Semester & Ledighet</h2>
+        <p className="text-xs text-text-muted mt-0.5">25 semesterdagar/år (semesterlagen) · Röda dagar markerade i rött</p>
       </div>
 
       {/* Per-person leave overview */}
-      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-gray-200">
-          <h3 className="text-sm font-semibold text-gray-900">Semesteröversikt 2026</h3>
+      <div className="bg-white border border-surface-border rounded-xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-surface-border">
+          <h3 className="text-sm font-semibold text-text-primary">Semesteröversikt 2026</h3>
           <div className="flex gap-4 mt-2">
-            <div className="flex items-center gap-1.5 text-xs text-gray-500">
+            <div className="flex items-center gap-1.5 text-xs text-text-muted">
               <div className="h-2 w-4 rounded-full bg-amber-400" />
               Uttaget
             </div>
-            <div className="flex items-center gap-1.5 text-xs text-gray-500">
+            <div className="flex items-center gap-1.5 text-xs text-text-muted">
               <div className="h-2 w-4 rounded-full bg-blue-400/60" />
               Planerat
             </div>
-            <div className="flex items-center gap-1.5 text-xs text-gray-500">
+            <div className="flex items-center gap-1.5 text-xs text-text-muted">
               <div className="h-2 w-4 rounded-full bg-surface-border" />
               Kvar
             </div>
@@ -152,26 +152,26 @@ export function LeaveView() {
                       {emp.initials}
                     </div>
                     <div>
-                      <div className="text-xs font-medium text-gray-900">{emp.name}</div>
-                      <div className="text-xs text-gray-500">{emp.role}</div>
+                      <div className="text-xs font-medium text-text-primary">{emp.name}</div>
+                      <div className="text-xs text-text-muted">{emp.role}</div>
                     </div>
                   </div>
                   <div className="flex gap-4 text-right">
                     <div>
                       <div className="text-xs font-semibold text-amber-700">{used}</div>
-                      <div className="text-xs text-gray-500">uttaget</div>
+                      <div className="text-xs text-text-muted">uttaget</div>
                     </div>
                     <div>
                       <div className="text-xs font-semibold text-blue-700">{planned}</div>
-                      <div className="text-xs text-gray-500">planerat</div>
+                      <div className="text-xs text-text-muted">planerat</div>
                     </div>
                     <div>
                       <div className="text-xs font-semibold text-green-700">{remaining}</div>
-                      <div className="text-xs text-gray-500">kvar</div>
+                      <div className="text-xs text-text-muted">kvar</div>
                     </div>
                     <div>
                       <div className="text-xs font-semibold text-gray-600">{entitled}</div>
-                      <div className="text-xs text-gray-500">totalt</div>
+                      <div className="text-xs text-text-muted">totalt</div>
                     </div>
                   </div>
                 </div>
@@ -182,7 +182,7 @@ export function LeaveView() {
                   <div className="mt-2 space-y-1">
                     {record.plannedLeave.map((pl, i) => (
                       <div key={i} className="flex items-center justify-between text-xs">
-                        <span className="text-gray-500">{pl.start} → {pl.end} ({pl.days} dagar)</span>
+                        <span className="text-text-muted">{pl.start} → {pl.end} ({pl.days} dagar)</span>
                         <span className={pl.approved ? 'text-green-700' : 'text-amber-700'}>
                           {pl.approved ? '✓ Godkänd' : '⏳ Inväntar'}
                         </span>
@@ -198,7 +198,7 @@ export function LeaveView() {
 
       {/* Calendar grid — Q3 2026 (summer = most leave) */}
       <div>
-        <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Kalendervy</h3>
+        <h3 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">Kalendervy</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[3, 4, 5, 6, 7, 8].map(m => (
             <SimpleCalendar key={m} month={m} year={2026} employees={employees} />
@@ -207,8 +207,8 @@ export function LeaveView() {
       </div>
 
       {/* Swedish holidays */}
-      <div className="bg-white border border-gray-200 rounded-xl px-5 py-5">
-        <h3 className="text-sm font-semibold text-gray-900 mb-4">Röda dagar 2026</h3>
+      <div className="bg-white border border-surface-border rounded-xl px-5 py-5">
+        <h3 className="text-sm font-semibold text-text-primary mb-4">Röda dagar 2026</h3>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
           {SWEDISH_HOLIDAYS_2026.map(h => {
             const d = new Date(h.date)

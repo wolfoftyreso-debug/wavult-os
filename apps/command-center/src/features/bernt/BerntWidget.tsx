@@ -176,8 +176,8 @@ export function BerntWidget() {
         onClick={() => setOpen(o => !o)}
         className="fixed bottom-6 right-6 z-50 h-12 w-12 rounded-full flex items-center justify-center shadow-2xl transition-all duration-200 hover:scale-105 active:scale-95"
         style={{
-          background: 'linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)',
-          boxShadow: '0 0 0 3px #8B5CF620, 0 8px 24px #0008',
+          background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
+          boxShadow: '0 0 0 3px #2563EB20, 0 8px 24px #0008',
         }}
         title="Bernt — AI-assistent"
       >
@@ -195,7 +195,7 @@ export function BerntWidget() {
             background: '#FFFFFF',
             border: '1px solid rgba(139,92,246,0.3)',
             height: '420px',
-            boxShadow: '0 0 40px #8B5CF620, 0 20px 60px #0009',
+            boxShadow: '0 0 40px #2563EB20, 0 20px 60px #0009',
           }}
         >
           {/* Header */}
@@ -204,11 +204,11 @@ export function BerntWidget() {
             style={{ background: 'linear-gradient(135deg, #1A1A2E 0%, #16213E 100%)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
           >
             <div className="h-7 w-7 rounded-full flex items-center justify-center text-sm"
-              style={{ background: 'linear-gradient(135deg, #8B5CF6, #6D28D9)' }}>
+              style={{ background: 'linear-gradient(135deg, #2563EB, #1D4ED8)' }}>
               🤖
             </div>
             <div className="flex-1">
-              <p className="text-xs font-bold text-gray-900">Bernt</p>
+              <p className="text-xs font-bold text-text-primary">Bernt</p>
               <div className="flex items-center gap-1">
                 <span className={`h-1.5 w-1.5 rounded-full ${connected ? 'bg-green-400' : 'bg-yellow-400'}`} />
                 <p className="text-[9px] font-mono" style={{ color: connected ? '#4ade80' : '#facc15' }}>
@@ -218,28 +218,28 @@ export function BerntWidget() {
             </div>
             <button
               onClick={() => setShowSettings(s => !s)}
-              className="text-gray-500 hover:text-gray-600 transition-colors text-sm"
+              className="text-text-muted hover:text-gray-600 transition-colors text-sm"
               title={t('nav.settings')}
             >⚙️</button>
           </div>
 
           {/* Settings panel */}
           {showSettings && (
-            <div className="px-4 py-3 flex-shrink-0 border-b border-gray-200 animate-fade-in">
-              <p className="text-xs text-gray-500 font-mono mb-1.5">{t('bernt.tunnel_url_label')}</p>
+            <div className="px-4 py-3 flex-shrink-0 border-b border-surface-border animate-fade-in">
+              <p className="text-xs text-text-muted font-mono mb-1.5">{t('bernt.tunnel_url_label')}</p>
               <div className="flex gap-2">
                 <input
                   type="text"
                   defaultValue={tunnelUrl}
                   placeholder="https://xxx.trycloudflare.com"
-                  className="flex-1 text-xs bg-white border border-gray-200 rounded-lg px-2.5 py-1.5 text-gray-900 placeholder-gray-700 focus:outline-none focus:border-purple-500/50"
+                  className="flex-1 text-xs bg-white border border-surface-border rounded-lg px-2.5 py-1.5 text-text-primary placeholder-gray-700 focus:outline-none focus:border-blue-600/50"
                   onKeyDown={e => e.key === 'Enter' && saveTunnel((e.target as HTMLInputElement).value)}
                   id="tunnel-input"
                 />
                 <button
                   onClick={() => saveTunnel((document.getElementById('tunnel-input') as HTMLInputElement)?.value || '')}
                   className="text-xs px-2.5 py-1.5 rounded-lg font-semibold"
-                  style={{ background: '#8B5CF620', color: '#A78BFA', border: '1px solid #8B5CF630' }}
+                  style={{ background: '#2563EB20', color: '#60A5FA', border: '1px solid #2563EB30' }}
                 >
                   {t('action.save')}
                 </button>
@@ -255,7 +255,7 @@ export function BerntWidget() {
                 <div
                   className="max-w-[85%] px-3 py-2 rounded-xl text-xs leading-relaxed"
                   style={msg.role === 'user'
-                    ? { background: '#8B5CF625', color: '#C4B5FD', border: '1px solid #8B5CF630' }
+                    ? { background: '#2563EB25', color: '#93C5FD', border: '1px solid #2563EB30' }
                     : { background: '#1C2029', color: '#D1D5DB', border: '1px solid rgba(255,255,255,0.06)' }
                   }
                 >
@@ -267,9 +267,9 @@ export function BerntWidget() {
               <div className="flex justify-start">
                 <div className="px-3 py-2 rounded-xl text-xs" style={{ background: '#1C2029', border: '1px solid rgba(255,255,255,0.06)' }}>
                   <span className="flex gap-1">
-                    <span className="h-1.5 w-1.5 rounded-full bg-purple-400 animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="h-1.5 w-1.5 rounded-full bg-purple-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="h-1.5 w-1.5 rounded-full bg-purple-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+                    <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '300ms' }} />
                   </span>
                 </div>
               </div>
@@ -285,7 +285,7 @@ export function BerntWidget() {
                   key={s}
                   onClick={() => sendMessage(s)}
                   className="text-[9px] font-mono px-2 py-1 rounded-full transition-colors"
-                  style={{ background: '#8B5CF610', color: '#A78BFA', border: '1px solid #8B5CF620' }}
+                  style={{ background: '#2563EB10', color: '#60A5FA', border: '1px solid #2563EB20' }}
                 >
                   {s}
                 </button>
@@ -301,16 +301,16 @@ export function BerntWidget() {
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && !loading && sendMessage(input)}
               placeholder="Skriv eller tala..."
-              className="flex-1 text-xs bg-white border border-gray-200 rounded-xl px-3 py-2 text-gray-900 placeholder-gray-700 focus:outline-none focus:border-purple-500/40 mt-2"
+              className="flex-1 text-xs bg-white border border-surface-border rounded-xl px-3 py-2 text-text-primary placeholder-gray-700 focus:outline-none focus:border-blue-600/40 mt-2"
               disabled={loading}
             />
             <button
               onClick={listening ? stopListen : startListen}
               className="mt-2 h-8 w-8 rounded-xl flex items-center justify-center transition-all flex-shrink-0"
               style={{
-                background: listening ? '#EF444420' : '#8B5CF615',
-                border: `1px solid ${listening ? '#EF444430' : '#8B5CF625'}`,
-                color: listening ? '#F87171' : '#A78BFA',
+                background: listening ? '#EF444420' : '#2563EB15',
+                border: `1px solid ${listening ? '#EF444430' : '#2563EB25'}`,
+                color: listening ? '#F87171' : '#60A5FA',
               }}
               title={listening ? t('action.stop') : t('action.speak')}
             >
@@ -320,7 +320,7 @@ export function BerntWidget() {
               onClick={() => !loading && sendMessage(input)}
               disabled={!input.trim() || loading}
               className="mt-2 h-8 w-8 rounded-xl flex items-center justify-center transition-all flex-shrink-0 disabled:opacity-30"
-              style={{ background: '#8B5CF620', border: '1px solid #8B5CF630', color: '#A78BFA' }}
+              style={{ background: '#2563EB20', border: '1px solid #2563EB30', color: '#60A5FA' }}
             >
               ↑
             </button>

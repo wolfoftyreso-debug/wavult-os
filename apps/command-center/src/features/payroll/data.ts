@@ -45,7 +45,7 @@ export const EMPLOYEES: Employee[] = [
     employmentRate: 1.0,
     status: 'active',
     taxTable: 33,
-    color: '#8B5CF6',
+    color: '#2563EB',
     location: 'Stockholm',
   },
   {

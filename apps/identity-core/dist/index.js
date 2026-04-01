@@ -5,10 +5,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const crypto_1 = __importDefault(require("crypto"));
+const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 const supabase_js_1 = require("@supabase/supabase-js");
 const config_1 = require("./config");
 const auth_1 = require("./routes/auth");
 const sessions_1 = require("./routes/sessions");
+const mfa_1 = require("./routes/mfa");
 const postgres_1 = require("./db/postgres");
 const metrics_1 = require("./metrics");
 // DEPLOY LADDER (never big-bang):
@@ -19,23 +21,38 @@ const metrics_1 = require("./metrics");
 const AUTH_MODE = config_1.config.authMode;
 const app = (0, express_1.default)();
 app.use(express_1.default.json({ limit: '1mb' }));
+app.use(express_1.default.urlencoded({ extended: false, limit: '1mb' }));
 // Request tracing — requestId injected before any route/middleware sees request
 app.use((req, _res, next) => {
     req.requestId = crypto_1.default.randomUUID();
     next();
 });
-// Security headers
+// Security headers — ALL responses
 app.use((_req, res, next) => {
-    res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('X-Frame-Options', 'DENY');
-    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+    res.setHeader('Content-Security-Policy', "default-src 'none'; frame-ancestors 'none'");
+    res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+    res.setHeader('Referrer-Policy', 'no-referrer');
+    res.removeHeader('X-Powered-By');
     next();
+});
+// Health endpoint rate limiter — prevents uptime detection / DDoS amplification
+const healthLimiter = (0, express_rate_limit_1.default)({
+    windowMs: 60 * 1000,
+    max: 30,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: 'Too many health check requests' },
 });
 // Routes
 app.use('/v1/auth', auth_1.authRouter);
 app.use('/v1/sessions', sessions_1.sessionsRouter);
-// Health
-app.get('/health', async (_req, res) => {
+app.use('/v1/mfa', mfa_1.mfaRouter);
+// Health — rate limited
+app.get('/health', healthLimiter, async (_req, res) => {
     const dbOk = await (0, postgres_1.testConnection)();
     res.status(dbOk ? 200 : 503).json({
         status: dbOk ? 'ok' : 'degraded',
@@ -58,7 +75,6 @@ main().catch((err) => {
     console.error('[Identity Core] Startup failed:', err);
     process.exit(1);
 });
-exports.default = app;
 // rds-ready Sun Mar 29 00:27:24 UTC 2026
 // ─── MIGRATION ENDPOINT (one-time use) ───────────────────────────────────────
 app.post('/v1/migrate/from-supabase', async (_req, res) => {
@@ -90,3 +106,45 @@ app.post('/v1/migrate/from-supabase', async (_req, res) => {
         res.status(500).json({ error: String(err) });
     }
 });
+// Schema migration endpoint — runs pending ALTER TABLE / CREATE TABLE migrations
+// Protected by migration secret, safe to call repeatedly (all DDL is idempotent)
+app.post('/v1/auth/schema-migrate', async (req, res) => {
+    const secret = req.headers['x-migration-secret'];
+    if (secret !== 'wavult-migrate-2026')
+        return res.status(401).json({ error: 'UNAUTHORIZED' });
+    try {
+        await postgres_1.db.query(`
+      -- MFA columns
+      ALTER TABLE ic_users ADD COLUMN IF NOT EXISTS mfa_enabled BOOLEAN DEFAULT false;
+      ALTER TABLE ic_users ADD COLUMN IF NOT EXISTS mfa_secret TEXT;
+      ALTER TABLE ic_users ADD COLUMN IF NOT EXISTS mfa_secret_pending TEXT;
+      ALTER TABLE ic_users ADD COLUMN IF NOT EXISTS mfa_backup_codes TEXT;
+      ALTER TABLE ic_users ADD COLUMN IF NOT EXISTS last_login_ip TEXT;
+
+      -- ic_auth_audit for compliance
+      CREATE TABLE IF NOT EXISTS ic_auth_audit (
+        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+        user_id UUID,
+        event_type TEXT NOT NULL,
+        ip_address TEXT,
+        user_agent TEXT,
+        country_code TEXT,
+        success BOOLEAN NOT NULL DEFAULT true,
+        error_code TEXT,
+        metadata JSONB DEFAULT '{}',
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_ic_auth_audit_user ON ic_auth_audit(user_id, created_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_ic_auth_audit_event ON ic_auth_audit(event_type, created_at DESC);
+    `);
+        return res.json({ ok: true, run: 'mfa_and_audit', message: 'Schema migration completed' });
+    }
+    catch (err) {
+        console.error('[Migration] Schema migrate failed:', err);
+        return res.status(500).json({ error: 'MIGRATION_FAILED', detail: String(err) });
+    }
+});
+// Catch-all: return 404 for unknown paths — do NOT leak endpoint existence
+app.use((_req, res) => res.status(404).json({ error: 'NOT_FOUND' }));
+exports.default = app;

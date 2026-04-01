@@ -94,7 +94,7 @@ const STRATEGIC_POSITIONS: StrategicPosition[] = [
     uniqueness:
       'Team-flat pricing + SIE4 native + ISO-compliance inbyggt + OMS dag 1. ' +
       'Ingen konkurrent har allt i ett paket till den prispunkten.',
-    color: '#8B5CF6',
+    color: '#2563EB',
     emoji: '🧠',
   },
 ]
@@ -374,7 +374,7 @@ const COMPLIANCE_ITEMS: ComplianceItem[] = [
     status: 'Ej påbörjat',
     responsible: 'Johan Putte Berglund',
     targetDate: 'Q3 2027',
-    color: '#8B5CF6',
+    color: '#2563EB',
   },
   {
     standard: 'NIS2-direktivet',
@@ -421,20 +421,62 @@ function complianceStatusBadge(status: ComplianceStatus) {
 
 function MissionCard() {
   return (
-    <div className="rounded-2xl bg-gradient-to-br from-purple-500/10 via-blue-500/5 to-transparent border border-purple-500/20 p-5">
-      <div className="text-xs font-bold text-purple-700 uppercase tracking-widest mb-3">Wavult Group — Mission</div>
-      <p className="text-sm text-gray-900 leading-relaxed font-medium">{WAVULT_MISSION.line1}</p>
-      <p className="text-sm text-gray-9000 leading-relaxed mt-2">{WAVULT_MISSION.line2}</p>
+    <div>
+      {/* Geographic context — Stockholm market */}
+      <div
+        className="rounded-xl overflow-hidden mb-4 relative"
+        style={{ height: 160 }}
+        aria-hidden="true"
+      >
+        <img
+          src="/images/os-briefing-map.jpg"
+          alt="Stockholm archipelago — quiXzoom launch market"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center',
+            display: 'block',
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(to bottom, transparent 40%, var(--color-bg) 100%)',
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 10,
+            left: 12,
+            fontSize: 10,
+            fontFamily: 'var(--font-mono)',
+            color: 'rgba(255,255,255,0.6)',
+            letterSpacing: '0.06em',
+            textTransform: 'uppercase',
+          }}
+        >
+          Primary market: Stockholm Archipelago · Launch Q2 2026
+        </div>
+      </div>
+
+      <div className="rounded-2xl bg-gradient-to-br from-blue-600/10 via-blue-500/5 to-transparent border border-blue-600/20 p-5">
+      <div className="text-xs font-bold text-blue-700 uppercase tracking-widest mb-3">Wavult Group — Mission</div>
+      <p style={{ fontSize: 14, color: "var(--color-text-primary)", lineHeight: 1.65, fontWeight: 500 }}>{WAVULT_MISSION.line1}</p>
+      <p style={{ fontSize: 14, color: "var(--color-text-secondary)", lineHeight: 1.65, marginTop: 8 }}>{WAVULT_MISSION.line2}</p>
       <div className="mt-4 flex flex-wrap gap-2">
         {['IP-ägande', 'Plattformskontroll', 'Optiskt lager', 'Dubai-holding', 'Global scale'].map(tag => (
           <span
             key={tag}
-            className="text-xs px-2 py-0.5 rounded-full border border-purple-500/30 text-purple-300 bg-purple-500/10"
+            className="text-xs px-2 py-0.5 rounded-full border border-blue-600/30 text-blue-400 bg-blue-600/10"
           >
             {tag}
           </span>
         ))}
       </div>
+    </div>
     </div>
   )
 }
@@ -457,10 +499,10 @@ function PositionsGrid() {
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-bold text-gray-900 text-sm">{pos.product}</span>
-                <span className="text-xs italic text-gray-9000">"{pos.tagline}"</span>
+                <span style={{ fontWeight: 700, color: "var(--color-text-primary)", fontSize: 14 }}>{pos.product}</span>
+                <span style={{ fontSize: 12, fontStyle: "italic", color: "var(--color-text-secondary)" }}>"{pos.tagline}"</span>
               </div>
-              <p className="text-xs text-gray-600 mt-1 leading-relaxed">{pos.positioning}</p>
+              <p style={{ fontSize: 12, color: "var(--color-text-secondary)", marginTop: 4, lineHeight: 1.6 }}>{pos.positioning}</p>
               <div
                 className="mt-2 text-xs rounded px-2 py-1 border"
                 style={{ borderColor: pos.color + '33', backgroundColor: pos.color + '11', color: pos.color }}
@@ -485,7 +527,7 @@ function CompetitorTable() {
   const productColor: Record<string, string> = {
     quiXzoom: '#F59E0B',
     Landvex: '#EC4899',
-    'Wavult OS': '#8B5CF6',
+    'Wavult OS': '#2563EB',
   }
 
   const visible = filter === 'Alla' ? COMPETITORS : COMPETITORS.filter(c => c.product === filter)
@@ -500,8 +542,8 @@ function CompetitorTable() {
             onClick={() => setFilter(f)}
             className={`text-xs px-3 py-1 rounded-full border font-medium transition-all ${
               filter === f
-                ? 'border-purple-500/60 bg-purple-500/20 text-purple-300'
-                : 'border-white/15 bg-gray-50 text-gray-9000 hover:text-gray-900 hover:bg-white/8'
+                ? 'border-blue-600/60 bg-blue-600/20 text-blue-400'
+                : 'border-[color:var(--color-border)] text-[color:var(--color-text-secondary)] hover:text-[color:var(--color-text-primary)]'
             }`}
           >
             {f}
@@ -518,7 +560,7 @@ function CompetitorTable() {
             className={`text-left rounded-xl border p-3 transition-all ${
               selected === comp.name
                 ? 'border-white/25 bg-white/8'
-                : 'border-gray-200 bg-gray-50 hover:bg-white/8'
+                : 'border-[color:var(--color-border)]'
             }`}
           >
             <div className="flex items-center gap-2">
@@ -526,8 +568,8 @@ function CompetitorTable() {
                 className="w-2 h-2 rounded-full flex-shrink-0"
                 style={{ backgroundColor: comp.color === '#000000' ? '#666' : comp.color }}
               />
-              <span className="font-semibold text-gray-900 text-sm">{comp.name}</span>
-              <span className="text-xs text-gray-9000">({comp.category})</span>
+              <span style={{ fontWeight: 600, color: "var(--color-text-primary)", fontSize: 14 }}>{comp.name}</span>
+              <span style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>({comp.category})</span>
               <span
                 className="ml-auto text-xs px-1.5 py-0.5 rounded font-medium"
                 style={{ color: productColor[comp.product] ?? '#aaa', backgroundColor: (productColor[comp.product] ?? '#aaa') + '18' }}
@@ -539,7 +581,7 @@ function CompetitorTable() {
               <div className="mt-3 flex flex-col gap-2">
                 <div className="rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-2">
                   <div className="text-xs font-semibold text-red-700 uppercase tracking-wide mb-0.5">Deras svaghet</div>
-                  <p className="text-xs text-gray-600">{comp.weakness}</p>
+                  <p style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>{comp.weakness}</p>
                 </div>
                 <div className="rounded-lg bg-green-500/10 border border-green-500/20 px-3 py-2">
                   <div className="text-xs font-semibold text-green-700 uppercase tracking-wide mb-0.5">Vår respons</div>
@@ -564,7 +606,7 @@ function MarketFacts() {
           style={{ borderColor: fact.color + '33', backgroundColor: fact.color + '08' }}
         >
           <div className="text-xl font-bold" style={{ color: fact.color }}>{fact.stat}</div>
-          <div className="text-xs text-gray-9000 mt-0.5 leading-snug">{fact.label}</div>
+          <div style={{ fontSize: 12, color: "var(--color-text-secondary)", marginTop: 2, lineHeight: 1.4 }}>{fact.label}</div>
         </div>
       ))}
     </div>
@@ -597,15 +639,15 @@ function PitchMaterials() {
       <div className="grid grid-cols-3 gap-2">
         <div className="rounded-lg border border-green-500/25 bg-green-500/8 px-3 py-2 text-center">
           <div className="text-lg font-bold text-green-700">{counts.Klar}</div>
-          <div className="text-xs text-gray-9000">Klara</div>
+          <div style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>Klara</div>
         </div>
         <div className="rounded-lg border border-yellow-500/25 bg-yellow-500/8 px-3 py-2 text-center">
           <div className="text-lg font-bold text-yellow-700">{counts.Draft}</div>
-          <div className="text-xs text-gray-9000">Drafts</div>
+          <div style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>Drafts</div>
         </div>
         <div className="rounded-lg border border-red-500/25 bg-red-500/8 px-3 py-2 text-center">
           <div className="text-lg font-bold text-red-700">{counts.Saknas}</div>
-          <div className="text-xs text-gray-9000">Saknas</div>
+          <div style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>Saknas</div>
         </div>
       </div>
 
@@ -617,8 +659,8 @@ function PitchMaterials() {
             onClick={() => setFilter(cat)}
             className={`text-xs px-3 py-1 rounded-full border font-medium transition-all ${
               filter === cat
-                ? 'border-purple-500/60 bg-purple-500/20 text-purple-300'
-                : 'border-white/15 bg-gray-50 text-gray-9000 hover:text-gray-900 hover:bg-white/8'
+                ? 'border-blue-600/60 bg-blue-600/20 text-blue-400'
+                : 'border-[color:var(--color-border)] text-[color:var(--color-text-secondary)] hover:text-[color:var(--color-text-primary)]'
             }`}
           >
             {cat === 'Alla' ? 'Alla' : (categoryLabel[cat] ?? cat)}
@@ -629,13 +671,13 @@ function PitchMaterials() {
       {/* List */}
       <div className="flex flex-col gap-2">
         {visible.map(doc => (
-          <div key={doc.title} className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+          <div key={doc.title} style={{ borderRadius: "var(--radius-lg)", border: "1px solid var(--color-border)", background: "var(--color-surface)", padding: "12px 16px" }}>
             <div className="flex items-start gap-2 flex-wrap">
-              <span className="text-sm font-semibold text-gray-900 flex-1">{doc.title}</span>
+              <span style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text-primary)", flex: 1 }}>{doc.title}</span>
               {statusBadge(doc.status)}
             </div>
-            <p className="text-xs text-gray-9000 mt-1 leading-relaxed">{doc.description}</p>
-            <div className="mt-1.5 text-xs text-gray-9000">{categoryLabel[doc.category] ?? doc.category}</div>
+            <p style={{ fontSize: 12, color: "var(--color-text-secondary)", marginTop: 4, lineHeight: 1.6 }}>{doc.description}</p>
+            <div style={{ marginTop: 6, fontSize: 12, color: "var(--color-text-secondary)" }}>{categoryLabel[doc.category] ?? doc.category}</div>
           </div>
         ))}
       </div>
@@ -658,15 +700,15 @@ function ComplianceFramework() {
       <div className="grid grid-cols-3 gap-2">
         <div className="rounded-lg border border-green-500/25 bg-green-500/8 px-3 py-2 text-center">
           <div className="text-lg font-bold text-green-700">{counts.Certifierat}</div>
-          <div className="text-xs text-gray-9000">Certifierat</div>
+          <div style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>Certifierat</div>
         </div>
         <div className="rounded-lg border border-yellow-500/25 bg-yellow-500/8 px-3 py-2 text-center">
           <div className="text-lg font-bold text-yellow-700">{counts['I process']}</div>
-          <div className="text-xs text-gray-9000">I process</div>
+          <div style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>I process</div>
         </div>
         <div className="rounded-lg border border-red-500/25 bg-red-500/8 px-3 py-2 text-center">
           <div className="text-lg font-bold text-red-700">{counts['Ej påbörjat']}</div>
-          <div className="text-xs text-gray-9000">Ej påbörjat</div>
+          <div style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>Ej påbörjat</div>
         </div>
       </div>
 
@@ -679,7 +721,7 @@ function ComplianceFramework() {
             className={`text-left rounded-xl border p-3 transition-all ${
               selected === item.standard
                 ? 'border-white/25 bg-white/8'
-                : 'border-gray-200 bg-gray-50 hover:bg-white/8'
+                : 'border-[color:var(--color-border)]'
             }`}
           >
             <div className="flex items-center gap-2 flex-wrap">
@@ -687,29 +729,29 @@ function ComplianceFramework() {
                 className="w-2 h-2 rounded-full flex-shrink-0"
                 style={{ backgroundColor: item.color }}
               />
-              <span className="font-bold text-gray-900 text-sm">{item.standard}</span>
+              <span style={{ fontWeight: 700, color: "var(--color-text-primary)", fontSize: 14 }}>{item.standard}</span>
               {complianceStatusBadge(item.status)}
-              <span className="ml-auto text-xs text-gray-9000">{item.targetDate}</span>
+              <span style={{ marginLeft: "auto", fontSize: 12, color: "var(--color-text-muted)" }}>{item.targetDate}</span>
             </div>
 
             {selected === item.standard && (
               <div className="mt-3 flex flex-col gap-2">
-                <div className="rounded-lg bg-gray-50 border border-gray-200 px-3 py-2">
-                  <div className="text-xs font-semibold text-gray-9000 uppercase tracking-wide mb-0.5">Beskrivning</div>
-                  <p className="text-xs text-gray-600 leading-relaxed">{item.description}</p>
+                <div style={{ borderRadius: "var(--radius-md)", background: "var(--color-bg-subtle)", border: "1px solid var(--color-border)", padding: "6px 12px" }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 2 }}>Beskrivning</div>
+                  <p style={{ fontSize: 12, color: "var(--color-text-secondary)", lineHeight: 1.6 }}>{item.description}</p>
                 </div>
                 <div className="rounded-lg bg-blue-500/8 border border-blue-500/20 px-3 py-2">
                   <div className="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-0.5">Krävs för</div>
-                  <p className="text-xs text-gray-600">{item.requiredFor}</p>
+                  <p style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>{item.requiredFor}</p>
                 </div>
                 <div className="flex gap-2">
-                  <div className="flex-1 rounded-lg bg-purple-500/8 border border-purple-500/20 px-3 py-2">
-                    <div className="text-xs font-semibold text-purple-700 uppercase tracking-wide mb-0.5">Ansvarig</div>
-                    <p className="text-xs text-gray-600">{item.responsible}</p>
+                  <div className="flex-1 rounded-lg bg-blue-600/8 border border-blue-600/20 px-3 py-2">
+                    <div className="text-xs font-semibold text-blue-700 uppercase tracking-wide mb-0.5">Ansvarig</div>
+                    <p style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>{item.responsible}</p>
                   </div>
-                  <div className="flex-1 rounded-lg bg-gray-500/8 border border-gray-500/20 px-3 py-2">
-                    <div className="text-xs font-semibold text-gray-9000 uppercase tracking-wide mb-0.5">Target</div>
-                    <p className="text-xs text-gray-600">{item.targetDate}</p>
+                  <div style={{ flex: 1, borderRadius: "var(--radius-md)", background: "var(--color-bg-subtle)", border: "1px solid var(--color-border)", padding: "6px 12px" }}>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: "var(--color-text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 2 }}>Target</div>
+                    <p style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>{item.targetDate}</p>
                   </div>
                 </div>
               </div>
@@ -739,15 +781,15 @@ export function StrategicBrief() {
   ]
 
   return (
-    <div className="h-full flex flex-col bg-gray-50 text-gray-900 overflow-hidden">
+    <div className="h-full flex flex-col overflow-hidden" style={{ background: "var(--color-bg)", color: "var(--color-text-primary)" }}>
       {/* Header */}
-      <div className="flex items-center gap-3 px-4 md:px-6 py-4 border-b border-gray-200 flex-shrink-0">
-        <div className="w-9 h-9 rounded-xl bg-purple-500/20 flex items-center justify-center text-base">🏛️</div>
+      <div className="flex items-center gap-3 px-4 md:px-6 py-4 border-b flex-shrink-0" style={{ borderColor: "var(--color-border)" }}>
+        <div className="w-9 h-9 rounded-xl bg-blue-600/20 flex items-center justify-center text-base">🏛️</div>
         <div>
-          <h1 className="text-lg font-bold text-gray-900">Strategic Brief</h1>
-          <p className="text-xs text-gray-9000">Mission · Positioning · Konkurrenter · Marknad · Material · Compliance</p>
+          <h1 style={{ fontSize: 18, fontWeight: 700, color: "var(--color-text-primary)" }}>Strategic Brief</h1>
+          <p style={{ fontSize: 12, color: "var(--color-text-secondary)" }}>Mission · Positioning · Konkurrenter · Marknad · Material · Compliance</p>
         </div>
-        <div className="ml-auto text-xs text-gray-9000 italic hidden sm:block">
+        <div className="hidden sm:block" style={{ fontSize: 12, color: "var(--color-text-secondary)", fontStyle: "italic" }}>
           Uppdaterad 2026-03-28
         </div>
       </div>
@@ -760,8 +802,8 @@ export function StrategicBrief() {
             onClick={() => setActiveTab(t.id)}
             className={`flex items-center gap-1.5 text-xs px-3 py-2 rounded-t-lg font-medium border-b-2 transition-all whitespace-nowrap ${
               activeTab === t.id
-                ? 'text-gray-900 border-purple-500 bg-white/8'
-                : 'text-gray-9000 border-transparent hover:text-gray-900 hover:bg-gray-50'
+                ? 'text-[color:var(--color-text-primary)] border-blue-600'
+                : 'text-[color:var(--color-text-secondary)] border-transparent hover:text-[color:var(--color-text-primary)]'
             }`}
           >
             <span>{t.icon}</span>
@@ -769,7 +811,7 @@ export function StrategicBrief() {
           </button>
         ))}
       </div>
-      <div className="h-px bg-gray-100 flex-shrink-0" />
+      <div className="h-px bg-muted flex-shrink-0" />
 
       {/* Content */}
       <div className="flex-1 overflow-auto p-5">

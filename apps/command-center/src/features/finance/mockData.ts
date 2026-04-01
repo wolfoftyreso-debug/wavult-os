@@ -108,7 +108,7 @@ export const FINANCE_ENTITIES: FinanceEntity[] = [
     shortName: 'Wavult Holding',
     currency: 'AED',
     jurisdiction: 'UAE (DIFC)',
-    color: '#8B5CF6',
+    color: '#2563EB',
   },
   {
     id: 'landvex-ab',

@@ -30,7 +30,7 @@ const BRAND_COLOR: Record<CampaignActivity['brand'], string> = {
   quixzoom: '#10B981',
   'quixom-ads': '#0EA5E9',
   landvex: '#F59E0B',
-  wavult: '#8B5CF6',
+  wavult: '#2563EB',
 }
 
 const BRAND_ABBR: Record<CampaignActivity['brand'], string> = {
@@ -75,7 +75,7 @@ function dayLabel(iso: string): string {
 
 function PanelSection({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="border-t border-gray-200 pt-3 pb-3 px-4 space-y-2">
+    <div className="border-t border-surface-border pt-3 pb-3 px-4 space-y-2">
       <p className="text-[9px] font-bold text-gray-600 uppercase tracking-[0.15em]">{label}</p>
       {children}
     </div>
@@ -113,7 +113,7 @@ function KpiBar({ label, current, target }: { label: string; current: number; ta
           {current.toLocaleString()} / {target.toLocaleString()}
         </span>
       </div>
-      <div className="h-1 rounded-full bg-gray-50 overflow-hidden">
+      <div className="h-1 rounded-full bg-muted/30 overflow-hidden">
         <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: color }} />
       </div>
     </div>
@@ -156,7 +156,7 @@ function ActivityCard({ activity, selected, onClick }: {
             style={{ color: brandColor }}>
             {BRAND_ABBR[activity.brand]}
           </span>
-          <span className="text-xs text-gray-900 font-semibold truncate flex-1">
+          <span className="text-xs text-text-primary font-semibold truncate flex-1">
             {activity.name}
           </span>
         </div>
@@ -172,8 +172,8 @@ function ActivityCard({ activity, selected, onClick }: {
           {ENTITY_REGION[activity.entity_id] && (
             <span style={{
               fontSize: 7, fontWeight: 700, padding: '1px 4px', borderRadius: 3,
-              background: ENTITY_REGION[activity.entity_id] === 'EU' ? '#3B82F620' : ENTITY_REGION[activity.entity_id] === 'US' ? '#F59E0B20' : '#8B5CF620',
-              color: ENTITY_REGION[activity.entity_id] === 'EU' ? '#3B82F6' : ENTITY_REGION[activity.entity_id] === 'US' ? '#F59E0B' : '#8B5CF6',
+              background: ENTITY_REGION[activity.entity_id] === 'EU' ? '#3B82F620' : ENTITY_REGION[activity.entity_id] === 'US' ? '#F59E0B20' : '#2563EB20',
+              color: ENTITY_REGION[activity.entity_id] === 'EU' ? '#3B82F6' : ENTITY_REGION[activity.entity_id] === 'US' ? '#F59E0B' : '#2563EB',
             }}>
               {ENTITY_REGION[activity.entity_id]}
             </span>
@@ -217,13 +217,13 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
       style={{ background: '#FFFFFF', borderLeft: '1px solid rgba(255,255,255,0.06)' }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-surface-border">
         <div className="flex items-center gap-2 flex-1 min-w-0">
           <span className="text-[9px] font-bold font-mono"
             style={{ color: brandColor }}>
             {BRAND_ABBR[activity.brand]}
           </span>
-          <span className="text-sm font-semibold text-gray-900 truncate">{activity.name}</span>
+          <span className="text-sm font-semibold text-text-primary truncate">{activity.name}</span>
         </div>
         <button
           onClick={onClose}
@@ -289,7 +289,7 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
               ))}
             </div>
           ) : valid && activity.status === 'ready' ? (
-            <div className="rounded-lg px-3 py-2 bg-gray-50 border border-gray-200">
+            <div className="rounded-lg px-3 py-2 bg-muted/30 border border-surface-border">
               <p className="text-xs" style={{ color: '#10B981' }}>✓ Ready to deploy</p>
               <p className="text-[9px] text-gray-9000 mt-0.5">All requirements met</p>
             </div>
@@ -301,7 +301,7 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
         {/* 3. KPI TARGET */}
         <PanelSection label="KPI Target">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-gray-900 font-semibold capitalize">{activity.kpi.metric}</span>
+            <span className="text-xs text-text-primary font-semibold capitalize">{activity.kpi.metric}</span>
             <span className="text-[8px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded"
               style={{ background: kpiColor + '20', color: kpiColor }}>
               {activity.kpi.result}
@@ -317,7 +317,7 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
 
         {/* 4. ASSET */}
         <PanelSection label="Asset">
-          <div className="rounded-lg px-3 py-2 bg-gray-50 border border-gray-100 space-y-1.5">
+          <div className="rounded-lg px-3 py-2 bg-muted/30 border border-surface-border/50 space-y-1.5">
             <div className="flex items-center justify-between gap-2">
               <span className="text-[9px] font-mono text-gray-9000 uppercase">{activity.asset.type.replace('-', ' ')}</span>
               <span className="text-[8px] font-bold uppercase tracking-widest px-1 rounded"
@@ -328,7 +328,7 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
                 {activity.asset.ready ? 'Ready' : 'Not ready'}
               </span>
             </div>
-            <p className="text-xs text-gray-900">{activity.asset.name}</p>
+            <p className="text-xs text-text-primary">{activity.asset.name}</p>
             {activity.asset.url && (
               <a
                 href={activity.asset.url}
@@ -347,7 +347,7 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs">
               <span className="text-gray-9000">Monthly cost</span>
-              <span className="text-gray-900 font-mono">${activity.budget.cost_monthly.toLocaleString()}</span>
+              <span className="text-text-primary font-mono">${activity.budget.cost_monthly.toLocaleString()}</span>
             </div>
             <div className="flex items-center justify-between text-xs">
               <span className="text-gray-9000">Spend to date</span>
@@ -357,7 +357,7 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
               </span>
             </div>
             <div className="space-y-1">
-              <div className="h-1 rounded-full bg-gray-50 overflow-hidden">
+              <div className="h-1 rounded-full bg-muted/30 overflow-hidden">
                 <div className="h-full rounded-full"
                   style={{
                     width: `${spendPct}%`,
@@ -387,7 +387,7 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs">
               <span className="text-gray-9000">Trigger</span>
-              <span className="font-mono text-gray-900 uppercase">{activity.automation.trigger}</span>
+              <span className="font-mono text-text-primary uppercase">{activity.automation.trigger}</span>
             </div>
             {activity.automation.schedule && (
               <div className="flex items-center justify-between text-xs">
@@ -436,7 +436,7 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
                 <span className="text-gray-9000">Entity</span>
                 <button
                   onClick={() => navigate('/entities/' + entity.id)}
-                  className="font-mono text-gray-9000 hover:text-gray-900 transition-colors flex items-center gap-1"
+                  className="font-mono text-gray-9000 hover:text-text-primary transition-colors flex items-center gap-1"
                 >
                   {entity.shortName} →
                 </button>
@@ -447,7 +447,7 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
                 <span className="text-gray-9000">Market site</span>
                 <button
                   onClick={() => navigate('/markets')}
-                  className="font-mono text-gray-9000 hover:text-gray-900 transition-colors flex items-center gap-1"
+                  className="font-mono text-gray-9000 hover:text-text-primary transition-colors flex items-center gap-1"
                 >
                   {site.name} →
                 </button>
@@ -460,7 +460,7 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
                   {role.initials}
                 </div>
                 <div>
-                  <p className="text-xs text-gray-900">{role.person}</p>
+                  <p className="text-xs text-text-primary">{role.person}</p>
                   <p className="text-[9px] text-gray-9000">{role.title}</p>
                 </div>
               </div>
@@ -482,7 +482,7 @@ function ActivityPanel({ activity, onClose }: { activity: CampaignActivity; onCl
 
 function SwimlaneView({ activities }: { activities: CampaignActivity[] }) {
   const COMPANIES = [
-    { id: 'wavult',      label: 'Wavult Group', flag: '🌐', color: '#7C3AED' },
+    { id: 'wavult',      label: 'Wavult Group', flag: '🌐', color: '#1E40AF' },
     { id: 'quixzoom',    label: 'QuiXzoom EU',  flag: '🇪🇺', color: '#2563EB' },
     { id: 'quixzoom-us', label: 'QuiXzoom US',  flag: '🇺🇸', color: '#0EA5E9' },
     { id: 'landvex',     label: 'Landvex SE',   flag: '🇸🇪', color: '#059669' },
@@ -704,7 +704,7 @@ export function CampaignOS() {
   const TODAY = '2026-03-25'
 
   const selectDropdownClass =
-    'text-xs bg-white border border-gray-200 rounded-lg px-2.5 py-1 font-mono cursor-pointer focus:outline-none appearance-none text-gray-9000'
+    'text-xs bg-white border border-surface-border rounded-lg px-2.5 py-1 font-mono cursor-pointer focus:outline-none appearance-none text-gray-9000'
 
   return (
     <div className="flex flex-col h-full" style={{ background: '#F9FAFB' }}>
@@ -764,8 +764,8 @@ export function CampaignOS() {
       >
         {/* Left: title + period + view toggle */}
         <div className="flex items-center gap-3">
-          <span className="text-xs font-bold text-gray-900 tracking-wide">Campaign OS</span>
-          <span className="text-[9px] font-mono text-gray-600 px-2 py-0.5 rounded border border-gray-200 bg-gray-50">
+          <span className="text-xs font-bold text-text-primary tracking-wide">Campaign OS</span>
+          <span className="text-[9px] font-mono text-gray-600 px-2 py-0.5 rounded border border-surface-border bg-muted/30">
             Q2 2026
           </span>
           <div style={{ display: 'flex', gap: 4 }}>
@@ -774,7 +774,7 @@ export function CampaignOS() {
                 style={{
                   padding: '4px 10px', borderRadius: 6, border: '1px solid #E5E7EB',
                   fontSize: 11, fontWeight: 500, cursor: 'pointer',
-                  background: viewMode === mode ? '#7C3AED' : '#F9FAFB',
+                  background: viewMode === mode ? '#1E40AF' : '#F9FAFB',
                   color: viewMode === mode ? '#fff' : '#374151',
                 }}>
                 {mode === 'list' ? 'Lista' : 'Swimlane'}
@@ -800,7 +800,7 @@ export function CampaignOS() {
             {countries.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
 
-          <div className="flex items-center gap-1.5 ml-2 pl-2 border-l border-gray-200">
+          <div className="flex items-center gap-1.5 ml-2 pl-2 border-l border-surface-border">
             <span className="text-[9px] font-mono text-gray-9000">{filtered.length} activities</span>
             {deployedCount > 0 && (
               <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full"
@@ -840,7 +840,7 @@ export function CampaignOS() {
           ) : (
             Array.from(grouped.entries()).map(([mk, byDay]) => {
               const monthActivities = Array.from(byDay.values()).flat()
-              const monthColor = mk === '2026-04' ? '#8B5CF6' : mk === '2026-05' ? '#0EA5E9' : '#10B981'
+              const monthColor = mk === '2026-04' ? '#2563EB' : mk === '2026-05' ? '#0EA5E9' : '#10B981'
 
               // Separate EU and US activities in this month
               const euActivities = monthActivities.filter(a => ENTITY_REGION[a.entity_id] === 'EU' || ENTITY_REGION[a.entity_id] === 'Global')

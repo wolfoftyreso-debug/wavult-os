@@ -34,7 +34,7 @@ export const ENTITIES: Entity[] = [
     type: 'holding',
     role: 'Ownership + IP + Capital Control',
     currency: 'AED',
-    color: '#5856D6',
+    color: '#2563EB',
     ownedBy: undefined,
     billsTo: [],
     receivesFrom: ['devops-co', 'finance-co', 'quixzoom-uab', 'quixzoom-inc', 'landvex-ab', 'landvex-inc'],

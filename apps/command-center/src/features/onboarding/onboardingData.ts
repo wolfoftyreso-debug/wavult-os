@@ -1,3 +1,22 @@
+// ─── Onboarding Data — Reactive, never hardcoded ───────────────────────────────
+// All dates and countdowns are computed at runtime from known milestones.
+// Entity data is pulled live from entityData.ts — never duplicated here.
+import { ENTITIES } from '../entity/entityData'
+
+// ─── Reactive entity summary ──────────────────────────────────────────────────
+function getEntitySummary(): string {
+  const count = ENTITIES.filter(e => e.active_status !== 'archived').length
+  const jurisdictions = [...new Set(ENTITIES.map(e => e.jurisdiction))].length
+  return `Wavult Group opererar via ${count} juridiska entiteter i ${jurisdictions} jurisdiktioner.`
+}
+
+function getEntityKeyPoints(): string[] {
+  return ENTITIES
+    .filter(e => e.active_status !== 'archived')
+    .slice(0, 7)
+    .map(e => `${e.flag} ${e.name} — ${e.description?.split('.')[0] || e.jurisdiction}`)
+}
+
 export interface OnboardingStep {
   id: string
   route: string
@@ -13,6 +32,7 @@ export interface OnboardingStep {
   targetSelector?: string
   icon: string
   visual?: 'entity-switcher' | 'finance' | 'mission-control' | 'system-graph' | 'knowledge'
+  keyPoints?: string[]
 }
 
 export interface OnboardingTour {
@@ -23,191 +43,111 @@ export interface OnboardingTour {
   steps: OnboardingStep[]
 }
 
+// ─── Computed milestones (reactive) ───────────────────────────────────────────
+
+function daysUntil(isoDate: string): number {
+  const now = new Date()
+  const target = new Date(isoDate)
+  return Math.max(0, Math.ceil((target.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)))
+}
+
+function formatCountdown(isoDate: string, label: string): string {
+  const days = daysUntil(isoDate)
+  if (days === 0) return `${label} är idag`
+  if (days === 1) return `${label} är imorgon`
+  if (days <= 7) return `${label} om ${days} ${days === 1 ? 'dag' : 'dagar'}`
+  const weeks = Math.floor(days / 7)
+  const rem = days % 7
+  const weeksStr = `${weeks} ${weeks === 1 ? 'vecka' : 'veckor'}`
+  const remStr = rem > 0 ? ` och ${rem} ${rem === 1 ? 'dag' : 'dagar'}` : ''
+  return `${label} om ${weeksStr}${remStr}`
+}
+
+const BANGKOK = formatCountdown('2026-04-11', 'Bangkok Workcamp')
+const SWEDEN_LAUNCH = formatCountdown('2026-06-01', 'quiXzoom Sverige-lansering')
+const NETHERLANDS_LAUNCH = formatCountdown('2027-01-01', 'Nederland-expansion')
+
+// ─── Tours ────────────────────────────────────────────────────────────────────
+
 export const TOURS: OnboardingTour[] = [
   {
     id: 'first-run',
     name: 'Välkommen till Wavult OS',
-    description: 'Ditt operativsystem för hela Wavult Group. En genomgång av allt du behöver veta — ta 3 minuter.',
+    description: 'Ditt operativsystem för hela Wavult Group.',
     estimatedMinutes: 3,
     steps: [
       {
         id: 'welcome',
         route: '/',
         title: 'Välkommen till Wavult OS',
-        description: 'Wavult OS är koncernens operativa nervsystem. Här lever allt: legal struktur, ekonomi, uppgifter, systemövervakning och kunskapsbank. Det är inte ett adminsystem — det är platsen där bolaget styrs från.',
-        bullets: [
-          'Wavult Group äger 6 juridiska entiteter i 4 jurisdiktioner',
-          'Alla system och data är kopplade till rätt bolag',
-          'Din roll avgör vad du ser och vad du kan göra',
-          'Systemet kör live — ändringar slår igenom direkt',
-        ],
-        callout: { type: 'tip', text: 'Tryck Hoppa över om du redan känner systemet.' },
+        description: `Wavult OS är det operativa navet för hela Wavult Group. Härifrån styr du ventures, team, ekonomi och infrastruktur — allt i ett system.\n\n${BANGKOK}. ${SWEDEN_LAUNCH}.`,
+        icon: '⬡',
         position: 'center',
+        keyPoints: [
+          'Realtidsövervakning av alla 9 backend-tjänster',
+          'Ekonomi, CRM, juridik och HR i ett system',
+          'Apollo.io-integration för försäljning och prospektering',
+          'Automatiserade reseflöden och bokningar',
+        ],
+      },
+      {
+        id: 'entities',
+        route: '/entities',
+        title: 'Wavult Group — Bolagsstruktur',
+        description: getEntitySummary(),
         icon: '🏛️',
-      },
-      {
-        id: 'entity-switcher',
-        route: '/',
-        title: 'Bolagsväxlaren — välj entitet',
-        description: 'Uppe till vänster i menyn hittar du bolagsväxlaren. Den styr vilket bolag all data visas för. "Wavult Group" visar konsoliderad data för hela koncernen. Väljer du t.ex. "Landvex AB" ser du bara det bolagets data.',
-        bullets: [
-          '"Wavult Group" = konsoliderad vy (alla 6 bolag)',
-          '"Landvex AB" = svensk B2G-verksamhet, org.nr 559141-7042',
-          '"QuiXzoom Inc" = US-bolaget (Delaware)',
-          'Alla finance- och legal-vyer filtreras automatiskt',
-        ],
-        example: 'Prova: Klicka på bolagsnamnet uppe till vänster och byt till "Landvex AB". Finansöversikten visar nu bara Landvex-data.',
-        position: 'right',
-        targetSelector: '[data-tour="entity-switcher"]',
-        icon: '🏢',
-        visual: 'entity-switcher',
-      },
-      {
-        id: 'mission-control',
-        route: '/',
-        title: 'Mission Control — systemets hjärna',
-        description: 'Startsidan är Mission Control: en deterministisk lista över vad som måste göras, sorterat efter kritikalitet. Systemet beräknar automatiskt vad som är blockerat, vad som brinner och vad som kan vänta. Du behöver aldrig undra vad du ska göra härnäst.',
-        bullets: [
-          'CRITICAL (röd) = måste göras nu, blockerar annat',
-          'HIGH (amber) = viktigt denna vecka',
-          'Blockerade tasks visas nedtonade — kan inte göras förrän dependency är klar',
-          'Påbörja → markerar task som IN_PROGRESS',
-          'Systemet uppdateras i realtid via Supabase',
-        ],
-        callout: { type: 'warning', text: 'Just nu är 4 kritiska tasks aktiva — bl.a. Bilda FZCO Dubai och Välj bokföringsbyrå.' },
         position: 'center',
-        icon: '🎯',
-        visual: 'mission-control',
+        keyPoints: getEntityKeyPoints(),
       },
       {
-        id: 'navigation',
-        route: '/',
-        title: 'Navigation — fem sektioner',
-        description: 'Wavult OS är strukturerat i fem tydliga sektioner. Varje sektion har ett tydligt ansvar och en tydlig ägare. Navigera aldrig aimlessly — systemet är uppbyggt för att du alltid vet var du är.',
-        bullets: [
-          'COMMAND: Mission Control, Operations Center, Min vy, Alerts',
-          'MONEY: Finance, Transaktioner, Simulering (Causal OS), Inköp, Lön',
-          'PEOPLE: People & Governance, Organisation, CRM',
-          'OPERATIONS: Milestones, Kampanjer, Submissions, Beslut, Projekt',
-          'KNOWLEDGE: Knowledge Hub, Infrastruktur, Inställningar',
-        ],
-        callout: { type: 'tip', text: 'Tangentbordsgenväg: Cmd+K öppnar global sökning i hela systemet.' },
-        position: 'right',
-        icon: '🧭',
-      },
-      {
-        id: 'bos-tasks',
-        route: '/',
-        title: 'BOS — Behavioral Operating System',
-        description: 'Bakom Mission Control finns BOS: ett deterministic state machine som hanterar alla tasks, beroenden och state-transitions. Varje task har exakt ett state, exakt en ägare och exakt ett validerade nästa steg. Systemet blockerar automatiskt ogiltiga övergångar.',
-        bullets: [
-          'REQUIRED → kan startas (inga blockers)',
-          'BLOCKED → dependency måste slutföras först',
-          'IN_PROGRESS → någon arbetar på detta',
-          'DONE → slutfört och verifierat',
-          'FAILED → deadline passerad, kräver åtgärd',
-        ],
-        example: 'Varje uppgift visar varför den är blockerad: "Blockerad av: Wavult Group FZCO måste bildas först"',
+        id: 'ventures',
+        route: '/quixzoom-app',
+        title: 'quiXzoom — Optisk datanätverk',
+        description: `quiXzoom är plattformen där Zoomers tar visuella uppdrag på kartan och tjänar pengar. Data säljs via Quixom Ads (leads, marknadsdata) och LandveX (enterprise intelligence). ${SWEDEN_LAUNCH}.`,
+        icon: '📍',
         position: 'center',
+        keyPoints: [
+          'Zoomers (aldrig "fotografer") tar geo-lokaliserade uppdrag',
+          'Quixom Ads: leads-paket och kartreklam för företag',
+          'LandveX: optisk intelligence till kommuner och infrastrukturägare',
+          'Separata produkter — blanda dem aldrig i kommunikation',
+        ],
+        callout: {
+          type: 'warning',
+          text: 'Regel: Kalla dem alltid Zoomers, aldrig fotografer eller fältpersonal.',
+        },
+      },
+      {
+        id: 'ops',
+        route: '/ops',
+        title: 'Operations & Genomförande',
+        description: 'Incident-systemet reagerar automatiskt på KPI-avvikelser. Alla kritiska händelser eskalerar till rätt person utan manuell handläggning.',
         icon: '⚙️',
+        position: 'center',
+        keyPoints: [
+          'Kafka event-streaming för all systemkommunikation',
+          'Automatisk eskalering vid KPI-avvikelse',
+          'n8n workflow-automation för repetitiva processer',
+          'ECS Fargate — 9 tjänster, all upptime-monitoring i realtid',
+        ],
       },
       {
-        id: 'finance',
-        route: '/finance',
-        title: 'Finance — ekonomisk kontroll',
-        description: 'Finance-modulen ger dig full ekonomisk kontroll per bolag och på koncernnivå. Här hittar du likviditetsöversikten, transaktionsflöden, intercompany-fakturering och skatteplanering. Allt är kopplat till rätt bolag via bolagsväxlaren.',
-        bullets: [
-          'Kassan idag: ~500 000 SEK (estimerat)',
-          'Burn rate: ~45 000 SEK/mån',
-          'Runway: ~333 dagar',
-          'Intercompany: IP-licens (5-15%) + management fees (8-15%) till Dubai',
-          'Revisor: ännu inte vald — KRITISK uppgift',
-        ],
-        callout: { type: 'warning', text: 'Landvex AB har noll bokföring. Personligt straffansvar. Välj revisor denna vecka.' },
+        id: 'travel',
+        route: '/flights',
+        title: 'Resor & Rörlighet',
+        description: `Reseflöden triggas automatiskt via kalenderintegration. Visum, flyg, boende, transport och gym hanteras i en pipeline. ${BANGKOK}`,
+        icon: '✈️',
         position: 'center',
-        icon: '💰',
-        visual: 'finance',
-      },
-      {
-        id: 'causal-os',
-        route: '/causal-os',
-        title: 'Causal OS — finansiell simulering',
-        description: 'Causal OS är systemets finansiella hjärna. Drag i reglage och se direkt hur beslut påverkar kassan, runway och intäkterna. Alla variabler är kausalt kopplade — ändrar du zoomer-count ser du automatiskt effekten på intäkter och runway.',
-        bullets: [
-          'Scenarioengine: Basfall, Optimistiskt, Pessimistiskt',
-          'Dag-för-dag cashflow 365 dagar framåt',
-          'Decision Impact Calculator: "Vad händer om vi anställer en säljare?"',
-          'Systemvarningar: "Kassa går under 0 om X dagar"',
+        keyPoints: [
+          'Visum-kontroll per destination och pass-typ',
+          'Uber for Business — centralbetalt för hela teamet',
+          'Wellhub (Gympass) — hälsa är en del av arbetet',
+          'Boende: Nysa Hotel Bangkok, Sukhumvit 13',
         ],
-        example: 'Prova: Drag i "Landvex-kunder" till 5 → se hur runway ökar med ~180 dagar.',
-        position: 'center',
-        icon: '🧠',
-      },
-      {
-        id: 'system-graph',
-        route: '/system-graph',
-        title: 'System Graph — levande infrastrukturkarta',
-        description: 'System Graph är en realtids-karta över hela Wavult Groups tekniska infrastruktur. Klicka på valfri nod för att se detaljer, beroenden och ägare. I Operator Mode kan du initiera actions — restart, scale, reroute — via Command Layer.',
-        bullets: [
-          '17 noder: ECS-services, databaser, S3, Cloudflare, GitHub, Identity Core',
-          'Live health check: kritiska tjänster uppdateras var 10s',
-          'Grupperat i: Customer Experience, Core Services, Data Layer, Automation',
-          'Operator Mode: initiera commands via Command & Control Layer',
-          'Klicka en nod → "Vad är det här?" på vanligt språk',
-        ],
-        callout: { type: 'info', text: 'Identity Core visas som "parallel build" — redo för migration när Erik ger order.' },
-        position: 'center',
-        icon: '🌐',
-        visual: 'system-graph',
-      },
-      {
-        id: 'knowledge-hub',
-        route: '/knowledge',
-        title: 'Knowledge Hub — allt teamet behöver veta',
-        description: 'Knowledge Hub är Wavult Groups samlade kunskapsbank. Här hittar du bolagsstruktur, GTM-strategi, juridik, policydokument och utbildningar. Alla 21 kurser i Academy är obligatoriska för Thailand Workcamp.',
-        bullets: [
-          '37 dokument: juridik, finans, GTM, policyer, teknisk arkitektur',
-          '21 kurser i Academy: från "Dag 1" till "Code of Conduct"',
-          'ZoomerCert: certifiering för QuiXzoom-fältpersonal',
-          'Kunskapsgraf: visuell karta över hur entiteter hänger ihop',
-          'Alla policydokument: CoC, GDPR, Travel & Expense, AUP',
-        ],
-        example: 'Börja med kursen "Ny teammedlem — Dag 1" (12 min) för snabbast möjlig orientering.',
-        position: 'center',
-        icon: '📚',
-        visual: 'knowledge',
-      },
-      {
-        id: 'people-governance',
-        route: '/people-governance',
-        title: 'People & Governance — performance och möten',
-        description: 'People & Governance är inte ett HR-system — det är ett performance control system. Varje person är en prestationsenhet med OKR, delivery rate och en automatisk consequence engine. Låg performance triggar automatiskt uppföljningsmöten.',
-        bullets: [
-          'Performance Engine: delivery rate (45%) + deadline accuracy (30%) + OKR score (25%)',
-          '5 nivåer: CRITICAL / LOW / MEETING / EXCEEDING / EXCEPTIONAL',
-          'Q2 2026 OKR för alla 5 teammedlemmar inlagda',
-          'Styrelsemöten, ledningsgruppsmöten, medarbetarsamtal — allt loggat',
-          'Mandatory structure: 1:1 kan inte markeras klar utan alla 4 fält',
-        ],
-        callout: { type: 'info', text: 'Alla teammedlemmar ska vara certifierade i Academy senast Thailand Workcamp (11 april).' },
-        position: 'center',
-        icon: '👥',
-      },
-      {
-        id: 'thailand',
-        route: '/',
-        title: 'Thailand Workcamp — 11 april 2026',
-        description: 'Om 14 dagar samlas hela teamet i Bangkok för Wavult Groups officiella projektstart. Vecka 1: utbildning och certifiering. Vecka 2+: intensiv build-sprint för QuiXzoom MVP och Landvex beta.',
-        bullets: [
-          'Plats: Nysa Hotel, Bangkok — Sukhumvit 13',
-          'Leon förhandlar: 3 rum + ev lokal (Arthur är kontakt)',
-          'Mål: QuiXzoom redo för Sverige-lansering juni 2026',
-          'Krav: Alla Academy-kurser klara + ZoomerCert tagen',
-          'Du är nu inloggad och redo. Börja med Mission Control.',
-        ],
-        callout: { type: 'tip', text: 'Klicka på Mission Control i navigationen för att se dina kritiska uppgifter.' },
-        position: 'center',
-        icon: '🇹🇭',
+        callout: {
+          type: 'info',
+          text: `${BANGKOK} — Visum: 30 dagar visumfritt för svenska pass. >30 dagar kräver TR-90.`,
+        },
       },
     ],
   },

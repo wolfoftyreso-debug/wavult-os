@@ -13,7 +13,7 @@ const PROJECTS = [
     name: 'Optic Insights',
     phase: 'Planning',
     progress: 35,
-    color: '#7C3AED',
+    color: '#1E40AF',
     icon: '🔭',
     velocity: 2.1,
     history: [24, 26, 29, 33, 35],
@@ -114,8 +114,8 @@ export function ProjectProgressWidget() {
   const avgVelocity = (PROJECTS.reduce((s, p) => s + p.velocity, 0) / PROJECTS.length).toFixed(1)
 
   return (
-    <div className="bg-gray-50 border border-gray-200 rounded-2xl overflow-hidden">
-      <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+    <div className="bg-muted/30 border border-surface-border rounded-2xl overflow-hidden">
+      <div className="px-4 py-3 border-b border-surface-border flex items-center justify-between">
         <p className="text-sm font-medium text-gray-900/70">Projekt</p>
         <span className="text-xs text-gray-900/30 font-mono">
           ø {avgVelocity} pp/v
@@ -129,7 +129,7 @@ export function ProjectProgressWidget() {
             <div className="flex items-center justify-between mb-1.5 gap-2">
               <div className="flex items-center gap-2 min-w-0 flex-1">
                 <span className="text-base flex-shrink-0">{p.icon}</span>
-                <span className="text-sm font-medium text-gray-900 truncate">{p.name}</span>
+                <span className="text-sm font-medium text-text-primary truncate">{p.name}</span>
               </div>
 
               <div className="flex items-center gap-2.5 flex-shrink-0">
@@ -143,7 +143,7 @@ export function ProjectProgressWidget() {
             </div>
 
             {/* Progress bar */}
-            <div className="h-1.5 bg-gray-50 rounded-full overflow-hidden">
+            <div className="h-1.5 bg-muted/30 rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full transition-all"
                 style={{ width: `${p.progress}%`, backgroundColor: p.color }}

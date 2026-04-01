@@ -14,18 +14,18 @@ export function MediaHub() {
   const [activeTab, setActiveTab] = useState<Tab>('campaigns')
 
   return (
-    <div className="flex flex-col h-full bg-white text-gray-900">
+    <div className="flex flex-col h-full bg-white text-text-primary">
       <ModuleHeader moduleId="media" />
 
       {/* Tabs */}
-      <div className="flex gap-0 px-6 pt-4 pb-0 border-b border-gray-200 flex-shrink-0">
+      <div className="flex gap-0 px-6 pt-4 pb-0 border-b border-surface-border flex-shrink-0">
         {TABS.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 -mb-px ${
               activeTab === tab.id
-                ? 'text-gray-900 border-white/60'
+                ? 'text-text-primary border-white/60'
                 : 'text-gray-9000 border-transparent hover:text-gray-600'
             }`}
           >

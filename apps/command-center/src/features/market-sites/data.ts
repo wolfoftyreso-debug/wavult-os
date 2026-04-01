@@ -90,7 +90,7 @@ export const SITE_STATUS_COLOR: Record<SiteStatus, string> = {
 }
 
 export const PRODUCT_COLOR: Record<ProductType, string> = {
-  'quixzoom':   '#8B5CF6',
+  'quixzoom':   '#2563EB',
   'quixom-ads': '#0EA5E9',
   'landvex':    '#10B981',
   'wavult':     '#F59E0B',

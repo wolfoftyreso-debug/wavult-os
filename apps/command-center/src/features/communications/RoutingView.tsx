@@ -22,7 +22,7 @@ const PRIORITY_LABELS: Record<number, { label: string; color: string; bg: string
 }
 
 const PERSON_COLORS: Record<string, string> = {
-  'Erik Svensson': '#8B5CF6',
+  'Erik Svensson': '#2563EB',
   'Leon Maurizio Russo De Cerame': '#10B981',
   'Dennis Bjarnemark': '#F59E0B',
   'Winston Bjarnemark': '#3B82F6',
@@ -41,7 +41,7 @@ function PersonBadge({ name, role }: { name: string; role: string }) {
         {initials}
       </div>
       <div>
-        <p className="text-xs font-semibold text-gray-900 leading-tight">{name.split(' ')[0]} {name.split(' ').slice(-1)[0]}</p>
+        <p className="text-xs font-semibold text-text-primary leading-tight">{name.split(' ')[0]} {name.split(' ').slice(-1)[0]}</p>
         <p className="text-xs text-gray-9000">{role}</p>
       </div>
     </div>
@@ -51,7 +51,7 @@ function PersonBadge({ name, role }: { name: string; role: string }) {
 function ChannelBadge({ channel }: { channel: Channel }) {
   const icons: Record<Channel, string> = { sms: '📱', email: '📧', telegram: '✈️', webhook: '🔗' }
   return (
-    <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-gray-50 text-gray-9000 border border-gray-200">
+    <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-muted/30 text-gray-9000 border border-surface-border">
       {icons[channel]} {channel}
     </span>
   )
@@ -62,17 +62,17 @@ function RuleCard({ rule }: { rule: RoutingRule }) {
   const deptIcon = DEPARTMENT_ICONS[rule.department] ?? '📂'
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-4 space-y-3">
+    <div className="bg-white rounded-xl border border-surface-border p-4 space-y-3">
       {/* Header */}
       <div className="flex items-start gap-3">
         <span className="text-xl flex-shrink-0 mt-0.5">{deptIcon}</span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap mb-1">
-            <h3 className="text-sm font-semibold text-gray-900 capitalize">{rule.department}</h3>
+            <h3 className="text-sm font-semibold text-text-primary capitalize">{rule.department}</h3>
             <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full border ${prio.bg} ${prio.color}`}>
               {prio.label}
             </span>
-            <span className="text-[9px] font-mono text-gray-9000 bg-gray-50 px-1.5 py-0.5 rounded">
+            <span className="text-[9px] font-mono text-gray-9000 bg-muted/30 px-1.5 py-0.5 rounded">
               #{rule.id}
             </span>
           </div>
@@ -103,7 +103,7 @@ function RuleCard({ rule }: { rule: RoutingRule }) {
           {rule.keywords.map(kw => (
             <span
               key={kw}
-              className="text-[9px] font-mono px-1.5 py-0.5 rounded-md bg-brand-accent/8 text-gray-9000 border border-gray-200"
+              className="text-[9px] font-mono px-1.5 py-0.5 rounded-md bg-brand-accent/8 text-gray-9000 border border-surface-border"
             >
               {kw}
             </span>
@@ -127,10 +127,10 @@ function RoutingTestPanel() {
   const passCount = results.filter(r => r.passed).length
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-      <div className="px-4 py-3 border-b border-gray-200 flex items-center gap-2">
+    <div className="bg-white rounded-xl border border-surface-border overflow-hidden">
+      <div className="px-4 py-3 border-b border-surface-border flex items-center gap-2">
         <span className="text-sm">🧪</span>
-        <h3 className="text-xs font-semibold text-gray-900">Routing-test — verifierade scenarier</h3>
+        <h3 className="text-xs font-semibold text-text-primary">Routing-test — verifierade scenarier</h3>
         <span className={`ml-auto text-xs font-mono ${passCount === results.length ? 'text-green-700' : 'text-red-700'}`}>
           {passCount}/{results.length} OK
         </span>
@@ -144,7 +144,7 @@ function RoutingTestPanel() {
                 <p className="text-xs text-gray-9000 mb-0.5 font-medium">{r.scenario}</p>
                 <div className="flex items-center gap-3 flex-wrap">
                   <span className="text-xs text-gray-9000">
-                    → <span className="text-gray-900 font-medium">{r.got ?? 'Ingen match'}</span>
+                    → <span className="text-text-primary font-medium">{r.got ?? 'Ingen match'}</span>
                   </span>
                   {r.ruleId && (
                     <span className="text-[9px] font-mono text-gray-9000">
@@ -166,10 +166,10 @@ function RoutingTestPanel() {
 function TeamSummary() {
   const teamEntries = Object.entries(TEAM)
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-      <div className="px-4 py-3 border-b border-gray-200 flex items-center gap-2">
+    <div className="bg-white rounded-xl border border-surface-border overflow-hidden">
+      <div className="px-4 py-3 border-b border-surface-border flex items-center gap-2">
         <span className="text-sm">👥</span>
-        <h3 className="text-xs font-semibold text-gray-900">Team-register</h3>
+        <h3 className="text-xs font-semibold text-text-primary">Team-register</h3>
         <span className="ml-auto text-xs text-gray-9000 font-mono">{teamEntries.length} personer</span>
       </div>
       <div className="divide-y divide-gray-100">
@@ -186,7 +186,7 @@ function TeamSummary() {
                 {initials}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold text-gray-900">{member.name}</p>
+                <p className="text-xs font-semibold text-text-primary">{member.name}</p>
                 <p className="text-xs text-gray-9000">{member.role}</p>
                 <div className="flex items-center gap-2 mt-0.5">
                   <span className="text-xs text-gray-9000 font-mono">{member.email}</span>
@@ -215,7 +215,7 @@ export function RoutingView() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-[14px] font-bold text-gray-900">Routing-regler</h2>
+          <h2 className="text-[14px] font-bold text-text-primary">Routing-regler</h2>
           <p className="text-xs text-gray-9000 mt-0.5">
             {ROUTING_RULES.length} aktiva regler · keyword-baserad routing → rätt person
           </p>

@@ -31,7 +31,8 @@ function EnergyInput({ userId }: { userId: string }) {
   const save = async (val: number) => {
     setEnergy(val)
     setSaved(false)
-    await fetch(`${API}/api/pci/state`, {
+    const stateApi = API || 'https://api.hypbit.com'
+    await fetch(`${stateApi}/api/pci/state`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ user_id: userId, energy: val }),
@@ -121,7 +122,8 @@ function CommandInput({ userId }: { userId: string }) {
     if (!input.trim()) return
     setLoading(true)
     try {
-      const res = await fetch(`${API}/api/pci/command`, {
+      const cmdApi = API || 'https://api.hypbit.com'
+      const res = await fetch(`${cmdApi}/api/pci/command`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_id: userId, command: input }),
@@ -193,13 +195,16 @@ export function BriefingView() {
   const [loading, setLoading] = useState(true)
   const [generating, setGenerating] = useState(false)
 
-  const userId = user?.id || ''
+  // Fallback: Erik's known user_id if not logged in via Supabase
+  const ERIK_USER_ID = 'a0000000-0000-0000-0000-000000000001'
+  const userId = user?.id || ERIK_USER_ID
 
   // Fetch today's briefing
   useEffect(() => {
-    if (!userId || !API) { setLoading(false); return }
+    const apiUrl = API || 'https://api.hypbit.com'
+    if (!userId) { setLoading(false); return }
 
-    fetch(`${API}/api/pci/briefing/${userId}`)
+    fetch(`${apiUrl}/api/pci/briefing/${userId}`)
       .then(r => r.ok ? r.json() : null)
       .then(data => setBriefing(data))
       .catch(() => {})
@@ -210,7 +215,8 @@ export function BriefingView() {
   const generate = async () => {
     setGenerating(true)
     try {
-      const res = await fetch(`${API}/api/pci/pipeline`, {
+      const apiBase = API || 'https://api.hypbit.com'
+      const res = await fetch(`${apiBase}/api/pci/pipeline`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_id: userId }),

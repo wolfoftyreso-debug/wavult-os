@@ -57,7 +57,7 @@ export function APIControlPanel() {
         {[
           { label: 'Aktiva API:er', value: String(active),           icon: <Activity size={18} />,      color: '#16A34A' },
           { label: 'Väntar',        value: String(pending),           icon: <AlertTriangle size={18} />, color: '#D97706' },
-          { label: 'Totalt',        value: String(API_CATALOG.length),icon: <DollarSign size={18} />,    color: '#7C3AED' },
+          { label: 'Totalt',        value: String(API_CATALOG.length),icon: <DollarSign size={18} />,    color: '#1E40AF' },
         ].map(card => (
           <div key={card.label} style={{ background: '#fff', border: '1px solid rgba(0,0,0,0.08)', borderRadius: 12, padding: '16px 20px' }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: '#8E8E93', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 6 }}>{card.label}</div>
@@ -72,8 +72,8 @@ export function APIControlPanel() {
           <button key={id} onClick={() => setFilter(id)}
             style={{
               padding: '6px 16px', borderRadius: 20,
-              border: `1px solid ${filter === id ? '#7C3AED' : '#E5E7EB'}`,
-              background: filter === id ? '#7C3AED' : '#fff',
+              border: `1px solid ${filter === id ? '#1E40AF' : '#E5E7EB'}`,
+              background: filter === id ? '#1E40AF' : '#fff',
               color: filter === id ? '#fff' : '#374151',
               fontSize: 13, fontWeight: filter === id ? 600 : 400, cursor: 'pointer',
             }}>

@@ -17,7 +17,7 @@ const SYSTEM_STATUS = [
 ]
 
 const TEAM_ACTIVITY = [
-  { name: 'Erik Svensson',             role: 'Chairman & Group CEO',      task: 'Systembygge, strategi & marknadsföring', status: 'active',  since: '11:00', color: '#8B5CF6' },
+  { name: 'Erik Svensson',             role: 'Chairman & Group CEO',      task: 'Systembygge, strategi & marknadsföring', status: 'active',  since: '11:00', color: '#2563EB' },
   { name: 'Leon Russo De Cerame',      role: 'CEO – Sälj & Execution',    task: 'Hela säljavdelningen · Q1 execution',                   status: 'active',  since: '09:00', color: '#10B981' },
   { name: 'Winston Bjarnemark',        role: 'CFO',                       task: 'Ekonomisk infrastruktur · betafärdiga system',        status: 'active',  since: '09:15', color: '#3B82F6' },
   { name: 'Dennis Bjarnemark',         role: 'Board / Chief Legal',       task: 'Bolagsjuridik · avtal · dokument',                status: 'idle',    since: '08:45', color: '#F59E0B' },
@@ -125,7 +125,7 @@ function UptimeGraph({ points }: { points: { hour: number; value: number }[] }) 
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="text-xs font-mono text-gray-500 uppercase tracking-widest mb-3">
+    <h2 className="text-xs font-mono text-text-muted uppercase tracking-widest mb-3">
       {children}
     </h2>
   )
@@ -204,7 +204,7 @@ function LiveActivityFeed() {
           LIVE
         </span>
       </div>
-      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+      <div className="bg-white border border-surface-border rounded-xl overflow-hidden">
         {events.map((evt, i) => (
           <div
             key={evt.id}
@@ -225,11 +225,11 @@ function LiveActivityFeed() {
               <p className="text-xs text-gray-800">
                 <span className="font-semibold" style={{ color: evt.color }}>{evt.actor}</span>
                 {' '}{evt.action}{' '}
-                <span className="text-gray-500">{evt.target}</span>
+                <span className="text-text-muted">{evt.target}</span>
               </p>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
-              <span className="text-[9px] text-gray-500 font-mono tabular-nums">{formatMs(evt.age)}</span>
+              <span className="text-[9px] text-text-muted font-mono tabular-nums">{formatMs(evt.age)}</span>
               <span className="text-xs">{CAT_ICON[evt.category]}</span>
             </div>
           </div>
@@ -244,7 +244,7 @@ function LiveActivityFeed() {
 const TALENT_CHANNELS = [
   { label: 'GitHub', sub: 'openclaw/openclaw — contributors med merged PRs', status: 'Aktivt', color: '#34C759' },
   { label: 'ClawHub', sub: 'Skill-publicister som förstår systemet på djupet', status: 'Scouting', color: '#F59E0B' },
-  { label: 'Discord clawd', sub: 'Hjälpsamma nördar i communityt', status: 'Läser', color: '#8B5CF6' },
+  { label: 'Discord clawd', sub: 'Hjälpsamma nördar i communityt', status: 'Läser', color: '#2563EB' },
   { label: 'Reddit r/openclaw', sub: 'Frustrerande engagerade = bäst att rekrytera', status: 'Bevakar', color: '#3B82F6' },
   { label: 'Twitter/X', sub: '#openclaw, @openclawai — genomtänkta trådar', status: 'Passivt', color: '#06B6D4' },
 ]
@@ -268,20 +268,20 @@ function TalentRadarWidget() {
         </div>
         <button
           onClick={() => setExpanded(e => !e)}
-          className="text-xs text-gray-500 hover:text-gray-600 transition-colors mb-3"
+          className="text-xs text-text-muted hover:text-gray-600 transition-colors mb-3"
         >
           {expanded ? 'Dölj' : 'Visa detaljer'}
         </button>
       </div>
 
       {/* Summary always visible */}
-      <div className="bg-white border border-gray-200 rounded-xl p-5 mb-3">
+      <div className="bg-white border border-surface-border rounded-xl p-5 mb-3">
         <p className="text-sm text-gray-600 mb-4">
-          Varsam rekrytering av <span className="text-gray-900 font-semibold">OpenClaw/AI-agent-nördar</span> — folk som faktiskt bygger, inte pratar om att bygga. Skapa relation INNAN rekrytering.
+          Varsam rekrytering av <span className="text-text-primary font-semibold">OpenClaw/AI-agent-nördar</span> — folk som faktiskt bygger, inte pratar om att bygga. Skapa relation INNAN rekrytering.
         </p>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p className="text-xs text-gray-500 font-mono uppercase mb-2">Måste ha</p>
+            <p className="text-xs text-text-muted font-mono uppercase mb-2">Måste ha</p>
             <div className="space-y-1">
               {TALENT_MUST.map(t => (
                 <div key={t} className="flex items-center gap-2 text-xs text-gray-600">
@@ -291,10 +291,10 @@ function TalentRadarWidget() {
             </div>
           </div>
           <div>
-            <p className="text-xs text-gray-500 font-mono uppercase mb-2">Röda flaggor</p>
+            <p className="text-xs text-text-muted font-mono uppercase mb-2">Röda flaggor</p>
             <div className="space-y-1">
               {TALENT_RED.map(t => (
-                <div key={t} className="flex items-center gap-2 text-xs text-gray-500">
+                <div key={t} className="flex items-center gap-2 text-xs text-text-muted">
                   <span style={{ color: '#EF4444' }}>✗</span> {t}
                 </div>
               ))}
@@ -305,7 +305,7 @@ function TalentRadarWidget() {
 
       {/* Channel breakdown (expanded) */}
       {expanded && (
-        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+        <div className="bg-white border border-surface-border rounded-xl overflow-hidden">
           {TALENT_CHANNELS.map((ch, i) => (
             <div
               key={ch.label}
@@ -319,8 +319,8 @@ function TalentRadarWidget() {
                 {ch.label.slice(0, 2).toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900">{ch.label}</p>
-                <p className="text-xs text-gray-500 truncate">{ch.sub}</p>
+                <p className="text-sm font-medium text-text-primary">{ch.label}</p>
+                <p className="text-xs text-text-muted truncate">{ch.sub}</p>
               </div>
               <span
                 className="text-xs font-mono px-2 py-0.5 rounded-full flex-shrink-0"
@@ -330,11 +330,11 @@ function TalentRadarWidget() {
               </span>
             </div>
           ))}
-          <div className="px-5 py-3 border-t border-gray-200">
-            <p className="text-xs text-gray-500 font-mono uppercase mb-1.5">Bonus-profil</p>
+          <div className="px-5 py-3 border-t border-surface-border">
+            <p className="text-xs text-text-muted font-mono uppercase mb-1.5">Bonus-profil</p>
             <div className="flex flex-wrap gap-2">
               {TALENT_BONUS.map(b => (
-                <span key={b} className="text-xs text-gray-500 px-2 py-0.5 rounded-full"
+                <span key={b} className="text-xs text-text-muted px-2 py-0.5 rounded-full"
                   style={{ background: '#F59E0B10', border: '1px solid #F59E0B20' }}>
                   ⭐ {b}
                 </span>
@@ -359,7 +359,7 @@ export function CommandDashboard() {
     <div className="space-y-8 animate-fade-in max-w-6xl">
       {/* Header */}
       <div>
-        <h1 className="text-sm font-semibold text-gray-900">Command Center</h1>
+        <h1 className="text-sm font-semibold text-text-primary">Command Center</h1>
         <p className="text-sm text-gray-600 mt-1">Wavult Group — Operationellt kontrollcenter</p>
       </div>
 
@@ -407,7 +407,7 @@ export function CommandDashboard() {
             label: 'Active Deploys',
             value: String(GITHUB_RUNS.filter(r => r.status === 'running').length || '0'),
             delta: `${GITHUB_RUNS.filter(r => r.status === 'success').length} lyckade idag`,
-            color: '#8B5CF6',
+            color: '#2563EB',
           },
           {
             label: 'Team Online',
@@ -417,9 +417,9 @@ export function CommandDashboard() {
             live: true,
           },
         ].map((s, i) => (
-          <div key={i} className="bg-white border border-gray-200 rounded-xl p-5">
+          <div key={i} className="bg-white border border-surface-border rounded-xl p-5">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-mono text-gray-500 uppercase tracking-widest">{s.label}</span>
+              <span className="text-xs font-mono text-text-muted uppercase tracking-widest">{s.label}</span>
               {s.live && (
                 <span className="flex items-center gap-1 text-xs font-mono" style={{ color: s.color }}>
                   <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: s.color }} />
@@ -428,7 +428,7 @@ export function CommandDashboard() {
               )}
             </div>
             <div className="text-3xl font-mono font-bold tabular-nums" style={{ color: s.color }}>{s.value}</div>
-            {s.delta && <div className="mt-2 text-xs text-gray-500">{s.delta}</div>}
+            {s.delta && <div className="mt-2 text-xs text-text-muted">{s.delta}</div>}
           </div>
         ))}
       </div>
@@ -438,7 +438,7 @@ export function CommandDashboard() {
         {/* System Status */}
         <div>
           <SectionHeading>System Status</SectionHeading>
-          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <div className="bg-white border border-surface-border rounded-xl overflow-hidden">
             {SYSTEM_STATUS.map((svc, i) => (
               <div
                 key={svc.name}
@@ -448,18 +448,18 @@ export function CommandDashboard() {
                 <StatusDot status={svc.status} />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-gray-900">{svc.name}</span>
-                    <span className="text-xs text-gray-500 bg-gray-50 px-1.5 py-0.5 rounded">
+                    <span className="text-sm font-medium text-text-primary">{svc.name}</span>
+                    <span className="text-xs text-text-muted bg-muted/30 px-1.5 py-0.5 rounded">
                       {svc.service}
                     </span>
                   </div>
-                  <div className="text-xs text-gray-500 mt-0.5">{svc.env}</div>
+                  <div className="text-xs text-text-muted mt-0.5">{svc.env}</div>
                 </div>
                 <div className="text-right">
                   <div className="text-xs font-mono tabular-nums" style={{ color: STATUS_COLOR[svc.status] }}>
                     {svc.uptime}% up
                   </div>
-                  <div className="text-xs text-gray-500 tabular-nums">{svc.latency}ms · {svc.lastCheck}</div>
+                  <div className="text-xs text-text-muted tabular-nums">{svc.latency}ms · {svc.lastCheck}</div>
                 </div>
               </div>
             ))}
@@ -469,23 +469,23 @@ export function CommandDashboard() {
         {/* Uptime Graph */}
         <div>
           <SectionHeading>Uptime — Senaste 24h</SectionHeading>
-          <div className="bg-white border border-gray-200 rounded-xl p-5">
+          <div className="bg-white border border-surface-border rounded-xl p-5">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <div className="text-2xl font-bold text-gray-900 tabular-nums">{avgUptime}%</div>
-                <div className="text-xs text-gray-500 mt-0.5">genomsnitt alla tjänster</div>
+                <div className="text-2xl font-bold text-text-primary tabular-nums">{avgUptime}%</div>
+                <div className="text-xs text-text-muted mt-0.5">genomsnitt alla tjänster</div>
               </div>
               <div className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full bg-green-500" />
-                <span className="text-xs text-gray-500">Uptime %</span>
+                <span className="text-xs text-text-muted">Uptime %</span>
               </div>
             </div>
             <UptimeGraph points={UPTIME_POINTS} />
             <div className="flex justify-between mt-2">
-              <span className="text-xs text-gray-500 tabular-nums">
+              <span className="text-xs text-text-muted tabular-nums">
                 {new Date(Date.now() - 23 * 3600000).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })}
               </span>
-              <span className="text-xs text-gray-500 tabular-nums">Nu</span>
+              <span className="text-xs text-text-muted tabular-nums">Nu</span>
             </div>
           </div>
         </div>
@@ -501,17 +501,17 @@ export function CommandDashboard() {
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-white border border-gray-200 rounded-xl p-4 flex flex-col items-center gap-2 text-center hover:bg-gray-50 transition-colors group"
+              className="bg-white border border-surface-border rounded-xl p-4 flex flex-col items-center gap-2 text-center hover:bg-muted/30 transition-colors group"
               style={{ textDecoration: 'none' }}
             >
               <span style={{ fontSize: 24 }}>{link.icon}</span>
               <span
-                className="text-xs font-semibold text-gray-600 group-hover:text-gray-900 transition-colors"
+                className="text-xs font-semibold text-gray-600 group-hover:text-text-primary transition-colors"
                 style={{ lineHeight: 1.3 }}
               >
                 {link.name}
               </span>
-              <span className="text-xs text-gray-500">{link.sub}</span>
+              <span className="text-xs text-text-muted">{link.sub}</span>
             </a>
           ))}
         </div>
@@ -522,7 +522,7 @@ export function CommandDashboard() {
         {/* Team Activity */}
         <div>
           <SectionHeading>Team-aktivitet (mock)</SectionHeading>
-          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <div className="bg-white border border-surface-border rounded-xl overflow-hidden">
             {TEAM_ACTIVITY.map((member, i) => (
               <div
                 key={member.name}
@@ -537,10 +537,10 @@ export function CommandDashboard() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-gray-900">{member.name}</span>
-                    <span className="text-xs text-gray-500">{member.role}</span>
+                    <span className="text-sm font-medium text-text-primary">{member.name}</span>
+                    <span className="text-xs text-text-muted">{member.role}</span>
                   </div>
-                  <div className="text-xs text-gray-500 mt-0.5 truncate">{member.task}</div>
+                  <div className="text-xs text-text-muted mt-0.5 truncate">{member.task}</div>
                 </div>
                 <div className="flex items-center gap-1.5 flex-shrink-0">
                   <span
@@ -550,7 +550,7 @@ export function CommandDashboard() {
                       boxShadow: member.status === 'active' ? `0 0 5px ${TEAM_STATUS_COLOR[member.status]}` : 'none',
                     }}
                   />
-                  <span className="text-xs text-gray-500 tabular-nums">{member.since}</span>
+                  <span className="text-xs text-text-muted tabular-nums">{member.since}</span>
                 </div>
               </div>
             ))}
@@ -563,12 +563,12 @@ export function CommandDashboard() {
             <SectionHeading>Aktiva Deploys</SectionHeading>
             <button
               onClick={() => setExpandedRuns(v => !v)}
-              className="text-xs text-gray-500 hover:text-gray-600 transition-colors"
+              className="text-xs text-text-muted hover:text-gray-600 transition-colors"
             >
               {expandedRuns ? 'Visa färre' : 'Visa alla'}
             </button>
           </div>
-          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <div className="bg-white border border-surface-border rounded-xl overflow-hidden">
             {(expandedRuns ? GITHUB_RUNS : GITHUB_RUNS.slice(0, 4)).map((run, i) => {
               const list = expandedRuns ? GITHUB_RUNS : GITHUB_RUNS.slice(0, 4)
               return (
@@ -579,14 +579,14 @@ export function CommandDashboard() {
                 >
                   <RunStatusBadge status={run.status} />
                   <div className="flex-1 min-w-0">
-                    <div className="text-xs font-medium text-gray-900 truncate">{run.workflow}</div>
-                    <div className="text-xs text-gray-500 mt-0.5">
-                      {run.repo} · <span className="text-gray-500">{run.branch}</span>
+                    <div className="text-xs font-medium text-text-primary truncate">{run.workflow}</div>
+                    <div className="text-xs text-text-muted mt-0.5">
+                      {run.repo} · <span className="text-text-muted">{run.branch}</span>
                     </div>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <div className="text-xs text-gray-500 tabular-nums">{run.time}</div>
-                    <div className="text-xs text-gray-500 tabular-nums">{run.duration}</div>
+                    <div className="text-xs text-text-muted tabular-nums">{run.time}</div>
+                    <div className="text-xs text-text-muted tabular-nums">{run.duration}</div>
                   </div>
                 </div>
               )
@@ -600,33 +600,33 @@ export function CommandDashboard() {
         <SectionHeading>Entities</SectionHeading>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {[
-            { name: 'Wavult Group Holding', code: 'WGH', jurisdiction: '🇦🇪 DIFC, Dubai', type: 'Holding', color: '#8B5CF6', products: ['Capital structure', 'IP ownership'] },
+            { name: 'Wavult Group Holding', code: 'WGH', jurisdiction: '🇦🇪 DIFC, Dubai', type: 'Holding', color: '#2563EB', products: ['Capital structure', 'IP ownership'] },
             { name: 'Wavult Technologies LLC', code: 'WTL', jurisdiction: '🇺🇸 Texas, USA', type: 'Operating', color: '#3B82F6', products: ['quiXzoom platform'] },
             { name: 'Wavult Intelligence UAB', code: 'WIU', jurisdiction: '🇱🇹 Vilnius, LT', type: 'Operating', color: '#06B6D4', products: ['Optic Insights Group'] },
           ].map((entity) => (
-            <div key={entity.code} className="bg-white border border-gray-200 rounded-xl p-5">
+            <div key={entity.code} className="bg-white border border-surface-border rounded-xl p-5">
               <div className="flex items-start gap-3 mb-4">
                 <div
-                  className="h-10 w-10 rounded-xl flex items-center justify-center text-sm font-bold text-gray-900 flex-shrink-0"
+                  className="h-10 w-10 rounded-xl flex items-center justify-center text-sm font-bold text-text-primary flex-shrink-0"
                   style={{ backgroundColor: entity.color + '33', border: `1px solid ${entity.color}55` }}
                 >
                   <span style={{ color: entity.color }}>{entity.code[0]}</span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-900">{entity.name}</p>
-                  <p className="text-xs text-gray-500">{entity.jurisdiction}</p>
+                  <p className="text-sm font-semibold text-text-primary">{entity.name}</p>
+                  <p className="text-xs text-text-muted">{entity.jurisdiction}</p>
                 </div>
               </div>
               <div className="space-y-1">
                 {entity.products.map((p) => (
-                  <div key={p} className="text-xs text-gray-500 flex items-center gap-1.5">
+                  <div key={p} className="text-xs text-text-muted flex items-center gap-1.5">
                     <span className="h-1 w-1 rounded-full bg-gray-600" />
                     {p}
                   </div>
                 ))}
               </div>
-              <div className="mt-3 pt-3 border-t border-gray-200">
-                <span className="text-xs text-gray-500">{entity.type}</span>
+              <div className="mt-3 pt-3 border-t border-surface-border">
+                <span className="text-xs text-text-muted">{entity.type}</span>
               </div>
             </div>
           ))}

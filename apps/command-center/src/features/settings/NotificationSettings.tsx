@@ -76,7 +76,7 @@ const INITIAL_RULES: NotificationRule[] = [
 const CATEGORY_CONFIG = {
   finance:  { label: 'Finans',    color: '#10B981', bg: '#10B98115' },
   crm:      { label: 'CRM',       color: '#3B82F6', bg: '#3B82F615' },
-  payroll:  { label: 'Lön',       color: '#8B5CF6', bg: '#8B5CF615' },
+  payroll:  { label: 'Lön',       color: '#2563EB', bg: '#2563EB15' },
   devops:   { label: 'DevOps',    color: '#EF4444', bg: '#EF444415' },
   incident: { label: 'Incident',  color: '#F59E0B', bg: '#F59E0B15' },
 }
@@ -128,9 +128,9 @@ export function NotificationSettings() {
       </div>
 
       {/* Channel header */}
-      <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
+      <div className="rounded-xl border border-surface-border bg-white overflow-hidden">
         {/* Column headers */}
-        <div className="flex items-center gap-2 px-5 py-2 border-b border-gray-100 bg-gray-50">
+        <div className="flex items-center gap-2 px-5 py-2 border-b border-surface-border/50 bg-muted/30">
           <div className="flex-1 text-[9px] text-gray-600 font-mono uppercase">Händelse</div>
           {(Object.entries(CHANNEL_CONFIG) as [Channel, typeof CHANNEL_CONFIG[Channel]][]).map(([key, cfg]) => (
             <div key={key} className="w-20 text-center text-[9px] text-gray-600 font-mono uppercase flex-shrink-0">
@@ -152,7 +152,7 @@ export function NotificationSettings() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="text-sm leading-none">{rule.icon}</span>
-                  <span className="text-xs font-semibold text-gray-900">{rule.label}</span>
+                  <span className="text-xs font-semibold text-text-primary">{rule.label}</span>
                   <span
                     className="text-[9px] px-1.5 py-0.5 rounded font-mono flex-shrink-0"
                     style={{ background: catCfg.bg, color: catCfg.color }}
@@ -169,7 +169,7 @@ export function NotificationSettings() {
                       onChange={e =>
                         setThresholds(prev => ({ ...prev, [rule.id]: e.target.value }))
                       }
-                      className="text-xs font-mono text-gray-9000 bg-gray-50 border border-gray-200 rounded px-2 py-0.5 w-24 focus:outline-none"
+                      className="text-xs font-mono text-gray-9000 bg-muted/30 border border-surface-border rounded px-2 py-0.5 w-24 focus:outline-none"
                     />
                   </div>
                 )}
@@ -183,7 +183,7 @@ export function NotificationSettings() {
                     <button
                       onClick={() => toggleChannel(rule.id, channel)}
                       className="relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer"
-                      style={{ background: on ? '#8B5CF6' : '#F3F4F6' }}
+                      style={{ background: on ? '#2563EB' : '#F3F4F6' }}
                     >
                       <span
                         className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${

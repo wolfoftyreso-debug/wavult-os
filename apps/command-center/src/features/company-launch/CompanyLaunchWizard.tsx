@@ -216,7 +216,7 @@ export function CompanyLaunchWizard() {
               <div style={{
                 width: 32, height: 32, borderRadius: '50%', display: 'flex',
                 alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                background: isDone ? '#34C759' : isActive ? '#5856D6' : '#F3F4F6',
+                background: isDone ? '#34C759' : isActive ? '#2563EB' : '#F3F4F6',
                 color: isDone || isActive ? '#FFFFFF' : '#9CA3AF',
               }}>
                 {isDone ? <CheckCircle style={{ width: 16, height: 16 }} /> : <Icon style={{ width: 16, height: 16 }} />}
@@ -239,8 +239,8 @@ export function CompanyLaunchWizard() {
             {JURISDICTIONS.map(j => (
               <button key={j.id} onClick={() => setForm(f => ({ ...f, jurisdiction: j.id }))} style={{
                 textAlign: 'left', padding: '16px', borderRadius: 14,
-                border: `2px solid ${form.jurisdiction === j.id ? '#5856D6' : 'rgba(0,0,0,0.08)'}`,
-                background: form.jurisdiction === j.id ? '#5856D608' : '#FFFFFF',
+                border: `2px solid ${form.jurisdiction === j.id ? '#2563EB' : 'rgba(0,0,0,0.08)'}`,
+                background: form.jurisdiction === j.id ? '#2563EB08' : '#FFFFFF',
                 cursor: 'pointer',
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -265,7 +265,7 @@ export function CompanyLaunchWizard() {
 
           <button onClick={() => selectedJurisdiction && setStep(1)} disabled={!form.jurisdiction} style={{
             marginTop: 24, width: '100%', padding: '14px', borderRadius: 12,
-            background: form.jurisdiction ? '#5856D6' : '#F3F4F6',
+            background: form.jurisdiction ? '#2563EB' : '#F3F4F6',
             color: form.jurisdiction ? '#FFFFFF' : '#9CA3AF',
             border: 'none', fontSize: 15, fontWeight: 600, cursor: form.jurisdiction ? 'pointer' : 'not-allowed',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
@@ -336,7 +336,7 @@ export function CompanyLaunchWizard() {
             <button onClick={() => setStep(0)} style={{ flex: 1, padding: '14px', borderRadius: 12, background: '#F3F4F6', color: '#6B7280', border: 'none', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
               <ChevronLeft style={{ width: 16, height: 16, display: 'inline', marginRight: 4 }} />Tillbaka
             </button>
-            <button onClick={() => setStep(2)} style={{ flex: 2, padding: '14px', borderRadius: 12, background: '#5856D6', color: '#FFFFFF', border: 'none', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
+            <button onClick={() => setStep(2)} style={{ flex: 2, padding: '14px', borderRadius: 12, background: '#2563EB', color: '#FFFFFF', border: 'none', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
               Granska <ChevronRight style={{ width: 16, height: 16, display: 'inline', marginLeft: 4 }} />
             </button>
           </div>
@@ -385,7 +385,7 @@ export function CompanyLaunchWizard() {
             <button onClick={() => setStep(1)} style={{ flex: 1, padding: '14px', borderRadius: 12, background: '#F3F4F6', color: '#6B7280', border: 'none', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
               <ChevronLeft style={{ width: 16, height: 16, display: 'inline', marginRight: 4 }} />Tillbaka
             </button>
-            <button onClick={() => setStep(3)} style={{ flex: 2, padding: '14px', borderRadius: 12, background: '#5856D6', color: '#FFFFFF', border: 'none', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
+            <button onClick={() => setStep(3)} style={{ flex: 2, padding: '14px', borderRadius: 12, background: '#2563EB', color: '#FFFFFF', border: 'none', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
               Gå vidare till betalning <ChevronRight style={{ width: 16, height: 16, display: 'inline' }} />
             </button>
           </div>
@@ -398,7 +398,7 @@ export function CompanyLaunchWizard() {
           <h2 style={{ fontSize: 20, fontWeight: 700, color: '#1C1C1E', marginBottom: 4 }}>Betala & Signera</h2>
           <p style={{ fontSize: 14, color: '#6B7280', marginBottom: 20 }}>Öppna leverantörens webbplats och slutför registreringen.</p>
 
-          <div style={{ background: '#5856D608', border: '2px solid #5856D6', borderRadius: 14, padding: '20px', marginBottom: 20, textAlign: 'center' }}>
+          <div style={{ background: '#2563EB08', border: '2px solid #2563EB', borderRadius: 14, padding: '20px', marginBottom: 20, textAlign: 'center' }}>
             <div style={{ fontSize: 32, marginBottom: 8 }}>{selectedJurisdiction.flag}</div>
             <div style={{ fontSize: 16, fontWeight: 700, color: '#1C1C1E', marginBottom: 4 }}>{selectedJurisdiction.provider}</div>
             <button
@@ -406,7 +406,7 @@ export function CompanyLaunchWizard() {
               disabled={launching}
               style={{
                 display: 'inline-block', marginTop: 12, padding: '12px 28px',
-                background: launching ? '#9CA3AF' : '#5856D6',
+                background: launching ? '#9CA3AF' : '#2563EB',
                 color: '#FFFFFF', borderRadius: 10, fontSize: 15, fontWeight: 600,
                 border: 'none', cursor: launching ? 'not-allowed' : 'pointer',
               }}
@@ -470,7 +470,7 @@ export function CompanyLaunchWizard() {
             <div style={{ fontSize: 13, fontWeight: 700, color: '#374151', marginBottom: 12 }}>Nästa steg — logga in BOS:</div>
             {selectedJurisdiction.nextSteps.map((s, i) => (
               <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
-                <span style={{ width: 20, height: 20, borderRadius: '50%', background: '#5856D6', color: '#FFF', fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{i + 1}</span>
+                <span style={{ width: 20, height: 20, borderRadius: '50%', background: '#2563EB', color: '#FFF', fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{i + 1}</span>
                 <span style={{ fontSize: 13, color: '#374151' }}>{s}</span>
               </div>
             ))}
@@ -478,7 +478,7 @@ export function CompanyLaunchWizard() {
 
           <button
             onClick={() => { setStep(0); setForm(f => ({ ...f, jurisdiction: null, companyName: '' })) }}
-            style={{ padding: '14px 32px', borderRadius: 12, background: '#5856D6', color: '#FFFFFF', border: 'none', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}
+            style={{ padding: '14px 32px', borderRadius: 12, background: '#2563EB', color: '#FFFFFF', border: 'none', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}
           >
             Registrera nytt bolag
           </button>

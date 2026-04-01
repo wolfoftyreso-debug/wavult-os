@@ -12,7 +12,7 @@ function CategoryProgress({ items }: { items: typeof THAILAND_CHECKLIST }) {
   const pct = Math.round((done / items.length) * 100)
   return (
     <div className="flex items-center gap-2 mt-1.5">
-      <div className="flex-1 bg-gray-50 rounded-full h-1">
+      <div className="flex-1 bg-muted/30 rounded-full h-1">
         <div
           className="h-1 rounded-full transition-all"
           style={{
@@ -32,7 +32,7 @@ function CheckItem({ item }: { item: typeof THAILAND_CHECKLIST[0] }) {
 
   return (
     <div
-      className="flex items-start gap-3 px-4 py-3 border-b border-gray-100 last:border-0"
+      className="flex items-start gap-3 px-4 py-3 border-b border-surface-border/50 last:border-0"
     >
       <span className="text-base mt-0.5 flex-shrink-0">{STATUS_ICON[item.status]}</span>
       <div className="flex-1 min-w-0">
@@ -81,7 +81,7 @@ export function ThailandPrepView() {
         <div className="flex items-center gap-4">
           <span className="text-4xl">🇹🇭</span>
           <div className="flex-1">
-            <h2 className="text-[18px] font-bold text-gray-900">Thailand Workcamp</h2>
+            <h2 className="text-[18px] font-bold text-text-primary">Thailand Workcamp</h2>
             <p className="text-xs text-gray-9000 mt-0.5">
               11 april 2026 — Vecka 1: Teambuilding & Utbildning
             </p>
@@ -92,7 +92,7 @@ export function ThailandPrepView() {
                   style={{ width: `${totalPct}%`, background: urgencyColor }}
                 />
               </div>
-              <span className="text-xs font-mono text-gray-900">{totalPct}%</span>
+              <span className="text-xs font-mono text-text-primary">{totalPct}%</span>
             </div>
           </div>
           <div className="text-right flex-shrink-0">
@@ -122,14 +122,14 @@ export function ThailandPrepView() {
         const catColor = catPct === 100 ? '#10B981' : items.some(i => i.status === 'delayed') ? '#EF4444' : '#3B82F6'
 
         return (
-          <div key={cat} className="rounded-xl border border-gray-200 bg-white overflow-hidden">
+          <div key={cat} className="rounded-xl border border-surface-border bg-white overflow-hidden">
             {/* Category header */}
-            <div className="px-4 py-3 border-b border-gray-200 flex items-center gap-2">
+            <div className="px-4 py-3 border-b border-surface-border flex items-center gap-2">
               <span
                 className="h-2 w-2 rounded-full flex-shrink-0"
                 style={{ background: catColor }}
               />
-              <span className="text-sm font-semibold text-gray-900">{cat}</span>
+              <span className="text-sm font-semibold text-text-primary">{cat}</span>
               <span
                 className="ml-auto text-[9px] font-mono px-2 py-0.5 rounded-full"
                 style={{ background: catColor + '15', color: catColor }}

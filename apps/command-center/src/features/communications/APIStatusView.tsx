@@ -105,7 +105,7 @@ function LatencyBar({ ms }: { ms: number }) {
   const color = ms < 100 ? 'bg-green-400' : ms < 400 ? 'bg-yellow-400' : 'bg-red-400'
   return (
     <div className="flex items-center gap-2">
-      <div className="flex-1 h-1 bg-gray-50 rounded-full overflow-hidden">
+      <div className="flex-1 h-1 bg-muted/30 rounded-full overflow-hidden">
         <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
       </div>
       <span className="text-xs font-mono text-gray-9000 w-12 text-right">{ms} ms</span>
@@ -149,7 +149,7 @@ export function APIStatusView() {
       <div className="flex items-center gap-3 flex-wrap">
         <div className="flex items-center gap-2">
           <div className={`h-2.5 w-2.5 rounded-full ${errorCount === 0 ? 'bg-green-400' : 'bg-yellow-400'} animate-pulse`} />
-          <span className="text-sm font-semibold text-gray-900">
+          <span className="text-sm font-semibold text-text-primary">
             API-status {errorCount === 0 ? '— Allt operativt' : `— ${errorCount} problem`}
           </span>
         </div>
@@ -160,7 +160,7 @@ export function APIStatusView() {
           <button
             onClick={simulateRefresh}
             disabled={refreshing}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-gray-200 text-gray-9000 hover:text-gray-900 hover:border-white/[0.16] transition-colors disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-surface-border text-gray-9000 hover:text-text-primary hover:border-white/[0.16] transition-colors disabled:opacity-50"
           >
             <span className={refreshing ? 'animate-spin' : ''}>↻</span>
             {refreshing ? 'Checkar…' : 'Refresha'}
@@ -178,7 +178,7 @@ export function APIStatusView() {
           <div className={`text-2xl font-bold ${errorCount > 0 ? 'text-yellow-700' : 'text-gray-9000'}`}>{errorCount}</div>
           <div className="text-xs text-gray-9000 mt-0.5">Problem</div>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-3 text-center">
+        <div className="bg-white rounded-xl border border-surface-border p-3 text-center">
           <div className="text-2xl font-bold text-gray-600">{services.length}</div>
           <div className="text-xs text-gray-9000 mt-0.5">Totalt</div>
         </div>
@@ -199,7 +199,7 @@ export function APIStatusView() {
                 <span className="text-xl flex-shrink-0">{svc.icon}</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-sm font-semibold text-gray-900">{svc.name}</span>
+                    <span className="text-sm font-semibold text-text-primary">{svc.name}</span>
                     <span className={`text-xs font-medium px-2 py-0.5 rounded-full border ${sc.bg} ${sc.color}`}>
                       {sc.label}
                     </span>

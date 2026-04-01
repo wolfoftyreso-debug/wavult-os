@@ -1,39 +1,38 @@
+/**
+ * OnboardingOverlay — Premium fullscreen enterprise OS onboarding
+ *
+ * Desktop: fullscreen with Gemini-generated atmospheric background,
+ *          large centered modal, 2-column layout on wide screens
+ * Mobile:  fullscreen card, stacked layout, touch-optimized
+ */
+
 import { useState, useEffect } from 'react'
-import { CheckCircle, ChevronRight, ChevronLeft, X, Clock, BookOpen, Lightbulb, AlertTriangle, Info } from 'lucide-react'
+import { CheckCircle, ChevronRight, ChevronLeft, X, Clock, Lightbulb, AlertTriangle, Info } from 'lucide-react'
 import { TOURS } from './onboardingData'
 
-const STORAGE_KEY = 'wavult_onboarding_v3'
+const STORAGE_KEY = 'wavult_onboarding_v4'
 
 function getCalloutStyle(type: 'info' | 'warning' | 'tip') {
   return {
-    info:    { bg: '#007AFF10', border: '#007AFF', icon: Info, color: '#007AFF' },
-    warning: { bg: '#FF950010', border: '#FF9500', icon: AlertTriangle, color: '#FF9500' },
-    tip:     { bg: '#5856D610', border: '#5856D6', icon: Lightbulb, color: '#5856D6' },
+    info:    { bg: 'rgba(37,99,235,0.08)', border: '#2563EB', icon: Info, color: '#2563EB' },
+    warning: { bg: 'rgba(245,158,11,0.08)', border: '#F59E0B', icon: AlertTriangle, color: '#F59E0B' },
+    tip:     { bg: 'rgba(22,163,74,0.08)',  border: '#16A34A', icon: Lightbulb, color: '#16A34A' },
   }[type]
 }
-
-const STEP_GRADIENTS = [
-  'from-purple-500 to-indigo-600',
-  'from-blue-500 to-cyan-600',
-  'from-emerald-500 to-teal-600',
-  'from-orange-500 to-amber-600',
-  'from-rose-500 to-pink-600',
-  'from-violet-500 to-purple-600',
-  'from-sky-500 to-blue-600',
-  'from-green-500 to-emerald-600',
-  'from-amber-500 to-orange-600',
-  'from-indigo-500 to-violet-600',
-  'from-teal-500 to-green-600',
-]
 
 export function OnboardingOverlay() {
   const tour = TOURS[0]
   const [step, setStep] = useState(0)
   const [visible, setVisible] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
     const done = localStorage.getItem(STORAGE_KEY)
     if (!done) setVisible(true)
+    setIsMobile(window.innerWidth < 768)
+    const handler = () => setIsMobile(window.innerWidth < 768)
+    window.addEventListener('resize', handler)
+    return () => window.removeEventListener('resize', handler)
   }, [])
 
   function dismiss() {
@@ -53,116 +52,139 @@ export function OnboardingOverlay() {
   if (!visible) return null
 
   const current = tour.steps[step]
-  const gradient = STEP_GRADIENTS[step % STEP_GRADIENTS.length]
   const progress = ((step + 1) / tour.steps.length) * 100
   const minutesLeft = Math.ceil(((tour.steps.length - step) / tour.steps.length) * tour.estimatedMinutes)
   const calloutStyle = current.callout ? getCalloutStyle(current.callout.type) : null
+  const CalloutIcon = calloutStyle?.icon
 
   return (
-    // Backdrop
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)' }}
-    >
-      {/* Modal */}
-      <div
-        className="w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl"
-        style={{ background: '#FFFFFF', maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}
-      >
-        {/* Colored header */}
-        <div className={`bg-gradient-to-br ${gradient} p-6 relative`}>
-          <button
-            onClick={dismiss}
-            className="absolute top-4 right-4 text-gray-900 opacity-70 hover:opacity-100 transition-opacity"
-          >
-            <X className="w-5 h-5" />
-          </button>
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 9999,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      // Background with Gemini image + dark overlay
+      backgroundImage: 'url(/images/os-onboarding-bg.jpg)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    }}>
+      {/* Dark overlay */}
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: 'rgba(10,15,30,0.88)',
+        backdropFilter: 'blur(2px)',
+      }}/>
 
-          <div className="flex items-start gap-4">
-            <div
-              className="flex items-center justify-center text-3xl rounded-xl flex-shrink-0"
-              style={{ width: 64, height: 64, background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)' }}
-            >
+      {/* Modal */}
+      <div style={{
+        position: 'relative', zIndex: 1,
+        width: isMobile ? '100%' : 'min(680px, 92vw)',
+        maxHeight: isMobile ? '100dvh' : '90vh',
+        margin: isMobile ? 0 : undefined,
+        display: 'flex', flexDirection: 'column',
+        background: 'rgba(13,21,38,0.95)',
+        border: '1px solid #1E2D45',
+        borderRadius: isMobile ? 0 : '8px',
+        boxShadow: '0 32px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(37,99,235,0.1)',
+        overflow: 'hidden',
+      }}>
+
+        {/* Header */}
+        <div style={{
+          padding: isMobile ? '20px 20px 16px' : '28px 32px 20px',
+          borderBottom: '1px solid #1E2D45',
+          display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <div style={{
+              width: isMobile ? 40 : 48, height: isMobile ? 40 : 48,
+              background: 'rgba(37,99,235,0.1)',
+              border: '1px solid rgba(37,99,235,0.2)',
+              borderRadius: '6px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: isMobile ? 20 : 24, flexShrink: 0,
+            }}>
               {current.icon}
             </div>
             <div>
-              <p className="text-gray-900 opacity-75 text-xs font-semibold uppercase tracking-widest mb-1">
-                {tour.name}
-              </p>
-              <h2 className="text-gray-900 text-xl font-bold leading-tight">
+              <div style={{
+                fontSize: 10, fontWeight: 700, letterSpacing: '0.2em',
+                textTransform: 'uppercase', color: '#2563EB',
+                fontFamily: 'monospace', marginBottom: 4,
+              }}>
+                WAVULT OS — {tour.name.toUpperCase()}
+              </div>
+              <h2 style={{
+                fontSize: isMobile ? 18 : 22, fontWeight: 800,
+                letterSpacing: '-0.02em', color: '#E2E8F0',
+                lineHeight: 1.2,
+              }}>
                 {current.title}
               </h2>
             </div>
           </div>
+          <button onClick={dismiss} style={{
+            background: 'none', border: 'none', cursor: 'pointer',
+            color: '#475569', padding: '4px', borderRadius: '4px',
+            flexShrink: 0, marginLeft: 8,
+          }}>
+            <X size={16} />
+          </button>
+        </div>
 
-          {/* Progress bar */}
-          <div className="mt-5">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-gray-900 opacity-70 text-xs">
-                Steg {step + 1} av {tour.steps.length}
-              </span>
-              <span className="text-gray-900 opacity-70 text-xs flex items-center gap-1">
-                <Clock className="w-3 h-3" />
-                ~{minutesLeft} min kvar
-              </span>
-            </div>
-            <div className="h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.3)' }}>
-              <div
-                className="h-full rounded-full transition-all duration-500"
-                style={{ width: `${progress}%`, background: 'rgba(255,255,255,0.9)' }}
-              />
-            </div>
+        {/* Progress */}
+        <div style={{ padding: '12px 32px', borderBottom: '1px solid #1E2D45', display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ flex: 1, height: 2, background: '#1E2D45', borderRadius: 1, overflow: 'hidden' }}>
+            <div style={{
+              height: '100%', width: `${progress}%`,
+              background: 'linear-gradient(90deg, #1E40AF, #2563EB)',
+              transition: 'width 0.3s ease',
+            }}/>
+          </div>
+          <div style={{ display: 'flex', gap: 12, fontSize: 11, color: '#475569', fontFamily: 'monospace', whiteSpace: 'nowrap' }}>
+            <span>Steg {step + 1} / {tour.steps.length}</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <Clock size={11} /> ~{minutesLeft} min
+            </span>
           </div>
         </div>
 
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-5">
-          {/* Description */}
-          <p className="text-gray-700 text-sm leading-relaxed">
+        {/* Body */}
+        <div style={{
+          padding: isMobile ? '20px' : '28px 32px',
+          flex: 1, overflowY: 'auto',
+        }}>
+          <p style={{
+            fontSize: isMobile ? 14 : 15, color: '#94A3B8',
+            lineHeight: 1.8, marginBottom: 24,
+          }}>
             {current.description}
           </p>
 
-          {/* Bullets */}
-          {current.bullets && current.bullets.length > 0 && (
-            <div className="space-y-2.5">
-              {current.bullets.map((bullet, i) => (
-                <div key={i} className="flex items-start gap-3">
-                  <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm text-gray-700">{bullet}</span>
+          {current.keyPoints && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
+              {current.keyPoints.map((point: string, i: number) => (
+                <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                  <div style={{
+                    width: 20, height: 20, borderRadius: '4px',
+                    background: 'rgba(37,99,235,0.1)', border: '1px solid rgba(37,99,235,0.2)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1,
+                  }}>
+                    <CheckCircle size={12} style={{ color: '#2563EB' }} />
+                  </div>
+                  <span style={{ fontSize: 13, color: '#94A3B8', lineHeight: 1.6 }}>{point}</span>
                 </div>
               ))}
             </div>
           )}
 
-          {/* Example */}
-          {current.example && (
-            <div
-              className="rounded-xl p-4"
-              style={{ background: '#007AFF0A', border: '1px solid #007AFF30' }}
-            >
-              <div className="flex items-center gap-2 mb-2">
-                <BookOpen className="w-3.5 h-3.5" style={{ color: '#007AFF' }} />
-                <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: '#007AFF' }}>
-                  Prova detta
-                </span>
-              </div>
-              <p className="text-sm text-gray-700 font-mono leading-relaxed" style={{ fontSize: 12 }}>
-                {current.example}
-              </p>
-            </div>
-          )}
-
-          {/* Callout */}
-          {current.callout && calloutStyle && (
-            <div
-              className="rounded-xl p-4 flex items-start gap-3"
-              style={{
-                background: calloutStyle.bg,
-                borderLeft: `3px solid ${calloutStyle.border}`,
-              }}
-            >
-              <calloutStyle.icon className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: calloutStyle.color }} />
-              <p className="text-sm" style={{ color: '#1C1C1E' }}>
+          {calloutStyle && current.callout && CalloutIcon && (
+            <div style={{
+              display: 'flex', gap: 12, padding: '12px 14px',
+              background: calloutStyle.bg,
+              borderLeft: `2px solid ${calloutStyle.border}`,
+              borderRadius: '0 4px 4px 0',
+            }}>
+              <CalloutIcon size={14} style={{ color: calloutStyle.color, flexShrink: 0, marginTop: 2 }} />
+              <p style={{ fontSize: 13, color: '#94A3B8', lineHeight: 1.6, margin: 0 }}>
                 {current.callout.text}
               </p>
             </div>
@@ -170,40 +192,42 @@ export function OnboardingOverlay() {
         </div>
 
         {/* Footer */}
-        <div
-          className="flex items-center justify-between px-6 py-4"
-          style={{ borderTop: '1px solid rgba(0,0,0,0.08)', background: '#F2F2F7' }}
-        >
-          <button
-            onClick={prev}
-            disabled={step === 0}
-            className="flex items-center gap-1.5 text-sm font-medium text-gray-9000 hover:text-gray-800 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Tillbaka
-          </button>
-
-          <button
-            onClick={dismiss}
-            className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
-          >
+        <div style={{
+          padding: isMobile ? '16px 20px' : '20px 32px',
+          borderTop: '1px solid #1E2D45',
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        }}>
+          <button onClick={dismiss} style={{
+            background: 'none', border: 'none', cursor: 'pointer',
+            fontSize: 13, color: '#475569', padding: '8px 0',
+          }}>
             Hoppa över
           </button>
 
-          <button
-            onClick={next}
-            className="flex items-center gap-1.5 text-sm font-semibold text-gray-900 px-5 py-2 rounded-xl transition-opacity hover:opacity-90"
-            style={{ background: '#5856D6' }}
-          >
-            {step === tour.steps.length - 1 ? 'Klar!' : 'Nästa'}
-            {step < tour.steps.length - 1 && <ChevronRight className="w-4 h-4" />}
-          </button>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {step > 0 && (
+              <button onClick={prev} style={{
+                display: 'flex', alignItems: 'center', gap: 6,
+                padding: '9px 16px', borderRadius: '4px',
+                background: 'transparent', border: '1px solid #1E2D45',
+                color: '#94A3B8', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+              }}>
+                <ChevronLeft size={14} /> Tillbaka
+              </button>
+            )}
+            <button onClick={next} style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              padding: '9px 20px', borderRadius: '4px',
+              background: '#2563EB', border: 'none',
+              color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer',
+              letterSpacing: '0.02em',
+            }}>
+              {step === tour.steps.length - 1 ? 'Klar' : 'Nästa'}
+              <ChevronRight size={14} />
+            </button>
+          </div>
         </div>
       </div>
     </div>
   )
-}
-
-export function resetOnboarding() {
-  localStorage.removeItem(STORAGE_KEY)
 }

@@ -128,12 +128,12 @@ export const ENTITY_LABELS: Record<EntityId, string> = {
 }
 
 export const ENTITY_COLORS: Record<EntityId, string> = {
-  'wavult-group': '#8B5CF6',
+  'wavult-group': '#2563EB',
   'landvex-ab': '#F59E0B',
   'landvex-inc': '#D97706',
   'quixzoom-uab': '#10B981',
   'quixzoom-inc': '#059669',
-  'wavult': '#A78BFA',
+  'wavult': '#60A5FA',
 }
 
 export const RISK_LEVEL_LABELS: Record<RiskLevel, string> = {

@@ -90,7 +90,7 @@ function NodeCard({ node, depth = 0 }: { node: OwnerNode; depth?: number }) {
 
         {/* Card */}
         <div
-          className="rounded-xl border p-4 flex-1 transition-all hover:bg-gray-50"
+          className="rounded-xl border p-4 flex-1 transition-all hover:bg-muted/30"
           style={{
             borderColor: node.color + '40',
             background: node.color + '08',
@@ -101,7 +101,7 @@ function NodeCard({ node, depth = 0 }: { node: OwnerNode; depth?: number }) {
             <div>
               <div className="flex items-center gap-2 mb-0.5">
                 <span className="h-2 w-2 rounded-full flex-shrink-0" style={{ background: node.color }} />
-                <span className="text-[15px] font-semibold text-gray-900">{node.name}</span>
+                <span className="text-[15px] font-semibold text-text-primary">{node.name}</span>
                 <span
                   className={`text-[9px] font-medium px-2 py-0.5 rounded-full border ${
                     node.status === 'aktiv'
@@ -149,7 +149,7 @@ function NodeCard({ node, depth = 0 }: { node: OwnerNode; depth?: number }) {
                   {/* Connector */}
                   <div className="flex flex-col items-end flex-shrink-0" style={{ width: 16 }}>
                     <div
-                      className="border-l border-b border-gray-200 rounded-bl"
+                      className="border-l border-b border-surface-border rounded-bl"
                       style={{ width: 16, height: 28, borderBottomLeftRadius: 4 }}
                     />
                     {i < node.children!.length - 1 && (
@@ -186,7 +186,7 @@ function StatsGrid() {
           className="rounded-xl p-3 border"
           style={{ borderColor: c.color + '30', background: c.color + '08' }}
         >
-          <div className="text-sm font-semibold text-gray-900 mb-0.5">{c.shortName}</div>
+          <div className="text-sm font-semibold text-text-primary mb-0.5">{c.shortName}</div>
           <div className="text-xs text-gray-9000 font-mono">{c.orgNr}</div>
           <div className="text-xs text-gray-9000 mt-1">{c.jurisdiction}</div>
           <div className="mt-2 flex items-center gap-1">
@@ -206,7 +206,7 @@ export function OwnershipView() {
       <StatsGrid />
 
       {/* Ownership tree */}
-      <div className="rounded-xl border border-gray-200 bg-white/[0.01] p-5">
+      <div className="rounded-xl border border-surface-border bg-white/[0.01] p-5">
         <h3 className="text-xs font-semibold text-gray-9000 uppercase tracking-wider mb-5">Ägarstruktur</h3>
         <OwnershipTree />
       </div>

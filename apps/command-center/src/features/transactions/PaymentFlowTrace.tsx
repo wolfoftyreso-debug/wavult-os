@@ -11,25 +11,25 @@ interface PaymentFlowTraceProps {
 const SPLIT_RULES: Record<string, Array<{ entity: string; short: string; percent: number; color: string }>> = {
   'Landvex AB': [
     { entity: 'FinanceCo FZCO', short: 'FCO', percent: 2.5, color: '#10B981' },
-    { entity: 'DevOps FZCO', short: 'DVO', percent: 10, color: '#7C3AED' },
+    { entity: 'DevOps FZCO', short: 'DVO', percent: 10, color: '#1E40AF' },
     { entity: 'Wavult Group FZCO', short: 'WGH', percent: 8, color: '#6366F1' },
     { entity: 'Landvex AB (netto)', short: 'LVX-SE', percent: 79.5, color: '#3B82F6' },
   ],
   'Landvex Inc': [
     { entity: 'FinanceCo FZCO', short: 'FCO', percent: 2.5, color: '#10B981' },
-    { entity: 'DevOps FZCO', short: 'DVO', percent: 10, color: '#7C3AED' },
+    { entity: 'DevOps FZCO', short: 'DVO', percent: 10, color: '#1E40AF' },
     { entity: 'Wavult Group FZCO', short: 'WGH', percent: 8, color: '#6366F1' },
     { entity: 'Landvex Inc (netto)', short: 'LVX-US', percent: 79.5, color: '#F59E0B' },
   ],
   'QuiXzoom UAB': [
     { entity: 'FinanceCo FZCO', short: 'FCO', percent: 2.5, color: '#10B981' },
-    { entity: 'DevOps FZCO', short: 'DVO', percent: 10, color: '#7C3AED' },
+    { entity: 'DevOps FZCO', short: 'DVO', percent: 10, color: '#1E40AF' },
     { entity: 'Wavult Group FZCO', short: 'WGH', percent: 8, color: '#6366F1' },
     { entity: 'QuiXzoom UAB (netto)', short: 'QZ-EU', percent: 79.5, color: '#EC4899' },
   ],
   'QuiXzoom Inc': [
     { entity: 'FinanceCo FZCO', short: 'FCO', percent: 2.5, color: '#10B981' },
-    { entity: 'DevOps FZCO', short: 'DVO', percent: 10, color: '#7C3AED' },
+    { entity: 'DevOps FZCO', short: 'DVO', percent: 10, color: '#1E40AF' },
     { entity: 'Wavult Group FZCO', short: 'WGH', percent: 8, color: '#6366F1' },
     { entity: 'QuiXzoom Inc (netto)', short: 'QZ-US', percent: 79.5, color: '#EC4899' },
   ],

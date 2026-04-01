@@ -44,8 +44,8 @@ export function JurisdictionView() {
             onClick={() => setSelectedCompany('all')}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
               selectedCompany === 'all'
-                ? 'bg-purple-50 text-purple-700 border-purple-200'
-                : 'bg-gray-50 text-gray-9000 border-gray-200 hover:text-gray-900'
+                ? 'bg-blue-50 text-blue-700 border-blue-200'
+                : 'bg-muted/30 text-gray-9000 border-surface-border hover:text-gray-900'
             }`}
           >
             Alla bolag
@@ -57,7 +57,7 @@ export function JurisdictionView() {
               className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
                 selectedCompany === c.id
                   ? 'border opacity-100'
-                  : 'bg-gray-50 text-gray-9000 border-gray-200 hover:text-gray-900'
+                  : 'bg-muted/30 text-gray-9000 border-surface-border hover:text-gray-900'
               }`}
               style={selectedCompany === c.id ? { background: c.color + '20', color: c.color, borderColor: c.color + '50' } : {}}
             >
@@ -79,9 +79,9 @@ export function JurisdictionView() {
                 <span className="text-xl">{FLAG[company.jurisdictionCode]}</span>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-[14px] font-semibold text-gray-900">{company.name}</span>
+                    <span className="text-[14px] font-semibold text-text-primary">{company.name}</span>
                     {urgentCount > 0 && (
-                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-red-500 text-gray-900">{urgentCount} brådskande</span>
+                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-red-500 text-text-primary">{urgentCount} brådskande</span>
                     )}
                   </div>
                   <div className="text-xs text-gray-9000">{company.jurisdiction} · {company.orgNr}</div>
@@ -103,7 +103,7 @@ export function JurisdictionView() {
               <div className="overflow-x-auto">
                 <table className="w-full text-xs">
                   <thead>
-                    <tr className="border-b border-gray-100 bg-white/[0.01]">
+                    <tr className="border-b border-surface-border/50 bg-white/[0.01]">
                       <th className="text-left px-4 py-2 text-gray-9000 font-medium">Myndighet</th>
                       <th className="text-left px-4 py-2 text-gray-9000 font-medium">Krav</th>
                       <th className="text-left px-4 py-2 text-gray-9000 font-medium">Deadline</th>
@@ -113,7 +113,7 @@ export function JurisdictionView() {
                   </thead>
                   <tbody>
                     {reqs.map(req => (
-                      <tr key={req.id} className="border-b border-white/[0.03] hover:bg-gray-50 transition-colors">
+                      <tr key={req.id} className="border-b border-white/[0.03] hover:bg-muted/30 transition-colors">
                         <td className="px-4 py-2.5 text-gray-9000 font-mono text-xs">{req.authority}</td>
                         <td className="px-4 py-2.5">
                           <div className="text-gray-800">{req.requirement}</div>

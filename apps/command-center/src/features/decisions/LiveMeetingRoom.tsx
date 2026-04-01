@@ -202,7 +202,7 @@ export function LiveMeetingRoom({ meetingId = 'meeting-001' }: { meetingId?: str
     cursor: 'pointer',
     fontSize: 13,
     fontWeight: 600,
-    background: activeTab === tab ? '#5856D6' : 'transparent',
+    background: activeTab === tab ? '#2563EB' : 'transparent',
     color: activeTab === tab ? '#FFFFFF' : '#6B7280',
     position: 'relative',
   })
@@ -302,7 +302,7 @@ export function LiveMeetingRoom({ meetingId = 'meeting-001' }: { meetingId?: str
                   background: '#FFFFFF',
                   borderRadius: 14,
                   padding: '16px 20px',
-                  border: `2px solid ${item.status === 'active' ? '#5856D6' : item.status === 'done' ? '#34C75930' : 'rgba(0,0,0,0.06)'}`,
+                  border: `2px solid ${item.status === 'active' ? '#2563EB' : item.status === 'done' ? '#34C75930' : 'rgba(0,0,0,0.06)'}`,
                   opacity: item.status === 'done' ? 0.6 : 1,
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -316,8 +316,8 @@ export function LiveMeetingRoom({ meetingId = 'meeting-001' }: { meetingId?: str
                         justifyContent: 'center',
                         fontSize: 12,
                         fontWeight: 700,
-                        background: item.status === 'done' ? '#34C75920' : item.status === 'active' ? '#5856D620' : '#F3F4F6',
-                        color: item.status === 'done' ? '#065F46' : item.status === 'active' ? '#5856D6' : '#9CA3AF',
+                        background: item.status === 'done' ? '#34C75920' : item.status === 'active' ? '#2563EB20' : '#F3F4F6',
+                        color: item.status === 'done' ? '#065F46' : item.status === 'active' ? '#2563EB' : '#9CA3AF',
                       }}>
                         {item.status === 'done' ? '✓' : i + 1}
                       </div>
@@ -335,7 +335,7 @@ export function LiveMeetingRoom({ meetingId = 'meeting-001' }: { meetingId?: str
                       <button onClick={() => advanceAgenda(item.id)} style={{
                         padding: '6px 14px',
                         borderRadius: 8,
-                        background: '#5856D6',
+                        background: '#2563EB',
                         color: '#FFF',
                         border: 'none',
                         fontSize: 12,
@@ -365,7 +365,7 @@ export function LiveMeetingRoom({ meetingId = 'meeting-001' }: { meetingId?: str
                 borderRadius: 12,
                 border: '2px dashed rgba(0,0,0,0.15)',
                 background: 'transparent',
-                color: '#5856D6',
+                color: '#2563EB',
                 fontSize: 14,
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -387,7 +387,7 @@ export function LiveMeetingRoom({ meetingId = 'meeting-001' }: { meetingId?: str
                 />
                 <div style={{ display: 'flex', gap: 8 }}>
                   <button onClick={() => openVote(newVoteQuestion)} disabled={!newVoteQuestion} style={{
-                    flex: 2, padding: '10px', background: '#5856D6', color: '#FFF', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer',
+                    flex: 2, padding: '10px', background: '#2563EB', color: '#FFF', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer',
                   }}>Starta omröstning</button>
                   <button onClick={() => setShowAddVote(false)} style={{
                     flex: 1, padding: '10px', background: '#F3F4F6', color: '#6B7280', border: 'none', borderRadius: 10, fontSize: 14, cursor: 'pointer',
@@ -416,7 +416,7 @@ export function LiveMeetingRoom({ meetingId = 'meeting-001' }: { meetingId?: str
                   borderRadius: 14,
                   padding: 20,
                   marginBottom: 12,
-                  border: `2px solid ${vote.status === 'open' ? '#5856D6' : vote.result === 'approved' ? '#34C759' : vote.result === 'rejected' ? '#FF3B30' : '#FF9500'}`,
+                  border: `2px solid ${vote.status === 'open' ? '#2563EB' : vote.result === 'approved' ? '#34C759' : vote.result === 'rejected' ? '#FF3B30' : '#FF9500'}`,
                 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
                     <div>
@@ -501,7 +501,7 @@ export function LiveMeetingRoom({ meetingId = 'meeting-001' }: { meetingId?: str
                 borderRadius: 12,
                 border: '2px dashed rgba(0,0,0,0.15)',
                 background: 'transparent',
-                color: '#5856D6',
+                color: '#2563EB',
                 fontSize: 14,
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -541,7 +541,7 @@ export function LiveMeetingRoom({ meetingId = 'meeting-001' }: { meetingId?: str
                 </div>
                 <div style={{ display: 'flex', gap: 8 }}>
                   <button onClick={addAction} disabled={!newAction.title || !newAction.ownerId} style={{
-                    flex: 2, padding: '10px', background: '#5856D6', color: '#FFF', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer',
+                    flex: 2, padding: '10px', background: '#2563EB', color: '#FFF', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer',
                   }}>Lägg till</button>
                   <button onClick={() => setShowAddAction(false)} style={{
                     flex: 1, padding: '10px', background: '#F3F4F6', color: '#6B7280', border: 'none', borderRadius: 10, fontSize: 14, cursor: 'pointer',
@@ -566,7 +566,7 @@ export function LiveMeetingRoom({ meetingId = 'meeting-001' }: { meetingId?: str
                   padding: '16px 20px',
                   marginBottom: 10,
                   border: '1px solid rgba(0,0,0,0.08)',
-                  borderLeft: `4px solid ${action.signedBy.length >= 2 ? '#34C759' : '#5856D6'}`,
+                  borderLeft: `4px solid ${action.signedBy.length >= 2 ? '#34C759' : '#2563EB'}`,
                 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div style={{ flex: 1 }}>
@@ -581,9 +581,9 @@ export function LiveMeetingRoom({ meetingId = 'meeting-001' }: { meetingId?: str
                     <button onClick={() => signAction(action.id)} disabled={signed} style={{
                       padding: '8px 16px',
                       borderRadius: 10,
-                      background: signed ? '#34C75915' : '#5856D620',
-                      color: signed ? '#34C759' : '#5856D6',
-                      border: `1px solid ${signed ? '#34C75930' : '#5856D630'}`,
+                      background: signed ? '#34C75915' : '#2563EB20',
+                      color: signed ? '#34C759' : '#2563EB',
+                      border: `1px solid ${signed ? '#34C75930' : '#2563EB30'}`,
                       fontSize: 12,
                       fontWeight: 600,
                       cursor: signed ? 'not-allowed' : 'pointer',

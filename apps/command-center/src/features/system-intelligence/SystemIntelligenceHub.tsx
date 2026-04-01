@@ -98,7 +98,7 @@ const ENTITY_HEALTH: EntityHealth[] = [
     trend: 'up',
     signals: ['Holding-struktur planerad', 'IP-ägarskap definierat', 'Dubai-formation pågår'],
     stressors: ['Formation ej klar', 'Inga revenues ännu', 'Bank-konto ej öppnat'],
-    color: '#8B5CF6',
+    color: '#2563EB',
   },
   {
     id: 'wdo',
@@ -383,7 +383,7 @@ function EntityCard({ entity }: { entity: EntityHealth }) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-lg">{entity.emoji}</span>
-            <span className="font-bold text-gray-900 text-sm">{entity.name}</span>
+            <span className="font-bold text-text-primary text-sm">{entity.name}</span>
             <span
               className="text-xs font-bold px-1.5 py-0.5 rounded"
               style={{ backgroundColor: statusColors[entity.status] + '22', color: statusColors[entity.status] }}
@@ -453,7 +453,7 @@ function RiskMatrix() {
             key={risk.id}
             onClick={() => setSelectedRisk(selectedRisk === risk.id ? null : risk.id)}
             className={`text-left rounded-xl p-3 border transition-all ${
-              selectedRisk === risk.id ? 'border-white/30 bg-gray-100' : 'border-gray-200 bg-gray-50 hover:bg-white/8'
+              selectedRisk === risk.id ? 'border-white/30 bg-muted' : 'border-surface-border bg-muted/30 hover:bg-white/8'
             }`}
           >
             <div className="flex items-center gap-2 mb-1">
@@ -464,23 +464,23 @@ function RiskMatrix() {
                 {levelLabels[risk.level]}
               </div>
               <span className="text-xs text-gray-9000">{risk.category}</span>
-              <span className="ml-auto text-xs font-bold text-gray-900">{risk.riskScore}</span>
+              <span className="ml-auto text-xs font-bold text-text-primary">{risk.riskScore}</span>
             </div>
-            <div className="text-sm font-medium text-gray-900">{risk.title}</div>
+            <div className="text-sm font-medium text-text-primary">{risk.title}</div>
             <div className="text-xs text-gray-9000 mt-0.5 truncate">{risk.owner}</div>
 
             {/* P×I bars */}
             <div className="flex gap-3 mt-2">
               <div className="flex items-center gap-1.5 text-xs">
                 <span className="text-gray-9000">P</span>
-                <div className="w-20 bg-gray-50 rounded-full h-1.5">
+                <div className="w-20 bg-muted/30 rounded-full h-1.5">
                   <div className="h-full rounded-full bg-amber-500" style={{ width: `${risk.probability * 10}%` }} />
                 </div>
                 <span className="text-amber-700">{risk.probability}</span>
               </div>
               <div className="flex items-center gap-1.5 text-xs">
                 <span className="text-gray-9000">I</span>
-                <div className="w-20 bg-gray-50 rounded-full h-1.5">
+                <div className="w-20 bg-muted/30 rounded-full h-1.5">
                   <div className="h-full rounded-full bg-red-500" style={{ width: `${risk.impact * 10}%` }} />
                 </div>
                 <span className="text-red-700">{risk.impact}</span>
@@ -493,7 +493,7 @@ function RiskMatrix() {
       {/* Right: detail */}
       <div className="flex-1">
         {selected ? (
-          <div className="rounded-xl border border-gray-200 bg-gray-50 p-5 flex flex-col gap-4">
+          <div className="rounded-xl border border-surface-border bg-muted/30 p-5 flex flex-col gap-4">
             <div className="flex items-start gap-3">
               <div
                 className="text-xs font-bold px-2 py-1 rounded uppercase"
@@ -502,7 +502,7 @@ function RiskMatrix() {
                 {levelLabels[selected.level]} RISK
               </div>
               <div>
-                <h3 className="text-lg font-bold text-gray-900">{selected.title}</h3>
+                <h3 className="text-lg font-bold text-text-primary">{selected.title}</h3>
                 <div className="text-xs text-gray-9000">{selected.category} · Owner: {selected.owner}</div>
               </div>
             </div>
@@ -517,7 +517,7 @@ function RiskMatrix() {
                 <div className="text-xs text-gray-9000">Impact</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-gray-900">{selected.riskScore}</div>
+                <div className="text-2xl font-bold text-text-primary">{selected.riskScore}</div>
                 <div className="text-xs text-gray-9000">Risk Score</div>
               </div>
             </div>
@@ -527,7 +527,7 @@ function RiskMatrix() {
             </div>
             {selected.eta && (
               <div className="flex items-center gap-2 text-xs text-gray-9000">
-                <ClockIcon /> Deadline: <span className="text-gray-900">{selected.eta}</span>
+                <ClockIcon /> Deadline: <span className="text-text-primary">{selected.eta}</span>
               </div>
             )}
           </div>
@@ -548,7 +548,7 @@ function DecisionLog() {
   const statusColors: Record<string, string> = {
     pending: '#F59E0B',
     executing: '#3B82F6',
-    monitoring: '#8B5CF6',
+    monitoring: '#2563EB',
     closed: '#10B981',
   }
   const statusLabels: Record<string, string> = {
@@ -561,7 +561,7 @@ function DecisionLog() {
   return (
     <div className="flex flex-col gap-3">
       {DECISION_LOG.map(entry => (
-        <div key={entry.id} className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+        <div key={entry.id} className="rounded-xl border border-surface-border bg-muted/30 p-4">
           <div className="flex items-start gap-3">
             <div className="flex flex-col items-center gap-1 flex-shrink-0 pt-1">
               <div
@@ -586,9 +586,9 @@ function DecisionLog() {
                 <span className="text-xs text-gray-9000">av {entry.decisionMaker}</span>
                 <span className="ml-auto text-xs text-gray-9000">Impact: {'★'.repeat(entry.impactScore)}</span>
               </div>
-              <h4 className="text-sm font-bold text-gray-900 mb-1">{entry.decision}</h4>
+              <h4 className="text-sm font-bold text-text-primary mb-1">{entry.decision}</h4>
               <p className="text-xs text-gray-9000 mb-2">{entry.context}</p>
-              <div className="rounded bg-gray-50 border border-gray-200 px-3 py-2">
+              <div className="rounded bg-muted/30 border border-surface-border px-3 py-2">
                 <div className="text-xs font-semibold text-gray-9000 uppercase tracking-wide mb-0.5">Konsekvens</div>
                 <p className="text-xs text-gray-600">{entry.consequence}</p>
               </div>
@@ -618,7 +618,7 @@ function MarketSignals() {
       {MARKET_SIGNALS.map(signal => (
         <div
           key={signal.id}
-          className={`rounded-xl border p-4 ${signal.actionable ? 'border-white/15 bg-gray-50' : 'border-white/8 bg-white/3 opacity-70'}`}
+          className={`rounded-xl border p-4 ${signal.actionable ? 'border-white/15 bg-muted/30' : 'border-white/8 bg-white/3 opacity-70'}`}
         >
           <div className="flex items-start gap-3">
             <div className="mt-0.5">
@@ -662,14 +662,14 @@ function MarketSignals() {
 
 function PixPhilosophy() {
   const pixLayers = [
-    { layer: 'Core Layer', description: 'PIX Event Layer + Ledger + Identity + Company Core', color: '#8B5CF6', note: 'Aldrig modulärt — grunden som aldrig byts ut' },
+    { layer: 'Core Layer', description: 'PIX Event Layer + Ledger + Identity + Company Core', color: '#2563EB', note: 'Aldrig modulärt — grunden som aldrig byts ut' },
     { layer: 'Module Layer', description: 'Execution · Process · Finance · Workforce · Workshop · Intelligence', color: '#3B82F6', note: 'Vad kunder betalar för — bygger på Core' },
     { layer: 'Industry Packs', description: 'Automotive Pack · Construction Pack · Healthcare Pack · Restaurant Pack', color: '#10B981', note: 'Pre-konfigurerade bundles per bransch' },
     { layer: 'Intelligence Layer', description: 'Control Tower · Root Cause Engine · PIX Analytics · AI Insights', color: '#F59E0B', note: 'Premium-lager med högst marginal' },
   ]
 
   const quixzoomPix = [
-    { event: 'mission_created', desc: 'En ny bilduppgift läggs till på kartan — en PIX föds', color: '#8B5CF6' },
+    { event: 'mission_created', desc: 'En ny bilduppgift läggs till på kartan — en PIX föds', color: '#2563EB' },
     { event: 'photographer_assigned', desc: 'Fotograf accepterar uppdrag — PIX byter status', color: '#3B82F6' },
     { event: 'photo_captured', desc: 'Bild tagen och uppladdad — en operationell pixel levererad', color: '#F59E0B' },
     { event: 'submission_reviewed', desc: 'Kvalitetsgodkänd av AI/admin — PIX valideras', color: '#10B981' },
@@ -685,15 +685,15 @@ function PixPhilosophy() {
   return (
     <div className="flex flex-col gap-8">
       {/* Hero */}
-      <div className="rounded-2xl bg-gradient-to-br from-purple-500/10 to-blue-500/10 border border-purple-500/20 p-6">
-        <div className="text-2xl font-bold text-gray-900 mb-2">PIX — Operational Pixels</div>
+      <div className="rounded-2xl bg-gradient-to-br from-blue-600/10 to-blue-500/10 border border-blue-600/20 p-6">
+        <div className="text-2xl font-bold text-text-primary mb-2">PIX — Operational Pixels</div>
         <div className="text-sm text-gray-600 leading-relaxed max-w-2xl">
-          Varje operation består av tusentals små, konkreta händelser. Vi kallar dem <strong className="text-purple-300">PIX</strong> — operational pixels.
+          Varje operation består av tusentals små, konkreta händelser. Vi kallar dem <strong className="text-blue-400">PIX</strong> — operational pixels.
           När dessa inte är synliga blir verksamheten ogenomskinlig. När de är synliga — blir allt tydligt.
         </div>
         <div className="mt-4 grid grid-cols-3 gap-4">
           <div className="text-center">
-            <div className="text-3xl font-bold text-purple-700">∞</div>
+            <div className="text-3xl font-bold text-blue-700">∞</div>
             <div className="text-xs text-gray-9000">PIX per operation</div>
           </div>
           <div className="text-center">
@@ -710,11 +710,11 @@ function PixPhilosophy() {
       {/* Core Philosophy */}
       <div>
         <div className="text-xs font-semibold text-gray-9000 uppercase tracking-wider mb-3">Kärnprincip</div>
-        <div className="rounded-xl border border-gray-200 bg-gray-50 p-5">
-          <div className="text-lg font-bold text-gray-900 mb-2 italic">"Systems should run the business. Not the other way around."</div>
+        <div className="rounded-xl border border-surface-border bg-muted/30 p-5">
+          <div className="text-lg font-bold text-text-primary mb-2 italic">"Systems should run the business. Not the other way around."</div>
           <p className="text-sm text-gray-600 leading-relaxed">
             Avancerade bolag som Amazon, Nvidia och Tesla uppnår inte hög output av slumpen. De opererar på system som
-            <strong className="text-gray-900"> spårar verkligheten i realtid</strong>, kontinuerligt rekalibrerar och förbättrar sig
+            <strong className="text-text-primary"> spårar verkligheten i realtid</strong>, kontinuerligt rekalibrerar och förbättrar sig
             själva genom struktur. Wavult OS ger detta till alla bolag — inte som rapporter, utan som verklighet.
           </p>
         </div>
@@ -737,7 +737,7 @@ function PixPhilosophy() {
                 {i + 1}
               </div>
               <div className="flex-1">
-                <div className="font-semibold text-gray-900 text-sm">{layer.layer}</div>
+                <div className="font-semibold text-text-primary text-sm">{layer.layer}</div>
                 <div className="text-xs text-gray-600 mt-0.5">{layer.description}</div>
                 <div className="text-xs mt-1 italic" style={{ color: layer.color }}>{layer.note}</div>
               </div>
@@ -765,10 +765,10 @@ function PixPhilosophy() {
                     {i + 1}
                   </div>
                   {i < quixzoomPix.length - 1 && (
-                    <div className="w-px h-4 bg-gray-100 ml-2" />
+                    <div className="w-px h-4 bg-muted ml-2" />
                   )}
                 </div>
-                <div className="flex-1 rounded-lg bg-gray-50 border border-gray-200 px-3 py-2">
+                <div className="flex-1 rounded-lg bg-muted/30 border border-surface-border px-3 py-2">
                   <div className="flex items-center gap-2">
                     <code className="text-xs font-mono" style={{ color: pix.color }}>{pix.event}</code>
                     <span className="text-xs text-gray-9000">— {pix.desc}</span>
@@ -786,7 +786,7 @@ function PixPhilosophy() {
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
             <thead>
-              <tr className="border-b border-gray-200">
+              <tr className="border-b border-surface-border">
                 <th className="text-left text-gray-9000 pb-2 pr-4">System</th>
                 <th className="text-left text-gray-9000 pb-2 pr-4">Kostnad</th>
                 <th className="text-left text-gray-9000 pb-2 pr-4">Driftsättning</th>
@@ -808,7 +808,7 @@ function PixPhilosophy() {
       </div>
 
       {/* Modular strategy */}
-      <div className="rounded-xl border border-gray-200 bg-gray-50 p-5">
+      <div className="rounded-xl border border-surface-border bg-muted/30 p-5">
         <div className="text-xs font-semibold text-gray-9000 uppercase tracking-wider mb-3">Modulär Strategi</div>
         <div className="grid grid-cols-2 gap-3 text-xs">
           <div>
@@ -824,7 +824,7 @@ function PixPhilosophy() {
             <div className="text-gray-600">• Operativsystem (BOS)</div>
           </div>
         </div>
-        <div className="mt-3 text-xs text-gray-9000 italic border-t border-gray-200 pt-3">
+        <div className="mt-3 text-xs text-gray-9000 italic border-t border-surface-border pt-3">
           Sell modularity. Build as modular monolith. Extract to microservices under scale pressure.
         </div>
       </div>
@@ -854,15 +854,15 @@ export function SystemIntelligenceHub() {
   const highRisks = RISK_MATRIX.filter(r => r.level === 'high').length
 
   return (
-    <div className="h-full flex flex-col bg-gray-50 text-gray-900 overflow-hidden">
+    <div className="h-full flex flex-col bg-muted/30 text-text-primary overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-gray-200 flex-shrink-0">
+      <div className="flex items-center justify-between px-4 md:px-6 py-4 border-b border-surface-border flex-shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-blue-500/20 flex items-center justify-center">
             <ActivityIcon />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-gray-900">System Intelligence</h1>
+            <h1 className="text-lg font-bold text-text-primary">System Intelligence</h1>
             <p className="text-xs text-gray-9000">Koncernhälsa · Risker · Beslut · Marknad</p>
           </div>
         </div>
@@ -894,8 +894,8 @@ export function SystemIntelligenceHub() {
             onClick={() => setActiveTab(t.id)}
             className={`flex items-center gap-1.5 text-xs px-3 py-2 rounded-t-lg font-medium border-b-2 transition-all ${
               activeTab === t.id
-                ? 'text-gray-900 border-blue-500 bg-white/8'
-                : 'text-gray-9000 border-transparent hover:text-gray-900 hover:bg-gray-50'
+                ? 'text-text-primary border-blue-500 bg-white/8'
+                : 'text-gray-9000 border-transparent hover:text-text-primary hover:bg-muted/30'
             }`}
           >
             <span>{t.icon}</span>
@@ -903,7 +903,7 @@ export function SystemIntelligenceHub() {
           </button>
         ))}
       </div>
-      <div className="h-px bg-gray-100 flex-shrink-0" />
+      <div className="h-px bg-muted flex-shrink-0" />
 
       {/* Content */}
       <div className="flex-1 overflow-auto p-5">
@@ -913,7 +913,7 @@ export function SystemIntelligenceHub() {
               <EntityCard key={entity.id} entity={entity} />
             ))}
             {/* Group summary card */}
-            <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 flex flex-col gap-2">
+            <div className="rounded-xl border border-surface-border bg-muted/30 p-4 flex flex-col gap-2">
               <div className="text-xs font-semibold text-gray-9000 uppercase tracking-wider">Koncernhälsa (λ)</div>
               <div className={`text-4xl font-mono font-bold ${avgHealth >= 70 ? 'text-green-700' : avgHealth >= 40 ? 'text-amber-700' : 'text-red-700'}`}>
                 λ {(avgHealth / 100).toFixed(2)}
@@ -926,7 +926,7 @@ export function SystemIntelligenceHub() {
                 {ENTITY_HEALTH.map(e => (
                   <div key={e.id} className="flex items-center gap-2 text-xs">
                     <span className="w-16 text-gray-9000">{e.code}</span>
-                    <div className="flex-1 bg-gray-50 rounded-full h-1.5">
+                    <div className="flex-1 bg-muted/30 rounded-full h-1.5">
                       <div
                         className="h-full rounded-full"
                         style={{
@@ -935,7 +935,7 @@ export function SystemIntelligenceHub() {
                         }}
                       />
                     </div>
-                    <span className="text-gray-900 w-6 text-right">{e.healthScore}</span>
+                    <span className="text-text-primary w-6 text-right">{e.healthScore}</span>
                   </div>
                 ))}
               </div>

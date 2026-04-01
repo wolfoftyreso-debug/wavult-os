@@ -155,14 +155,14 @@ export function IntercompanyView() {
     <div className="space-y-4">
       {/* Header */}
       <div>
-        <h2 className="text-lg font-bold text-gray-900">Intercompany</h2>
+        <h2 className="text-lg font-bold text-text-primary">Intercompany</h2>
         <p className="text-xs text-gray-9000 mt-0.5">Mellanhavanden &amp; skattestruktur — Wavult Group</p>
       </div>
 
       {/* What is intercompany — plain language explanation */}
-      <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+      <div className="rounded-xl border border-surface-border bg-muted/30 px-4 py-3">
         <p className="text-xs text-gray-9000 leading-relaxed">
-          <span className="font-semibold text-gray-900">Vad är intercompany?</span>{' '}
+          <span className="font-semibold text-text-primary">Vad är intercompany?</span>{' '}
           Betalningar <em>inom</em> koncernen — t.ex. när ett dotterbolag betalar en licensavgift till holdingbolaget i Dubai.
           Det är inte försäljning till kund — det är pengar som <span className="text-gray-9000">flyttas</span> mellan egna bolag.
           Syftet kan vara skatteoptimering, koncernintern finansiering, eller fördelning av tjänster.
@@ -170,15 +170,15 @@ export function IntercompanyView() {
       </div>
 
       {/* Visual flow diagram */}
-      <div className="rounded-xl border border-gray-200 bg-white p-4">
-        <p className="text-xs font-semibold text-gray-900 mb-3">💸 Pengarnas väg — koncernstruktur</p>
+      <div className="rounded-xl border border-surface-border bg-white p-4">
+        <p className="text-xs font-semibold text-text-primary mb-3">💸 Pengarnas väg — koncernstruktur</p>
         {/* Flow: subsidiaries → Dubai */}
         <div className="flex flex-col items-center gap-2">
           {/* Subsidiaries row */}
           <div className="flex flex-wrap gap-2 justify-center">
             {[
               { name: 'Landvex AB', flag: '🇸🇪', color: '#3B82F6', fee: '45k SEK/mån' },
-              { name: 'Landvex Inc', flag: '🇺🇸', color: '#8B5CF6', fee: '6k USD/mån' },
+              { name: 'Landvex Inc', flag: '🇺🇸', color: '#2563EB', fee: '6k USD/mån' },
               { name: 'QuiXzoom Inc', flag: '🇺🇸', color: '#F59E0B', fee: '8.5k USD/mån' },
               { name: 'QuiXzoom UAB', flag: '🇱🇹', color: '#10B981', fee: '7.2k EUR/mån' },
             ].map(sub => (
@@ -186,7 +186,7 @@ export function IntercompanyView() {
                 className="flex flex-col items-center px-3 py-2 rounded-lg border text-center"
                 style={{ borderColor: sub.color + '40', background: sub.color + '10' }}>
                 <span className="text-base">{sub.flag}</span>
-                <span className="text-xs font-semibold text-gray-900 mt-0.5">{sub.name}</span>
+                <span className="text-xs font-semibold text-text-primary mt-0.5">{sub.name}</span>
                 <span className="text-[9px] font-mono mt-0.5" style={{ color: sub.color }}>{sub.fee}</span>
               </div>
             ))}
@@ -201,13 +201,13 @@ export function IntercompanyView() {
           {/* Dubai holding */}
           <div className="flex flex-col items-center px-6 py-3 rounded-xl border border-emerald-500/40 bg-emerald-500/10 text-center">
             <span className="text-2xl">🇦🇪</span>
-            <span className="text-xs font-bold text-gray-700 mt-1">Dubai — 3 Bolag</span>
+            <span className="text-xs font-bold text-text-secondary mt-1">Dubai — 3 Bolag</span>
             <div className="flex flex-col gap-0.5 mt-1">
               <span className="text-xs text-gray-9000 font-mono">Wavult Group FZCO — IP + Holding</span>
               <span className="text-xs text-gray-9000 font-mono">DevOps FZCO — Tech & Operations</span>
               <span className="text-xs text-gray-9000 font-mono">FinanceCo FZCO — Payments & Treasury</span>
             </div>
-            <span className="text-[14px] font-bold text-gray-700 mt-1">≈ €{TOTAL_DUBAI_EUR.toLocaleString()}/mån</span>
+            <span className="text-[14px] font-bold text-text-secondary mt-1">≈ €{TOTAL_DUBAI_EUR.toLocaleString()}/mån</span>
           </div>
         </div>
       </div>
@@ -233,8 +233,8 @@ export function IntercompanyView() {
             onClick={() => setSection(tab.id)}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap flex-shrink-0 ${
               section === tab.id
-                ? 'bg-gray-50 text-gray-600 border border-gray-200'
-                : 'text-gray-9000 hover:text-gray-600 hover:bg-gray-50'
+                ? 'bg-muted/30 text-gray-600 border border-gray-200'
+                : 'text-gray-9000 hover:text-gray-600 hover:bg-muted/30'
             }`}
           >
             <span className="text-xs">{tab.icon}</span>
@@ -250,7 +250,7 @@ export function IntercompanyView() {
           <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 flex items-center justify-between">
             <div>
               <p className="text-xs text-gray-9000 font-mono uppercase tracking-widest">Total insamlat i Dubai / mån</p>
-              <p className="text-3xl font-bold text-gray-700 mt-1">≈ €{TOTAL_DUBAI_EUR.toLocaleString()}</p>
+              <p className="text-3xl font-bold text-text-secondary mt-1">≈ €{TOTAL_DUBAI_EUR.toLocaleString()}</p>
               <p className="text-xs text-gray-9000 mt-0.5">Wavult Group FZCO + DevOps FZCO + FinanceCo FZCO — 0% corporate tax</p>
             </div>
             <div className="text-5xl opacity-30">🇦🇪</div>
@@ -259,11 +259,11 @@ export function IntercompanyView() {
           {/* Flow cards */}
           <div className="grid grid-cols-1 gap-3">
             {LICENSE_FEES.map(lf => (
-              <div key={lf.fromId} className="rounded-xl border border-gray-200 bg-white p-4">
+              <div key={lf.fromId} className="rounded-xl border border-surface-border bg-white p-4">
                 <div className="flex items-center gap-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-gray-900">{lf.from}</span>
+                      <span className="text-sm font-bold text-text-primary">{lf.from}</span>
                       <span className="text-[9px] text-gray-9000 font-mono">{lf.jurisdiction}</span>
                     </div>
                     <div className="flex items-center gap-2 mt-1.5">
@@ -276,7 +276,7 @@ export function IntercompanyView() {
                   </div>
                   <div className="text-right">
                     <p className="text-xs text-gray-9000">≈ EUR-ekvivalent</p>
-                    <p className="text-[16px] font-bold text-gray-900 font-mono">€{lf.euroEquiv.toLocaleString()}</p>
+                    <p className="text-[16px] font-bold text-text-primary font-mono">€{lf.euroEquiv.toLocaleString()}</p>
                   </div>
                 </div>
                 {/* Progress bar showing share of total */}
@@ -285,7 +285,7 @@ export function IntercompanyView() {
                     <span>Andel av total Dubai-inkomst</span>
                     <span>{((lf.euroEquiv / TOTAL_DUBAI_EUR) * 100).toFixed(1)}%</span>
                   </div>
-                  <div className="h-1 rounded-full bg-gray-50">
+                  <div className="h-1 rounded-full bg-muted/30">
                     <div
                       className="h-1 rounded-full bg-emerald-500"
                       style={{ width: `${(lf.euroEquiv / TOTAL_DUBAI_EUR) * 100}%` }}
@@ -301,14 +301,14 @@ export function IntercompanyView() {
       {/* ── Sektion B — Management Fee Dashboard ──────────────────────── */}
       {section === 'mgmt' && (
         <div className="space-y-4">
-          <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+          <div className="rounded-xl border border-surface-border bg-muted/30 p-4">
             <p className="text-xs font-semibold text-gray-600 mb-1">🏛️ Management Services</p>
             <p className="text-xs text-gray-9000 leading-relaxed">
               Wavult Group FZCO (Holding) äger IP och varumärken. 
 DevOps FZCO tillhandahåller tech-tjänster. 
 FinanceCo FZCO hanterar alla betalningsflöden, payouts och treasury.
 Alla tre är 100% ägda av Wavult Group (Erik Svensson).
-              Kostnaden sätts till <strong className="text-gray-900">15% av resp. bolags omsättning</strong> och
+              Kostnaden sätts till <strong className="text-text-primary">15% av resp. bolags omsättning</strong> och
               faktureras månadsvis. Detta är avdragsgillt i respektive land och reducerar lokal beskattningsbar vinst.
             </p>
           </div>
@@ -323,10 +323,10 @@ Alla tre är 100% ägda av Wavult Group (Erik Svensson).
               const fee = row.revenue * row.rate
               const taxSaving = fee * (row.currency === 'SEK' ? 0.206 : 0.21)
               return (
-                <div key={row.entity} className="rounded-xl border border-gray-200 bg-white p-4">
+                <div key={row.entity} className="rounded-xl border border-surface-border bg-white p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-bold text-gray-900">{row.entity}</p>
+                      <p className="text-sm font-bold text-text-primary">{row.entity}</p>
                       <p className="text-xs text-gray-9000 font-mono mt-0.5">
                         Omsättning: {row.revenue.toLocaleString()} {row.currency}/mån
                       </p>
@@ -338,7 +338,7 @@ Alla tre är 100% ägda av Wavult Group (Erik Svensson).
                       </p>
                     </div>
                   </div>
-                  <div className="mt-2 pt-2 border-t border-gray-200 flex justify-between">
+                  <div className="mt-2 pt-2 border-t border-surface-border flex justify-between">
                     <span className="text-xs text-gray-9000">→ Dubai FZCO (IP → WG, Tech → DevOps, $$ → FinanceCo)</span>
                     <span className="text-xs text-green-700 font-mono">
                       Skattebesparning: ~{taxSaving.toFixed(0)} {row.currency}
@@ -363,18 +363,18 @@ Alla tre är 100% ägda av Wavult Group (Erik Svensson).
 
           {/* Netting from live entries */}
           {nettingEntries.length > 0 ? (
-            <div className="rounded-xl border border-gray-200 overflow-hidden">
+            <div className="rounded-xl border border-surface-border overflow-hidden">
               <div className="divide-y divide-gray-100">
                 {nettingEntries.map((pair, i) => (
-                  <div key={i} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors">
+                  <div key={i} className="flex items-center gap-3 px-4 py-3 hover:bg-muted/30 transition-colors">
                     <div className="flex items-center gap-1.5">
                       <span className="h-1.5 w-1.5 rounded-full" style={{ background: entityColor(pair.fromId) }} />
-                      <span className="text-xs text-gray-900 font-semibold">{entityShortName(pair.fromId)}</span>
+                      <span className="text-xs text-text-primary font-semibold">{entityShortName(pair.fromId)}</span>
                     </div>
                     <span className="text-gray-9000 text-sm">→</span>
                     <div className="flex items-center gap-1.5">
                       <span className="h-1.5 w-1.5 rounded-full" style={{ background: entityColor(pair.toId) }} />
-                      <span className="text-xs text-gray-900 font-semibold">{entityShortName(pair.toId)}</span>
+                      <span className="text-xs text-text-primary font-semibold">{entityShortName(pair.toId)}</span>
                     </div>
                     <span className="ml-auto text-xs font-bold text-amber-700 font-mono">{fmt(pair.netAmount, pair.currency)}</span>
                     <span className="text-[9px] text-gray-9000 font-mono">{pair.count} poster</span>
@@ -388,7 +388,7 @@ Alla tre är 100% ägda av Wavult Group (Erik Svensson).
 
           {/* Dubai accumulation */}
           <div className="rounded-xl border border-emerald-500/20 bg-white p-4 space-y-2">
-            <p className="text-xs font-semibold text-gray-700">🏦 Kvarvar i Dubai (Wavult Group + DevOps + FinanceCo FZCO)</p>
+            <p className="text-xs font-semibold text-text-secondary">🏦 Kvarvar i Dubai (Wavult Group + DevOps + FinanceCo FZCO)</p>
             <div className="grid grid-cols-3 gap-3 mt-2">
               {[
                 { label: '/mån', value: TOTAL_DUBAI_EUR, suffix: '' },
@@ -397,7 +397,7 @@ Alla tre är 100% ägda av Wavult Group (Erik Svensson).
               ].map(col => (
                 <div key={col.label} className="text-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 p-3">
                   <p className="text-[9px] text-gray-9000 font-mono uppercase">{col.label}</p>
-                  <p className="text-[15px] font-bold text-gray-700 font-mono mt-1">
+                  <p className="text-[15px] font-bold text-text-secondary font-mono mt-1">
                     €{col.value.toLocaleString()}
                   </p>
                 </div>
@@ -413,19 +413,19 @@ Alla tre är 100% ägda av Wavult Group (Erik Svensson).
       {/* ── Sektion D — Skatteoptimering ──────────────────────────────── */}
       {section === 'tax' && (
         <div className="space-y-4">
-          <div className="rounded-xl border border-purple-500/20 bg-purple-500/05 p-4">
-            <p className="text-xs font-semibold text-purple-300 mb-1">📊 Skatteeffekt per jurisdiktion</p>
+          <div className="rounded-xl border border-blue-600/20 bg-blue-600/05 p-4">
+            <p className="text-xs font-semibold text-blue-400 mb-1">📊 Skatteeffekt per jurisdiktion</p>
             <p className="text-xs text-gray-9000">
               Licensavgifterna minskar beskattningsbar vinst i högskatteländer och samlas i Dubai (0% skatt).
             </p>
           </div>
 
           {/* Tax table */}
-          <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
+          <div className="rounded-xl border border-surface-border bg-white overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-xs">
                 <thead>
-                  <tr className="border-b border-gray-200">
+                  <tr className="border-b border-surface-border">
                     {['Entitet', 'Jurisdiktion', 'Skattesats', 'Beskattningsbar vinst', 'Skatt', 'Vinst till Dubai'].map(h => (
                       <th key={h} className="text-left px-4 py-2.5 text-xs text-gray-9000 font-mono uppercase tracking-wide">
                         {h}
@@ -435,13 +435,13 @@ Alla tre är 100% ägda av Wavult Group (Erik Svensson).
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {LICENSE_FEES.map(lf => (
-                    <tr key={lf.fromId} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-4 py-3 font-semibold text-gray-900">{lf.from}</td>
+                    <tr key={lf.fromId} className="hover:bg-muted/30 transition-colors">
+                      <td className="px-4 py-3 font-semibold text-text-primary">{lf.from}</td>
                       <td className="px-4 py-3 text-gray-9000">{lf.jurisdiction}</td>
                       <td className="px-4 py-3">
                         <span className="font-mono text-red-700">{(lf.taxRate * 100).toFixed(1)}%</span>
                       </td>
-                      <td className="px-4 py-3 font-mono text-gray-900">
+                      <td className="px-4 py-3 font-mono text-text-primary">
                         {lf.localTaxableProfit.toLocaleString()} {lf.currency}
                       </td>
                       <td className="px-4 py-3 font-mono text-red-700">
@@ -454,7 +454,7 @@ Alla tre är 100% ägda av Wavult Group (Erik Svensson).
                   ))}
                   {/* Dubai row */}
                   <tr className="bg-emerald-500/05 border-t border-emerald-500/20">
-                    <td className="px-4 py-3 font-semibold text-gray-700">
+                    <td className="px-4 py-3 font-semibold text-text-secondary">
                       Wavult Group FZCO<br/>
                       <span className="text-xs font-normal text-gray-9000">+ DevOps FZCO + FinanceCo FZCO</span>
                     </td>
@@ -462,7 +462,7 @@ Alla tre är 100% ägda av Wavult Group (Erik Svensson).
                     <td className="px-4 py-3">
                       <span className="font-mono text-gray-9000 font-bold">0%</span>
                     </td>
-                    <td className="px-4 py-3 font-mono text-gray-700">
+                    <td className="px-4 py-3 font-mono text-text-secondary">
                       ≈ €{TOTAL_DUBAI_EUR.toLocaleString()}
                     </td>
                     <td className="px-4 py-3 font-mono font-bold text-gray-9000">€0</td>
@@ -498,33 +498,33 @@ Alla tre är 100% ägda av Wavult Group (Erik Svensson).
             if (entries.length === 0) return null
             const typeInfo = TYPE_CONFIG[type]
             return (
-              <div key={type} className="rounded-xl border border-gray-200 bg-white overflow-hidden">
-                <div className="px-4 py-3 border-b border-gray-200 flex items-center gap-2">
+              <div key={type} className="rounded-xl border border-surface-border bg-white overflow-hidden">
+                <div className="px-4 py-3 border-b border-surface-border flex items-center gap-2">
                   <span>{typeInfo.icon}</span>
-                  <span className="text-xs font-semibold text-gray-900">{typeInfo.label}</span>
+                  <span className="text-xs font-semibold text-text-primary">{typeInfo.label}</span>
                   <span className="text-[9px] font-mono text-gray-9000 ml-1">{entries.length} poster</span>
                 </div>
                 <div className="divide-y divide-gray-100">
                   {entries.map(ic => {
                     const st = STATUS_CONFIG[ic.status]
                     return (
-                      <div key={ic.id} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors">
+                      <div key={ic.id} className="flex items-center gap-3 px-4 py-3 hover:bg-muted/30 transition-colors">
                         <div className="flex items-center gap-2 flex-1 min-w-0">
                           <div className="flex items-center gap-1.5">
                             <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: entityColor(ic.fromEntityId) }} />
-                            <span className="text-xs text-gray-900 font-semibold truncate">{entityShortName(ic.fromEntityId)}</span>
+                            <span className="text-xs text-text-primary font-semibold truncate">{entityShortName(ic.fromEntityId)}</span>
                           </div>
                           <span className="text-gray-9000 text-sm flex-shrink-0">→</span>
                           <div className="flex items-center gap-1.5">
                             <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: entityColor(ic.toEntityId) }} />
-                            <span className="text-xs text-gray-900 font-semibold truncate">{entityShortName(ic.toEntityId)}</span>
+                            <span className="text-xs text-text-primary font-semibold truncate">{entityShortName(ic.toEntityId)}</span>
                           </div>
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-xs text-gray-600 truncate">{ic.description}</p>
                           <p className="text-[9px] text-gray-9000 font-mono mt-0.5">{ic.date}</p>
                         </div>
-                        <span className="text-xs font-bold font-mono text-gray-900 flex-shrink-0">{fmt(ic.amount, ic.currency)}</span>
+                        <span className="text-xs font-bold font-mono text-text-primary flex-shrink-0">{fmt(ic.amount, ic.currency)}</span>
                         <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0"
                           style={{ color: st.color, background: st.bg }}>
                           {st.label}

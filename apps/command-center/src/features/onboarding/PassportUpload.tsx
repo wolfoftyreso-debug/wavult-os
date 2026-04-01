@@ -138,7 +138,7 @@ export function PassportUpload({ personName, personId, onComplete, onSkip }: Pas
             Börja om
           </button>
           <button onClick={handleSubmit} disabled={uploading}
-            style={{ flex: 2, padding: '10px 0', borderRadius: 8, border: 'none', background: '#7C3AED', color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: uploading ? 0.7 : 1 }}>
+            style={{ flex: 2, padding: '10px 0', borderRadius: 8, border: 'none', background: '#3B82F6', color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer', opacity: uploading ? 0.7 : 1 }}>
             {uploading ? 'Laddar upp...' : 'Bekräfta & spara säkert'}
           </button>
         </div>
@@ -154,7 +154,7 @@ export function PassportUpload({ personName, personId, onComplete, onSkip }: Pas
             {(['front', 'selfie'] as ScanSide[]).map(s => (
               <div key={s} style={{
                 flex: 1, padding: '8px 0', textAlign: 'center', fontSize: 13, fontWeight: side === s ? 600 : 400,
-                background: side === s ? '#7C3AED' : '#F9FAFB', color: side === s ? '#fff' : '#6B7280',
+                background: side === s ? '#3B82F6' : '#F9FAFB', color: side === s ? '#fff' : '#6B7280',
               }}>
                 {s === 'front' ? 'Passbild' : 'Selfie'}
                 {(s === 'front' ? frontImage : selfieImage) && ' ✓'}
@@ -173,7 +173,7 @@ export function PassportUpload({ personName, personId, onComplete, onSkip }: Pas
             <input ref={cameraRef} type="file" accept="image/*" capture="environment" style={{ display: 'none' }} onChange={handleFileSelect} />
             <input ref={fileRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleFileSelect} />
             <button onClick={() => cameraRef.current?.click()}
-              style={{ padding: '8px 16px', borderRadius: 8, border: 'none', background: '#7C3AED', color: '#fff', fontSize: 13, fontWeight: 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
+              style={{ padding: '8px 16px', borderRadius: 8, border: 'none', background: '#3B82F6', color: '#fff', fontSize: 13, fontWeight: 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}>
               <Camera style={{ width: 14, height: 14 }} /> Kamera
             </button>
             <button onClick={() => fileRef.current?.click()}
@@ -191,7 +191,7 @@ export function PassportUpload({ personName, personId, onComplete, onSkip }: Pas
     <div style={{ padding: 24 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
         <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#EDE9FE', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <ShieldCheck style={{ width: 22, height: 22, color: '#7C3AED' }} />
+          <ShieldCheck style={{ width: 22, height: 22, color: '#3B82F6' }} />
         </div>
         <div>
           <div style={{ fontSize: 16, fontWeight: 700, color: '#1C1C1E' }}>Passverifiering</div>
@@ -214,7 +214,7 @@ export function PassportUpload({ personName, personId, onComplete, onSkip }: Pas
       ].map(item => (
         <div key={item.step} style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 12 }}>
           <div style={{ width: 24, height: 24, borderRadius: '50%', background: '#EDE9FE', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-            <span style={{ fontSize: 11, fontWeight: 700, color: '#7C3AED' }}>{item.step}</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: '#3B82F6' }}>{item.step}</span>
           </div>
           <span style={{ fontSize: 13, color: '#374151' }}>{item.text}</span>
         </div>
@@ -227,7 +227,7 @@ export function PassportUpload({ personName, personId, onComplete, onSkip }: Pas
           </button>
         )}
         <button onClick={() => setStep('capture')}
-          style={{ flex: 2, padding: '10px 0', borderRadius: 8, border: 'none', background: '#7C3AED', color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+          style={{ flex: 2, padding: '10px 0', borderRadius: 8, border: 'none', background: '#3B82F6', color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
           Starta verifiering
         </button>
       </div>

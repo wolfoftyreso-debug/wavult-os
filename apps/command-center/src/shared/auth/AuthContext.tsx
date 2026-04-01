@@ -32,12 +32,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Hämta initial session
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session)
-      setUser(data.session?.user ?? null)
-      setLoading(false)
-    })
+    // Hämta initial session — med timeout så loading inte hänger för evigt
+    const sessionTimeout = setTimeout(() => setLoading(false), 2000)
+    supabase.auth.getSession()
+      .then(({ data }) => {
+        setSession(data.session)
+        setUser(data.session?.user ?? null)
+      })
+      .catch(() => {/* Supabase unreachable — visa login */})
+      .finally(() => {
+        clearTimeout(sessionTimeout)
+        setLoading(false)
+      })
 
     // Lyssna på auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {

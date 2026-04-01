@@ -35,7 +35,7 @@ export const COMPANIES: Company[] = [
     orgNr: 'FZCO-2025-DVO1',
     founded: '2025-06-01',
     status: 'aktiv',
-    color: '#7C3AED',
+    color: '#1E40AF',
   },
   {
     id: 'wavult-group',

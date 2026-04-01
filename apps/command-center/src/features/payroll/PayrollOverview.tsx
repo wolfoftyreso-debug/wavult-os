@@ -3,10 +3,10 @@ import { useTranslation } from '../../shared/i18n/useTranslation'
 
 function KpiCard({ label, value, sub, color }: { label: string; value: string; sub?: string; color: string }) {
   return (
-    <div className="bg-white border border-gray-200 rounded-xl px-5 py-4">
-      <div className="text-xs text-gray-500 mb-1">{label}</div>
+    <div className="bg-white border border-surface-border rounded-xl px-5 py-4">
+      <div className="text-xs text-text-muted mb-1">{label}</div>
       <div className="text-2xl font-bold tabular-nums" style={{ color }}>{value}</div>
-      {sub && <div className="text-xs text-gray-500 mt-1">{sub}</div>}
+      {sub && <div className="text-xs text-text-muted mt-1">{sub}</div>}
     </div>
   )
 }
@@ -16,7 +16,7 @@ export function PayrollOverview() {
   const { activeEmployees: active, totalGrossPerMonth, loading, error, calcSalary, fmt, EMPLOYER_TAX_RATE } = usePayroll()
 
   if (loading) {
-    return <div className="flex items-center justify-center h-64 text-gray-500">Laddar lönedata...</div>
+    return <div className="flex items-center justify-center h-64 text-text-muted">Laddar lönedata...</div>
   }
 
   if (error) {
@@ -57,21 +57,21 @@ export function PayrollOverview() {
 
       {/* KPI row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <KpiCard label="Total lönekostnad/mån" value={fmt(totalCost)} sub={`ink. arb.avg. ${fmt(totalEmployerTax)}`} color="#8B5CF6" />
+        <KpiCard label="Total lönekostnad/mån" value={fmt(totalCost)} sub={`ink. arb.avg. ${fmt(totalEmployerTax)}`} color="#2563EB" />
         <KpiCard label="Arbetsgivaravgifter" value={fmt(totalEmployerTax)} sub="31.42% av bruttolöner" color="#F59E0B" />
         <KpiCard label="Nettolöner totalt" value={fmt(totalNet)} sub="Utbetalt till anställda" color="#10B981" />
         <KpiCard label="Nästa utbetalning" value={payrollDateStr} sub={`Om ${daysUntil} dagar`} color={warning ? '#F59E0B' : '#3B82F6'} />
       </div>
 
       {/* Employee salary table */}
-      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-gray-200">
-          <h2 className="text-sm font-semibold text-gray-900">Anställda — löneöversikt</h2>
+      <div className="bg-white border border-surface-border rounded-xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-surface-border">
+          <h2 className="text-sm font-semibold text-text-primary">Anställda — löneöversikt</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-200 text-xs text-gray-500 uppercase tracking-wider">
+              <tr className="border-b border-surface-border text-xs text-text-muted uppercase tracking-wider">
                 <th className="text-left px-5 py-3">Namn</th>
                 <th className="text-left px-5 py-3">Roll</th>
                 <th className="text-right px-5 py-3">Bruttolön</th>
@@ -95,30 +95,30 @@ export function PayrollOverview() {
                         >
                           {emp.initials}
                         </div>
-                        <span className="text-gray-900 font-medium text-xs">{emp.name}</span>
+                        <span className="text-text-primary font-medium text-xs">{emp.name}</span>
                       </div>
                     </td>
-                    <td className="px-5 py-3 text-xs text-gray-500">{emp.role}</td>
-                    <td className="px-5 py-3 text-right text-xs text-gray-900 tabular-nums">{fmt(c.gross)}</td>
+                    <td className="px-5 py-3 text-xs text-text-muted">{emp.role}</td>
+                    <td className="px-5 py-3 text-right text-xs text-text-primary tabular-nums">{fmt(c.gross)}</td>
                     <td className="px-5 py-3 text-right text-xs text-red-700 tabular-nums">−{fmt(c.taxDeduction)}</td>
                     <td className="px-5 py-3 text-right text-xs text-green-700 tabular-nums font-semibold">{fmt(c.net)}</td>
                     <td className="px-5 py-3 text-right text-xs text-amber-700 tabular-nums">{fmt(c.employerTax)}</td>
-                    <td className="px-5 py-3 text-right text-xs text-purple-700 tabular-nums font-semibold">{fmt(c.totalCost)}</td>
-                    <td className="px-5 py-3 text-right text-xs text-gray-500">{payrollDateStr}</td>
+                    <td className="px-5 py-3 text-right text-xs text-blue-700 tabular-nums font-semibold">{fmt(c.totalCost)}</td>
+                    <td className="px-5 py-3 text-right text-xs text-text-muted">{payrollDateStr}</td>
                   </tr>
                 )
               })}
             </tbody>
             <tfoot>
-              <tr className="border-t border-gray-200 bg-gray-50/20">
-                <td colSpan={2} className="px-5 py-3 text-xs font-semibold text-gray-500">TOTALT</td>
-                <td className="px-5 py-3 text-right text-xs font-bold text-gray-900 tabular-nums">{fmt(totalGross)}</td>
+              <tr className="border-t border-surface-border bg-gray-50/20">
+                <td colSpan={2} className="px-5 py-3 text-xs font-semibold text-text-muted">TOTALT</td>
+                <td className="px-5 py-3 text-right text-xs font-bold text-text-primary tabular-nums">{fmt(totalGross)}</td>
                 <td className="px-5 py-3 text-right text-xs font-bold text-red-700 tabular-nums">
                   −{fmt(active.reduce((s, e) => s + calcSalary(e.gross_salary).taxDeduction, 0))}
                 </td>
                 <td className="px-5 py-3 text-right text-xs font-bold text-green-700 tabular-nums">{fmt(totalNet)}</td>
                 <td className="px-5 py-3 text-right text-xs font-bold text-amber-700 tabular-nums">{fmt(totalEmployerTax)}</td>
-                <td className="px-5 py-3 text-right text-xs font-bold text-purple-700 tabular-nums">{fmt(totalCost)}</td>
+                <td className="px-5 py-3 text-right text-xs font-bold text-blue-700 tabular-nums">{fmt(totalCost)}</td>
                 <td />
               </tr>
             </tfoot>

@@ -111,7 +111,7 @@ export function DimensionPill({
         <span className="text-lg flex-shrink-0">{dim.icon}</span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-gray-900">{dim.label}</span>
+            <span className="text-xs font-semibold text-text-primary">{dim.label}</span>
             <span className="text-xs px-1.5 py-0.5 rounded font-mono"
               style={{ background: color + '20', color }}>
               {LEVEL_LABEL[dim.level]}
@@ -130,7 +130,7 @@ export function DimensionPill({
 
       {/* Expanded signals */}
       {expanded && (
-        <div className="px-3 pb-3 space-y-1.5 border-t border-gray-100 pt-2.5">
+        <div className="px-3 pb-3 space-y-1.5 border-t border-surface-border/50 pt-2.5">
           {dim.signals.slice(0, 8).map((s, i) => {
             const sigColor = s.weight === 'positive' ? '#10B981' : s.weight === 'critical' ? '#EF4444' : s.weight === 'negative' ? '#F59E0B' : '#6B7280'
             const sigIcon  = s.weight === 'positive' ? '✓' : s.weight === 'critical' ? '✕' : s.weight === 'negative' ? '⚠' : '·'
@@ -165,7 +165,7 @@ export function HealthScorePanel({ hs }: { hs: EntityHealthScore }) {
         <ScoreGauge score={hs.overall} level={hs.level} size={64} strokeWidth={6} />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="text-lg font-bold text-gray-900">Health Score</span>
+            <span className="text-lg font-bold text-text-primary">Health Score</span>
             <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
               style={{ background: LEVEL_COLOR[hs.level] + '20', color: LEVEL_COLOR[hs.level] }}>
               {LEVEL_LABEL[hs.level]}

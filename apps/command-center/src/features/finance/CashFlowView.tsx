@@ -41,11 +41,11 @@ function EntityCashFlow({ entityId, entityColor }: { entityId: EntityId; entityC
   const forecastNet = forecastInflow - forecastOutflow
 
   return (
-    <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
+    <div className="rounded-xl border border-surface-border bg-white overflow-hidden">
       {/* Header */}
-      <div className="px-4 py-3 border-b border-gray-200 flex items-center gap-2">
+      <div className="px-4 py-3 border-b border-surface-border flex items-center gap-2">
         <span className="h-2 w-2 rounded-full flex-shrink-0" style={{ background: entityColor }} />
-        <span className="text-xs font-semibold text-gray-900">{fe.name}</span>
+        <span className="text-xs font-semibold text-text-primary">{fe.name}</span>
         <span className="text-[9px] font-mono text-gray-9000 ml-1">{fe.jurisdiction}</span>
         <span className="ml-auto text-[9px] font-mono px-2 py-0.5 rounded-full"
           style={{ background: entityColor + '15', color: entityColor }}>
@@ -56,17 +56,17 @@ function EntityCashFlow({ entityId, entityColor }: { entityId: EntityId; entityC
       <div className="p-4 space-y-4">
         {/* Summary row + Runway + Burn Rate */}
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <div className="px-3 py-2 rounded-lg bg-gray-50 text-center">
+          <div className="px-3 py-2 rounded-lg bg-muted/30 text-center">
             <p className="text-[9px] text-gray-9000 font-mono uppercase">Inbetalningar 6m</p>
             <p className="text-[14px] font-bold text-green-700 mt-1">{fmt(totalInflow)} {fe.currency}</p>
             <p className="text-[8px] text-gray-600 mt-0.5">pengar som kommit in</p>
           </div>
-          <div className="px-3 py-2 rounded-lg bg-gray-50 text-center">
+          <div className="px-3 py-2 rounded-lg bg-muted/30 text-center">
             <p className="text-[9px] text-gray-9000 font-mono uppercase">Utbetalningar 6m</p>
             <p className="text-[14px] font-bold text-red-700 mt-1">{fmt(totalOutflow)} {fe.currency}</p>
             <p className="text-[8px] text-gray-600 mt-0.5">pengar som gått ut</p>
           </div>
-          <div className="px-3 py-2 rounded-lg bg-gray-50 text-center">
+          <div className="px-3 py-2 rounded-lg bg-muted/30 text-center">
             <p className="text-[9px] text-gray-9000 font-mono uppercase">Netto 6m</p>
             <p className="text-[14px] font-bold mt-1" style={{ color: netTotal >= 0 ? '#10B981' : '#EF4444' }}>
               {netTotal >= 0 ? '+' : ''}{fmt(netTotal)} {fe.currency}
@@ -132,7 +132,7 @@ function EntityCashFlow({ entityId, entityColor }: { entityId: EntityId; entityC
         </div>
 
         {/* 30-day forecast */}
-        <div className="rounded-lg border border-gray-200 p-3">
+        <div className="rounded-lg border border-surface-border p-3">
           <p className="text-xs text-gray-9000 font-semibold mb-2">📈 Prognos nästa 30 dagar</p>
           <div className="grid grid-cols-3 gap-3">
             <div>
@@ -158,36 +158,35 @@ function EntityCashFlow({ entityId, entityColor }: { entityId: EntityId; entityC
 }
 
 export function CashFlowView() {
-  const { activeEntity, scopedEntities } = useEntityScope()
+  const { activeEntity, scopedEntities, viewScope } = useEntityScope()
   const isRoot = activeEntity.layer === 0
+  const isGroupView = isRoot || viewScope === 'group'
   const scopedIds = new Set(scopedEntities.map(e => e.id))
 
-  const entitiesToShow = FINANCE_ENTITIES.filter(
-    fe => isRoot || scopedIds.has(fe.id)
-  )
+  const entitiesToShow = isGroupView
+    ? FINANCE_ENTITIES
+    : FINANCE_ENTITIES.filter(fe => fe.id === activeEntity.id)
 
   return (
     <div className="space-y-4">
-      {/* MOCKDATA banner */}
-      <div className="rounded-xl border border-yellow-500/40 bg-yellow-500/10 px-4 py-3 flex items-start gap-3">
-        <span className="text-yellow-700 text-lg flex-shrink-0">🧪</span>
-        <div>
-          <p className="text-xs font-semibold text-yellow-300">DEMO-DATA — inte live</p>
-          <p className="text-xs text-yellow-200/60 mt-0.5 leading-relaxed">
-            Alla siffror är illustrativa och kopplade till mockdata. För att visa verklig data måste du integrera ett bokföringssystem (t.ex. Fortnox, Xero) eller koppla Supabase-schemat.
-            <span className="ml-1 text-yellow-500">Kontakta tech-teamet för live-integration.</span>
-          </p>
-        </div>
-      </div>
-
       <div>
-        <h2 className="text-lg font-bold text-gray-900">Kassaflöde</h2>
-        <p className="text-xs text-gray-9000 mt-0.5">Inbetalningar vs utbetalningar per bolag — senaste 6 månader + 30-dagarsprognos + runway</p>
+        <h2 className="text-lg font-bold text-text-primary">Kassaflöde</h2>
+        <p className="text-xs text-gray-9000 mt-0.5">
+          {isGroupView
+            ? 'Inbetalningar vs utbetalningar — alla bolag i koncernen — 6 månader + prognos'
+            : `${activeEntity.name} · ${activeEntity.jurisdiction}`}
+        </p>
       </div>
 
       {entitiesToShow.map(fe => (
         <EntityCashFlow key={fe.id} entityId={fe.id} entityColor={fe.color} />
       ))}
+
+      {entitiesToShow.length === 0 && (
+        <div className="text-center py-12 text-gray-9000 text-xs">
+          Ingen kassaflödesdata för {activeEntity.name} ännu
+        </div>
+      )}
     </div>
   )
 }

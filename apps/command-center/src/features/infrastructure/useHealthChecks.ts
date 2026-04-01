@@ -7,7 +7,7 @@ import type { HealthCheckResult, ServiceStatus } from './infraTypes'
 
 const API_BASE =
   (import.meta as Record<string, unknown> & { env?: Record<string, string> }).env
-    ?.VITE_API_URL ?? 'https://api.hypbit.com'
+    ?.VITE_API_URL ?? 'https://api.wavult.com'
 
 const ENDPOINT = `${API_BASE}/v1/infrastructure/health`
 const POLL_INTERVAL_MS = 30_000

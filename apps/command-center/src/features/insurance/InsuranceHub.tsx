@@ -1,450 +1,215 @@
-// ─── Wavult OS — Insurance Hub ────────────────────────────────────────────────
+/**
+ * InsuranceHub — Wavult Group Insurance Management
+ *
+ * AXA Partners integration (pending partnership approval).
+ * Three coverage areas: Platform (Zoomers), Infrastructure (LandveX), Group (Wavult).
+ *
+ * API endpoints (configured once AXA provides credentials):
+ * POST /api/insurance/policy/activate  — Activate per-mission Zoomer coverage
+ * POST /api/insurance/policy/deactivate — Deactivate on mission complete
+ * POST /api/insurance/claim/initiate   — Trigger claim from LandveX alert
+ * GET  /api/insurance/coverage/status  — Current group coverage status
+ */
 
-import { useState, useMemo } from 'react'
-import {
-  POLICIES,
-  INSURANCE_ENTITIES,
-  MOCK_AUDIT_HISTORY,
-  CATEGORY_LABELS,
-  STATUS_CONFIG,
-  PRIORITY_CONFIG,
-  runWeeklyAudit,
-  type InsurancePolicy,
-  type InsurancePriority,
-} from './insuranceData'
+import { useState } from 'react'
+import { Shield, AlertTriangle, CheckCircle, Clock, ExternalLink, Zap, Building2, Users } from 'lucide-react'
 
-// ─── Score Circle ─────────────────────────────────────────────────────────────
+type CoverageArea = 'platform' | 'infrastructure' | 'group'
 
-function ScoreCircle({ score }: { score: number }) {
-  const r = 40
-  const circ = 2 * Math.PI * r
-  const fill = (score / 100) * circ
-  const color = score < 50 ? '#EF4444' : score < 75 ? '#F59E0B' : '#10B981'
-  const label = score < 50 ? 'Kritisk' : score < 75 ? 'Begränsad' : 'God'
-
-  return (
-    <div className="flex flex-col items-center gap-2">
-      <svg width="108" height="108" viewBox="0 0 108 108">
-        <circle cx="54" cy="54" r={r} fill="none" stroke="#1F2937" strokeWidth="10" />
-        <circle
-          cx="54" cy="54" r={r}
-          fill="none"
-          stroke={color}
-          strokeWidth="10"
-          strokeDasharray={`${fill} ${circ}`}
-          strokeLinecap="round"
-          transform="rotate(-90 54 54)"
-          style={{ transition: 'stroke-dasharray 0.6s ease' }}
-        />
-        <text x="54" y="50" textAnchor="middle" dominantBaseline="middle" fill="white" fontSize="20" fontWeight="bold" fontFamily="monospace">
-          {score}
-        </text>
-        <text x="54" y="66" textAnchor="middle" dominantBaseline="middle" fill={color} fontSize="9" fontFamily="sans-serif">
-          {label}
-        </text>
-      </svg>
-      <span className="text-xs text-gray-9000">Täckningspoäng</span>
-    </div>
-  )
+const COVERAGE = {
+  platform: {
+    title: 'Platform Liability',
+    subtitle: 'quiXzoom — Per-mission Zoomer coverage',
+    icon: Users,
+    color: '#2563EB',
+    status: 'pending_partner' as const,
+    description: 'On-demand liability coverage per Zoomer mission. Policy activates via API on mission start, deactivates on completion. Scales with active operators.',
+    features: [
+      'API-triggered policy activation',
+      'Per-mission premium calculation',
+      'Automatic claim trigger on incident',
+      'Coverage: bodily injury, property damage, third-party liability',
+      'Jurisdictions: SE, NL, DE, GB, US',
+    ],
+    stats: { zoomers: '50 000+', missions: '1M+/year', target: 'Q3 2026' },
+  },
+  infrastructure: {
+    title: 'Infrastructure Intelligence',
+    subtitle: 'LandveX — AI-triggered claims',
+    icon: Building2,
+    color: '#1E40AF',
+    status: 'pending_partner' as const,
+    description: 'When LandveX vision engine detects structural anomalies, automatically trigger claim assessment via AXA API. New product category: evidence-based infrastructure claims.',
+    features: [
+      'Webhook: LandveX alert → AXA claim assessment',
+      'Optical evidence package auto-attached',
+      'Municipality and port authority coverage',
+      'Infrastructure: roads, bridges, harbors, buildings',
+      'SLA: claim acknowledgement < 4 hours',
+    ],
+    stats: { clients: '100+ target', alertTypes: '12', responseTime: '< 4h' },
+  },
+  group: {
+    title: 'Group Coverage',
+    subtitle: 'Wavult Group — D&O, Cyber, Travel',
+    icon: Shield,
+    color: '#0284C7',
+    status: 'pending_partner' as const,
+    description: 'Comprehensive group-level insurance: Directors & Officers, Cyber, Professional Indemnity, and Travel for the Wavult executive team across all jurisdictions.',
+    features: [
+      'D&O: Erik Svensson, Dennis Bjarnemark, Winston Bjarnemark',
+      'Cyber: AWS infrastructure, Cloudflare, databases',
+      'Professional indemnity: UAPIX, LandveX, Apifly data products',
+      'Travel: SE, UAE, US, Thailand (active from April 11, 2026)',
+      'Jurisdictions: Sweden, UAE (Dubai), USA (Delaware)',
+    ],
+    stats: { directors: '5', jurisdictions: '4+', urgency: 'April 11' },
+  },
 }
 
-// ─── Policy Row ───────────────────────────────────────────────────────────────
-
-function PolicyRow({ policy }: { policy: InsurancePolicy }) {
-  const [expanded, setExpanded] = useState(false)
-  const sc = STATUS_CONFIG[policy.status]
-  const pc = PRIORITY_CONFIG[policy.priority]
-
-  return (
-    <div
-      className="rounded-xl border border-gray-200 bg-gray-50 cursor-pointer transition-colors hover:bg-gray-50"
-      onClick={() => setExpanded(v => !v)}
-    >
-      <div className="flex items-center gap-3 px-4 py-3">
-        {/* Priority dot */}
-        <div className="h-2 w-2 rounded-full flex-shrink-0" style={{ background: pc.color }} />
-
-        {/* Name + category */}
-        <div className="flex-1 min-w-0">
-          <div className="text-sm text-gray-900 font-medium truncate">{policy.name}</div>
-          <div className="text-xs text-gray-9000 mt-0.5">
-            {CATEGORY_LABELS[policy.category]} · {policy.entities.length} {policy.entities.length === 1 ? 'bolag' : 'bolag'}
-            {policy.coverage ? ` · ${policy.coverage}` : ''}
-          </div>
-        </div>
-
-        {/* Status badge */}
-        <span
-          className="text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0"
-          style={{ color: sc.color, background: sc.bg }}
-        >
-          {sc.label.toUpperCase()}
-        </span>
-
-        {/* Chevron */}
-        <svg
-          width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
-          className={`flex-shrink-0 text-gray-9000 transition-transform ${expanded ? 'rotate-180' : ''}`}
-        >
-          <path d="M6 9l6 6 6-6" />
-        </svg>
-      </div>
-
-      {expanded && (
-        <div className="px-4 pb-4 border-t border-gray-100 space-y-3 mt-1 pt-3">
-          <p className="text-sm text-gray-600">{policy.description}</p>
-
-          <div className="rounded-lg px-3 py-2.5" style={{ background: '#1C1107' }}>
-            <div className="text-[10px] text-amber-700 font-semibold uppercase tracking-wider mb-1">Varför viktigt</div>
-            <p className="text-xs text-amber-200">{policy.why}</p>
-          </div>
-
-          {policy.recommendation && (
-            <div className="rounded-lg px-3 py-2.5" style={{ background: '#0D1B3E' }}>
-              <div className="text-[10px] text-blue-700 font-semibold uppercase tracking-wider mb-1">Rekommendation</div>
-              <p className="text-xs text-blue-200">{policy.recommendation}</p>
-            </div>
-          )}
-
-          {/* Entities covered */}
-          <div className="flex flex-wrap gap-1.5">
-            {policy.entities.map(e => {
-              const ent = INSURANCE_ENTITIES.find(x => x.id === e)
-              return (
-                <span key={e} className="text-[10px] px-2 py-0.5 rounded-full bg-gray-50 text-gray-9000">
-                  {ent?.shortName ?? e}
-                </span>
-              )
-            })}
-          </div>
-
-          {policy.provider && (
-            <p className="text-xs text-gray-9000">Leverantör: {policy.provider}</p>
-          )}
-          {policy.premium && (
-            <p className="text-xs text-gray-9000">Premie: {policy.premium}</p>
-          )}
-        </div>
-      )}
-    </div>
-  )
+const STATUS_LABELS = {
+  active: { label: 'Active', color: '#16A34A', bg: '#052E16' },
+  pending_partner: { label: 'Awaiting AXA Partnership', color: '#D97706', bg: '#1C1107' },
+  pending_config: { label: 'Pending API Config', color: '#2563EB', bg: '#0F2444' },
+  inactive: { label: 'Not configured', color: '#64748B', bg: '#0F172A' },
 }
-
-// ─── Tab 1: Overview ──────────────────────────────────────────────────────────
-
-function OverviewTab({ score }: { score: number }) {
-  const criticalCount = useMemo(
-    () => POLICIES.filter(p => p.priority === 'critical' && (p.status === 'missing' || p.status === 'expired')).length,
-    []
-  )
-  const importantCount = useMemo(
-    () => POLICIES.filter(p => p.priority === 'important' && (p.status === 'missing' || p.status === 'expired')).length,
-    []
-  )
-  const activeCount = useMemo(
-    () => POLICIES.filter(p => p.status === 'active').length,
-    []
-  )
-
-  const sorted = useMemo(() => {
-    const order: Record<InsurancePriority, number> = { critical: 0, important: 1, optional: 2 }
-    return [...POLICIES].sort((a, b) => order[a.priority] - order[b.priority])
-  }, [])
-
-  return (
-    <div className="space-y-6">
-      {/* Score + Summary */}
-      <div className="flex flex-col sm:flex-row items-center gap-6 p-5 rounded-2xl border border-gray-200 bg-white/[0.01]">
-        <ScoreCircle score={score} />
-        <div className="flex-1 grid grid-cols-3 gap-4 w-full">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-red-700">{criticalCount}</div>
-            <div className="text-xs text-gray-9000 mt-1">Kritiska gap</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-amber-700">{importantCount}</div>
-            <div className="text-xs text-gray-9000 mt-1">Viktiga saknas</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-emerald-700">{activeCount}</div>
-            <div className="text-xs text-gray-9000 mt-1">Aktiva</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Alert banner */}
-      {criticalCount > 0 && (
-        <div className="flex items-start gap-3 px-4 py-3 rounded-xl border border-red-500/30 bg-red-500/10">
-          <div className="h-1.5 w-1.5 rounded-full bg-red-400 mt-1.5 flex-shrink-0 animate-pulse" />
-          <div>
-            <div className="text-sm font-semibold text-red-300">
-              {criticalCount} kritisk{criticalCount !== 1 ? 'a' : ''} täckning{criticalCount !== 1 ? 'ar' : ''} saknas
-            </div>
-            <div className="text-xs text-red-700 mt-0.5">
-              Organisationen är exponerad mot skadeståndskrav, dataintrång och arbetsgivaransvar utan adekvat skydd.
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Policies list */}
-      <div className="space-y-2">
-        <div className="text-xs text-gray-9000 uppercase tracking-wider font-semibold px-1">
-          Alla försäkringar ({POLICIES.length})
-        </div>
-        {sorted.map(p => <PolicyRow key={p.id} policy={p} />)}
-      </div>
-    </div>
-  )
-}
-
-// ─── Tab 2: Weekly Audit ──────────────────────────────────────────────────────
-
-function AuditTab() {
-  const audit = useMemo(() => runWeeklyAudit(), [])
-
-  return (
-    <div className="space-y-6">
-      {/* Audit header */}
-      <div className="flex items-center justify-between p-4 rounded-xl border border-gray-200 bg-white/[0.01]">
-        <div>
-          <div className="text-sm font-semibold text-gray-900">Veckorevision — vecka {audit.weekNumber}</div>
-          <div className="text-xs text-gray-9000 mt-0.5">Utförd: {audit.auditDate}</div>
-        </div>
-        <div className="text-right">
-          <div className="text-xs text-gray-9000">Nästa revision</div>
-          <div className="text-sm font-mono text-purple-700">{audit.nextReviewDate}</div>
-        </div>
-      </div>
-
-      {/* Score */}
-      <div className="flex justify-center">
-        <ScoreCircle score={audit.overallScore} />
-      </div>
-
-      {/* Recommendations */}
-      <div className="space-y-3">
-        <div className="text-xs text-gray-9000 uppercase tracking-wider font-semibold px-1">
-          Rekommendationer ({audit.recommendations.length})
-        </div>
-        {audit.recommendations.length === 0 ? (
-          <div className="text-center py-8 text-gray-9000 text-sm">Inga aktiva rekommendationer</div>
-        ) : (
-          audit.recommendations.map((rec) => {
-            const pc = PRIORITY_CONFIG[rec.priority]
-            const actionLabels = {
-              obtain:           'Teckna',
-              renew:            'Förnya',
-              review:           'Granska',
-              increase_coverage: 'Utöka täckning',
-            }
-            return (
-              <div
-                key={rec.policyId}
-                className="px-4 py-3 rounded-xl border border-gray-200 bg-white/[0.01] space-y-1"
-              >
-                <div className="flex items-center gap-2">
-                  <span
-                    className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                    style={{ color: pc.color, background: pc.color + '20' }}
-                  >
-                    {pc.label.toUpperCase()}
-                  </span>
-                  <span className="text-[10px] text-gray-9000 font-mono">{actionLabels[rec.action]}</span>
-                  {rec.deadline && (
-                    <span className="text-[10px] text-red-700 font-mono ml-auto">
-                      Deadline: {rec.deadline}
-                    </span>
-                  )}
-                </div>
-                <div className="text-sm text-gray-900 font-medium">{rec.title}</div>
-                <div className="text-xs text-gray-9000">{rec.detail}</div>
-              </div>
-            )
-          })
-        )}
-      </div>
-
-      {/* Historical audit log */}
-      <div className="space-y-2">
-        <div className="text-xs text-gray-9000 uppercase tracking-wider font-semibold px-1">
-          Revisionshistorik
-        </div>
-        <div className="rounded-xl border border-gray-200 overflow-hidden">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="border-b border-gray-200 text-gray-9000">
-                <th className="text-left px-4 py-2 font-medium">Datum</th>
-                <th className="text-left px-4 py-2 font-medium">Vecka</th>
-                <th className="text-left px-4 py-2 font-medium">Poäng</th>
-                <th className="text-left px-4 py-2 font-medium">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {MOCK_AUDIT_HISTORY.map((h, i) => (
-                <tr key={i} className="border-b border-white/[0.03] text-gray-9000">
-                  <td className="px-4 py-2 font-mono">{h.date}</td>
-                  <td className="px-4 py-2">V{h.week}</td>
-                  <td className="px-4 py-2 font-mono">
-                    <span style={{ color: h.score < 50 ? '#EF4444' : h.score < 75 ? '#F59E0B' : '#10B981' }}>
-                      {h.score}
-                    </span>
-                  </td>
-                  <td className="px-4 py-2 text-red-700 text-[10px] font-mono">KRITISK</td>
-                </tr>
-              ))}
-              <tr className="text-gray-600 bg-gray-50">
-                <td className="px-4 py-2 font-mono">{audit.auditDate}</td>
-                <td className="px-4 py-2">V{audit.weekNumber}</td>
-                <td className="px-4 py-2 font-mono">
-                  <span style={{ color: audit.overallScore < 50 ? '#EF4444' : audit.overallScore < 75 ? '#F59E0B' : '#10B981' }}>
-                    {audit.overallScore}
-                  </span>
-                </td>
-                <td className="px-4 py-2 text-[10px] font-mono text-blue-700">SENASTE</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <p className="text-[10px] text-gray-9000 px-1">Revisioner sker automatiskt varje måndag. Score baseras på kritiska och viktiga täckningsgap.</p>
-      </div>
-    </div>
-  )
-}
-
-// ─── Tab 3: Entities ──────────────────────────────────────────────────────────
-
-function EntityCoverage({ entityId, name }: { entityId: string; name: string }) {
-  const covered = POLICIES.filter(p => p.entities.includes(entityId))
-  const missing = covered.filter(p => p.status === 'missing' || p.status === 'expired')
-  const active  = covered.filter(p => p.status === 'active')
-  const criticalGaps = missing.filter(p => p.priority === 'critical')
-
-  return (
-    <div className="rounded-xl border border-gray-200 bg-white/[0.01] overflow-hidden">
-      {/* Header */}
-      <div className="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
-        <div>
-          <div className="text-sm font-semibold text-gray-900">{name}</div>
-          <div className="text-xs text-gray-9000 mt-0.5">
-            {active.length} aktiva · {missing.length} saknas
-          </div>
-        </div>
-        {criticalGaps.length > 0 && (
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-500/20 text-red-700">
-            {criticalGaps.length} kritisk{criticalGaps.length !== 1 ? 'a' : ''} gap
-          </span>
-        )}
-      </div>
-
-      {/* Policies */}
-      <div className="divide-y divide-white/[0.03]">
-        {covered.length === 0 ? (
-          <div className="px-4 py-3 text-xs text-gray-9000">Inga försäkringar registrerade för denna enhet.</div>
-        ) : (
-          covered.map(p => {
-            const sc = STATUS_CONFIG[p.status]
-            const pc = PRIORITY_CONFIG[p.priority]
-            return (
-              <div key={p.id} className="flex items-center gap-3 px-4 py-2.5">
-                <div className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: pc.color }} />
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs text-gray-600 truncate">{p.name}</div>
-                  <div className="text-[10px] text-gray-9000">{CATEGORY_LABELS[p.category]}</div>
-                </div>
-                <span
-                  className="text-[9px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0"
-                  style={{ color: sc.color, background: sc.bg }}
-                >
-                  {sc.label.toUpperCase()}
-                </span>
-              </div>
-            )
-          })
-        )}
-      </div>
-    </div>
-  )
-}
-
-function EntitiesTab() {
-  return (
-    <div className="space-y-4">
-      <div className="text-xs text-gray-9000 px-1">
-        Visar försäkringsskydd per juridisk enhet inom Wavult Group.
-      </div>
-      {INSURANCE_ENTITIES.map(e => (
-        <EntityCoverage key={e.id} entityId={e.id} name={e.name} />
-      ))}
-
-      {/* Note on missing entities */}
-      <div className="px-4 py-3 rounded-xl border border-gray-100 bg-white/[0.01]">
-        <div className="text-[10px] text-gray-9000 font-semibold uppercase tracking-wider mb-1">Notering</div>
-        <p className="text-xs text-gray-9000">
-          Texas LLC, Litauisk UAB och Dubai Holding saknas ännu i registret. Lägg till försäkringsuppgifter när dessa enheter är etablerade.
-        </p>
-      </div>
-    </div>
-  )
-}
-
-// ─── Main Component ───────────────────────────────────────────────────────────
-
-type Tab = 'overview' | 'audit' | 'entities'
-
-const TABS: { id: Tab; label: string }[] = [
-  { id: 'overview', label: 'Översikt' },
-  { id: 'audit',    label: 'Veckorevision' },
-  { id: 'entities', label: 'Entiteter' },
-]
 
 export function InsuranceHub() {
-  const [activeTab, setActiveTab] = useState<Tab>('overview')
-  const audit = useMemo(() => runWeeklyAudit(), [])
+  const [active, setActive] = useState<CoverageArea>('platform')
+
+  const coverage = COVERAGE[active]
+  const CoverageIcon = coverage.icon
+  const statusInfo = STATUS_LABELS[coverage.status]
 
   return (
-    <div className="max-w-3xl mx-auto space-y-4">
-      {/* Page header */}
-      <div>
-        <h1 className="text-xl font-bold text-gray-900 tracking-tight">Insurance Hub</h1>
-        <p className="text-sm text-gray-9000 mt-1">
-          Organisationens försäkringsskydd — revideras automatiskt varje vecka
-        </p>
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: 'var(--color-bg)' }}>
+
+      {/* Header */}
+      <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--color-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ width: 36, height: 36, background: 'rgba(37,99,235,0.1)', border: '1px solid rgba(37,99,235,0.2)', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Shield size={18} style={{ color: '#2563EB' }} />
+          </div>
+          <div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--color-text-primary)' }}>Insurance</div>
+            <div style={{ fontSize: 11, color: 'var(--color-text-muted)', fontFamily: 'monospace' }}>AXA Partners · Partnership pending</div>
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, padding: '4px 10px', borderRadius: 4, background: '#1C1107', border: '1px solid rgba(245,158,11,0.2)', color: '#F59E0B' }}>
+            <Clock size={11} /> Partnership enquiry sent · Awaiting response
+          </div>
+          <a href="https://partners.axa.com" target="_blank" rel="noopener noreferrer"
+            style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, padding: '4px 10px', borderRadius: 4, border: '1px solid var(--color-border)', color: 'var(--color-text-secondary)', textDecoration: 'none' }}>
+            <ExternalLink size={11} /> AXA Partners
+          </a>
+        </div>
       </div>
 
-      {/* Critical alert strip */}
-      {audit.criticalGaps.length > 0 && (
-        <div className="flex items-center gap-3 px-4 py-2.5 rounded-lg border border-red-500/40 bg-red-500/8">
-          <div className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse flex-shrink-0" />
-          <span className="text-xs text-red-300 flex-1">
-            <strong>{audit.criticalGaps.length} kritiska</strong> försäkringsgap kräver omedelbar åtgärd
-          </span>
-          <span className="text-[10px] text-gray-9000 font-mono">V{audit.weekNumber}</span>
-        </div>
-      )}
-
-      {/* Tab nav */}
-      <div className="flex border-b border-gray-200">
-        {TABS.map(t => (
-          <button
-            key={t.id}
-            onClick={() => setActiveTab(t.id)}
-            className={`px-4 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px ${
-              activeTab === t.id
-                ? 'border-brand-accent text-gray-900'
-                : 'border-transparent text-gray-9000 hover:text-gray-600'
-            }`}
-          >
-            {t.label}
+      {/* Tab navigation */}
+      <div style={{ display: 'flex', borderBottom: '1px solid var(--color-border)', background: 'var(--color-surface)', overflowX: 'auto' }}>
+        {(Object.entries(COVERAGE) as [CoverageArea, typeof coverage][]).map(([key, cov]) => (
+          <button key={key} onClick={() => setActive(key)}
+            style={{ padding: '10px 18px', border: 'none', background: 'transparent', cursor: 'pointer', fontSize: 12, fontWeight: active === key ? 700 : 400,
+              color: active === key ? cov.color : 'var(--color-text-muted)',
+              borderBottom: active === key ? `2px solid ${cov.color}` : '2px solid transparent',
+              whiteSpace: 'nowrap' }}>
+            {cov.title}
           </button>
         ))}
       </div>
 
-      {/* Tab content */}
-      <div>
-        {activeTab === 'overview'  && <OverviewTab score={audit.overallScore} />}
-        {activeTab === 'audit'     && <AuditTab />}
-        {activeTab === 'entities'  && <EntitiesTab />}
+      <div style={{ flex: 1, overflow: 'auto', padding: '20px 24px' }}>
+
+        {/* Coverage header */}
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16, marginBottom: 24 }}>
+          <div style={{ width: 48, height: 48, background: `${coverage.color}15`, border: `1px solid ${coverage.color}30`, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <CoverageIcon size={22} style={{ color: coverage.color }} />
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4, flexWrap: 'wrap' }}>
+              <div style={{ fontSize: 18, fontWeight: 800, letterSpacing: '-.02em', color: 'var(--color-text-primary)' }}>{coverage.title}</div>
+              <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 3, background: statusInfo.bg, color: statusInfo.color, border: `1px solid ${statusInfo.color}30`, fontFamily: 'monospace' }}>
+                {statusInfo.label}
+              </span>
+            </div>
+            <div style={{ fontSize: 13, color: 'var(--color-text-secondary)' }}>{coverage.subtitle}</div>
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 10, marginBottom: 24 }}>
+          {Object.entries(coverage.stats).map(([k, v]) => (
+            <div key={k} style={{ border: '1px solid var(--color-border)', borderRadius: 4, padding: '12px', background: 'var(--color-surface)' }}>
+              <div style={{ fontSize: 18, fontWeight: 800, letterSpacing: '-.03em', color: coverage.color }}>{v}</div>
+              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--color-text-muted)', marginTop: 2 }}>{k.replace(/([A-Z])/g, ' $1').trim()}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Description */}
+        <div style={{ fontSize: 13, color: 'var(--color-text-secondary)', lineHeight: 1.7, marginBottom: 24 }}>
+          {coverage.description}
+        </div>
+
+        {/* Features */}
+        <div style={{ marginBottom: 24 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.15em', textTransform: 'uppercase', color: 'var(--color-text-muted)', marginBottom: 12 }}>Coverage Features</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {coverage.features.map((f, i) => (
+              <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                <CheckCircle size={14} style={{ color: coverage.color, flexShrink: 0, marginTop: 1 }} />
+                <span style={{ fontSize: 13, color: 'var(--color-text-secondary)' }}>{f}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* API Integration preview */}
+        <div style={{ border: '1px solid var(--color-border)', borderRadius: 6, overflow: 'hidden' }}>
+          <div style={{ padding: '10px 14px', background: 'var(--color-bg-subtle)', borderBottom: '1px solid var(--color-border)', fontSize: 10, fontWeight: 700, letterSpacing: '.15em', textTransform: 'uppercase', color: 'var(--color-text-muted)' }}>
+            API Integration — Ready to connect when AXA credentials received
+          </div>
+          <div style={{ padding: '14px', background: '#0A0F1E', fontFamily: 'monospace', fontSize: 12, color: '#94A3B8', lineHeight: 1.8 }}>
+            {active === 'platform' && <>
+              <div style={{ color: '#64748B' }}>// POST /api/insurance/policy/activate</div>
+              <div><span style={{ color: '#2563EB' }}>const</span> policy = <span style={{ color: '#2563EB' }}>await</span> axa.activate{'({'}</div>
+              <div>  missionId: <span style={{ color: '#22C55E' }}>"M-4729"</span>,</div>
+              <div>  zoomerId: <span style={{ color: '#22C55E' }}>"Z-8831"</span>,</div>
+              <div>  location: <span style={{ color: '#22C55E' }}>"Stockholm, SE"</span>,</div>
+              <div>  coverage: <span style={{ color: '#22C55E' }}>"liability_standard"</span></div>
+              <div>{'}'})  <span style={{ color: '#64748B' }}>// Returns: policyId + premium</span></div>
+            </>}
+            {active === 'infrastructure' && <>
+              <div style={{ color: '#64748B' }}>// LandveX alert → AXA claim webhook</div>
+              <div><span style={{ color: '#2563EB' }}>await</span> axa.initiateClaimAssessment({'({'}</div>
+              <div>  alertId: <span style={{ color: '#22C55E' }}>"A-1047"</span>,</div>
+              <div>  type: <span style={{ color: '#22C55E' }}>"structural_anomaly"</span>,</div>
+              <div>  evidence: landvexReport.imageUrls,</div>
+              <div>  clientId: <span style={{ color: '#22C55E' }}>"Gotlands Kommun"</span></div>
+              <div>{'}'})  <span style={{ color: '#64748B' }}>// Returns: claimRef + assessor</span></div>
+            </>}
+            {active === 'group' && <>
+              <div style={{ color: '#64748B' }}>// GET /api/insurance/coverage/status</div>
+              <div><span style={{ color: '#2563EB' }}>const</span> status = <span style={{ color: '#2563EB' }}>await</span> axa.getCoverage({'({'}</div>
+              <div>  entity: <span style={{ color: '#22C55E' }}>"Wavult Group"</span>,</div>
+              <div>  types: [<span style={{ color: '#22C55E' }}>"D&O"</span>, <span style={{ color: '#22C55E' }}>"cyber"</span>, <span style={{ color: '#22C55E' }}>"travel"</span>],</div>
+              <div>  jurisdictions: [<span style={{ color: '#22C55E' }}>"SE"</span>, <span style={{ color: '#22C55E' }}>"UAE"</span>, <span style={{ color: '#22C55E' }}>"US"</span>]</div>
+              <div>{'}'})  <span style={{ color: '#64748B' }}>// Returns: policies[] + expiry dates</span></div>
+            </>}
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div style={{ marginTop: 20, padding: '14px 16px', borderRadius: 6, border: '1px solid rgba(37,99,235,0.2)', background: 'rgba(37,99,235,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+          <div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: 2 }}>Partnership enquiry sent to AXA Partners</div>
+            <div style={{ fontSize: 12, color: 'var(--color-text-muted)' }}>Awaiting response from partners@axa-assistance.com · cc: dennis@wavult.com</div>
+          </div>
+          <a href="mailto:partners@axa-assistance.com" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 4, background: '#2563EB', color: '#fff', fontSize: 12, fontWeight: 600, textDecoration: 'none', whiteSpace: 'nowrap' }}>
+            <ExternalLink size={12} /> Follow up
+          </a>
+        </div>
       </div>
     </div>
   )

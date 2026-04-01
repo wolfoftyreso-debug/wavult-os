@@ -14,10 +14,10 @@ function NewAudienceModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 bg-white/70 z-50 flex items-center justify-center p-4">
-      <div className="bg-white border border-gray-200 rounded-xl w-full max-w-lg">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-          <h2 className="text-gray-900 font-semibold">Ny audience</h2>
-          <button onClick={onClose} className="text-gray-9000 hover:text-gray-900 text-lg leading-none">×</button>
+      <div className="bg-white border border-surface-border rounded-xl w-full max-w-lg">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-surface-border">
+          <h2 className="text-text-primary font-semibold">Ny audience</h2>
+          <button onClick={onClose} className="text-gray-9000 hover:text-text-primary text-lg leading-none">×</button>
         </div>
         <div className="px-6 py-5 space-y-4">
           <div>
@@ -25,7 +25,7 @@ function NewAudienceModal({ onClose }: { onClose: () => void }) {
             <select
               value={form.campaign_id}
               onChange={e => setForm({ ...form, campaign_id: e.target.value })}
-              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none"
+              className="w-full bg-white border border-surface-border rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none"
             >
               {MOCK_CAMPAIGNS.map(c => (
                 <option key={c.id} value={c.id}>{c.name}</option>
@@ -39,7 +39,7 @@ function NewAudienceModal({ onClose }: { onClose: () => void }) {
               value={form.geo}
               onChange={e => setForm({ ...form, geo: e.target.value })}
               placeholder="t.ex. Sverige, Stockholm, Göteborg"
-              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none"
+              className="w-full bg-white border border-surface-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder-gray-600 focus:outline-none"
             />
           </div>
 
@@ -51,7 +51,7 @@ function NewAudienceModal({ onClose }: { onClose: () => void }) {
                 value={form.age_min}
                 onChange={e => setForm({ ...form, age_min: e.target.value })}
                 placeholder="18"
-                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none"
+                className="w-full bg-white border border-surface-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder-gray-600 focus:outline-none"
               />
             </div>
             <div>
@@ -61,7 +61,7 @@ function NewAudienceModal({ onClose }: { onClose: () => void }) {
                 value={form.age_max}
                 onChange={e => setForm({ ...form, age_max: e.target.value })}
                 placeholder="65"
-                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none"
+                className="w-full bg-white border border-surface-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder-gray-600 focus:outline-none"
               />
             </div>
           </div>
@@ -72,7 +72,7 @@ function NewAudienceModal({ onClose }: { onClose: () => void }) {
               value={form.interests}
               onChange={e => setForm({ ...form, interests: e.target.value })}
               placeholder="t.ex. infrastruktur, fastigheter, tech"
-              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none"
+              className="w-full bg-white border border-surface-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder-gray-600 focus:outline-none"
             />
           </div>
 
@@ -82,7 +82,7 @@ function NewAudienceModal({ onClose }: { onClose: () => void }) {
               value={form.custom_data}
               onChange={e => setForm({ ...form, custom_data: e.target.value })}
               placeholder="t.ex. CRM-segment: SE-kommuner"
-              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none"
+              className="w-full bg-white border border-surface-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder-gray-600 focus:outline-none"
             />
           </div>
 
@@ -94,11 +94,11 @@ function NewAudienceModal({ onClose }: { onClose: () => void }) {
             📥 Importera från CRM — Fas 2
           </button>
         </div>
-        <div className="px-6 py-4 border-t border-gray-200 flex justify-end gap-3">
-          <button onClick={onClose} className="px-4 py-2 text-sm text-gray-9000 hover:text-gray-900 transition-colors">Avbryt</button>
+        <div className="px-6 py-4 border-t border-surface-border flex justify-end gap-3">
+          <button onClick={onClose} className="px-4 py-2 text-sm text-gray-9000 hover:text-text-primary transition-colors">Avbryt</button>
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm bg-brand-accent/20 text-purple-700 border border-purple-200 rounded-lg hover:bg-brand-accent/30 transition-colors"
+            className="px-4 py-2 text-sm bg-brand-accent/20 text-blue-700 border border-blue-200 rounded-lg hover:bg-brand-accent/30 transition-colors"
           >
             Spara audience
           </button>
@@ -116,7 +116,7 @@ export function AudienceView() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-gray-900 font-semibold">Audiences</h2>
+          <h2 className="text-text-primary font-semibold">Audiences</h2>
           <p className="text-xs text-gray-9000 mt-0.5">{MOCK_AUDIENCES.length} audiences definierade</p>
         </div>
         <div className="flex items-center gap-2">
@@ -129,7 +129,7 @@ export function AudienceView() {
           </button>
           <button
             onClick={() => setShowModal(true)}
-            className="px-3 py-1.5 text-sm bg-brand-accent/20 text-purple-700 border border-purple-200 rounded-lg hover:bg-brand-accent/30 transition-colors"
+            className="px-3 py-1.5 text-sm bg-brand-accent/20 text-blue-700 border border-blue-200 rounded-lg hover:bg-brand-accent/30 transition-colors"
           >
             + Ny audience
           </button>
@@ -142,11 +142,11 @@ export function AudienceView() {
           return (
             <div
               key={audience.id}
-              className="bg-white border border-gray-200 rounded-xl p-4"
+              className="bg-white border border-surface-border rounded-xl p-4"
             >
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <div className="text-sm font-medium text-gray-900 mb-0.5">
+                  <div className="text-sm font-medium text-text-primary mb-0.5">
                     {audience.custom_data ?? `Audience ${audience.id}`}
                   </div>
                   <div className="text-xs text-gray-9000">{campaign?.name}</div>
@@ -169,7 +169,7 @@ export function AudienceView() {
               {audience.interests && audience.interests.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
                   {audience.interests.map(i => (
-                    <span key={i} className="text-xs px-2 py-0.5 bg-purple-900/30 text-purple-300 rounded-full">
+                    <span key={i} className="text-xs px-2 py-0.5 bg-blue-900/30 text-blue-400 rounded-full">
                       {i}
                     </span>
                   ))}
@@ -180,7 +180,7 @@ export function AudienceView() {
         })}
       </div>
 
-      <div className="rounded-lg bg-gray-500 border border-gray-200 px-4 py-3 text-xs text-gray-9000">
+      <div className="rounded-lg bg-gray-500 border border-surface-border px-4 py-3 text-xs text-gray-9000">
         💡 CRM-import och lookalike audiences aktiveras i Fas 2 (Q2 2026).
       </div>
 

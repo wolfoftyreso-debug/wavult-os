@@ -37,7 +37,7 @@ const severityConfig: Record<AgentSeverity, {
     dot: 'bg-blue-400',
   },
   low: {
-    bg: 'bg-gray-50',
+    bg: 'bg-muted/30',
     border: 'border-gray-200',
     text: 'text-gray-600',
     icon: Clock,
@@ -68,7 +68,7 @@ export function AgentCommandPanel() {
         <span className={`text-xs font-medium ${sysConfig.text}`}>
           {renderAgentMessage(systemMessage, t)}
         </span>
-        <Zap className="w-3 h-3 text-purple-700 ml-auto" />
+        <Zap className="w-3 h-3 text-blue-700 ml-auto" />
       </div>
 
       {/* Priority queue */}

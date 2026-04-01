@@ -4,7 +4,7 @@ type Quarter = 'Q2-2026' | 'Q3-2026' | 'Q4-2026'
 
 const QUARTERS: { id: Quarter; label: string; months: string; color: string }[] = [
   { id: 'Q2-2026', label: 'Q2 2026', months: 'Apr – Jun', color: '#3B82F6' },
-  { id: 'Q3-2026', label: 'Q3 2026', months: 'Jul – Sep', color: '#A78BFA' },
+  { id: 'Q3-2026', label: 'Q3 2026', months: 'Jul – Sep', color: '#60A5FA' },
   { id: 'Q4-2026', label: 'Q4 2026', months: 'Okt – Dec', color: '#F59E0B' },
 ]
 
@@ -46,12 +46,12 @@ export function RoadmapView() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h2 className="text-lg font-bold text-gray-900">Roadmap 2026</h2>
+          <h2 className="text-lg font-bold text-text-primary">Roadmap 2026</h2>
           <p className="text-xs text-gray-9000 mt-0.5">Q2–Q4 · quiXzoom · Landvex · Hypbit OS</p>
         </div>
         <div className="text-right">
           <p className="text-xs text-gray-9000">{done}/{total} klara</p>
-          <div className="w-24 bg-gray-50 rounded-full h-1.5 mt-1">
+          <div className="w-24 bg-muted/30 rounded-full h-1.5 mt-1">
             <div
               className="h-1.5 rounded-full bg-brand-accent transition-all"
               style={{ width: `${Math.round((done / total) * 100)}%` }}
@@ -92,7 +92,7 @@ export function RoadmapView() {
           const qDone = quarterItems.filter(i => i.status === 'done').length
 
           return (
-            <div key={q.id} className="rounded-xl border border-gray-200 bg-white overflow-hidden">
+            <div key={q.id} className="rounded-xl border border-surface-border bg-white overflow-hidden">
               {/* Quarter header */}
               <div
                 className="px-4 py-3 border-b flex items-center gap-2"
@@ -103,7 +103,7 @@ export function RoadmapView() {
                   style={{ background: q.color }}
                 />
                 <div>
-                  <p className="text-sm font-bold text-gray-900">{q.label}</p>
+                  <p className="text-sm font-bold text-text-primary">{q.label}</p>
                   <p className="text-[9px] text-gray-9000 font-mono">{q.months}</p>
                 </div>
                 <span
@@ -151,7 +151,7 @@ export function RoadmapView() {
         <h3 className="text-xs text-gray-9000 font-mono uppercase tracking-wider mb-3">
           🏛️ Bolagsstruktur
         </h3>
-        <div className="rounded-xl border border-gray-200 bg-white p-4">
+        <div className="rounded-xl border border-surface-border bg-white p-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
             {QUARTERS.map(q => {
               const items = ROADMAP_ITEMS.filter(i => i.quarter === q.id && i.project === 'bolagsstruktur')

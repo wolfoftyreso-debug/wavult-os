@@ -30,7 +30,7 @@ export function TaxComplianceView() {
   const { totalGrossPerMonth, EMPLOYER_TAX_RATE, fmt, fmtPeriod, loading } = usePayroll()
 
   if (loading) {
-    return <div className="flex items-center justify-center h-64 text-gray-500">Laddar skattedata...</div>
+    return <div className="flex items-center justify-center h-64 text-text-muted">Laddar skattedata...</div>
   }
 
   const totalGross = totalGrossPerMonth
@@ -42,8 +42,8 @@ export function TaxComplianceView() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-sm font-semibold text-gray-900">Skatt & Arbetsgivaravgift</h2>
-        <p className="text-xs text-gray-500 mt-0.5">Arbetsgivardeklaration (AGI) — Skatteverket</p>
+        <h2 className="text-sm font-semibold text-text-primary">Skatt & Arbetsgivaravgift</h2>
+        <p className="text-xs text-text-muted mt-0.5">Arbetsgivardeklaration (AGI) — Skatteverket</p>
       </div>
 
       {/* KPI cards */}
@@ -51,13 +51,13 @@ export function TaxComplianceView() {
         {[
           { label: 'Månatlig arb.avg.', value: fmt(monthlyEmployerTax), color: '#FBBF24', sub: '31.42% av bruttolöner' },
           { label: 'F-skatt (bolaget)', value: 'Beräknas', color: '#60A5FA', sub: 'Kontakta revisor' },
-          { label: 'Nästa deklaration', value: upcoming?.deadline ?? '—', color: days !== null && days <= 7 ? '#F87171' : '#A78BFA', sub: days !== null ? `Om ${days} dagar` : '' },
+          { label: 'Nästa deklaration', value: upcoming?.deadline ?? '—', color: days !== null && days <= 7 ? '#F87171' : '#60A5FA', sub: days !== null ? `Om ${days} dagar` : '' },
           { label: 'Årsavgifter (est.)', value: fmt(monthlyEmployerTax * 12), color: '#C084FC', sub: '12 månader' },
         ].map(k => (
-          <div key={k.label} className="bg-white border border-gray-200 rounded-xl px-5 py-4">
-            <div className="text-xs text-gray-500 mb-1">{k.label}</div>
+          <div key={k.label} className="bg-white border border-surface-border rounded-xl px-5 py-4">
+            <div className="text-xs text-text-muted mb-1">{k.label}</div>
             <div className="text-xl font-bold tabular-nums" style={{ color: k.color }}>{k.value}</div>
-            {k.sub && <div className="text-xs text-gray-500 mt-1">{k.sub}</div>}
+            {k.sub && <div className="text-xs text-text-muted mt-1">{k.sub}</div>}
           </div>
         ))}
       </div>
@@ -74,14 +74,14 @@ export function TaxComplianceView() {
       )}
 
       {/* Declaration table */}
-      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-        <div className="px-5 py-4 border-b border-gray-200">
-          <h3 className="text-sm font-semibold text-gray-900">Arbetsgivardeklarationer (AGI)</h3>
+      <div className="bg-white border border-surface-border rounded-xl overflow-hidden">
+        <div className="px-5 py-4 border-b border-surface-border">
+          <h3 className="text-sm font-semibold text-text-primary">Arbetsgivardeklarationer (AGI)</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-200 text-xs text-gray-500 uppercase tracking-wider">
+              <tr className="border-b border-surface-border text-xs text-text-muted uppercase tracking-wider">
                 <th className="text-left px-5 py-3">Period</th>
                 <th className="text-left px-5 py-3">Deadline</th>
                 <th className="text-right px-5 py-3">Arbetsgivaravgift</th>
@@ -92,7 +92,7 @@ export function TaxComplianceView() {
             <tbody>
               {TAX_DECLARATIONS.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-5 py-8 text-center text-gray-500 text-xs italic">
+                  <td colSpan={5} className="px-5 py-8 text-center text-text-muted text-xs italic">
                     Inga skattedeklarationer registrerade — konfigureras via lönesystemet
                   </td>
                 </tr>
@@ -101,13 +101,13 @@ export function TaxComplianceView() {
                 const d = daysUntil(dec.deadline)
                 return (
                   <tr key={dec.period} className="border-b border-gray-200/50 hover:bg-gray-50/30 transition-colors">
-                    <td className="px-5 py-3 text-xs text-gray-900">{fmtPeriod(dec.period)}</td>
-                    <td className="px-5 py-3 text-xs text-gray-500">{dec.deadline}</td>
+                    <td className="px-5 py-3 text-xs text-text-primary">{fmtPeriod(dec.period)}</td>
+                    <td className="px-5 py-3 text-xs text-text-muted">{dec.deadline}</td>
                     <td className="px-5 py-3 text-right text-xs text-amber-700 tabular-nums font-medium">{fmt(dec.amount)}</td>
                     <td className="px-5 py-3"><StatusPill status={dec.status} /></td>
                     <td className="px-5 py-3 text-xs">
                       {dec.status === 'paid' ? (
-                        <span className="text-gray-500">—</span>
+                        <span className="text-text-muted">—</span>
                       ) : (
                         <span className={d <= 7 ? 'text-red-700 font-semibold' : d <= 14 ? 'text-amber-700' : 'text-gray-500'}>
                           {d > 0 ? `${d} dagar` : `${Math.abs(d)} dagar sedan`}
@@ -123,8 +123,8 @@ export function TaxComplianceView() {
       </div>
 
       {/* Skattekonton section */}
-      <div className="bg-white border border-gray-200 rounded-xl px-5 py-5 space-y-4">
-        <h3 className="text-sm font-semibold text-gray-900">Skattekonton</h3>
+      <div className="bg-white border border-surface-border rounded-xl px-5 py-5 space-y-4">
+        <h3 className="text-sm font-semibold text-text-primary">Skattekonton</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
             {
@@ -142,12 +142,12 @@ export function TaxComplianceView() {
               icon: '📊',
             },
           ].map(acc => (
-            <div key={acc.title} className="border border-gray-200 rounded-xl p-4">
+            <div key={acc.title} className="border border-surface-border rounded-xl p-4">
               <div className="flex items-start gap-3">
                 <span className="text-2xl">{acc.icon}</span>
                 <div>
-                  <div className="text-xs font-semibold text-gray-900 mb-1">{acc.title}</div>
-                  <div className="text-xs text-gray-500 mb-2">{acc.desc}</div>
+                  <div className="text-xs font-semibold text-text-primary mb-1">{acc.title}</div>
+                  <div className="text-xs text-text-muted mb-2">{acc.desc}</div>
                   <div className="text-base font-bold tabular-nums" style={{ color: acc.color }}>{acc.amount}</div>
                 </div>
               </div>
@@ -157,8 +157,8 @@ export function TaxComplianceView() {
       </div>
 
       {/* Skatteverket deadline calendar */}
-      <div className="bg-white border border-gray-200 rounded-xl px-5 py-5">
-        <h3 className="text-sm font-semibold text-gray-900 mb-4">Skatteverket — deadlines 2026</h3>
+      <div className="bg-white border border-surface-border rounded-xl px-5 py-5">
+        <h3 className="text-sm font-semibold text-text-primary mb-4">Skatteverket — deadlines 2026</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
             { month: 'Jan', deadline: '12 feb', paid: true },
@@ -178,7 +178,7 @@ export function TaxComplianceView() {
                 : { borderColor: 'rgb(255 255 255 / 0.06)', background: 'rgb(255 255 255 / 0.02)' }
               }
             >
-              <div className="text-xs text-gray-500">{d.month} 2026</div>
+              <div className="text-xs text-text-muted">{d.month} 2026</div>
               <div className={`text-xs font-semibold mt-1 ${d.paid ? 'text-green-700' : 'text-gray-600'}`}>
                 {d.paid ? '✓ ' : ''}{d.deadline}
               </div>

@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState } from 'react'
 import { ENTITIES, Entity } from '../../features/org-graph/data'
 
+export type ViewScope = 'group' | 'entity'
+
 interface EntityScopeContextValue {
   activeEntity: Entity
   setActiveEntity: (e: Entity) => void
@@ -10,6 +12,9 @@ interface EntityScopeContextValue {
   isInScope: (entityId: string) => boolean
   // All entities that are in scope
   scopedEntities: Entity[]
+  // View scope: 'group' = aggregate all entities, 'entity' = filter to activeEntity only
+  viewScope: ViewScope
+  setViewScope: (scope: ViewScope) => void
 }
 
 // Build subtree: entity + all its descendants (recursive via parent_entity_id)
@@ -28,13 +33,14 @@ export function EntityScopeProvider({ children }: { children: React.ReactNode })
   // Default: root holding (wavult-group)
   const defaultEntity = ENTITIES.find(e => e.id === 'wavult-group') ?? ENTITIES[0]
   const [activeEntity, setActiveEntity] = useState<Entity>(defaultEntity)
+  const [viewScope, setViewScope] = useState<ViewScope>('entity')
 
   const scopedEntities = getSubtree(activeEntity, ENTITIES)
   const scopedIds = new Set(scopedEntities.map(e => e.id))
   const isInScope = (entityId: string) => scopedIds.has(entityId)
 
   return (
-    <EntityScopeContext.Provider value={{ activeEntity, setActiveEntity, scopedEntities, isInScope }}>
+    <EntityScopeContext.Provider value={{ activeEntity, setActiveEntity, scopedEntities, isInScope, viewScope, setViewScope }}>
       {children}
     </EntityScopeContext.Provider>
   )

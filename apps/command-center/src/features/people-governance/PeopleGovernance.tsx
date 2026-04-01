@@ -66,7 +66,7 @@ const PEOPLE: Person[] = [
     name: 'Erik Svensson',
     initials: 'ES',
     role: 'Chairman & Group CEO',
-    color: '#8B5CF6',
+    color: '#2563EB',
     email: 'erik@wavult.com',
     phone: '+46709123223',
     entityId: 'Wavult Group',
@@ -422,7 +422,7 @@ function PersonCard({ person, onClick, onPassportClick }: {
             padding: 4, flexShrink: 0,
           }}
         >
-          <PassportIcon color={passData?.hasPassport ? '#7C3AED' : '#D1D5DB'} />
+          <PassportIcon color={passData?.hasPassport ? '#1E40AF' : '#D1D5DB'} />
         </button>
       </div>
       <div style={{ marginTop: 12, fontSize: 11, color: '#8E8E93' }}>

@@ -144,7 +144,7 @@ function MemberCard({ member }: { member: TeamMember }) {
             {initials || '?'}
           </div>
           <div className="min-w-0">
-            <p className="text-gray-900 font-semibold text-sm truncate leading-tight">{displayName}</p>
+            <p className="text-text-primary font-semibold text-sm truncate leading-tight">{displayName}</p>
             {title && (
               <p className="text-xs font-medium mt-0.5 truncate" style={{ color: color + 'CC' }}>
                 {title}
@@ -199,16 +199,16 @@ function MemberCard({ member }: { member: TeamMember }) {
         {/* HRV / Sömn / Strain */}
         <div className="grid grid-cols-3 gap-2">
           {/* HRV */}
-          <div className="rounded-xl bg-gray-50 p-3 flex flex-col items-center gap-1">
+          <div className="rounded-xl bg-muted/30 p-3 flex flex-col items-center gap-1">
             <span className="text-[10px] text-gray-9000 uppercase font-semibold tracking-wider">HRV</span>
-            <span className="text-xl font-bold text-gray-900 tabular-nums">
+            <span className="text-xl font-bold text-text-primary tabular-nums">
               {member.hrv != null ? Math.round(member.hrv) : '—'}
             </span>
             <span className="text-[9px] text-gray-9000">ms</span>
           </div>
 
           {/* Sömn */}
-          <div className="rounded-xl bg-gray-50 p-3 flex flex-col items-center gap-1">
+          <div className="rounded-xl bg-muted/30 p-3 flex flex-col items-center gap-1">
             <span className="text-[10px] text-gray-9000 uppercase font-semibold tracking-wider">Sömn</span>
             <span className="text-xl font-bold text-blue-700 tabular-nums">
               {member.sleep_hours != null ? `${member.sleep_hours.toFixed(1)}h` : '—'}
@@ -219,7 +219,7 @@ function MemberCard({ member }: { member: TeamMember }) {
           </div>
 
           {/* Strain */}
-          <div className="rounded-xl bg-gray-50 p-3 flex flex-col items-center gap-1">
+          <div className="rounded-xl bg-muted/30 p-3 flex flex-col items-center gap-1">
             <span className="text-[10px] text-gray-9000 uppercase font-semibold tracking-wider">Strain</span>
             <span className="text-xl font-bold text-orange-700 tabular-nums">
               {member.strain_score != null ? (Math.round(member.strain_score * 10) / 10).toFixed(1) : '—'}
@@ -231,7 +231,7 @@ function MemberCard({ member }: { member: TeamMember }) {
         {/* Strain bar */}
         {member.strain_score != null && (
           <div>
-            <div className="h-1 rounded-full bg-gray-50 overflow-hidden">
+            <div className="h-1 rounded-full bg-muted/30 overflow-hidden">
               <div
                 className="h-full rounded-full transition-all"
                 style={{
@@ -289,14 +289,14 @@ function TeamPulse({
         <button
           onClick={onRefresh}
           disabled={loading}
-          className="text-xs px-3 py-1.5 rounded-lg bg-gray-50 text-gray-9000 hover:bg-white/[0.10] transition-colors disabled:opacity-50"
+          className="text-xs px-3 py-1.5 rounded-lg bg-muted/30 text-gray-9000 hover:bg-white/[0.10] transition-colors disabled:opacity-50"
         >
           {loading ? '↻ Synkar…' : '↻ Synka'}
         </button>
       </div>
 
       {/* Team-genomsnitt */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-6">
+      <div className="rounded-2xl border border-surface-border bg-white p-6">
         <p className="text-xs text-gray-9000 font-mono uppercase tracking-wider mb-5">
           Team-genomsnitt
         </p>
@@ -342,7 +342,7 @@ function TeamPulse({
         </div>
 
         {/* Legend */}
-        <div className="flex flex-wrap items-center gap-4 mt-5 pt-4 border-t border-gray-200">
+        <div className="flex flex-wrap items-center gap-4 mt-5 pt-4 border-t border-surface-border">
           <div className="flex items-center gap-1.5">
             <div className="h-2 w-2 rounded-full bg-red-500" />
             <span className="text-xs text-gray-9000">Röd &lt;33 — vila idag</span>
@@ -366,7 +366,7 @@ function TeamPulse({
             <p className="text-sm font-semibold text-amber-300">Armbanden samlar data</p>
             <p className="text-xs text-gray-9000 leading-relaxed mt-0.5">
               WHOOP behöver bäras dygnet runt i{' '}
-              <strong className="text-gray-900">4–5 dagar</strong> innan recovery-data är pålitlig.
+              <strong className="text-text-primary">4–5 dagar</strong> innan recovery-data är pålitlig.
               Data börjar visas successivt — håll armbanden på.
             </p>
           </div>
@@ -478,7 +478,7 @@ function SetupAndConnectTab({ onConnected }: { onConnected: () => void }) {
         <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-6 flex flex-col items-center gap-4 text-center">
           <span className="text-4xl">✅</span>
           <div>
-            <h2 className="text-lg font-bold text-gray-900">WHOOP kopplat!</h2>
+            <h2 className="text-lg font-bold text-text-primary">WHOOP kopplat!</h2>
             <p className="text-sm text-gray-9000 mt-1">Din data synkas automatiskt.</p>
           </div>
 
@@ -497,7 +497,7 @@ function SetupAndConnectTab({ onConnected }: { onConnected: () => void }) {
                   <p className="text-sm font-semibold text-amber-300">Samlar data</p>
                   <p className="text-xs text-gray-9000 leading-relaxed">
                     WHOOP behöver bäras dygnet runt i{' '}
-                    <strong className="text-gray-900">minst 4–5 dagar</strong> innan recovery-data är
+                    <strong className="text-text-primary">minst 4–5 dagar</strong> innan recovery-data är
                     tillgänglig.
                   </p>
                 </div>
@@ -505,7 +505,7 @@ function SetupAndConnectTab({ onConnected }: { onConnected: () => void }) {
             }
 
             return (
-              <div className="w-full rounded-xl border border-gray-200 bg-gray-100 p-4 grid grid-cols-3 gap-3 text-center">
+              <div className="w-full rounded-xl border border-surface-border bg-muted p-4 grid grid-cols-3 gap-3 text-center">
                 <div>
                   <div
                     className="text-2xl font-bold"
@@ -604,8 +604,8 @@ function SetupAndConnectTab({ onConnected }: { onConnected: () => void }) {
         </div>
       )}
 
-      <div className="rounded-2xl border border-gray-200 bg-white p-5">
-        <h2 className="text-base font-semibold text-gray-900 mb-1">Koppla &amp; Kom igång</h2>
+      <div className="rounded-2xl border border-surface-border bg-white p-5">
+        <h2 className="text-base font-semibold text-text-primary mb-1">Koppla &amp; Kom igång</h2>
         <p className="text-sm text-gray-9000">Följ stegen nedan — från kartong till kopplat.</p>
       </div>
 
@@ -614,18 +614,18 @@ function SetupAndConnectTab({ onConnected }: { onConnected: () => void }) {
         return (
           <div
             key={num}
-            className="rounded-2xl border border-gray-200 bg-white p-5 flex gap-4"
+            className="rounded-2xl border border-surface-border bg-white p-5 flex gap-4"
           >
             <div className="flex flex-col items-center gap-2 flex-shrink-0">
-              <div className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-sm font-bold text-gray-900">
+              <div className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center text-sm font-bold text-text-primary">
                 {num}
               </div>
-              {!isLastStep && <div className="w-px flex-1 bg-gray-100 min-h-[20px]" />}
+              {!isLastStep && <div className="w-px flex-1 bg-muted min-h-[20px]" />}
             </div>
             <div className="flex-1 pb-2">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xl">{emoji}</span>
-                <h3 className="text-sm font-semibold text-gray-900">{title}</h3>
+                <h3 className="text-sm font-semibold text-text-primary">{title}</h3>
               </div>
               <p className="text-sm text-gray-9000 leading-relaxed">{body}</p>
               {tip && (
@@ -707,13 +707,13 @@ export function WHOOPTeamDashboard() {
   ]
 
   return (
-    <div className="h-full flex flex-col bg-gray-50 text-gray-900 overflow-hidden">
+    <div className="h-full flex flex-col bg-muted/30 text-text-primary overflow-hidden">
       {/* Header */}
-      <div className="flex-shrink-0 px-4 md:px-6 pt-5 pb-0 border-b border-gray-200">
+      <div className="flex-shrink-0 px-4 md:px-6 pt-5 pb-0 border-b border-surface-border">
         <div className="flex items-center gap-3 mb-4">
           <span className="text-2xl">⌚</span>
           <div>
-            <h1 className="text-lg font-bold text-gray-900">WHOOP</h1>
+            <h1 className="text-lg font-bold text-text-primary">WHOOP</h1>
             <p className="text-xs text-gray-9000">Team Pulse · Biometri · Recovery</p>
           </div>
         </div>
@@ -726,7 +726,7 @@ export function WHOOPTeamDashboard() {
               onClick={() => setTab(t.id)}
               className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors border-b-2 ${
                 tab === t.id
-                  ? 'text-gray-900 border-amber-400'
+                  ? 'text-text-primary border-amber-400'
                   : 'text-gray-9000 border-transparent hover:text-gray-600'
               }`}
             >

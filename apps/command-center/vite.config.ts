@@ -11,6 +11,8 @@ export default defineConfig({
     alias: { '@': path.resolve(__dirname, './src') },
   },
   build: {
+    // Target modern browsers including iOS Safari 14+
+    target: ['es2020', 'safari14', 'chrome87', 'firefox78'],
     rollupOptions: {
       output: {
         manualChunks: {

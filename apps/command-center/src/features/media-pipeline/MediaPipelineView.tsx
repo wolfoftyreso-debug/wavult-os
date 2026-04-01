@@ -102,7 +102,7 @@ export function MediaPipelineView() {
 
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 p-6 space-y-8">
+    <div className="min-h-screen bg-white text-text-primary p-6 space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -143,8 +143,8 @@ export function MediaPipelineView() {
           {MOCK_FILES.map(file => {
             const meta = STATUS_META[file.status]
             return (
-              <div key={file.id} className="bg-gray-50 rounded-lg p-4 flex items-center gap-4">
-                <div className="w-10 h-10 bg-gray-100 rounded flex items-center justify-center text-lg flex-shrink-0">
+              <div key={file.id} className="bg-muted/30 rounded-lg p-4 flex items-center gap-4">
+                <div className="w-10 h-10 bg-muted rounded flex items-center justify-center text-lg flex-shrink-0">
                   🖼️
                 </div>
                 <div className="flex-1 min-w-0">
@@ -157,7 +157,7 @@ export function MediaPipelineView() {
                     <div className="text-xs text-gray-9000">📍 {file.lat.toFixed(4)}, {file.lng?.toFixed(4)}</div>
                   )}
                   {(file.status === 'uploading' || file.status === 'processing') && (
-                    <div className="mt-2 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                    <div className="mt-2 h-1.5 bg-muted rounded-full overflow-hidden">
                       <div
                         className="h-full bg-blue-500 rounded-full transition-all"
                         style={{ width: `${file.progress}%` }}
@@ -190,7 +190,7 @@ export function MediaPipelineView() {
         <div className="flex items-center gap-2 overflow-x-auto pb-2">
           {PIPELINE_STAGES.map((s, i) => (
             <>
-              <div key={s.stage} className="bg-gray-50 rounded-xl p-4 text-center min-w-[120px] flex-shrink-0">
+              <div key={s.stage} className="bg-muted/30 rounded-xl p-4 text-center min-w-[120px] flex-shrink-0">
                 <div className="text-2xl mb-1">{s.emoji}</div>
                 <div className="text-xs font-semibold text-gray-800 mb-2">{s.label}</div>
                 <div className="text-2xl font-bold text-blue-700">{s.count}</div>
@@ -215,7 +215,7 @@ export function MediaPipelineView() {
             <select
               value={filterStatus}
               onChange={e => setFilterStatus(e.target.value as FileStatus | 'all')}
-              className="bg-gray-50 border border-gray-200 text-gray-600 text-xs rounded px-2 py-1"
+              className="bg-muted/30 border border-surface-border text-gray-600 text-xs rounded px-2 py-1"
             >
               <option value="all">Alla statusar</option>
               {Object.entries(STATUS_META).map(([k, v]) => (
@@ -225,7 +225,7 @@ export function MediaPipelineView() {
             <select
               value={filterMission}
               onChange={e => setFilterMission(e.target.value)}
-              className="bg-gray-50 border border-gray-200 text-gray-600 text-xs rounded px-2 py-1"
+              className="bg-muted/30 border border-surface-border text-gray-600 text-xs rounded px-2 py-1"
             >
               <option value="all">Alla uppdrag</option>
               {missions.map(m => <option key={m} value={m}>{m}</option>)}
@@ -233,10 +233,10 @@ export function MediaPipelineView() {
           </div>
         </div>
 
-        <div className="bg-gray-50 rounded-xl overflow-hidden">
+        <div className="bg-muted/30 rounded-xl overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-200 text-gray-9000 text-xs uppercase">
+              <tr className="border-b border-surface-border text-gray-9000 text-xs uppercase">
                 <th className="text-left p-3 pl-4">Fil</th>
                 <th className="text-left p-3">Uppdrag</th>
                 <th className="text-left p-3">Geo</th>
@@ -253,7 +253,7 @@ export function MediaPipelineView() {
                   <tr key={f.id} className={`border-b border-gray-200/50 hover:bg-gray-750 transition-colors ${i % 2 === 0 ? '' : 'bg-gray-50/50'}`}>
                     <td className="p-3 pl-4">
                       <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-sm">🖼️</div>
+                        <div className="w-8 h-8 bg-muted rounded flex items-center justify-center text-sm">🖼️</div>
                         <span className="font-medium text-gray-800">{f.name}</span>
                       </div>
                     </td>
@@ -264,7 +264,7 @@ export function MediaPipelineView() {
                     <td className="p-3">
                       <div className="flex flex-wrap gap-1">
                         {f.aiTags?.slice(0, 3).map(tag => (
-                          <span key={tag} className="text-xs bg-purple-900/50 text-purple-300 px-1.5 py-0.5 rounded border border-purple-800">
+                          <span key={tag} className="text-xs bg-blue-900/50 text-blue-400 px-1.5 py-0.5 rounded border border-blue-800">
                             {tag}
                           </span>
                         ))}
@@ -309,13 +309,13 @@ export function MediaPipelineView() {
         </h2>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {STORAGE_BUCKETS.map(b => (
-            <div key={b.id} className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+            <div key={b.id} className="bg-muted/30 rounded-xl p-4 border border-surface-border">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xl">{b.flag}</span>
                 <span className={`text-xs px-2 py-0.5 rounded-full border ${
                   b.role === 'primary'
                     ? 'text-blue-700 border-blue-800 bg-blue-900/30'
-                    : 'text-gray-9000 border-gray-200 bg-gray-50'
+                    : 'text-gray-9000 border-surface-border bg-muted/30'
                 }`}>
                   {b.role === 'primary' ? 'Primary' : 'Backup (CRR)'}
                 </span>
@@ -325,15 +325,15 @@ export function MediaPipelineView() {
               <div className="space-y-1">
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-9000">Lagring</span>
-                  <span className="text-gray-900 font-medium">{b.estimatedGb} GB</span>
+                  <span className="text-text-primary font-medium">{b.estimatedGb} GB</span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-9000">Objekt</span>
-                  <span className="text-gray-900 font-medium">{b.objectCount.toLocaleString()}</span>
+                  <span className="text-text-primary font-medium">{b.objectCount.toLocaleString()}</span>
                 </div>
               </div>
               {/* Mini usage bar */}
-              <div className="mt-3 h-1 bg-gray-100 rounded-full overflow-hidden">
+              <div className="mt-3 h-1 bg-muted rounded-full overflow-hidden">
                 <div
                   className="h-full bg-blue-500 rounded-full"
                   style={{ width: `${Math.min((b.estimatedGb / 50) * 100, 100)}%` }}

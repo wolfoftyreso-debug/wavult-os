@@ -45,7 +45,7 @@ export const COMPANY_DESCRIPTIONS: CompanyDescription[] = [
     shortName: 'Wavult Group',
     jurisdiction: 'UAE — Dubai Freezone (IFZA)',
     flag: '🇦🇪',
-    color: '#8B5CF6',
+    color: '#2563EB',
     syfte:
       'Moderbolag och koncernens holdingstruktur. Äger IP-rättigheter, hanterar intercompany-flöden och samordnar strategiska beslut för hela Wavult Group.',
     karnverksamhet:
@@ -64,7 +64,7 @@ export const COMPANY_DESCRIPTIONS: CompanyDescription[] = [
     shortName: 'Wavult DevOps',
     jurisdiction: 'UAE — Dubai Freezone (IFZA)',
     flag: '🇦🇪',
-    color: '#A78BFA',
+    color: '#60A5FA',
     syfte:
       'Tekniskt operationsbolag. Bygger, driftar och äger den tekniska plattformen — Wavult OS, quiXzoom-plattformen och Optical Insight-motorn.',
     karnverksamhet:
@@ -180,8 +180,8 @@ export function getProductgrenMeta(gren: CompanyDescription['produktgren']): { c
   switch (gren) {
     case 'quiXzoom': return { color: '#3B82F6', icon: '📷' }
     case 'Landvex': return { color: '#10B981', icon: '🌍' }
-    case 'Wavult OS': return { color: '#A78BFA', icon: '⚙️' }
-    case 'Holding': return { color: '#8B5CF6', icon: '🏛️' }
+    case 'Wavult OS': return { color: '#60A5FA', icon: '⚙️' }
+    case 'Holding': return { color: '#2563EB', icon: '🏛️' }
     case 'DevOps': return { color: '#EC4899', icon: '💻' }
   }
 }

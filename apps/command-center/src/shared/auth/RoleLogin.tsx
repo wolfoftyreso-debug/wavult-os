@@ -1,22 +1,48 @@
-import { Crown, DollarSign, Cpu, Scale, User } from 'lucide-react'
-import type { LucideProps } from 'lucide-react'
 import { ROLES, RoleProfile, useRole } from './RoleContext'
 import { useTranslation } from '../i18n/useTranslation'
 
-function getRoleIcon(roleId: string): React.ComponentType<LucideProps> {
-  switch (roleId) {
-    case 'group-ceo':
-    case 'admin':
-      return Crown
-    case 'cfo':
-      return DollarSign
-    case 'cto':
-      return Cpu
-    case 'clo':
-      return Scale
-    default:
-      return User
-  }
+// ─── Wavult hexagon logo mark ─────────────────────────────────────────────────
+function WavultMark({ size = 44 }: { size?: number }) {
+  const cx = size / 2
+  const cy = size / 2
+  const r = size * 0.44
+  const pts = Array.from({ length: 6 }, (_, i) => {
+    const angle = (Math.PI / 3) * i - Math.PI / 6
+    return `${cx + r * Math.cos(angle)},${cy + r * Math.sin(angle)}`
+  }).join(' ')
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} fill="none">
+      <polygon points={pts} fill="var(--color-accent)" />
+      <text
+        x={cx}
+        y={cy + 1}
+        textAnchor="middle"
+        dominantBaseline="middle"
+        fill="#FFFFFF"
+        fontSize={size * 0.38}
+        fontWeight="700"
+        fontFamily="var(--font-sans)"
+      >
+        W
+      </text>
+    </svg>
+  )
+}
+
+// ─── Access scope display ─────────────────────────────────────────────────────
+const SCOPE_LABELS: Record<string, string> = {
+  full: 'Full Access',
+  finance: 'Finance',
+  tech: 'Technology',
+  legal: 'Legal',
+  product: 'Product',
+  execution: 'Execution',
+  strategy: 'Strategy',
+  sales: 'Sales',
+  systems: 'Systems',
+  infra: 'Infrastructure',
+  support: 'Support',
+  contracts: 'Contracts',
 }
 
 export function RoleLogin() {
@@ -24,19 +50,54 @@ export function RoleLogin() {
   const { t } = useTranslation()
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6">
+    <div
+      className="min-h-screen flex flex-col items-center justify-center p-6"
+      style={{ background: 'var(--color-bg)' }}
+    >
       {/* Header */}
       <div className="mb-8 text-center">
-        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-purple-700 mb-4">
-          <span className="text-xl font-bold text-gray-900">W</span>
+        <div className="inline-flex items-center justify-center mb-4">
+          <WavultMark size={44} />
         </div>
-        <h1 className="text-xl font-semibold text-gray-900">Wavult OS</h1>
-        <p className="text-xs text-gray-9000 uppercase tracking-wide font-medium mt-1">Wavult Ecosystem</p>
-        <p className="text-sm text-gray-9000 mt-2">{t('auth.select_role')}</p>
+        <h1
+          style={{
+            fontSize: 18,
+            fontWeight: 700,
+            color: 'var(--color-text-primary)',
+            marginBottom: 4,
+          }}
+        >
+          Wavult OS
+        </h1>
+        <p
+          style={{
+            fontSize: 11,
+            fontWeight: 600,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+            color: 'var(--color-text-tertiary)',
+            marginBottom: 8,
+          }}
+        >
+          Operational Intelligence Platform
+        </p>
+        <p style={{ fontSize: 13, color: 'var(--color-text-secondary)' }}>
+          {t('auth.select_role')}
+        </p>
       </div>
 
       {/* Role grid */}
-      <div className="bg-white border border-gray-200 rounded-2xl p-8 w-full max-w-md shadow-md">
+      <div
+        style={{
+          background: 'var(--color-surface)',
+          border: '1px solid var(--color-border)',
+          borderRadius: 'var(--radius-xl)',
+          padding: 24,
+          width: '100%',
+          maxWidth: 480,
+          boxShadow: 'var(--shadow-lg)',
+        }}
+      >
         <div className="grid grid-cols-2 gap-3">
           {ROLES.map((r) => (
             <RoleCard key={r.id} role={r} onSelect={() => setRole(r)} />
@@ -44,65 +105,169 @@ export function RoleLogin() {
         </div>
       </div>
 
-      <p className="mt-6 text-xs text-gray-9000 font-mono">
-        Wavult OS · Intern access
+      <p
+        className="mt-6"
+        style={{
+          fontSize: 10,
+          color: 'var(--color-text-tertiary)',
+          fontFamily: 'var(--font-mono)',
+          opacity: 0.5,
+        }}
+      >
+        Wavult OS · Internal access only
       </p>
     </div>
   )
 }
 
 function RoleCard({ role, onSelect }: { role: RoleProfile; onSelect: () => void }) {
-  const { t } = useTranslation()
   const vacant = role.name.startsWith('—')
-  const Icon = getRoleIcon(role.id)
+
+  // Show at most 3 scope tags (skip 'full' — it's implied by admin)
+  const displayScopes = role.access
+    .filter(s => s !== 'full')
+    .slice(0, 2)
 
   return (
     <button
       onClick={onSelect}
       disabled={vacant}
-      className="text-left bg-white border border-gray-200 rounded-xl p-4 hover:border-purple-400 hover:shadow-sm cursor-pointer transition-all disabled:opacity-40 disabled:cursor-not-allowed group"
+      className="text-left transition-all group"
+      style={{
+        background: 'var(--color-bg-muted)',
+        border: '1px solid var(--color-border)',
+        borderLeft: `3px solid ${vacant ? 'var(--color-border)' : role.color}`,
+        borderRadius: 'var(--radius-lg)',
+        padding: '14px 14px 12px',
+        cursor: vacant ? 'not-allowed' : 'pointer',
+        opacity: vacant ? 0.4 : 1,
+        position: 'relative',
+        overflow: 'hidden',
+      }}
     >
-      {/* Icon */}
+      {/* Avatar initials */}
       <div
-        className="w-9 h-9 rounded-lg flex items-center justify-center mb-3 flex-shrink-0"
-        style={{ background: role.color + '18', border: `1px solid ${role.color}40` }}
+        style={{
+          width: 36,
+          height: 36,
+          borderRadius: '50%',
+          background: role.color + '18',
+          border: `1px solid ${role.color}35`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: 10,
+          flexShrink: 0,
+        }}
       >
-        <Icon className="w-4 h-4" style={{ color: role.color }} />
+        <span
+          style={{
+            fontSize: 12,
+            fontWeight: 700,
+            color: role.color,
+            fontFamily: 'var(--font-mono)',
+            letterSpacing: '0.02em',
+          }}
+        >
+          {role.initials}
+        </span>
       </div>
 
-      {/* Role info */}
+      {/* Role info — clear hierarchy */}
       <div className="min-w-0">
-        <div className="text-sm font-semibold text-gray-900 truncate">{role.person}</div>
-        <div className="text-xs font-medium mt-0.5 truncate" style={{ color: role.color }}>
-          {role.title}
+        {/* Role/title — largest */}
+        <div
+          style={{
+            fontSize: 12,
+            fontWeight: 700,
+            color: 'var(--color-text-primary)',
+            lineHeight: 1.3,
+            marginBottom: 2,
+          }}
+        >
+          {role.person}
         </div>
-        <div className="text-xs text-gray-9000 mt-1 truncate">{role.name}</div>
+
+        {/* Person name — medium */}
+        <div
+          style={{
+            fontSize: 11,
+            fontWeight: 500,
+            color: 'var(--color-text-secondary)',
+            lineHeight: 1.3,
+            marginBottom: 6,
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {role.name}
+        </div>
+
+        {/* Access scope — smallest */}
+        <div className="flex flex-wrap gap-1">
+          {displayScopes.map((scope) => (
+            <span
+              key={scope}
+              style={{
+                fontSize: 9,
+                fontWeight: 600,
+                fontFamily: 'var(--font-mono)',
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+                padding: '2px 5px',
+                borderRadius: 3,
+                background: role.color + '12',
+                color: role.color,
+                border: `1px solid ${role.color}25`,
+              }}
+            >
+              {SCOPE_LABELS[scope] ?? scope}
+            </span>
+          ))}
+          {role.access.filter(s => s !== 'full').length > 2 && (
+            <span
+              style={{
+                fontSize: 9,
+                fontFamily: 'var(--font-mono)',
+                padding: '2px 5px',
+                borderRadius: 3,
+                background: 'var(--color-bg)',
+                color: 'var(--color-text-tertiary)',
+                border: '1px solid var(--color-border)',
+              }}
+            >
+              +{role.access.filter(s => s !== 'full').length - 2}
+            </span>
+          )}
+          {role.access.includes('full') && (
+            <span
+              style={{
+                fontSize: 9,
+                fontWeight: 600,
+                fontFamily: 'var(--font-mono)',
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+                padding: '2px 5px',
+                borderRadius: 3,
+                background: role.color + '12',
+                color: role.color,
+                border: `1px solid ${role.color}25`,
+              }}
+            >
+              Full Access
+            </span>
+          )}
+        </div>
       </div>
 
-      {/* Access scopes */}
-      <div className="flex flex-wrap gap-1 mt-3">
-        {role.access.slice(0, 2).map((scope) => (
-          <span
-            key={scope}
-            className="text-xs px-1.5 py-0.5 rounded-full font-mono capitalize"
-            style={{ background: role.color + '12', color: role.color, border: `1px solid ${role.color}25` }}
-          >
-            {scope}
-          </span>
-        ))}
-        {role.access.length > 2 && (
-          <span className="text-xs px-1.5 py-0.5 rounded-full font-mono bg-gray-100 text-gray-9000">
-            +{role.access.length - 2}
-          </span>
-        )}
-      </div>
-
+      {/* Hover state: title line at bottom */}
       {!vacant && (
         <div
           className="mt-3 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity"
-          style={{ color: role.color }}
+          style={{ color: role.color, fontSize: 10 }}
         >
-          {t('auth.continue_as')}
+          Continue as {role.person} →
         </div>
       )}
     </button>

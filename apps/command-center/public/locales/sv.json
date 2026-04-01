@@ -12,6 +12,7 @@
   "nav.ops": "Operations Center",
   "nav.money": "Pengar",
   "nav.finance": "Finance",
+  "nav.venture_engine": "Venture Engine",
   "nav.transactions": "Transaktioner",
   "nav.simulation": "Simulering",
   "nav.procurement": "Inköp",
@@ -232,6 +233,8 @@
   "nav.quixzoom_ads": "Quixzoom Ads",
   "nav.finance_flow": "Finance Flow",
   "nav.flights": "Flyg & Resor",
+  "nav.visa": "Visum & Tillstånd",
+  "nav.travel_hub": "Reseplaner",
   "nav.company_launch": "Bilda bolag",
   "nav.corporate": "Bolag",
   "nav.legal": "Legal",
@@ -243,8 +246,23 @@
     "platforms": "Plattformar",
     "quixzoom_app": "quiXzoom",
     "landvex_portal": "Landvex",
-    "quixzoom_ads": "Quixom Ads"
+    "quixzoom_ads": "Quixom Ads",
+    "dashboard": "Dashboard",
+    "tasks": "Uppgifter",
+    "entities": "Entiteter",
+    "travel": "Resor & Rörlighet",
+    "incidents": "Incidenter",
+    "communications": "Kommunikation",
+    "core": "Kärnverksamhet",
+    "execution": "Genomförande",
+    "infrastructure": "Infrastruktur",
+    "support_systems": "Stödsystem",
+    "system": "System",
+    "uber": "Uber",
+    "visa": "Visum & Tillstånd",
+    "operations": "Operationer"
   },
   "nav.openclaw": "OpenClaw",
-  "nav.networkMap": "Network Map"
+  "nav.networkMap": "Network Map",
+  "nav.uber": "🚗 Uber"
 }

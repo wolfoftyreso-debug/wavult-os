@@ -23,7 +23,7 @@ export const SERVICE_REGISTRY: ServiceDefinition[] = [
     name: 'Wavult OS API',
     category: 'compute',
     provider: 'aws',
-    endpoint: 'https://api.hypbit.com/api/health',
+    endpoint: 'https://api.wavult.com/api/health',
     region: 'eu-north-1',
     criticalityLevel: 1,
     owner: 'group-cto',

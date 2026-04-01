@@ -121,8 +121,8 @@ export function WHOOPConnect() {
 
   if (loading) {
     return (
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 animate-pulse">
-        <div className="h-8 w-48 bg-gray-50 rounded-lg" />
+      <div className="rounded-2xl border border-surface-border bg-white p-6 animate-pulse">
+        <div className="h-8 w-48 bg-muted/30 rounded-lg" />
       </div>
     )
   }
@@ -131,11 +131,11 @@ export function WHOOPConnect() {
 
   if (!status?.connected) {
     return (
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 flex flex-col gap-4">
+      <div className="rounded-2xl border border-surface-border bg-white p-6 flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <span className="text-3xl">⌚</span>
           <div>
-            <h2 className="text-gray-900 font-semibold text-lg">WHOOP</h2>
+            <h2 className="text-text-primary font-semibold text-lg">WHOOP</h2>
             <p className="text-gray-9000 text-sm">Inte kopplat</p>
           </div>
         </div>
@@ -162,13 +162,13 @@ export function WHOOPConnect() {
   const label = recoveryLabel(score)
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-6 flex flex-col gap-5">
+    <div className="rounded-2xl border border-surface-border bg-white p-6 flex flex-col gap-5">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span className="text-3xl">⌚</span>
           <div>
-            <h2 className="text-gray-900 font-semibold text-lg">WHOOP</h2>
+            <h2 className="text-text-primary font-semibold text-lg">WHOOP</h2>
             <p className="text-xs text-green-700 font-mono">● Kopplat</p>
           </div>
         </div>
@@ -203,16 +203,16 @@ export function WHOOPConnect() {
       {/* Metrics grid */}
       <div className="grid grid-cols-3 gap-3">
         {/* HRV */}
-        <div className="rounded-xl bg-gray-50 border border-gray-200 p-3 text-center">
-          <div className="text-xl font-bold text-gray-900 tabular-nums">
+        <div className="rounded-xl bg-muted/30 border border-surface-border p-3 text-center">
+          <div className="text-xl font-bold text-text-primary tabular-nums">
             {data?.recovery?.hrv != null ? Math.round(data.recovery.hrv) : '—'}
           </div>
           <div className="text-xs text-gray-9000 font-mono mt-1">HRV ms</div>
         </div>
 
         {/* Sömn % */}
-        <div className="rounded-xl bg-gray-50 border border-gray-200 p-3 text-center">
-          <div className="text-xl font-bold text-gray-900 tabular-nums">
+        <div className="rounded-xl bg-muted/30 border border-surface-border p-3 text-center">
+          <div className="text-xl font-bold text-text-primary tabular-nums">
             {data?.sleep?.performancePercent != null
               ? `${Math.round(data.sleep.performancePercent)}%`
               : '—'}
@@ -221,8 +221,8 @@ export function WHOOPConnect() {
         </div>
 
         {/* Strain */}
-        <div className="rounded-xl bg-gray-50 border border-gray-200 p-3 text-center">
-          <div className="text-xl font-bold text-gray-900 tabular-nums">
+        <div className="rounded-xl bg-muted/30 border border-surface-border p-3 text-center">
+          <div className="text-xl font-bold text-text-primary tabular-nums">
             {data?.strain?.score != null
               ? Math.round(data.strain.score * 10) / 10
               : '—'}
@@ -233,17 +233,17 @@ export function WHOOPConnect() {
 
       {/* Extra: sömn duration + vila HR */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="rounded-xl bg-gray-50 border border-gray-200 p-3">
+        <div className="rounded-xl bg-muted/30 border border-surface-border p-3">
           <div className="text-xs text-gray-9000 font-mono mb-1">Sovtid</div>
-          <div className="text-sm font-semibold text-gray-900">
+          <div className="text-sm font-semibold text-text-primary">
             {data?.sleep?.durationHours != null
               ? `${data.sleep.durationHours}h`
               : '—'}
           </div>
         </div>
-        <div className="rounded-xl bg-gray-50 border border-gray-200 p-3">
+        <div className="rounded-xl bg-muted/30 border border-surface-border p-3">
           <div className="text-xs text-gray-9000 font-mono mb-1">Vilopuls</div>
-          <div className="text-sm font-semibold text-gray-900">
+          <div className="text-sm font-semibold text-text-primary">
             {data?.recovery?.restingHr != null
               ? `${Math.round(data.recovery.restingHr)} bpm`
               : '—'}

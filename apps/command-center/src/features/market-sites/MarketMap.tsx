@@ -48,7 +48,7 @@ function KpiBar({ label, current, target, unit = '' }: {
           {displayCurrent} / {displayTarget}
         </span>
       </div>
-      <div className="h-1 rounded-full bg-gray-50 overflow-hidden">
+      <div className="h-1 rounded-full bg-muted/30 overflow-hidden">
         <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: color }} />
       </div>
     </div>
@@ -70,7 +70,7 @@ function StageBadge({ stage }: { stage: MarketSite['stage'] }) {
   const colors: Record<MarketSite['stage'], string> = {
     planned: '#6B7280',
     setup:   '#F59E0B',
-    launch:  '#8B5CF6',
+    launch:  '#2563EB',
     scale:   '#3B82F6',
     mature:  '#10B981',
   }
@@ -107,7 +107,7 @@ function ProductBadge({ product }: { product: ProductType }) {
 
 function PanelSection({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="border-t border-gray-200 pt-3 pb-3 px-4 space-y-2">
+    <div className="border-t border-surface-border pt-3 pb-3 px-4 space-y-2">
       <p className="text-[9px] font-bold text-gray-600 uppercase tracking-[0.15em]">{label}</p>
       {children}
     </div>
@@ -135,10 +135,10 @@ function SitePanel({ site, onClose }: { site: MarketSite; onClose: () => void })
     <div className="w-[340px] flex-shrink-0 flex flex-col h-full overflow-hidden"
       style={{ background: '#FFFFFF', borderLeft: '1px solid rgba(255,255,255,0.06)' }}>
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-surface-border">
         <div className="flex items-center gap-2">
           <span className="text-xl leading-none">{flagEmoji(site.countryCode)}</span>
-          <span className="text-sm font-semibold text-gray-900">{site.name}</span>
+          <span className="text-sm font-semibold text-text-primary">{site.name}</span>
         </div>
         <button onClick={onClose}
           className="text-gray-9000 hover:text-gray-600 transition-colors text-sm leading-none">
@@ -176,7 +176,7 @@ function SitePanel({ site, onClose }: { site: MarketSite; onClose: () => void })
               <p className="text-[9px] text-gray-9000">{nextActionAlert.action_required}</p>
             </div>
           ) : nextActionItem ? (
-            <div className="rounded-lg px-3 py-2 bg-gray-50 border border-gray-200">
+            <div className="rounded-lg px-3 py-2 bg-muted/30 border border-surface-border">
               <p className="text-xs text-gray-600">☐ {nextActionItem.item}</p>
               <p className="text-[9px] text-gray-9000 mt-0.5">Current stage: {STAGE_LABEL[site.stage]}</p>
             </div>
@@ -202,14 +202,14 @@ function SitePanel({ site, onClose }: { site: MarketSite; onClose: () => void })
             {STAGE_ORDER.map((s, i) => {
               const isCurrent = s === site.stage
               const isDone = STAGE_ORDER.indexOf(site.stage) > i
-              const stageColor = isDone ? '#10B981' : isCurrent ? '#8B5CF6' : '#F3F4F6'
+              const stageColor = isDone ? '#10B981' : isCurrent ? '#2563EB' : '#F3F4F6'
               return (
                 <div key={s} className="flex items-center gap-1 flex-1">
                   <div className="flex flex-col items-center gap-0.5 flex-1">
                     <div className="h-1.5 w-full rounded-full transition-all"
                       style={{ background: stageColor }} />
                     <span className="text-[7px] font-mono"
-                      style={{ color: isCurrent ? '#8B5CF6' : isDone ? '#10B981' : '#F3F4F6' }}>
+                      style={{ color: isCurrent ? '#2563EB' : isDone ? '#10B981' : '#F3F4F6' }}>
                       {s.substring(0, 3).toUpperCase()}
                     </span>
                   </div>
@@ -249,9 +249,9 @@ function SitePanel({ site, onClose }: { site: MarketSite; onClose: () => void })
                   active: '#10B981', planned: '#6B7280', paused: '#F59E0B',
                 }
                 return (
-                  <div key={campaign.id} className="rounded-lg px-3 py-2 bg-gray-50 border border-gray-100 space-y-1.5">
+                  <div key={campaign.id} className="rounded-lg px-3 py-2 bg-muted/30 border border-surface-border/50 space-y-1.5">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-xs font-semibold text-gray-900 flex-1 truncate">{campaign.name}</span>
+                      <span className="text-xs font-semibold text-text-primary flex-1 truncate">{campaign.name}</span>
                       <span className="text-[8px] font-bold uppercase px-1 rounded"
                         style={{ background: statusColor[campaign.status] + '20', color: statusColor[campaign.status] }}>
                         {campaign.status}
@@ -266,7 +266,7 @@ function SitePanel({ site, onClose }: { site: MarketSite; onClose: () => void })
                         <span>Spend</span>
                         <span>${campaign.spend_to_date.toLocaleString()} / ${campaign.budget_monthly.toLocaleString()}/mo</span>
                       </div>
-                      <div className="h-1 rounded-full bg-gray-50 overflow-hidden">
+                      <div className="h-1 rounded-full bg-muted/30 overflow-hidden">
                         <div className="h-full rounded-full"
                           style={{ width: `${spendPct}%`, background: spendPct > 90 ? '#EF4444' : '#3B82F6' }} />
                       </div>
@@ -290,7 +290,7 @@ function SitePanel({ site, onClose }: { site: MarketSite; onClose: () => void })
           <div className="space-y-2">
             <div className="flex justify-between text-xs">
               <span className="text-gray-9000">Team size</span>
-              <span className="text-gray-900 font-mono">{site.operations.team_size} people</span>
+              <span className="text-text-primary font-mono">{site.operations.team_size} people</span>
             </div>
             <div className="space-y-1">
               <div className="flex justify-between text-xs">
@@ -300,7 +300,7 @@ function SitePanel({ site, onClose }: { site: MarketSite; onClose: () => void })
                   {site.operations.capacity_pct}%
                 </span>
               </div>
-              <div className="h-1 rounded-full bg-gray-50 overflow-hidden">
+              <div className="h-1 rounded-full bg-muted/30 overflow-hidden">
                 <div className="h-full rounded-full"
                   style={{
                     width: `${site.operations.capacity_pct}%`,
@@ -319,7 +319,7 @@ function SitePanel({ site, onClose }: { site: MarketSite; onClose: () => void })
           <div className="space-y-2">
             <div>
               <p className="text-[9px] text-gray-9000">Entity linkage</p>
-              <p className="text-xs text-gray-900 mt-0.5">{site.legal.entity_linkage}</p>
+              <p className="text-xs text-text-primary mt-0.5">{site.legal.entity_linkage}</p>
             </div>
             {site.legal.contracts.length > 0 && (
               <div className="space-y-1">
@@ -352,7 +352,7 @@ function SitePanel({ site, onClose }: { site: MarketSite; onClose: () => void })
                   {responsible.initials}
                 </div>
                 <div>
-                  <p className="text-xs text-gray-900">{responsible.person}</p>
+                  <p className="text-xs text-text-primary">{responsible.person}</p>
                   <p className="text-[9px] text-gray-9000">{responsible.title}</p>
                 </div>
               </div>
@@ -552,7 +552,7 @@ export function MarketMap() {
 
   const activeSiteCount = MARKET_SITES.filter(s => s.status === 'active' || s.status === 'scaling').length
 
-  const selectEl = 'text-xs bg-white border border-gray-200 rounded-lg px-2.5 py-1 font-mono cursor-pointer focus:outline-none appearance-none text-gray-9000'
+  const selectEl = 'text-xs bg-white border border-surface-border rounded-lg px-2.5 py-1 font-mono cursor-pointer focus:outline-none appearance-none text-gray-9000'
 
   return (
     <div className="flex flex-col h-full" style={{ background: '#F9FAFB' }}>
@@ -561,7 +561,7 @@ export function MarketMap() {
       <div className="flex-shrink-0 h-11 flex items-center justify-between px-4 border-b"
         style={{ borderColor: 'rgba(255,255,255,0.06)', background: '#F9FAFB' }}>
         {/* Title */}
-        <span className="text-xs font-bold text-gray-900 tracking-wide">
+        <span className="text-xs font-bold text-text-primary tracking-wide">
           Market Deployment Control
         </span>
 
@@ -598,7 +598,7 @@ export function MarketMap() {
             placeholder="Search…"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="text-xs bg-white border border-gray-200 rounded-lg px-2.5 py-1 font-mono focus:outline-none text-gray-9000 placeholder-gray-700 w-24"
+            className="text-xs bg-white border border-surface-border rounded-lg px-2.5 py-1 font-mono focus:outline-none text-gray-9000 placeholder-gray-700 w-24"
           />
 
           {/* Summary pills */}

@@ -26,14 +26,14 @@ export function ContactsView() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h2 className="text-sm font-semibold text-gray-900">Kontakter</h2>
-          <p className="text-sm text-gray-500 mt-0.5">{CONTACTS.length} kontakter i registret</p>
+          <h2 className="text-sm font-semibold text-text-primary">Kontakter</h2>
+          <p className="text-sm text-text-muted mt-0.5">{CONTACTS.length} kontakter i registret</p>
         </div>
         <input
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="Sök namn, företag, roll..."
-          className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none focus:border-gray-300 w-72"
+          className="bg-white border border-surface-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder-gray-600 focus:outline-none focus:border-gray-300 w-72"
         />
       </div>
 
@@ -44,7 +44,7 @@ export function ContactsView() {
           return (
             <div
               key={c.id}
-              className="bg-white border border-gray-200 rounded-xl p-4 flex flex-col gap-3 hover:border-gray-300 transition-colors"
+              className="bg-white border border-surface-border rounded-xl p-4 flex flex-col gap-3 hover:border-gray-300 transition-colors"
             >
               {/* Name + company */}
               <div className="flex items-start gap-3">
@@ -55,9 +55,9 @@ export function ContactsView() {
                   {c.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
                 </div>
                 <div className="min-w-0">
-                  <p className="font-semibold text-gray-900 text-sm">{c.name}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">{c.role}</p>
-                  <p className="text-xs text-gray-500">{c.company}</p>
+                  <p className="font-semibold text-text-primary text-sm">{c.name}</p>
+                  <p className="text-xs text-text-muted mt-0.5">{c.role}</p>
+                  <p className="text-xs text-text-muted">{c.company}</p>
                 </div>
               </div>
 
@@ -65,16 +65,16 @@ export function ContactsView() {
               <div className="space-y-1.5">
                 <a
                   href={`mailto:${c.email}`}
-                  className="flex items-center gap-2 text-xs text-gray-500 hover:text-gray-900 transition-colors group"
+                  className="flex items-center gap-2 text-xs text-text-muted hover:text-text-primary transition-colors group"
                 >
-                  <span className="text-gray-500 group-hover:text-gray-500">📧</span>
+                  <span className="text-text-muted group-hover:text-text-muted">📧</span>
                   <span className="truncate">{c.email}</span>
                 </a>
                 <a
                   href={`tel:${c.phone}`}
-                  className="flex items-center gap-2 text-xs text-gray-500 hover:text-gray-900 transition-colors group"
+                  className="flex items-center gap-2 text-xs text-text-muted hover:text-text-primary transition-colors group"
                 >
-                  <span className="text-gray-500 group-hover:text-gray-500">📞</span>
+                  <span className="text-text-muted group-hover:text-text-muted">📞</span>
                   <span>{c.phone}</span>
                 </a>
               </div>
@@ -82,7 +82,7 @@ export function ContactsView() {
               {/* Linked prospect */}
               {prospect && (
                 <div
-                  className="flex items-center justify-between pt-2 border-t border-gray-200"
+                  className="flex items-center justify-between pt-2 border-t border-surface-border"
                 >
                   <div className="flex items-center gap-2">
                     <span
@@ -91,7 +91,7 @@ export function ContactsView() {
                     >
                       {prospect.product}
                     </span>
-                    <span className="text-xs text-gray-500">{prospect.company}</span>
+                    <span className="text-xs text-text-muted">{prospect.company}</span>
                   </div>
                   <span
                     className="text-xs px-1.5 py-0.5 rounded"
@@ -106,7 +106,7 @@ export function ContactsView() {
         })}
 
         {filtered.length === 0 && (
-          <div className="col-span-3 py-12 text-center text-gray-500 text-sm">
+          <div className="col-span-3 py-12 text-center text-text-muted text-sm">
             Inga kontakter matchar sökningen
           </div>
         )}

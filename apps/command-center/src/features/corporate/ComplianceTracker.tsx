@@ -51,10 +51,10 @@ export function ComplianceTracker() {
     <div className="space-y-5">
       {/* Summary cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="rounded-xl bg-gray-50 border border-gray-200 p-4">
-          <div className="text-[28px] font-bold text-gray-900">{totals.klarCount}<span className="text-[16px] text-gray-9000">/{totals.total}</span></div>
+        <div className="rounded-xl bg-muted/30 border border-surface-border p-4">
+          <div className="text-[28px] font-bold text-text-primary">{totals.klarCount}<span className="text-[16px] text-gray-9000">/{totals.total}</span></div>
           <div className="text-xs text-gray-9000 mt-0.5">Krav uppfyllda</div>
-          <div className="mt-2 h-1 rounded-full bg-gray-50 overflow-hidden">
+          <div className="mt-2 h-1 rounded-full bg-muted/30 overflow-hidden">
             <div className="h-full rounded-full bg-green-400 transition-all" style={{ width: `${progress}%` }} />
           </div>
           <div className="text-xs text-gray-9000 mt-1">{progress}% klart</div>
@@ -67,8 +67,8 @@ export function ComplianceTracker() {
           <div className="text-[28px] font-bold text-red-700">{totals.overdue}</div>
           <div className="text-xs text-red-700/70 mt-0.5">Förfallna</div>
         </div>
-        <div className="rounded-xl bg-gray-50 border border-gray-200 p-4">
-          <div className="text-[28px] font-bold text-gray-900">{upcoming.length}</div>
+        <div className="rounded-xl bg-muted/30 border border-surface-border p-4">
+          <div className="text-[28px] font-bold text-text-primary">{upcoming.length}</div>
           <div className="text-xs text-gray-9000 mt-0.5">Kommande (30d)</div>
         </div>
       </div>
@@ -98,7 +98,7 @@ export function ComplianceTracker() {
         <select
           value={selectedCompany}
           onChange={e => setSelectedCompany(e.target.value as CompanyId | 'all')}
-          className="text-xs bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-gray-600 focus:outline-none"
+          className="text-xs bg-white border border-surface-border rounded-lg px-3 py-1.5 text-gray-600 focus:outline-none"
         >
           <option value="all">Alla bolag</option>
           {COMPANIES.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -106,13 +106,13 @@ export function ComplianceTracker() {
         <div className="flex gap-1.5 flex-wrap">
           <button
             onClick={() => setSelectedStatus('all')}
-            className={`px-3 py-1.5 rounded-lg text-xs border transition-colors ${selectedStatus === 'all' ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-gray-50 text-gray-9000 border-gray-200 hover:text-gray-900'}`}
+            className={`px-3 py-1.5 rounded-lg text-xs border transition-colors ${selectedStatus === 'all' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-muted/30 text-gray-9000 border-surface-border hover:text-gray-900'}`}
           >Alla</button>
           {ALL_STATUSES.map(s => (
             <button
               key={s}
               onClick={() => setSelectedStatus(selectedStatus === s ? 'all' : s)}
-              className={`px-3 py-1.5 rounded-lg text-xs border capitalize transition-colors ${selectedStatus === s ? STATUS_STYLES[s].pill : 'bg-gray-50 text-gray-9000 border-gray-200 hover:text-gray-900'}`}
+              className={`px-3 py-1.5 rounded-lg text-xs border capitalize transition-colors ${selectedStatus === s ? STATUS_STYLES[s].pill : 'bg-muted/30 text-gray-9000 border-surface-border hover:text-gray-900'}`}
             >
               {STATUS_STYLES[s].label}
             </button>
@@ -121,11 +121,11 @@ export function ComplianceTracker() {
       </div>
 
       {/* Checklist table */}
-      <div className="rounded-xl border border-gray-200 overflow-hidden">
+      <div className="rounded-xl border border-surface-border overflow-hidden">
         <div className="overflow-x-auto">
         <table className="w-full text-xs min-w-[540px]">
           <thead>
-            <tr className="border-b border-gray-200 bg-gray-50">
+            <tr className="border-b border-surface-border bg-muted/30">
               <th className="text-left px-4 py-2.5 text-gray-9000 font-medium w-6" />
               <th className="text-left px-4 py-2.5 text-gray-9000 font-medium">Krav</th>
               <th className="text-left px-4 py-2.5 text-gray-9000 font-medium">Bolag</th>
@@ -142,7 +142,7 @@ export function ComplianceTracker() {
               return (
                 <tr
                   key={item.id}
-                  className={`border-b border-white/[0.03] hover:bg-gray-50 transition-colors ${i % 2 === 0 ? '' : 'bg-white/[0.01]'} ${isOverdue ? 'border-l-2 border-l-red-500/50' : ''}`}
+                  className={`border-b border-white/[0.03] hover:bg-muted/30 transition-colors ${i % 2 === 0 ? '' : 'bg-white/[0.01]'} ${isOverdue ? 'border-l-2 border-l-red-500/50' : ''}`}
                 >
                   <td className="px-4 py-3">
                     <div className={`h-3 w-3 rounded-sm border flex items-center justify-center ${item.status === 'klar' ? 'bg-green-500/20 border-green-500/50' : 'border-white/[0.15]'}`}>
@@ -160,7 +160,7 @@ export function ComplianceTracker() {
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="text-xs text-gray-9000 bg-gray-50 px-2 py-0.5 rounded border border-gray-200">
+                    <span className="text-xs text-gray-9000 bg-muted/30 px-2 py-0.5 rounded border border-surface-border">
                       {item.category}
                     </span>
                   </td>

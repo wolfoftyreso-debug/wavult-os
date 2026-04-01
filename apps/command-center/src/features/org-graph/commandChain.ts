@@ -39,7 +39,7 @@ export const COMMAND_CHAIN: CommandRole[] = [
     person: 'Erik Svensson',
     avatar: '/avatars/erik.png',
     initials: 'ES',
-    color: '#8B5CF6',
+    color: '#2563EB',
     title: 'Chairman & Group CEO',
     reports_to: null,
     scope: 'group',

@@ -47,7 +47,7 @@ export const ROLES: RoleProfile[] = [
     name: 'Erik Svensson',
     title: 'Chairman & Group CEO',
     person: 'Erik',
-    color: '#8B5CF6',
+    color: '#2563EB',
     initials: 'ES',
     emoji: '👑',
     access: ['full', 'strategy', 'finance', 'tech', 'legal', 'product', 'execution'],

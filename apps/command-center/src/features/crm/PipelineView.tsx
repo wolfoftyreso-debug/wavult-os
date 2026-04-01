@@ -30,12 +30,12 @@ function DealCard({
   const nextStage = stageIdx < STAGE_ORDER.length - 1 ? STAGE_ORDER[stageIdx + 1] : null
 
   return (
-    <div className="bg-gray-50 border border-gray-200 rounded-xl p-3.5 flex flex-col gap-2.5 group hover:border-gray-300 transition-colors">
+    <div className="bg-muted/30 border border-surface-border rounded-xl p-3.5 flex flex-col gap-2.5 group hover:border-gray-300 transition-colors">
       {/* Header */}
       <div className="flex items-start justify-between gap-2">
         <div>
-          <p className="text-sm font-semibold text-gray-900 leading-tight">{prospect.company}</p>
-          <p className="text-xs text-gray-500 mt-0.5">{prospect.contactName}</p>
+          <p className="text-sm font-semibold text-text-primary leading-tight">{prospect.company}</p>
+          <p className="text-xs text-text-muted mt-0.5">{prospect.contactName}</p>
         </div>
         <span
           className="text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0"
@@ -46,13 +46,13 @@ function DealCard({
       </div>
 
       {/* Value */}
-      <div className="text-base font-bold text-gray-900 tabular-nums">
+      <div className="text-base font-bold text-text-primary tabular-nums">
         {formatSEK(prospect.valueSEK)}
-        <span className="text-xs text-gray-500 font-normal ml-1">/år</span>
+        <span className="text-xs text-text-muted font-normal ml-1">/år</span>
       </div>
 
       {/* Meta row */}
-      <div className="flex items-center gap-3 text-xs text-gray-500">
+      <div className="flex items-center gap-3 text-xs text-text-muted">
         <span>⏱ {prospect.daysInStage}d i stage</span>
         <span
           className="h-4 w-4 rounded-full flex items-center justify-center text-[9px] font-bold ml-auto"
@@ -68,7 +68,7 @@ function DealCard({
       </div>
 
       {/* Next step */}
-      <p className="text-xs text-gray-500 italic truncate" title={prospect.nextStep}>
+      <p className="text-xs text-text-muted italic truncate" title={prospect.nextStep}>
         → {prospect.nextStep}
       </p>
 
@@ -77,7 +77,7 @@ function DealCard({
         {prevStage && (
           <button
             onClick={() => onMove(prospect.id, prevStage)}
-            className="text-xs px-2 py-0.5 rounded bg-gray-50 text-gray-500 hover:text-gray-900 transition-colors flex-1 truncate"
+            className="text-xs px-2 py-0.5 rounded bg-muted/30 text-text-muted hover:text-text-primary transition-colors flex-1 truncate"
             title={`Flytta till ${prevStage}`}
           >
             ← {prevStage}
@@ -86,7 +86,7 @@ function DealCard({
         {nextStage && (
           <button
             onClick={() => onMove(prospect.id, nextStage)}
-            className="text-xs px-2 py-0.5 rounded bg-gray-50 text-gray-500 hover:text-gray-900 transition-colors flex-1 truncate"
+            className="text-xs px-2 py-0.5 rounded bg-muted/30 text-text-muted hover:text-text-primary transition-colors flex-1 truncate"
             title={`Flytta till ${nextStage}`}
           >
             {nextStage} →
@@ -127,9 +127,9 @@ export function PipelineView() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h2 className="text-sm font-semibold text-gray-900">Pipeline</h2>
-          <p className="text-sm text-gray-500 mt-0.5">
-            Pipeline-värde: <span className="text-gray-900 font-semibold">{formatSEK(totalPipelineValue)}</span>
+          <h2 className="text-sm font-semibold text-text-primary">Pipeline</h2>
+          <p className="text-sm text-text-muted mt-0.5">
+            Pipeline-värde: <span className="text-text-primary font-semibold">{formatSEK(totalPipelineValue)}</span>
             <span className="ml-3">Vunnet: <span className="text-green-700 font-semibold">{formatSEK(wonValue)}</span></span>
           </p>
         </div>
@@ -142,7 +142,7 @@ export function PipelineView() {
               className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${
                 productFilter === p
                   ? 'text-gray-900'
-                  : 'bg-white border border-gray-200 text-gray-500 hover:text-gray-900'
+                  : 'bg-white border border-surface-border text-text-muted hover:text-gray-900'
               }`}
               style={productFilter === p && p !== 'Alla'
                 ? { background: PRODUCT_COLORS[p as CRMProduct] + '22', border: `1px solid ${PRODUCT_COLORS[p as CRMProduct]}40`, color: PRODUCT_COLORS[p as CRMProduct] }
@@ -161,7 +161,7 @@ export function PipelineView() {
               className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${
                 assigneeFilter === a
                   ? 'text-gray-900'
-                  : 'bg-white border border-gray-200 text-gray-500 hover:text-gray-900'
+                  : 'bg-white border border-surface-border text-text-muted hover:text-gray-900'
               }`}
               style={assigneeFilter === a && a !== 'Alla'
                 ? { background: TEAM_COLORS[a as TeamMember] + '22', border: `1px solid ${TEAM_COLORS[a as TeamMember]}40`, color: TEAM_COLORS[a as TeamMember] }
@@ -195,7 +195,7 @@ export function PipelineView() {
                 </span>
               </div>
               {cards.length > 0 && (
-                <p className="text-xs text-gray-500 px-1 tabular-nums">{formatSEK(stageValue)}</p>
+                <p className="text-xs text-text-muted px-1 tabular-nums">{formatSEK(stageValue)}</p>
               )}
               <div
                 className="flex flex-col gap-2 min-h-24 p-2 rounded-xl"
@@ -230,7 +230,7 @@ export function PipelineView() {
                 </div>
                 <div className="flex items-center gap-2">
                   {cards.length > 0 && (
-                    <span className="text-xs text-gray-500 tabular-nums">{formatSEK(stageValue)}</span>
+                    <span className="text-xs text-text-muted tabular-nums">{formatSEK(stageValue)}</span>
                   )}
                   <span
                     className="text-xs font-bold tabular-nums px-1.5 py-0.5 rounded-full"
@@ -260,7 +260,7 @@ export function PipelineView() {
         })}
       </div>
 
-      <p className="text-xs text-gray-500 pt-1 border-t border-gray-200">
+      <p className="text-xs text-text-muted pt-1 border-t border-surface-border">
         Hover på ett kort för att flytta det mellan stages →
       </p>
     </div>

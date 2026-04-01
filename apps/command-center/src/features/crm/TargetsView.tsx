@@ -26,7 +26,7 @@ function ProgressBar({ current, goal, color }: { current: number; goal: number; 
   const pct = Math.min(100, Math.round((current / goal) * 100))
   return (
     <div className="flex items-center gap-3">
-      <div className="flex-1 h-2 bg-gray-50 rounded-full overflow-hidden">
+      <div className="flex-1 h-2 bg-muted/30 rounded-full overflow-hidden">
         <div
           className="h-full rounded-full transition-all duration-700"
           style={{ width: `${pct}%`, background: color }}
@@ -46,7 +46,7 @@ function TargetCard({ member }: { member: PersonTarget }) {
   )
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-5 flex flex-col gap-4">
+    <div className="bg-white border border-surface-border rounded-xl p-5 flex flex-col gap-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -57,8 +57,8 @@ function TargetCard({ member }: { member: PersonTarget }) {
             {member.member[0]}
           </div>
           <div>
-            <p className="font-bold text-gray-900">{member.member}</p>
-            <p className="text-xs text-gray-500">Säljmål Thailand</p>
+            <p className="font-bold text-text-primary">{member.member}</p>
+            <p className="text-xs text-text-muted">Säljmål Thailand</p>
           </div>
         </div>
         <div
@@ -74,10 +74,10 @@ function TargetCard({ member }: { member: PersonTarget }) {
         {member.targets.map((t, i) => (
           <div key={i} className="space-y-1.5">
             <div className="flex items-center justify-between text-xs">
-              <span className="text-gray-500">{t.label}</span>
-              <span className="text-gray-900 font-semibold tabular-nums">
+              <span className="text-text-muted">{t.label}</span>
+              <span className="text-text-primary font-semibold tabular-nums">
                 {t.unit === 'SEK' ? formatSEK(t.current) : t.current}
-                <span className="text-gray-500 font-normal"> / {t.unit === 'SEK' ? formatSEK(t.goal) : `${t.goal} ${t.unit}`}</span>
+                <span className="text-text-muted font-normal"> / {t.unit === 'SEK' ? formatSEK(t.goal) : `${t.goal} ${t.unit}`}</span>
               </span>
             </div>
             <ProgressBar current={t.current} goal={t.goal} color={t.color} />
@@ -111,7 +111,7 @@ export function TargetsView() {
       targets: [
         { label: 'Signerade kunder', current: wonCount('Leon'), goal: 5, unit: 'kunder', color: TEAM_COLORS.Leon },
         { label: 'Total ARR', current: signedARR('Leon'), goal: 1200000, unit: 'SEK', color: '#3B82F6' },
-        { label: 'Demos utförda', current: demoCount('Leon'), goal: 8, unit: 'demos', color: '#8B5CF6' },
+        { label: 'Demos utförda', current: demoCount('Leon'), goal: 8, unit: 'demos', color: '#2563EB' },
         { label: 'Prospects kvalificerade', current: PROSPECTS.filter(p => p.assignee === 'Leon' && p.stage !== 'Lead').length, goal: 6, unit: 'st', color: '#F59E0B' },
       ],
     },
@@ -121,7 +121,7 @@ export function TargetsView() {
         { label: 'Avtal under hantering', current: DEALS.filter(d => d.assignee === 'Dennis').length, goal: 3, unit: 'avtal', color: TEAM_COLORS.Dennis },
         { label: 'Signerade avtal', current: signedDeals.filter(d => d.assignee === 'Dennis').length, goal: 2, unit: 'st', color: '#10B981' },
         { label: 'Total ARR', current: signedARR('Dennis'), goal: 500000, unit: 'SEK', color: '#3B82F6' },
-        { label: 'Demos utförda', current: demoCount('Dennis'), goal: 3, unit: 'demos', color: '#8B5CF6' },
+        { label: 'Demos utförda', current: demoCount('Dennis'), goal: 3, unit: 'demos', color: '#2563EB' },
       ],
     },
     {
@@ -146,42 +146,42 @@ export function TargetsView() {
       {/* Thailand countdown banner */}
       <div
         className="rounded-xl p-5 flex flex-col md:flex-row items-center justify-between gap-4"
-        style={{ background: 'linear-gradient(135deg, #8B5CF620 0%, #3B82F615 100%)', border: '1px solid #8B5CF630' }}
+        style={{ background: 'linear-gradient(135deg, #2563EB20 0%, #3B82F615 100%)', border: '1px solid #2563EB30' }}
       >
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-2xl">🏖️</span>
-            <h2 className="text-sm font-semibold text-gray-900">Thailand Workcamp</h2>
+            <h2 className="text-sm font-semibold text-text-primary">Thailand Workcamp</h2>
           </div>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-text-muted">
             11 april 2026 — Teambuilding + projektlansering. Säljmålen ska vara uppfyllda.
           </p>
         </div>
         <div className="text-center flex-shrink-0">
-          <p className="text-4xl font-bold text-gray-900 tabular-nums">{daysLeft}</p>
-          <p className="text-sm text-gray-500">dagar kvar</p>
+          <p className="text-4xl font-bold text-text-primary tabular-nums">{daysLeft}</p>
+          <p className="text-sm text-text-muted">dagar kvar</p>
         </div>
       </div>
 
       {/* Team overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <div className="bg-white border border-gray-200 rounded-xl px-5 py-4 text-center">
-          <p className="text-3xl font-bold text-gray-900">{totalSignedCustomers}</p>
-          <p className="text-sm text-gray-500 mt-1">Signerade kunder</p>
+        <div className="bg-white border border-surface-border rounded-xl px-5 py-4 text-center">
+          <p className="text-3xl font-bold text-text-primary">{totalSignedCustomers}</p>
+          <p className="text-sm text-text-muted mt-1">Signerade kunder</p>
           <ProgressBar current={totalSignedCustomers} goal={8} color="#10B981" />
-          <p className="text-xs text-gray-500 mt-1">Mål: 8</p>
+          <p className="text-xs text-text-muted mt-1">Mål: 8</p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-xl px-5 py-4 text-center">
-          <p className="text-2xl font-bold text-gray-900">{formatSEK(totalSignedARR)}</p>
-          <p className="text-sm text-gray-500 mt-1">Total signerad ARR</p>
+        <div className="bg-white border border-surface-border rounded-xl px-5 py-4 text-center">
+          <p className="text-2xl font-bold text-text-primary">{formatSEK(totalSignedARR)}</p>
+          <p className="text-sm text-text-muted mt-1">Total signerad ARR</p>
           <ProgressBar current={totalSignedARR} goal={totalGoalARR} color="#3B82F6" />
-          <p className="text-xs text-gray-500 mt-1">Mål: {formatSEK(totalGoalARR)}</p>
+          <p className="text-xs text-text-muted mt-1">Mål: {formatSEK(totalGoalARR)}</p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-xl px-5 py-4 text-center">
-          <p className="text-3xl font-bold text-gray-900">{totalDemos}</p>
-          <p className="text-sm text-gray-500 mt-1">Demos utförda</p>
-          <ProgressBar current={totalDemos} goal={15} color="#8B5CF6" />
-          <p className="text-xs text-gray-500 mt-1">Mål: 15</p>
+        <div className="bg-white border border-surface-border rounded-xl px-5 py-4 text-center">
+          <p className="text-3xl font-bold text-text-primary">{totalDemos}</p>
+          <p className="text-sm text-text-muted mt-1">Demos utförda</p>
+          <ProgressBar current={totalDemos} goal={15} color="#2563EB" />
+          <p className="text-xs text-text-muted mt-1">Mål: 15</p>
         </div>
       </div>
 

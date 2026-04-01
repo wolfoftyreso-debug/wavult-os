@@ -74,9 +74,9 @@ const INITIAL_TASKS: Task[] = [
     id: '4',
     title: 'Thailand workcamp — agenda och boenden',
     project: 'Team',
-    projectColor: '#8B5CF6',
+    projectColor: '#2563EB',
     assignee: 'ES',
-    assigneeColor: '#8B5CF6',
+    assigneeColor: '#2563EB',
     priority: 'medium',
     column: 'in-progress',
     tags: ['intern', 'thailand'],
@@ -86,7 +86,7 @@ const INITIAL_TASKS: Task[] = [
     id: '5',
     title: 'Admin-panel CRM-vyer (Hypbit OS)',
     project: 'Hypbit OS',
-    projectColor: '#8B5CF6',
+    projectColor: '#2563EB',
     assignee: 'JL',
     assigneeColor: '#06B6D4',
     priority: 'medium',
@@ -122,9 +122,9 @@ const INITIAL_TASKS: Task[] = [
     id: '8',
     title: 'Brand guidelines Wavult Group v1',
     project: 'Brand',
-    projectColor: '#8B5CF6',
+    projectColor: '#2563EB',
     assignee: 'ES',
-    assigneeColor: '#8B5CF6',
+    assigneeColor: '#2563EB',
     priority: 'low',
     column: 'review',
     tags: ['brand', 'design'],
@@ -134,7 +134,7 @@ const INITIAL_TASKS: Task[] = [
     id: '9',
     title: 'Hypbit OS — Command Center routing komplett',
     project: 'Hypbit OS',
-    projectColor: '#8B5CF6',
+    projectColor: '#2563EB',
     assignee: 'WA',
     assigneeColor: '#3B82F6',
     priority: 'medium',
@@ -148,7 +148,7 @@ const INITIAL_TASKS: Task[] = [
     project: 'quiXzoom',
     projectColor: '#3B82F6',
     assignee: 'ES',
-    assigneeColor: '#8B5CF6',
+    assigneeColor: '#2563EB',
     priority: 'high',
     column: 'done',
     tags: ['produkt'],
@@ -189,7 +189,7 @@ function TaskCard({
 
   return (
     <div
-      className="bg-gray-50 border border-gray-200 rounded-xl p-3.5 flex flex-col gap-2.5 group"
+      className="bg-muted/30 border border-surface-border rounded-xl p-3.5 flex flex-col gap-2.5 group"
       style={{ opacity: task.column === 'done' ? 0.65 : 1 }}
     >
       {/* Tags row */}
@@ -201,14 +201,14 @@ function TaskCard({
           {task.project}
         </span>
         {task.tags.map(t => (
-          <span key={t} className="text-xs px-1.5 py-0.5 rounded bg-gray-50 text-gray-500">
+          <span key={t} className="text-xs px-1.5 py-0.5 rounded bg-muted/30 text-text-muted">
             {t}
           </span>
         ))}
       </div>
 
       {/* Title */}
-      <p className={`text-sm text-gray-900 leading-snug ${task.column === 'done' ? 'line-through text-gray-500' : ''}`}>
+      <p className={`text-sm text-text-primary leading-snug ${task.column === 'done' ? 'line-through text-gray-500' : ''}`}>
         {task.title}
       </p>
 
@@ -234,7 +234,7 @@ function TaskCard({
           {idx > 0 && (
             <button
               onClick={() => onMove(task.id, cols[idx - 1] as Column)}
-              className="text-xs px-1.5 py-0.5 rounded bg-gray-50 text-gray-500 hover:text-gray-900 transition-colors"
+              className="text-xs px-1.5 py-0.5 rounded bg-muted/30 text-text-muted hover:text-text-primary transition-colors"
               title="Flytta bakåt"
             >
               ←
@@ -243,7 +243,7 @@ function TaskCard({
           {idx < cols.length - 1 && (
             <button
               onClick={() => onMove(task.id, cols[idx + 1] as Column)}
-              className="text-xs px-1.5 py-0.5 rounded bg-gray-50 text-gray-500 hover:text-gray-900 transition-colors"
+              className="text-xs px-1.5 py-0.5 rounded bg-muted/30 text-text-muted hover:text-text-primary transition-colors"
               title="Flytta framåt"
             >
               →
@@ -282,8 +282,8 @@ export function TasksView() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Task Board</h1>
-          <p className="text-gray-500 mt-1">
+          <h1 className="text-2xl font-bold text-text-primary">Task Board</h1>
+          <p className="text-text-muted mt-1">
             {isRoot
               ? `Wavult Group — ${scopedTasks.length} uppgifter`
               : `${activeEntity.name} — ${scopedTasks.length} uppgifter`}
@@ -312,7 +312,7 @@ export function TasksView() {
               className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${
                 filter === p
                   ? 'bg-brand-accent text-gray-900'
-                  : 'bg-white border border-gray-200 text-gray-500 hover:text-gray-900'
+                  : 'bg-white border border-surface-border text-text-muted hover:text-gray-900'
               }`}
             >
               {p === 'all' ? 'Alla' : p}
@@ -350,7 +350,7 @@ export function TasksView() {
                   <TaskCard key={t.id} task={t} onMove={move} />
                 ))}
                 {colTasks.length === 0 && (
-                  <div className="flex items-center justify-center h-16 text-xs text-gray-500">
+                  <div className="flex items-center justify-center h-16 text-xs text-text-muted">
                     Tom
                   </div>
                 )}
@@ -361,7 +361,7 @@ export function TasksView() {
       </div>
 
       {/* Stats footer */}
-      <div className="flex gap-4 flex-wrap text-xs text-gray-500 pt-2 border-t border-gray-200">
+      <div className="flex gap-4 flex-wrap text-xs text-text-muted pt-2 border-t border-surface-border">
         {COLUMNS.map(col => (
           <span key={col.id}>
             <span style={{ color: col.color }}>●</span>{' '}

@@ -135,7 +135,7 @@ export function TeamPhones() {
               <option value="305">Miami (305)</option>
               <option value="202">Washington DC (202)</option>
             </select>
-            <button onClick={searchAvailable} style={{ padding: '8px 20px', borderRadius: 8, border: 'none', background: '#7C3AED', color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+            <button onClick={searchAvailable} style={{ padding: '8px 20px', borderRadius: 8, border: 'none', background: '#1E40AF', color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
               Sök tillgängliga
             </button>
           </div>

@@ -161,18 +161,11 @@ export function WebhookLog() {
 
   return (
     <div className="space-y-4">
-      {/* MOCKDATA BANNER */}
-      <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-yellow-500/10 border border-yellow-500/25 text-yellow-700 text-xs font-medium">
-        <span>⚠️</span>
-        <span>Visar mockdata — live webhook-loggning kopplas in när backend är konfigurerat</span>
-        <span className="ml-auto text-yellow-600 font-mono text-xs">MOCKDATA</span>
-      </div>
-
       {/* Stats */}
       <div className="flex items-center gap-3 flex-wrap">
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white border border-gray-200 text-xs">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white border border-surface-border text-xs">
           <span className="text-gray-9000">Total:</span>
-          <span className="text-gray-900 font-medium">{MOCK_WEBHOOKS.length}</span>
+          <span className="text-text-primary font-medium">{MOCK_WEBHOOKS.length}</span>
         </div>
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-green-500/10 border border-green-500/20 text-xs">
           <span className="text-gray-9000">Lyckade:</span>
@@ -182,18 +175,18 @@ export function WebhookLog() {
           <span className="text-gray-9000">Fel:</span>
           <span className="text-red-700 font-medium">{MOCK_WEBHOOKS.filter(w => w.status >= 400).length}</span>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white border border-gray-200 text-xs">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white border border-surface-border text-xs">
           <span className="text-gray-9000">Success rate:</span>
-          <span className="text-gray-900 font-medium">{successRate}%</span>
+          <span className="text-text-primary font-medium">{successRate}%</span>
         </div>
-        <div className="ml-auto flex items-center gap-1 p-0.5 bg-white rounded-lg border border-gray-200">
+        <div className="ml-auto flex items-center gap-1 p-0.5 bg-white rounded-lg border border-surface-border">
           {sources.map(s => (
             <button
               key={s}
               onClick={() => setSourceFilter(s)}
               className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
                 sourceFilter === s
-                  ? 'bg-brand-accent/20 text-purple-700'
+                  ? 'bg-blue-500/20 text-blue-700'
                   : 'text-gray-9000 hover:text-gray-600'
               }`}
             >
@@ -204,9 +197,9 @@ export function WebhookLog() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-xl border border-surface-border overflow-hidden">
         {/* Header */}
-        <div className="grid grid-cols-[1fr_1.5fr_140px_90px_60px] gap-3 px-4 py-2.5 border-b border-gray-200 text-xs text-gray-9000 font-mono uppercase tracking-wider">
+        <div className="grid grid-cols-[1fr_1.5fr_140px_90px_60px] gap-3 px-4 py-2.5 border-b border-surface-border text-xs text-gray-9000 font-mono uppercase tracking-wider">
           <span>Källa</span>
           <span>Typ</span>
           <span>Tidsstämpel</span>
@@ -222,7 +215,7 @@ export function WebhookLog() {
               <div key={wh.id}>
                 <button
                   onClick={() => setExpanded(isExpanded ? null : wh.id)}
-                  className="w-full grid grid-cols-[1fr_1.5fr_140px_90px_60px] gap-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors"
+                  className="w-full grid grid-cols-[1fr_1.5fr_140px_90px_60px] gap-3 px-4 py-3 text-left hover:bg-muted/30 transition-colors"
                 >
                   <span className="text-xs text-gray-600 font-medium">{wh.source}</span>
                   <span className="text-xs text-gray-9000 font-mono truncate">{wh.type}</span>
@@ -239,7 +232,7 @@ export function WebhookLog() {
                 </button>
                 {isExpanded && (
                   <div className="px-4 pb-4">
-                    <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                    <div className="bg-muted/30 rounded-lg p-3 border border-surface-border">
                       <div className="text-xs text-gray-9000 font-mono uppercase tracking-wider mb-2">Payload</div>
                       <pre className="text-xs text-gray-9000 font-mono overflow-x-auto leading-relaxed whitespace-pre-wrap">
                         {JSON.stringify(wh.payload, null, 2)}

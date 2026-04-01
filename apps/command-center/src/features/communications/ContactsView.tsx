@@ -31,7 +31,7 @@ const CONTACTS: Contact[] = [
     name: 'Erik Svensson',
     role: 'Chairman & Group CEO',
     entity: 'Wavult Group',
-    entityColor: '#8B5CF6',
+    entityColor: '#2563EB',
     email: 'erik@wavult.com',
     phone: '+46709123223',
     telegram: '@eriksvensson',
@@ -94,7 +94,7 @@ const CONTACTS: Contact[] = [
     name: 'Wavult Group FZCO',
     role: 'Holding Company / IP Owner',
     entity: 'Dubai',
-    entityColor: '#8B5CF6',
+    entityColor: '#2563EB',
     email: 'group@wavult.com',
     category: 'entity',
     tags: ['Dubai', 'FZCO', 'Holding', 'IP'],
@@ -105,7 +105,7 @@ const CONTACTS: Contact[] = [
     name: 'Wavult DevOps FZCO',
     role: 'Operating Company — Builds & Licenses Systems',
     entity: 'Dubai',
-    entityColor: '#7C3AED',
+    entityColor: '#1E40AF',
     email: 'devops@wavult.com',
     category: 'entity',
     tags: ['Dubai', 'FZCO', 'Operating'],
@@ -162,7 +162,7 @@ const CONTACTS: Contact[] = [
     name: 'Revolut Business',
     role: 'Primary Business Banking',
     entity: 'Fintech',
-    entityColor: '#7C3AED',
+    entityColor: '#1E40AF',
     email: 'business@revolut.com',
     category: 'bank',
     tags: ['Bank', 'EUR', 'SEK', 'USD'],
@@ -231,7 +231,7 @@ const CONTACTS: Contact[] = [
 // ─── Category Labels ──────────────────────────────────────────────────────────
 
 const CATEGORY_META = {
-  team:     { label: 'Kärnteamet',  icon: '👥', color: '#8B5CF6' },
+  team:     { label: 'Kärnteamet',  icon: '👥', color: '#2563EB' },
   entity:   { label: 'Bolag',       icon: '🏢', color: '#3B82F6' },
   bank:     { label: 'Bank & Fintech', icon: '💳', color: '#10B981' },
   external: { label: 'Externa',     icon: '🌐', color: '#F59E0B' },
@@ -249,7 +249,7 @@ function ContactCard({ contact, expanded, onToggle }: {
 
   return (
     <div
-      className="bg-white border border-gray-200 rounded-xl overflow-hidden cursor-pointer transition-all"
+      className="bg-white border border-surface-border rounded-xl overflow-hidden cursor-pointer transition-all"
       onClick={onToggle}
     >
       {/* Header row */}
@@ -261,8 +261,8 @@ function ContactCard({ contact, expanded, onToggle }: {
           {initials}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-gray-900 truncate">{contact.name}</p>
-          <p className="text-xs text-gray-500 truncate">{contact.role}</p>
+          <p className="text-sm font-semibold text-text-primary truncate">{contact.name}</p>
+          <p className="text-xs text-text-muted truncate">{contact.role}</p>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           <span
@@ -271,16 +271,16 @@ function ContactCard({ contact, expanded, onToggle }: {
           >
             {contact.entity}
           </span>
-          <span className="text-gray-500 text-xs">{expanded ? '▲' : '▼'}</span>
+          <span className="text-text-muted text-xs">{expanded ? '▲' : '▼'}</span>
         </div>
       </div>
 
       {/* Expanded: alle kontaktvägar */}
       {expanded && (
-        <div className="px-4 pb-4 border-t border-gray-200 pt-3 space-y-2">
+        <div className="px-4 pb-4 border-t border-surface-border pt-3 space-y-2">
           {contact.email && (
             <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-500 w-20 flex-shrink-0 font-mono">EMAIL</span>
+              <span className="text-xs text-text-muted w-20 flex-shrink-0 font-mono">EMAIL</span>
               <a
                 href={`mailto:${contact.email}`}
                 className="text-xs text-signal-amber hover:underline"
@@ -292,10 +292,10 @@ function ContactCard({ contact, expanded, onToggle }: {
           )}
           {contact.phone && (
             <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-500 w-20 flex-shrink-0 font-mono">TELEFON</span>
+              <span className="text-xs text-text-muted w-20 flex-shrink-0 font-mono">TELEFON</span>
               <a
                 href={`tel:${contact.phone}`}
-                className="text-xs text-gray-900 hover:text-gray-600"
+                className="text-xs text-text-primary hover:text-gray-600"
                 onClick={e => e.stopPropagation()}
               >
                 {contact.phone}
@@ -304,20 +304,20 @@ function ContactCard({ contact, expanded, onToggle }: {
           )}
           {contact.telegram && (
             <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-500 w-20 flex-shrink-0 font-mono">TELEGRAM</span>
+              <span className="text-xs text-text-muted w-20 flex-shrink-0 font-mono">TELEGRAM</span>
               <span className="text-xs text-[#229ED9]">{contact.telegram}</span>
             </div>
           )}
           {contact.notes && (
             <div className="flex items-start gap-2 mt-2">
-              <span className="text-xs text-gray-500 w-20 flex-shrink-0 font-mono pt-0.5">NOTERING</span>
-              <p className="text-xs text-gray-500 leading-relaxed">{contact.notes}</p>
+              <span className="text-xs text-text-muted w-20 flex-shrink-0 font-mono pt-0.5">NOTERING</span>
+              <p className="text-xs text-text-muted leading-relaxed">{contact.notes}</p>
             </div>
           )}
           {contact.tags && contact.tags.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mt-2">
               {contact.tags.map(tag => (
-                <span key={tag} className="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-gray-50 text-gray-500 border border-gray-200">
+                <span key={tag} className="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-muted/30 text-text-muted border border-surface-border">
                   {tag}
                 </span>
               ))}
@@ -359,7 +359,7 @@ export function ContactsView() {
         value={search}
         onChange={e => setSearch(e.target.value)}
         placeholder="Sök namn, roll, mail..."
-        className="w-full px-4 py-2.5 rounded-xl bg-white border border-gray-200 text-sm text-gray-900 placeholder-gray-600 focus:outline-none focus:border-brand-accent/50"
+        className="w-full px-4 py-2.5 rounded-xl bg-white border border-surface-border text-sm text-text-primary placeholder-gray-600 focus:outline-none focus:border-brand-accent/50"
       />
 
       {/* Category filter */}
@@ -368,8 +368,8 @@ export function ContactsView() {
           onClick={() => setActiveCategory('all')}
           className={`text-xs font-mono px-3 py-1.5 rounded-lg flex-shrink-0 transition-colors ${
             activeCategory === 'all'
-              ? 'bg-purple-50 text-purple-700 border border-purple-200'
-              : 'text-gray-500 border border-gray-200 hover:text-gray-600'
+              ? 'bg-blue-50 text-blue-700 border border-blue-200'
+              : 'text-text-muted border border-surface-border hover:text-gray-600'
           }`}
         >
           Alla ({CONTACTS.length})
@@ -382,8 +382,8 @@ export function ContactsView() {
               onClick={() => setActiveCategory(key)}
               className={`text-xs font-mono px-3 py-1.5 rounded-lg flex-shrink-0 transition-colors whitespace-nowrap ${
                 activeCategory === key
-                  ? 'bg-purple-50 text-purple-700 border border-purple-200'
-                  : 'text-gray-500 border border-gray-200 hover:text-gray-600'
+                  ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                  : 'text-text-muted border border-surface-border hover:text-gray-600'
               }`}
             >
               {meta.icon} {meta.label} ({count})
@@ -399,8 +399,8 @@ export function ContactsView() {
           <div key={category}>
             <div className="flex items-center gap-2 mb-2">
               <span className="text-sm">{meta?.icon}</span>
-              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{meta?.label}</h3>
-              <span className="text-xs text-gray-500">({contacts.length})</span>
+              <h3 className="text-xs font-semibold text-text-muted uppercase tracking-wider">{meta?.label}</h3>
+              <span className="text-xs text-text-muted">({contacts.length})</span>
             </div>
             <div className="space-y-2">
               {contacts.map(contact => (
@@ -417,7 +417,7 @@ export function ContactsView() {
       })}
 
       {filtered.length === 0 && (
-        <div className="text-center py-12 text-gray-500 text-sm">
+        <div className="text-center py-12 text-text-muted text-sm">
           Inga kontakter matchar sökningen
         </div>
       )}

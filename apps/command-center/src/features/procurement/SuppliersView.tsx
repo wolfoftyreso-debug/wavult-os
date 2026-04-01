@@ -36,13 +36,13 @@ export function SuppliersView() {
   return (
     <div className="flex flex-col h-full">
       {/* Filters */}
-      <div className="flex items-center gap-3 px-4 md:px-6 py-3 border-b border-gray-200 flex-shrink-0 flex-wrap">
+      <div className="flex items-center gap-3 px-4 md:px-6 py-3 border-b border-surface-border flex-shrink-0 flex-wrap">
         <input
           type="text"
           placeholder="Sök leverantör…"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 text-xs text-gray-900 placeholder-gray-600 focus:outline-none focus:border-gray-300 w-44"
+          className="bg-muted/30 border border-surface-border rounded-lg px-3 py-1.5 text-xs text-text-primary placeholder-gray-600 focus:outline-none focus:border-gray-300 w-44"
         />
 
         <div className="flex gap-1">
@@ -52,7 +52,7 @@ export function SuppliersView() {
               onClick={() => setFilterCategory(cat as SupplierCategory | 'Alla')}
               className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors ${
                 filterCategory === cat
-                  ? 'bg-gray-100 text-gray-900'
+                  ? 'bg-muted text-gray-900'
                   : 'text-gray-9000 hover:text-gray-600'
               }`}
             >
@@ -73,7 +73,7 @@ export function SuppliersView() {
               key={s}
               onClick={() => setFilterStatus(s as SupplierStatus | 'Alla')}
               className={`px-2.5 py-1 rounded-lg text-xs transition-colors ${
-                filterStatus === s ? 'bg-gray-100 text-gray-900' : 'text-gray-9000 hover:text-gray-600'
+                filterStatus === s ? 'bg-muted text-gray-900' : 'text-gray-9000 hover:text-gray-600'
               }`}
             >
               {s.charAt(0).toUpperCase() + s.slice(1)}
@@ -87,7 +87,7 @@ export function SuppliersView() {
         <div className="overflow-x-auto">
         <table className="w-full min-w-[500px]">
           <thead>
-            <tr className="text-left border-b border-gray-200">
+            <tr className="text-left border-b border-surface-border">
               {['Leverantör', 'Kategori', 'Land', 'Kontakt', 'Status'].map(h => (
                 <th key={h} className="pb-2 text-xs font-semibold text-gray-9000 uppercase tracking-wider pr-6">{h}</th>
               ))}
@@ -97,9 +97,9 @@ export function SuppliersView() {
             {filtered.map(s => {
               const badge = STATUS_BADGE[s.status]
               return (
-                <tr key={s.id} className="border-b border-white/[0.03] hover:bg-gray-50 transition-colors">
+                <tr key={s.id} className="border-b border-white/[0.03] hover:bg-muted/30 transition-colors">
                   <td className="py-3 pr-6">
-                    <span className="text-sm font-semibold text-gray-900">{s.name}</span>
+                    <span className="text-sm font-semibold text-text-primary">{s.name}</span>
                   </td>
                   <td className="py-3 pr-6">
                     <span

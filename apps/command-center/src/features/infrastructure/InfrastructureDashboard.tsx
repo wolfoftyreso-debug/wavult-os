@@ -92,7 +92,7 @@ function providerLabel(provider: ServiceDefinition['provider']): string {
 }
 
 function critLabel(level: 1 | 2 | 3): string {
-  return level === 1 ? 'Kritisk' : level === 2 ? 'Viktig' : 'Lågprio'
+  return level === 1 ? 'Affärskritisk' /* = Affärskritisk: Om tjänsten faller påverkas hela verksamheten */ : level === 2 ? 'Viktig' : 'Lågprio'
 }
 
 function formatSEK(n: number): string {
@@ -277,7 +277,7 @@ function ServiceDrawer({
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded transition-colors hover:bg-gray-100"
+            className="p-1.5 rounded transition-colors hover:bg-muted"
             style={{ color: 'var(--color-text-muted)' }}
           >
             <X size={16} />
@@ -615,7 +615,7 @@ function AlertsPanel({ alerts, onAcknowledge }: { alerts: ServiceAlert[]; onAckn
             </div>
             <button
               onClick={() => onAcknowledge(alert.id)}
-              className="flex-shrink-0 text-xs px-2 py-1 rounded border transition-colors hover:bg-gray-50"
+              className="flex-shrink-0 text-xs px-2 py-1 rounded border transition-colors hover:bg-muted/50"
               style={{ borderColor: 'var(--color-border)', color: 'var(--color-text-muted)' }}
             >
               Kvittera
@@ -890,7 +890,7 @@ export function InfrastructureDashboard() {
           <button
             onClick={refresh}
             disabled={loading}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-colors hover:bg-gray-50 disabled:opacity-50"
+            className="flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-colors hover:bg-muted/50 disabled:opacity-50"
             style={{ borderColor: 'var(--color-border)', color: 'var(--color-text-secondary)' }}
           >
             <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
@@ -960,7 +960,7 @@ export function InfrastructureDashboard() {
                   <button
                     key={s.id}
                     onClick={() => setSelectedService(s)}
-                    className="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg border text-left transition-colors hover:bg-gray-50"
+                    className="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg border text-left transition-colors hover:bg-muted/50"
                     style={{ borderColor: 'var(--color-border)', background: 'var(--color-surface)' }}
                   >
                     <div className="flex items-center gap-2 min-w-0">

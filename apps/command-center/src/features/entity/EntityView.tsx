@@ -132,7 +132,7 @@ function OverviewTab({ entityId }: { entityId: string }) {
       {/* Key facts */}
       <div className="grid grid-cols-2 gap-3">
         {Object.entries(entity.metadata).map(([k, v]) => (
-          <div key={k} className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+          <div key={k} className="rounded-xl border border-surface-border bg-muted/30 px-4 py-3">
             <div className="text-xs text-gray-9000 font-mono mb-1">{k}</div>
             <div className="text-sm text-gray-800">{v}</div>
           </div>
@@ -145,7 +145,7 @@ function OverviewTab({ entityId }: { entityId: string }) {
           <h3 className="text-xs font-semibold text-gray-9000 uppercase tracking-wider mb-3">Key Metrics</h3>
           <div className="flex flex-wrap gap-3">
             {ops.kpis.map(kpi => (
-              <div key={kpi.label} className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 min-w-[120px]">
+              <div key={kpi.label} className="rounded-xl border border-surface-border bg-muted/30 px-4 py-3 min-w-[120px]">
                 <div className="text-xs text-gray-9000 mb-1">{kpi.label}</div>
                 <div className="text-lg font-bold" style={{ color: kpi.good ? '#10B981' : '#F59E0B' }}>{kpi.value}</div>
                 {kpi.delta && <div className="text-xs text-gray-9000 mt-0.5">{kpi.delta}</div>}
@@ -173,7 +173,7 @@ function OverviewTab({ entityId }: { entityId: string }) {
       {/* Mini rel graph */}
       <div>
         <h3 className="text-xs font-semibold text-gray-9000 uppercase tracking-wider mb-3">Structure</h3>
-        <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+        <div className="rounded-xl border border-surface-border bg-muted/30 p-4">
           <MiniRelGraph entityId={entityId} />
         </div>
       </div>
@@ -192,15 +192,15 @@ function FinanceTab({ entityId }: { entityId: string }) {
     <div className="space-y-6">
       {/* Summary row */}
       <div className="grid grid-cols-3 gap-3">
-        <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+        <div className="rounded-xl border border-surface-border bg-muted/30 px-4 py-3">
           <div className="text-xs text-gray-9000 mb-1">Currency</div>
-          <div className="text-lg font-bold text-gray-900 font-mono">{finance.currency}</div>
+          <div className="text-lg font-bold text-text-primary font-mono">{finance.currency}</div>
         </div>
-        <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+        <div className="rounded-xl border border-surface-border bg-muted/30 px-4 py-3">
           <div className="text-xs text-gray-9000 mb-1">Est. MRR</div>
           <div className="text-sm font-semibold text-gray-600">{finance.estimated_mrr}</div>
         </div>
-        <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+        <div className="rounded-xl border border-surface-border bg-muted/30 px-4 py-3">
           <div className="text-xs text-gray-9000 mb-1">Cashflow</div>
           <div className="text-sm font-semibold" style={{ color: RISK_COLOR[finance.cashflow_status] }}>
             {finance.cashflow_status.toUpperCase()}
@@ -209,7 +209,7 @@ function FinanceTab({ entityId }: { entityId: string }) {
       </div>
 
       {/* Revenue model */}
-      <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+      <div className="rounded-xl border border-surface-border bg-muted/30 p-4">
         <div className="text-xs text-gray-9000 font-mono mb-1">Revenue model</div>
         <div className="text-sm text-gray-800">{finance.revenue_model}</div>
         {finance.billing_notes && (
@@ -268,12 +268,12 @@ function LegalTab({ entityId }: { entityId: string }) {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 gap-3">
-        <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+        <div className="rounded-xl border border-surface-border bg-muted/30 px-4 py-3">
           <div className="text-xs text-gray-9000 mb-1">Legal form</div>
-          <div className="text-sm font-semibold text-gray-900">{legal.legal_form}</div>
+          <div className="text-sm font-semibold text-text-primary">{legal.legal_form}</div>
           <div className="text-xs text-gray-9000 mt-1">{legal.jurisdiction_detail}</div>
         </div>
-        <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+        <div className="rounded-xl border border-surface-border bg-muted/30 px-4 py-3">
           <div className="text-xs text-gray-9000 mb-1">Incorporation</div>
           <div className="text-sm font-semibold" style={{ color: incColor }}>{legal.incorporation_status}</div>
           <div className="text-xs mt-1" style={{ color: RISK_COLOR[legal.compliance_status] }}>
@@ -289,10 +289,10 @@ function LegalTab({ entityId }: { entityId: string }) {
           </h3>
           <div className="space-y-2">
             {legal.contracts.map((c, i) => (
-              <div key={i} className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+              <div key={i} className="rounded-xl border border-surface-border bg-muted/30 px-4 py-3">
                 <div className="flex items-center gap-2 mb-1">
                   <RiskDot level={c.status} />
-                  <span className="text-sm font-semibold text-gray-900">{c.name}</span>
+                  <span className="text-sm font-semibold text-text-primary">{c.name}</span>
                 </div>
                 <p className="text-xs text-gray-9000">{c.note}</p>
               </div>
@@ -341,7 +341,7 @@ function PeopleTab({ entityId }: { entityId: string }) {
               {p.initials}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="font-semibold text-gray-900 text-sm">{p.person}</div>
+              <div className="font-semibold text-text-primary text-sm">{p.person}</div>
               <div className="text-xs text-gray-9000">{p.role_type} · {p.scope}</div>
             </div>
             <div className="text-xs px-2 py-0.5 rounded-full"
@@ -351,7 +351,7 @@ function PeopleTab({ entityId }: { entityId: string }) {
           </div>
           <div className="flex flex-wrap gap-1.5 mt-3 pl-13">
             {p.permissions.map(perm => (
-              <span key={perm} className="text-xs px-2 py-0.5 rounded bg-gray-50 text-gray-9000 font-mono">{perm}</span>
+              <span key={perm} className="text-xs px-2 py-0.5 rounded bg-muted/30 text-gray-9000 font-mono">{perm}</span>
             ))}
           </div>
         </div>
@@ -372,7 +372,7 @@ function OpsTab({ entityId }: { entityId: string }) {
       {ops.kpis.length > 0 && (
         <div className="flex flex-wrap gap-3">
           {ops.kpis.map(kpi => (
-            <div key={kpi.label} className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 min-w-[140px]">
+            <div key={kpi.label} className="rounded-xl border border-surface-border bg-muted/30 px-4 py-3 min-w-[140px]">
               <div className="text-xs text-gray-9000 mb-1">{kpi.label}</div>
               <div className="text-xl font-bold" style={{ color: kpi.good ? '#10B981' : '#F59E0B' }}>{kpi.value}</div>
               {kpi.delta && <div className="text-xs text-gray-9000 mt-0.5">{kpi.delta}</div>}
@@ -386,7 +386,7 @@ function OpsTab({ entityId }: { entityId: string }) {
           <h3 className="text-xs font-semibold text-gray-9000 uppercase tracking-wider mb-3">Active Work</h3>
           <div className="space-y-2">
             {ops.active_work.map((w, i) => (
-              <div key={i} className="flex items-center gap-3 rounded-xl border border-gray-200 px-4 py-2.5">
+              <div key={i} className="flex items-center gap-3 rounded-xl border border-surface-border px-4 py-2.5">
                 <span className="h-2 w-2 rounded-full flex-shrink-0" style={{ background: workColor[w.status] }} />
                 <span className="flex-1 text-sm text-gray-800">{w.label}</span>
                 <span className="text-xs text-gray-9000 flex-shrink-0">{w.owner}</span>
@@ -402,7 +402,7 @@ function OpsTab({ entityId }: { entityId: string }) {
           <h3 className="text-xs font-semibold text-gray-9000 uppercase tracking-wider mb-3">Deliverables</h3>
           <div className="space-y-2">
             {ops.deliverables.map((d, i) => (
-              <div key={i} className="flex items-center gap-3 rounded-xl border border-gray-200 px-4 py-2.5">
+              <div key={i} className="flex items-center gap-3 rounded-xl border border-surface-border px-4 py-2.5">
                 <span className="flex-1 text-sm text-gray-800">{d.label}</span>
                 <span className="text-xs text-gray-9000">{d.due}</span>
                 <span className="text-xs font-mono" style={{ color: delivColor[d.status] }}>{d.status}</span>
@@ -428,10 +428,10 @@ function SystemsTab({ entityId }: { entityId: string }) {
           <h3 className="text-xs font-semibold text-gray-9000 uppercase tracking-wider mb-3">Connected Systems</h3>
           <div className="space-y-2">
             {sys.systems.map((s, i) => (
-              <div key={i} className="flex items-start gap-3 rounded-xl border border-gray-200 px-4 py-3">
+              <div key={i} className="flex items-start gap-3 rounded-xl border border-surface-border px-4 py-3">
                 <span className="text-xs text-gray-9000 font-mono w-16 flex-shrink-0 pt-0.5">{s.type}</span>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold text-gray-900">{s.name}</div>
+                  <div className="text-sm font-semibold text-text-primary">{s.name}</div>
                   <div className="text-xs text-gray-9000 mt-0.5">{s.note}</div>
                   {s.url && (
                     <a href={s.url} target="_blank" rel="noopener noreferrer"
@@ -452,7 +452,7 @@ function SystemsTab({ entityId }: { entityId: string }) {
           <h3 className="text-xs font-semibold text-gray-9000 uppercase tracking-wider mb-3">CI/CD</h3>
           <div className="space-y-2">
             {sys.pipelines.map((p, i) => (
-              <div key={i} className="flex items-center gap-3 rounded-xl border border-gray-200 px-4 py-2.5">
+              <div key={i} className="flex items-center gap-3 rounded-xl border border-surface-border px-4 py-2.5">
                 <span className="h-2 w-2 rounded-full flex-shrink-0"
                   style={{ background: p.status === 'passing' ? '#10B981' : p.status === 'failing' ? '#EF4444' : '#F59E0B' }} />
                 <span className="flex-1 text-sm text-gray-800">{p.name}</span>
@@ -503,7 +503,7 @@ const FLOW_TYPE_COLOR: Record<string, string> = {
   money: '#34C759',
   user: '#AF52DE',
   tech: '#FF9500',
-  ownership: '#5856D6',
+  ownership: '#2563EB',
 }
 
 const FLOW_STATUS_COLOR: Record<string, string> = {
@@ -516,7 +516,7 @@ function FlowCard({ flow }: { flow: Flow }) {
   const typeColor = FLOW_TYPE_COLOR[flow.type] ?? '#6B7280'
   const statusColor = FLOW_STATUS_COLOR[flow.status] ?? '#6B7280'
   return (
-    <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-3">
+    <div className="rounded-xl border border-surface-border bg-muted/30 p-4 space-y-3">
       {/* Header */}
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div className="flex items-center gap-2 flex-wrap">
@@ -526,7 +526,7 @@ function FlowCard({ flow }: { flow: Flow }) {
           >
             {flow.type}
           </span>
-          <span className="text-sm font-semibold text-gray-900">{flow.name}</span>
+          <span className="text-sm font-semibold text-text-primary">{flow.name}</span>
         </div>
         <span
           className="text-xs px-2 py-0.5 rounded font-mono flex-shrink-0"
@@ -539,7 +539,7 @@ function FlowCard({ flow }: { flow: Flow }) {
       <p className="text-xs text-gray-9000 leading-relaxed">{flow.description}</p>
       {/* Value */}
       {flow.value && (
-        <div className="text-xs font-mono px-3 py-1.5 rounded-lg bg-gray-50 text-gray-400">
+        <div className="text-xs font-mono px-3 py-1.5 rounded-lg bg-muted/30 text-gray-400">
           💰 {flow.value}
         </div>
       )}
@@ -547,7 +547,7 @@ function FlowCard({ flow }: { flow: Flow }) {
       <ol className="space-y-1">
         {flow.steps.map((step, i) => (
           <li key={i} className="flex items-start gap-2 text-xs text-gray-600">
-            <span className="flex-shrink-0 w-5 h-5 rounded-full bg-gray-50 flex items-center justify-center text-gray-9000 font-mono font-semibold mt-0.5">
+            <span className="flex-shrink-0 w-5 h-5 rounded-full bg-muted/30 flex items-center justify-center text-gray-9000 font-mono font-semibold mt-0.5">
               {i + 1}
             </span>
             <span className="leading-relaxed pt-0.5">{step}</span>
@@ -646,9 +646,9 @@ export function EntityView() {
         ${mobileShowDetail ? 'hidden md:flex' : 'flex'}
         w-full md:w-56 flex-shrink-0
         flex-col
-        border-r border-gray-200 bg-[#07090F] overflow-y-auto
+        border-r border-surface-border bg-[#07090F] overflow-y-auto
       `}>
-        <div className="px-3 py-3 border-b border-gray-200">
+        <div className="px-3 py-3 border-b border-surface-border">
           <p className="text-xs font-semibold text-gray-9000 uppercase tracking-wider">Entities</p>
         </div>
         <div className="py-2">
@@ -660,7 +660,7 @@ export function EntityView() {
               <button
                 key={ent.id}
                 onClick={() => handleSelectEntity(ent.id)}
-                className="w-full flex items-center gap-2.5 px-3 py-3 md:py-2.5 text-left transition-colors hover:bg-gray-50"
+                className="w-full flex items-center gap-2.5 px-3 py-3 md:py-2.5 text-left transition-colors hover:bg-muted/30"
                 style={{ background: active ? ent.color + '12' : undefined }}
               >
                 <span className="text-base flex-shrink-0">{ent.flag}</span>
@@ -687,7 +687,7 @@ export function EntityView() {
       `}>
 
         {/* Header */}
-        <div className="flex-shrink-0 border-b border-gray-200 bg-white">
+        <div className="flex-shrink-0 border-b border-surface-border bg-white">
           <div className="px-4 md:px-6 py-4">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3 min-w-0">
@@ -701,7 +701,7 @@ export function EntityView() {
                 <span className="text-2xl flex-shrink-0">{entity.flag}</span>
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h1 className="text-base md:text-lg font-bold text-gray-900 truncate">{entity.name}</h1>
+                    <h1 className="text-base md:text-lg font-bold text-text-primary truncate">{entity.name}</h1>
                     <span className="text-xs px-2 py-0.5 rounded-full font-mono flex-shrink-0"
                       style={{ background: statusColor + '18', color: statusColor, border: `1px solid ${statusColor}30` }}>
                       {entity.active_status}
@@ -715,7 +715,7 @@ export function EntityView() {
               </div>
               <button
                 onClick={() => navigate('/org')}
-                className="hidden md:block text-xs text-gray-9000 hover:text-gray-600 px-2.5 py-1.5 rounded-lg border border-gray-200 transition-colors flex-shrink-0 ml-4"
+                className="hidden md:block text-xs text-gray-9000 hover:text-gray-600 px-2.5 py-1.5 rounded-lg border border-surface-border transition-colors flex-shrink-0 ml-4"
               >
                 Graph →
               </button>

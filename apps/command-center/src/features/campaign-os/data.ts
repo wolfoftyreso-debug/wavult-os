@@ -91,7 +91,7 @@ export const CHANNEL_COLOR: Record<CampaignChannel, string> = {
   meta: '#1877F2',
   google: '#4285F4',
   email: '#10B981',
-  outbound: '#8B5CF6',
+  outbound: '#2563EB',
   pr: '#F59E0B',
   event: '#EC4899',
   sms: '#06B6D4',
@@ -103,7 +103,7 @@ export const STATUS_COLOR: Record<ActivityStatus, string> = {
   ready: '#F59E0B',
   deployed: '#10B981',
   failed: '#EF4444',
-  paused: '#8B5CF6',
+  paused: '#2563EB',
 }
 
 export const KPI_COLOR: Record<KPIResult, string> = {
@@ -123,10 +123,10 @@ export const ENTITY_FILTER_OPTIONS: Array<{ id: string; label: string; region: '
 ]
 
 export const ENTITY_COLOR: Record<string, string> = {
-  'wavult-group': '#8B5CF6',
+  'wavult-group': '#2563EB',
   'quixzoom-uab': '#10B981',
   'landvex-inc': '#F59E0B',
-  'wavult': '#A78BFA',
+  'wavult': '#60A5FA',
 }
 
 export const ENTITY_REGION: Record<string, 'EU' | 'US' | 'Global'> = {

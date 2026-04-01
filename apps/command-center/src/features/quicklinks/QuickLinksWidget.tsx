@@ -9,18 +9,18 @@ const LINKS = [
 
 export function QuickLinksWidget() {
   return (
-    <div className="bg-gray-50 border border-gray-200 rounded-2xl overflow-hidden">
-      <div className="px-4 py-3 border-b border-gray-200">
+    <div className="bg-muted/30 border border-surface-border rounded-2xl overflow-hidden">
+      <div className="px-4 py-3 border-b border-surface-border">
         <p className="text-sm font-medium text-gray-900/70">Snabblänkar</p>
       </div>
-      <div className="grid grid-cols-3 gap-px bg-gray-50">
+      <div className="grid grid-cols-3 gap-px bg-muted/30">
         {LINKS.map(link => (
           <a
             key={link.label}
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex flex-col items-center gap-1.5 p-3 bg-[#0A0A1B] hover:bg-gray-50 transition-colors"
+            className="flex flex-col items-center gap-1.5 p-3 bg-[#0A0A1B] hover:bg-muted/30 transition-colors"
           >
             <span className="text-xl">{link.icon}</span>
             <span className="text-xs text-gray-900/50 text-center leading-tight">{link.label}</span>

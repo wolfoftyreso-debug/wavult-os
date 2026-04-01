@@ -66,10 +66,10 @@ const ROLE_SUBORDINATES: Partial<Record<RoleId, SubNode[]>> = {
   'group-ceo': [
     {
       id: 'sub-ceo-strategy', type: 'team', label: 'Group Strategy',
-      sublabel: 'Capital · Structure · Direction', color: '#8B5CF6', flag: '🧭',
+      sublabel: 'Capital · Structure · Direction', color: '#2563EB', flag: '🧭',
       status: 'active', expandable: true,
       children: [
-        { id: 'sub-ceo-s1', type: 'individual', label: 'Erik Svensson', sublabel: 'Chairman & Group CEO', color: '#8B5CF6', flag: '👑', status: 'active', expandable: false },
+        { id: 'sub-ceo-s1', type: 'individual', label: 'Erik Svensson', sublabel: 'Chairman & Group CEO', color: '#2563EB', flag: '👑', status: 'active', expandable: false },
         { id: 'sub-ceo-s2', type: 'individual', label: 'Dennis Bjarnemark', sublabel: 'Board / Chief Legal', color: '#F59E0B', flag: '⚖️', status: 'active', expandable: false },
       ],
     },
@@ -100,14 +100,14 @@ const ROLE_SUBORDINATES: Partial<Record<RoleId, SubNode[]>> = {
     },
     {
       id: 'sub-ops-sys', type: 'system', label: 'Hypbit OS',
-      sublabel: 'Internal operating system', color: '#A78BFA', flag: '⚙️',
+      sublabel: 'Internal operating system', color: '#60A5FA', flag: '⚙️',
       status: 'live', expandable: true, entityId: 'hypbit-system',
       metadata: { 'Deployed': 'AWS ECS eu-north-1', 'Modules': '6 core modules' },
       children: [
-        { id: 'sub-ops-sys-db', type: 'system', label: 'Dashboard', sublabel: 'Role-based overview', color: '#A78BFA', flag: '📊', status: 'live', expandable: false },
-        { id: 'sub-ops-sys-cg', type: 'system', label: 'Corporate Graph', sublabel: 'Entity map & relations', color: '#A78BFA', flag: '🏗', status: 'live', expandable: false },
-        { id: 'sub-ops-sys-fi', type: 'system', label: 'Transactions', sublabel: 'Financial flows', color: '#A78BFA', flag: '↕', status: 'live', expandable: false },
-        { id: 'sub-ops-sys-pr', type: 'system', label: 'Projects & KPI', sublabel: 'Roadmap tracking', color: '#A78BFA', flag: '🚀', status: 'live', expandable: false },
+        { id: 'sub-ops-sys-db', type: 'system', label: 'Dashboard', sublabel: 'Role-based overview', color: '#60A5FA', flag: '📊', status: 'live', expandable: false },
+        { id: 'sub-ops-sys-cg', type: 'system', label: 'Corporate Graph', sublabel: 'Entity map & relations', color: '#60A5FA', flag: '🏗', status: 'live', expandable: false },
+        { id: 'sub-ops-sys-fi', type: 'system', label: 'Transactions', sublabel: 'Financial flows', color: '#60A5FA', flag: '↕', status: 'live', expandable: false },
+        { id: 'sub-ops-sys-pr', type: 'system', label: 'Projects & KPI', sublabel: 'Roadmap tracking', color: '#60A5FA', flag: '🚀', status: 'live', expandable: false },
       ],
     },
   ],
@@ -173,7 +173,7 @@ const ROLE_SUBORDINATES: Partial<Record<RoleId, SubNode[]>> = {
       sublabel: '6 entities across 4 jurisdictions', color: '#F59E0B', flag: '🏛',
       status: 'active', expandable: true,
       children: [
-        { id: 'sub-clo-s1', type: 'entity', label: 'Wavult Group Dubai', sublabel: 'Holding · IP owner · Forming', color: '#8B5CF6', flag: '🇦🇪', status: 'forming', expandable: false, entityId: 'wavult-group' },
+        { id: 'sub-clo-s1', type: 'entity', label: 'Wavult Group Dubai', sublabel: 'Holding · IP owner · Forming', color: '#2563EB', flag: '🇦🇪', status: 'forming', expandable: false, entityId: 'wavult-group' },
         { id: 'sub-clo-s2', type: 'entity', label: 'Wavult Operations Dubai', sublabel: 'Operations hub · Forming', color: '#0EA5E9', flag: '🇦🇪', status: 'forming', expandable: false, entityId: 'wavult-operations' },
         { id: 'sub-clo-s3', type: 'entity', label: 'Landvex AB', sublabel: 'Sweden · Live', color: '#EC4899', flag: '🇸🇪', status: 'live', expandable: false, entityId: 'landvex-ab' },
         { id: 'sub-clo-s4', type: 'entity', label: 'Landvex Inc', sublabel: 'Texas · Forming', color: '#F59E0B', flag: '🇺🇸', status: 'forming', expandable: false, entityId: 'landvex-inc' },
@@ -202,7 +202,7 @@ const ROLE_SUBORDINATES: Partial<Record<RoleId, SubNode[]>> = {
       children: [
         { id: 'sub-cpo-p1', type: 'system', label: 'quiXzoom', sublabel: 'Crowdsourced camera · Zoomer platform · Sverige juni 2026', color: '#10B981', flag: '📸', status: 'active', expandable: false },
         { id: 'sub-cpo-p2', type: 'system', label: 'Optical Insight / Landvex', sublabel: 'B2G control system · Right control. Right cost.', color: '#F59E0B', flag: '🔭', status: 'active', expandable: false },
-        { id: 'sub-cpo-p3', type: 'system', label: 'Hypbit OS', sublabel: 'Internal operating system · All Wavult entities', color: '#A78BFA', flag: '⚙️', status: 'active', expandable: false },
+        { id: 'sub-cpo-p3', type: 'system', label: 'Hypbit OS', sublabel: 'Internal operating system · All Wavult entities', color: '#60A5FA', flag: '⚙️', status: 'active', expandable: false },
         { id: 'sub-cpo-p4', type: 'system', label: 'Quixom Ads', sublabel: 'Data monetization · Phase 2 after quiXzoom', color: '#6B7280', flag: '📢', status: 'planned', expandable: false },
       ],
     },

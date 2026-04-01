@@ -26,7 +26,7 @@ export function PayrollHub() {
     <div className="h-full flex flex-col overflow-hidden">
       {/* Page header */}
       <div className="px-6 pt-6 pb-0 flex-shrink-0">
-        <h1 className="text-sm font-semibold text-gray-900">Lön & Personal</h1>
+        <h1 className="text-sm font-semibold text-text-primary">Lön & Personal</h1>
         <p className="text-sm text-gray-600 mt-1">{activeEntity.shortName} — 5 anställda · Skattetabell 33 · Arbetsgivaravgift 31.42%</p>
 
         {/* Tab bar */}
@@ -37,7 +37,7 @@ export function PayrollHub() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 py-2.5 text-xs font-medium whitespace-nowrap border-b-2 transition-colors -mb-px ${
                 activeTab === tab.id
-                  ? 'border-purple-500 text-purple-700'
+                  ? 'border-blue-600 text-blue-700'
                   : 'border-transparent text-gray-9000 hover:text-gray-600 hover:border-gray-600'
               }`}
             >

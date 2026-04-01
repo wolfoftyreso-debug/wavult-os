@@ -29,7 +29,7 @@ function TaskRow({ task, variant }: { task: Task; variant: 'action' | 'blocking'
   const opacityClass = variant === 'done' ? 'opacity-60' : ''
 
   return (
-    <div className={`bg-white border border-gray-200 border-l-4 ${borderColor} rounded-xl shadow-sm p-3 ${opacityClass}`}>
+    <div className={`bg-white border border-surface-border border-l-4 ${borderColor} rounded-xl shadow-sm p-3 ${opacityClass}`}>
       <div className="flex items-center justify-between gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
@@ -62,8 +62,8 @@ function TaskRow({ task, variant }: { task: Task; variant: 'action' | 'blocking'
         </div>
 
         {variant === 'action' && (
-          <button className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-900 ${
-            task.priority === 'critical' ? 'bg-red-600 hover:bg-red-700' : 'bg-white hover:bg-gray-50'
+          <button className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-text-primary ${
+            task.priority === 'critical' ? 'bg-red-600 hover:bg-red-700' : 'bg-white hover:bg-muted/30'
           } transition-colors`}>
             {effectiveState === 'IN_PROGRESS' ? t('task.continue') : t('task.start')}
             <ArrowRight className="w-3 h-3" />
@@ -99,10 +99,10 @@ export function PersonView() {
   const person = PERSONS[selectedId]
 
   return (
-    <div className="min-h-full bg-gray-50 space-y-6">
+    <div className="min-h-full bg-muted/30 space-y-6">
 
       {/* ── Person Selector ────────────────────────────────────────────── */}
-      <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-5">
+      <div className="bg-white border border-surface-border rounded-xl shadow-sm p-5">
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           <div className="flex-1">
             <label className="block text-xs font-mono text-gray-9000 mb-1 uppercase tracking-wide">
@@ -111,7 +111,7 @@ export function PersonView() {
             <select
               value={selectedId}
               onChange={e => setSelectedId(e.target.value)}
-              className="w-full sm:w-auto text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-purple-300 text-gray-900"
+              className="w-full sm:w-auto text-sm border border-surface-border rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400 text-text-primary"
             >
               {personIds.map(id => (
                 <option key={id} value={id}>
@@ -123,7 +123,7 @@ export function PersonView() {
 
           {person && (
             <div className="text-right">
-              <div className="text-lg font-bold text-gray-900">{person.name}</div>
+              <div className="text-lg font-bold text-text-primary">{person.name}</div>
               <div className="text-sm text-gray-9000 font-mono">{person.role}</div>
             </div>
           )}
@@ -134,7 +134,7 @@ export function PersonView() {
       <section>
         <div className="flex items-center gap-2 mb-3">
           <AlertTriangle className="w-4 h-4 text-red-500" />
-          <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+          <h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
             {t('person.my_tasks')}
           </h2>
           <span className="text-xs font-mono bg-red-100 text-red-700 px-2 py-0.5 rounded">
@@ -144,7 +144,7 @@ export function PersonView() {
 
         <div className="space-y-2">
           {nextActions.length === 0 ? (
-            <div className="bg-white border border-gray-200 rounded-xl p-4 text-sm text-gray-9000">
+            <div className="bg-white border border-surface-border rounded-xl p-4 text-sm text-gray-9000">
               {t('person.no_tasks')}
             </div>
           ) : (
@@ -160,7 +160,7 @@ export function PersonView() {
         <section>
           <div className="flex items-center gap-2 mb-3">
             <Lock className="w-4 h-4 text-orange-700" />
-            <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+            <h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
               {t('task.blocking_others')}
             </h2>
             <span className="text-xs font-mono bg-orange-100 text-orange-700 px-2 py-0.5 rounded">
@@ -180,7 +180,7 @@ export function PersonView() {
       <section>
         <div className="flex items-center gap-2 mb-3">
           <CheckCircle className="w-4 h-4 text-emerald-500" />
-          <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
+          <h2 className="text-sm font-semibold text-text-primary uppercase tracking-wide">
             {t('task.completed_tasks')}
           </h2>
           <span className="text-xs font-mono bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded">
@@ -190,7 +190,7 @@ export function PersonView() {
 
         <div className="space-y-2">
           {doneTasks.length === 0 ? (
-            <div className="bg-white border border-gray-200 rounded-xl p-4 text-sm text-gray-9000">
+            <div className="bg-white border border-surface-border rounded-xl p-4 text-sm text-gray-9000">
               {t('agent.no_actions')}
             </div>
           ) : (

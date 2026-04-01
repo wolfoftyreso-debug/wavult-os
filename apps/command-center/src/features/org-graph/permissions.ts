@@ -103,7 +103,7 @@ export const ROLE_PERMISSIONS: Record<RoleId, GraphPermissions> = {
 }
 
 export const OVERLAY_LABELS: Record<OverlayMode, { label: string; color: string; icon: string }> = {
-  full:       { label: 'Full View',        color: '#8B5CF6', icon: '🔭' },
+  full:       { label: 'Full View',        color: '#2563EB', icon: '🔭' },
   financial:  { label: 'Financial Overlay', color: '#10B981', icon: '💰' },
   legal:      { label: 'Legal Overlay',     color: '#F59E0B', icon: '⚖️' },
   technical:  { label: 'Tech Overlay',      color: '#06B6D4', icon: '🧠' },

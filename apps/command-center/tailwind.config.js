@@ -5,44 +5,39 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Wavult OS v2 — Atmospheric color system
-        wavult: {
-          charcoal: '#161B22',       // Deep matte charcoal — neutral/cruising
-          carbon: '#0D1117',         // Deeper shade for contrast
-          slate: '#21262D',          // Raised surfaces
-          steel: '#2D333B',          // Overlay / hover states
-          border: '#30363D',         // Subtle borders
-          'border-light': '#363C48', // Emphasized borders
-        },
-        // Signal colors — operational language
-        signal: {
-          amber: '#C4961A',          // Attention needed
-          red: '#D94040',            // Action required — insistent, not alarming
-          green: '#4A7A5B',          // Success/completion — muted, satisfying
-          blue: '#4A7A9B',           // Informational
-        },
-        // Text hierarchy
+        // Muted background — bridges bg-muted/30 pattern
+        muted: 'var(--color-border)',
+        // Text hierarchy (legacy compat)
         text: {
-          primary: '#E8E9EB',        // High contrast primary
-          secondary: '#8B919A',      // Secondary / labels
-          tertiary: '#5A6170',       // Tertiary / metadata
-          muted: '#3D4452',          // Very low emphasis
+          primary: '#0F172A',
+          secondary: '#475569',
+          tertiary: '#94A3B8',
+          muted: '#CBD5E1',
+        },
+        // Industrial Enterprise palette
+        wavult: {
+          bg: '#0A0F1E',         // deep navy
+          surface: '#111929',    // card bg
+          border: '#1E2D45',     // borders
+          text: '#E2E8F0',       // primary text
+          muted: '#475569',      // muted text
+          accent: '#2563EB',     // interactive blue
+          brand: '#1E40AF',      // brand steel blue
         },
         // Legacy compat
         brand: {
-          primary: '#14181E',
-          accent: '#C4961A',
-          highlight: '#4A7A9B',
-          success: '#4A7A5B',
-          warning: '#C4961A',
-          danger: '#D94040',
-          premium: '#8B5CF6',
+          primary: '#1E40AF',
+          accent: '#2563EB',
+          highlight: '#3B82F6',
+          success: '#16A34A',
+          warning: '#D97706',
+          danger: '#DC2626',
         },
         surface: {
-          base: '#0F1218',
-          raised: '#14181E',
-          overlay: '#1C2029',
-          border: '#2A2F3A',
+          base: '#F8FAFC',
+          raised: '#FFFFFF',
+          overlay: '#F1F5F9',
+          border: '#E2E8F0',
         },
       },
       fontFamily: {

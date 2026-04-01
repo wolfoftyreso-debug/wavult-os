@@ -1,11 +1,39 @@
 /**
- * LoginPage — Wavult OS inloggning (Apple-native design system)
+ * LoginPage — Wavult OS enterprise sign-in
  */
 
 import { useState, FormEvent } from 'react'
 import { useAuth } from './AuthContext'
 import { useTranslation } from '../i18n/useTranslation'
 import { Input } from '../design-system/DesignSystem'
+
+// ─── Wavult hexagon logo mark ─────────────────────────────────────────────────
+function WavultMark({ size = 52 }: { size?: number }) {
+  const cx = size / 2
+  const cy = size / 2
+  const r = size * 0.44
+  const pts = Array.from({ length: 6 }, (_, i) => {
+    const angle = (Math.PI / 3) * i - Math.PI / 6
+    return `${cx + r * Math.cos(angle)},${cy + r * Math.sin(angle)}`
+  }).join(' ')
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} fill="none">
+      <polygon points={pts} fill="var(--color-accent)" />
+      <text
+        x={cx}
+        y={cy + 1}
+        textAnchor="middle"
+        dominantBaseline="middle"
+        fill="#FFFFFF"
+        fontSize={size * 0.38}
+        fontWeight="700"
+        fontFamily="var(--font-sans)"
+      >
+        W
+      </text>
+    </svg>
+  )
+}
 
 export function LoginPage() {
   const { signIn } = useAuth()
@@ -26,35 +54,60 @@ export function LoginPage() {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center p-4"
-      style={{ background: 'var(--color-bg-secondary)' }}
+      className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden"
+      style={{
+        background: 'var(--color-bg)',
+      }}
     >
-      {/* Card */}
+      {/* Full-screen background image */}
       <div
-        className="w-full max-w-sm"
+        aria-hidden="true"
         style={{
-          background: 'var(--color-bg-primary)',
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: 'url(/images/os-login-bg.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          opacity: 0.15,
+          zIndex: 0,
+        }}
+      />
+      {/* Overlay gradient for depth */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(135deg, var(--color-bg) 0%, transparent 60%, var(--color-bg) 100%)',
+          zIndex: 1,
+        }}
+      />
+
+      {/* Login card */}
+      <div
+        className="w-full max-w-sm relative"
+        style={{
+          zIndex: 2,
+          background: 'var(--color-surface)',
           borderRadius: 'var(--radius-xl)',
           boxShadow: 'var(--shadow-lg)',
+          border: '1px solid var(--color-border)',
           padding: 32,
         }}
       >
         {/* Logo */}
         <div className="mb-8 text-center">
-          <div
-            className="inline-flex items-center justify-center mb-4"
-            style={{ width: 52, height: 52, borderRadius: '50%', background: 'var(--color-accent)' }}
-          >
-            <span style={{ fontSize: 22, fontWeight: 700, color: '#FFFFFF' }}>W</span>
+          <div className="inline-flex items-center justify-center mb-4">
+            <WavultMark size={52} />
           </div>
-          <h1 style={{ fontSize: 20, fontWeight: 600, color: 'var(--color-text-primary)', marginBottom: 4 }}>
+          <h1 style={{ fontSize: 20, fontWeight: 700, color: 'var(--color-text-primary)', marginBottom: 4 }}>
             Wavult OS
           </h1>
-          <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--color-text-tertiary)' }}>
-            Wavult Group
+          <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--color-text-tertiary)', marginBottom: 6 }}>
+            Operational Intelligence Platform
           </p>
-          <p style={{ fontSize: 14, color: 'var(--color-text-secondary)', marginTop: 8 }}>
-            {t('auth.login')}
+          <p style={{ fontSize: 13, color: 'var(--color-text-secondary)' }}>
+            Sign in to continue
           </p>
         </div>
 
@@ -64,7 +117,7 @@ export function LoginPage() {
             <Input
               type="email"
               label={t('auth.email')}
-              placeholder="namn@wavult.com"
+              placeholder="Email address"
               value={email}
               onChange={setEmail}
             />
@@ -72,7 +125,7 @@ export function LoginPage() {
             <Input
               type="password"
               label={t('auth.password')}
-              placeholder="••••••••"
+              placeholder="Password"
               value={password}
               onChange={setPassword}
             />
@@ -100,18 +153,36 @@ export function LoginPage() {
                   transition: 'all var(--transition-fast)',
                 }}
               >
-                {loading ? t('auth.logging_in') : t('auth.login')}
+                {loading ? 'Signing in…' : 'Sign in to Wavult OS'}
               </button>
             </div>
           </div>
         </form>
+
+        {/* Footer note */}
+        <p
+          className="text-center mt-6"
+          style={{ fontSize: 12, color: 'var(--color-text-tertiary)' }}
+        >
+          Need access?{' '}
+          <span style={{ color: 'var(--color-text-secondary)' }}>
+            Contact your administrator.
+          </span>
+        </p>
       </div>
 
+      {/* Bottom build tag */}
       <p
         className="absolute bottom-6"
-        style={{ fontSize: 11, color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-mono)' }}
+        style={{
+          fontSize: 10,
+          color: 'var(--color-text-tertiary)',
+          fontFamily: 'var(--font-mono)',
+          zIndex: 2,
+          opacity: 0.5,
+        }}
       >
-        Wavult OS · Intern access · Kontakta admin vid problem
+        Wavult OS · Internal access only · Unauthorized access is prohibited
       </p>
     </div>
   )
@@ -119,9 +190,9 @@ export function LoginPage() {
 
 function translateError(msg: string, t: (key: string) => string): string {
   if (msg.includes('Invalid login credentials')) return t('auth.error.invalid')
-  if (msg.includes('Email not confirmed')) return 'E-postadressen är inte bekräftad — kolla din inbox'
-  if (msg.includes('Too many requests')) return 'För många försök — vänta en stund och försök igen'
-  if (msg.includes('User not found')) return 'Ingen användare med den e-postadressen hittades'
+  if (msg.includes('Email not confirmed')) return 'Email address is not confirmed — check your inbox'
+  if (msg.includes('Too many requests')) return 'Too many attempts — please wait and try again'
+  if (msg.includes('User not found')) return 'No account found with that email address'
   if (msg.includes('network')) return t('agent.error.network')
   return msg
 }

@@ -4,7 +4,7 @@ import { MOCK_CREATIVES, MOCK_CAMPAIGNS } from './mockData'
 import { useTranslation } from '../../shared/i18n/useTranslation'
 
 const STATUS_COLORS: Record<Creative['status'], string> = {
-  draft: 'bg-gray-100 text-gray-600',
+  draft: 'bg-muted text-gray-600',
   review: 'bg-yellow-900 text-yellow-300',
   approved: 'bg-blue-900 text-blue-300',
   live: 'bg-green-900 text-green-300',
@@ -34,10 +34,10 @@ function NewCreativeModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 bg-white/70 z-50 flex items-center justify-center p-4">
-      <div className="bg-white border border-gray-200 rounded-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 sticky top-0 bg-white">
-          <h2 className="text-gray-900 font-semibold">Ny creative</h2>
-          <button onClick={onClose} className="text-gray-9000 hover:text-gray-900 text-lg leading-none">×</button>
+      <div className="bg-white border border-surface-border rounded-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-surface-border sticky top-0 bg-white">
+          <h2 className="text-text-primary font-semibold">Ny creative</h2>
+          <button onClick={onClose} className="text-gray-9000 hover:text-text-primary text-lg leading-none">×</button>
         </div>
         <div className="px-6 py-5 space-y-4">
           <div className="grid grid-cols-2 gap-3">
@@ -46,7 +46,7 @@ function NewCreativeModal({ onClose }: { onClose: () => void }) {
               <select
                 value={form.campaign_id}
                 onChange={e => setForm({ ...form, campaign_id: e.target.value })}
-                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none"
+                className="w-full bg-white border border-surface-border rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none"
               >
                 {MOCK_CAMPAIGNS.map(c => (
                   <option key={c.id} value={c.id}>{c.name}</option>
@@ -58,7 +58,7 @@ function NewCreativeModal({ onClose }: { onClose: () => void }) {
               <select
                 value={form.type}
                 onChange={e => setForm({ ...form, type: e.target.value as Creative['type'] })}
-                className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none"
+                className="w-full bg-white border border-surface-border rounded-lg px-3 py-2 text-sm text-text-primary focus:outline-none"
               >
                 <option value="audio">Audio</option>
                 <option value="video">Video</option>
@@ -74,7 +74,7 @@ function NewCreativeModal({ onClose }: { onClose: () => void }) {
               value={form.hook}
               onChange={e => setForm({ ...form, hook: e.target.value })}
               placeholder="t.ex. Sveriges infrastruktur behöver ögon."
-              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none"
+              className="w-full bg-white border border-surface-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder-gray-600 focus:outline-none"
             />
           </div>
 
@@ -85,7 +85,7 @@ function NewCreativeModal({ onClose }: { onClose: () => void }) {
               onChange={e => setForm({ ...form, message: e.target.value })}
               rows={3}
               placeholder="Beskriv erbjudandet eller varumärkesbudskapet..."
-              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none resize-none"
+              className="w-full bg-white border border-surface-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder-gray-600 focus:outline-none resize-none"
             />
           </div>
 
@@ -95,7 +95,7 @@ function NewCreativeModal({ onClose }: { onClose: () => void }) {
               value={form.cta}
               onChange={e => setForm({ ...form, cta: e.target.value })}
               placeholder="t.ex. Läs mer, Ansök nu, Se demo"
-              className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder-gray-600 focus:outline-none"
+              className="w-full bg-white border border-surface-border rounded-lg px-3 py-2 text-sm text-text-primary placeholder-gray-600 focus:outline-none"
             />
           </div>
 
@@ -104,7 +104,7 @@ function NewCreativeModal({ onClose }: { onClose: () => void }) {
               <label className="text-xs text-gray-9000">Varianter (A/B-test)</label>
               <button
                 onClick={addVariant}
-                className="text-xs text-purple-700 hover:underline"
+                className="text-xs text-blue-700 hover:underline"
               >
                 + Lägg till variant
               </button>
@@ -119,7 +119,7 @@ function NewCreativeModal({ onClose }: { onClose: () => void }) {
                       updated[i].label = e.target.value
                       setVariants(updated)
                     }}
-                    className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-gray-900 focus:outline-none"
+                    className="flex-1 bg-white border border-surface-border rounded-lg px-3 py-1.5 text-sm text-text-primary focus:outline-none"
                   />
                   {variants.length > 1 && (
                     <button
@@ -134,11 +134,11 @@ function NewCreativeModal({ onClose }: { onClose: () => void }) {
             </div>
           </div>
         </div>
-        <div className="px-6 py-4 border-t border-gray-200 flex justify-end gap-3 sticky bottom-0 bg-white">
-          <button onClick={onClose} className="px-4 py-2 text-sm text-gray-9000 hover:text-gray-900 transition-colors">Avbryt</button>
+        <div className="px-6 py-4 border-t border-surface-border flex justify-end gap-3 sticky bottom-0 bg-white">
+          <button onClick={onClose} className="px-4 py-2 text-sm text-gray-9000 hover:text-text-primary transition-colors">Avbryt</button>
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm bg-brand-accent/20 text-purple-700 border border-purple-200 rounded-lg hover:bg-brand-accent/30 transition-colors"
+            className="px-4 py-2 text-sm bg-brand-accent/20 text-blue-700 border border-blue-200 rounded-lg hover:bg-brand-accent/30 transition-colors"
           >
             Spara creative
           </button>
@@ -157,12 +157,12 @@ export function CreativeView() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-gray-900 font-semibold">Creatives</h2>
+          <h2 className="text-text-primary font-semibold">Creatives</h2>
           <p className="text-xs text-gray-9000 mt-0.5">{MOCK_CREATIVES.length} creatives · alla i draft</p>
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="px-3 py-1.5 text-sm bg-brand-accent/20 text-purple-700 border border-purple-200 rounded-lg hover:bg-brand-accent/30 transition-colors"
+          className="px-3 py-1.5 text-sm bg-brand-accent/20 text-blue-700 border border-blue-200 rounded-lg hover:bg-brand-accent/30 transition-colors"
         >
           + Ny creative
         </button>
@@ -175,17 +175,17 @@ export function CreativeView() {
           return (
             <div
               key={creative.id}
-              className="bg-white border border-gray-200 rounded-xl overflow-hidden"
+              className="bg-white border border-surface-border rounded-xl overflow-hidden"
             >
               <div
-                className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 transition-colors"
+                className="flex items-center justify-between p-4 cursor-pointer hover:bg-muted/30 transition-colors"
                 onClick={() => setExpanded(isExpanded ? null : creative.id)}
               >
                 <div className="flex items-center gap-3">
                   <span className="text-xl">{TYPE_ICONS[creative.type]}</span>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-gray-900">{creative.hook}</span>
+                      <span className="text-sm font-medium text-text-primary">{creative.hook}</span>
                       <span className={`text-xs px-2 py-0.5 rounded-full font-mono ${STATUS_COLORS[creative.status]}`}>
                         {creative.status}
                       </span>
@@ -206,13 +206,13 @@ export function CreativeView() {
                   </div>
                   <div>
                     <div className="text-xs text-gray-9000 mb-1">CTA</div>
-                    <p className="text-sm text-purple-700">{creative.cta}</p>
+                    <p className="text-sm text-blue-700">{creative.cta}</p>
                   </div>
                   <div>
                     <div className="text-xs text-gray-9000 mb-2">Varianter (A/B)</div>
                     <div className="space-y-1">
                       {creative.variants.map(v => (
-                        <div key={v.id} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2">
+                        <div key={v.id} className="flex items-center justify-between bg-muted/30 rounded-lg px-3 py-2">
                           <span className="text-xs text-gray-600">{v.label}</span>
                           <span className="text-xs text-gray-9000">
                             {v.performance_score !== undefined ? `Score: ${v.performance_score}` : 'Inget data'}

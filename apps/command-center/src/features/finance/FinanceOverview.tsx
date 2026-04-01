@@ -15,7 +15,7 @@ function fmt(n: number, currency: string) {
 function ProgressBar({ value, max, color }: { value: number; max: number; color: string }) {
   const pct = max > 0 ? Math.min(100, Math.round((value / max) * 100)) : 0
   return (
-    <div className="w-full bg-gray-50 rounded-full h-1.5 mt-1.5">
+    <div className="w-full bg-muted/30 rounded-full h-1.5 mt-1.5">
       <div
         className="h-1.5 rounded-full transition-all"
         style={{ width: `${pct}%`, background: color }}
@@ -56,8 +56,9 @@ function calcHealth(result: number, revenue: number, expenses: number): {
 
 export function FinanceOverview() {
   const { t: _t } = useTranslation() // ready for i18n
-  const { activeEntity, scopedEntities } = useEntityScope()
+  const { activeEntity, scopedEntities, viewScope } = useEntityScope()
   const isRoot = activeEntity.layer === 0
+  const isGroupView = isRoot || viewScope === 'group'
   const scopedIds = new Set(scopedEntities.map(e => e.id))
   const updatedAt = new Date().toLocaleString('sv-SE', { dateStyle: 'short', timeStyle: 'short' })
 
@@ -118,9 +119,9 @@ export function FinanceOverview() {
       }))
     : recentEntriesRaw
 
-  const entitiesToShow = isRoot
+  const entitiesToShow = isGroupView
     ? entities
-    : entities.filter(e => scopedIds.has(e.id))
+    : entities.filter(e => e.id === activeEntity.id)
 
   const kpiMap = (kpis || []).reduce<Record<string, FinanceKpi>>((acc, k) => {
     acc[k.entity_id] = k
@@ -128,9 +129,9 @@ export function FinanceOverview() {
   }, {})
 
   // Recent transactions from ledger (last 5 entries)
-  const recentTxns = (isRoot
+  const recentTxns = (isGroupView
     ? recentEntries
-    : (recentEntries || []).filter(e => scopedIds.has(e.entity_id))
+    : (recentEntries || []).filter(e => e.entity_id === activeEntity.id)
   ).slice(0, 5)
 
   const isLoading = entitiesLoading || kpisLoading || ledgerLoading
@@ -147,10 +148,12 @@ export function FinanceOverview() {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-lg font-bold text-gray-900">Finansiell Översikt</h2>
+          <h2 className="text-lg font-bold text-text-primary">Finansiell Översikt</h2>
           <p className="text-xs text-gray-9000 mt-0.5">
-            {isRoot ? 'Wavult Group — konsoliderad vy' : `${activeEntity.name}`}
-            {useMock && <span className="ml-2 text-gray-9000 text-[9px] font-mono">[ej konfigurerat]</span>}
+            {isGroupView
+              ? 'Koncernvy — alla bolag aggregerade'
+              : `${activeEntity.name} · ${activeEntity.jurisdiction}`}
+            {useMock && <span className="ml-2 text-amber-600 text-[9px] font-mono">[ej konfigurerat]</span>}
           </p>
         </div>
         <div className="text-right flex-shrink-0">
@@ -165,11 +168,11 @@ export function FinanceOverview() {
         if (!kpi) return null
         const health = calcHealth(kpi.result ?? 0, kpi.revenue ?? 0, kpi.expenses ?? 0)
         return (
-          <div key={fe.id} className="rounded-xl border border-gray-200 bg-white overflow-hidden">
+          <div key={fe.id} className="rounded-xl border border-surface-border bg-white overflow-hidden">
             {/* Entity header */}
-            <div className="px-4 py-3 border-b border-gray-200 flex items-center gap-2">
+            <div className="px-4 py-3 border-b border-surface-border flex items-center gap-2">
               <span className="h-2 w-2 rounded-full flex-shrink-0" style={{ background: fe.color }} />
-              <span className="text-xs font-semibold text-gray-900">{fe.name}</span>
+              <span className="text-xs font-semibold text-text-primary">{fe.name}</span>
               <span className="text-[9px] font-mono text-gray-9000 ml-1">{fe.jurisdiction}</span>
               {/* Health indicator */}
               <span
@@ -230,9 +233,9 @@ export function FinanceOverview() {
       )}
 
       {/* Recent ledger entries */}
-      <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
-        <div className="px-4 py-3 border-b border-gray-200">
-          <span className="text-xs font-semibold text-gray-900">Senaste transaktioner</span>
+      <div className="rounded-xl border border-surface-border bg-white overflow-hidden">
+        <div className="px-4 py-3 border-b border-surface-border">
+          <span className="text-xs font-semibold text-text-primary">Senaste transaktioner</span>
         </div>
         <div className="divide-y divide-gray-100">
           {recentTxns.length === 0 ? (
@@ -250,7 +253,7 @@ export function FinanceOverview() {
                     {isCredit ? '↑' : '↓'}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-gray-900 truncate">{tx.description}</p>
+                    <p className="text-xs text-text-primary truncate">{tx.description}</p>
                     <p className="text-[9px] text-gray-9000 font-mono mt-0.5">{tx.date} · {fe?.short_name}</p>
                   </div>
                   <span

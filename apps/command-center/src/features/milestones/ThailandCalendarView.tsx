@@ -18,7 +18,7 @@ const TYPE_COLORS = {
   work:    '#3B82F6',
   health:  '#10B981',
   social:  '#F59E0B',
-  travel:  '#8B5CF6',
+  travel:  '#2563EB',
   retreat: '#EC4899',
   free:    '#6B7280',
 }
@@ -112,7 +112,7 @@ const PROGRAM: DayProgram[] = [
     dayNum: 6,
     label: 'Resa Phuket / Kamala Beach',
     theme: 'PHUKET',
-    color: '#8B5CF6',
+    color: '#2563EB',
     icon: '🏖️',
     events: [
       { time: '10:00', activity: 'Flyg Bangkok → Phuket (ca 1h 20min)', type: 'travel' },
@@ -126,7 +126,7 @@ const PROGRAM: DayProgram[] = [
     dayNum: 7,
     label: 'Kamala Beach — Strategi',
     theme: 'PHUKET',
-    color: '#8B5CF6',
+    color: '#2563EB',
     icon: '📊',
     events: [
       { time: '08:00', activity: 'Morgonlöpning längs stranden', type: 'health' },
@@ -189,7 +189,7 @@ const PROGRAM: DayProgram[] = [
     dayNum: 11,
     label: 'Sprint-avslutning & Nästa steg',
     theme: 'PHUKET',
-    color: '#8B5CF6',
+    color: '#2563EB',
     icon: '🎯',
     events: [
       { time: '09:00', activity: 'Wavult OS final review — vad är klart, vad återstår', type: 'work' },
@@ -203,7 +203,7 @@ const PROGRAM: DayProgram[] = [
 
 const THEME_COLORS: Record<string, string> = {
   BANGKOK: '#3B82F6',
-  PHUKET: '#8B5CF6',
+  PHUKET: '#2563EB',
   RETREAT: '#EC4899',
 }
 
@@ -220,12 +220,12 @@ export function ThailandCalendarView() {
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">🇹🇭 Thailand Workcamp — April 2026</h1>
-          <p className="text-gray-500 text-sm mt-1">Fullständigt program: Bangkok → Phuket → Retreat → Launch</p>
+          <h1 className="text-xl font-bold text-text-primary">🇹🇭 Thailand Workcamp — April 2026</h1>
+          <p className="text-text-muted text-sm mt-1">Fullständigt program: Bangkok → Phuket → Retreat → Launch</p>
         </div>
         <div className="text-right">
           <div className="text-2xl font-bold text-signal-amber tabular-nums">{daysToStart}</div>
-          <div className="text-xs text-gray-500">dagar kvar</div>
+          <div className="text-xs text-text-muted">dagar kvar</div>
         </div>
       </div>
 
@@ -263,14 +263,14 @@ export function ThailandCalendarView() {
                 <span className="text-lg">{day.icon}</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-xs font-bold text-gray-900">Dag {day.dayNum}</span>
+                    <span className="text-xs font-bold text-text-primary">Dag {day.dayNum}</span>
                     <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full"
                       style={{ background: THEME_COLORS[day.theme] + '20', color: THEME_COLORS[day.theme] }}>
                       {day.theme}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-500 truncate">{day.label}</p>
-                  <p className="text-[9px] text-gray-500 font-mono mt-0.5">
+                  <p className="text-xs text-text-muted truncate">{day.label}</p>
+                  <p className="text-[9px] text-text-muted font-mono mt-0.5">
                     {new Date(day.date).toLocaleDateString('sv-SE', { weekday: 'short', day: 'numeric', month: 'short' })}
                   </p>
                 </div>
@@ -281,27 +281,27 @@ export function ThailandCalendarView() {
 
         {/* Day detail */}
         {selectedDay && (
-          <div className="lg:col-span-2 bg-white border border-gray-200 rounded-xl overflow-hidden">
+          <div className="lg:col-span-2 bg-white border border-surface-border rounded-xl overflow-hidden">
             {/* Header */}
-            <div className="px-5 py-4 border-b border-gray-200"
+            <div className="px-5 py-4 border-b border-surface-border"
               style={{ background: selectedDay.color + '10' }}>
               <div className="flex items-center gap-3">
                 <span className="text-2xl">{selectedDay.icon}</span>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h2 className="text-base font-bold text-gray-900">Dag {selectedDay.dayNum} — {selectedDay.label}</h2>
+                    <h2 className="text-base font-bold text-text-primary">Dag {selectedDay.dayNum} — {selectedDay.label}</h2>
                     <span className="text-[9px] font-mono px-2 py-0.5 rounded-full"
                       style={{ background: THEME_COLORS[selectedDay.theme] + '20', color: THEME_COLORS[selectedDay.theme] }}>
                       {selectedDay.theme}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-500 font-mono mt-0.5">
+                  <p className="text-xs text-text-muted font-mono mt-0.5">
                     {new Date(selectedDay.date).toLocaleDateString('sv-SE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
                   </p>
                 </div>
               </div>
               {selectedDay.notes && (
-                <div className="mt-3 text-xs text-gray-500 px-3 py-2 rounded-lg"
+                <div className="mt-3 text-xs text-text-muted px-3 py-2 rounded-lg"
                   style={{ background: selectedDay.color + '08', border: `1px solid ${selectedDay.color}20` }}>
                   {selectedDay.notes}
                 </div>
@@ -313,14 +313,14 @@ export function ThailandCalendarView() {
               {selectedDay.events.map((evt, i) => (
                 <div key={i} className="flex items-start gap-3 px-5 py-3">
                   <div className="flex-shrink-0 w-14 text-right">
-                    <span className="text-xs font-mono text-gray-500">{evt.time}</span>
+                    <span className="text-xs font-mono text-text-muted">{evt.time}</span>
                   </div>
                   <div
                     className="h-4 w-0.5 rounded-full flex-shrink-0 mt-0.5"
                     style={{ background: TYPE_COLORS[evt.type] }}
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-gray-900">{evt.activity}</p>
+                    <p className="text-sm text-text-primary">{evt.activity}</p>
                   </div>
                   <div className="flex items-center gap-1 flex-shrink-0">
                     <span>{TYPE_ICONS[evt.type]}</span>
@@ -344,10 +344,10 @@ export function ThailandCalendarView() {
           { label: 'Hälsoaktiviteter', value: PROGRAM.flatMap(d => d.events).filter(e => e.type === 'health').length, color: '#10B981', icon: '🏥' },
           { label: 'Sociala event', value: PROGRAM.flatMap(d => d.events).filter(e => e.type === 'social').length, color: '#F59E0B', icon: '🎉' },
         ].map(s => (
-          <div key={s.label} className="bg-white border border-gray-200 rounded-xl p-4 text-center">
+          <div key={s.label} className="bg-white border border-surface-border rounded-xl p-4 text-center">
             <div className="text-2xl mb-1">{s.icon}</div>
             <div className="text-2xl font-bold" style={{ color: s.color }}>{s.value}</div>
-            <div className="text-xs text-gray-500 mt-0.5">{s.label}</div>
+            <div className="text-xs text-text-muted mt-0.5">{s.label}</div>
           </div>
         ))}
       </div>

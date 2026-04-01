@@ -49,26 +49,26 @@ export function TaxView() {
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-lg font-bold text-gray-900">Moms &amp; Skatt</h2>
+        <h2 className="text-lg font-bold text-text-primary">Moms &amp; Skatt</h2>
         <p className="text-xs text-gray-9000 mt-0.5">Momsperioder per jurisdiktion — Wavult Group</p>
       </div>
 
       {/* Next VAT deadline reminder */}
-      <div className="rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 flex items-start gap-3">
-        <span className="text-gray-700 text-lg flex-shrink-0">📅</span>
+      <div className="rounded-xl border border-surface-border bg-muted/30 px-4 py-3 flex items-start gap-3">
+        <span className="text-text-secondary text-lg flex-shrink-0">📅</span>
         <div>
-          <p className="text-xs font-semibold text-gray-700">Nästa momsdeadline (SE)</p>
+          <p className="text-xs font-semibold text-text-secondary">Nästa momsdeadline (SE)</p>
           <p className="text-xs text-gray-700/70 mt-0.5">
-            Nästa svenska momsdeklaration: <strong className="text-gray-700">{deadlineStr}</strong>
+            Nästa svenska momsdeklaration: <strong className="text-text-secondary">{deadlineStr}</strong>
             {' '}— gäller tvåmånadersperioder för mindre bolag. Missa inte — förseningsavgift tillkommer.
           </p>
         </div>
       </div>
 
       {/* Swedish VAT rates explanation */}
-      <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
-        <div className="px-4 py-3 border-b border-gray-200">
-          <span className="text-xs font-semibold text-gray-900">🇸🇪 Svenska momssatser</span>
+      <div className="rounded-xl border border-surface-border bg-white overflow-hidden">
+        <div className="px-4 py-3 border-b border-surface-border">
+          <span className="text-xs font-semibold text-text-primary">🇸🇪 Svenska momssatser</span>
         </div>
         <div className="divide-y divide-gray-100">
           {[
@@ -80,7 +80,7 @@ export function TaxView() {
             <div key={row.rate} className="flex items-center gap-3 px-4 py-2.5">
               <span className="text-[15px] font-bold font-mono w-12 flex-shrink-0" style={{ color: row.color }}>{row.rate}</span>
               <div className="flex-1">
-                <span className="text-xs text-gray-900 font-semibold">{row.desc}</span>
+                <span className="text-xs text-text-primary font-semibold">{row.desc}</span>
                 <span className="text-xs text-gray-9000 ml-2">{row.examples}</span>
               </div>
             </div>
@@ -89,12 +89,12 @@ export function TaxView() {
       </div>
 
       {/* VAT MOSS / OSS */}
-      <div className="rounded-xl border border-purple-500/30 bg-purple-500/08 px-4 py-3">
-        <p className="text-xs font-semibold text-purple-300 mb-1">🌍 VAT OSS — digitala tjänster till EU-kunder</p>
-        <p className="text-xs text-purple-200/70 leading-relaxed">
+      <div className="rounded-xl border border-blue-600/30 bg-blue-600/08 px-4 py-3">
+        <p className="text-xs font-semibold text-blue-400 mb-1">🌍 VAT OSS — digitala tjänster till EU-kunder</p>
+        <p className="text-xs text-blue-200/70 leading-relaxed">
           Om ni säljer digitala tjänster (appar, SaaS, streaming) till privatpersoner i EU gäller
-          <strong className="text-purple-300"> OSS (One Stop Shop)</strong> — momsen betalas i köparens land.
-          Gräns: <strong className="text-purple-300">10 000 EUR/år</strong> i EU-försäljning.
+          <strong className="text-blue-400"> OSS (One Stop Shop)</strong> — momsen betalas i köparens land.
+          Gräns: <strong className="text-blue-400">10 000 EUR/år</strong> i EU-försäljning.
           Under gränsen: svensk moms. Över: registrera OSS hos Skatteverket.
         </p>
       </div>
@@ -116,9 +116,9 @@ export function TaxView() {
       </div>
 
       {/* Jurisdiction overview */}
-      <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
-        <div className="px-4 py-3 border-b border-gray-200">
-          <span className="text-xs font-semibold text-gray-900">Momssatser per jurisdiktion</span>
+      <div className="rounded-xl border border-surface-border bg-white overflow-hidden">
+        <div className="px-4 py-3 border-b border-surface-border">
+          <span className="text-xs font-semibold text-text-primary">Momssatser per jurisdiktion</span>
         </div>
         <div className="divide-y divide-gray-100">
           {availableJurisdictions.map(fe => {
@@ -128,7 +128,7 @@ export function TaxView() {
                 <span className="text-lg flex-shrink-0">{info.flag}</span>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold text-gray-900">{fe.jurisdiction}</span>
+                    <span className="text-xs font-semibold text-text-primary">{fe.jurisdiction}</span>
                     <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: fe.color }} />
                     <span className="text-[9px] font-mono text-gray-9000">{fe.shortName}</span>
                   </div>
@@ -142,9 +142,9 @@ export function TaxView() {
       </div>
 
       {/* Tax periods */}
-      <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
-        <div className="px-4 py-3 border-b border-gray-200">
-          <span className="text-xs font-semibold text-gray-900">Momsperioder</span>
+      <div className="rounded-xl border border-surface-border bg-white overflow-hidden">
+        <div className="px-4 py-3 border-b border-surface-border">
+          <span className="text-xs font-semibold text-text-primary">Momsperioder</span>
         </div>
 
         {/* Urgent unreported first */}
@@ -178,7 +178,7 @@ export function TaxView() {
             const isOverdue = tp.status === 'unreported' && tp.dueDate < new Date().toISOString().slice(0, 10)
             return (
               <div key={tp.id}
-                className={`grid grid-cols-12 px-4 py-3 items-center hover:bg-gray-50 transition-colors ${isUrgent ? 'border-l-2 border-red-500/50' : ''}`}
+                className={`grid grid-cols-12 px-4 py-3 items-center hover:bg-muted/30 transition-colors ${isUrgent ? 'border-l-2 border-red-500/50' : ''}`}
               >
                 <div className="col-span-2 flex items-center gap-1.5">
                   <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: fe?.color }} />
@@ -186,7 +186,7 @@ export function TaxView() {
                 </div>
                 <span className="col-span-2 text-xs text-gray-9000">{tp.jurisdiction}</span>
                 <span className="col-span-2 text-xs font-mono text-gray-600">{tp.period}</span>
-                <span className="col-span-1 text-right text-xs font-mono font-semibold text-gray-900">{tp.vatRate}%</span>
+                <span className="col-span-1 text-right text-xs font-mono font-semibold text-text-primary">{tp.vatRate}%</span>
                 <span className="col-span-2 text-right text-xs font-mono text-gray-9000">
                   {fmt(tp.taxableRevenue, tp.currency)}
                 </span>

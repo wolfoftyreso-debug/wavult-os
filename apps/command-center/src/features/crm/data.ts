@@ -97,7 +97,7 @@ export const STAGE_ORDER: CRMStage[] = [
 export const STAGE_COLORS: Record<CRMStage, string> = {
   Lead: '#6B7280',
   Kvalificerad: '#3B82F6',
-  'Demo/Möte': '#8B5CF6',
+  'Demo/Möte': '#2563EB',
   Offert: '#F59E0B',
   Förhandling: '#EF4444',
   Vunnen: '#10B981',
@@ -107,7 +107,7 @@ export const STAGE_COLORS: Record<CRMStage, string> = {
 export const PRODUCT_COLORS: Record<CRMProduct, string> = {
   quiXzoom: '#3B82F6',
   Landvex: '#10B981',
-  Hypbit: '#8B5CF6',
+  Hypbit: '#2563EB',
 }
 
 export const DEAL_STATUS_COLORS: Record<DealStatus, string> = {
@@ -130,7 +130,7 @@ export const ACTIVITY_ICONS: Record<ActivityType, string> = {
 export const TEAM_COLORS: Record<TeamMember, string> = {
   Leon: '#10B981',
   Dennis: '#F59E0B',
-  Erik: '#8B5CF6',
+  Erik: '#2563EB',
 }
 
 export function formatSEK(value: number): string {

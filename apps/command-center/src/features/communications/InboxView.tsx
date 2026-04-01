@@ -18,7 +18,7 @@ const MOCK_MESSAGES: Message[] = [
     id: 'msg-001',
     from: 'Erik Svensson',
     fromInitials: 'ES',
-    fromColor: '#8B5CF6',
+    fromColor: '#2563EB',
     to: 'Leon Russo De Cerame',
     subject: 'QuixZoom launch timeline — vecka 15',
     body: 'Hej Leon,\n\nVi behöver låsa in lanseringsdatumet för QuixZoom Thailand. Jag föreslår att vi kör soft launch 14 april, dag 3 av workcampen. Kan du säkerställa att säljmaterialet är klart?\n\nErik',
@@ -73,7 +73,7 @@ const MOCK_MESSAGES: Message[] = [
     id: 'msg-006',
     from: 'Erik Svensson',
     fromInitials: 'ES',
-    fromColor: '#8B5CF6',
+    fromColor: '#2563EB',
     to: 'Winston Bjarnemark',
     subject: 'Stripe — payment volume Q1',
     body: 'Winston,\n\nKan du ta fram Stripe-rapport för Q1? Jag behöver: total volym, failed payments, chargeback-rate. Ska in i Q1-board report.\n\nErik',
@@ -136,7 +136,7 @@ export function InboxView() {
       id: `msg-${Date.now()}`,
       from: 'Erik Svensson',
       fromInitials: 'ES',
-      fromColor: '#8B5CF6',
+      fromColor: '#2563EB',
       to: form.to,
       subject: form.subject,
       body: form.body,
@@ -152,27 +152,22 @@ export function InboxView() {
 
   return (
     <div className="flex flex-col h-full gap-4">
-      {/* MOCKDATA BANNER */}
-      <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-yellow-500/10 border border-yellow-500/25 text-yellow-700 text-xs font-medium flex-shrink-0">
-        <span>⚠️</span>
-        <span>Visar mockdata — live IMAP kopplas in i fas 2</span>
-        <span className="ml-auto text-yellow-600 font-mono text-xs">SMTP ut: live via Loopia · IMAP in: ej konfigurerat</span>
-      </div>
+
       <div className="flex h-full gap-4">
       {/* Message list */}
       <div className="flex flex-col flex-shrink-0 w-[400px]">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <h2 className="text-sm font-semibold text-gray-900">Inkorg</h2>
+            <h2 className="text-sm font-semibold text-text-primary">Inkorg</h2>
             {unreadCount > 0 && (
-              <span className="text-xs font-bold px-1.5 py-0.5 rounded-full bg-blue-500 text-gray-900">
+              <span className="text-xs font-bold px-1.5 py-0.5 rounded-full bg-blue-500 text-text-primary">
                 {unreadCount}
               </span>
             )}
           </div>
           <button
             onClick={() => setShowCompose(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-purple-50 text-purple-700 border border-purple-200 hover:bg-brand-accent/25 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200 hover:bg-brand-accent/25 transition-colors"
           >
             ✏️ Nytt meddelande
           </button>
@@ -185,9 +180,9 @@ export function InboxView() {
               onClick={() => openMessage(msg)}
               className={`w-full text-left px-3 py-3 rounded-xl border transition-all ${
                 selected?.id === msg.id
-                  ? 'bg-purple-50 border-purple-200'
+                  ? 'bg-blue-50 border-blue-200'
                   : msg.read
-                  ? 'bg-white border-gray-200 hover:border-gray-200'
+                  ? 'bg-white border-surface-border hover:border-gray-200'
                   : 'bg-white border-blue-500/20 hover:border-blue-500/40'
               }`}
             >
@@ -224,11 +219,11 @@ export function InboxView() {
       </div>
 
       {/* Message detail / Compose */}
-      <div className="flex-1 bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="flex-1 bg-white rounded-xl border border-surface-border overflow-hidden">
         {showCompose ? (
           <div className="p-5 h-full flex flex-col">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-gray-900">Nytt meddelande</h3>
+              <h3 className="text-sm font-semibold text-text-primary">Nytt meddelande</h3>
               <button onClick={() => setShowCompose(false)} className="text-gray-9000 hover:text-gray-600 text-lg leading-none">×</button>
             </div>
             <div className="space-y-3 flex-1 flex flex-col">
@@ -237,7 +232,7 @@ export function InboxView() {
                 <select
                   value={form.to}
                   onChange={e => setForm(f => ({ ...f, to: e.target.value }))}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 focus:outline-none focus:border-brand-accent/50"
+                  className="w-full bg-muted/30 border border-surface-border rounded-lg px-3 py-2 text-xs text-text-primary focus:outline-none focus:border-brand-accent/50"
                 >
                   <option value="">Välj mottagare…</option>
                   {TEAM_MEMBERS.map(m => (
@@ -251,7 +246,7 @@ export function InboxView() {
                   value={form.subject}
                   onChange={e => setForm(f => ({ ...f, subject: e.target.value }))}
                   placeholder="Ämnesrad…"
-                  className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 placeholder-gray-600 focus:outline-none focus:border-brand-accent/50"
+                  className="w-full bg-muted/30 border border-surface-border rounded-lg px-3 py-2 text-xs text-text-primary placeholder-gray-600 focus:outline-none focus:border-brand-accent/50"
                 />
               </div>
               <div className="flex-1 flex flex-col">
@@ -260,12 +255,12 @@ export function InboxView() {
                   value={form.body}
                   onChange={e => setForm(f => ({ ...f, body: e.target.value }))}
                   placeholder="Skriv ditt meddelande…"
-                  className="flex-1 w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-900 placeholder-gray-600 focus:outline-none focus:border-brand-accent/50 resize-none"
+                  className="flex-1 w-full bg-muted/30 border border-surface-border rounded-lg px-3 py-2 text-xs text-text-primary placeholder-gray-600 focus:outline-none focus:border-brand-accent/50 resize-none"
                 />
               </div>
               <button
                 onClick={sendMessage}
-                className="self-end px-5 py-2 rounded-lg text-xs font-medium bg-brand-accent text-gray-900 hover:bg-brand-accent/90 transition-colors"
+                className="self-end px-5 py-2 rounded-lg text-xs font-medium bg-brand-accent text-text-primary hover:bg-brand-accent/90 transition-colors"
               >
                 Skicka →
               </button>
@@ -282,7 +277,7 @@ export function InboxView() {
               </div>
               <div className="flex-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-[14px] font-semibold text-gray-900">{selected.from}</span>
+                  <span className="text-[14px] font-semibold text-text-primary">{selected.from}</span>
                   <span className="text-xs text-gray-9000 font-mono">
                     {new Date(selected.timestamp).toLocaleString('sv-SE')}
                   </span>
@@ -290,17 +285,17 @@ export function InboxView() {
                 <div className="text-xs text-gray-9000">Till: {selected.to}</div>
               </div>
             </div>
-            <h2 className="text-[15px] font-bold text-gray-900 mb-4">{selected.subject}</h2>
+            <h2 className="text-[15px] font-bold text-text-primary mb-4">{selected.subject}</h2>
             <div className="text-xs text-gray-600 leading-relaxed whitespace-pre-line">
               {selected.body}
             </div>
-            <div className="mt-5 pt-4 border-t border-gray-200">
+            <div className="mt-5 pt-4 border-t border-surface-border">
               <button
                 onClick={() => {
                   setForm({ to: selected.from, subject: `Re: ${selected.subject}`, body: '' })
                   setShowCompose(true)
                 }}
-                className="text-xs text-purple-700 hover:text-purple-700/80 font-medium transition-colors"
+                className="text-xs text-blue-700 hover:text-blue-700/80 font-medium transition-colors"
               >
                 ↩ Svara
               </button>
