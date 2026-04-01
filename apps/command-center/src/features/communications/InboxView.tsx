@@ -1,315 +1,209 @@
-import { useState } from 'react'
-import { useTranslation } from '../../shared/i18n/useTranslation'
+import { useState, useEffect, useCallback } from 'react'
+import { RefreshCw, Mail, AlertCircle, Inbox } from 'lucide-react'
 
-interface Message {
+const API_BASE = (import.meta as Record<string, unknown> & { env?: Record<string, string> }).env?.VITE_API_URL ?? 'https://api.wavult.com'
+
+interface EmailSummary {
   id: string
+  uid: string
   from: string
-  fromInitials: string
-  fromColor: string
-  to: string
   subject: string
-  body: string
-  timestamp: string
+  date: string
   read: boolean
+  snippet: string
 }
 
-const MOCK_MESSAGES: Message[] = [
-  {
-    id: 'msg-001',
-    from: 'Erik Svensson',
-    fromInitials: 'ES',
-    fromColor: '#2563EB',
-    to: 'Leon Russo De Cerame',
-    subject: 'QuixZoom launch timeline — vecka 15',
-    body: 'Hej Leon,\n\nVi behöver låsa in lanseringsdatumet för QuixZoom Thailand. Jag föreslår att vi kör soft launch 14 april, dag 3 av workcampen. Kan du säkerställa att säljmaterialet är klart?\n\nErik',
-    timestamp: '2026-03-26T09:14:00Z',
-    read: false,
-  },
-  {
-    id: 'msg-002',
-    from: 'Winston Bjarnemark',
-    fromInitials: 'WB',
-    fromColor: '#3B82F6',
-    to: 'Erik Svensson',
-    subject: 'Revolut Business — KYC godkänt',
-    body: 'Erik,\n\nRevolut har godkänt KYC för Wavult Operations Ltd. Vi kan nu ta emot EUR-betalningar. Ska jag sätta upp automatisk sweeping till holding?\n\nWinston',
-    timestamp: '2026-03-26T08:30:00Z',
-    read: false,
-  },
-  {
-    id: 'msg-003',
-    from: 'Johan Berglund',
-    fromInitials: 'JB',
-    fromColor: '#06B6D4',
-    to: 'Erik Svensson',
-    subject: 'AWS ECS deployment — wavult-api v1.4.2',
-    body: 'Hej,\n\nDeployade wavult-api v1.4.2 till ECS igår kväll. Allt ser stabilt ut, latens nere på 89ms p99. En liten timeout-bugg fixad i payment webhook handler.\n\nJohan',
-    timestamp: '2026-03-25T22:05:00Z',
-    read: true,
-  },
-  {
-    id: 'msg-004',
-    from: 'Dennis Bjarnemark',
-    fromInitials: 'DB',
-    fromColor: '#F59E0B',
-    to: 'Erik Svensson',
-    subject: 'Avtal Litauen UAB — revidering klart',
-    body: 'Erik,\n\nJag har reviderat bolagsavtalet för UAB:n. Tre punkter behöver din signatur innan vi skickar till notarien. Kan vi ta ett 30min-möte imorgon?\n\nDennis',
-    timestamp: '2026-03-25T16:45:00Z',
-    read: true,
-  },
-  {
-    id: 'msg-005',
-    from: 'Leon Russo De Cerame',
-    fromInitials: 'LR',
-    fromColor: '#10B981',
-    to: 'Erik Svensson',
-    subject: 'Re: QuixZoom launch timeline — vecka 15',
-    body: 'Erik,\n\nKlart! Säljmaterialet är 90% klart. Pitchdeck, prislista och onboarding-guide är klara. Jobbar på case studies nu. Soft launch 14 april funkar.\n\nLeon',
-    timestamp: '2026-03-25T14:20:00Z',
-    read: true,
-  },
-  {
-    id: 'msg-006',
-    from: 'Erik Svensson',
-    fromInitials: 'ES',
-    fromColor: '#2563EB',
-    to: 'Winston Bjarnemark',
-    subject: 'Stripe — payment volume Q1',
-    body: 'Winston,\n\nKan du ta fram Stripe-rapport för Q1? Jag behöver: total volym, failed payments, chargeback-rate. Ska in i Q1-board report.\n\nErik',
-    timestamp: '2026-03-25T11:00:00Z',
-    read: true,
-  },
-  {
-    id: 'msg-007',
-    from: 'Johan Berglund',
-    fromInitials: 'JB',
-    fromColor: '#06B6D4',
-    to: 'Leon Russo De Cerame',
-    subject: 'Zoomer API-dokumentation — utkast',
-    body: 'Leon,\n\nBifogat är utkast på Zoomer API-dokumentation. Den täcker autentisering, uppdragsskapande och bildleverans. Feedback välkommen innan vi publicerar externt.\n\nJohan',
-    timestamp: '2026-03-24T13:30:00Z',
-    read: true,
-  },
-  {
-    id: 'msg-008',
-    from: 'Winston Bjarnemark',
-    fromInitials: 'WB',
-    fromColor: '#3B82F6',
-    to: 'Dennis Bjarnemark',
-    subject: 'Moms-registrering Sverige — status',
-    body: 'Dennis,\n\nF-skattsedel inlämnad till Skatteverket 20 mars. Väntar på bekräftelse. Momsreg bör vara klar inom 2 veckor. Ingenting att agera på just nu.\n\nWinston',
-    timestamp: '2026-03-24T09:15:00Z',
-    read: true,
-  },
-]
-
-interface NewMessageForm {
-  to: string
-  subject: string
-  body: string
+function relTime(dateStr: string): string {
+  if (!dateStr) return ''
+  try {
+    const d = new Date(dateStr)
+    if (isNaN(d.getTime())) return dateStr
+    const diff = Date.now() - d.getTime()
+    const h = Math.floor(diff / 3_600_000)
+    if (h < 1) return 'just nu'
+    if (h < 24) return `${h}h sedan`
+    return d.toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' })
+  } catch { return dateStr }
 }
 
-const TEAM_MEMBERS = [
-  'Erik Svensson',
-  'Leon Russo De Cerame',
-  'Winston Bjarnemark',
-  'Johan Berglund',
-  'Dennis Bjarnemark',
-]
+function extractDisplayName(from: string): string {
+  if (!from) return '—'
+  const m = from.match(/^"?([^"<]+)"?\s*</)
+  return m ? m[1].trim() : from.replace(/<[^>]+>/, '').trim() || from
+}
+
+function initials(name: string): string {
+  return name.split(/\s+/).map(w => w[0]).join('').toUpperCase().slice(0, 2)
+}
+
+const AVATAR_COLORS = ['#2563EB', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4', '#EC4899']
+function avatarColor(str: string): string {
+  let h = 0
+  for (let i = 0; i < str.length; i++) h = str.charCodeAt(i) + ((h << 5) - h)
+  return AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length]
+}
 
 export function InboxView() {
-  const { t: _t } = useTranslation() // ready for i18n
-  const [messages, setMessages] = useState<Message[]>(MOCK_MESSAGES)
-  const [selected, setSelected] = useState<Message | null>(null)
-  const [showCompose, setShowCompose] = useState(false)
-  const [form, setForm] = useState<NewMessageForm>({ to: '', subject: '', body: '' })
+  const [emails, setEmails] = useState<EmailSummary[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [selected, setSelected] = useState<EmailSummary | null>(null)
 
-  function openMessage(msg: Message) {
-    setSelected(msg)
-    setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, read: true } : m))
-  }
-
-  function sendMessage() {
-    if (!form.to || !form.subject || !form.body) return
-    const newMsg: Message = {
-      id: `msg-${Date.now()}`,
-      from: 'Erik Svensson',
-      fromInitials: 'ES',
-      fromColor: '#2563EB',
-      to: form.to,
-      subject: form.subject,
-      body: form.body,
-      timestamp: new Date().toISOString(),
-      read: true,
+  const fetchInbox = useCallback(async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const r = await fetch(`${API_BASE}/api/communications/inbox`, {
+        signal: AbortSignal.timeout(20_000),
+      })
+      if (!r.ok) throw new Error(`HTTP ${r.status}`)
+      const data = await r.json() as { emails: EmailSummary[]; count: number }
+      setEmails(data.emails ?? [])
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Kunde inte hämta mail')
+    } finally {
+      setLoading(false)
     }
-    setMessages(prev => [newMsg, ...prev])
-    setForm({ to: '', subject: '', body: '' })
-    setShowCompose(false)
-  }
+  }, [])
 
-  const unreadCount = messages.filter(m => !m.read).length
+  useEffect(() => { fetchInbox() }, [fetchInbox])
+
+  const unread = emails.filter(e => !e.read).length
 
   return (
-    <div className="flex flex-col h-full gap-4">
-
-      <div className="flex h-full gap-4">
-      {/* Message list */}
-      <div className="flex flex-col flex-shrink-0 w-[400px]">
-        <div className="flex items-center justify-between mb-3">
+    <div className="flex h-full gap-4">
+      {/* Sidebar */}
+      <div className="w-80 flex-shrink-0 flex flex-col gap-0 bg-neutral-900 border border-white/10 rounded-xl overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
           <div className="flex items-center gap-2">
-            <h2 className="text-sm font-semibold text-text-primary">Inkorg</h2>
-            {unreadCount > 0 && (
-              <span className="text-xs font-bold px-1.5 py-0.5 rounded-full bg-blue-500 text-text-primary">
-                {unreadCount}
+            <Inbox size={14} className="text-blue-400" />
+            <span className="text-xs font-semibold text-white">Inkorg</span>
+            {unread > 0 && (
+              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">
+                {unread}
               </span>
             )}
           </div>
           <button
-            onClick={() => setShowCompose(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200 hover:bg-brand-accent/25 transition-colors"
+            onClick={fetchInbox}
+            disabled={loading}
+            className="text-white/30 hover:text-white/60 transition-colors"
           >
-            ✏️ Nytt meddelande
+            <RefreshCw size={12} className={loading ? 'animate-spin' : ''} />
           </button>
         </div>
 
-        <div className="space-y-1.5 overflow-auto flex-1">
-          {messages.map(msg => (
-            <button
-              key={msg.id}
-              onClick={() => openMessage(msg)}
-              className={`w-full text-left px-3 py-3 rounded-xl border transition-all ${
-                selected?.id === msg.id
-                  ? 'bg-blue-50 border-blue-200'
-                  : msg.read
-                  ? 'bg-white border-surface-border hover:border-gray-200'
-                  : 'bg-white border-blue-500/20 hover:border-blue-500/40'
-              }`}
-            >
-              <div className="flex items-start gap-2.5">
-                <div
-                  className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5"
-                  style={{ background: msg.fromColor + '25', color: msg.fromColor }}
+        {/* List */}
+        <div className="flex-1 overflow-y-auto">
+          {loading && emails.length === 0 ? (
+            <div className="p-4 space-y-3">
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="flex gap-3 items-start animate-pulse">
+                  <div className="w-8 h-8 rounded-full bg-white/10 flex-shrink-0" />
+                  <div className="flex-1 space-y-1.5">
+                    <div className="h-3 bg-white/10 rounded w-3/4" />
+                    <div className="h-2 bg-white/5 rounded w-full" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : error ? (
+            <div className="p-4 flex flex-col items-center gap-3 text-center">
+              <AlertCircle size={20} className="text-red-400" />
+              <p className="text-xs text-red-400">{error}</p>
+              <button onClick={fetchInbox} className="text-xs text-white/40 hover:text-white/60">Försök igen</button>
+            </div>
+          ) : emails.length === 0 ? (
+            <div className="p-8 flex flex-col items-center gap-3 text-center">
+              <Mail size={24} className="text-white/20" />
+              <p className="text-xs text-white/30">Inga mail i inkorgen</p>
+            </div>
+          ) : (
+            emails.map(email => {
+              const name = extractDisplayName(email.from)
+              const color = avatarColor(email.from)
+              const isSelected = selected?.id === email.id
+              return (
+                <button
+                  key={email.id}
+                  onClick={() => setSelected(email)}
+                  className={`w-full text-left flex items-start gap-3 px-4 py-3 border-b border-white/5 transition-colors ${
+                    isSelected ? 'bg-blue-500/10 border-l-2 border-l-blue-500' : 'hover:bg-white/5'
+                  }`}
                 >
-                  {msg.fromInitials}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className={`text-xs font-medium truncate ${!msg.read ? 'text-gray-900' : 'text-gray-600'}`}>
-                      {msg.from}
-                    </span>
-                    <span className="text-xs text-gray-9000 flex-shrink-0 font-mono">
-                      {new Date(msg.timestamp).toLocaleDateString('sv-SE', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                    </span>
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                    style={{ background: color + '25', color, border: `1px solid ${color}40` }}
+                  >
+                    {initials(name)}
                   </div>
-                  <div className={`text-xs truncate ${!msg.read ? 'text-gray-800 font-medium' : 'text-gray-9000'}`}>
-                    {msg.subject}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-1 mb-0.5">
+                      <span className={`text-xs truncate ${email.read ? 'text-white/50' : 'text-white font-semibold'}`}>
+                        {name}
+                      </span>
+                      <span className="text-[10px] text-white/20 font-mono flex-shrink-0">{relTime(email.date)}</span>
+                    </div>
+                    <p className={`text-xs truncate ${email.read ? 'text-white/30' : 'text-white/60'}`}>
+                      {email.subject || '(inget ämne)'}
+                    </p>
                   </div>
-                  <div className="text-xs text-gray-9000 truncate mt-0.5">
-                    Till: {msg.to}
-                  </div>
-                </div>
-                {!msg.read && (
-                  <div className="w-1.5 h-1.5 rounded-full bg-blue-400 flex-shrink-0 mt-2" />
-                )}
-              </div>
-            </button>
-          ))}
+                  {!email.read && <span className="w-1.5 h-1.5 rounded-full bg-blue-400 flex-shrink-0 mt-1.5" />}
+                </button>
+              )
+            })
+          )}
         </div>
       </div>
 
-      {/* Message detail / Compose */}
-      <div className="flex-1 bg-white rounded-xl border border-surface-border overflow-hidden">
-        {showCompose ? (
-          <div className="p-5 h-full flex flex-col">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-text-primary">Nytt meddelande</h3>
-              <button onClick={() => setShowCompose(false)} className="text-gray-9000 hover:text-gray-600 text-lg leading-none">×</button>
-            </div>
-            <div className="space-y-3 flex-1 flex flex-col">
-              <div>
-                <label className="text-xs text-gray-9000 font-mono uppercase tracking-wider mb-1 block">Till</label>
-                <select
-                  value={form.to}
-                  onChange={e => setForm(f => ({ ...f, to: e.target.value }))}
-                  className="w-full bg-muted/30 border border-surface-border rounded-lg px-3 py-2 text-xs text-text-primary focus:outline-none focus:border-brand-accent/50"
-                >
-                  <option value="">Välj mottagare…</option>
-                  {TEAM_MEMBERS.map(m => (
-                    <option key={m} value={m}>{m}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="text-xs text-gray-9000 font-mono uppercase tracking-wider mb-1 block">Ämne</label>
-                <input
-                  value={form.subject}
-                  onChange={e => setForm(f => ({ ...f, subject: e.target.value }))}
-                  placeholder="Ämnesrad…"
-                  className="w-full bg-muted/30 border border-surface-border rounded-lg px-3 py-2 text-xs text-text-primary placeholder-gray-600 focus:outline-none focus:border-brand-accent/50"
-                />
-              </div>
-              <div className="flex-1 flex flex-col">
-                <label className="text-xs text-gray-9000 font-mono uppercase tracking-wider mb-1 block">Meddelande</label>
-                <textarea
-                  value={form.body}
-                  onChange={e => setForm(f => ({ ...f, body: e.target.value }))}
-                  placeholder="Skriv ditt meddelande…"
-                  className="flex-1 w-full bg-muted/30 border border-surface-border rounded-lg px-3 py-2 text-xs text-text-primary placeholder-gray-600 focus:outline-none focus:border-brand-accent/50 resize-none"
-                />
-              </div>
-              <button
-                onClick={sendMessage}
-                className="self-end px-5 py-2 rounded-lg text-xs font-medium bg-brand-accent text-text-primary hover:bg-brand-accent/90 transition-colors"
-              >
-                Skicka →
-              </button>
-            </div>
-          </div>
-        ) : selected ? (
-          <div className="p-5 h-full overflow-auto">
-            <div className="flex items-start gap-3 mb-5">
-              <div
-                className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
-                style={{ background: selected.fromColor + '25', color: selected.fromColor }}
-              >
-                {selected.fromInitials}
-              </div>
+      {/* Detail pane */}
+      <div className="flex-1 bg-neutral-900 border border-white/10 rounded-xl overflow-hidden">
+        {selected ? (
+          <div className="p-6 h-full overflow-auto">
+            <div className="flex items-start gap-4 mb-6">
+              {(() => {
+                const name = extractDisplayName(selected.from)
+                const color = avatarColor(selected.from)
+                return (
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
+                    style={{ background: color + '25', color, border: `1px solid ${color}40` }}
+                  >
+                    {initials(name)}
+                  </div>
+                )
+              })()}
               <div className="flex-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-[14px] font-semibold text-text-primary">{selected.from}</span>
-                  <span className="text-xs text-gray-9000 font-mono">
-                    {new Date(selected.timestamp).toLocaleString('sv-SE')}
-                  </span>
+                  <span className="text-sm font-semibold text-white">{extractDisplayName(selected.from)}</span>
+                  <span className="text-xs text-white/30 font-mono">{selected.date}</span>
                 </div>
-                <div className="text-xs text-gray-9000">Till: {selected.to}</div>
+                <div className="text-xs text-white/30">{selected.from}</div>
               </div>
             </div>
-            <h2 className="text-[15px] font-bold text-text-primary mb-4">{selected.subject}</h2>
-            <div className="text-xs text-gray-600 leading-relaxed whitespace-pre-line">
-              {selected.body}
-            </div>
-            <div className="mt-5 pt-4 border-t border-surface-border">
-              <button
-                onClick={() => {
-                  setForm({ to: selected.from, subject: `Re: ${selected.subject}`, body: '' })
-                  setShowCompose(true)
-                }}
-                className="text-xs text-blue-700 hover:text-blue-700/80 font-medium transition-colors"
+            <h2 className="text-base font-bold text-white mb-4">{selected.subject || '(inget ämne)'}</h2>
+            <div className="text-xs text-white/50 bg-white/5 rounded-xl p-4">
+              Öppna detta mail i Loopia Webmail för att läsa hela innehållet.
+              <br /><br />
+              <a
+                href="https://webmail.loopia.se"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:text-blue-300 transition-colors"
               >
-                ↩ Svara
-              </button>
+                Öppna Loopia Webmail →
+              </a>
             </div>
           </div>
         ) : (
           <div className="h-full flex items-center justify-center">
             <div className="text-center">
-              <div className="text-4xl mb-3">📬</div>
-              <p className="text-gray-9000 text-xs">Välj ett meddelande för att läsa det</p>
+              <Mail size={32} className="text-white/10 mx-auto mb-3" />
+              <p className="text-xs text-white/20">Välj ett mail för att läsa det</p>
             </div>
           </div>
         )}
-      </div>
       </div>
     </div>
   )

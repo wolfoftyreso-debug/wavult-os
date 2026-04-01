@@ -84,6 +84,9 @@ const DatabaseManager        = lazy(() => import('./features/database/DatabaseMa
 const DomainManager          = lazy(() => import('./features/domains/DomainManager').then(m => ({ default: m.DomainManager })))
 const N8NManager             = lazy(() => import('./features/automation/N8NManager').then(m => ({ default: m.N8NManager })))
 const InfraMonitor           = lazy(() => import('./features/infrastructure/InfraMonitor').then(m => ({ default: m.InfraMonitor })))
+const MediaPipelineView      = lazy(() => import('./features/media-pipeline/MediaPipelineView').then(m => ({ default: m.MediaPipelineView })))
+const BerntWidget            = lazy(() => import('./features/bernt/BerntWidget').then(m => ({ default: m.BerntWidget })))
+const AgentCommandPanel      = lazy(() => import('./features/agent/AgentCommandPanel').then(m => ({ default: m.AgentCommandPanel })))
 
 // ─── Page loader fallback ───────────────────────────────────────────────────────
 function PageLoader() {
@@ -219,6 +222,9 @@ function AuthenticatedApp() {
               <Route path="/domains" element={<DomainManager />} />
               <Route path="/automation" element={<N8NManager />} />
               <Route path="/infra-monitor" element={<InfraMonitor />} />
+              <Route path="/media-pipeline" element={<MediaPipelineView />} />
+              <Route path="/bernt" element={<BerntWidget />} />
+              <Route path="/agent" element={<AgentCommandPanel />} />
             </Routes>
           </Suspense>
         </Shell>

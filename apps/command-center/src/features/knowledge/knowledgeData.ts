@@ -705,7 +705,7 @@ Alla services körs som ECS Fargate tasks i cluster "wavult" (eu-north-1):
 
 ### Infrastruktur-detaljer
 
-**ECS Cluster:** hypbit (eu-north-1, AWS account 155407238699)  
+**ECS Cluster:** wavult (eu-north-1, AWS account 155407238699)  
 **Task definition:** quixzoom-api:6 (senaste, fixades 2026-03-27 — SUPABASE_SERVICE_KEY saknades)  
 **ALB:** wavult-api-alb, priority 20, host api.quixzoom.com → quixzoom-api-tg  
 **ACM cert:** api.quixzoom.com + app.quixzoom.com + quixzoom.com (eu-north-1, ISSUED)  
@@ -1287,7 +1287,7 @@ Wavult Groups infrastruktur bygger på fyra grundprinciper:
 
 ### AWS (Account: 155407238699, Region: eu-north-1)
 
-**ECS Cluster: hypbit**
+**ECS Cluster: wavult**
 
 | Service | Task Definition | Status | URL |
 |---|---|---|---|
@@ -2948,7 +2948,7 @@ Ingenting mer. Principle of least privilege.
 ### Vanliga kommandon
 
 git clone git@github.com:wolfoftyreso-debug/wavult-os.git
-cd hypbit
+cd wavult-os
 git checkout -b feature/mitt-feature
 
 # Jobba, committa

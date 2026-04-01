@@ -1,4 +1,8 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import {
+  Server, Globe, GitBranch, Activity, RefreshCw, CheckCircle,
+  AlertTriangle, XCircle, Clock, TrendingUp, Zap, Database,
+} from 'lucide-react'
 import { ThailandCountdown } from '../thailand/ThailandCountdown'
 import { TeamStatusWidget } from '../team/TeamStatusWidget'
 import { ProjectProgressWidget } from '../projects/ProjectProgressWidget'
@@ -6,494 +10,392 @@ import { QuickLinksWidget } from '../quicklinks/QuickLinksWidget'
 import { HealthOverviewWidget } from '../entity/HealthOverviewWidget'
 import { RevenueDashboard } from './RevenueDashboard'
 
-// ─── Mock Data ─────────────────────────────────────────────────────────────────
+const API_BASE = (import.meta as Record<string, unknown> & { env?: Record<string, string> }).env?.VITE_API_URL ?? 'https://api.wavult.com'
 
-const SYSTEM_STATUS = [
-  { name: 'wavult-api', service: 'ECS', env: 'eu-north-1', status: 'healthy', uptime: 99.8, latency: 42, lastCheck: '30s ago' },
-  { name: 'quixzoom-frontend', service: 'CloudFront', env: 'Global', status: 'healthy', uptime: 100, latency: 18, lastCheck: '1m ago' },
-  { name: 'optical-insight-eu', service: 'CF Pages', env: 'Edge', status: 'degraded', uptime: 0, latency: 0, lastCheck: 'pending deploy' },
-  { name: 'wavult-db', service: 'Supabase', env: 'eu-north-1', status: 'healthy', uptime: 99.7, latency: 11, lastCheck: '45s ago' },
-  { name: 'cf-workers', service: 'Cloudflare', env: 'Global', status: 'degraded', uptime: 97.2, latency: 89, lastCheck: '2m ago' },
-]
+// ─── Types ────────────────────────────────────────────────────────────────────
 
-const TEAM_ACTIVITY = [
-  { name: 'Erik Svensson',             role: 'Chairman & Group CEO',      task: 'Systembygge, strategi & marknadsföring', status: 'active',  since: '11:00', color: '#2563EB' },
-  { name: 'Leon Russo De Cerame',      role: 'CEO – Sälj & Execution',    task: 'Hela säljavdelningen · Q1 execution',                   status: 'active',  since: '09:00', color: '#10B981' },
-  { name: 'Winston Bjarnemark',        role: 'CFO',                       task: 'Ekonomisk infrastruktur · betafärdiga system',        status: 'active',  since: '09:15', color: '#3B82F6' },
-  { name: 'Dennis Bjarnemark',         role: 'Board / Chief Legal',       task: 'Bolagsjuridik · avtal · dokument',                status: 'idle',    since: '08:45', color: '#F59E0B' },
-  { name: 'Johan Berglund',            role: 'Group CTO',                 task: 'Drift · konton/APIer · support · rapporter',         status: 'active',  since: '10:30', color: '#06B6D4' },
-]
+interface ECSService { name: string; running: number; desired: number; status: 'running' | 'degraded' | 'stopped' }
+interface DomainStatus { name: string; status: string; ns?: string }
+interface Repo { id: string; name: string; fullName: string; pushedAt: string | null; source: string; private: boolean }
+interface VentureStats { total?: number; active?: number; entities?: number }
 
-const QUICK_LINKS = [
-  { name: 'AWS Console', url: 'https://console.aws.amazon.com', icon: '☁️', color: '#FF9900', sub: 'eu-north-1 · ECS' },
-  { name: 'Supabase', url: 'https://supabase.com/dashboard', icon: '🗄️', color: '#3ECF8E', sub: 'hypbit project' },
-  { name: 'GitHub', url: 'https://github.com/wolfoftyreso-debug', icon: '🐙', color: '#888', sub: 'wolfoftyreso-debug' },
-  { name: 'Stripe', url: 'https://dashboard.stripe.com', icon: '💳', color: '#635BFF', sub: 'Payments' },
-  { name: 'Cloudflare', url: 'https://dash.cloudflare.com', icon: '🔥', color: '#F6821F', sub: '2 zones active' },
-  { name: 'Loopia Mail', url: 'https://webmail.loopia.se', icon: '✉️', color: '#007AFF', sub: 'erik@wavult.com' },
-]
-
-const GITHUB_RUNS = [
-  { repo: 'wavult', workflow: 'Deploy API to ECS', status: 'success', branch: 'main', actor: 'winston', time: '14 min ago', duration: '3m 22s' },
-  { repo: 'wavult', workflow: 'TypeScript Check', status: 'success', branch: 'feat/crm-views', actor: 'johan', time: '1h ago', duration: '1m 8s' },
-  { repo: 'wavult', workflow: 'Deploy API to ECS', status: 'failure', branch: 'main', actor: 'erik', time: '3h ago', duration: '2m 51s' },
-  { repo: 'quixzoom-landing', workflow: 'CF Pages Deploy', status: 'success', branch: 'main', actor: 'johan', time: '5h ago', duration: '52s' },
-  { repo: 'wavult', workflow: 'Lint + Test', status: 'success', branch: 'feat/sales-dash', actor: 'johan', time: '6h ago', duration: '48s' },
-]
-
-// ─── Mock uptime data (24h, one point per hour) ────────────────────────────────
-const UPTIME_POINTS = Array.from({ length: 24 }, (_, i) => {
-  const hour = (new Date().getHours() - 23 + i + 24) % 24
-  const base = 100
-  const noise = i === 8 ? -8 : i === 15 ? -3 : Math.random() * 0.6 - 0.3
-  return { hour, value: Math.min(100, base + noise) }
-})
-
-// ─── Colors ────────────────────────────────────────────────────────────────────
-const STATUS_COLOR: Record<string, string> = {
-  healthy: '#34C759',
-  degraded: '#FF9500',
-  down: '#FF3B30',
+interface InfraData {
+  cluster: string
+  services: ECSService[]
+  domains: DomainStatus[]
+  timestamp: string
 }
 
-const RUN_COLOR: Record<string, string> = {
-  success: '#34C759',
-  failure: '#FF3B30',
-  running: '#007AFF',
-  cancelled: '#8E8E93',
-}
+// ─── Helpers ─────────────────────────────────────────────────────────────────
 
-const TEAM_STATUS_COLOR: Record<string, string> = {
-  active: '#34C759',
-  meeting: '#007AFF',
-  idle: '#8E8E93',
+function relTime(dateStr: string | null): string {
+  if (!dateStr) return '—'
+  const d = (Date.now() - new Date(dateStr).getTime()) / 1000
+  if (d < 60) return `${Math.round(d)}s sedan`
+  if (d < 3600) return `${Math.round(d / 60)}m sedan`
+  if (d < 86400) return `${Math.round(d / 3600)}h sedan`
+  return `${Math.round(d / 86400)}d sedan`
 }
-
-// ─── Subcomponents ─────────────────────────────────────────────────────────────
 
 function StatusDot({ status }: { status: string }) {
-  const color = STATUS_COLOR[status] || '#8E8E93'
-  return (
-    <span style={{
-      display: 'inline-block', width: 8, height: 8, borderRadius: '50%',
-      background: color,
-      boxShadow: status === 'healthy' ? `0 0 6px ${color}60` : 'none',
-      flexShrink: 0,
-    }} />
-  )
+  const color = status === 'running' || status === 'active' ? '#34C759'
+    : status === 'degraded' ? '#FF9500'
+    : '#FF3B30'
+  return <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%', background: color, flexShrink: 0, boxShadow: `0 0 5px ${color}60` }} />
 }
 
-function RunStatusBadge({ status }: { status: string }) {
-  const color = RUN_COLOR[status] || '#8E8E93'
-  return (
-    <span style={{
-      fontSize: 10, fontWeight: 700, padding: '2px 7px', borderRadius: 5,
-      background: color + '18', color, border: `1px solid ${color}30`,
-      whiteSpace: 'nowrap',
-    }}>
-      {status.toUpperCase()}
-    </span>
-  )
+function Skeleton({ w = '100%', h = 16 }: { w?: string | number; h?: number }) {
+  return <div className="animate-pulse rounded" style={{ width: w, height: h, background: 'rgba(255,255,255,0.06)' }} />
 }
 
-function UptimeGraph({ points }: { points: { hour: number; value: number }[] }) {
-  const W = 400, H = 60, pad = 4
-  const minV = 90, maxV = 100.5
-  const pts = points.map((p, i) => {
-    const x = pad + (i / (points.length - 1)) * (W - 2 * pad)
-    const y = H - pad - ((p.value - minV) / (maxV - minV)) * (H - 2 * pad)
-    return `${x},${y}`
-  })
-  const pathD = `M ${pts.join(' L ')}`
-  const fillD = `${pathD} L ${W - pad},${H} L ${pad},${H} Z`
+// ─── ECS Status Card ─────────────────────────────────────────────────────────
 
-  return (
-    <svg viewBox={`0 0 ${W} ${H}`} width="100%" height={H} style={{ display: 'block' }}>
-      <defs>
-        <linearGradient id="uptimeGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#34C759" stopOpacity="0.3" />
-          <stop offset="100%" stopColor="#34C759" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <path d={fillD} fill="url(#uptimeGrad)" />
-      <path d={pathD} fill="none" stroke="#34C759" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
+function ECSStatusCard() {
+  const [data, setData] = useState<InfraData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-// ─── Section Heading ──────────────────────────────────────────────────────────
-
-function SectionHeading({ children }: { children: React.ReactNode }) {
-  return (
-    <h2 className="text-xs font-mono text-text-muted uppercase tracking-widest mb-3">
-      {children}
-    </h2>
-  )
-}
-
-// ─── Live Activity Feed ───────────────────────────────────────────────────────
-
-interface LiveEvt {
-  id: string
-  actor: string
-  initials: string
-  color: string
-  action: string
-  target: string
-  age: number
-  category: 'deploy' | 'sale' | 'task' | 'system' | 'alert' | 'comms'
-}
-
-const EVT_POOL: Omit<LiveEvt, 'id' | 'age'>[] = [
-  { actor: 'Leon', initials: 'LR', color: '#10B981', action: 'stängde leadsamtal med', target: 'Stockholms Hamnar AB', category: 'sale' },
-  { actor: 'Johan', initials: 'JB', color: '#06B6D4', action: 'deployade quiXzoom API →', target: 'ECS eu-north-1', category: 'deploy' },
-  { actor: 'Dennis', initials: 'DB', color: '#F59E0B', action: 'signerade NDA med', target: 'Trafikverket', category: 'task' },
-  { actor: 'Winston', initials: 'WB', color: '#3B82F6', action: 'godkände faktura', target: 'AWS €1,240', category: 'sale' },
-  { actor: 'Leon', initials: 'LR', color: '#10B981', action: 'lade till kontakt:', target: 'Malmö Stad infrastruktur', category: 'comms' },
-  { actor: 'Johan', initials: 'JB', color: '#06B6D4', action: 'fixade bug i', target: 'zoomer-wallet', category: 'task' },
-  { actor: 'System', initials: 'SY', color: '#EF4444', action: 'API latency spike', target: 'quiXzoom → 320ms', category: 'alert' },
-  { actor: 'Dennis', initials: 'DB', color: '#F59E0B', action: 'bolagshandlingar klara för', target: 'Landvex AB', category: 'task' },
-  { actor: 'Winston', initials: 'WB', color: '#3B82F6', action: 'uppdaterade cashflow Q2', target: '2026', category: 'task' },
-  { actor: 'System', initials: 'SY', color: '#34C759', action: 'CF Tunnel', target: 'auto-restarted ✓', category: 'system' },
-  { actor: 'Leon', initials: 'LR', color: '#10B981', action: 'skickade pitch-deck till', target: 'Göteborgs Stad (Landvex)', category: 'comms' },
-  { actor: 'Johan', initials: 'JB', color: '#06B6D4', action: 'CI/CD live för', target: 'quiXzoom-landing CF Pages', category: 'deploy' },
-  { actor: 'System', initials: 'SY', color: '#34C759', action: '47 nya uppdrag i', target: 'quiXzoom Stockholm', category: 'system' },
-]
-
-const CAT_ICON: Record<string, string> = { deploy: '🚀', sale: '💰', task: '✅', system: '⚙️', alert: '⚡', comms: '💬' }
-
-function formatMs(ms: number) {
-  const s = Math.floor(ms / 1000)
-  if (s < 60) return `${s}s`
-  const m = Math.floor(s / 60)
-  if (m < 60) return `${m}m`
-  return `${Math.floor(m / 60)}h`
-}
-
-function LiveActivityFeed() {
-  const [events, setEvents] = useState<LiveEvt[]>(() =>
-    [0, 1, 2, 3, 4].map((i) => ({ ...EVT_POOL[i], id: `seed-${i}`, age: (i + 1) * 40 * 1000 }))
-  )
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  // Age events every second
-  useEffect(() => {
-    const t = setInterval(() => setEvents(prev => prev.map(e => ({ ...e, age: e.age + 1000 }))), 1000)
-    return () => clearInterval(t)
-  }, [])
-
-  // Inject new event every 9-16s
-  useEffect(() => {
-    const schedule = () => {
-      timerRef.current = setTimeout(() => {
-        const pool = EVT_POOL[Math.floor(Math.random() * EVT_POOL.length)]
-        setEvents(prev => [{ ...pool, id: `e-${Date.now()}`, age: 0 }, ...prev].slice(0, 7))
-        schedule()
-      }, 9000 + Math.random() * 7000)
+  const fetch_ = useCallback(async () => {
+    setLoading(true)
+    try {
+      const r = await fetch(`${API_BASE}/api/infra/status`, { signal: AbortSignal.timeout(10_000) })
+      if (!r.ok) throw new Error(`HTTP ${r.status}`)
+      setData(await r.json())
+      setError(null)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Kunde inte hämta infra-status')
+    } finally {
+      setLoading(false)
     }
-    schedule()
-    return () => { if (timerRef.current) clearTimeout(timerRef.current) }
   }, [])
 
+  useEffect(() => { fetch_(); const t = setInterval(fetch_, 60_000); return () => clearInterval(t) }, [fetch_])
+
+  const services = data?.services ?? []
+  const running = services.filter(s => s.status === 'running').length
+  const degraded = services.filter(s => s.status === 'degraded').length
+  const stopped = services.filter(s => s.status === 'stopped').length
+
   return (
-    <div>
-      <div className="flex items-center justify-between mb-3">
-        <SectionHeading>Live — Teamet jobbar</SectionHeading>
-        <span className="flex items-center gap-1.5 text-xs" style={{ color: '#34C759' }}>
-          <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: '#34C759' }} />
-          LIVE
-        </span>
+    <div className="bg-neutral-900 border border-white/10 rounded-xl p-5">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <Server size={14} className="text-blue-400" />
+          <span className="text-xs font-mono text-white/50 uppercase tracking-widest">ECS Services</span>
+        </div>
+        <button onClick={fetch_} className="text-white/30 hover:text-white/60 transition-colors">
+          <RefreshCw size={12} className={loading ? 'animate-spin' : ''} />
+        </button>
       </div>
-      <div className="bg-white border border-surface-border rounded-xl overflow-hidden">
-        {events.map((evt, i) => (
-          <div
-            key={evt.id}
-            className="flex items-center gap-3 px-5 py-3"
-            style={{
-              borderBottom: i < events.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none',
-              opacity: Math.max(0.35, 1 - i * 0.1),
-              transition: 'opacity 0.5s ease',
-            }}
-          >
-            <div
-              className="h-7 w-7 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold"
-              style={{ background: evt.color + '25', color: evt.color, border: `1px solid ${evt.color}40` }}
-            >
-              {evt.initials}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs text-gray-800">
-                <span className="font-semibold" style={{ color: evt.color }}>{evt.actor}</span>
-                {' '}{evt.action}{' '}
-                <span className="text-text-muted">{evt.target}</span>
-              </p>
-            </div>
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <span className="text-[9px] text-text-muted font-mono tabular-nums">{formatMs(evt.age)}</span>
-              <span className="text-xs">{CAT_ICON[evt.category]}</span>
-            </div>
+
+      {loading && !data ? (
+        <div className="space-y-2"><Skeleton /><Skeleton w="80%" /></div>
+      ) : error ? (
+        <div className="flex items-center gap-2 text-xs text-red-400"><XCircle size={12} />{error}</div>
+      ) : services.length === 0 ? (
+        <p className="text-xs text-white/30">Inga ECS-tjänster hittades</p>
+      ) : (
+        <>
+          <div className="flex gap-3 mb-4">
+            <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-green-500" /><span className="text-xs text-white/60">{running} running</span></div>
+            {degraded > 0 && <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-orange-400" /><span className="text-xs text-orange-400">{degraded} degraded</span></div>}
+            {stopped > 0 && <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-red-500" /><span className="text-xs text-red-400">{stopped} stopped</span></div>}
           </div>
-        ))}
-      </div>
+          <div className="space-y-2">
+            {services.slice(0, 6).map(svc => (
+              <div key={svc.name} className="flex items-center gap-2">
+                <StatusDot status={svc.status} />
+                <span className="text-xs text-white/70 flex-1 truncate">{svc.name}</span>
+                <span className="text-xs font-mono text-white/30">{svc.running}/{svc.desired}</span>
+              </div>
+            ))}
+            {services.length > 6 && <p className="text-xs text-white/30">+{services.length - 6} fler</p>}
+          </div>
+        </>
+      )}
     </div>
   )
 }
 
-// ─── Nörd-rekrytering ─────────────────────────────────────────────────────────
+// ─── Domains Card ─────────────────────────────────────────────────────────────
 
-const TALENT_CHANNELS = [
-  { label: 'GitHub', sub: 'openclaw/openclaw — contributors med merged PRs', status: 'Aktivt', color: '#34C759' },
-  { label: 'ClawHub', sub: 'Skill-publicister som förstår systemet på djupet', status: 'Scouting', color: '#F59E0B' },
-  { label: 'Discord clawd', sub: 'Hjälpsamma nördar i communityt', status: 'Läser', color: '#2563EB' },
-  { label: 'Reddit r/openclaw', sub: 'Frustrerande engagerade = bäst att rekrytera', status: 'Bevakar', color: '#3B82F6' },
-  { label: 'Twitter/X', sub: '#openclaw, @openclawai — genomtänkta trådar', status: 'Passivt', color: '#06B6D4' },
-]
+function DomainsCard() {
+  const [domains, setDomains] = useState<DomainStatus[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-const TALENT_MUST: string[] = ['Aktiv GitHub (senaste 3 mån)', 'TypeScript / Node.js', 'AI-agenter & automatisering', 'Europa eller Asien']
-const TALENT_BONUS: string[] = ['Vision AI / computer vision', 'React Native / Expo', 'Thailand-ready', 'Självgående — levererar utan struktur']
-const TALENT_RED: string[] = ['Pratar mycket — committar lite', 'Kräver kontor / fast struktur']
+  const fetch_ = useCallback(async () => {
+    setLoading(true)
+    try {
+      const r = await fetch(`${API_BASE}/api/domains/status`, { signal: AbortSignal.timeout(10_000) })
+      if (!r.ok) throw new Error(`HTTP ${r.status}`)
+      const d = await r.json() as { domains: DomainStatus[] }
+      setDomains(d.domains ?? [])
+      setError(null)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Cloudflare ej nåbar')
+    } finally {
+      setLoading(false)
+    }
+  }, [])
 
-function TalentRadarWidget() {
-  const [expanded, setExpanded] = useState(false)
+  useEffect(() => { fetch_() }, [fetch_])
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-3">
-          <SectionHeading>🎯 Nörd-rekrytering</SectionHeading>
-          <span className="text-xs font-mono px-2 py-0.5 rounded-full mb-3"
-            style={{ background: '#F59E0B18', color: '#F59E0B', border: '1px solid #F59E0B30' }}>
-            IGÅNG
-          </span>
+    <div className="bg-neutral-900 border border-white/10 rounded-xl p-5">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <Globe size={14} className="text-orange-400" />
+          <span className="text-xs font-mono text-white/50 uppercase tracking-widest">Domäner</span>
         </div>
-        <button
-          onClick={() => setExpanded(e => !e)}
-          className="text-xs text-text-muted hover:text-gray-600 transition-colors mb-3"
-        >
-          {expanded ? 'Dölj' : 'Visa detaljer'}
+        <button onClick={fetch_} className="text-white/30 hover:text-white/60 transition-colors">
+          <RefreshCw size={12} className={loading ? 'animate-spin' : ''} />
         </button>
       </div>
 
-      {/* Summary always visible */}
-      <div className="bg-white border border-surface-border rounded-xl p-5 mb-3">
-        <p className="text-sm text-gray-600 mb-4">
-          Varsam rekrytering av <span className="text-text-primary font-semibold">OpenClaw/AI-agent-nördar</span> — folk som faktiskt bygger, inte pratar om att bygga. Skapa relation INNAN rekrytering.
-        </p>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <p className="text-xs text-text-muted font-mono uppercase mb-2">Måste ha</p>
-            <div className="space-y-1">
-              {TALENT_MUST.map(t => (
-                <div key={t} className="flex items-center gap-2 text-xs text-gray-600">
-                  <span style={{ color: '#34C759' }}>✓</span> {t}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div>
-            <p className="text-xs text-text-muted font-mono uppercase mb-2">Röda flaggor</p>
-            <div className="space-y-1">
-              {TALENT_RED.map(t => (
-                <div key={t} className="flex items-center gap-2 text-xs text-text-muted">
-                  <span style={{ color: '#EF4444' }}>✗</span> {t}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Channel breakdown (expanded) */}
-      {expanded && (
-        <div className="bg-white border border-surface-border rounded-xl overflow-hidden">
-          {TALENT_CHANNELS.map((ch, i) => (
-            <div
-              key={ch.label}
-              className="flex items-center gap-4 px-5 py-3.5"
-              style={{ borderBottom: i < TALENT_CHANNELS.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none' }}
-            >
-              <div
-                className="h-8 w-8 rounded-lg flex items-center justify-center flex-shrink-0 text-xs font-bold"
-                style={{ background: ch.color + '20', color: ch.color, border: `1px solid ${ch.color}30` }}
-              >
-                {ch.label.slice(0, 2).toUpperCase()}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-text-primary">{ch.label}</p>
-                <p className="text-xs text-text-muted truncate">{ch.sub}</p>
-              </div>
-              <span
-                className="text-xs font-mono px-2 py-0.5 rounded-full flex-shrink-0"
-                style={{ background: ch.color + '15', color: ch.color, border: `1px solid ${ch.color}30` }}
-              >
-                {ch.status}
-              </span>
+      {loading && !domains.length ? (
+        <div className="space-y-2"><Skeleton /><Skeleton w="70%" /></div>
+      ) : error ? (
+        <div className="flex items-center gap-2 text-xs text-red-400"><XCircle size={12} />{error}</div>
+      ) : domains.length === 0 ? (
+        <p className="text-xs text-white/30">Inga domäner hittades</p>
+      ) : (
+        <div className="space-y-2">
+          {domains.map(d => (
+            <div key={d.name} className="flex items-center gap-2">
+              <StatusDot status={d.status === 'active' ? 'running' : 'degraded'} />
+              <span className="text-xs text-white/70 flex-1">{d.name}</span>
+              <span className={`text-xs font-mono ${d.status === 'active' ? 'text-green-400' : 'text-orange-400'}`}>{d.status}</span>
             </div>
           ))}
-          <div className="px-5 py-3 border-t border-surface-border">
-            <p className="text-xs text-text-muted font-mono uppercase mb-1.5">Bonus-profil</p>
-            <div className="flex flex-wrap gap-2">
-              {TALENT_BONUS.map(b => (
-                <span key={b} className="text-xs text-text-muted px-2 py-0.5 rounded-full"
-                  style={{ background: '#F59E0B10', border: '1px solid #F59E0B20' }}>
-                  ⭐ {b}
-                </span>
-              ))}
-            </div>
-          </div>
         </div>
       )}
     </div>
   )
 }
 
+// ─── Repos Card ───────────────────────────────────────────────────────────────
+
+function ReposCard() {
+  const [repos, setRepos] = useState<Repo[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  const fetch_ = useCallback(async () => {
+    setLoading(true)
+    try {
+      const r = await fetch(`${API_BASE}/api/git/repos?source=github`, { signal: AbortSignal.timeout(10_000) })
+      if (!r.ok) throw new Error(`HTTP ${r.status}`)
+      const d = await r.json() as { repos: Repo[] }
+      setRepos((d.repos ?? []).slice(0, 8))
+      setError(null)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'GitHub ej nåbar')
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => { fetch_() }, [fetch_])
+
+  return (
+    <div className="bg-neutral-900 border border-white/10 rounded-xl p-5">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <GitBranch size={14} className="text-purple-400" />
+          <span className="text-xs font-mono text-white/50 uppercase tracking-widest">Senaste repos</span>
+        </div>
+        <button onClick={fetch_} className="text-white/30 hover:text-white/60 transition-colors">
+          <RefreshCw size={12} className={loading ? 'animate-spin' : ''} />
+        </button>
+      </div>
+
+      {loading && !repos.length ? (
+        <div className="space-y-2">{[...Array(4)].map((_, i) => <Skeleton key={i} w={`${70 + i * 5}%`} />)}</div>
+      ) : error ? (
+        <div className="flex items-center gap-2 text-xs text-red-400"><XCircle size={12} />{error}</div>
+      ) : repos.length === 0 ? (
+        <p className="text-xs text-white/30">Inga repos hittades</p>
+      ) : (
+        <div className="space-y-2">
+          {repos.map(r => (
+            <div key={r.id} className="flex items-center gap-2">
+              <span className="text-xs text-white/70 flex-1 truncate">{r.name}</span>
+              <span className="text-xs text-white/30 font-mono">{relTime(r.pushedAt)}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ─── API Health Card ──────────────────────────────────────────────────────────
+
+interface HealthCheck { url: string; label: string; status: 'ok' | 'error' | 'loading' }
+
+function APIHealthCard() {
+  const ENDPOINTS: Array<{ url: string; label: string }> = [
+    { url: `${API_BASE}/api/health`, label: 'Wavult OS API' },
+    { url: 'https://api.quixzoom.com/health', label: 'quiXzoom API' },
+  ]
+
+  const [checks, setChecks] = useState<HealthCheck[]>(ENDPOINTS.map(e => ({ ...e, status: 'loading' })))
+
+  const runChecks = useCallback(async () => {
+    setChecks(ENDPOINTS.map(e => ({ ...e, status: 'loading' })))
+    const results = await Promise.all(
+      ENDPOINTS.map(async (e) => {
+        try {
+          const r = await fetch(e.url, { signal: AbortSignal.timeout(5_000) })
+          return { ...e, status: r.ok ? 'ok' as const : 'error' as const }
+        } catch {
+          return { ...e, status: 'error' as const }
+        }
+      })
+    )
+    setChecks(results)
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => { runChecks(); const t = setInterval(runChecks, 30_000); return () => clearInterval(t) }, [runChecks])
+
+  const allOk = checks.every(c => c.status === 'ok')
+
+  return (
+    <div className="bg-neutral-900 border border-white/10 rounded-xl p-5">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <Activity size={14} className="text-green-400" />
+          <span className="text-xs font-mono text-white/50 uppercase tracking-widest">API Health</span>
+        </div>
+        {allOk && <CheckCircle size={12} className="text-green-400" />}
+        {!allOk && checks.some(c => c.status === 'error') && <AlertTriangle size={12} className="text-orange-400" />}
+      </div>
+      <div className="space-y-3">
+        {checks.map(c => (
+          <div key={c.url} className="flex items-center gap-2">
+            {c.status === 'loading' ? <div className="w-2 h-2 rounded-full bg-white/20 animate-pulse" />
+              : c.status === 'ok' ? <span className="w-2 h-2 rounded-full bg-green-500" style={{ boxShadow: '0 0 5px #34C75960' }} />
+              : <span className="w-2 h-2 rounded-full bg-red-500" />}
+            <span className="text-xs text-white/70 flex-1">{c.label}</span>
+            <span className={`text-xs font-mono ${c.status === 'ok' ? 'text-green-400' : c.status === 'error' ? 'text-red-400' : 'text-white/30'}`}>
+              {c.status === 'loading' ? '…' : c.status}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// ─── Ventures Card ────────────────────────────────────────────────────────────
+
+function VenturesCard() {
+  const [stats, setStats] = useState<VentureStats | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch(`${API_BASE}/api/venture-engine/stats`, { signal: AbortSignal.timeout(8_000) })
+      .then(r => r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`)))
+      .then((d: VentureStats) => setStats(d))
+      .catch(() => setStats(null))
+      .finally(() => setLoading(false))
+  }, [])
+
+  const kpis = [
+    { label: 'Aktiva ventures', value: stats?.active ?? '—', icon: <TrendingUp size={12} className="text-blue-400" /> },
+    { label: 'Entiteter', value: stats?.entities ?? '—', icon: <Database size={12} className="text-purple-400" /> },
+    { label: 'Totalt', value: stats?.total ?? '—', icon: <Zap size={12} className="text-yellow-400" /> },
+  ]
+
+  return (
+    <div className="bg-neutral-900 border border-white/10 rounded-xl p-5">
+      <div className="flex items-center gap-2 mb-4">
+        <Zap size={14} className="text-yellow-400" />
+        <span className="text-xs font-mono text-white/50 uppercase tracking-widest">Venture Engine</span>
+      </div>
+      {loading ? (
+        <div className="space-y-2"><Skeleton /><Skeleton w="60%" /></div>
+      ) : !stats ? (
+        <p className="text-xs text-white/30">Data saknas — venture-engine ej konfigurerad</p>
+      ) : (
+        <div className="grid grid-cols-3 gap-3">
+          {kpis.map(k => (
+            <div key={k.label} className="text-center">
+              <div className="flex justify-center mb-1">{k.icon}</div>
+              <div className="text-lg font-bold font-mono text-white">{String(k.value)}</div>
+              <div className="text-[10px] text-white/30">{k.label}</div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ─── Quick Links ─────────────────────────────────────────────────────────────
+
+const QUICK_LINKS = [
+  { name: 'AWS Console', url: 'https://console.aws.amazon.com', icon: '☁️', sub: 'eu-north-1 · ECS' },
+  { name: 'Supabase', url: 'https://supabase.com/dashboard', icon: '🗄️', sub: 'hypbit project' },
+  { name: 'GitHub', url: 'https://github.com/wolfoftyreso-debug', icon: '🐙', sub: 'wolfoftyreso-debug' },
+  { name: 'Cloudflare', url: 'https://dash.cloudflare.com', icon: '🔥', sub: '6 zoner' },
+  { name: 'Loopia Mail', url: 'https://webmail.loopia.se', icon: '✉️', sub: 'erik@hypbit.com' },
+  { name: 'n8n', url: 'https://n8n.wavult.com', icon: '⚡', sub: 'Workflows' },
+]
+
 // ─── Main Dashboard ────────────────────────────────────────────────────────────
 
 export function CommandDashboard() {
-  const [expandedRuns, setExpandedRuns] = useState(false)
-  const allHealthy = SYSTEM_STATUS.every(s => s.status === 'healthy')
-  const degraded = SYSTEM_STATUS.filter(s => s.status === 'degraded').length
-  const avgUptime = (SYSTEM_STATUS.reduce((s, x) => s + x.uptime, 0) / SYSTEM_STATUS.length).toFixed(1)
+  const [now, setNow] = useState(new Date())
+  useEffect(() => { const t = setInterval(() => setNow(new Date()), 1000); return () => clearInterval(t) }, [])
 
   return (
     <div className="space-y-8 animate-fade-in max-w-6xl">
       {/* Header */}
-      <div>
-        <h1 className="text-sm font-semibold text-text-primary">Command Center</h1>
-        <p className="text-sm text-gray-600 mt-1">Wavult Group — Operationellt kontrollcenter</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-sm font-semibold text-white">Command Center</h1>
+          <p className="text-xs text-white/40 mt-0.5">Wavult Group — Operationellt kontrollcenter</p>
+        </div>
+        <div className="flex items-center gap-1.5 text-xs font-mono text-white/30">
+          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+          {now.toLocaleTimeString('sv-SE')}
+        </div>
       </div>
 
-      {/* Live Revenue Dashboard */}
+      {/* Revenue */}
       <RevenueDashboard />
 
-      {/* Thailand Workcamp Countdown */}
+      {/* Thailand Countdown */}
       <div className="max-w-sm">
         <ThailandCountdown />
       </div>
 
-      {/* Widgets — Team, Projects, Quick Links */}
+      {/* Live System Widgets */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <ECSStatusCard />
+        <DomainsCard />
+        <APIHealthCard />
+        <VenturesCard />
+      </div>
+
+      {/* Team + Projects + Quicklinks */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <TeamStatusWidget />
         <ProjectProgressWidget />
         <QuickLinksWidget />
       </div>
 
-      {/* Entity Health Overview */}
+      {/* Entity Health */}
       <HealthOverviewWidget />
 
-      {/* Live Activity Feed */}
-      <LiveActivityFeed />
-
-      {/* Nörd-rekrytering */}
-      <TalentRadarWidget />
-
-      {/* Top KPIs */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {[
-          {
-            label: 'System Status',
-            value: allHealthy ? 'All OK' : `${degraded} degraded`,
-            delta: `${SYSTEM_STATUS.length} services`,
-            color: allHealthy ? '#34C759' : '#FF9500',
-            live: true,
-          },
-          {
-            label: 'Avg Uptime',
-            value: `${avgUptime}%`,
-            delta: 'Senaste 24h',
-            color: '#3B82F6',
-          },
-          {
-            label: 'Active Deploys',
-            value: String(GITHUB_RUNS.filter(r => r.status === 'running').length || '0'),
-            delta: `${GITHUB_RUNS.filter(r => r.status === 'success').length} lyckade idag`,
-            color: '#2563EB',
-          },
-          {
-            label: 'Team Online',
-            value: String(TEAM_ACTIVITY.filter(t => t.status !== 'idle').length),
-            delta: `av ${TEAM_ACTIVITY.length} totalt`,
-            color: '#FF9500',
-            live: true,
-          },
-        ].map((s, i) => (
-          <div key={i} className="bg-white border border-surface-border rounded-xl p-5">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-mono text-text-muted uppercase tracking-widest">{s.label}</span>
-              {s.live && (
-                <span className="flex items-center gap-1 text-xs font-mono" style={{ color: s.color }}>
-                  <span className="h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: s.color }} />
-                  LIVE
-                </span>
-              )}
-            </div>
-            <div className="text-3xl font-mono font-bold tabular-nums" style={{ color: s.color }}>{s.value}</div>
-            {s.delta && <div className="mt-2 text-xs text-text-muted">{s.delta}</div>}
-          </div>
-        ))}
-      </div>
-
-      {/* System Status + Uptime Graph */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* System Status */}
-        <div>
-          <SectionHeading>System Status</SectionHeading>
-          <div className="bg-white border border-surface-border rounded-xl overflow-hidden">
-            {SYSTEM_STATUS.map((svc, i) => (
-              <div
-                key={svc.name}
-                style={{ borderBottom: i < SYSTEM_STATUS.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none' }}
-                className="flex items-center gap-3 px-5 py-3.5"
-              >
-                <StatusDot status={svc.status} />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-text-primary">{svc.name}</span>
-                    <span className="text-xs text-text-muted bg-muted/30 px-1.5 py-0.5 rounded">
-                      {svc.service}
-                    </span>
-                  </div>
-                  <div className="text-xs text-text-muted mt-0.5">{svc.env}</div>
-                </div>
-                <div className="text-right">
-                  <div className="text-xs font-mono tabular-nums" style={{ color: STATUS_COLOR[svc.status] }}>
-                    {svc.uptime}% up
-                  </div>
-                  <div className="text-xs text-text-muted tabular-nums">{svc.latency}ms · {svc.lastCheck}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Uptime Graph */}
-        <div>
-          <SectionHeading>Uptime — Senaste 24h</SectionHeading>
-          <div className="bg-white border border-surface-border rounded-xl p-5">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <div className="text-2xl font-bold text-text-primary tabular-nums">{avgUptime}%</div>
-                <div className="text-xs text-text-muted mt-0.5">genomsnitt alla tjänster</div>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-green-500" />
-                <span className="text-xs text-text-muted">Uptime %</span>
-              </div>
-            </div>
-            <UptimeGraph points={UPTIME_POINTS} />
-            <div className="flex justify-between mt-2">
-              <span className="text-xs text-text-muted tabular-nums">
-                {new Date(Date.now() - 23 * 3600000).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })}
-              </span>
-              <span className="text-xs text-text-muted tabular-nums">Nu</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Latest Repos */}
+      <ReposCard />
 
       {/* Quick Links */}
       <div>
-        <SectionHeading>Snabblänkar</SectionHeading>
+        <h2 className="text-xs font-mono text-white/30 uppercase tracking-widest mb-3">Snabblänkar</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
           {QUICK_LINKS.map((link) => (
             <a
@@ -501,132 +403,49 @@ export function CommandDashboard() {
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-white border border-surface-border rounded-xl p-4 flex flex-col items-center gap-2 text-center hover:bg-muted/30 transition-colors group"
+              className="bg-neutral-900 border border-white/10 rounded-xl p-4 flex flex-col items-center gap-2 text-center hover:bg-neutral-800 transition-colors"
               style={{ textDecoration: 'none' }}
             >
               <span style={{ fontSize: 24 }}>{link.icon}</span>
-              <span
-                className="text-xs font-semibold text-gray-600 group-hover:text-text-primary transition-colors"
-                style={{ lineHeight: 1.3 }}
-              >
-                {link.name}
-              </span>
-              <span className="text-xs text-text-muted">{link.sub}</span>
+              <span className="text-xs font-medium text-white/70">{link.name}</span>
+              <span className="text-[10px] text-white/30">{link.sub}</span>
             </a>
           ))}
         </div>
       </div>
 
-      {/* Team Activity + Active Deploys */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Team Activity */}
-        <div>
-          <SectionHeading>Team-aktivitet (mock)</SectionHeading>
-          <div className="bg-white border border-surface-border rounded-xl overflow-hidden">
-            {TEAM_ACTIVITY.map((member, i) => (
-              <div
-                key={member.name}
-                style={{ borderBottom: i < TEAM_ACTIVITY.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none' }}
-                className="flex items-center gap-3 px-5 py-3.5"
-              >
-                <div
-                  className="h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-                  style={{ background: member.color + '22', color: member.color, border: `1px solid ${member.color}40` }}
-                >
-                  {member.name[0]}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-text-primary">{member.name}</span>
-                    <span className="text-xs text-text-muted">{member.role}</span>
-                  </div>
-                  <div className="text-xs text-text-muted mt-0.5 truncate">{member.task}</div>
-                </div>
-                <div className="flex items-center gap-1.5 flex-shrink-0">
-                  <span
-                    className="h-1.5 w-1.5 rounded-full"
-                    style={{
-                      background: TEAM_STATUS_COLOR[member.status],
-                      boxShadow: member.status === 'active' ? `0 0 5px ${TEAM_STATUS_COLOR[member.status]}` : 'none',
-                    }}
-                  />
-                  <span className="text-xs text-text-muted tabular-nums">{member.since}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Active Deploys / GitHub Actions */}
-        <div>
-          <div className="flex items-center justify-between mb-3">
-            <SectionHeading>Aktiva Deploys</SectionHeading>
-            <button
-              onClick={() => setExpandedRuns(v => !v)}
-              className="text-xs text-text-muted hover:text-gray-600 transition-colors"
-            >
-              {expandedRuns ? 'Visa färre' : 'Visa alla'}
-            </button>
-          </div>
-          <div className="bg-white border border-surface-border rounded-xl overflow-hidden">
-            {(expandedRuns ? GITHUB_RUNS : GITHUB_RUNS.slice(0, 4)).map((run, i) => {
-              const list = expandedRuns ? GITHUB_RUNS : GITHUB_RUNS.slice(0, 4)
-              return (
-                <div
-                  key={i}
-                  style={{ borderBottom: i < list.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none' }}
-                  className="flex items-center gap-3 px-5 py-3.5"
-                >
-                  <RunStatusBadge status={run.status} />
-                  <div className="flex-1 min-w-0">
-                    <div className="text-xs font-medium text-text-primary truncate">{run.workflow}</div>
-                    <div className="text-xs text-text-muted mt-0.5">
-                      {run.repo} · <span className="text-text-muted">{run.branch}</span>
-                    </div>
-                  </div>
-                  <div className="text-right flex-shrink-0">
-                    <div className="text-xs text-text-muted tabular-nums">{run.time}</div>
-                    <div className="text-xs text-text-muted tabular-nums">{run.duration}</div>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* Entities (existing section, kept) */}
+      {/* Entities */}
       <div>
-        <SectionHeading>Entities</SectionHeading>
+        <h2 className="text-xs font-mono text-white/30 uppercase tracking-widest mb-3">Entities</h2>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {[
             { name: 'Wavult Group Holding', code: 'WGH', jurisdiction: '🇦🇪 DIFC, Dubai', type: 'Holding', color: '#2563EB', products: ['Capital structure', 'IP ownership'] },
             { name: 'Wavult Technologies LLC', code: 'WTL', jurisdiction: '🇺🇸 Texas, USA', type: 'Operating', color: '#3B82F6', products: ['quiXzoom platform'] },
             { name: 'Wavult Intelligence UAB', code: 'WIU', jurisdiction: '🇱🇹 Vilnius, LT', type: 'Operating', color: '#06B6D4', products: ['Optic Insights Group'] },
           ].map((entity) => (
-            <div key={entity.code} className="bg-white border border-surface-border rounded-xl p-5">
+            <div key={entity.code} className="bg-neutral-900 border border-white/10 rounded-xl p-5">
               <div className="flex items-start gap-3 mb-4">
                 <div
-                  className="h-10 w-10 rounded-xl flex items-center justify-center text-sm font-bold text-text-primary flex-shrink-0"
+                  className="h-10 w-10 rounded-xl flex items-center justify-center text-sm font-bold flex-shrink-0"
                   style={{ backgroundColor: entity.color + '33', border: `1px solid ${entity.color}55` }}
                 >
                   <span style={{ color: entity.color }}>{entity.code[0]}</span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-text-primary">{entity.name}</p>
-                  <p className="text-xs text-text-muted">{entity.jurisdiction}</p>
+                  <p className="text-sm font-semibold text-white">{entity.name}</p>
+                  <p className="text-xs text-white/40">{entity.jurisdiction}</p>
                 </div>
               </div>
               <div className="space-y-1">
                 {entity.products.map((p) => (
-                  <div key={p} className="text-xs text-text-muted flex items-center gap-1.5">
-                    <span className="h-1 w-1 rounded-full bg-gray-600" />
+                  <div key={p} className="text-xs text-white/40 flex items-center gap-1.5">
+                    <span className="h-1 w-1 rounded-full bg-white/20" />
                     {p}
                   </div>
                 ))}
               </div>
-              <div className="mt-3 pt-3 border-t border-surface-border">
-                <span className="text-xs text-text-muted">{entity.type}</span>
+              <div className="mt-3 pt-3 border-t border-white/10">
+                <span className="text-xs text-white/30">{entity.type}</span>
               </div>
             </div>
           ))}

@@ -1,20 +1,22 @@
 import { useState } from 'react'
+import { AcademyView } from './AcademyView'
 import { KnowledgeBase } from './KnowledgeBase'
-import { KnowledgeGraph } from './KnowledgeGraph'
+import { ZoomerCert } from './ZoomerCert'
 import { AccessControlCenter } from './AccessControlCenter'
 import { PortfolioView } from './PortfolioView'
 
-type Tab = 'kunskapsbas' | 'systemöversikt' | 'kunskapsgraf' | 'portfolio'
+type Tab = 'systemskola' | 'kunskapsbas' | 'zoomer-cert' | 'systemöversikt' | 'portfolio'
 
 const TABS: { id: Tab; label: string }[] = [
-  { id: 'kunskapsbas',    label: 'Kunskapsbas' },
-  { id: 'systemöversikt', label: 'Systemöversikt' },
-  { id: 'kunskapsgraf',   label: 'Kunskapsgraf' },
-  { id: 'portfolio',      label: 'Idéportfolio' },
+  { id: 'systemskola',    label: '🎓 Systemskolan' },
+  { id: 'kunskapsbas',    label: '📚 Kunskapsbas' },
+  { id: 'zoomer-cert',    label: '🏆 Zoomer-cert' },
+  { id: 'systemöversikt', label: '🖥️ Systemöversikt' },
+  { id: 'portfolio',      label: '💡 Portfolio' },
 ]
 
 export function KnowledgeHub() {
-  const [activeTab, setActiveTab] = useState<Tab>('kunskapsbas')
+  const [activeTab, setActiveTab] = useState<Tab>('systemskola')
 
   return (
     <div className="flex flex-col h-full bg-muted/30 overflow-hidden">
@@ -22,9 +24,9 @@ export function KnowledgeHub() {
       <div className="flex-shrink-0 border-b border-surface-border px-4 md:px-6 pt-4 md:pt-5 pb-0">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-xl font-semibold text-text-primary">Access & System Control</h1>
+            <h1 className="text-xl font-semibold text-text-primary">Knowledge Hub</h1>
             <p className="text-sm text-gray-400 mt-0.5">
-              Wavult Groups systemregister, åtkomststatus och operativ kontrollpanel
+              Systemskolan, kunskapsbas, Zoomer-certifiering och systemöversikt
             </p>
           </div>
         </div>
@@ -49,9 +51,10 @@ export function KnowledgeHub() {
 
       {/* Content */}
       <div className="flex-1 overflow-hidden p-4 md:p-6" style={{ minHeight: 0 }}>
+        {activeTab === 'systemskola'    && <AcademyView />}
         {activeTab === 'kunskapsbas'    && <KnowledgeBase />}
+        {activeTab === 'zoomer-cert'    && <ZoomerCert />}
         {activeTab === 'systemöversikt' && <AccessControlCenter />}
-        {activeTab === 'kunskapsgraf'   && <KnowledgeGraph />}
         {activeTab === 'portfolio'      && <PortfolioView />}
       </div>
     </div>
