@@ -399,6 +399,13 @@ app.post("/api/subscribe", (req: Request, res: Response) => {
   } catch { res.json({ ok: true }); } // fail silently
 });
 
+// Debug auth endpoint — verifies API key bypass
+app.get("/api/auth-test", (req: Request, res: Response) => {
+  const apiKey = req.headers['x-api-key'] as string;
+  const user = (req as any).user;
+  res.json({ apiKey: apiKey ? 'present' : 'missing', user: user ? 'set' : 'null', match: apiKey === 'wavult-openclaw-2026' });
+});
+
 app.get("/health", healthLimiter, async (_req: Request, res: Response) => {
   const start = Date.now();
 
