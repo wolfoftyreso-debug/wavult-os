@@ -56,6 +56,9 @@ jobs:
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
+      - name: Syntax check (esbuild gate)
+        run: npx esbuild server/src/index.ts --bundle --platform=node --packages=external --outfile=/dev/null --log-level=error
+
       - name: Build and push Docker image
         id: build
         run: |

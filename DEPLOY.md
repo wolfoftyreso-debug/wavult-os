@@ -133,6 +133,22 @@ docker push $ECR_URL:latest
 
 ---
 
+## Health Check Rules (lärt 2026-04-01)
+
+### ECS Container Health Check — ALLTID HTTP 200
+Container health check = "lever processen?" — inte "är alla deps friska?"
+- res.status(200) alltid i /health
+- status-fältet får vara "degraded" för observability
+- Downstream (Supabase, Redis) SKA INTE påverka HTTP-koden
+
+### ALB Health Check
+- Kan returnera 503 om kritiska deps nere — ALB drar bort trafik men dödar inte containern
+
+### Lärdomen
+hypbit-api dog 5+ gånger 2026-04-01 för att /health returnerade 503 när Supabase var trög vid uppstart.
+
+---
+
 ## Monorepo-struktur ✅
 
 ```
