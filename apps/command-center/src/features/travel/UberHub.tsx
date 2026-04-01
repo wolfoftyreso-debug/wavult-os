@@ -16,7 +16,7 @@ import {
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type Tab = 'business' | 'eats' | 'direct'
+type Tab = 'business' | 'eats' | 'direct' | 'team'
 
 interface DeliveryHistoryItem extends DeliveryRequest {
   id: string
@@ -640,11 +640,79 @@ function UberDirectTab() {
 // ─── Main UberHub ─────────────────────────────────────────────────────────────
 
 export function UberHub() {
+  // ─── Team Onboard Tab ───────────────────────────────────────────────────────
+  function TeamOnboardTab() {
+    const INVITE_URL = 'https://redeem.uber.com/public/optin/pK8tyzNKastR'
+    const TEAM = [
+      { name: 'Dennis Bjarnemark', role: 'Legal & Operations', phone: '+46761474243' },
+      { name: 'Leon Russo',        role: 'CEO Operations',     phone: '+46738968949' },
+      { name: 'Winston Bjarnemark',role: 'CFO',                phone: '+46768123548' },
+      { name: 'Johan Berglund',    role: 'Group CTO',          phone: '+46736977576' },
+    ]
+    return (
+      <div className="space-y-5">
+        <div className="p-4 rounded-xl border border-white/10 bg-white/5">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-8 h-8 rounded-full bg-black border border-white/10 flex items-center justify-center">
+              <Car className="w-4 h-4 text-white" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-white">Uber for Business — Team Invite</p>
+              <p className="text-xs text-white/50">Wavult Group Business Account</p>
+            </div>
+          </div>
+          <div className="p-3 rounded-lg bg-white/5 border border-white/10 mb-3 flex items-center justify-between gap-2">
+            <span className="text-xs text-white/60 truncate">{INVITE_URL}</span>
+            <button
+              onClick={() => navigator.clipboard.writeText(INVITE_URL)}
+              className="text-xs px-2 py-1 rounded bg-white/10 hover:bg-white/20 text-white/70 shrink-0"
+            >
+              Copy
+            </button>
+          </div>
+          <a
+            href={INVITE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-black text-white text-sm font-medium hover:bg-neutral-900 transition-colors border border-white/10"
+          >
+            <ExternalLink className="w-4 h-4" />
+            Open Invite Link
+          </a>
+        </div>
+
+        <div className="p-4 rounded-xl border border-white/10 bg-white/5">
+          <p className="text-xs text-white/50 uppercase tracking-wider font-medium mb-3">Team Members</p>
+          <div className="space-y-2">
+            {TEAM.map(m => (
+              <div key={m.phone} className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/10">
+                <div>
+                  <p className="text-sm font-medium text-white">{m.name}</p>
+                  <p className="text-xs text-white/40">{m.role} · {m.phone}</p>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-green-400" />
+                  <span className="text-xs text-green-400">Invited</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/30 flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0" />
+          <p className="text-xs text-green-300">SMS-inbjudan skickad till alla 4 teammedlemmar via 46elks.</p>
+        </div>
+      </div>
+    )
+  }
+
   const [tab, setTab] = useState<Tab>('business')
 
   const tabs: { id: Tab; label: string; icon: typeof Car }[] = [
     { id: 'business', label: 'For Business', icon: Car },
     { id: 'eats',     label: 'Team Lunch',   icon: UtensilsCrossed },
+    { id: 'team',     label: 'Team Onboard', icon: Users },
     { id: 'direct',   label: 'Direct',       icon: Package },
   ]
 
@@ -689,6 +757,7 @@ export function UberHub() {
         {tab === 'business' && <ForBusinessTab />}
         {tab === 'eats'     && <TeamLunchTab />}
         {tab === 'direct'   && <UberDirectTab />}
+        {tab === 'team'     && <TeamOnboardTab />}
       </div>
     </div>
   )
