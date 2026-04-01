@@ -68,7 +68,6 @@ export interface AccountingProvider {
 }
 
 export const ACCOUNTING_PROVIDERS: AccountingProvider[] = [
-  },
   {
     id: 'pe_accounting',
     name: 'PE Accounting',
