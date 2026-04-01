@@ -1,5 +1,63 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import { COMPANY_LAUNCHES, CompanyLaunch, LaunchStep } from './data'
+
+// ─── API base ─────────────────────────────────────────────────────────────────
+const API_BASE = (import.meta.env.VITE_API_URL as string | undefined) ?? 'https://api.hypbit.com'
+
+// ─── DB shape from API (flat, no steps array) ─────────────────────────────────
+interface ApiCompany {
+  id: string
+  name: string
+  type: string
+  jurisdiction: string
+  flag: string
+  status: string
+  priority: number
+  notes: string | null
+}
+
+interface ApiStep {
+  id: string
+  company_id: string
+  step_key: string
+  title: string
+  description: string | null
+  owner: string
+  category: string
+  estimated_days: number
+  cost_eur: number | null
+  prerequisites: string[]
+  evidence_required: string | null
+  external_url: string | null
+  status: string
+  completed_at: string | null
+  notes: string | null
+}
+
+function mapApiToCompany(c: ApiCompany, steps: ApiStep[]): CompanyLaunch {
+  return {
+    id: c.id,
+    name: c.name,
+    type: c.type as CompanyLaunch['type'],
+    jurisdiction: c.jurisdiction as CompanyLaunch['jurisdiction'],
+    flag: c.flag,
+    status: c.status as CompanyLaunch['status'],
+    priority: c.priority,
+    steps: steps.map(s => ({
+      id: s.id,
+      title: s.title,
+      description: s.description ?? '',
+      owner: s.owner as LaunchStep['owner'],
+      category: s.category as LaunchStep['category'],
+      estimated_days: s.estimated_days,
+      cost_eur: s.cost_eur ?? undefined,
+      prerequisites: s.prerequisites ?? [],
+      evidence_required: s.evidence_required ?? '',
+      external_url: s.external_url ?? undefined,
+      status: s.status as LaunchStep['status'],
+    })),
+  }
+}
 import { CompanyLaunchWizard } from './CompanyLaunchWizard'
 import { CompanyFormation } from './CompanyFormation'
 import { BolagsverketSearch } from './BolagsverketSearch'
@@ -87,14 +145,23 @@ function StatusBadge({ status }: { status: CompanyLaunch['status'] }) {
 }
 
 // ─── Single step row ──────────────────────────────────────────────────────────
+const STEP_STATUS_META: Record<string, { label: string; color: string; bg: string }> = {
+  pending:     { label: 'Pending',     color: '#9CA3AF', bg: '#1f2937' },
+  in_progress: { label: 'In Progress', color: '#FBBF24', bg: '#451a03' },
+  blocked:     { label: 'Blocked',     color: '#F87171', bg: '#450a0a' },
+  done:        { label: 'Done',        color: '#34D399', bg: '#064e3b' },
+}
+
 function StepRow({
   step,
   allSteps,
   onToggle,
+  onStatusChange,
 }: {
   step: LaunchStep
   allSteps: LaunchStep[]
   onToggle: (id: string) => void
+  onStatusChange?: (id: string, status: LaunchStep['status']) => void
 }) {
   const owner = OWNER_META[step.owner] ?? OWNER_META.external
   const isBlocked = step.prerequisites.some(pid => {
@@ -102,12 +169,13 @@ function StepRow({
     return dep && dep.status !== 'done'
   })
   const done = step.status === 'done'
+  const statusMeta = STEP_STATUS_META[step.status] ?? STEP_STATUS_META.pending
 
   return (
     <div
       className={`flex gap-3 p-3 rounded-lg border transition-all ${
         done
-          ? 'border-white/5 opacity-50'
+          ? 'border-white/5 opacity-60'
           : isBlocked
           ? 'border-red-900/30 bg-red-950/10'
           : 'border-white/8 bg-muted/30 hover:bg-muted/30'
@@ -147,6 +215,22 @@ function StepRow({
           >
             {owner.label}
           </span>
+
+          {/* Status dropdown */}
+          {onStatusChange && (
+            <select
+              value={step.status}
+              onChange={e => onStatusChange(step.id, e.target.value as LaunchStep['status'])}
+              className="text-[9px] font-mono px-1.5 py-0.5 rounded-full border-0 cursor-pointer flex-shrink-0 focus:outline-none"
+              style={{ color: statusMeta.color, background: statusMeta.bg }}
+              onClick={e => e.stopPropagation()}
+            >
+              <option value="pending">Pending</option>
+              <option value="in_progress">In Progress</option>
+              <option value="blocked">Blocked</option>
+              <option value="done">Done</option>
+            </select>
+          )}
 
           {/* Blocked tag */}
           {isBlocked && !done && (
@@ -203,16 +287,219 @@ function StepRow({
 }
 
 // ─── Main view ────────────────────────────────────────────────────────────────
+// ─── Launch New Company Modal ─────────────────────────────────────────────────
+const JURISDICTION_FLAGS: Record<string, string> = {
+  SE: '🇸🇪', 'US-TX': '🇺🇸', 'US-DE': '🇺🇸', LT: '🇱🇹', 'AE-DMCC': '🇦🇪',
+}
+
+function LaunchCompanyModal({
+  onClose,
+  onCreated,
+}: {
+  onClose: () => void
+  onCreated: () => void
+}) {
+  const [name, setName] = useState('')
+  const [type, setType] = useState<'AB' | 'Inc' | 'UAB' | 'LLC' | 'FZCO'>('AB')
+  const [jurisdiction, setJurisdiction] = useState<'SE' | 'US-TX' | 'US-DE' | 'LT' | 'AE-DMCC'>('SE')
+  const [priority, setPriority] = useState(5)
+  const [notes, setNotes] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const flag = JURISDICTION_FLAGS[jurisdiction] ?? '🏢'
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!name.trim()) return setError('Company name is required')
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await fetch(`${API_BASE}/api/company-launch`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ name: name.trim(), type, jurisdiction, flag, priority, notes: notes.trim() || null }),
+      })
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}))
+        throw new Error(body.error ?? `HTTP ${res.status}`)
+      }
+      onCreated()
+      onClose()
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+      onClick={e => { if (e.target === e.currentTarget) onClose() }}
+    >
+      <div className="w-full max-w-md rounded-xl border border-white/10 bg-[#1a1a2e] shadow-2xl p-6">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-sm font-bold text-text-primary">🚀 Launch New Company</h2>
+          <button onClick={onClose} className="text-gray-500 hover:text-white transition-colors text-lg leading-none">×</button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Name */}
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Company name *</label>
+            <input
+              type="text"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="e.g. Landvex AB"
+              className="w-full px-3 py-2 rounded-lg bg-muted/50 border border-white/10 text-sm text-text-primary placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-colors"
+              autoFocus
+            />
+          </div>
+
+          {/* Type + Jurisdiction row */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs text-gray-400 mb-1">Type *</label>
+              <select
+                value={type}
+                onChange={e => setType(e.target.value as any)}
+                className="w-full px-3 py-2 rounded-lg bg-muted/50 border border-white/10 text-sm text-text-primary focus:outline-none focus:border-blue-500 transition-colors"
+              >
+                <option value="AB">AB</option>
+                <option value="Inc">Inc</option>
+                <option value="UAB">UAB</option>
+                <option value="LLC">LLC</option>
+                <option value="FZCO">FZCO</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs text-gray-400 mb-1">Jurisdiction *</label>
+              <select
+                value={jurisdiction}
+                onChange={e => setJurisdiction(e.target.value as any)}
+                className="w-full px-3 py-2 rounded-lg bg-muted/50 border border-white/10 text-sm text-text-primary focus:outline-none focus:border-blue-500 transition-colors"
+              >
+                <option value="SE">🇸🇪 SE</option>
+                <option value="US-TX">🇺🇸 US-TX</option>
+                <option value="US-DE">🇺🇸 US-DE</option>
+                <option value="LT">🇱🇹 LT</option>
+                <option value="AE-DMCC">🇦🇪 AE-DMCC</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Flag preview + Priority row */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs text-gray-400 mb-1">Flag (auto)</label>
+              <div className="px-3 py-2 rounded-lg bg-muted/30 border border-white/5 text-sm text-text-primary">
+                {flag} <span className="text-gray-500 text-xs ml-1">auto-filled</span>
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs text-gray-400 mb-1">Priority (1=highest)</label>
+              <select
+                value={priority}
+                onChange={e => setPriority(Number(e.target.value))}
+                className="w-full px-3 py-2 rounded-lg bg-muted/50 border border-white/10 text-sm text-text-primary focus:outline-none focus:border-blue-500 transition-colors"
+              >
+                {[1,2,3,4,5].map(n => <option key={n} value={n}>{n}</option>)}
+              </select>
+            </div>
+          </div>
+
+          {/* Notes */}
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Notes</label>
+            <textarea
+              value={notes}
+              onChange={e => setNotes(e.target.value)}
+              rows={3}
+              placeholder="Optional context or notes..."
+              className="w-full px-3 py-2 rounded-lg bg-muted/50 border border-white/10 text-sm text-text-primary placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-colors resize-none"
+            />
+          </div>
+
+          {error && (
+            <p className="text-xs text-red-400 bg-red-950/30 border border-red-900/30 rounded-lg px-3 py-2">{error}</p>
+          )}
+
+          <div className="flex gap-3 pt-1">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 px-4 py-2 rounded-lg text-xs font-semibold border border-white/10 text-gray-400 hover:text-white hover:border-white/20 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading || !name.trim()}
+              className="flex-1 px-4 py-2 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Creating...' : '+ Launch Company'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
+
 export function CompanyLaunchView() {
   const [activeTab, setActiveTab] = useState<'bolag' | 'tracker' | 'wizard' | 'formation' | 'sok-bolag' | 'lagerbolag' | 'certificates' | 'uae' | 'lithuania' | 'delaware'>('bolag')
   const [companies, setCompanies] = useState<CompanyLaunch[]>(COMPANY_LAUNCHES)
   const [selectedId, setSelectedId] = useState<string>(COMPANY_LAUNCHES[0].id)
+  const [apiLoading, setApiLoading] = useState(false)
+  const [showCreateModal, setShowCreateModal] = useState(false)
+
+  // ── Load from API ───────────────────────────────────────────────────────────
+  const loadCompanies = useCallback(async () => {
+    setApiLoading(true)
+    try {
+      const res = await fetch(`${API_BASE}/api/company-launch`, { credentials: 'include' })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      const apiCompanies: ApiCompany[] = await res.json()
+
+      if (!apiCompanies || apiCompanies.length === 0) {
+        // fallback to local data
+        setCompanies(COMPANY_LAUNCHES)
+        return
+      }
+
+      // Load steps for each company in parallel
+      const withSteps: CompanyLaunch[] = await Promise.all(
+        apiCompanies.map(async c => {
+          const sr = await fetch(`${API_BASE}/api/company-launch/${c.id}/steps`, { credentials: 'include' })
+          const steps: ApiStep[] = sr.ok ? await sr.json() : []
+          return mapApiToCompany(c, steps)
+        })
+      )
+
+      setCompanies(withSteps)
+      // Keep selected id valid
+      setSelectedId(prev => withSteps.find(c => c.id === prev) ? prev : withSteps[0]?.id ?? prev)
+    } catch {
+      // fallback silently to local data
+      setCompanies(COMPANY_LAUNCHES)
+    } finally {
+      setApiLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    loadCompanies()
+  }, [loadCompanies])
 
   const selected = companies.find(c => c.id === selectedId) ?? companies[0]
 
   // Group steps by category
   const byCategory = useMemo(() => {
     const groups: Record<string, LaunchStep[]> = {}
+    if (!selected?.steps) return groups
     for (const step of selected.steps) {
       if (!groups[step.category]) groups[step.category] = []
       groups[step.category].push(step)
@@ -220,28 +507,73 @@ export function CompanyLaunchView() {
     return groups
   }, [selected])
 
-  function toggleStep(companyId: string, stepId: string) {
+  async function toggleStep(companyId: string, stepId: string) {
+    const company = companies.find(c => c.id === companyId)
+    const step = company?.steps.find(s => s.id === stepId)
+    if (!step) return
+
+    const newStatus: LaunchStep['status'] = step.status === 'done' ? 'pending' : 'done'
+
+    // Optimistic UI update
     setCompanies(prev =>
       prev.map(c => {
         if (c.id !== companyId) return c
         const updatedSteps = c.steps.map(s => {
           if (s.id !== stepId) return s
-          const newStatus = s.status === 'done' ? 'pending' : 'done'
           return { ...s, status: newStatus } as LaunchStep
         })
         const done = updatedSteps.filter(s => s.status === 'done').length
         const total = updatedSteps.length
-        const newStatus: CompanyLaunch['status'] =
+        const cStatus: CompanyLaunch['status'] =
           done === total ? 'operational' : done > 0 ? 'in_progress' : 'not_started'
-        return { ...c, steps: updatedSteps, status: newStatus }
+        return { ...c, steps: updatedSteps, status: cStatus }
       })
     )
+
+    // Persist to API
+    try {
+      await fetch(`${API_BASE}/api/company-launch/${companyId}/steps/${stepId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ status: newStatus }),
+      })
+    } catch {
+      // Revert on failure
+      loadCompanies()
+    }
   }
 
-  const selDone = doneSteps(selected.steps)
-  const selTotal = selected.steps.length
-  const selCost = totalCost(selected.steps)
-  const selDays = criticalPath(selected.steps)
+  async function updateStepStatus(companyId: string, stepId: string, newStatus: LaunchStep['status']) {
+    // Optimistic UI
+    setCompanies(prev =>
+      prev.map(c => {
+        if (c.id !== companyId) return c
+        const updatedSteps = c.steps.map(s => s.id === stepId ? { ...s, status: newStatus } as LaunchStep : s)
+        const done = updatedSteps.filter(s => s.status === 'done').length
+        const total = updatedSteps.length
+        const cStatus: CompanyLaunch['status'] =
+          done === total ? 'operational' : done > 0 ? 'in_progress' : 'not_started'
+        return { ...c, steps: updatedSteps, status: cStatus }
+      })
+    )
+
+    try {
+      await fetch(`${API_BASE}/api/company-launch/${companyId}/steps/${stepId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ status: newStatus }),
+      })
+    } catch {
+      loadCompanies()
+    }
+  }
+
+  const selDone = doneSteps(selected?.steps ?? [])
+  const selTotal = (selected?.steps ?? []).length
+  const selCost = totalCost(selected?.steps ?? [])
+  const selDays = criticalPath(selected?.steps ?? [])
   const selPct = selTotal === 0 ? 0 : Math.round((selDone / selTotal) * 100)
 
   return (
@@ -348,7 +680,27 @@ export function CompanyLaunchView() {
         >
           🇺🇸 Delaware
         </button>
+
+        {/* Spacer + Launch button */}
+        <div className="flex-1" />
+        <button
+          onClick={() => setShowCreateModal(true)}
+          className="ml-2 mb-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white transition-colors flex items-center gap-1.5 flex-shrink-0"
+        >
+          + Launch New Company
+        </button>
+        {apiLoading && (
+          <span className="ml-2 mb-1 text-[10px] text-gray-500 flex-shrink-0">loading…</span>
+        )}
       </div>
+
+      {/* ── Create Company Modal ── */}
+      {showCreateModal && (
+        <LaunchCompanyModal
+          onClose={() => setShowCreateModal(false)}
+          onCreated={() => loadCompanies()}
+        />
+      )}
 
       {/* ── Bolag tab ── */}
       {activeTab === 'bolag' && (
@@ -734,6 +1086,7 @@ export function CompanyLaunchView() {
                       step={step}
                       allSteps={selected.steps}
                       onToggle={id => toggleStep(selected.id, id)}
+                      onStatusChange={(id, status) => updateStepStatus(selected.id, id, status)}
                     />
                   ))}
                 </div>

@@ -695,6 +695,13 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
 };
 
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// Company Launch — full CRUD, company management, step tracking
+// ---------------------------------------------------------------------------
+import { companyLaunchRouter } from './company-launch';
+app.use('/api/company-launch', auth, companyLaunchRouter);
+
+// ---------------------------------------------------------------------------
 // Wavult Ledger Core v1 — Double-entry bookkeeping, multi-entity, multi-currency
 // ---------------------------------------------------------------------------
 import { ledgerRouter } from './ledger-api';
