@@ -25,6 +25,7 @@ import procurementRouter from './routes/procurement'
 import decisionsRouter from './routes/decisions'
 import mediaRouter from './routes/media'
 import accountingRouter from './routes/accounting'
+import auditRouter from './routes/audit'
 
 const app = express()
 
@@ -76,6 +77,7 @@ app.use('/api/media', mediaRouter)                   // Media — campaigns, cha
 app.use('/api/revolut', revolutPaymentRouter)   // Payment initiation + webhook
 app.use('/api/intelligence', intelligenceRouter)
 app.use('/api/accounting', accountingRouter)
+app.use('/api/audit-log', auditRouter)
 app.use('/', accountsRouter)                    // Customer account ledger + invoice spool file
 app.use('/', revolutOAuthRouter)
 app.use('/', healthMonitor)
