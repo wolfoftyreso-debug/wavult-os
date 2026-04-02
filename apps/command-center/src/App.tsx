@@ -78,6 +78,7 @@ const VisaHub                = lazy(() => import('./features/visa/VisaHub').then
 const TravelAutomationHub    = lazy(() => import('./features/travel/TravelAutomationHub').then(m => ({ default: m.TravelAutomationHub })))
 const UberHub                = lazy(() => import('./features/travel/UberHub').then(m => ({ default: m.UberHub })))
 const OpenClawHub            = lazy(() => import('./features/openclaw/OpenClawHub').then(m => ({ default: m.OpenClawHub })))
+const DeploymentPipeline     = lazy(() => import('./features/deployments/DeploymentPipeline').then(m => ({ default: m.DeploymentPipeline })))
 const NetworkMap             = lazy(() => import('./features/network-map/NetworkMap').then(m => ({ default: m.NetworkMap })))
 const VentureEngine          = lazy(() => import('./features/venture-engine').then(m => ({ default: m.VentureEngine })))
 const TeamPhones             = lazy(() => import('./features/communications/TeamPhones').then(m => ({ default: m.TeamPhones })))
@@ -217,6 +218,7 @@ function AuthenticatedApp() {
               <Route path="/uber" element={<UberHub />} />
               <Route path="/phones" element={<TeamPhones />} />
               <Route path="/openclaw" element={<OpenClawHub />} />
+              <Route path="/deployments" element={<DeploymentPipeline />} />
               <Route path="/network-map" element={<NetworkMap />} />
               <Route path="/venture-engine" element={<VentureEngine />} />
               <Route path="/git" element={<GitHubView />} />
