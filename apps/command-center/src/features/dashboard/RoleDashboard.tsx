@@ -1,3 +1,4 @@
+import { IllustrationModule } from '../../shared/ui/IllustrationModule'
 import { useState } from 'react'
 import { useRole } from '../../shared/auth/RoleContext'
 import { CommandDashboard } from './CommandDashboard'
@@ -10,7 +11,7 @@ function WelcomeBanner() {
   const [dismissed, setDismissed] = useState(() => !!localStorage.getItem('wavult-banner-dismissed'))
   if (dismissed) return null
   return (
-    <div className="mb-6 rounded-xl p-4 flex items-start gap-3" style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", borderLeft: "3px solid var(--color-accent)" }}>
+    <div className="mb-6 rounded-xl p-4 flex items-start gap-3 reveal card-interactive" style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", borderLeft: "3px solid var(--color-accent)" }}>
       <span className="text-xl flex-shrink-0">👋</span>
       <div className="flex-1 min-w-0">
         <p style={{ fontSize: 14, fontWeight: 600, color: "var(--color-text-primary)", marginBottom: 4 }}>Välkommen till Wavult OS</p>
@@ -37,7 +38,7 @@ function VisaAlertBanner() {
   const top = critical[0] ?? warning[0] ?? alerts[0]
   return (
     <div
-      className="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium mb-1"
+      className="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium mb-1 reveal card-interactive"
       style={{
         background: top.severity === 'critical' ? '#7f1d1d22' : '#78350f22',
         border: `1px solid ${top.severity === 'critical' ? '#ef444430' : '#f59e0b30'}`,
@@ -407,7 +408,7 @@ function ScopeBanner() {
 
   return (
     <div
-      className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium mb-1"
+      className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium mb-1 reveal card-interactive"
       style={{
         background: activeEntity.color + '12',
         border: `1px solid ${activeEntity.color}25`,

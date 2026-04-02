@@ -733,3 +733,268 @@
 }
 .empty-state h3 { font-size: 16px; font-weight: 700; color: var(--color-brand, #0A3D62); }
 .empty-state p { font-size: 13px; color: var(--color-text-secondary, #2C5F8A); max-width: 300px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   VOLKSWAGEN MEETS FUTURAMA
+   Precision engineering. Connected world. Warm intelligence.
+═══════════════════════════════════════════════════════════════ */
+
+/* ── Typography hierarchy ────────────────────────────────────── */
+h1, h2, h3 {
+  font-feature-settings: "kern" 1, "liga" 1;
+  letter-spacing: -0.02em;
+}
+h1 { font-size: clamp(22px, 2.5vw, 30px); font-weight: 800; color: var(--color-brand, #0A3D62); }
+h2 { font-size: clamp(17px, 2vw, 22px);   font-weight: 700; color: var(--color-brand, #0A3D62); }
+h3 { font-size: clamp(14px, 1.5vw, 17px); font-weight: 700; color: var(--color-brand, #0A3D62); }
+
+/* ── Nav item with illustration ──────────────────────────────── */
+.nav-item-illus {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background .15s, transform .15s;
+  text-decoration: none;
+  color: rgba(245,240,232,.7);
+  font-size: 13px;
+  font-weight: 500;
+  position: relative;
+}
+.nav-item-illus:hover {
+  background: rgba(232,184,75,.08);
+  color: rgba(245,240,232,.95);
+  transform: translateX(2px);
+}
+.nav-item-illus.active {
+  background: rgba(232,184,75,.14);
+  color: #F5F0E8;
+  border-left: 2.5px solid #E8B84B;
+}
+.nav-item-illus .nav-illus {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(255,255,255,.07);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.nav-item-illus .nav-illus img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+.nav-item-illus span {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Futurama glow on active items ───────────────────────────── */
+.nav-item-illus.active .nav-illus {
+  background: rgba(232,184,75,.18);
+  box-shadow: 0 0 12px rgba(232,184,75,.2);
+}
+
+/* ── Dashboard grid ──────────────────────────────────────────── */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.dashboard-grid-2 { grid-template-columns: repeat(2, 1fr); }
+.dashboard-grid-3 { grid-template-columns: repeat(3, 1fr); }
+.dashboard-grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* ── Stat widget ─────────────────────────────────────────────── */
+.stat-widget {
+  background: var(--color-surface, #FDFAF5);
+  border: 1px solid var(--color-border, #DDD5C5);
+  border-radius: 12px;
+  padding: 20px 24px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .2s, box-shadow .2s;
+}
+.stat-widget:hover {
+  border-color: rgba(232,184,75,.35);
+  box-shadow: 0 4px 20px rgba(10,61,98,.06);
+}
+.stat-widget-illus {
+  position: absolute;
+  right: -8px;
+  bottom: -8px;
+  width: 72px;
+  height: 72px;
+  opacity: .12;
+  pointer-events: none;
+}
+.stat-widget-illus img { width: 100%; height: 100%; object-fit: contain; }
+.stat-widget-value {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--color-brand, #0A3D62);
+  line-height: 1;
+  letter-spacing: -.03em;
+}
+.stat-widget-label {
+  font-size: 11px;
+  color: var(--color-text-secondary, #2C5F8A);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  margin-top: 6px;
+}
+.stat-widget-gold .stat-widget-value { color: #B8860B; }
+.stat-widget-gold { border-bottom: 2px solid rgba(232,184,75,.4); }
+
+/* ── Data table ──────────────────────────────────────────────── */
+.data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.data-table th {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--color-text-secondary, #2C5F8A);
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--color-border, #DDD5C5);
+  background: var(--color-bg-subtle, #EDE8DC);
+  text-align: left;
+}
+.data-table td {
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--color-text-primary, #0A3D62);
+  border-bottom: 1px solid rgba(221,213,197,.5);
+}
+.data-table tr:hover td {
+  background: rgba(232,184,75,.04);
+}
+.data-table tr:last-child td { border-bottom: none; }
+
+/* ── Gold accent line — module separator ─────────────────────── */
+.gold-line {
+  height: 2px;
+  background: linear-gradient(90deg, rgba(232,184,75,.6) 0%, rgba(232,184,75,0) 100%);
+  border: none;
+  margin: 24px 0;
+}
+
+/* ── Status badge system ─────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .02em;
+}
+.badge-live    { background: rgba(45,122,79,.12); color: #1A5C3A; }
+.badge-dev     { background: rgba(44,63,107,.12); color: #1A2E5A; }
+.badge-offline { background: rgba(232,184,75,.15); color: #8B6914; }
+.badge-warning { background: rgba(184,118,10,.12); color: #7A4E06; }
+.badge-critical{ background: rgba(192,57,43,.12);  color: #7A1E12; }
+
+/* ── Action bar ──────────────────────────────────────────────── */
+.action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  background: var(--color-surface, #FDFAF5);
+  border: 1px solid var(--color-border, #DDD5C5);
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+.action-bar-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-brand, #0A3D62);
+}
+.action-bar-sub {
+  font-size: 12px;
+  color: var(--color-text-secondary, #2C5F8A);
+  margin-top: 2px;
+}
+
+/* ── Button system ───────────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 18px; border-radius: 7px;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: all .15s; border: none;
+  font-family: inherit; text-decoration: none;
+}
+.btn-primary {
+  background: var(--color-brand, #0A3D62);
+  color: #F5F0E8;
+}
+.btn-primary:hover { background: #072E4A; transform: translateY(-1px); }
+.btn-gold {
+  background: var(--color-accent, #E8B84B);
+  color: var(--color-brand, #0A3D62);
+  font-weight: 700;
+}
+.btn-gold:hover { background: #D4A53A; transform: translateY(-1px); }
+.btn-ghost {
+  background: transparent;
+  color: var(--color-brand, #0A3D62);
+  border: 1.5px solid var(--color-border, #DDD5C5);
+}
+.btn-ghost:hover { border-color: var(--color-accent, #E8B84B); background: rgba(232,184,75,.06); }
+.btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
+.btn-lg { padding: 13px 28px; font-size: 15px; border-radius: 9px; }
+
+/* ── Live indicator ──────────────────────────────────────────── */
+.live-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #2D7A4F;
+  display: inline-block;
+  animation: gold-pulse 2s ease-in-out infinite;
+  box-shadow: 0 0 0 0 rgba(45,122,79,.4);
+}
+@keyframes gold-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(232,184,75,0); }
+  50%       { box-shadow: 0 0 0 5px rgba(232,184,75,.15); }
+}
+.live-dot.live { background: #2D7A4F; animation-name: green-pulse; }
+@keyframes green-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(45,122,79,0); }
+  50%       { box-shadow: 0 0 0 4px rgba(45,122,79,.2); }
+}
+
+/* ── Cockpit trigger button ──────────────────────────────────── */
+#cockpit-trigger {
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  z-index: 8999 !important;
+  background: var(--color-brand, #0A3D62) !important;
+  border: 1.5px solid rgba(232,184,75,.4) !important;
+  color: #E8B84B !important;
+  padding: 10px 18px !important;
+  border-radius: 10px !important;
+  cursor: pointer !important;
+  font-family: 'Courier New', monospace !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: .05em !important;
+  box-shadow: 0 4px 24px rgba(10,61,98,.3) !important;
+  transition: transform .15s, box-shadow .15s !important;
+}
+#cockpit-trigger:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 32px rgba(10,61,98,.4) !important;
+  border-color: #E8B84B !important;
+}
