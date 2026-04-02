@@ -14,6 +14,7 @@ import { EventsView } from './views/EventsView'
 import { NotificationsView } from './views/NotificationsView'
 import { ProfileView } from './views/ProfileView'
 import { BriefingView } from './views/BriefingView'
+import { MediaView } from './views/MediaView'
 import { TabBar } from './components/TabBar'
 import { AvatarCreator } from './components/AvatarCreator'
 import { DigitalHuman } from './components/DigitalHuman'
@@ -31,6 +32,7 @@ function AuthenticatedApp() {
             <Route path="/briefing" element={<BriefingView />} />
             <Route path="/dashboard" element={<DashboardView />} />
             <Route path="/events" element={<EventsView />} />
+            <Route path="/media" element={<MediaView />} />
             <Route path="/notifications" element={<NotificationsView />} />
             <Route path="/profile" element={<ProfileView />} />
           </Routes>
