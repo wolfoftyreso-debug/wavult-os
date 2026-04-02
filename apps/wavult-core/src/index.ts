@@ -21,6 +21,7 @@ import whoopRouter from './routes/whoop'
 import orgGraphRouter from './routes/org-graph'
 import revolutPaymentRouter from './routes/revolut-payment'
 import accountsRouter from './routes/accounts'
+import procurementRouter from './routes/procurement'
 
 const app = express()
 
@@ -65,6 +66,7 @@ app.use(intelligenceRouter)             // Intelligence Dashboard (Semrush + sig
 app.use(apolloRouter)                   // Apollo B2B account intelligence
 app.use('/voice', voiceRouter)          // Bernt röst-agent (46elks + Whisper + ElevenLabs)
 app.use('/whoop', whoopRouter)          // WHOOP integration — recovery, sleep, strain
+app.use('/api/procurement', procurementRouter)       // Procurement — suppliers, POs, contracts, approvals
 app.use('/api/venture-engine', ventureEngineRouter)  // Venture Engine — capital allocation & tracking
 app.use('/api/revolut', revolutPaymentRouter)   // Payment initiation + webhook
 app.use('/', accountsRouter)                    // Customer account ledger + invoice spool file
