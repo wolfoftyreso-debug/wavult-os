@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { useEntityScope } from '../../shared/scope/EntityScopeContext'
-import { INTERCOMPANY_ENTRIES, FINANCE_ENTITIES, type IntercompanyEntry } from './mockData'
+import { useFinanceIntercompany, useFinanceEntities } from './hooks/useFinance'
+import type { FinanceIntercompany, FinanceEntity } from '../../lib/supabase'
 
-type ICStatus = IntercompanyEntry['status']
-type ICType = IntercompanyEntry['type']
+type ICStatus = FinanceIntercompany['status']
+type ICType = FinanceIntercompany['type']
 
 const STATUS_CONFIG: Record<ICStatus, { label: string; color: string; bg: string }> = {
   pending:  { label: 'Pågående',   color: '#F59E0B', bg: '#F59E0B15' },
@@ -24,12 +25,12 @@ function fmt(n: number, currency: string) {
   return `${n.toLocaleString()} ${currency}`
 }
 
-function entityShortName(id: string) {
-  return FINANCE_ENTITIES.find(e => e.id === id)?.shortName ?? id
+function entityShortName(id: string, entities: FinanceEntity[]) {
+  return entities.find(e => e.id === id)?.short_name ?? id
 }
 
-function entityColor(id: string) {
-  return FINANCE_ENTITIES.find(e => e.id === id)?.color ?? '#6B7280'
+function entityColor(id: string, entities: FinanceEntity[]) {
+  return entities.find(e => e.id === id)?.color ?? '#6B7280'
 }
 
 // ─── License fee data ───────────────────────────────────────────────────────
@@ -109,12 +110,15 @@ export function IntercompanyView() {
   const isRoot = activeEntity.layer === 0
   const scopedIds = new Set(scopedEntities.map(e => e.id))
 
-  const filtered = INTERCOMPANY_ENTRIES.filter(
-    ic => isRoot || scopedIds.has(ic.fromEntityId) || scopedIds.has(ic.toEntityId)
+  const { data: entities = [], isLoading: entitiesLoading } = useFinanceEntities()
+  const { data: icEntries = [], isLoading: icLoading } = useFinanceIntercompany()
+
+  const filtered = icEntries.filter(
+    ic => isRoot || scopedIds.has(ic.from_entity_id) || scopedIds.has(ic.to_entity_id)
   )
 
   // Group by type
-  const byType: Record<ICType, IntercompanyEntry[]> = {
+  const byType: Record<ICType, FinanceIntercompany[]> = {
     management_fee: [],
     ip_license: [],
     loan: [],

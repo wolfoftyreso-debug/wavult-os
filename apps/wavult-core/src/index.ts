@@ -28,6 +28,7 @@ import accountingRouter from './routes/accounting'
 import auditRouter from './routes/audit'
 import taxRouter from './routes/tax-integration'
 import taxAutomationRouter from './routes/tax-automation'
+import deploymentsRouter from './routes/deployments'
 
 const app = express()
 
@@ -82,6 +83,7 @@ app.use('/api/accounting', accountingRouter)
 app.use('/api/audit-log', auditRouter)
 app.use('/api/tax', taxRouter)             // Tax Integration — SE moms/AGD, UAE VAT, LT VMI, deadline calendar
 app.use('/api/tax-automation', taxAutomationRouter)
+app.use('/api/deployments', deploymentsRouter)   // Deployment gate — two-step approval, version history, rollback
 app.use('/', accountsRouter)                    // Customer account ledger + invoice spool file
 app.use('/', revolutOAuthRouter)
 app.use('/', healthMonitor)

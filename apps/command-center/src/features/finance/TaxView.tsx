@@ -1,7 +1,8 @@
 import { useEntityScope } from '../../shared/scope/EntityScopeContext'
-import { TAX_PERIODS, FINANCE_ENTITIES, type TaxPeriod } from './mockData'
+import { useFinanceTaxPeriods, useFinanceEntities } from './hooks/useFinance'
+import type { FinanceTaxPeriod } from '../../lib/supabase'
 
-type TaxStatus = TaxPeriod['status']
+type TaxStatus = FinanceTaxPeriod['status']
 
 const STATUS_CONFIG: Record<TaxStatus, { label: string; color: string; bg: string; icon: string }> = {
   unreported: { label: 'Ej rapporterad', color: '#EF4444', bg: '#EF444415', icon: '⚠️' },
@@ -29,15 +30,20 @@ export function TaxView() {
   const isRoot = activeEntity.layer === 0
   const scopedIds = new Set(scopedEntities.map(e => e.id))
 
-  const filteredPeriods = TAX_PERIODS.filter(
-    tp => isRoot || scopedIds.has(tp.entityId)
+  const { data: entities = [], isLoading: entitiesLoading } = useFinanceEntities()
+  const { data: taxPeriods = [], isLoading: taxLoading } = useFinanceTaxPeriods()
+
+  const isLoading = entitiesLoading || taxLoading
+
+  const filteredPeriods = taxPeriods.filter(
+    tp => isRoot || scopedIds.has(tp.entity_id)
   )
 
   const unreported = filteredPeriods.filter(t => t.status === 'unreported')
   const submitted = filteredPeriods.filter(t => t.status === 'submitted')
   const paid = filteredPeriods.filter(t => t.status === 'paid')
 
-  const availableJurisdictions = FINANCE_ENTITIES.filter(
+  const availableJurisdictions = entities.filter(
     fe => isRoot || scopedIds.has(fe.id)
   )
 
@@ -45,6 +51,14 @@ export function TaxView() {
   const now = new Date()
   const nextDeadlineMonth = new Date(now.getFullYear(), now.getMonth() + 1, 26)
   const deadlineStr = nextDeadlineMonth.toLocaleDateString('sv-SE', { day: 'numeric', month: 'long', year: 'numeric' })
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-40 text-gray-9000 text-xs">
+        Laddar skatte- och momsdata...
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-4">
@@ -130,7 +144,7 @@ export function TaxView() {
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-semibold text-text-primary">{fe.jurisdiction}</span>
                     <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: fe.color }} />
-                    <span className="text-[9px] font-mono text-gray-9000">{fe.shortName}</span>
+                    <span className="text-[9px] font-mono text-gray-9000">{fe.short_name}</span>
                   </div>
                   <p className="text-xs text-gray-9000 mt-0.5">{info.notes}</p>
                 </div>
@@ -147,69 +161,77 @@ export function TaxView() {
           <span className="text-xs font-semibold text-text-primary">Momsperioder</span>
         </div>
 
-        {/* Urgent unreported first */}
-        {unreported.length > 0 && (
-          <div className="mx-4 mt-3 mb-2 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20">
-            <p className="text-xs font-semibold text-red-300">
-              ⚠️ {unreported.length} period{unreported.length > 1 ? 'er' : ''} ej rapporterade
-            </p>
-            <p className="text-xs text-red-600/80 mt-0.5">
-              Kräver åtgärd inom angiven deadline
-            </p>
+        {filteredPeriods.length === 0 ? (
+          <div className="px-4 py-8 text-center text-gray-9000 text-xs">
+            Inga momsperioder registrerade ännu
           </div>
-        )}
-
-        <div className="divide-y divide-gray-100 pb-2">
-          {/* Header */}
-          <div className="grid grid-cols-12 px-4 py-2 text-[9px] font-mono text-gray-9000 uppercase tracking-wider">
-            <span className="col-span-2">Bolag</span>
-            <span className="col-span-2">Jurisdiktion</span>
-            <span className="col-span-2">Period</span>
-            <span className="col-span-1 text-right">Sats</span>
-            <span className="col-span-2 text-right">Beskattningsbar</span>
-            <span className="col-span-2 text-right">Moms skuld</span>
-            <span className="col-span-1">Status</span>
-          </div>
-
-          {filteredPeriods.map(tp => {
-            const fe = FINANCE_ENTITIES.find(e => e.id === tp.entityId)
-            const st = STATUS_CONFIG[tp.status]
-            const isUrgent = tp.status === 'unreported'
-            const isOverdue = tp.status === 'unreported' && tp.dueDate < new Date().toISOString().slice(0, 10)
-            return (
-              <div key={tp.id}
-                className={`grid grid-cols-12 px-4 py-3 items-center hover:bg-muted/30 transition-colors ${isUrgent ? 'border-l-2 border-red-500/50' : ''}`}
-              >
-                <div className="col-span-2 flex items-center gap-1.5">
-                  <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: fe?.color }} />
-                  <span className="text-xs text-gray-9000 font-mono truncate">{fe?.shortName}</span>
-                </div>
-                <span className="col-span-2 text-xs text-gray-9000">{tp.jurisdiction}</span>
-                <span className="col-span-2 text-xs font-mono text-gray-600">{tp.period}</span>
-                <span className="col-span-1 text-right text-xs font-mono font-semibold text-text-primary">{tp.vatRate}%</span>
-                <span className="col-span-2 text-right text-xs font-mono text-gray-9000">
-                  {fmt(tp.taxableRevenue, tp.currency)}
-                </span>
-                <span className="col-span-2 text-right text-xs font-mono font-bold"
-                  style={{ color: tp.vatOwed === 0 ? '#6B7280' : isUrgent ? '#EF4444' : '#F59E0B' }}>
-                  {fmt(tp.vatOwed, tp.currency)}
-                </span>
-                <div className="col-span-1">
-                  <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full"
-                    style={{ color: st.color, background: st.bg }}>
-                    {st.label}
-                  </span>
-                  {isOverdue && (
-                    <p className="text-[8px] text-red-700 mt-0.5 font-mono">FÖRSENAD</p>
-                  )}
-                  {!isOverdue && (
-                    <p className="text-[8px] text-gray-600 mt-0.5 font-mono">→ {tp.dueDate.slice(5)}</p>
-                  )}
-                </div>
+        ) : (
+          <>
+            {/* Urgent unreported first */}
+            {unreported.length > 0 && (
+              <div className="mx-4 mt-3 mb-2 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20">
+                <p className="text-xs font-semibold text-red-300">
+                  ⚠️ {unreported.length} period{unreported.length > 1 ? 'er' : ''} ej rapporterade
+                </p>
+                <p className="text-xs text-red-600/80 mt-0.5">
+                  Kräver åtgärd inom angiven deadline
+                </p>
               </div>
-            )
-          })}
-        </div>
+            )}
+
+            <div className="divide-y divide-gray-100 pb-2">
+              {/* Header */}
+              <div className="grid grid-cols-12 px-4 py-2 text-[9px] font-mono text-gray-9000 uppercase tracking-wider">
+                <span className="col-span-2">Bolag</span>
+                <span className="col-span-2">Jurisdiktion</span>
+                <span className="col-span-2">Period</span>
+                <span className="col-span-1 text-right">Sats</span>
+                <span className="col-span-2 text-right">Beskattningsbar</span>
+                <span className="col-span-2 text-right">Moms skuld</span>
+                <span className="col-span-1">Status</span>
+              </div>
+
+              {filteredPeriods.map(tp => {
+                const fe = entities.find(e => e.id === tp.entity_id)
+                const st = STATUS_CONFIG[tp.status]
+                const isUrgent = tp.status === 'unreported'
+                const isOverdue = tp.status === 'unreported' && tp.due_date != null && tp.due_date < new Date().toISOString().slice(0, 10)
+                return (
+                  <div key={tp.id}
+                    className={`grid grid-cols-12 px-4 py-3 items-center hover:bg-muted/30 transition-colors ${isUrgent ? 'border-l-2 border-red-500/50' : ''}`}
+                  >
+                    <div className="col-span-2 flex items-center gap-1.5">
+                      <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: fe?.color }} />
+                      <span className="text-xs text-gray-9000 font-mono truncate">{fe?.short_name}</span>
+                    </div>
+                    <span className="col-span-2 text-xs text-gray-9000">{tp.jurisdiction}</span>
+                    <span className="col-span-2 text-xs font-mono text-gray-600">{tp.period}</span>
+                    <span className="col-span-1 text-right text-xs font-mono font-semibold text-text-primary">{tp.vat_rate}%</span>
+                    <span className="col-span-2 text-right text-xs font-mono text-gray-9000">
+                      {fmt(tp.taxable_revenue, tp.currency)}
+                    </span>
+                    <span className="col-span-2 text-right text-xs font-mono font-bold"
+                      style={{ color: tp.vat_owed === 0 ? '#6B7280' : isUrgent ? '#EF4444' : '#F59E0B' }}>
+                      {fmt(tp.vat_owed, tp.currency)}
+                    </span>
+                    <div className="col-span-1">
+                      <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full"
+                        style={{ color: st.color, background: st.bg }}>
+                        {st.label}
+                      </span>
+                      {isOverdue && (
+                        <p className="text-[8px] text-red-700 mt-0.5 font-mono">FÖRSENAD</p>
+                      )}
+                      {!isOverdue && tp.due_date && (
+                        <p className="text-[8px] text-gray-600 mt-0.5 font-mono">→ {tp.due_date.slice(5)}</p>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </>
+        )}
       </div>
     </div>
   )

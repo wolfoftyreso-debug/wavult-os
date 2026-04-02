@@ -1,5 +1,6 @@
 import { useEntityScope } from '../../shared/scope/EntityScopeContext'
-import { CASHFLOW_DATA, FINANCE_ENTITIES, type EntityId } from './mockData'
+import { useFinanceCashFlow, useFinanceEntities } from './hooks/useFinance'
+import type { FinanceCashFlow, FinanceEntity } from '../../lib/supabase'
 
 function fmt(n: number) {
   const abs = Math.abs(n)
@@ -18,9 +19,8 @@ function calcRunway(cashBalance: number, avgMonthlyOutflow: number): string {
   return `${Math.round(months * 30)} dagar`
 }
 
-function EntityCashFlow({ entityId, entityColor }: { entityId: EntityId; entityColor: string }) {
-  const data = CASHFLOW_DATA[entityId] ?? []
-  const fe = FINANCE_ENTITIES.find(e => e.id === entityId)!
+function EntityCashFlow({ entity, allCashFlow }: { entity: FinanceEntity; allCashFlow: FinanceCashFlow[] }) {
+  const data = allCashFlow.filter(cf => cf.entity_id === entity.id)
   if (data.length === 0) return null
 
   const maxVal = Math.max(...data.map(d => Math.max(d.inflow, d.outflow)))
@@ -28,7 +28,6 @@ function EntityCashFlow({ entityId, entityColor }: { entityId: EntityId; entityC
   const totalOutflow = data.reduce((s, d) => s + d.outflow, 0)
   const netTotal = totalInflow - totalOutflow
 
-  // Runway: antag kassan = totalInflow - totalOutflow senaste 6 mån, avg outflow
   const avgMonthlyOutflow = totalOutflow / data.length
   const estimatedCash = Math.max(netTotal, 0)
   const runwayText = calcRunway(estimatedCash, avgMonthlyOutflow)
@@ -44,12 +43,12 @@ function EntityCashFlow({ entityId, entityColor }: { entityId: EntityId; entityC
     <div className="rounded-xl border border-surface-border bg-white overflow-hidden">
       {/* Header */}
       <div className="px-4 py-3 border-b border-surface-border flex items-center gap-2">
-        <span className="h-2 w-2 rounded-full flex-shrink-0" style={{ background: entityColor }} />
-        <span className="text-xs font-semibold text-text-primary">{fe.name}</span>
-        <span className="text-[9px] font-mono text-gray-9000 ml-1">{fe.jurisdiction}</span>
+        <span className="h-2 w-2 rounded-full flex-shrink-0" style={{ background: entity.color }} />
+        <span className="text-xs font-semibold text-text-primary">{entity.name}</span>
+        <span className="text-[9px] font-mono text-gray-9000 ml-1">{entity.jurisdiction}</span>
         <span className="ml-auto text-[9px] font-mono px-2 py-0.5 rounded-full"
-          style={{ background: entityColor + '15', color: entityColor }}>
-          {fe.currency}
+          style={{ background: entity.color + '15', color: entity.color }}>
+          {entity.currency}
         </span>
       </div>
 
@@ -58,18 +57,18 @@ function EntityCashFlow({ entityId, entityColor }: { entityId: EntityId; entityC
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <div className="px-3 py-2 rounded-lg bg-muted/30 text-center">
             <p className="text-[9px] text-gray-9000 font-mono uppercase">Inbetalningar 6m</p>
-            <p className="text-[14px] font-bold text-green-700 mt-1">{fmt(totalInflow)} {fe.currency}</p>
+            <p className="text-[14px] font-bold text-green-700 mt-1">{fmt(totalInflow)} {entity.currency}</p>
             <p className="text-[8px] text-gray-600 mt-0.5">pengar som kommit in</p>
           </div>
           <div className="px-3 py-2 rounded-lg bg-muted/30 text-center">
             <p className="text-[9px] text-gray-9000 font-mono uppercase">Utbetalningar 6m</p>
-            <p className="text-[14px] font-bold text-red-700 mt-1">{fmt(totalOutflow)} {fe.currency}</p>
+            <p className="text-[14px] font-bold text-red-700 mt-1">{fmt(totalOutflow)} {entity.currency}</p>
             <p className="text-[8px] text-gray-600 mt-0.5">pengar som gått ut</p>
           </div>
           <div className="px-3 py-2 rounded-lg bg-muted/30 text-center">
             <p className="text-[9px] text-gray-9000 font-mono uppercase">Netto 6m</p>
             <p className="text-[14px] font-bold mt-1" style={{ color: netTotal >= 0 ? '#10B981' : '#EF4444' }}>
-              {netTotal >= 0 ? '+' : ''}{fmt(netTotal)} {fe.currency}
+              {netTotal >= 0 ? '+' : ''}{fmt(netTotal)} {entity.currency}
             </p>
             <p className="text-[8px] text-gray-600 mt-0.5">in minus ut</p>
           </div>
@@ -84,16 +83,14 @@ function EntityCashFlow({ entityId, entityColor }: { entityId: EntityId; entityC
         {/* Chart */}
         <div>
           <p className="text-xs text-gray-9000 font-mono mb-1">Inbetalningar (grön) vs Utbetalningar (röd) per månad</p>
-          <p className="text-[9px] text-gray-600 mb-3">Y-axeln visar belopp i {fe.currency} — högre stapel = mer pengar</p>
+          <p className="text-[9px] text-gray-600 mb-3">Y-axeln visar belopp i {entity.currency} — högre stapel = mer pengar</p>
           <div className="flex gap-2">
-            {/* Y-axis label */}
             <div className="flex flex-col justify-between text-right pr-2 py-1 flex-shrink-0">
               <span className="text-[8px] font-mono text-gray-600">{fmt(maxVal)}</span>
               <span className="text-[8px] font-mono text-gray-600">{fmt(maxVal / 2)}</span>
               <span className="text-[8px] font-mono text-gray-600">0</span>
             </div>
             <div className="flex-1">
-              {/* Bars — stacked per month */}
               <div className="flex items-end gap-2" style={{ height: 100 }}>
                 {data.map((d, i) => {
                   const inflowPct = maxVal > 0 ? (d.inflow / maxVal) * 100 : 0
@@ -110,7 +107,6 @@ function EntityCashFlow({ entityId, entityColor }: { entityId: EntityId; entityC
                   )
                 })}
               </div>
-              {/* Month labels */}
               <div className="flex gap-2 mt-1">
                 {data.map((d, i) => (
                   <div key={i} className="flex-1 text-center text-[9px] font-mono text-gray-9000">{d.month}</div>
@@ -118,7 +114,6 @@ function EntityCashFlow({ entityId, entityColor }: { entityId: EntityId; entityC
               </div>
             </div>
           </div>
-          {/* Legend */}
           <div className="flex gap-4 mt-2">
             <div className="flex items-center gap-1.5">
               <span className="h-2 w-3 rounded-sm bg-green-500/70" />
@@ -137,16 +132,16 @@ function EntityCashFlow({ entityId, entityColor }: { entityId: EntityId; entityC
           <div className="grid grid-cols-3 gap-3">
             <div>
               <p className="text-[9px] text-gray-9000 font-mono">Inbetalningar</p>
-              <p className="text-sm font-bold text-green-700">{fmt(forecastInflow)} {fe.currency}</p>
+              <p className="text-sm font-bold text-green-700">{fmt(forecastInflow)} {entity.currency}</p>
             </div>
             <div>
               <p className="text-[9px] text-gray-9000 font-mono">Utbetalningar</p>
-              <p className="text-sm font-bold text-red-700">{fmt(forecastOutflow)} {fe.currency}</p>
+              <p className="text-sm font-bold text-red-700">{fmt(forecastOutflow)} {entity.currency}</p>
             </div>
             <div>
               <p className="text-[9px] text-gray-9000 font-mono">Prognos netto</p>
               <p className="text-sm font-bold" style={{ color: forecastNet >= 0 ? '#10B981' : '#EF4444' }}>
-                {forecastNet >= 0 ? '+' : ''}{fmt(forecastNet)} {fe.currency}
+                {forecastNet >= 0 ? '+' : ''}{fmt(forecastNet)} {entity.currency}
               </p>
             </div>
           </div>
@@ -158,14 +153,26 @@ function EntityCashFlow({ entityId, entityColor }: { entityId: EntityId; entityC
 }
 
 export function CashFlowView() {
-  const { activeEntity, scopedEntities, viewScope } = useEntityScope()
+  const { activeEntity, viewScope } = useEntityScope()
   const isRoot = activeEntity.layer === 0
   const isGroupView = isRoot || viewScope === 'group'
-  const scopedIds = new Set(scopedEntities.map(e => e.id))
+
+  const { data: entities = [], isLoading: entitiesLoading } = useFinanceEntities()
+  const { data: cashFlow = [], isLoading: cashFlowLoading } = useFinanceCashFlow()
+
+  const isLoading = entitiesLoading || cashFlowLoading
 
   const entitiesToShow = isGroupView
-    ? FINANCE_ENTITIES
-    : FINANCE_ENTITIES.filter(fe => fe.id === activeEntity.id)
+    ? entities
+    : entities.filter(e => e.id === activeEntity.id)
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-40 text-gray-9000 text-xs">
+        Laddar kassaflödesdata...
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-4">
@@ -179,12 +186,12 @@ export function CashFlowView() {
       </div>
 
       {entitiesToShow.map(fe => (
-        <EntityCashFlow key={fe.id} entityId={fe.id} entityColor={fe.color} />
+        <EntityCashFlow key={fe.id} entity={fe} allCashFlow={cashFlow} />
       ))}
 
-      {entitiesToShow.length === 0 && (
+      {(entitiesToShow.length === 0 || entitiesToShow.every(fe => cashFlow.filter(cf => cf.entity_id === fe.id).length === 0)) && (
         <div className="text-center py-12 text-gray-9000 text-xs">
-          Ingen kassaflödesdata för {activeEntity.name} ännu
+          Ingen kassaflödesdata registrerad ännu
         </div>
       )}
     </div>

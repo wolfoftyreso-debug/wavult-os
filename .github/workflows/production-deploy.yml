@@ -1,0 +1,85 @@
+name: Production Deploy (Requires Approval)
+
+on:
+  workflow_dispatch:
+    inputs:
+      domain:
+        description: 'Domain to deploy (wavult.com | quixzoom.com | landvex.com)'
+        required: true
+        type: choice
+        options:
+          - wavult.com
+          - quixzoom.com
+          - landvex.com
+      deployment_request_id:
+        description: 'Deployment Request ID from Wavult OS (required)'
+        required: true
+        type: string
+
+# REQUIRED: Manual approval via GitHub Environments
+# Set up "production" environment in GitHub → Environments → Required reviewers
+
+jobs:
+  validate-request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate deployment request exists and is approved
+        run: |
+          RESPONSE=$(curl -sf \
+            "https://api.wavult.com/api/deployments/${{ github.event.inputs.deployment_request_id }}/status" \
+            -H "x-api-key: ${{ secrets.WAVULT_API_KEY }}")
+          STATUS=$(echo $RESPONSE | python3 -c "import sys,json; print(json.load(sys.stdin).get('status','unknown'))")
+          if [ "$STATUS" != "approved" ] && [ "$STATUS" != "deployed" ]; then
+            echo "❌ Deployment request is '$STATUS' — must be 'approved' in Wavult OS first"
+            exit 1
+          fi
+          echo "✅ Deployment request approved in Wavult OS (status: $STATUS)"
+
+  deploy:
+    needs: validate-request
+    runs-on: ubuntu-latest
+    environment: production  # Requires manual approval in GitHub → Environments → Required reviewers
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-north-1
+
+      - name: Deploy (restricted to approved domains only)
+        run: |
+          DOMAIN="${{ github.event.inputs.domain }}"
+          REQUEST_ID="${{ github.event.inputs.deployment_request_id }}"
+
+          echo "Deploying to: $DOMAIN (request: $REQUEST_ID)"
+
+          # Domain → CloudFront distribution mapping
+          case "$DOMAIN" in
+            wavult.com)   DIST_ID="E281H61AW2WQOH" ;;
+            quixzoom.com) DIST_ID="EE30B9WM5ZYM7" ;;
+            landvex.com)  DIST_ID="E2M3J95HLUR89H" ;;
+            *) echo "❌ Unknown domain: $DOMAIN"; exit 1 ;;
+          esac
+
+          echo "CloudFront distribution: $DIST_ID"
+
+          # Invalidate CDN cache
+          INVALIDATION=$(aws cloudfront create-invalidation \
+            --distribution-id $DIST_ID \
+            --paths "/*" \
+            --output json)
+          echo "Invalidation: $INVALIDATION"
+
+          echo "✅ Deployment executed for $DOMAIN"
+
+      - name: Record deployment in Wavult OS
+        run: |
+          curl -X POST \
+            "https://api.wavult.com/api/deployments/${{ github.event.inputs.deployment_request_id }}/mark-deployed" \
+            -H "x-api-key: ${{ secrets.WAVULT_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"deployed_by\": \"github-actions\", \"commit\": \"${{ github.sha }}\"}"
+          echo "✅ Deployment recorded in Wavult OS"
