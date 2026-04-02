@@ -88,11 +88,13 @@ function Thumb({ v, repoName, onClick }: { v: Version; repoName: string; onClick
   const [loaded, setLoaded] = useState(false)
   const [errored, setErrored] = useState(false)
 
-  // Sizes: live is largest (240x150), others 180x115
+  // Sizes depend on type and slot
   const isLive = v.slot === 'live'
-  const W = isLive ? 240 : 180
-  const H = isLive ? 150 : 115
-  const SCALE = W / (isLive ? 1200 : 1200)
+  // Mobile app: portrait phone shape
+  const isApp = !!repoName.match(/mobile|app|ios|android/i) || !!v.label?.toLowerCase().includes('app')
+  const W = isApp ? (isLive ? 130 : 100) : (isLive ? 240 : 180)
+  const H = isApp ? (isLive ? 240 : 185) : (isLive ? 150 : 115)
+  const SCALE = isApp ? (W / 375) : (W / 1200)
 
   const colors = {
     archive: { border:'rgba(10,61,98,.2)',  bg:'rgba(10,61,98,.04)', tag:'ARKIV',  tagColor:'rgba(10,61,98,.45)' },
@@ -103,7 +105,7 @@ function Thumb({ v, repoName, onClick }: { v: Version; repoName: string; onClick
   return (
     <div
       onClick={onClick}
-      style={{ width:W, cursor:'pointer', borderRadius:10, overflow:'hidden', border:`1.5px solid ${colors.border}`, background:colors.bg, transition:'transform .15s, box-shadow .15s', flexShrink:0 }}
+      style={{ width:W, cursor:'pointer', borderRadius: isApp ? 20 : 10, overflow:'hidden', border:`1.5px solid ${colors.border}`, background:colors.bg, transition:'transform .15s, box-shadow .15s', flexShrink:0, boxShadow: isApp ? 'inset 0 0 0 3px rgba(10,61,98,.08)' : 'none' }}
       onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.transform='translateY(-4px)';(e.currentTarget as HTMLElement).style.boxShadow='0 10px 28px rgba(10,61,98,.14)'}}
       onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform='';(e.currentTarget as HTMLElement).style.boxShadow=''}}
     >
@@ -123,6 +125,10 @@ function Thumb({ v, repoName, onClick }: { v: Version; repoName: string; onClick
             sandbox="allow-scripts allow-same-origin"
             title={`${repoName} ${v.version}`}
           />
+        )}
+        {/* Phone notch for apps */}
+        {isApp && loaded && (
+          <div style={{ position:'absolute', top:0, left:'50%', transform:'translateX(-50%)', width:40, height:14, background:colors.bg, borderRadius:'0 0 10px 10px', zIndex:2 }} />
         )}
         {/* Live badge */}
         {isLive && (
