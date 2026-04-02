@@ -157,7 +157,7 @@ function SidebarNav({ criticalAlertCount, onNavigate }: {
                 fontWeight: 600,
                 letterSpacing: '0.06em',
                 textTransform: 'uppercase',
-                color: 'var(--color-text-tertiary)',
+                color: 'var(--sidebar-text, rgba(245,240,232,0.75))',
               }}
             >
               {t(group.labelKey)}
@@ -180,12 +180,12 @@ function SidebarNav({ criticalAlertCount, onNavigate }: {
                     borderRadius: 'var(--radius-md)',
                     fontSize: 14,
                     fontWeight: isActive ? 600 : 400,
-                    color: isActive ? 'var(--color-accent)' : 'var(--color-text-secondary)',
-                    background: isActive ? 'var(--color-accent-light)' : 'transparent',
+                    color: isActive ? 'var(--sidebar-accent, #C9A84C)' : 'var(--sidebar-text, rgba(245,240,232,0.75))',
+                    background: isActive ? 'var(--sidebar-item-active, rgba(201,168,76,0.12))' : 'transparent',
                     transition: 'all var(--transition-fast)',
                     textDecoration: 'none',
                   }}
-                  onMouseEnter={e => !isActive && ((e.currentTarget as HTMLAnchorElement).style.background = 'var(--color-bg-grouped)')}
+                  onMouseEnter={e => !isActive && ((e.currentTarget as HTMLAnchorElement).style.background = 'var(--sidebar-item-hover, rgba(245,240,232,0.06))')}
                   onMouseLeave={e => !isActive && ((e.currentTarget as HTMLAnchorElement).style.background = 'transparent')}
                   end={item.to === '/'}
                 >
@@ -240,7 +240,7 @@ export function Shell({ children }: ShellProps) {
   const notificationCount = 3
 
   return (
-    <div className="flex overflow-hidden" style={{ height: '100dvh', minHeight: '100vh', width: '100vw', background: 'var(--color-bg-secondary)' }}>
+    <div className="flex overflow-hidden" style={{ height: '100dvh', minHeight: '100vh', width: '100vw', background: 'var(--color-bg, #F2EDE4)' }}>
 
       {/* Mobile overlay */}
       {sidebarOpen && (
@@ -259,25 +259,25 @@ export function Shell({ children }: ShellProps) {
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         `}
         style={{
-          background: 'var(--color-bg-primary)',
-          borderRight: '1px solid var(--color-border)',
+          background: 'var(--sidebar-bg, #1A1A2E)',
+          borderRight: '1px solid var(--sidebar-border, rgba(201,168,76,0.15))',
         }}
       >
         {/* Logo */}
-        <div className="flex items-center px-4" style={{ height: 52, borderBottom: '1px solid var(--color-border)' }}>
+        <div className="flex items-center px-4" style={{ height: 52, borderBottom: '1px solid var(--sidebar-border, rgba(201,168,76,0.15))' }}>
           <div className="flex items-center gap-2.5 min-w-0">
             <div
               className="flex items-center justify-center flex-shrink-0"
-              style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--color-accent)' }}
+              style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--sidebar-accent, #C9A84C)' }}
             >
-              <span style={{ fontSize: 13, fontWeight: 700, color: '#FFFFFF' }}>W</span>
+              <span style={{ fontSize: 13, fontWeight: 700, color: '#1A1A2E' }}>W</span>
             </div>
-            <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--color-text-primary)' }}>Wavult OS</span>
+            <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--sidebar-text-active, #F5F0E8)' }}>Wavult OS</span>
           </div>
           {/* Close btn (mobile) */}
           <button
             className="ml-auto md:hidden p-1"
-            style={{ color: 'var(--color-text-tertiary)' }}
+            style={{ color: 'var(--sidebar-text, rgba(245,240,232,0.75))' }}
             onClick={() => setSidebarOpen(false)}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -287,8 +287,8 @@ export function Shell({ children }: ShellProps) {
         </div>
 
         {/* Entity Switcher — prominent at top of nav */}
-        <div className="px-3 py-3" style={{ borderBottom: '1px solid var(--color-border)' }}>
-          <p className="px-1 mb-2" style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--color-text-tertiary)' }}>Aktivt bolag</p>
+        <div className="px-3 py-3" style={{ borderBottom: '1px solid var(--sidebar-border, rgba(201,168,76,0.15))' }}>
+          <p className="px-1 mb-2" style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--sidebar-text, rgba(245,240,232,0.75))' }}>Aktivt bolag</p>
           <EntitySwitcher />
         </div>
 
@@ -299,14 +299,14 @@ export function Shell({ children }: ShellProps) {
         />
 
         {/* Agent Claw — priority queue */}
-        <div className="pt-3 mt-2 px-2" style={{ borderTop: '1px solid var(--color-border)' }}>
-          <p className="px-3 py-1 mb-2" style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-mono)' }}>Agent Claw</p>
+        <div className="pt-3 mt-2 px-2" style={{ borderTop: '1px solid var(--sidebar-border, rgba(201,168,76,0.15))' }}>
+          <p className="px-3 py-1 mb-2" style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--sidebar-text, rgba(245,240,232,0.75))', fontFamily: 'var(--font-mono)' }}>Agent Claw</p>
           <AgentCommandPanel />
         </div>
 
         {/* Footer */}
-        <div className="px-4 py-3 mt-2" style={{ borderTop: '1px solid var(--color-border)' }}>
-          <p style={{ fontSize: 12, color: 'var(--color-text-tertiary)', fontFamily: 'var(--font-mono)' }}>Wavult Group 2026</p>
+        <div className="px-4 py-3 mt-2" style={{ borderTop: '1px solid var(--sidebar-border, rgba(201,168,76,0.15))' }}>
+          <p style={{ fontSize: 12, color: 'var(--sidebar-text, rgba(245,240,232,0.75))', fontFamily: 'var(--font-mono)' }}>Wavult Group 2026</p>
         </div>
       </aside>
 
@@ -318,7 +318,7 @@ export function Shell({ children }: ShellProps) {
           className="flex-shrink-0 flex items-center justify-between px-6"
           style={{
             height: 52,
-            background: 'rgba(242,242,247,0.85)',
+            background: 'var(--color-topbar-bg, rgba(242,237,228,0.92))',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
             borderBottom: '1px solid var(--color-border)',
@@ -442,7 +442,7 @@ export function Shell({ children }: ShellProps) {
         </header>
 
         {/* Content */}
-        <div className="content-scroll-area flex-1 overflow-auto" style={{ background: 'var(--color-bg-secondary)' }}>
+        <div className="content-scroll-area flex-1 overflow-auto" style={{ background: 'var(--color-bg, #F2EDE4)' }}>
           <div className="p-6 pb-[calc(env(safe-area-inset-bottom)+1.5rem)] md:pb-6">
             {children}
           </div>

@@ -38,46 +38,49 @@
 
 @layer base {
   :root {
+    /* ── Wavult OS — Warm cream/navy/gold theme ── */
+    /* Full tokens live in tokens.css; this block provides Tailwind layer aliases */
+
     /* ── BACKGROUND LAYERS ── */
-    --color-bg-base:       #F8FAFC;
+    --color-bg-base:       #F2EDE4;
     --color-bg-primary:    #FFFFFF;
-    --color-bg-secondary:  #F1F5F9;
+    --color-bg-secondary:  #EDE7DD;
     --color-bg-elevated:   #FFFFFF;
-    --color-bg-grouped:    #F1F5F9;
+    --color-bg-grouped:    #EDE7DD;
 
     /* ── BORDERS ── */
-    --color-border:        #E2E8F0;
-    --color-border-strong: #CBD5E1;
+    --color-border:        #DDD8CE;
+    --color-border-strong: #C8C1B4;
 
     /* ── TEXT ── */
-    --color-text-primary:    #0F172A;
-    --color-text-secondary:  #475569;
-    --color-text-tertiary:   #94A3B8;
-    --color-text-quaternary: #CBD5E1;
+    --color-text-primary:    #1A1A2E;
+    --color-text-secondary:  #4A4A6A;
+    --color-text-tertiary:   #8A8A9A;
+    --color-text-quaternary: #C8C1B4;
 
     /* ── SEMANTIC ── */
-    --color-success:    #16A34A;
-    --color-success-bg: #DCFCE7;
-    --color-warning:    #D97706;
-    --color-warning-bg: #FEF3C7;
-    --color-danger:     #DC2626;
-    --color-danger-bg:  #FEE2E2;
-    --color-info:       #0284C7;
-    --color-info-bg:    #E0F2FE;
+    --color-success:    #2D7A4F;
+    --color-success-bg: #E8F5ED;
+    --color-warning:    #B8760A;
+    --color-warning-bg: #FDF3E0;
+    --color-danger:     #C0392B;
+    --color-danger-bg:  #FDECEA;
+    --color-info:       #2C6EA6;
+    --color-info-bg:    #E3EFF8;
 
-    /* ── ACCENT ── */
-    --color-accent:       #2563EB;
-    --color-accent-hover: #1D4ED8;
-    --color-accent-light: #DBEAFE;
-    --color-accent-text:  #FFFFFF;
-    --color-brand:        #1E40AF;
-    --color-brand-hover:  #1E3A8A;
+    /* ── ACCENT — Gold ── */
+    --color-accent:       #C9A84C;
+    --color-accent-hover: #B8963C;
+    --color-accent-light: #F5EDD5;
+    --color-accent-text:  #1A1A2E;
+    --color-brand:        #1A1A2E;
+    --color-brand-hover:  #12122A;
 
-    /* ── SHADOWS ── */
-    --shadow-xs: 0 1px 2px rgba(0,0,0,.04);
-    --shadow-sm: 0 1px 2px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.04);
-    --shadow-md: 0 2px 4px rgba(0,0,0,.06), 0 4px 8px rgba(0,0,0,.04);
-    --shadow-lg: 0 4px 8px rgba(0,0,0,.06), 0 8px 16px rgba(0,0,0,.04);
+    /* ── SHADOWS — warm ── */
+    --shadow-xs: 0 1px 2px rgba(26,26,46,0.04);
+    --shadow-sm: 0 1px 3px rgba(26,26,46,0.06), 0 1px 2px rgba(26,26,46,0.04);
+    --shadow-md: 0 4px 12px rgba(26,26,46,0.08), 0 2px 4px rgba(26,26,46,0.04);
+    --shadow-lg: 0 8px 24px rgba(26,26,46,0.10), 0 4px 8px rgba(26,26,46,0.06);
 
     /* ── TYPOGRAPHY ── */
     --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
@@ -94,21 +97,22 @@
     --space-10: 40px;
     --space-12: 48px;
 
-    /* ── RADIUS — sharp ── */
-    --radius-sm:   3px;
-    --radius-md:   5px;
-    --radius-lg:   6px;
-    --radius-xl:   8px;
+    /* ── RADIUS — clean, professional ── */
+    --radius-sm:   4px;
+    --radius-md:   6px;
+    --radius-lg:   8px;
+    --radius-xl:   12px;
+    --radius-2xl:  16px;
     --radius-full: 9999px;
 
-    /* ── TRANSITIONS — fast ── */
+    /* ── TRANSITIONS ── */
     --transition-fast:   80ms ease;
     --transition-base:  120ms ease;
     --transition-slow:  200ms ease;
     --transition-normal: var(--transition-base);
 
     /* ── TOPBAR ── */
-    --color-topbar-bg: rgba(248,250,252,0.92);
+    --color-topbar-bg: rgba(242,237,228,0.92);
 
     /* ── LEGACY ALIASES ── */
     --bg-base:        var(--color-bg-base);
@@ -135,23 +139,24 @@
     --surface-raised:  var(--color-bg-primary);
     --surface-overlay: var(--color-bg-grouped);
     --entity-color:    var(--color-accent);
-    --color-muted: var(--color-bg-muted, #E2E8F0);
+    --color-muted: var(--color-bg-muted, #E5DED3);
   }
 
   /* Base styles */
   * { box-sizing: border-box; }
 
   body {
-    background: var(--color-bg-secondary);
-    color: var(--color-text-primary);
+    background: var(--color-bg, #F2EDE4);
+    color: var(--color-text-primary, #1A1A2E);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     -webkit-text-size-adjust: 100%;
   }
 
   #root {
-    background: var(--color-bg-secondary);
-    color: var(--color-text-primary);
+    background: var(--color-bg, #F2EDE4);
+    color: var(--color-text-primary, #1A1A2E);
     min-height: 100vh;
   }
 
@@ -187,12 +192,12 @@
     --color-info:       #38BDF8;
     --color-info-bg:    #0C1A2E;
 
-    --color-accent:       #3B82F6;
-    --color-accent-hover: #60A5FA;
-    --color-accent-light: #1E3A5F;
+    --color-accent:       #C9A84C;
+    --color-accent-hover: #E8C96C;
+    --color-accent-light: #2A2010;
     --color-accent-text:  #0F172A;
-    --color-brand:        #3B82F6;
-    --color-brand-hover:  #60A5FA;
+    --color-brand:        #C9A84C;
+    --color-brand-hover:  #E8C96C;
 
     --color-topbar-bg: rgba(10,15,30,0.92);
 
@@ -216,6 +221,46 @@
   .shadow-sm { box-shadow: var(--shadow-sm) !important; }
   .shadow-md { box-shadow: var(--shadow-md) !important; }
   .shadow-lg { box-shadow: var(--shadow-lg) !important; }
+
+  /* Scrollbar — warm toned */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--color-bg-subtle, #EDE7DD); }
+  ::-webkit-scrollbar-thumb { background: var(--color-border-strong, #C8C1B4); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-text-muted, #8A8A9A); }
+
+  /* Selection highlight — gold */
+  ::selection { background: rgba(201,168,76,0.2); color: var(--color-text-primary, #1A1A2E); }
+
+  /* Illustration helper classes */
+  .illustration {
+    background: #F5F0E8;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+  }
+  .illustration img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 8px;
+  }
+
+  /* Module illustration badges */
+  .module-illustration {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-lg);
+    background: var(--color-accent-subtle, #FAF5E8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .module-illustration img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+  }
 
   input, select, textarea {
     font-size: 16px !important;
