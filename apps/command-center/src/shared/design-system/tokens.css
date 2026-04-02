@@ -15,31 +15,31 @@ html, body, #root {
   ═══════════════════════════════════════════════════════════ */
 
   /* ── Backgrounds — warm cream tones ─────────────────────── */
-  --color-bg:              #F2EDE4;   /* main app background — warm cream */
-  --color-bg-subtle:       #EDE7DD;   /* sidebar, panels */
-  --color-bg-muted:        #E5DED3;   /* hover states */
-  --color-surface:         #FAF7F2;   /* cards, modals — slightly lighter */
+  --color-bg:              #F5F0E8;   /* main app background — warm cream */
+  --color-bg-subtle:       #EDE8DC;   /* sidebar, panels */
+  --color-bg-muted:        #E8E0D0;   /* hover states */
+  --color-surface:         #FDFAF5;   /* cards, modals — slightly lighter */
   --color-surface-raised:  #FFFFFF;   /* elevated cards */
-  --color-border:          #DDD8CE;   /* subtle border */
+  --color-border:          #DDD5C5;   /* subtle border */
   --color-border-strong:   #C8C1B4;   /* strong border */
 
   /* ── Text ────────────────────────────────────────────────── */
-  --color-text-primary:    #1A1A2E;   /* Wavult navy — primary text */
-  --color-text-secondary:  #4A4A6A;   /* secondary text */
+  --color-text-primary:    #0A3D62;   /* Wavult navy — primary text */
+  --color-text-secondary:  #2C5F8A;   /* secondary text */
   --color-text-muted:      #8A8A9A;   /* muted/placeholder */
   --color-text-inverse:    #F5F0E8;   /* text on dark backgrounds */
 
   /* ── Brand — Deep Navy ───────────────────────────────────── */
-  --color-brand:           #1A1A2E;   /* Wavult navy */
-  --color-brand-hover:     #12122A;
-  --color-brand-light:     #E8E8F5;
+  --color-brand:           #0A3D62;   /* Wavult navy */
+  --color-brand-hover:     #072E4A;
+  --color-brand-light:     #E0EBF4;
   --color-brand-subtle:    #F0F0F8;
 
   /* ── Accent — Gold ───────────────────────────────────────── */
-  --color-accent:          #C9A84C;   /* Wavult gold */
-  --color-accent-hover:    #B8963C;
-  --color-accent-light:    #F5EDD5;
-  --color-accent-subtle:   #FAF5E8;
+  --color-accent:          #E8B84B;   /* Wavult gold */
+  --color-accent-hover:    #D4A53A;
+  --color-accent-light:    #FDF4DC;
+  --color-accent-subtle:   #FEF8E8;
 
   /* ── Interactive — Navy (replaces cold blue) ─────────────── */
   --color-interactive:     #2C3E6B;   /* interactive blue-navy */
@@ -107,11 +107,11 @@ html, body, #root {
   --shadow-xl:   0 16px 48px rgba(26,26,46,0.12), 0 8px 16px rgba(26,26,46,0.08);
 
   /* ── Sidebar ─────────────────────────────────────────────── */
-  --sidebar-bg:            #1A1A2E;   /* deep navy sidebar */
+  --sidebar-bg:            #0A3D62;   /* deep navy sidebar */
   --sidebar-border:        rgba(201,168,76,0.15);
   --sidebar-text:          rgba(245,240,232,0.75);
   --sidebar-text-active:   #F5F0E8;
-  --sidebar-accent:        #C9A84C;
+  --sidebar-accent:        #E8B84B;
   --sidebar-item-hover:    rgba(245,240,232,0.06);
   --sidebar-item-active:   rgba(201,168,76,0.12);
 
@@ -156,7 +156,7 @@ html, body, #root {
   --color-brand-light:     #1E3A5F;
   --color-brand-subtle:    #0F2444;
 
-  --color-accent:          #C9A84C;
+  --color-accent:          #E8B84B;
   --color-accent-hover:    #E8C96C;
   --color-accent-light:    #2A2010;
   --color-accent-subtle:   #1A1508;
@@ -180,7 +180,7 @@ html, body, #root {
   --sidebar-border:        rgba(201,168,76,0.20);
   --sidebar-text:          rgba(226,232,240,0.65);
   --sidebar-text-active:   #E2E8F0;
-  --sidebar-accent:        #C9A84C;
+  --sidebar-accent:        #E8B84B;
   --sidebar-item-hover:    rgba(226,232,240,0.06);
   --sidebar-item-active:   rgba(201,168,76,0.15);
 
