@@ -18,6 +18,7 @@ import {
   Database,
   Zap,
   Film,
+  Shield,
 } from 'lucide-react'
 import { useRole, ROLES } from '../auth/RoleContext'
 import { useTheme } from '../theme/ThemeContext'
@@ -62,9 +63,15 @@ const NAV_GROUPS: NavGroup[] = [
   {
     labelKey: 'nav.platforms',
     items: [
-      { to: '/quixzoom-app',   labelKey: 'nav.quixzoom_app',   icon: Smartphone },
-      { to: '/landvex-portal', labelKey: 'nav.landvex_portal', icon: MapPin },
-      { to: '/quixzoom-ads',   labelKey: 'nav.quixzoom_ads',   icon: Package },
+      { to: '/zoomer-app',      labelKey: 'nav.zoomer_app',      icon: Smartphone },
+      { to: '/landvex-portal',  labelKey: 'nav.landvex_portal',  icon: MapPin },
+      { to: '/quixzoom-ads',    labelKey: 'nav.quixzoom_ads',    icon: Package },
+      { to: '/corpfitt',        labelKey: 'nav.corpfitt',        icon: Activity },
+      { to: '/venture-engine',  labelKey: 'nav.venture_engine',  icon: Rocket },
+      { to: '/uapix',           labelKey: 'nav.uapix',           icon: Shield },
+      { to: '/dissg',           labelKey: 'nav.dissg',           icon: Network },
+      { to: '/apifly',          labelKey: 'nav.apifly',          icon: Zap },
+      { to: '/mlcs',            labelKey: 'nav.mlcs',            icon: BookOpen },
     ],
   },
   {

@@ -93,6 +93,11 @@ const InfraMonitor           = lazy(() => import('./features/infrastructure/Infr
 const MediaPipelineView      = lazy(() => import('./features/media-pipeline/MediaPipelineView').then(m => ({ default: m.MediaPipelineView })))
 const BerntWidget            = lazy(() => import('./features/bernt/BerntWidget').then(m => ({ default: m.BerntWidget })))
 const AgentCommandPanel      = lazy(() => import('./features/agent/AgentCommandPanel').then(m => ({ default: m.AgentCommandPanel })))
+const CorpFittPlatform       = lazy(() => import('./features/corpfitt-platform/CorpFittView'))
+const UAPIXView              = lazy(() => import('./features/uapix/UAPIXView'))
+const DISSGView              = lazy(() => import('./features/dissg/DISSGView'))
+const ApiflyView             = lazy(() => import('./features/apifly/ApiflyView'))
+const MLCSPlatform           = lazy(() => import('./features/mlcs-platform/MLCSView'))
 
 // ─── Page loader fallback ───────────────────────────────────────────────────────
 function PageLoader() {
@@ -212,6 +217,12 @@ function AuthenticatedApp() {
               <Route path="/ops" element={<OperationsCenter />} />
               <Route path="/system-graph" element={<SystemGraph />} />
               <Route path="/quixzoom-app" element={<QuixzoomApp />} />
+              <Route path="/zoomer-app" element={<QuixzoomApp />} />
+              <Route path="/corpfitt" element={<CorpFittPlatform />} />
+              <Route path="/uapix" element={<UAPIXView />} />
+              <Route path="/dissg" element={<DISSGView />} />
+              <Route path="/apifly" element={<ApiflyView />} />
+              <Route path="/mlcs" element={<MLCSPlatform />} />
               <Route path="/landvex-portal" element={<LandvexPortal />} />
               <Route path="/quixzoom-ads" element={<QuixzoomAds />} />
               <Route path="/finance-flow" element={<FinanceFlow />} />
