@@ -5,6 +5,36 @@
 export const EMPLOYER_TAX_RATE = 0.3142 // Arbetsgivaravgift 31.42%
 export const TAX_TABLE = 33             // Skattetabell Stockholm
 
+// ─── Grundarteamets löneavtal ─────────────────────────────────────────────────
+// Villkor: Löner betalas aldrig ut om de sätter verksamheten i obestånd.
+// Prioritet: Verksamhetskostnader > Löner. Alltid.
+//
+//  Fas 1: Mån 1–6    → 20 000 kr/mån (brutto)
+//  Fas 2: Mån 7–12   → 50 000 kr/mån (brutto)
+//  Fas 3: Mån 13+    → 100 000 kr/mån (brutto)
+//
+export const FOUNDER_SALARY_SCHEDULE = [
+  { fromMonth: 1,  toMonth: 6,  grossMonthly: 20_000 },
+  { fromMonth: 7,  toMonth: 12, grossMonthly: 50_000 },
+  { fromMonth: 13, toMonth: Infinity, grossMonthly: 100_000 },
+] as const
+
+// Beräkna aktuell grundarlön baserat på startmånad
+export function founderCurrentSalary(startDate: string): number {
+  if (!startDate) return FOUNDER_SALARY_SCHEDULE[0].grossMonthly
+  const start = new Date(startDate)
+  const now = new Date()
+  const monthsElapsed = (now.getFullYear() - start.getFullYear()) * 12
+    + (now.getMonth() - start.getMonth()) + 1
+  const phase = FOUNDER_SALARY_SCHEDULE.find(
+    s => monthsElapsed >= s.fromMonth && monthsElapsed <= s.toMonth
+  )
+  return phase?.grossMonthly ?? FOUNDER_SALARY_SCHEDULE[2].grossMonthly
+}
+
+// Startdatum för alla grundare — satt till 2026-04-11 (Thailand workcamp)
+export const FOUNDER_START_DATE = '2026-04-11'
+
 // Swedish income tax approximation for table 33 (Stockholm, ~2026)
 export function calcTaxDeduction(grossMonthly: number): number {
   if (grossMonthly <= 20_000) return grossMonthly * 0.25
@@ -30,8 +60,9 @@ export interface Employee {
   location: string
 }
 
-// Anställda — struktur bevaras, löner hämtas från databasen
-// grossSalary = 0 tills registrerat i Supabase (employees.gross_salary)
+// Anställda — grundarteamet
+// grossSalary beräknas dynamiskt via founderCurrentSalary(startDate)
+// Löner utbetalas ENDAST om likviditeten tillåter det (aldrig obestånd)
 export const EMPLOYEES: Employee[] = [
   {
     id: 'erik',
@@ -40,12 +71,27 @@ export const EMPLOYEES: Employee[] = [
     role: 'Chairman & Group CEO',
     email: 'erik@wavult.com',
     phone: '+46709123223',
-    startDate: '',
-    grossSalary: 0,
+    startDate: FOUNDER_START_DATE,
+    grossSalary: founderCurrentSalary(FOUNDER_START_DATE),
     employmentRate: 1.0,
     status: 'active',
     taxTable: 33,
     color: '#2563EB',
+    location: 'Stockholm',
+  },
+  {
+    id: 'johan',
+    name: 'Johan Berglund',
+    initials: 'JB',
+    role: 'Group CTO',
+    email: 'johan@wavult.com',
+    phone: '+46736977576',
+    startDate: FOUNDER_START_DATE,
+    grossSalary: founderCurrentSalary(FOUNDER_START_DATE),
+    employmentRate: 1.0,
+    status: 'active',
+    taxTable: 33,
+    color: '#06B6D4',
     location: 'Stockholm',
   },
   {
@@ -55,8 +101,8 @@ export const EMPLOYEES: Employee[] = [
     role: 'CEO Wavult Operations',
     email: 'leon@wavult.com',
     phone: '+46738968949',
-    startDate: '',
-    grossSalary: 0,
+    startDate: FOUNDER_START_DATE,
+    grossSalary: founderCurrentSalary(FOUNDER_START_DATE),
     employmentRate: 1.0,
     status: 'active',
     taxTable: 33,
@@ -70,8 +116,8 @@ export const EMPLOYEES: Employee[] = [
     role: 'CFO',
     email: 'winston@wavult.com',
     phone: '0768123548',
-    startDate: '',
-    grossSalary: 0,
+    startDate: FOUNDER_START_DATE,
+    grossSalary: founderCurrentSalary(FOUNDER_START_DATE),
     employmentRate: 1.0,
     status: 'active',
     taxTable: 33,
@@ -85,27 +131,12 @@ export const EMPLOYEES: Employee[] = [
     role: 'Board / Chief Legal & Operations',
     email: 'dennis@wavult.com',
     phone: '0761474243',
-    startDate: '',
-    grossSalary: 0,
+    startDate: FOUNDER_START_DATE,
+    grossSalary: founderCurrentSalary(FOUNDER_START_DATE),
     employmentRate: 1.0,
     status: 'active',
     taxTable: 33,
     color: '#F59E0B',
-    location: 'Stockholm',
-  },
-  {
-    id: 'johan',
-    name: 'Johan Berglund',
-    initials: 'JB',
-    role: 'Group CTO',
-    email: 'johan@wavult.com',
-    phone: '+46736977576',
-    startDate: '',
-    grossSalary: 0,
-    employmentRate: 1.0,
-    status: 'active',
-    taxTable: 33,
-    color: '#06B6D4',
     location: 'Stockholm',
   },
 ]
