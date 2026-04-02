@@ -12,6 +12,7 @@ import { COMMAND_CHAIN, getDirectReports, getApexRole } from './commandChain'
 import { generateIncidents, computePropagation, getRoleKPIs, getKPIStatus, KPI_STATUS_COLOR } from '../incidents/incidentEngine'
 import { MARKET_SITES, SITE_STATUS_COLOR } from '../market-sites/data'
 import { useTranslation } from '../../shared/i18n/useTranslation'
+import { useOrgGraph } from './useOrgGraph'
 
 // ─── Layout constants ──────────────────────────────────────────────────────────
 
@@ -41,7 +42,7 @@ const TOTAL_W     = CMD_X_START + CMD_NODE_W + 32  // full svg width with comman
 function layoutNodes(visibleLayers: number[]): Map<string, { x: number; y: number }> {
   const positions = new Map<string, { x: number; y: number }>()
   const byLayer: Record<number, Entity[]> = {}
-  ENTITIES.filter(e => visibleLayers.includes(e.layer)).forEach(e => {
+  liveEntities.filter(e => visibleLayers.includes(e.layer)).forEach(e => {
     if (!byLayer[e.layer]) byLayer[e.layer] = []
     byLayer[e.layer].push(e)
   })
@@ -648,7 +649,7 @@ function DrillPanel({
             <div className="space-y-1">
               {outgoing.map(r => {
                 const s = REL_STYLE[r.type]
-                const target = ENTITIES.find(e => e.id === r.to_entity_id)
+                const target = liveEntities.find(e => e.id === r.to_entity_id)
                 return (
                   <div key={r.id} className="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-gray-100">
                     <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: s.stroke }} />
@@ -663,7 +664,7 @@ function DrillPanel({
               })}
               {incoming.map(r => {
                 const s = REL_STYLE[r.type]
-                const source = ENTITIES.find(e => e.id === r.from_entity_id)
+                const source = liveEntities.find(e => e.id === r.from_entity_id)
                 return (
                   <div key={r.id} className="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-surface-border/50 bg-muted/30">
                     <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: s.stroke }} />
@@ -1005,6 +1006,7 @@ function CommandChainLayer({
 // ─── Main OrgGraph component ───────────────────────────────────────────────────
 
 export function OrgGraph() {
+  const { entities: liveEntities, relationships: liveRels, roleMappings: liveRoles } = useOrgGraph()
   const { t: _t } = useTranslation() // ready for i18n
   const { effectiveRole } = useRole()
   const { scopedEntities, activeEntity: scopeEntity } = useEntityScope()
@@ -1018,13 +1020,13 @@ export function OrgGraph() {
   const positions = useMemo(() => layoutNodes(perms.visibleLayers), [perms.visibleLayers])
   const visibleEntities = useMemo(() => {
     // Always show ALL entities in visible layers — scope dims rather than hides
-    return ENTITIES.filter(e => perms.visibleLayers.includes(e.layer))
+    return liveEntities.filter(e => perms.visibleLayers.includes(e.layer))
   }, [perms.visibleLayers])
 
   // Entities outside current scope get dimmed (not hidden)
   const scopedIds = useMemo(() => new Set(scopedEntities.map(e => e.id)), [scopedEntities])
   const visibleRels = useMemo(() =>
-    RELATIONSHIPS.filter(r =>
+    liveRels.filter(r =>
       perms.visibleRelTypes.includes(r.type) &&
       positions.has(r.from_entity_id) &&
       positions.has(r.to_entity_id)

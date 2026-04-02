@@ -18,6 +18,7 @@ import { testEmbedding } from './engines/embeddingEngine'
 import { testVision } from './engines/visionEngine'
 import ventureEngineRouter from './routes/venture-engine'
 import whoopRouter from './routes/whoop'
+import orgGraphRouter from './routes/org-graph'
 
 const app = express()
 
