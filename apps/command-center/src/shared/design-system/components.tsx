@@ -7,6 +7,7 @@
 
 import React from 'react'
 export { HumanFigure } from './HumanFigure'
+export { IllustrationModule, IllustrationPicker } from '../ui/IllustrationModule'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

@@ -33,6 +33,7 @@ import { GuidanceToast } from '../guidance/GuidanceToast'
 import { useTranslation } from '../i18n/useTranslation'
 import { useAuth } from '../auth/AuthContext'
 import { LanguageToggle } from '../i18n/LanguageToggle'
+import { IllustrationModule } from '../ui/IllustrationModule'
 
 // ─── Nav item/group types ──────────────────────────────────────────────────────
 
@@ -40,6 +41,7 @@ interface NavItem {
   to: string
   labelKey: string
   icon: React.ComponentType<{ className?: string }>
+  illustration?: string  // module key for IllustrationModule
 }
 
 interface NavGroup {
