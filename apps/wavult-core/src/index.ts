@@ -1,3 +1,4 @@
+import configRouter from './routes/config'
 import express from 'express'
 import rateLimit from 'express-rate-limit'
 import { taskRouter } from './routes/tasks'
@@ -86,6 +87,7 @@ app.use('/api/tax', taxRouter)             // Tax Integration — SE moms/AGD, U
 app.use('/api/tax-automation', taxAutomationRouter)
 app.use('/api/deployments', deploymentsRouter)   // Deployment gate — two-step approval, version history, rollback
 app.use('/api/cockpit', cockpitRouter)           // Cockpit — live metrics: latency, Gitea, DB, Cloudflare
+app.use('/api/config', configRouter)
 app.use('/', accountsRouter)                    // Customer account ledger + invoice spool file
 app.use('/', revolutOAuthRouter)
 app.use('/', healthMonitor)

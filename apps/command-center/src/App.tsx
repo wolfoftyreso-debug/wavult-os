@@ -1,3 +1,5 @@
+import { FoundingConfig } from './features/onboarding/FoundingConfig'
+import { useState, useEffect } from 'react'
 import { useGlobalScrollReveal } from './shared/hooks/useScrollReveal'
 // ─── Wavult OS v2 — Application Root ───────────────────────────────────────────
 // Provider hierarchy: Auth → Role → EntityScope → Operator → Events → Shell
@@ -236,6 +238,22 @@ function AuthenticatedApp() {
       </EventProvider>
     </OperatorProvider>
   )
+}
+
+function ConfigGate({ children }: { children: React.ReactNode }) {
+  const [checked, setChecked] = useState(false)
+  const [needsConfig, setNeedsConfig] = useState(false)
+
+  useEffect(() => {
+    fetch('/api/config/founding', { headers: { 'x-api-key': import.meta.env.VITE_API_CORE_KEY || '' } })
+      .then(r => r.json())
+      .then(d => { setNeedsConfig(!d.complete); setChecked(true) })
+      .catch(() => setChecked(true))
+  }, [])
+
+  if (!checked) return null
+  if (needsConfig) return <FoundingConfig onComplete={() => setNeedsConfig(false)} />
+  return <>{children}</>
 }
 
 export default function App() {
