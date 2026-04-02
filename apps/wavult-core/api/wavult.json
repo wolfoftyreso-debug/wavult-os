@@ -1,0 +1,43 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Wavult API",
+    "version": "1.0.0",
+    "description": "Wavult OS public/internal API documentation"
+  },
+  "invoice_api": {
+    "description": "VW Spolfil-principen: invoice header and line items are separate resources. Summary never includes line details.",
+    "endpoints": {
+      "invoice_summary":        "GET /api/invoices/{id}",
+      "invoice_lines":          "GET /api/invoices/{id}/lines",
+      "invoice_audit":          "GET /api/invoices/{id}/audit",
+      "invoice_add_line":       "POST /api/invoices/{id}/lines",
+      "account_balance":        "GET /api/accounts/{id}",
+      "account_list":           "GET /api/accounts",
+      "account_create":         "POST /api/accounts",
+      "account_transactions":   "GET /api/accounts/{id}/transactions",
+      "account_add_transaction":"POST /api/accounts/{id}/transactions",
+      "payment_webhook":        "POST /api/payments/webhook"
+    },
+    "webhooks": [
+      "invoice.created",
+      "invoice.paid",
+      "payment.sent",
+      "payment.received"
+    ],
+    "formats": ["JSON", "JSON-LD", "UBL 2.1", "EDIFACT (enterprise)"],
+    "auto_payment": {
+      "trigger": "net_balance < -(credit_threshold)",
+      "processor": "Revolut",
+      "status": "configured when Revolut OAuth is active"
+    },
+    "sensitive_endpoints": {
+      "note": "Never expose publicly",
+      "list": ["auth", "kyc", "pass", "payments", "account_balance"]
+    },
+    "public_endpoints": {
+      "note": "Safe to expose via public API",
+      "list": ["missions", "zoomers", "landvex_objects", "alerts", "dissg_data"]
+    }
+  }
+}
