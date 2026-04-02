@@ -353,7 +353,7 @@ export function DeploymentPipeline() {
     // Try to get real data, fall back to defaults
     apiFetch('/api/deployments/status')
       .then(r => r.ok ? r.json() : null)
-      .then(data => { if (data?.services) setServices(data.services) else setServices(DEFAULT_SERVICES) })
+      .then(data => { if (data?.services) { setServices(data.services) } else { setServices(DEFAULT_SERVICES) } })
       .catch(() => setServices(DEFAULT_SERVICES))
       .finally(() => setLoading(false))
   }, [apiFetch])
