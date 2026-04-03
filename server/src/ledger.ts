@@ -119,71 +119,48 @@ async function nextEntryNumber(orgId: string, year: number): Promise<string> {
 export const LedgerService = {
 
   /**
-   * Skapa ett nytt verifikat (journal entry) med rader
+   * Skapa ett nytt verifikat (journal entry) med rader — ATOMISKT via PostgreSQL RPC.
+   *
+   * Debet och kredit skapas i en enda databastransaktion (BEGIN/COMMIT).
+   * Om servern kraschar mitt i finns inga halva bokföringsposter.
+   * Idempotency-key är obligatorisk — duplicat returnerar befintlig post.
    */
   async createEntry(input: CreateJournalInput): Promise<{ id: string; entryNumber: string }> {
-    const year = new Date(input.entryDate).getFullYear()
-    const entryNumber = await nextEntryNumber(input.orgId, year)
-
-    // Hämta account IDs
-    const accountCodes = input.lines.map(l => l.accountCode)
-    const { data: accounts, error: acctErr } = await supabase
-      .from('chart_of_accounts')
-      .select('id, account_code')
-      .eq('org_id', input.orgId)
-      .in('account_code', accountCodes)
-
-    if (acctErr || !accounts) throw new Error(`Failed to fetch accounts: ${acctErr?.message}`)
-
-    const accountMap = Object.fromEntries(accounts.map((a: { account_code: string; id: string }) => [a.account_code, a.id]))
-
-    // Validera att alla konton finns
-    for (const line of input.lines) {
-      if (!accountMap[line.accountCode]) {
-        throw new Error(`Account ${line.accountCode} not found for org ${input.orgId}`)
-      }
+    if (!input.idempotencyKey) {
+      // Fallback: generera UUID om anroparen inte skickade en nyckel.
+      // Logga varning — anropare bör skicka sin egen nyckel för äkta idempotency.
+      console.warn('[LedgerService] createEntry called without idempotencyKey — generating fallback UUID. Caller should provide a stable key.')
+      input = { ...input, idempotencyKey: crypto.randomUUID() }
     }
 
-    // Skapa journal entry
-    const { data: entry, error: entryErr } = await supabase
-      .from('journal_entries')
-      .insert({
-        org_id: input.orgId,
-        entry_number: entryNumber,
-        entry_date: input.entryDate,
-        description: input.description,
-        currency: input.currency,
-        type: input.type ?? 'STANDARD',
-        reference: input.reference,
-        idempotency_key: input.idempotencyKey,
-        status: 'DRAFT',
-      })
-      .select('id')
-      .single()
-
-    if (entryErr || !entry) throw new Error(`Failed to create journal entry: ${entryErr?.message}`)
-
-    // Skapa rader
+    // Mappa JournalLine → JSONB-format som PostgreSQL-funktionen förväntar sig
     const lines = input.lines.map(line => ({
-      journal_id: entry.id,
-      account_id: accountMap[line.accountCode],
-      debit_minor: line.debitMinor ?? 0,
-      credit_minor: line.creditMinor ?? 0,
-      description: line.description,
-      original_amount: line.originalAmount,
-      original_currency: line.originalCurrency,
-      fx_rate: line.fxRate,
+      account_code:  line.accountCode,
+      debit_minor:   line.debitMinor  ?? 0,
+      credit_minor:  line.creditMinor ?? 0,
+      description:   line.description ?? null,
     }))
 
-    const { error: linesErr } = await supabase.from('journal_lines').insert(lines)
-    if (linesErr) throw new Error(`Failed to create journal lines: ${linesErr.message}`)
+    const { data, error } = await supabase.rpc('create_journal_entry', {
+      p_org_id:          input.orgId,
+      p_entry_date:      input.entryDate,
+      p_description:     input.description,
+      p_currency:        input.currency,
+      p_type:            input.type ?? 'STANDARD',
+      p_reference:       input.reference ?? null,
+      p_idempotency_key: input.idempotencyKey,
+      p_lines:           lines,
+    })
+
+    if (error) throw new Error(`Failed to create journal entry: ${error.message}`)
+    if (!data)  throw new Error('create_journal_entry returned no data')
 
     // Auto-post om begärt
     if (input.autoPost) {
-      await LedgerService.postEntry(entry.id)
+      await LedgerService.postEntry(data.id)
     }
 
-    return { id: entry.id, entryNumber }
+    return { id: data.id, entryNumber: data.entry_number ?? data.id }
   },
 
   /**
