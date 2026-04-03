@@ -367,11 +367,41 @@ app.get("/status", (req: Request, res: Response) => {
   res.send(getStatusDashboardHTML(req));
 });
 
-// Status probe — checks external URLs for the dashboard
+// SSRF guard — block private/internal IP ranges and non-HTTPS URLs
+function isPrivateUrl(urlStr: string): boolean {
+  try {
+    const u = new URL(urlStr);
+    if (u.protocol !== 'https:') return true;
+    const host = u.hostname.toLowerCase();
+    // Block localhost variants
+    if (host === 'localhost' || host === '::1') return true;
+    // Block common internal/private hostnames
+    if (host.endsWith('.internal') || host.endsWith('.local')) return true;
+    // Block private IPv4 ranges
+    const ipv4 = host.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+    if (ipv4) {
+      const [, a, b] = ipv4.map(Number);
+      if (a === 10) return true;                          // 10.0.0.0/8
+      if (a === 127) return true;                         // 127.0.0.0/8
+      if (a === 169 && b === 254) return true;            // 169.254.0.0/16 (link-local / AWS metadata)
+      if (a === 172 && b >= 16 && b <= 31) return true;  // 172.16.0.0/12
+      if (a === 192 && b === 168) return true;            // 192.168.0.0/16
+    }
+    return false;
+  } catch {
+    return true; // unparseable URL = block
+  }
+}
+
+// Status probe — checks external URLs for the dashboard (authenticated, SSRF-protected)
 app.get("/api/status-probe", async (req: Request, res: Response) => {
+  if (!(req as any).user) return res.status(401).json({ ok: false, error: 'Unauthorized' });
   const url = req.query.url as string;
   if (!url || !url.startsWith('https://')) {
     return res.status(400).json({ ok: false, error: 'invalid url' });
+  }
+  if (isPrivateUrl(url)) {
+    return res.status(400).json({ ok: false, error: 'private or internal URLs not allowed' });
   }
   try {
     const controller = new AbortController();
@@ -447,7 +477,9 @@ app.get("/health", healthLimiter, async (_req: Request, res: Response) => {
 // Sync API key bypass middleware — runs BEFORE async auth
 app.use((req: Request, _res: Response, next: NextFunction) => {
   const apiKey = (req.headers['x-api-key'] || req.headers['X-Api-Key']) as string;
-  if (apiKey && (apiKey === 'wavult-openclaw-2026' || apiKey === process.env.WAVULT_API_KEY)) {
+  // Internal API key — must be set via WAVULT_API_KEY env var (SSM Parameter Store).
+  // Never hardcode this value in source code.
+  if (apiKey && process.env.WAVULT_API_KEY && apiKey === process.env.WAVULT_API_KEY) {
     (req as any).user = {
       id: '00000000-0000-0000-0000-000000000001',
       org_id: '00020001-0000-0000-0000-000000000001',
@@ -1200,7 +1232,7 @@ app.post('/migrate-to-ic', async (req: import('express').Request, res: import('e
 });
 
 // ─── Perplexity AI Research endpoint ─────────────────────────────────────────
-app.post('/api/research', async (req, res) => {
+app.post('/api/research', auth, async (req, res) => {
   const { query, focus = 'internet' } = req.body
   if (!query) return res.status(400).json({ error: 'query required' })
   try {

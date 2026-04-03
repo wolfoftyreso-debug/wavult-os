@@ -40,7 +40,7 @@ router.post("/login", async (req: Request, res: Response) => {
   };
 
   // Sätt HttpOnly-cookie
-  res.cookie("pixdrift_session", session.access_token, {
+  res.cookie("wavult_session", session.access_token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
@@ -66,7 +66,7 @@ router.post("/magic-link", async (req: Request, res: Response) => {
     email,
     options: {
       emailRedirectTo:
-        process.env.MAGIC_LINK_REDIRECT ?? "https://workstation.bc.pixdrift.com",
+        process.env.MAGIC_LINK_REDIRECT ?? "https://app.wavult.com",
     },
   });
 
@@ -79,7 +79,7 @@ router.post("/magic-link", async (req: Request, res: Response) => {
 // ─────────────────────────────────────────────
 router.post("/logout", async (_req: Request, res: Response) => {
   await supabase.auth.signOut();
-  res.clearCookie("pixdrift_session", { path: "/" });
+  res.clearCookie("wavult_session", { path: "/" });
   return res.json({ success: true });
 });
 
@@ -89,7 +89,7 @@ router.post("/logout", async (_req: Request, res: Response) => {
 router.get("/me", async (req: Request, res: Response) => {
   const token =
     req.headers.authorization?.replace("Bearer ", "") ||
-    (req as any).cookies?.pixdrift_session;
+    (req as any).cookies?.wavult_session;
 
   if (!token) return res.status(401).json({ error: "Unauthorized" });
 
@@ -209,7 +209,7 @@ router.post("/register", async (req: Request, res: Response) => {
 export function requireAuth(req: Request, res: Response, next: NextFunction) {
   const token =
     req.headers.authorization?.replace("Bearer ", "") ||
-    (req as any).cookies?.pixdrift_session;
+    (req as any).cookies?.wavult_session;
 
   if (!token) return res.status(401).json({ error: "Unauthorized" });
 

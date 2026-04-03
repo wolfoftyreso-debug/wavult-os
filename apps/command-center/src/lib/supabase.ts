@@ -1,11 +1,17 @@
 import { createClient } from '@supabase/supabase-js'
 
-const SUPABASE_URL = 'https://znmxtnxxjpmgtycmsqjv.supabase.co'
-// Wavult OS är ett internt verktyg — service role key ger full access utan RLS-blockering.
-// Exponeras inte i publik frontend-kod.
-const SUPABASE_SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpubXh0bnh4anBtZ3R5Y21zcWp2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3Mzg4MDY2NSwiZXhwIjoyMDg5NDU2NjY1fQ.4R1tNeukZRBbAhxvo0rHPf9KZKEOjiILTeDIN9hYBjc'
+// SECURITY: Frontend uses anon key + server-side auth ONLY.
+// Service role key must NEVER appear in frontend code — it ships in the JS bundle
+// and gives anyone full database access bypassing RLS.
+// Privileged operations go through the server API (api.wavult.com).
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  console.error('Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY — check .env.local')
+}
+
+export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
 // ─── Legacy LedgerEntry type (kept for backward compat) ──────────────────────
 
