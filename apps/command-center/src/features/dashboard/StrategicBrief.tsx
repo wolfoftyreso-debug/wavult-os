@@ -424,42 +424,24 @@ function MissionCard() {
     <div>
       {/* Geographic context — Stockholm market */}
       <div
-        className="rounded-xl overflow-hidden mb-4 relative"
-        style={{ height: 160 }}
+        className="rounded-xl mb-4 flex items-center gap-3 px-4"
+        style={{
+          height: 56,
+          background: 'linear-gradient(90deg, var(--color-bg-secondary) 0%, var(--color-bg-grouped) 100%)',
+          border: '1px solid var(--color-border)',
+        }}
         aria-hidden="true"
       >
-        <img
-          src="/images/os-briefing-map.jpg"
-          alt="Stockholm archipelago — quiXzoom launch market"
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            objectPosition: 'center',
-            display: 'block',
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'linear-gradient(to bottom, transparent 40%, var(--color-bg) 100%)',
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 10,
-            left: 12,
-            fontSize: 10,
-            fontFamily: 'var(--font-mono)',
-            color: 'rgba(255,255,255,0.6)',
-            letterSpacing: '0.06em',
-            textTransform: 'uppercase',
-          }}
-        >
+        <span style={{ fontSize: 18 }}>🗺️</span>
+        <span style={{
+          fontSize: 11,
+          fontFamily: 'var(--font-mono)',
+          color: 'var(--color-text-tertiary)',
+          letterSpacing: '0.06em',
+          textTransform: 'uppercase',
+        }}>
           Primary market: Stockholm Archipelago · Launch Q2 2026
-        </div>
+        </span>
       </div>
 
       <div className="rounded-2xl bg-gradient-to-br from-blue-600/10 via-blue-500/5 to-transparent border border-blue-600/20 p-5">
