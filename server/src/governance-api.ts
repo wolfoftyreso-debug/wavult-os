@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import crypto from 'crypto'
 import { runFullGovernanceSweep, runLedgerAudit, runPaymentAudit, runSystemHealth } from './governance'
 import { supabase, isSupabaseFallback } from './supabase'
 
@@ -6,19 +7,35 @@ const DB_UNAVAILABLE_WARNING = 'Database unavailable — results are incomplete.
 
 export const governanceRouter = Router()
 
-// POST /api/governance/sweep — Kör full sweep
+// In-memory job store (replace with Redis/DB for multi-container)
+const governanceJobs = new Map<string, { status: string; result?: any; error?: string; startedAt: string; completedAt?: string }>()
+
+// POST /api/governance/sweep — Kör full sweep (fire-and-forget, returns jobId)
 governanceRouter.post('/sweep', async (req, res) => {
   if (isSupabaseFallback()) {
-    return res.status(503).json({ ok: false, error: DB_UNAVAILABLE_WARNING })
+    return res.status(503).json({ ok: false, error: 'Database unavailable' })
   }
-  try {
-    const { orgId } = req.body as { orgId?: string }
-    const result = await runFullGovernanceSweep(orgId)
-    res.json({ ok: true, data: result })
-  } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : String(err)
-    res.status(500).json({ ok: false, error: msg })
-  }
+  const { orgId } = req.body as { orgId?: string }
+  const jobId = crypto.randomUUID()
+  governanceJobs.set(jobId, { status: 'running', startedAt: new Date().toISOString() })
+
+  // Fire and forget
+  runFullGovernanceSweep(orgId)
+    .then(result => {
+      governanceJobs.set(jobId, { status: 'completed', result, startedAt: governanceJobs.get(jobId)!.startedAt, completedAt: new Date().toISOString() })
+    })
+    .catch(err => {
+      governanceJobs.set(jobId, { status: 'failed', error: String(err), startedAt: governanceJobs.get(jobId)!.startedAt, completedAt: new Date().toISOString() })
+    })
+
+  res.status(202).json({ ok: true, jobId, message: 'Governance sweep started' })
+})
+
+// GET /api/governance/sweep/:jobId — Poll sweep job status
+governanceRouter.get('/sweep/:jobId', (req, res) => {
+  const job = governanceJobs.get(req.params.jobId)
+  if (!job) return res.status(404).json({ ok: false, error: 'Job not found' })
+  res.json({ ok: true, ...job })
 })
 
 // POST /api/governance/audit/ledger
