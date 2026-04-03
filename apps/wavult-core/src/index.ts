@@ -31,6 +31,7 @@ import accountingRouter from './routes/accounting'
 import auditRouter from './routes/audit'
 import taxRouter from './routes/tax-integration'
 import visaRouter from './routes/visa'
+import qmsRouter from './routes/qms'
 import taxAutomationRouter from './routes/tax-automation'
 import deploymentsRouter from './routes/deployments'
 import cockpitRouter from './routes/cockpit'
@@ -94,6 +95,7 @@ app.use('/api/tax-automation', taxAutomationRouter)
 app.use('/api/deployments', deploymentsRouter)   // Deployment gate — two-step approval, version history, rollback
 app.use('/api/cockpit', cockpitRouter)           // Cockpit — live metrics: latency, Gitea, DB, Cloudflare
 app.use('/v1/system', systemAuditRouter)        // System Audit — parallella health-checks, healthScore
+app.use('/', qmsRouter)                         // QMS — ISO 9001/27001/GDPR/NIS2 compliance tracking
 app.use('/api/config', configRouter)
 app.use('/api/dgs', dgsRouter)
 app.use('/', accountsRouter)                    // Customer account ledger + invoice spool file

@@ -3,9 +3,8 @@ import { useGlobalScrollReveal } from './shared/hooks/useScrollReveal'
 // ─── Wavult OS v2 — Application Root ───────────────────────────────────────────
 // Provider hierarchy: Auth → Role → EntityScope → Operator → Events → Shell
 
-import React, { lazy, Suspense, useState, useCallback } from 'react'
+import React, { lazy, Suspense, useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
-import { BootSequence } from './shared/boot/BootSequence'
 import { AuthProvider, useAuth } from './shared/auth/AuthContext'
 import { ThemeProvider } from './shared/theme/ThemeContext'
 import { LoginPage } from './shared/auth/LoginPage'
@@ -16,7 +15,6 @@ import { EventProvider } from './core/events/EventContext'
 import { RoleLogin } from './shared/auth/RoleLogin'
 import { ShellWithGuidance as Shell } from './shared/layout/Shell'
 import { RoleDashboard } from './features/dashboard/RoleDashboard'
-import { CockpitPanel, useCockpit } from './features/cockpit/CockpitPanel'
 
 // ─── Lazy-loaded feature routes ────────────────────────────────────────────────
 const TransactionFeed        = lazy(() => import('./features/transactions/TransactionFeed').then(m => ({ default: m.TransactionFeed })))
@@ -66,16 +64,16 @@ const TerraformMapView = lazy(() => import('./features/infrastructure/TerraformM
 const WavultIDView           = lazy(() => import('./features/identity/WavultIDView').then(m => ({ default: m.WavultIDView })))
 const CausalOS               = lazy(() => import('./features/causal-os/CausalOS').then(m => ({ default: m.CausalOS })))
 const CommandView            = lazy(() => import('./features/command-view/CommandView').then(m => ({ default: m.CommandView })))
-const MissionControl         = lazy(() => import('./features/mission-control/MissionControl').then(m => ({ default: m.MissionControl })))
 const PersonView             = lazy(() => import('./features/mission-control/PersonView').then(m => ({ default: m.PersonView })))
 const OperationsCenter       = lazy(() => import('./features/operations-center/OperationsCenter').then(m => ({ default: m.OperationsCenter })))
 const SystemGraph            = lazy(() => import('./features/system-graph/SystemGraph').then(m => ({ default: m.SystemGraph })))
 const QuixzoomApp            = lazy(() => import('./features/quixzoom-app/QuixzoomApp').then(m => ({ default: m.QuixzoomApp })))
 const LandvexPortal          = lazy(() => import('./features/landvex-portal/LandvexPortal').then(m => ({ default: m.LandvexPortal })))
 const QuixzoomAds            = lazy(() => import('./features/quixzoom-ads/QuixzoomAds').then(m => ({ default: m.QuixzoomAds })))
-const FinanceFlow            = lazy(() => import('./features/finance-flow/FinanceFlow').then(m => ({ default: m.FinanceFlow })))
+const FinanceFlow            = lazy(() => import('./features/finance-flow/FinanceFlow'))
 const FlightSearch           = lazy(() => import('./features/travel/FlightSearch').then(m => ({ default: m.FlightSearch })))
 const VisaHub                = lazy(() => import('./features/visa/VisaHub').then(m => ({ default: m.VisaHub })))
+const QmsDashboard           = lazy(() => import('./features/qms/QmsDashboard').then(m => ({ default: m.QmsDashboard })))
 const TravelAutomationHub    = lazy(() => import('./features/travel/TravelAutomationHub').then(m => ({ default: m.TravelAutomationHub })))
 const UberHub                = lazy(() => import('./features/travel/UberHub').then(m => ({ default: m.UberHub })))
 const OpenClawHub            = lazy(() => import('./features/openclaw/OpenClawHub').then(m => ({ default: m.OpenClawHub })))
@@ -83,7 +81,6 @@ const DeploymentPipeline     = lazy(() => import('./features/deployments/Deploym
 const NetworkMap             = lazy(() => import('./features/network-map/NetworkMap').then(m => ({ default: m.NetworkMap })))
 const VentureEngine          = lazy(() => import('./features/venture-engine').then(m => ({ default: m.VentureEngine })))
 const TeamPhones             = lazy(() => import('./features/communications/TeamPhones').then(m => ({ default: m.TeamPhones })))
-const GitHubView             = lazy(() => import('./features/git/GitHub').then(m => ({ default: m.GitHub })))
 const GitViewComponent       = lazy(() => import('./features/git/GitView').then(m => ({ default: m.GitView })))
 const DatabaseManager        = lazy(() => import('./features/database/DatabaseManager').then(m => ({ default: m.DatabaseManager })))
 const DomainManager          = lazy(() => import('./features/domains/DomainManager').then(m => ({ default: m.DomainManager })))
@@ -229,6 +226,7 @@ function AuthenticatedApp() {
               <Route path="/finance-flow" element={<FinanceFlow />} />
               <Route path="/flights" element={<FlightSearch />} />
               <Route path="/visa" element={<VisaHub />} />
+              <Route path="/qms" element={<QmsDashboard />} />
               <Route path="/travel" element={<TravelAutomationHub />} />
               <Route path="/uber" element={<UberHub />} />
               <Route path="/phones" element={<TeamPhones />} />
