@@ -69,11 +69,11 @@ import { LithuaniaFormation } from './LithuaniaFormation'
 
 // ─── Owner colours ────────────────────────────────────────────────────────────
 const OWNER_META: Record<string, { label: string; color: string; bg: string }> = {
-  erik:     { label: 'Erik',     color: '#60A5FA', bg: '#1e3a5f' },
-  dennis:   { label: 'Dennis',   color: '#34D399', bg: '#064e3b' },
-  winston:  { label: 'Winston',  color: '#FBBF24', bg: '#451a03' },
-  leon:     { label: 'Leon',     color: '#F472B6', bg: '#500724' },
-  external: { label: 'External', color: '#9CA3AF', bg: '#F9FAFB' },
+  erik:     { label: 'Erik',     color: '#1e40af', bg: '#dbeafe' },
+  dennis:   { label: 'Dennis',   color: '#065f46', bg: '#d1fae5' },
+  winston:  { label: 'Winston',  color: '#92400e', bg: '#fef3c7' },
+  leon:     { label: 'Leon',     color: '#9d174d', bg: '#fce7f3' },
+  external: { label: 'External', color: '#374151', bg: '#f3f4f6' },
 }
 
 // ─── Category meta ────────────────────────────────────────────────────────────
@@ -117,10 +117,10 @@ function doneSteps(steps: LaunchStep[]) {
 }
 
 // ─── Mini progress bar ────────────────────────────────────────────────────────
-function ProgressBar({ value, max, color = '#60A5FA' }: { value: number; max: number; color?: string }) {
+function ProgressBar({ value, max, color = '#0A3D62' }: { value: number; max: number; color?: string }) {
   const pct = max === 0 ? 0 : Math.round((value / max) * 100)
   return (
-    <div className="h-1 w-full rounded-full bg-muted overflow-hidden">
+    <div className="h-1 w-full rounded-full overflow-hidden" style={{ background: '#E8E3D8' }}>
       <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: color }} />
     </div>
   )
@@ -129,9 +129,9 @@ function ProgressBar({ value, max, color = '#60A5FA' }: { value: number; max: nu
 // ─── Status badge ─────────────────────────────────────────────────────────────
 function StatusBadge({ status }: { status: CompanyLaunch['status'] }) {
   const map = {
-    not_started: { label: 'Not Started', color: '#6B7280', bg: '#F9FAFB' },
-    in_progress:  { label: 'In Progress', color: '#FBBF24', bg: '#451a03' },
-    operational:  { label: 'Operational', color: '#34D399', bg: '#064e3b' },
+    not_started: { label: 'Not Started', color: '#374151', bg: '#f3f4f6' },
+    in_progress:  { label: 'In Progress', color: '#92400e', bg: '#fef3c7' },
+    operational:  { label: 'Operational', color: '#065f46', bg: '#d1fae5' },
   }
   const m = map[status]
   return (
@@ -146,10 +146,10 @@ function StatusBadge({ status }: { status: CompanyLaunch['status'] }) {
 
 // ─── Single step row ──────────────────────────────────────────────────────────
 const STEP_STATUS_META: Record<string, { label: string; color: string; bg: string }> = {
-  pending:     { label: 'Pending',     color: '#9CA3AF', bg: '#1f2937' },
-  in_progress: { label: 'In Progress', color: '#FBBF24', bg: '#451a03' },
-  blocked:     { label: 'Blocked',     color: '#F87171', bg: '#450a0a' },
-  done:        { label: 'Done',        color: '#34D399', bg: '#064e3b' },
+  pending:     { label: 'Pending',     color: '#6B7280', bg: '#f3f4f6' },
+  in_progress: { label: 'In Progress', color: '#92400e', bg: '#fef3c7' },
+  blocked:     { label: 'Blocked',     color: '#991b1b', bg: '#fee2e2' },
+  done:        { label: 'Done',        color: '#065f46', bg: '#d1fae5' },
 }
 
 function StepRow({
@@ -175,10 +175,10 @@ function StepRow({
     <div
       className={`flex gap-3 p-3 rounded-lg border transition-all ${
         done
-          ? 'border-white/5 opacity-60'
+          ? 'border-[#D4C9B8] opacity-60'
           : isBlocked
-          ? 'border-red-900/30 bg-red-950/10'
-          : 'border-white/8 bg-muted/30 hover:bg-muted/30'
+          ? 'border-red-200 bg-red-50'
+          : 'border-[#D4C9B8] bg-white hover:bg-[#EDE8DE]'
       }`}
     >
       {/* Checkbox */}
@@ -190,7 +190,7 @@ function StepRow({
             ? 'bg-green-500 border-green-500'
             : isBlocked
             ? 'border-red-700 cursor-not-allowed'
-            : 'border-gray-300 hover:border-white/40 cursor-pointer'
+            : 'border-gray-300 hover:border-[#0A3D62] cursor-pointer'
         }`}
         title={isBlocked && !done ? 'Blocked by prerequisite' : done ? 'Mark as pending' : 'Mark as done'}
       >
@@ -234,7 +234,7 @@ function StepRow({
 
           {/* Blocked tag */}
           {isBlocked && !done && (
-            <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-red-900/40 text-red-700 flex-shrink-0">
+            <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-red-100 text-red-700 flex-shrink-0">
               ⛔ blocked
             </span>
           )}
@@ -269,7 +269,7 @@ function StepRow({
                 <span
                   key={pid}
                   className={`text-[9px] font-mono px-1 py-0.5 rounded ${
-                    depDone ? 'text-green-600 bg-green-950/30' : 'text-red-500 bg-red-950/30'
+                    depDone ? 'text-green-700 bg-green-100' : 'text-red-600 bg-red-100'
                   }`}
                 >
                   {pid}
@@ -339,10 +339,10 @@ function LaunchCompanyModal({
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
-      <div className="w-full max-w-md rounded-xl border border-white/10 bg-[#1a1a2e] shadow-2xl p-6 reveal">
+      <div className="w-full max-w-md rounded-xl border border-[#D4C9B8] bg-white shadow-2xl p-6 reveal">
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-sm font-bold text-text-primary">🚀 Launch New Company</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-white transition-colors text-lg leading-none">×</button>
+          <button onClick={onClose} className="text-gray-500 hover:text-[#1a1a2e] transition-colors text-lg leading-none">×</button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -354,7 +354,7 @@ function LaunchCompanyModal({
               value={name}
               onChange={e => setName(e.target.value)}
               placeholder="e.g. Landvex AB"
-              className="w-full px-3 py-2 rounded-lg bg-muted/50 border border-white/10 text-sm text-text-primary placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-colors reveal"
+              className="w-full px-3 py-2 rounded-lg bg-[#F5F0E8] border border-[#D4C9B8] text-sm text-text-primary placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors reveal"
               autoFocus
             />
           </div>
@@ -366,7 +366,7 @@ function LaunchCompanyModal({
               <select
                 value={type}
                 onChange={e => setType(e.target.value as any)}
-                className="w-full px-3 py-2 rounded-lg bg-muted/50 border border-white/10 text-sm text-text-primary focus:outline-none focus:border-blue-500 transition-colors reveal"
+                className="w-full px-3 py-2 rounded-lg bg-[#F5F0E8] border border-[#D4C9B8] text-sm text-text-primary focus:outline-none focus:border-blue-500 transition-colors reveal"
               >
                 <option value="AB">AB</option>
                 <option value="Inc">Inc</option>
@@ -380,7 +380,7 @@ function LaunchCompanyModal({
               <select
                 value={jurisdiction}
                 onChange={e => setJurisdiction(e.target.value as any)}
-                className="w-full px-3 py-2 rounded-lg bg-muted/50 border border-white/10 text-sm text-text-primary focus:outline-none focus:border-blue-500 transition-colors reveal"
+                className="w-full px-3 py-2 rounded-lg bg-[#F5F0E8] border border-[#D4C9B8] text-sm text-text-primary focus:outline-none focus:border-blue-500 transition-colors reveal"
               >
                 <option value="SE">🇸🇪 SE</option>
                 <option value="US-TX">🇺🇸 US-TX</option>
@@ -395,7 +395,7 @@ function LaunchCompanyModal({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs text-gray-400 mb-1">Flag (auto)</label>
-              <div className="px-3 py-2 rounded-lg bg-muted/30 border border-white/5 text-sm text-text-primary reveal">
+              <div className="px-3 py-2 rounded-lg bg-[#F0EBE1] border border-[#D4C9B8] text-sm text-text-primary reveal">
                 {flag} <span className="text-gray-500 text-xs ml-1">auto-filled</span>
               </div>
             </div>
@@ -404,7 +404,7 @@ function LaunchCompanyModal({
               <select
                 value={priority}
                 onChange={e => setPriority(Number(e.target.value))}
-                className="w-full px-3 py-2 rounded-lg bg-muted/50 border border-white/10 text-sm text-text-primary focus:outline-none focus:border-blue-500 transition-colors"
+                className="w-full px-3 py-2 rounded-lg bg-[#F5F0E8] border border-[#D4C9B8] text-sm text-text-primary focus:outline-none focus:border-blue-500 transition-colors"
               >
                 {[1,2,3,4,5].map(n => <option key={n} value={n}>{n}</option>)}
               </select>
@@ -419,19 +419,19 @@ function LaunchCompanyModal({
               onChange={e => setNotes(e.target.value)}
               rows={3}
               placeholder="Optional context or notes..."
-              className="w-full px-3 py-2 rounded-lg bg-muted/50 border border-white/10 text-sm text-text-primary placeholder-gray-600 focus:outline-none focus:border-blue-500 transition-colors resize-none"
+              className="w-full px-3 py-2 rounded-lg bg-[#F5F0E8] border border-[#D4C9B8] text-sm text-text-primary placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors resize-none"
             />
           </div>
 
           {error && (
-            <p className="text-xs text-red-400 bg-red-950/30 border border-red-900/30 rounded-lg px-3 py-2">{error}</p>
+            <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</p>
           )}
 
           <div className="flex gap-3 pt-1">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 rounded-lg text-xs font-semibold border border-white/10 text-gray-400 hover:text-white hover:border-white/20 transition-colors"
+              className="flex-1 px-4 py-2 rounded-lg text-xs font-semibold border border-[#D4C9B8] text-gray-500 hover:text-[#1a1a2e] hover:border-[#0A3D62] transition-colors"
             >
               Cancel
             </button>
@@ -579,7 +579,7 @@ export function CompanyLaunchView() {
   return (
     <div className="flex flex-col h-full overflow-hidden bg-muted/30 text-text-primary">
       {/* ── Tab bar ── */}
-      <div className="flex items-center gap-1 px-4 pt-3 pb-0 border-b border-white/8 flex-shrink-0">
+      <div className="flex items-center gap-1 px-4 pt-3 pb-0 border-b border-[#D4C9B8] flex-shrink-0">
         <button
           onClick={() => setActiveTab('bolag')}
           className={`px-4 py-2 text-xs font-semibold rounded-t-lg border-b-2 transition-colors ${
@@ -780,13 +780,13 @@ export function CompanyLaunchView() {
             <div className="space-y-3">
 
               {/* quiXzoom Inc. */}
-              <div className="rounded-lg border border-white/8 bg-muted/30 p-4 space-y-3">
+              <div className="rounded-lg border border-[#D4C9B8] bg-white p-4 space-y-3">
                 <div className="flex items-start justify-between gap-3 flex-wrap">
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-sm font-semibold text-text-primary">quiXzoom Inc.</span>
-                      <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full" style={{ color: '#FBBF24', background: '#451a03' }}>Delaware C-Corp</span>
-                      <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full" style={{ color: '#F59E0B', background: '#78350f33' }}>⏳ EIN Pending</span>
+                      <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full" style={{ color: '#92400e', background: '#fef3c7' }}>Delaware C-Corp</span>
+                      <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full" style={{ color: '#92400e', background: '#fef3c7' }}>⏳ EIN Pending</span>
                     </div>
                     <p className="text-xs text-gray-9000 mt-1">
                       Certificate of Good Standing krävs för: bankkontoöppning, enterpriseavtal, visumansökning, investerar-KYC
@@ -809,13 +809,13 @@ export function CompanyLaunchView() {
               </div>
 
               {/* Landvex Inc. */}
-              <div className="rounded-lg border border-white/8 bg-muted/30 p-4 space-y-3">
+              <div className="rounded-lg border border-[#D4C9B8] bg-white p-4 space-y-3">
                 <div className="flex items-start justify-between gap-3 flex-wrap">
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-sm font-semibold text-text-primary">Landvex Inc.</span>
-                      <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full" style={{ color: '#60A5FA', background: '#1e3a5f' }}>Texas LLC</span>
-                      <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full" style={{ color: '#F87171', background: '#450a0a33' }}>❌ Ej beställd</span>
+                      <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full" style={{ color: '#1e40af', background: '#dbeafe' }}>Texas LLC</span>
+                      <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full" style={{ color: '#991b1b', background: '#fee2e2' }}>❌ Ej beställd</span>
                     </div>
                     <p className="text-xs text-gray-9000 mt-1">
                       Certificate of Good Standing krävs för: bankkontoöppning, enterpriseavtal, visumansökning, investerar-KYC
@@ -826,7 +826,7 @@ export function CompanyLaunchView() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex-shrink-0 px-3 py-1.5 rounded text-xs font-semibold transition-opacity hover:opacity-80"
-                    style={{ background: '#1d4ed8', color: '#fff' }}
+                    style={{ background: '#0A3D62', color: '#fff' }}
                   >
                     Beställ nu →
                   </a>
@@ -868,13 +868,13 @@ export function CompanyLaunchView() {
               <span className="text-sm">🇸🇪</span>
               <h3 className="text-xs font-mono uppercase tracking-widest text-gray-9000">Svenska Bolag — via Bolagsverket</h3>
             </div>
-            <div className="rounded-lg border border-white/8 bg-muted/30 p-4 space-y-3">
+            <div className="rounded-lg border border-[#D4C9B8] bg-white p-4 space-y-3">
               <div className="flex items-start justify-between gap-3 flex-wrap">
                 <div>
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-sm font-semibold text-text-primary">Landvex AB</span>
-                    <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full" style={{ color: '#34D399', background: '#064e3b' }}>559141-7042</span>
-                    <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full" style={{ color: '#F87171', background: '#450a0a33' }}>❌ Ej beställd</span>
+                    <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full" style={{ color: '#065f46', background: '#d1fae5' }}>559141-7042</span>
+                    <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full" style={{ color: '#991b1b', background: '#fee2e2' }}>❌ Ej beställd</span>
                   </div>
                   <p className="text-xs text-gray-9000 mt-1">
                     Registreringsbevis från Bolagsverket — officiellt utdrag ur aktiebolagsregistret. Krävs vid bankrelationer och avtalsförhandlingar.
@@ -885,7 +885,7 @@ export function CompanyLaunchView() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-shrink-0 px-3 py-1.5 rounded text-xs font-semibold transition-opacity hover:opacity-80"
-                  style={{ background: '#065f46', color: '#6ee7b7' }}
+                  style={{ background: '#0A3D62', color: '#ffffff' }}
                 >
                   Bolagsverket →
                 </a>
@@ -903,10 +903,10 @@ export function CompanyLaunchView() {
             <div className="flex items-center gap-2 mb-3">
               <h3 className="text-xs font-mono uppercase tracking-widest text-gray-9000">📊 Certifikatstatus — alla bolag</h3>
             </div>
-            <div className="rounded-lg border border-white/8 overflow-hidden">
+            <div className="rounded-lg border border-[#D4C9B8] overflow-hidden">
               <table className="w-full text-xs">
                 <thead>
-                  <tr className="border-b border-white/8 bg-muted/50">
+                  <tr className="border-b border-[#D4C9B8] bg-[#F0EBE1]">
                     <th className="text-left px-4 py-2 font-mono text-gray-9000 uppercase tracking-wider text-[10px]">Entitet</th>
                     <th className="text-left px-4 py-2 font-mono text-gray-9000 uppercase tracking-wider text-[10px]">Jurisdiktion</th>
                     <th className="text-left px-4 py-2 font-mono text-gray-9000 uppercase tracking-wider text-[10px]">Status</th>
@@ -914,12 +914,12 @@ export function CompanyLaunchView() {
                     <th className="text-left px-4 py-2 font-mono text-gray-9000 uppercase tracking-wider text-[10px]">Åtgärd</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/5">
+                <tbody className="divide-y divide-[#D4C9B8]">
                   <tr className="hover:bg-muted/20 transition-colors">
                     <td className="px-4 py-3 font-medium text-text-primary">quiXzoom Inc.</td>
                     <td className="px-4 py-3 text-gray-9000">Delaware</td>
                     <td className="px-4 py-3">
-                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full" style={{ color: '#F59E0B', background: '#78350f33' }}>⏳ EIN pending</span>
+                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full" style={{ color: '#92400e', background: '#fef3c7' }}>⏳ EIN pending</span>
                     </td>
                     <td className="px-4 py-3 text-gray-9000 font-mono">—</td>
                     <td className="px-4 py-3 text-gray-9000 italic text-[11px]">Beställ när EIN klar</td>
@@ -928,7 +928,7 @@ export function CompanyLaunchView() {
                     <td className="px-4 py-3 font-medium text-text-primary">Landvex Inc.</td>
                     <td className="px-4 py-3 text-gray-9000">Texas</td>
                     <td className="px-4 py-3">
-                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full" style={{ color: '#F87171', background: '#450a0a33' }}>❌ Ej beställd</span>
+                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full" style={{ color: '#991b1b', background: '#fee2e2' }}>❌ Ej beställd</span>
                     </td>
                     <td className="px-4 py-3 text-gray-9000 font-mono">—</td>
                     <td className="px-4 py-3">
@@ -939,7 +939,7 @@ export function CompanyLaunchView() {
                     <td className="px-4 py-3 font-medium text-text-primary">Landvex AB</td>
                     <td className="px-4 py-3 text-gray-9000">Sverige</td>
                     <td className="px-4 py-3">
-                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full" style={{ color: '#F87171', background: '#450a0a33' }}>❌ Ej beställd</span>
+                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full" style={{ color: '#991b1b', background: '#fee2e2' }}>❌ Ej beställd</span>
                     </td>
                     <td className="px-4 py-3 text-gray-9000 font-mono">—</td>
                     <td className="px-4 py-3">
@@ -950,7 +950,7 @@ export function CompanyLaunchView() {
                     <td className="px-4 py-3 font-medium text-text-primary">Wavult Group DMCC</td>
                     <td className="px-4 py-3 text-gray-9000">Dubai</td>
                     <td className="px-4 py-3">
-                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full" style={{ color: '#A78BFA', background: '#2e1065' }}>⏳ Forming</span>
+                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-full" style={{ color: '#5b21b6', background: '#ede9fe' }}>⏳ Forming</span>
                     </td>
                     <td className="px-4 py-3 text-gray-9000 font-mono">—</td>
                     <td className="px-4 py-3">
@@ -964,8 +964,8 @@ export function CompanyLaunchView() {
 
           {/* ── Info box ── */}
           <section>
-            <div className="rounded-lg border border-amber-900/30 bg-amber-950/10 p-4 space-y-1">
-              <p className="text-xs font-semibold text-amber-400">ℹ️ Om Certificate of Good Standing</p>
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 space-y-1">
+              <p className="text-xs font-semibold text-amber-700">ℹ️ Om Certificate of Good Standing</p>
               <p className="text-xs text-gray-9000">
                 Intygar att bolaget är registrerat, har betalat avgifter och lever upp till statliga krav.
                 Utfärdas av delstatens secretary of state (USA) eller motsvarande myndighet.
@@ -985,8 +985,8 @@ export function CompanyLaunchView() {
       {activeTab === 'tracker' && (
       <div className="flex flex-1 overflow-hidden">
       {/* ── Left panel ── */}
-      <aside className="w-[280px] flex-shrink-0 border-r border-white/8 flex flex-col overflow-hidden">
-        <div className="px-4 py-4 border-b border-white/8">
+      <aside className="w-[280px] flex-shrink-0 border-r border-[#D4C9B8] flex flex-col overflow-hidden">
+        <div className="px-4 py-4 border-b border-[#D4C9B8]">
           <h2 className="text-xs font-mono text-gray-9000 uppercase tracking-widest">Company Launch</h2>
           <p className="text-xs text-gray-600 mt-0.5">Wavult Ecosystem · 5 bolag</p>
         </div>
@@ -1025,7 +1025,7 @@ export function CompanyLaunchView() {
                   <ProgressBar
                     value={done}
                     max={total}
-                    color={c.status === 'operational' ? '#34D399' : c.status === 'in_progress' ? '#FBBF24' : '#F3F4F6'}
+                    color={c.status === 'operational' ? '#16a34a' : c.status === 'in_progress' ? '#E8B84B' : '#0A3D62'}
                   />
                 </button>
               )
@@ -1036,7 +1036,7 @@ export function CompanyLaunchView() {
       {/* ── Right panel ── */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-white/8 flex-shrink-0">
+        <div className="px-6 py-4 border-b border-[#D4C9B8] flex-shrink-0">
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-center gap-3">
               <span className="text-3xl leading-none">{selected.flag}</span>
@@ -1079,7 +1079,7 @@ export function CompanyLaunchView() {
             <ProgressBar
               value={selDone}
               max={selTotal}
-              color={selected.status === 'operational' ? '#34D399' : '#60A5FA'}
+              color={selected.status === 'operational' ? '#16a34a' : '#0A3D62'}
             />
           </div>
         </div>
@@ -1117,7 +1117,7 @@ export function CompanyLaunchView() {
         </div>
 
         {/* Summary footer */}
-        <div className="px-6 py-3 border-t border-white/8 flex-shrink-0 bg-muted/30">
+        <div className="px-6 py-3 border-t border-[#D4C9B8] flex-shrink-0 bg-[#F0EBE1]">
           <div className="flex items-center gap-6 flex-wrap">
             <div className="flex items-center gap-2">
               <span className="text-xs text-gray-9000 font-mono">TOTAL COST</span>
