@@ -613,6 +613,7 @@ export function UXQualityDashboard() {
   const [report, setReport] = useState<AuditReport | null>(null)
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
+  const [usingFallback, setUsingFallback] = useState(false)
   const [filters, setFilters] = useState<Filters>({
     search: '',
     levels: new Set<UXLevel>(),
@@ -633,6 +634,7 @@ export function UXQualityDashboard() {
       setReport(data)
     } catch {
       setNotFound(true)
+      setUsingFallback(true)
     } finally {
       setLoading(false)
     }
@@ -750,6 +752,11 @@ export function UXQualityDashboard() {
         </div>
       )}
 
+      {usingFallback && !loading && (
+        <div style={{ marginBottom: 16, padding: '8px 14px', background: 'rgba(234,179,8,0.08)', border: '1px solid rgba(234,179,8,0.3)', borderRadius: 8, fontSize: 12, color: '#92400e' }}>
+          Audit-rapport ej tillgänglig · Kör: node ux-audit/run-audit.mjs
+        </div>
+      )}
       {/* ── Not Found ── */}
       {!loading && notFound && <EmptyState />}
 

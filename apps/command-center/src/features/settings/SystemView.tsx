@@ -56,12 +56,13 @@ export function SystemView() {
   const [clearing, setClearing] = useState(false)
   const [clearDone, setClearDone] = useState(false)
   const [liveMetrics, setLiveMetrics] = useState<LiveMetrics | null>(null)
+  const [usingFallback, setUsingFallback] = useState(false)
 
   const fetchMetrics = useCallback(() => {
     fetch('/api/cockpit/metrics', { credentials: 'include' })
       .then(r => (r.ok ? r.json() : null))
-      .then(data => { if (data) setLiveMetrics(data) })
-      .catch(() => null)
+      .then(data => { if (data) setLiveMetrics(data); else setUsingFallback(true) })
+      .catch(() => setUsingFallback(true))
   }, [])
 
   useEffect(() => {
@@ -106,6 +107,11 @@ export function SystemView() {
 
   return (
     <div className="space-y-5">
+      {usingFallback && (
+        <div style={{ padding: '8px 14px', background: 'rgba(234,179,8,0.08)', border: '1px solid rgba(234,179,8,0.3)', borderRadius: 8, fontSize: 12, color: '#92400e' }}>
+          Visar standardkonfiguration · Live-metrics ej tillgängliga
+        </div>
+      )}
       {/* System overview card */}
       <div className="rounded-xl border border-surface-border bg-white px-5 py-4 space-y-3">
         <div className="flex items-center justify-between">

@@ -404,6 +404,7 @@ export function VisaHub() {
   const [selectedTrip, setSelectedTrip] = useState<Trip>(ACTIVE_TRIPS[0])
   const [smsSent, setSmsSent] = useState<Record<string, boolean>>({})
   const [smsAllSent, setSmsAllSent] = useState(false)
+  const [usingFallback, setUsingFallback] = useState(true) // Always uses static data until calendar API is connected
 
   const visa = VISA_REQUIREMENTS[selectedTrip.destination]
 
@@ -451,6 +452,11 @@ export function VisaHub() {
           </div>
         </div>
 
+        {usingFallback && (
+          <div style={{ padding: '8px 14px', background: 'rgba(234,179,8,0.08)', border: '1px solid rgba(234,179,8,0.3)', borderRadius: 8, fontSize: 12, color: '#92400e' }}>
+            Visar fördefinierade resedestinationer · Kalender-API ej ansluten
+          </div>
+        )}
         {/* Urgent banners */}
         {urgentTrips.map(t => (
           <UrgentBanner key={t.id} trip={t} visa={VISA_REQUIREMENTS[t.destination]} />

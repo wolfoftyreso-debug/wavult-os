@@ -682,6 +682,14 @@ function TripCard({ trip, onUpdate }: { trip: Trip; onUpdate: (t: Trip) => void 
 
 export function TravelAutomationHub() {
   const [trips, setTrips] = useState<Trip[]>(INITIAL_TRIPS)
+  const [usingFallback, setUsingFallback] = useState(false)
+
+  useEffect(() => {
+    fetch(`${API}/api/travel/trips`)
+      .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
+      .then(d => { if (d.trips?.length) setTrips(d.trips) })
+      .catch(() => setUsingFallback(true))
+  }, [])
 
   function handleUpdate(updated: Trip) {
     setTrips(prev => prev.map(t => t.id === updated.id ? updated : t))
@@ -714,6 +722,11 @@ export function TravelAutomationHub() {
         }
       `}</style>
 
+      {usingFallback && (
+        <div style={{ marginBottom: 16, padding: '8px 14px', background: 'rgba(234,179,8,0.08)', border: '1px solid rgba(234,179,8,0.3)', borderRadius: 8, fontSize: 12, color: '#92400e' }}>
+          Visar fördefinierade resor · Live-API ej ansluten
+        </div>
+      )}
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
         <div>

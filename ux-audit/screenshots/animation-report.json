@@ -1,0 +1,86 @@
+[
+  {
+    "id": "dashboard",
+    "path": "/",
+    "animations": 0,
+    "illustrations": 0,
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/dashboard_latest.png"
+  },
+  {
+    "id": "thailand",
+    "path": "/thailand",
+    "animations": 0,
+    "illustrations": 0,
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/thailand_latest.png"
+  },
+  {
+    "id": "finance-flow",
+    "path": "/finance-flow",
+    "animations": 0,
+    "illustrations": 0,
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/finance-flow_latest.png"
+  },
+  {
+    "id": "team",
+    "path": "/team",
+    "animations": 0,
+    "illustrations": 0,
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/team_latest.png"
+  },
+  {
+    "id": "intelligence",
+    "path": "/intelligence",
+    "animations": 0,
+    "illustrations": 0,
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/intelligence_latest.png"
+  },
+  {
+    "id": "apifly",
+    "path": "/apifly",
+    "animations": 0,
+    "illustrations": 0,
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/apifly_latest.png"
+  },
+  {
+    "id": "dissg",
+    "path": "/dissg",
+    "animations": 0,
+    "illustrations": 0,
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/dissg_latest.png"
+  },
+  {
+    "id": "exports",
+    "path": "/exports",
+    "animations": 0,
+    "illustrations": 0,
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/exports_latest.png"
+  },
+  {
+    "id": "uapix",
+    "path": "/uapix",
+    "animations": 0,
+    "illustrations": 0,
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/uapix_latest.png"
+  },
+  {
+    "id": "mlcs-platform",
+    "path": "/mlcs",
+    "animations": 0,
+    "illustrations": 0,
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/mlcs-platform_latest.png"
+  },
+  {
+    "id": "infrastructure",
+    "path": "/infrastructure",
+    "animations": 0,
+    "illustrations": 0,
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/infrastructure_latest.png"
+  },
+  {
+    "id": "quixzoom-app",
+    "path": "/quixzoom",
+    "animations": 0,
+    "illustrations": 0,
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/quixzoom-app_latest.png"
+  }
+]

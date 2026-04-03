@@ -261,6 +261,7 @@ export function NetworkMap() {
   const [filter, setFilter] = useState<FilterZone>('all')
   const [checking, setChecking] = useState(false)
   const [lastChecked, setLastChecked] = useState<Date | null>(null)
+  const [usingFallback, setUsingFallback] = useState(false)
 
   const runChecks = useCallback(async () => {
     setChecking(true)
@@ -274,6 +275,8 @@ export function NetworkMap() {
       const v = r.value as { status: NodeStatus; latency: number }
       return { ...n, status: v.status, latency: v.latency }
     }))
+    const allDown = results.every(r => r.status === 'fulfilled' && (r.value as { status: NodeStatus }).status === 'down')
+    if (allDown) setUsingFallback(true)
     setLastChecked(new Date())
     setChecking(false)
   }, [])
@@ -346,6 +349,11 @@ export function NetworkMap() {
         </div>
       </div>
 
+      {usingFallback && (
+        <div style={{ flexShrink: 0, padding: '6px 20px', background: 'rgba(234,179,8,0.08)', borderBottom: '1px solid rgba(234,179,8,0.3)', fontSize: 11, color: '#92400e' }}>
+          Visar konfigurerade noder · Live-hälsokontroll ej tillgänglig
+        </div>
+      )}
       {/* ── Zone filter ── */}
       <div style={{
         flexShrink: 0, padding: '8px 20px',

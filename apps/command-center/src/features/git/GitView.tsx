@@ -38,11 +38,19 @@ const LockIcon = () => (
   </svg>
 )
 
+// ── Viewports ─────────────────────────────────────────────────────────────────
+const VIEWPORTS = [
+  { id: 'desktop', label: '🖥 Desktop', width: '100%',  height: '100%' },
+  { id: 'ipad',    label: '⬜ iPad',    width: '768px',  height: '1024px' },
+  { id: 'mobile',  label: '📱 Mobile',  width: '390px',  height: '844px' },
+]
+
 // ── Cockpit overlay ───────────────────────────────────────────────────────────
 function CockpitOverlay({ url, label, isLive, onClose, allPages = [] }: { url: string; label: string; isLive: boolean; onClose: () => void; allPages?: {label:string;url:string}[] }) {
   const [viewport, setViewport] = useState('desktop')
   const [currentUrl, setCurrentUrl] = useState(url)
   const [showPages, setShowPages] = useState(false)
+  const [iframeBlocked, setIframeBlocked] = useState(false)
   const vp = VIEWPORTS.find(v=>v.id===viewport) || VIEWPORTS[0]
   return (
     <div style={{ position:'fixed', inset:0, zIndex:9999, background:'#050510', display:'flex', flexDirection:'column', fontFamily:'system-ui,sans-serif' }}>
@@ -85,8 +93,25 @@ function CockpitOverlay({ url, label, isLive, onClose, allPages = [] }: { url: s
       <div style={{ flex:1, display:'grid', gridTemplateColumns:'1fr 320px', overflow:'hidden' }}>
         <div style={{ position:'relative', overflow:'hidden', display:'flex', alignItems:'center', justifyContent:'center', background:'#080818' }}>
           <div style={{ width:vp.width, height:vp.height, border:viewport!=='desktop'?'2px solid rgba(255,255,255,.1)':'none', borderRadius:viewport==='mobile'?'20px':viewport==='ipad'?'12px':'0', overflow:'hidden', transition:'all .3s', position:'relative', flexShrink:0 }}>
-          {currentUrl ? (
-            <iframe src={url} style={{ width:'100%', height:'100%', border:'none' }} sandbox={isLive?'allow-scripts allow-same-origin allow-forms':'allow-scripts'} />
+          {currentUrl && !iframeBlocked ? (
+            <iframe
+              src={currentUrl}
+              style={{ width:'100%', height:'100%', border:'none' }}
+              sandbox={isLive?'allow-scripts allow-same-origin allow-forms':'allow-scripts'}
+              onError={() => setIframeBlocked(true)}
+            />
+          ) : iframeBlocked ? (
+            <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100%', flexDirection:'column', gap:16, background:'#0A0A1A' }}>
+              <span style={{ fontSize:36 }}>🔒</span>
+              <span style={{ color:'rgba(255,255,255,.4)', fontFamily:'monospace', fontSize:12, textAlign:'center' }}>
+                Sajten blockerar inbäddning<br/>
+                <span style={{ opacity:.5, fontSize:10 }}>X-Frame-Options / CSP</span>
+              </span>
+              <a href={currentUrl} target="_blank" rel="noopener noreferrer"
+                 style={{ padding:'8px 20px', background:'#E8B84B', color:'#050510', borderRadius:6, textDecoration:'none', fontSize:12, fontWeight:700, fontFamily:'monospace' }}>
+                Öppna i nytt fönster ↗
+              </a>
+            </div>
           ) : (
             <div style={{ display:'flex', alignItems:'center', justifyContent:'center', height:'100%', flexDirection:'column', gap:12 }}>
               <span style={{ fontSize:48 }}>🚧</span>

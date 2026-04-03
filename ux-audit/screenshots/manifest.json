@@ -1,0 +1,752 @@
+{
+  "agent": {
+    "id": "agent",
+    "name": "agent",
+    "path": "/agent",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/agent_2026-04-03_12-26-15.png",
+    "filename": "agent_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:26:20.843Z",
+    "url": "http://localhost:5175/agent"
+  },
+  "api-hub": {
+    "id": "api-hub",
+    "name": "API Hub",
+    "path": "/api-hub",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/api-hub_2026-04-03_12-26-15.png",
+    "filename": "api-hub_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:26:23.449Z",
+    "url": "http://localhost:5175/api-hub"
+  },
+  "apifly": {
+    "id": "apifly",
+    "name": "apifly",
+    "path": "/apifly",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/apifly_2026-04-03_12-26-15.png",
+    "filename": "apifly_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:26:26.042Z",
+    "url": "http://localhost:5175/apifly"
+  },
+  "automation": {
+    "id": "automation",
+    "name": "automation",
+    "path": "/automation",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/automation_2026-04-03_12-26-15.png",
+    "filename": "automation_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:26:28.617Z",
+    "url": "http://localhost:5175/automation"
+  },
+  "bernt": {
+    "id": "bernt",
+    "name": "bernt",
+    "path": "/bernt",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/bernt_2026-04-03_12-26-15.png",
+    "filename": "bernt_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:26:31.150Z",
+    "url": "http://localhost:5175/bernt"
+  },
+  "campaign-os": {
+    "id": "campaign-os",
+    "name": "campaign-os",
+    "path": "/campaign-os",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/campaign-os_2026-04-03_12-26-15.png",
+    "filename": "campaign-os_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:26:33.735Z",
+    "url": "http://localhost:5175/campaign-os"
+  },
+  "causal-os": {
+    "id": "causal-os",
+    "name": "causal-os",
+    "path": "/causal-os",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/causal-os_2026-04-03_12-26-15.png",
+    "filename": "causal-os_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:26:36.313Z",
+    "url": "http://localhost:5175/causal-os"
+  },
+  "cockpit": {
+    "id": "cockpit",
+    "name": "cockpit",
+    "path": "/cockpit",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/cockpit_2026-04-03_12-26-15.png",
+    "filename": "cockpit_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:26:39.100Z",
+    "url": "http://localhost:5175/cockpit"
+  },
+  "command-view": {
+    "id": "command-view",
+    "name": "command-view",
+    "path": "/command-view",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/command-view_2026-04-03_12-26-15.png",
+    "filename": "command-view_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:26:41.656Z",
+    "url": "http://localhost:5175/command-view"
+  },
+  "communications": {
+    "id": "communications",
+    "name": "Kommunikation",
+    "path": "/communications",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/communications_2026-04-03_12-26-15.png",
+    "filename": "communications_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:26:44.220Z",
+    "url": "http://localhost:5175/communications"
+  },
+  "company-launch": {
+    "id": "company-launch",
+    "name": "company-launch",
+    "path": "/company-launch",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/company-launch_2026-04-03_12-26-15.png",
+    "filename": "company-launch_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:26:46.800Z",
+    "url": "http://localhost:5175/company-launch"
+  },
+  "corpfitt-platform": {
+    "id": "corpfitt-platform",
+    "name": "corpfitt-platform",
+    "path": "/corpfitt-platform",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/corpfitt-platform_2026-04-03_12-26-15.png",
+    "filename": "corpfitt-platform_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:26:49.367Z",
+    "url": "http://localhost:5175/corpfitt-platform"
+  },
+  "corporate": {
+    "id": "corporate",
+    "name": "Bolagsadmin",
+    "path": "/corporate",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/corporate_2026-04-03_12-26-15.png",
+    "filename": "corporate_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:26:51.929Z",
+    "url": "http://localhost:5175/corporate"
+  },
+  "crm": {
+    "id": "crm",
+    "name": "CRM",
+    "path": "/crm",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/crm_2026-04-03_12-26-15.png",
+    "filename": "crm_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:26:54.484Z",
+    "url": "http://localhost:5175/crm"
+  },
+  "dashboard": {
+    "id": "dashboard",
+    "name": "Dashboard",
+    "path": "/dashboard",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/dashboard_2026-04-03_12-26-15.png",
+    "filename": "dashboard_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:26:57.070Z",
+    "url": "http://localhost:5175/dashboard"
+  },
+  "database": {
+    "id": "database",
+    "name": "database",
+    "path": "/database",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/database_2026-04-03_12-26-15.png",
+    "filename": "database_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:26:59.658Z",
+    "url": "http://localhost:5175/database"
+  },
+  "decisions": {
+    "id": "decisions",
+    "name": "decisions",
+    "path": "/decisions",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/decisions_2026-04-03_12-26-15.png",
+    "filename": "decisions_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:27:02.216Z",
+    "url": "http://localhost:5175/decisions"
+  },
+  "deployments": {
+    "id": "deployments",
+    "name": "deployments",
+    "path": "/deployments",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/deployments_2026-04-03_12-26-15.png",
+    "filename": "deployments_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:27:04.771Z",
+    "url": "http://localhost:5175/deployments"
+  },
+  "dissg": {
+    "id": "dissg",
+    "name": "dissg",
+    "path": "/dissg",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/dissg_2026-04-03_12-26-15.png",
+    "filename": "dissg_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:27:07.357Z",
+    "url": "http://localhost:5175/dissg"
+  },
+  "domains": {
+    "id": "domains",
+    "name": "domains",
+    "path": "/domains",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/domains_2026-04-03_12-26-15.png",
+    "filename": "domains_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:27:09.932Z",
+    "url": "http://localhost:5175/domains"
+  },
+  "entity": {
+    "id": "entity",
+    "name": "entity",
+    "path": "/entity",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/entity_2026-04-03_12-26-15.png",
+    "filename": "entity_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:27:12.509Z",
+    "url": "http://localhost:5175/entity"
+  },
+  "entity-switcher": {
+    "id": "entity-switcher",
+    "name": "entity-switcher",
+    "path": "/entity-switcher",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/entity-switcher_2026-04-03_12-26-15.png",
+    "filename": "entity-switcher_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:27:15.086Z",
+    "url": "http://localhost:5175/entity-switcher"
+  },
+  "exports": {
+    "id": "exports",
+    "name": "exports",
+    "path": "/exports",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/exports_2026-04-03_12-26-15.png",
+    "filename": "exports_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:27:17.675Z",
+    "url": "http://localhost:5175/exports"
+  },
+  "finance": {
+    "id": "finance",
+    "name": "Finance",
+    "path": "/finance",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/finance_2026-04-03_12-26-15.png",
+    "filename": "finance_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:27:20.255Z",
+    "url": "http://localhost:5175/finance"
+  },
+  "finance-flow": {
+    "id": "finance-flow",
+    "name": "finance-flow",
+    "path": "/finance-flow",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/finance-flow_2026-04-03_12-26-15.png",
+    "filename": "finance-flow_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:27:22.876Z",
+    "url": "http://localhost:5175/finance-flow"
+  },
+  "git": {
+    "id": "git",
+    "name": "git",
+    "path": "/git",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/git_2026-04-03_12-26-15.png",
+    "filename": "git_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:27:25.417Z",
+    "url": "http://localhost:5175/git"
+  },
+  "governance": {
+    "id": "governance",
+    "name": "governance",
+    "path": "/governance",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/governance_2026-04-03_12-26-15.png",
+    "filename": "governance_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:27:27.990Z",
+    "url": "http://localhost:5175/governance"
+  },
+  "identity": {
+    "id": "identity",
+    "name": "identity",
+    "path": "/identity",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/identity_2026-04-03_12-26-15.png",
+    "filename": "identity_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:27:30.530Z",
+    "url": "http://localhost:5175/identity"
+  },
+  "incidents": {
+    "id": "incidents",
+    "name": "incidents",
+    "path": "/incidents",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/incidents_2026-04-03_12-26-15.png",
+    "filename": "incidents_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:27:33.116Z",
+    "url": "http://localhost:5175/incidents"
+  },
+  "infrastructure": {
+    "id": "infrastructure",
+    "name": "infrastructure",
+    "path": "/infrastructure",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/infrastructure_2026-04-03_12-26-15.png",
+    "filename": "infrastructure_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:27:35.662Z",
+    "url": "http://localhost:5175/infrastructure"
+  },
+  "insurance": {
+    "id": "insurance",
+    "name": "Insurance Hub",
+    "path": "/insurance",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/insurance_2026-04-03_12-26-15.png",
+    "filename": "insurance_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:27:38.239Z",
+    "url": "http://localhost:5175/insurance"
+  },
+  "intelligence": {
+    "id": "intelligence",
+    "name": "intelligence",
+    "path": "/intelligence",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/intelligence_2026-04-03_12-26-15.png",
+    "filename": "intelligence_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:27:40.780Z",
+    "url": "http://localhost:5175/intelligence"
+  },
+  "knowledge": {
+    "id": "knowledge",
+    "name": "Knowledge Hub",
+    "path": "/knowledge",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/knowledge_2026-04-03_12-26-15.png",
+    "filename": "knowledge_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:27:43.321Z",
+    "url": "http://localhost:5175/knowledge"
+  },
+  "landvex-portal": {
+    "id": "landvex-portal",
+    "name": "landvex-portal",
+    "path": "/landvex-portal",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/landvex-portal_2026-04-03_12-26-15.png",
+    "filename": "landvex-portal_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:27:45.882Z",
+    "url": "http://localhost:5175/landvex-portal"
+  },
+  "legal": {
+    "id": "legal",
+    "name": "Legal Hub",
+    "path": "/legal",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/legal_2026-04-03_12-26-15.png",
+    "filename": "legal_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:27:48.417Z",
+    "url": "http://localhost:5175/legal"
+  },
+  "llm-hub": {
+    "id": "llm-hub",
+    "name": "LLM Hub",
+    "path": "/llm-hub",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/llm-hub_2026-04-03_12-26-15.png",
+    "filename": "llm-hub_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:27:50.995Z",
+    "url": "http://localhost:5175/llm-hub"
+  },
+  "market-sites": {
+    "id": "market-sites",
+    "name": "market-sites",
+    "path": "/market-sites",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/market-sites_2026-04-03_12-26-15.png",
+    "filename": "market-sites_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:27:53.523Z",
+    "url": "http://localhost:5175/market-sites"
+  },
+  "media": {
+    "id": "media",
+    "name": "Media & Ads",
+    "path": "/media",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/media_2026-04-03_12-26-15.png",
+    "filename": "media_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:27:56.105Z",
+    "url": "http://localhost:5175/media"
+  },
+  "media-pipeline": {
+    "id": "media-pipeline",
+    "name": "media-pipeline",
+    "path": "/media-pipeline",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/media-pipeline_2026-04-03_12-26-15.png",
+    "filename": "media-pipeline_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:27:58.683Z",
+    "url": "http://localhost:5175/media-pipeline"
+  },
+  "milestones": {
+    "id": "milestones",
+    "name": "Milestones",
+    "path": "/milestones",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/milestones_2026-04-03_12-26-15.png",
+    "filename": "milestones_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:28:01.234Z",
+    "url": "http://localhost:5175/milestones"
+  },
+  "mission-control": {
+    "id": "mission-control",
+    "name": "mission-control",
+    "path": "/mission-control",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/mission-control_2026-04-03_12-26-15.png",
+    "filename": "mission-control_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:28:03.794Z",
+    "url": "http://localhost:5175/mission-control"
+  },
+  "mlcs-platform": {
+    "id": "mlcs-platform",
+    "name": "mlcs-platform",
+    "path": "/mlcs-platform",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/mlcs-platform_2026-04-03_12-26-15.png",
+    "filename": "mlcs-platform_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:28:06.381Z",
+    "url": "http://localhost:5175/mlcs-platform"
+  },
+  "network-map": {
+    "id": "network-map",
+    "name": "network-map",
+    "path": "/network-map",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/network-map_2026-04-03_12-26-15.png",
+    "filename": "network-map_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:28:08.949Z",
+    "url": "http://localhost:5175/network-map"
+  },
+  "onboarding": {
+    "id": "onboarding",
+    "name": "onboarding",
+    "path": "/onboarding",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/onboarding_2026-04-03_12-26-15.png",
+    "filename": "onboarding_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:28:11.515Z",
+    "url": "http://localhost:5175/onboarding"
+  },
+  "openclaw": {
+    "id": "openclaw",
+    "name": "openclaw",
+    "path": "/openclaw",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/openclaw_2026-04-03_12-26-15.png",
+    "filename": "openclaw_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:28:14.081Z",
+    "url": "http://localhost:5175/openclaw"
+  },
+  "operations-center": {
+    "id": "operations-center",
+    "name": "operations-center",
+    "path": "/operations-center",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/operations-center_2026-04-03_12-26-15.png",
+    "filename": "operations-center_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:28:16.636Z",
+    "url": "http://localhost:5175/operations-center"
+  },
+  "org-graph": {
+    "id": "org-graph",
+    "name": "org-graph",
+    "path": "/org-graph",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/org-graph_2026-04-03_12-26-15.png",
+    "filename": "org-graph_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:28:19.234Z",
+    "url": "http://localhost:5175/org-graph"
+  },
+  "payroll": {
+    "id": "payroll",
+    "name": "Lön & Personal",
+    "path": "/payroll",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/payroll_2026-04-03_12-26-15.png",
+    "filename": "payroll_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:28:21.798Z",
+    "url": "http://localhost:5175/payroll"
+  },
+  "people": {
+    "id": "people",
+    "name": "people",
+    "path": "/people",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/people_2026-04-03_12-26-15.png",
+    "filename": "people_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:28:24.391Z",
+    "url": "http://localhost:5175/people"
+  },
+  "people-governance": {
+    "id": "people-governance",
+    "name": "people-governance",
+    "path": "/people-governance",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/people-governance_2026-04-03_12-26-15.png",
+    "filename": "people-governance_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:28:27.040Z",
+    "url": "http://localhost:5175/people-governance"
+  },
+  "people-intelligence": {
+    "id": "people-intelligence",
+    "name": "People Intelligence",
+    "path": "/people-intelligence",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/people-intelligence_2026-04-03_12-26-15.png",
+    "filename": "people-intelligence_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:28:29.627Z",
+    "url": "http://localhost:5175/people-intelligence"
+  },
+  "procurement": {
+    "id": "procurement",
+    "name": "Inköp",
+    "path": "/procurement",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/procurement_2026-04-03_12-26-15.png",
+    "filename": "procurement_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:28:32.277Z",
+    "url": "http://localhost:5175/procurement"
+  },
+  "projects": {
+    "id": "projects",
+    "name": "projects",
+    "path": "/projects",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/projects_2026-04-03_12-26-15.png",
+    "filename": "projects_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:28:34.928Z",
+    "url": "http://localhost:5175/projects"
+  },
+  "quicklinks": {
+    "id": "quicklinks",
+    "name": "quicklinks",
+    "path": "/quicklinks",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/quicklinks_2026-04-03_12-26-15.png",
+    "filename": "quicklinks_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:28:37.520Z",
+    "url": "http://localhost:5175/quicklinks"
+  },
+  "quixzoom-ads": {
+    "id": "quixzoom-ads",
+    "name": "quixzoom-ads",
+    "path": "/quixzoom-ads",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/quixzoom-ads_2026-04-03_12-26-15.png",
+    "filename": "quixzoom-ads_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:28:40.096Z",
+    "url": "http://localhost:5175/quixzoom-ads"
+  },
+  "quixzoom-app": {
+    "id": "quixzoom-app",
+    "name": "quixzoom-app",
+    "path": "/quixzoom-app",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/quixzoom-app_2026-04-03_12-26-15.png",
+    "filename": "quixzoom-app_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:28:42.679Z",
+    "url": "http://localhost:5175/quixzoom-app"
+  },
+  "reports": {
+    "id": "reports",
+    "name": "Rapporter",
+    "path": "/reports",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/reports_2026-04-03_12-26-15.png",
+    "filename": "reports_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:28:45.227Z",
+    "url": "http://localhost:5175/reports"
+  },
+  "settings": {
+    "id": "settings",
+    "name": "Inställningar",
+    "path": "/settings",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/settings_2026-04-03_12-26-15.png",
+    "filename": "settings_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:28:47.834Z",
+    "url": "http://localhost:5175/settings"
+  },
+  "submissions": {
+    "id": "submissions",
+    "name": "submissions",
+    "path": "/submissions",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/submissions_2026-04-03_12-26-15.png",
+    "filename": "submissions_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:28:50.416Z",
+    "url": "http://localhost:5175/submissions"
+  },
+  "system-audit": {
+    "id": "system-audit",
+    "name": "system-audit",
+    "path": "/system-audit",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/system-audit_2026-04-03_12-26-15.png",
+    "filename": "system-audit_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:28:52.952Z",
+    "url": "http://localhost:5175/system-audit"
+  },
+  "system-graph": {
+    "id": "system-graph",
+    "name": "system-graph",
+    "path": "/system-graph",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/system-graph_2026-04-03_12-26-15.png",
+    "filename": "system-graph_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:28:55.532Z",
+    "url": "http://localhost:5175/system-graph"
+  },
+  "system-intelligence": {
+    "id": "system-intelligence",
+    "name": "System Intelligence",
+    "path": "/system-intelligence",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/system-intelligence_2026-04-03_12-26-15.png",
+    "filename": "system-intelligence_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:28:58.112Z",
+    "url": "http://localhost:5175/system-intelligence"
+  },
+  "system-status": {
+    "id": "system-status",
+    "name": "system-status",
+    "path": "/system-status",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/system-status_2026-04-03_12-26-15.png",
+    "filename": "system-status_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:29:00.717Z",
+    "url": "http://localhost:5175/system-status"
+  },
+  "talent-radar": {
+    "id": "talent-radar",
+    "name": "Talent Radar",
+    "path": "/talent-radar",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/talent-radar_2026-04-03_12-26-15.png",
+    "filename": "talent-radar_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:29:03.292Z",
+    "url": "http://localhost:5175/talent-radar"
+  },
+  "tasks": {
+    "id": "tasks",
+    "name": "tasks",
+    "path": "/tasks",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/tasks_2026-04-03_12-26-15.png",
+    "filename": "tasks_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:29:05.845Z",
+    "url": "http://localhost:5175/tasks"
+  },
+  "team": {
+    "id": "team",
+    "name": "team",
+    "path": "/team",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/team_2026-04-03_12-26-15.png",
+    "filename": "team_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:29:08.420Z",
+    "url": "http://localhost:5175/team"
+  },
+  "team-map": {
+    "id": "team-map",
+    "name": "Team Map",
+    "path": "/team-map",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/team-map_2026-04-03_12-26-15.png",
+    "filename": "team-map_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:29:10.986Z",
+    "url": "http://localhost:5175/team-map"
+  },
+  "thailand": {
+    "id": "thailand",
+    "name": "thailand",
+    "path": "/thailand",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/thailand_2026-04-03_12-26-15.png",
+    "filename": "thailand_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:29:13.546Z",
+    "url": "http://localhost:5175/thailand"
+  },
+  "transactions": {
+    "id": "transactions",
+    "name": "transactions",
+    "path": "/transactions",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/transactions_2026-04-03_12-26-15.png",
+    "filename": "transactions_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:29:16.101Z",
+    "url": "http://localhost:5175/transactions"
+  },
+  "travel": {
+    "id": "travel",
+    "name": "travel",
+    "path": "/travel",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/travel_2026-04-03_12-26-15.png",
+    "filename": "travel_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:29:18.643Z",
+    "url": "http://localhost:5175/travel"
+  },
+  "uapix": {
+    "id": "uapix",
+    "name": "uapix",
+    "path": "/uapix",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/uapix_2026-04-03_12-26-15.png",
+    "filename": "uapix_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:29:21.212Z",
+    "url": "http://localhost:5175/uapix"
+  },
+  "venture-engine": {
+    "id": "venture-engine",
+    "name": "venture-engine",
+    "path": "/venture-engine",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/venture-engine_2026-04-03_12-26-15.png",
+    "filename": "venture-engine_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:29:23.779Z",
+    "url": "http://localhost:5175/venture-engine"
+  },
+  "visa": {
+    "id": "visa",
+    "name": "visa",
+    "path": "/visa",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/visa_2026-04-03_12-26-15.png",
+    "filename": "visa_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:29:26.322Z",
+    "url": "http://localhost:5175/visa"
+  },
+  "voice": {
+    "id": "voice",
+    "name": "voice",
+    "path": "/voice",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/voice_2026-04-03_12-26-15.png",
+    "filename": "voice_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:29:28.881Z",
+    "url": "http://localhost:5175/voice"
+  },
+  "whoop": {
+    "id": "whoop",
+    "name": "WHOOP Team Pulse",
+    "path": "/whoop",
+    "description": "",
+    "screenshot": "/mnt/c/Users/erik/Desktop/Wavult/ux-audit/screenshots/whoop_2026-04-03_12-26-15.png",
+    "filename": "whoop_2026-04-03_12-26-15.png",
+    "timestamp": "2026-04-03T12:29:31.452Z",
+    "url": "http://localhost:5175/whoop"
+  }
+}

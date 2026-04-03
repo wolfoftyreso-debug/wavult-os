@@ -345,6 +345,7 @@ export function LLMHub() {
   const [activeTab, setActiveTab] = useState<'chat' | 'playground'>('chat')
   const [status, setStatus] = useState<LLMStatus | null>(null)
   const [statusLoading, setStatusLoading] = useState(true)
+  const [usingFallback, setUsingFallback] = useState(false)
 
   useEffect(() => {
     const fetchStatus = async () => {
@@ -353,7 +354,8 @@ export function LLMHub() {
         const data: LLMStatus = await response.json()
         setStatus(data)
       } catch {
-        setStatus(null)
+        setStatus({ ok: false, providers: [{ name: 'openai', available: false }, { name: 'anthropic', available: false }], message: 'API ej ansluten' })
+        setUsingFallback(true)
       } finally {
         setStatusLoading(false)
       }
@@ -407,6 +409,11 @@ export function LLMHub() {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-4">
+        {usingFallback && (
+          <div style={{ padding: '8px 14px', background: 'rgba(234,179,8,0.08)', border: '1px solid rgba(234,179,8,0.3)', borderRadius: 8, fontSize: 12, color: '#92400e' }}>
+            LLM-API ej ansluten · Chat-svar ej tillgängliga
+          </div>
+        )}
         {/* Status Panel — alltid synlig */}
         <StatusPanel status={status} loading={statusLoading} />
 

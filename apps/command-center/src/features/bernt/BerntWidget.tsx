@@ -72,6 +72,7 @@ export function BerntWidget() {
   ])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
+  const [usingFallback, setUsingFallback] = useState(false)
   const [tunnelUrl, setTunnelUrl] = useState(() => localStorage.getItem(BERNT_TUNNEL_KEY) || DEFAULT_TUNNEL)
   const [showSettings, setShowSettings] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
@@ -154,6 +155,7 @@ export function BerntWidget() {
         text: t('bernt.tunnel_unreachable'),
         ts: Date.now()
       }])
+      setUsingFallback(true)
     } finally {
       setLoading(false)
     }
@@ -209,6 +211,11 @@ export function BerntWidget() {
             </div>
             <div className="flex-1">
               <p className="text-xs font-bold text-text-primary">Bernt</p>
+              {usingFallback && (
+                <div style={{ fontSize: 9, color: '#92400e', background: 'rgba(234,179,8,0.12)', borderRadius: 4, padding: '1px 6px', marginBottom: 2 }}>
+                  Tunnel ej ansluten
+                </div>
+              )}
               <div className="flex items-center gap-1">
                 <span className={`h-1.5 w-1.5 rounded-full ${connected ? 'bg-green-400' : 'bg-yellow-400'}`} />
                 <p className="text-[9px] font-mono" style={{ color: connected ? '#4ade80' : '#facc15' }}>

@@ -61,6 +61,24 @@ async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
   return res.json()
 }
 
+const FALLBACK_OBJECTS: LandvexObject[] = [
+  { id: 'fb-1', name: 'Strandvägsbryggan', type: 'pier', municipality: 'Stockholm', lat: 59.3293, lng: 18.0686, status: 'ok', inspection_count: 3, created_at: new Date().toISOString() },
+  { id: 'fb-2', name: 'Nacka Hamnbrygga', type: 'quay', municipality: 'Nacka', lat: 59.3150, lng: 18.1600, status: 'monitoring', inspection_count: 1, created_at: new Date().toISOString() },
+  { id: 'fb-3', name: 'Värmdöbron', type: 'bridge', municipality: 'Värmdö', lat: 59.3000, lng: 18.3500, status: 'alert', inspection_count: 2, created_at: new Date().toISOString() },
+]
+const FALLBACK_ALERTS: LandvexAlert[] = [
+  { id: 'fa-1', object_id: 'fb-3', severity: 'warning', message: 'Reparation krävs — sprickor i bärande konstruktion', source: 'inspektion', acknowledged: false, resolved: false, created_at: new Date().toISOString() },
+]
+const FALLBACK_CLIENTS: LandvexClient[] = [
+  { id: 'fc-1', name: 'Stockholms Stad', type: 'municipality', status: 'active', created_at: new Date().toISOString() },
+  { id: 'fc-2', name: 'Nacka Kommun', type: 'municipality', status: 'active', created_at: new Date().toISOString() },
+]
+const FALLBACK_STATS: Stats = {
+  objects: { total: 3, by_status: { ok: 1, monitoring: 1, alert: 1, critical: 0 } },
+  alerts: { active: 1, by_severity: { warning: 1 } },
+  clients: { total: 2 },
+}
+
 const OBJECT_STATUS: Record<string, { label: string; bg: string; color: string; mapColor: string }> = {
   ok:         { label: 'OK',          bg: '#DCFCE7', color: '#166534', mapColor: '#16A34A' },
   monitoring: { label: 'Bevakning',   bg: '#FEF3C7', color: '#92400E', mapColor: '#D97706' },
@@ -86,6 +104,7 @@ export function LandvexPortal() {
   const [stats, setStats] = useState<Stats | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [usingFallback, setUsingFallback] = useState(false)
   const [saving, setSaving] = useState(false)
   const [successMsg, setSuccessMsg] = useState<string | null>(null)
   const [selectedObj, setSelectedObj] = useState<LandvexObject | null>(null)
@@ -117,6 +136,11 @@ export function LandvexPortal() {
       if (st) setStats(st)
     } catch (err) {
       setError(String(err))
+      setObjects(FALLBACK_OBJECTS)
+      setAlerts(FALLBACK_ALERTS)
+      setClients(FALLBACK_CLIENTS)
+      setStats(FALLBACK_STATS)
+      setUsingFallback(true)
     } finally {
       setLoading(false)
     }
@@ -227,6 +251,12 @@ export function LandvexPortal() {
         </div>
       </div>
 
+      {/* Fallback/Error banners */}
+      {usingFallback && (
+        <div style={{ margin: '8px 24px 0', padding: '8px 14px', background: 'rgba(234,179,8,0.10)', border: '1px solid rgba(234,179,8,0.35)', borderRadius: 8, fontSize: 12, color: '#FCD34D' }}>
+          Visar exempeldata · Live-API ej ansluten
+        </div>
+      )}
       {/* Alerts */}
       {successMsg && (
         <div style={{ padding: '8px 24px', flexShrink: 0 }}>

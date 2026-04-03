@@ -29,12 +29,13 @@ export function QuixzoomAds() {
   const [packages, setPackages] = useState(DEMO_PACKAGES)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [usingFallback, setUsingFallback] = useState(false)
 
   useEffect(() => {
     fetch('/api/quixzoom/ads/packages')
       .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
       .then(d => { if (d.packages?.length) setPackages(d.packages); setLoading(false) })
-      .catch(() => setLoading(false)) // fall back to DEMO_PACKAGES on error
+      .catch(() => { setLoading(false); setUsingFallback(true) }) // fall back to DEMO_PACKAGES on error
   }, [])
 
   if (loading) {
@@ -83,6 +84,11 @@ export function QuixzoomAds() {
         </div>
       </div>
 
+      {usingFallback && (
+        <div style={{ margin: '0 24px 0', padding: '8px 14px', background: 'rgba(234,179,8,0.08)', border: '1px solid rgba(234,179,8,0.3)', borderRadius: 8, fontSize: 12, color: '#92400e' }}>
+          Visar exempelpaket · Live-marketplace ej ansluten
+        </div>
+      )}
       {/* Marketplace */}
       {activeTab === 'marketplace' && (
         <div style={{ flex: 1, overflow: 'auto', padding: 24 }}>

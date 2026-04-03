@@ -61,6 +61,7 @@ export function TerraformMapView() {
   const [services, setServices] = useState<Record<string, ServiceStatus>>({})
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date())
   const [loading, setLoading] = useState(false)
+  const [usingFallback, setUsingFallback] = useState(false)
 
   const checkHealth = useCallback(async () => {
     setLoading(true)
@@ -80,6 +81,7 @@ export function TerraformMapView() {
         }
       } catch {
         results[svc.name] = { name: svc.name, status: 'warn', detail: 'No response' }
+        setUsingFallback(true)
       }
     }))
 
@@ -133,6 +135,11 @@ export function TerraformMapView() {
   return (
     <div style={{ height: '100%', overflowY: 'auto', background: 'var(--color-bg)', padding: '20px 24px' }}>
 
+      {usingFallback && (
+        <div style={{ marginBottom: 16, padding: '8px 14px', background: 'rgba(234,179,8,0.08)', border: '1px solid rgba(234,179,8,0.3)', borderRadius: 8, fontSize: 12, color: '#92400e' }}>
+          Hälsokontroll ej tillgänglig · Visar konfigurerad infrastruktur
+        </div>
+      )}
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
         <div>

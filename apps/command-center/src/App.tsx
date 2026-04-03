@@ -1,5 +1,4 @@
 import { FoundingConfig } from './features/onboarding/FoundingConfig'
-import { useState, useEffect } from 'react'
 import { useGlobalScrollReveal } from './shared/hooks/useScrollReveal'
 // ─── Wavult OS v2 — Application Root ───────────────────────────────────────────
 // Provider hierarchy: Auth → Role → EntityScope → Operator → Events → Shell

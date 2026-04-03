@@ -3,18 +3,24 @@ import { ModuleHeader } from '../../shared/illustrations/ModuleIllustration'
 
 interface CommandResult { id: string; command: string; output: string; status: 'success' | 'error'; timestamp: string }
 
+const FALLBACK_HISTORY: CommandResult[] = [
+  { id: 'f1', command: 'openclaw status', output: 'OpenClaw v2.1.0 — online\nBernt tunnel: connected\nMemory: 3 active contexts', status: 'success', timestamp: new Date().toISOString() },
+  { id: 'f2', command: 'docker ps --format "{{.Names}}"', output: 'wavult-api\nquixzoom-api\nidentity-core\nn8n\nkafka', status: 'success', timestamp: new Date().toISOString() },
+]
+
 export function CommandView() {
   const [history, setHistory] = useState<CommandResult[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [initError, setInitError] = useState<string | null>(null)
+  const [usingFallback, setUsingFallback] = useState(false)
   const endRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     fetch('/api/command/history')
       .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
       .then(d => setHistory(d.history ?? []))
-      .catch(e => setInitError(String(e)))
+      .catch(e => { setInitError(String(e)); setHistory(FALLBACK_HISTORY); setUsingFallback(true) })
   }, [])
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }) }, [history])
@@ -59,7 +65,12 @@ export function CommandView() {
         illustrationSize="md"
       />
 
-      {initError && (
+      {usingFallback && (
+        <div style={{ marginBottom: 16, padding: '8px 14px', background: 'rgba(234,179,8,0.08)', border: '1px solid rgba(234,179,8,0.3)', borderRadius: 8, fontSize: 12, color: '#92400e' }}>
+          Visar exempelhistorik · Live-API ej ansluten
+        </div>
+      )}
+      {initError && !usingFallback && (
         <div style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 10, padding: '12px 16px', marginBottom: 16, fontSize: 13, color: 'var(--color-text-muted)' }}>
           ⚠️ Historik ej tillgänglig: {initError}
         </div>

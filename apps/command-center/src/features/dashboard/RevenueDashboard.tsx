@@ -11,9 +11,20 @@ interface RevenueMetrics {
   pendingPayouts: number
 }
 
+const FALLBACK_METRICS: RevenueMetrics = {
+  mrr: 18750,
+  arr: 225000,
+  activeMissions: 12,
+  completedThisMonth: 8,
+  totalZoomers: 47,
+  activeZoomers: 23,
+  pendingPayouts: 42188,
+}
+
 export function RevenueDashboard() {
   const [metrics, setMetrics] = useState<RevenueMetrics | null>(null)
   const [loading, setLoading] = useState(true)
+  const [usingFallback, setUsingFallback] = useState(false)
 
   useEffect(() => {
     async function fetchMetrics() {
@@ -45,16 +56,8 @@ export function RevenueDashboard() {
           pendingPayouts: mArr.filter((m: Record<string, unknown>) => m.status === 'approved').length * avgReward * 0.75,
         })
       } catch {
-        // silently fail — show zeros
-        setMetrics({
-          mrr: 0,
-          arr: 0,
-          activeMissions: 0,
-          completedThisMonth: 0,
-          totalZoomers: 0,
-          activeZoomers: 0,
-          pendingPayouts: 0,
-        })
+        setMetrics(FALLBACK_METRICS)
+        setUsingFallback(true)
       } finally {
         setLoading(false)
       }
@@ -65,13 +68,24 @@ export function RevenueDashboard() {
     return () => clearInterval(i)
   }, [])
 
-  if (loading || !metrics) return null
+  if (loading) return (
+    <div style={{ background: '#FFFFFF', borderRadius: 12, border: '1px solid rgba(0,0,0,0.08)', padding: '20px 24px', marginBottom: 20, textAlign: 'center', color: '#8E8E93', fontSize: 13 }}>
+      Laddar intäktsdata…
+    </div>
+  )
+
+  if (!metrics) return null
 
   const fmt = (n: number) => n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(Math.round(n))
 
   return (
     <div style={{ background: '#FFFFFF', borderRadius: 12, border: '1px solid rgba(0,0,0,0.08)', padding: '20px 24px', marginBottom: 20 }}>
       <div style={{ fontSize: 11, fontWeight: 700, color: '#8E8E93', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 16 }}>Live Revenue</div>
+      {usingFallback && (
+        <div style={{ marginBottom: 12, padding: '6px 12px', background: 'rgba(234,179,8,0.08)', border: '1px solid rgba(234,179,8,0.3)', borderRadius: 6, fontSize: 11, color: '#92400e' }}>
+          Visar exempelintäkter · Live-data ej tillgänglig
+        </div>
+      )}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
         {[
           { label: 'MRR', value: `${fmt(metrics.mrr)} SEK`, sub: 'denna månad', icon: <DollarSign size={14} /> },

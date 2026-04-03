@@ -40,6 +40,14 @@ const CATEGORY_CONFIG: Record<ArticleCategory, { label: string; emoji: string; c
 
 const ALL_CATEGORIES = Object.keys(CATEGORY_CONFIG) as ArticleCategory[]
 
+const FALLBACK_ARTICLES: KnowledgeArticle[] = [
+  { id: 'fb-1', slug: 'wavult-group', title: 'Wavult Group AB', category: 'company', content_markdown: '# Wavult Group AB\n\nHoldingbolag för hela Wavult-koncernen. Registrerat i Sverige.\n\n## Bolag\n- quiXzoom UAB (Litauen)\n- LandveX AB\n- Wavult Operations AB', source_type: 'company.added', auto_generated: true, last_updated: new Date().toISOString(), created_at: new Date().toISOString() },
+  { id: 'fb-2', slug: 'quixzoom-uab', title: 'quiXzoom UAB', category: 'company', content_markdown: '# quiXzoom UAB\n\nLitauisk entitet för quiXzoom-plattformen. Uppdragsmarknadsplats för fotografer och videografer.', source_type: 'company.added', auto_generated: true, last_updated: new Date().toISOString(), created_at: new Date().toISOString() },
+  { id: 'fb-3', slug: 'wavult-api', title: 'Wavult OS API (ECS)', category: 'infrastructure', content_markdown: '# Wavult OS API\n\nNode.js API på ECS Fargate (eu-north-1). Kluster: hypbit. Port 3001.\n\n## Endpoints\n- GET /api/health\n- POST /api/command/run', source_type: 'ecs.deployed', auto_generated: true, last_updated: new Date().toISOString(), created_at: new Date().toISOString() },
+  { id: 'fb-4', slug: 'quixzoom-api', title: 'quiXzoom API', category: 'api', content_markdown: '# quiXzoom API\n\nREST API för uppdrag, zoomers och utbetalningar.\n\n## Bas-URL\nhttps://api.quixzoom.com\n\n## Endpoints\n- POST /v1/missions\n- GET /v1/zoomers', source_type: 'api.integrated', auto_generated: true, last_updated: new Date().toISOString(), created_at: new Date().toISOString() },
+  { id: 'fb-5', slug: 'landvex-ab', title: 'LandveX AB', category: 'company', content_markdown: '# LandveX AB\n\nB2G-tjänst för kommunal infrastrukturbevakning. Bryggor, kajer, vägar och broar.', source_type: 'company.added', auto_generated: true, last_updated: new Date().toISOString(), created_at: new Date().toISOString() },
+]
+
 // ─── Markdown-renderer ────────────────────────────────────────────────────────
 
 function InlineMarkdown({ text }: { text: string }) {
@@ -170,6 +178,7 @@ export function KnowledgeBase() {
   const [showGenerateModal, setShowGenerateModal] = useState(false)
   const [generateForm, setGenerateForm] = useState({ event_type: 'company.added', name: '', type: '', jurisdiction: '' })
 
+  const [usingFallback, setUsingFallback] = useState(false)
   const prevArticleIds = useRef<Set<string>>(new Set())
 
   // ── Toast-hantering ──────────────────────────────────────────────────────────
@@ -201,6 +210,7 @@ export function KnowledgeBase() {
       prevArticleIds.current = new Set(data.map(a => a.id))
     } catch (err) {
       console.error('[KnowledgeBase] Fetch error:', err)
+      if (!isBackground) { setArticles(FALLBACK_ARTICLES); setUsingFallback(true) }
     } finally {
       if (!isBackground) setLoading(false)
     }
@@ -357,6 +367,11 @@ export function KnowledgeBase() {
 
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-surface-border shrink-0">
+        {usingFallback && (
+          <div style={{ padding: '6px 14px', background: 'rgba(234,179,8,0.08)', border: '1px solid rgba(234,179,8,0.3)', borderRadius: 6, fontSize: 11, color: '#92400e', marginBottom: 4 }}>
+            Visar exempelartiklar · Live-API ej ansluten
+          </div>
+        )}
         <div className="flex items-center gap-2">
           <span className="text-lg">📚</span>
           <h2 className="text-base font-semibold text-text-primary">Kunskapsbas</h2>
