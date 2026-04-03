@@ -135,6 +135,29 @@ import pciRouter from './pci/router';
 import voiceRouter from './voice-api';
 
 // ---------------------------------------------------------------------------
+// Auth token cache — avoids DB lookup on every request
+// TTL: 5 minutes. Max: 500 entries (LRU eviction by insertion order)
+// ---------------------------------------------------------------------------
+const AUTH_CACHE = new Map<string, { user: any; expiresAt: number }>()
+const AUTH_CACHE_TTL_MS = 5 * 60 * 1000  // 5 min
+const AUTH_CACHE_MAX = 500
+
+function authCacheGet(token: string): any | null {
+  const entry = AUTH_CACHE.get(token)
+  if (!entry) return null
+  if (Date.now() > entry.expiresAt) { AUTH_CACHE.delete(token); return null }
+  return entry.user
+}
+
+function authCacheSet(token: string, user: any): void {
+  if (AUTH_CACHE.size >= AUTH_CACHE_MAX) {
+    // Evict oldest entry (Map preserves insertion order)
+    AUTH_CACHE.delete(AUTH_CACHE.keys().next().value)
+  }
+  AUTH_CACHE.set(token, { user, expiresAt: Date.now() + AUTH_CACHE_TTL_MS })
+}
+
+// ---------------------------------------------------------------------------
 // App setup
 // ---------------------------------------------------------------------------
 const app = express();
@@ -499,6 +522,11 @@ app.use(async (req: Request, _res: Response, next: NextFunction) => {
 
   if (authHeader?.startsWith("Bearer ")) {
     const token = authHeader.slice(7);
+
+    // Cache hit — skip DB lookup entirely
+    const cached = authCacheGet(token);
+    if (cached) { (req as any).user = cached; return next(); }
+
     try {
       const {
         data: { user },
@@ -525,6 +553,7 @@ app.use(async (req: Request, _res: Response, next: NextFunction) => {
             email: user.email,
             full_name: dbUser.full_name,
           };
+          authCacheSet(token, (req as any).user);
         } else {
           // Fallback: auth user exists but no matching users row yet
           // Try to find by email as secondary lookup
@@ -548,6 +577,7 @@ app.use(async (req: Request, _res: Response, next: NextFunction) => {
               email: user.email,
               full_name: dbUserByEmail.full_name,
             };
+            authCacheSet(token, (req as any).user);
           } else {
             // No matching user at all — do NOT grant any role.
             // Returning null forces individual auth() guards to reject with 401.
@@ -1120,26 +1150,35 @@ app.get('/api/velocity/team', auth, async (req, res) => {
     .eq('org_id', (req as any).user.org_id);
 
   const today = new Date().toISOString().split('T')[0];
-  const results: any[] = [];
+  const userIds = (users || []).map((u: any) => u.id);
 
-  for (const user of (users || [])) {
-    const { data: tasks } = await supabase
-      .from('task_executions')
-      .select('id, status')
-      .eq('user_id', user.id)
-      .gte('created_at', today);
-    
-    const completed = (tasks || []).filter((t: any) => t.status === 'completed').length;
-    const total = (tasks || []).length;
-    results.push({
+  // Single batch query instead of N individual queries
+  const { data: allTasks } = await supabase
+    .from('task_executions')
+    .select('user_id, status')
+    .in('user_id', userIds)
+    .gte('created_at', today);
+
+  // Group counts by user_id in JS
+  const tasksByUser = new Map<string, { completed: number; total: number }>();
+  for (const t of (allTasks || [])) {
+    const entry = tasksByUser.get(t.user_id) ?? { completed: 0, total: 0 };
+    entry.total++;
+    if (t.status === 'completed') entry.completed++;
+    tasksByUser.set(t.user_id, entry);
+  }
+
+  const results = (users || []).map((user: any) => {
+    const { completed = 0, total = 0 } = tasksByUser.get(user.id) ?? {};
+    return {
       user_id: user.id,
       name: user.full_name,
       role: user.role,
       completed,
       total,
       completion_rate: total > 0 ? Math.round(completed / total * 100) : 0
-    });
-  }
+    };
+  });
 
   res.json(results);
 });
