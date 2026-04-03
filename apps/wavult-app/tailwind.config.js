@@ -5,26 +5,26 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Wavult OS v2 — Atmospheric color system (shared with command-center)
+        // Wavult OS — Cream/Beige light system (LOCKED 2026-04-03, no dark mode)
         w: {
-          bg: '#0F1218',
-          surface: '#14181E',
-          card: '#1C2029',
-          hover: '#252A34',
-          border: '#2A2F3A',
-          'border-light': '#363C48',
+          bg: '#F5F0E8',
+          surface: '#EDE8DF',
+          card: '#FAF7F2',
+          hover: '#EDE8DF',
+          border: '#D8D0C4',
+          'border-light': '#E4DDD4',
         },
         signal: {
-          amber: '#C4961A',
-          red: '#D94040',
+          amber: '#C4651A',
+          red: '#C0392B',
           green: '#4A7A5B',
-          blue: '#4A7A9B',
+          blue: '#2C5F7A',
         },
         tx: {
-          primary: '#E8E9EB',
-          secondary: '#8B919A',
-          tertiary: '#5A6170',
-          muted: '#3D4452',
+          primary: '#1A1612',
+          secondary: '#4A4540',
+          tertiary: '#7A7570',
+          muted: '#A0998F',
         },
       },
       fontFamily: {

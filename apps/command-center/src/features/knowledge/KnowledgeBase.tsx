@@ -96,7 +96,7 @@ function MarkdownContent({ content }: { content: string }) {
         if (line.trimStart().startsWith('- ') || line.trimStart().startsWith('* ')) {
           const indent = (line.length - line.trimStart().length) / 2
           return (
-            <div key={i} className={`flex gap-2 text-gray-700 style={{ paddingLeft: `${indent * 12}px` }}>
+            <div key={i} className="flex gap-2 text-gray-700" style={{ paddingLeft: `${indent * 12}px` }}>
               <span className="text-[#8A8A9A] mt-0.5 shrink-0">•</span>
               <span><InlineMarkdown text={line.replace(/^\s*[-*] /, '')} /></span>
             </div>

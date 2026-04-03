@@ -14,15 +14,18 @@ export default {
           tertiary: '#94A3B8',
           muted: '#CBD5E1',
         },
-        // Industrial Enterprise palette
+        // Warm cream enterprise palette
         wavult: {
-          bg: '#0A0F1E',         // deep navy
-          surface: '#111929',    // card bg
-          border: '#1E2D45',     // borders
-          text: '#E2E8F0',       // primary text
-          muted: '#475569',      // muted text
-          accent: '#2563EB',     // interactive blue
-          brand: '#1E40AF',      // brand steel blue
+          bg: '#F5F0E8',
+          surface: '#FDFAF5',
+          border: '#DDD5C5',
+          text: '#0A3D62',
+          muted: '#8A8A9A',
+          accent: '#E8B84B',
+          brand: '#0A3D62',
+          navy: '#0A3D62',
+          gold: '#E8B84B',
+          cream: '#F5F0E8',
         },
         // Legacy compat
         brand: {

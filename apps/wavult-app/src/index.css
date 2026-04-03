@@ -22,7 +22,7 @@
   /* Minimal scrollbar */
   ::-webkit-scrollbar { width: 2px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #2A2F3A; border-radius: 1px; }
+  ::-webkit-scrollbar-thumb { background: #D8D0C4; border-radius: 1px; }
 }
 
 @layer components {
