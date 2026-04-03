@@ -132,7 +132,10 @@ export function NotificationCenter() {
     setNotifications(prev => prev.map(n => ({ ...n, read: true })))
   }
 
-  const filtered = filter === 'all' ? notifications : notifications.filter(n => n.level === filter)
+  const LEVEL_ORDER: Record<string, number> = { critical: 0, warning: 1, info: 2 }
+  const filtered = (filter === 'all' ? notifications : notifications.filter(n => n.level === filter))
+    .slice()
+    .sort((a, b) => (LEVEL_ORDER[a.level] ?? 9) - (LEVEL_ORDER[b.level] ?? 9))
   const unreadCount = notifications.filter(n => !n.read).length
   const criticalCount = notifications.filter(n => n.level === 'critical' && !n.read).length
 
