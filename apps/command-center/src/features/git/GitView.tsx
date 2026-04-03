@@ -415,12 +415,101 @@ const ALL_REPOS: Repo[] = [
 ]
 
 // ── Main View ─────────────────────────────────────────────────────────────────
+// ── Gitea repo type ────────────────────────────────────────────────────────────
+interface GiteaRepo {
+  id: number
+  name: string
+  full_name: string
+  description: string
+  html_url: string
+  updated: string
+  private: boolean
+}
+
+const GITEA_URL = import.meta.env.VITE_GITEA_URL ?? 'https://git.wavult.com'
+const GITEA_TOKEN = import.meta.env.VITE_GITEA_TOKEN ?? ''
+
+// Mappa Gitea-repo-namn till live-URL om känd
+const LIVE_URL_MAP: Record<string, string> = {
+  'wavult-os':         'https://os.wavult.com',
+  'wavult.com':        'https://wavult.com',
+  'quixzoom.com':      'https://quixzoom.com',
+  'quixzoom-v2':       'https://app.quixzoom.com',
+  'landvex.com':       'https://landvex.com',
+  'landvex-api':       'https://api.wavult.com',
+  'strim.se':          'https://strim.se',
+  'uapix.com':         'https://uapix.com',
+  'apifly.com':        'https://apifly.com',
+  'dissg.com':         'https://dissg.com',
+  'mlcs.com':          'https://mlcs.com',
+  'opticinsights.com': 'https://opticinsights.com',
+  'luninafoundation.org': 'https://lunina-foundation.pages.dev',
+  'corpfitt-app':      'https://corpfitt.com',
+  'wavult.com':        'https://wavult.com',
+  'quixzoom-landing':  'https://quixzoom-landing-prod.pages.dev',
+  'landvex-web':       'https://landvex-prod.s3.eu-north-1.amazonaws.com/index.html',
+  'wavult-group':      'https://wavult.com',
+}
+
+function giteaRepoToRepo(gr: GiteaRepo): Repo {
+  const liveUrl = LIVE_URL_MAP[gr.name] ?? ''
+  const hasLive = !!liveUrl
+  return {
+    id: `gitea-${gr.id}`,
+    name: gr.name,
+    domain: gr.full_name,
+    repo_url: gr.html_url,
+    status: hasLive ? 'live' : 'dev',
+    description: gr.description || gr.name,
+    versions: hasLive ? [
+      { id: `${gr.id}-live`, slot: 'live', version: 'latest', url: liveUrl, label: 'Production' },
+    ] : [
+      { id: `${gr.id}-dev`, slot: 'dev', version: 'main', url: '', label: 'Dev' },
+    ],
+  }
+}
+
+async function fetchGiteaRepos(): Promise<Repo[]> {
+  const res = await fetch(
+    `${GITEA_URL}/api/v1/repos/search?limit=50&sort=updated&order=desc`,
+    { headers: GITEA_TOKEN ? { Authorization: `token ${GITEA_TOKEN}` } : {} }
+  )
+  if (!res.ok) throw new Error(`Gitea ${res.status}`)
+  const data = await res.json()
+  return (data.data as GiteaRepo[]).map(giteaRepoToRepo)
+}
+
 export function GitView() {
+  const [repos, setRepos] = useState<Repo[]>(ALL_REPOS)
+  const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<RepoStatus|'all'>('all')
   const [sort, setSort] = useState<SortKey>('status')
   const [search, setSearch] = useState('')
+  const [source, setSource] = useState<'gitea'|'static'>('static')
 
-  const filtered = ALL_REPOS
+  useEffect(() => {
+    fetchGiteaRepos()
+      .then(gitRepos => {
+        // Slå ihop: Gitea-repos + behåll live-URL:er från ALL_REPOS för kända repos
+        const merged = gitRepos.map(gr => {
+          const known = ALL_REPOS.find(r => r.repo_url.includes(gr.name) || r.name === gr.name)
+          if (known) return { ...gr, versions: known.versions, status: known.status, domain: known.domain }
+          return gr
+        })
+        // Lägg till ALL_REPOS som saknas i Gitea (hårdkodade)
+        const gitNames = new Set(gitRepos.map(r => r.name))
+        const extra = ALL_REPOS.filter(r => !gitNames.has(r.name) && !r.repo_url.includes(gitRepos.find(g => r.repo_url.includes(g.name))?.name ?? '__'))
+        setRepos([...merged, ...extra])
+        setSource('gitea')
+      })
+      .catch(() => {
+        setRepos(ALL_REPOS)
+        setSource('static')
+      })
+      .finally(() => setLoading(false))
+  }, [])
+
+  const filtered = repos
     .filter(r => filter === 'all' || r.status === filter)
     .filter(r => !search || r.domain.toLowerCase().includes(search.toLowerCase()) || r.name.toLowerCase().includes(search.toLowerCase()))
     .sort((a, b) => {
@@ -432,31 +521,35 @@ export function GitView() {
     })
 
   const counts = {
-    all:     ALL_REPOS.length,
-    live:    ALL_REPOS.filter(r=>r.status==='live').length,
-    dev:     ALL_REPOS.filter(r=>r.status==='dev').length,
-    offline: ALL_REPOS.filter(r=>r.status==='offline').length,
-    archive: ALL_REPOS.filter(r=>r.status==='archive').length,
+    all:     repos.length,
+    live:    repos.filter(r=>r.status==='live').length,
+    dev:     repos.filter(r=>r.status==='dev').length,
+    offline: repos.filter(r=>r.status==='offline').length,
+    archive: repos.filter(r=>r.status==='archive').length,
   }
 
   return (
     <div style={{ padding:'0 0 40px', fontFamily:'system-ui,sans-serif' }}>
       {/* Header */}
-      <div style={{ background:'linear-gradient(135deg,#0A3D62,#0d4d78)', borderRadius:12, padding:'20px 24px', marginBottom:20, display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:12 }}>
+      <div style={{ background:'linear-gradient(135deg,#0A3D62,#0d4d78)', borderRadius:12, padding:'20px 24px', marginBottom:16, display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:12 }}>
         <div>
-          <div style={{ fontSize:9, fontFamily:'monospace', color:'rgba(232,184,75,.7)', letterSpacing:'.15em', textTransform:'uppercase', marginBottom:6 }}>Repositories & Deployments</div>
+          <div style={{ fontSize:9, fontFamily:'monospace', color:'rgba(232,184,75,.7)', letterSpacing:'.15em', textTransform:'uppercase', marginBottom:6 }}>
+            Repositories & Deployments
+            {source === 'gitea' && <span style={{ marginLeft:8, color:'rgba(16,185,129,.7)' }}>● Gitea live</span>}
+            {source === 'static' && <span style={{ marginLeft:8, color:'rgba(232,184,75,.4)' }}>○ Static fallback</span>}
+          </div>
           <h2 style={{ fontSize:18, fontWeight:800, color:'#F5F0E8', margin:0 }}>
-            {counts.live} live · {counts.dev} dev · {counts.offline} offline
+            {loading ? '...' : `${counts.live} live · ${counts.dev} dev · ${counts.offline} offline`}
           </h2>
           <p style={{ fontSize:11, color:'rgba(245,240,232,.4)', margin:'4px 0 0', fontFamily:'monospace' }}>
-            ARKIV → LIVE 🟢🔒 → DEV · Click thumbnail → Cockpit
+            {repos.length} repos totalt · ARKIV → LIVE 🟢🔒 → DEV
           </p>
         </div>
         <div style={{ display:'flex', gap:8, alignItems:'center' }}>
           <input
             value={search}
             onChange={e=>setSearch(e.target.value)}
-            placeholder="Search domains..."
+            placeholder="Sök repos..."
             style={{ padding:'7px 12px', borderRadius:6, border:'1px solid rgba(255,255,255,.15)', background:'rgba(255,255,255,.08)', color:'#F5F0E8', fontSize:12, outline:'none', width:180 }}
           />
           <a href="https://git.wavult.com/wavult" target="_blank" rel="noopener noreferrer"
@@ -466,29 +559,37 @@ export function GitView() {
         </div>
       </div>
 
+      {loading && (
+        <div style={{ padding:'24px', textAlign:'center', color:'rgba(10,61,98,.4)', fontSize:13 }}>
+          Hämtar repos från Gitea...
+        </div>
+      )}
+
       {/* Filter tabs */}
-      <div style={{ display:'flex', gap:6, marginBottom:16, flexWrap:'wrap' }}>
-        {STATUS_FILTERS.map(f=>(
-          <button key={f.key} onClick={()=>setFilter(f.key)}
-            style={{ padding:'6px 14px', borderRadius:6, border:`1.5px solid ${filter===f.key?f.color:'rgba(10,61,98,.12)'}`, background:filter===f.key?`${f.color}12`:'transparent', color:filter===f.key?f.color:'rgba(10,61,98,.5)', cursor:'pointer', fontSize:12, fontWeight:filter===f.key?700:400, transition:'all .15s', fontFamily:'inherit' }}>
-            {f.label} <span style={{ fontSize:10, opacity:.7 }}>({counts[f.key as keyof typeof counts]??counts.all})</span>
-          </button>
-        ))}
-        <div style={{ marginLeft:'auto', display:'flex', gap:6 }}>
-          {(['status','name'] as SortKey[]).map(s=>(
-            <button key={s} onClick={()=>setSort(s)}
-              style={{ padding:'6px 12px', borderRadius:6, border:`1.5px solid ${sort===s?'rgba(10,61,98,.4)':'rgba(10,61,98,.1)'}`, background:sort===s?'rgba(10,61,98,.08)':'transparent', color:sort===s?'#0A3D62':'rgba(10,61,98,.4)', cursor:'pointer', fontSize:11, fontFamily:'monospace', transition:'all .15s' }}>
-              Sort: {s}
+      {!loading && (
+        <div style={{ display:'flex', gap:6, marginBottom:16, flexWrap:'wrap' }}>
+          {STATUS_FILTERS.map(f=>(
+            <button key={f.key} onClick={()=>setFilter(f.key)}
+              style={{ padding:'6px 14px', borderRadius:6, border:`1.5px solid ${filter===f.key?f.color:'rgba(10,61,98,.12)'}`, background:filter===f.key?`${f.color}12`:'transparent', color:filter===f.key?f.color:'rgba(10,61,98,.5)', cursor:'pointer', fontSize:12, fontWeight:filter===f.key?700:400, transition:'all .15s', fontFamily:'inherit' }}>
+              {f.label} <span style={{ fontSize:10, opacity:.7 }}>({counts[f.key as keyof typeof counts]??counts.all})</span>
             </button>
           ))}
+          <div style={{ marginLeft:'auto', display:'flex', gap:6 }}>
+            {(['status','name'] as SortKey[]).map(s=>(
+              <button key={s} onClick={()=>setSort(s)}
+                style={{ padding:'6px 12px', borderRadius:6, border:`1.5px solid ${sort===s?'rgba(10,61,98,.4)':'rgba(10,61,98,.1)'}`, background:sort===s?'rgba(10,61,98,.08)':'transparent', color:sort===s?'#0A3D62':'rgba(10,61,98,.4)', cursor:'pointer', fontSize:11, fontFamily:'monospace', transition:'all .15s' }}>
+                Sort: {s}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Repos */}
-      {filtered.map(repo => <RepoRow key={repo.id} repo={repo} />)}
+      {!loading && filtered.map(repo => <RepoRow key={repo.id} repo={repo} />)}
 
-      {filtered.length === 0 && (
-        <div style={{ padding:48, textAlign:'center', color:'rgba(10,61,98,.3)', fontSize:14 }}>No repos match this filter</div>
+      {!loading && filtered.length === 0 && (
+        <div style={{ padding:48, textAlign:'center', color:'rgba(10,61,98,.3)', fontSize:14 }}>Inga repos matchar filtret</div>
       )}
     </div>
   )

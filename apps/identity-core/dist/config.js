@@ -37,6 +37,8 @@ exports.config = {
         sessionsTable: process.env.DYNAMO_SESSIONS_TABLE || 'ic-sessions',
         tokensTable: process.env.DYNAMO_TOKENS_TABLE || 'ic-refresh-tokens',
         eventsTable: process.env.DYNAMO_EVENTS_TABLE || 'ic-auth-events',
+        magicLinksTable: process.env.DYNAMO_MAGIC_LINKS_TABLE || 'wavult-magic-links',
+        otpCodesTable: process.env.DYNAMO_OTP_CODES_TABLE || 'wavult-otp-codes',
         // TTL: expires_at must be enabled as DynamoDB TTL field via AWS CLI:
         // aws dynamodb update-time-to-live --table-name ic-sessions \
         //   --time-to-live-specification "Enabled=true,AttributeName=expires_at_ttl"

@@ -599,6 +599,273 @@ router.get('/v1/qms/:entitySlug/audit', async (req: Request, res: Response) => {
   }
 })
 
+// ─── GET /v1/qms/:entitySlug/controls/:controlId/meetings ────────────────────
+router.get('/v1/qms/:entitySlug/controls/:controlId/meetings', async (req: Request, res: Response) => {
+  try {
+    const { entitySlug, controlId } = req.params
+
+    const { data: entity } = await sb()
+      .from('qms_entities')
+      .select('id')
+      .eq('slug', entitySlug)
+      .single()
+    if (!entity) return res.status(404).json({ error: 'Entity not found' })
+
+    const { data: control } = await sb()
+      .from('iso_controls')
+      .select('clause')
+      .eq('id', controlId)
+      .single()
+    if (!control) return res.status(404).json({ error: 'Control not found' })
+
+    const { data: impl } = await sb()
+      .from('qms_implementations')
+      .select('id')
+      .eq('entity_id', entity.id)
+      .eq('control_id', controlId)
+      .single()
+
+    // Hämta qms_meeting_links för denna implementation
+    const meetingLinks = impl
+      ? (await sb()
+          .from('qms_meeting_links')
+          .select('*')
+          .eq('implementation_id', impl.id)
+          .order('created_at', { ascending: false })).data ?? []
+      : []
+
+    // Klausulbaserad filtrering av faktiska möten
+    const clause = control.clause
+    let meetingTypeFilter: string[] = []
+    if (clause.startsWith('9.3')) meetingTypeFilter = ['management-review', 'annual', 'qbr']
+    else if (clause.startsWith('9.1')) meetingTypeFilter = ['qbr', 'kpi-review', 'monthly']
+    else if (clause.startsWith('6.2')) meetingTypeFilter = ['annual', 'qbr']
+    else if (clause.startsWith('10.2')) meetingTypeFilter = ['qbr', 'annual', 'monthly']
+    else meetingTypeFilter = ['annual', 'qbr', 'monthly', 'management-review']
+
+    // Hämta faktiska möten från meetings-tabellen
+    const { data: actualMeetings } = await sb()
+      .from('meetings')
+      .select('id, title, date, status, summary, decisions')
+      .order('date', { ascending: false })
+      .limit(10)
+
+    // Hämta management_reviews om klausul 9.3
+    let managementReviews: any[] = []
+    if (clause.startsWith('9.3')) {
+      const { data: mr } = await sb()
+        .from('management_reviews')
+        .select('*')
+        .order('review_date', { ascending: false })
+        .limit(5)
+      managementReviews = mr ?? []
+    }
+
+    res.json({
+      control_clause: clause,
+      meeting_links: meetingLinks,
+      recent_meetings: actualMeetings ?? [],
+      management_reviews: managementReviews,
+      applicable_meeting_types: meetingTypeFilter,
+    })
+  } catch (err: any) {
+    console.error('[qms] GET /controls/:id/meetings error:', err)
+    res.status(500).json({ error: 'Failed to fetch meeting data', detail: err?.message })
+  }
+})
+
+// ─── POST /v1/qms/:entitySlug/controls/:controlId/meetings ───────────────────
+router.post('/v1/qms/:entitySlug/controls/:controlId/meetings', async (req: Request, res: Response) => {
+  try {
+    const { entitySlug, controlId } = req.params
+    const { meeting_type, meeting_id, iso_clause, link_description, is_primary_evidence } = req.body
+
+    const { data: entity } = await sb()
+      .from('qms_entities')
+      .select('id')
+      .eq('slug', entitySlug)
+      .single()
+    if (!entity) return res.status(404).json({ error: 'Entity not found' })
+
+    const { data: control } = await sb()
+      .from('iso_controls')
+      .select('clause')
+      .eq('id', controlId)
+      .single()
+    if (!control) return res.status(404).json({ error: 'Control not found' })
+
+    // Säkerställ implementation-post
+    const { data: impl } = await sb()
+      .from('qms_implementations')
+      .upsert(
+        { entity_id: entity.id, control_id: controlId, updated_at: new Date().toISOString() },
+        { onConflict: 'entity_id,control_id' }
+      )
+      .select('id')
+      .single()
+
+    const { data, error } = await sb()
+      .from('qms_meeting_links')
+      .insert({
+        implementation_id: impl!.id,
+        meeting_type: meeting_type ?? 'unknown',
+        meeting_id: meeting_id ?? null,
+        iso_clause: iso_clause ?? control.clause,
+        link_description: link_description ?? null,
+        is_primary_evidence: is_primary_evidence ?? false,
+      })
+      .select()
+      .single()
+
+    if (error) throw error
+    res.status(201).json(data)
+  } catch (err: any) {
+    console.error('[qms] POST /controls/:id/meetings error:', err)
+    res.status(500).json({ error: 'Failed to create meeting link', detail: err?.message })
+  }
+})
+
+// ─── GET /v1/qms/:entitySlug/compliance-timeline ─────────────────────────────
+// Revisorsvyn: kronologisk vy av alla möten, beslut och ISO-krav
+router.get('/v1/qms/:entitySlug/compliance-timeline', async (req: Request, res: Response) => {
+  try {
+    const { entitySlug } = req.params
+    const { clause, from, to, limit: limitParam } = req.query
+
+    const { data: entity } = await sb()
+      .from('qms_entities')
+      .select('id')
+      .eq('slug', entitySlug)
+      .single()
+    if (!entity) return res.status(404).json({ error: 'Entity not found' })
+
+    const pageLimit = Math.min(parseInt(limitParam as string || '50'), 200)
+
+    // Hämta alla qms_meeting_links för denna entitet
+    let linksQuery = sb()
+      .from('qms_meeting_links')
+      .select(`
+        id, meeting_type, meeting_id, iso_clause, link_description, is_primary_evidence, created_at,
+        qms_implementations!inner(
+          entity_id,
+          iso_controls(clause, title)
+        )
+      `)
+      .eq('qms_implementations.entity_id', entity.id)
+      .order('created_at', { ascending: false })
+      .limit(pageLimit)
+
+    if (clause) linksQuery = linksQuery.ilike('iso_clause', `${clause}%`)
+
+    const { data: links } = await linksQuery
+
+    // Hämta faktiska möten
+    let meetingsQuery = sb()
+      .from('meetings')
+      .select('id, title, date, status, summary')
+      .order('date', { ascending: false })
+      .limit(pageLimit)
+
+    if (from) meetingsQuery = meetingsQuery.gte('date', from as string)
+    if (to) meetingsQuery = meetingsQuery.lte('date', to as string)
+
+    const { data: meetings } = await meetingsQuery
+
+    // Hämta management reviews
+    let mrQuery = sb()
+      .from('management_reviews')
+      .select('*')
+      .order('review_date', { ascending: false })
+      .limit(20)
+
+    if (from) mrQuery = mrQuery.gte('review_date', from as string)
+    if (to) mrQuery = mrQuery.lte('review_date', to as string)
+    const { data: managementReviews } = await mrQuery
+
+    // Hämta decision blocks med beslutsdatum
+    const { data: decisionBlocks } = await sb()
+      .from('decision_blocks')
+      .select('id, title, meeting_id, type, status, deadline, chosen_option, created_at')
+      .order('created_at', { ascending: false })
+      .limit(pageLimit)
+
+    // Bygg unified timeline
+    const timelineItems: any[] = []
+
+    for (const m of meetings ?? []) {
+      timelineItems.push({
+        type: 'meeting',
+        date: m.date,
+        title: m.title,
+        meeting_type: 'general',
+        status: m.status,
+        summary: m.summary,
+        ref_id: m.id,
+        iso_clauses: [],
+      })
+    }
+
+    for (const mr of managementReviews ?? []) {
+      timelineItems.push({
+        type: 'management_review',
+        date: mr.review_date,
+        title: mr.title ?? 'Ledningsgenomgång',
+        meeting_type: 'management-review',
+        status: mr.status,
+        ref_id: mr.id,
+        iso_clauses: ['9.3', '9.3.1', '9.3.2', '9.3.3'],
+      })
+    }
+
+    for (const db of decisionBlocks ?? []) {
+      timelineItems.push({
+        type: 'decision',
+        date: db.deadline ?? db.created_at,
+        title: db.title,
+        meeting_type: db.type,
+        status: db.status,
+        chosen_option: db.chosen_option,
+        ref_id: db.id,
+        meeting_id: db.meeting_id,
+        iso_clauses: [],
+      })
+    }
+
+    // Sortera kronologiskt (nyast först)
+    timelineItems.sort((a, b) => {
+      const da = a.date ? new Date(a.date).getTime() : 0
+      const db = b.date ? new Date(b.date).getTime() : 0
+      return db - da
+    })
+
+    // Filtrera på klausul om specifikt
+    const filteredItems = clause
+      ? timelineItems.filter(item =>
+          item.iso_clauses?.some((c: string) => c.startsWith(clause as string)) ||
+          item.type === 'meeting' // inkludera alla möten i klausulvy
+        )
+      : timelineItems
+
+    res.json({
+      entity_slug: entitySlug,
+      clause_filter: clause ?? null,
+      from_filter: from ?? null,
+      to_filter: to ?? null,
+      total: filteredItems.length,
+      items: filteredItems.slice(0, pageLimit),
+      meeting_links: (links ?? []).map(l => ({
+        iso_clause: l.iso_clause,
+        meeting_type: l.meeting_type,
+        link_description: l.link_description,
+        is_primary_evidence: l.is_primary_evidence,
+      })),
+    })
+  } catch (err: any) {
+    console.error('[qms] GET /compliance-timeline error:', err)
+    res.status(500).json({ error: 'Failed to fetch compliance timeline', detail: err?.message })
+  }
+})
+
 // ─── POST /v1/qms/:entitySlug/audit ──────────────────────────────────────────
 router.post('/v1/qms/:entitySlug/audit', async (req: Request, res: Response) => {
   try {

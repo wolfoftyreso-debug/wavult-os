@@ -41,9 +41,8 @@ export function ModuleIllustration({ route, alt, size = 'md', float = false, cla
 }
 
 /**
- * ModuleHeader — full-bleed illustration integration.
- * The illustration bleeds out from the right edge, partially cropped,
- * creating depth without being a "stamp" or framed image.
+ * ModuleHeader — cream-themed header med illustration synligt integrerad till höger.
+ * Illustration är fullt synlig, ingen toning, gifter sig med cream/navy/gold-temat.
  */
 interface ModuleHeaderProps {
   route: string
@@ -52,8 +51,7 @@ interface ModuleHeaderProps {
   description?: string
   badge?: React.ReactNode
   illustrationSize?: ModuleIllustrationProps['size']
-  /** 'bleed' = illustration crops at right edge (default), 'corner' = bottom-right corner bleed */
-  variant?: 'bleed' | 'corner' | 'full-bg'
+  variant?: 'default' | 'accent'
 }
 
 export function ModuleHeader({
@@ -63,76 +61,107 @@ export function ModuleHeader({
   description,
   badge,
   illustrationSize = 'lg',
-  variant = 'bleed',
+  variant = 'default',
 }: ModuleHeaderProps) {
   const [imgLoaded, setImgLoaded] = useState(false)
   const src = getModuleIllustration(route)
+  const imgWidth = illustrationSize === 'hero' ? 220 : illustrationSize === 'lg' ? 180 : 140
+
+  const isAccent = variant === 'accent'
 
   return (
     <div
       className="wv-header-enter"
       style={{
-        background: 'var(--color-brand)',
-        borderRadius: 12,
-        padding: '28px 32px',
+        background: isAccent ? 'var(--color-brand)' : '#F5F0E8',
+        border: isAccent ? 'none' : '1px solid var(--color-border)',
+        borderRadius: 14,
+        padding: '24px 32px',
         marginBottom: 24,
-        color: 'var(--color-text-inverse)',
         position: 'relative',
         overflow: 'hidden',
-        minHeight: variant === 'full-bg' ? 180 : 120,
+        minHeight: 110,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 16,
       }}
     >
-      {/* Illustration — bleeds into the background, not a framed stamp */}
-      <img
-        src={src}
-        alt=""
-        aria-hidden="true"
-        onLoad={() => setImgLoaded(true)}
-        style={{
-          position: 'absolute',
-          right: variant === 'corner' ? -20 : -30,
-          bottom: variant === 'corner' ? -20 : '50%',
-          transform: variant === 'corner' ? 'none' : 'translateY(50%)',
-          width: variant === 'hero' || illustrationSize === 'hero' ? 260 : illustrationSize === 'lg' ? 200 : 160,
-          height: 'auto',
-          objectFit: 'contain',
-          opacity: imgLoaded ? 0.22 : 0,
-          transition: 'opacity 0.5s ease',
-          animation: imgLoaded ? 'wv-float-slow 7s ease-in-out 1s infinite' : 'none',
-          pointerEvents: 'none',
-          userSelect: 'none',
-          // Mix with navy background — illustration tinted
-          filter: 'brightness(1.4) saturate(0.6)',
-        }}
-      />
-
-      {/* Content sits on top */}
-      <div style={{ position: 'relative', zIndex: 1, maxWidth: '65%' }}>
+      {/* Vänster: text */}
+      <div style={{ flex: 1, minWidth: 0, position: 'relative', zIndex: 1 }}>
         <div style={{
-          fontSize: 9, fontFamily: 'monospace',
-          color: 'var(--color-accent)',
-          letterSpacing: '.18em', textTransform: 'uppercase', marginBottom: 8,
+          fontSize: 10,
+          fontFamily: 'monospace',
+          color: isAccent ? 'var(--color-accent)' : 'var(--color-accent)',
+          letterSpacing: '.18em',
+          textTransform: 'uppercase',
+          marginBottom: 6,
+          fontWeight: 600,
         }}>
           {label}
         </div>
-        <h2 style={{ fontSize: 24, fontWeight: 800, margin: '0 0 6px', lineHeight: 1.15, letterSpacing: '-0.02em' }}>
+        <h2 style={{
+          fontSize: 22,
+          fontWeight: 800,
+          margin: '0 0 6px',
+          lineHeight: 1.2,
+          letterSpacing: '-0.02em',
+          color: isAccent ? '#F5F0E8' : 'var(--color-text-primary)',
+        }}>
           {title}
         </h2>
         {description && (
-          <p style={{ fontSize: 13, color: 'rgba(245,240,232,.6)', margin: 0, lineHeight: 1.5 }}>
+          <p style={{
+            fontSize: 13,
+            color: isAccent ? 'rgba(245,240,232,0.65)' : 'var(--color-text-secondary)',
+            margin: 0,
+            lineHeight: 1.55,
+          }}>
             {description}
           </p>
         )}
         {badge && <div style={{ marginTop: 10 }}>{badge}</div>}
+      </div>
+
+      {/* Höger: illustration — fullt synlig, ingen toning */}
+      <div style={{
+        flexShrink: 0,
+        width: imgWidth,
+        height: imgWidth,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+      }}>
+        {!imgLoaded && (
+          <div className="wv-skeleton" style={{ width: imgWidth, height: imgWidth, borderRadius: 12 }} />
+        )}
+        <img
+          src={src}
+          alt=""
+          aria-hidden="true"
+          onLoad={() => setImgLoaded(true)}
+          style={{
+            display: imgLoaded ? 'block' : 'none',
+            width: imgWidth,
+            height: imgWidth,
+            objectFit: 'contain',
+            opacity: 1,
+            transition: 'opacity 0.4s ease',
+            animation: imgLoaded ? 'wv-illustration-enter 0.5s cubic-bezier(0.22,1,0.36,1) both, wv-float-slow 7s ease-in-out 0.8s infinite' : 'none',
+            pointerEvents: 'none',
+            userSelect: 'none',
+            filter: 'none',
+          }}
+        />
       </div>
     </div>
   )
 }
 
 /**
- * SectionIllustration — inline illustration that flows with content.
- * Use for empty states, onboarding, and section breaks.
- * NOT a framed box — renders illustration as part of the layout.
+ * SectionIllustration — empty state / onboarding.
+ * Illustrationen är fullt synlig, flödar med innehållet, ingen ram.
  */
 interface SectionIllustrationProps {
   route: string
@@ -147,18 +176,24 @@ export function SectionIllustration({ route, title, description, action }: Secti
 
   return (
     <div className="wv-card-enter" style={{
-      display: 'flex', flexDirection: 'column', alignItems: 'center',
-      padding: '48px 32px', textAlign: 'center', gap: 0,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      padding: '48px 32px',
+      textAlign: 'center',
+      gap: 0,
     }}>
-      {/* Illustration floats above text, no border, no shadow */}
-      <div style={{ marginBottom: 20, position: 'relative' }}>
-        {!loaded && <div className="wv-skeleton" style={{ width: 160, height: 160, borderRadius: '50%' }} />}
+      <div style={{ marginBottom: 20 }}>
+        {!loaded && <div className="wv-skeleton" style={{ width: 160, height: 160, borderRadius: 12 }} />}
         <img
           src={src} alt="" aria-hidden="true"
           onLoad={() => setLoaded(true)}
           style={{
             display: loaded ? 'block' : 'none',
-            width: 160, height: 160, objectFit: 'contain',
+            width: 160,
+            height: 160,
+            objectFit: 'contain',
+            filter: 'none',
             animation: loaded ? 'wv-illustration-enter 0.5s ease both, wv-float-slow 6s ease-in-out 0.6s infinite' : 'none',
           }}
         />
@@ -167,7 +202,7 @@ export function SectionIllustration({ route, title, description, action }: Secti
         {title}
       </div>
       {description && (
-        <div style={{ fontSize: 13, color: 'var(--color-text-muted)', maxWidth: 320, lineHeight: 1.6 }}>
+        <div style={{ fontSize: 13, color: 'var(--color-text-secondary)', maxWidth: 320, lineHeight: 1.6 }}>
           {description}
         </div>
       )}

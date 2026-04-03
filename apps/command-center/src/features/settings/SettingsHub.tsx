@@ -5,11 +5,13 @@ import { EntitySettingsView } from './EntitySettingsView'
 import { NotificationSettings } from './NotificationSettings'
 import { SystemView } from './SystemView'
 import { ProfileSettings } from './ProfileSettings'
+import { UsersView } from './UsersView'
 
-type Tab = 'profile' | 'api-keys' | 'roles' | 'entities' | 'notifications' | 'system'
+type Tab = 'profile' | 'api-keys' | 'roles' | 'entities' | 'notifications' | 'system' | 'users'
 
 const TABS: Array<{ id: Tab; label: string; icon: string }> = [
   { id: 'profile',        label: 'Min profil',            icon: '👤' },
+  { id: 'users',          label: 'Användare',             icon: '👥' },
   { id: 'api-keys',       label: 'API-nycklar',           icon: '🔑' },
   { id: 'roles',          label: 'Roller & Behörigheter', icon: '🛡' },
   { id: 'entities',       label: 'Entitetsinställningar', icon: '🏢' },
@@ -66,6 +68,7 @@ export function SettingsHub() {
       {/* Content */}
       <div className="flex-1 overflow-auto p-6">
         {activeTab === 'profile'       && <ProfileSettings />}
+        {activeTab === 'users'         && <UsersView />}
         {activeTab === 'api-keys'      && <APIKeysView />}
         {activeTab === 'roles'         && <RolesView />}
         {activeTab === 'entities'      && <EntitySettingsView />}

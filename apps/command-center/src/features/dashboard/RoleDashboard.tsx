@@ -40,12 +40,12 @@ function VisaAlertBanner() {
     <div
       className="flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium mb-1 reveal card-interactive"
       style={{
-        background: top.severity === 'critical' ? '#7f1d1d22' : '#78350f22',
-        border: `1px solid ${top.severity === 'critical' ? '#ef444430' : '#f59e0b30'}`,
+        background: top.severity === 'critical' ? '#7f1d1d22' : '#78350f18',
+        border: `1px solid ${top.severity === 'critical' ? '#ef444430' : '#92400e40'}`,
       }}
     >
       <span style={{ fontSize: 15 }}>🛂</span>
-      <span style={{ color: top.severity === 'critical' ? '#fca5a5' : '#fcd34d' }}>
+      <span style={{ color: top.severity === 'critical' ? '#b91c1c' : '#92400e' }}>
         {top.person}: {top.message}
         {alerts.length > 1 && ` (+${alerts.length - 1} till)`}
       </span>

@@ -6,7 +6,8 @@ exports.testConnection = testConnection;
 exports.initSchema = initSchema;
 const pg_1 = require("pg");
 const config_1 = require("../config");
-exports.db = new pg_1.Pool(config_1.config.db);
+const connectionString = process.env.EOS_DATABASE_URL || process.env.DATABASE_URL;
+exports.db = connectionString ? new pg_1.Pool({ connectionString, ssl: { rejectUnauthorized: false } }) : new pg_1.Pool(config_1.config.db);
 /** Alias for route-level access — returns the shared pool */
 function getDb() { return exports.db; }
 exports.db.on('error', (err) => {

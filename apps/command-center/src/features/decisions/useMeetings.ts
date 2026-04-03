@@ -1,11 +1,10 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useApi } from '../../shared/auth/useApi'
 import type { Meeting } from './decisionTypes'
-import { mockMeetings } from './mockDecisions'
 
 export function useMeetings() {
   const { apiFetch } = useApi()
-  const [meetings, setMeetings] = useState<Meeting[]>(mockMeetings) // static fallback
+  const [meetings, setMeetings] = useState<Meeting[]>([])
   const [loading, setLoading] = useState(false)
 
   const load = useCallback(async () => {
@@ -14,7 +13,7 @@ export function useMeetings() {
       const res = await apiFetch('/api/decisions/meetings')
       if (res.ok) {
         const data = await res.json() as Meeting[]
-        if (data.length > 0) setMeetings(data)
+        setMeetings(data)
       }
     } catch {} finally { setLoading(false) }
   }, [apiFetch])

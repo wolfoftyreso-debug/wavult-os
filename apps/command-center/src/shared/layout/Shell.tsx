@@ -78,7 +78,6 @@ const NAV_GROUPS: NavGroup[] = [
     labelKey: 'nav.money',
     items: [
       { to: '/finance',         labelKey: 'nav.finance',         icon: DollarSign },
-      { to: '/venture-engine',  labelKey: 'nav.venture_engine',  icon: Rocket },
       { to: '/transactions',    labelKey: 'nav.transactions',    icon: Receipt },
       { to: '/causal-os',       labelKey: 'nav.simulation',      icon: GitBranch },
       { to: '/procurement',     labelKey: 'nav.procurement',     icon: ShoppingCart },
@@ -139,6 +138,29 @@ const NAV_GROUPS: NavGroup[] = [
       { to: '/openclaw',        labelKey: 'nav.openclaw',        icon: Terminal },
       
       { to: '/settings',        labelKey: 'nav.settings',       icon: Settings },
+    ],
+  },
+  {
+    labelKey: 'nav.dev',
+    items: [
+      { to: '/travel',              labelKey: 'nav.travel',              icon: Plane },
+      { to: '/media',               labelKey: 'nav.media',               icon: Film },
+      { to: '/people',              labelKey: 'nav.people_view',         icon: Users },
+      { to: '/tasks',               labelKey: 'nav.tasks',               icon: Layers },
+      { to: '/whoop',               labelKey: 'nav.whoop',               icon: Activity },
+      { to: '/api-hub',             labelKey: 'nav.api_hub',             icon: Zap },
+      { to: '/llm-hub',             labelKey: 'nav.llm_hub',             icon: Terminal },
+      { to: '/team-map',            labelKey: 'nav.team_map',            icon: MapPin },
+      { to: '/governance',          labelKey: 'nav.governance',          icon: ShieldCheck },
+      { to: '/network-map',         labelKey: 'nav.network_map',         icon: Network },
+      { to: '/deployments',         labelKey: 'nav.deployments',         icon: GitBranch },
+      { to: '/strategic-brief',     labelKey: 'nav.strategic_brief',     icon: FileText },
+      { to: '/talent-radar',        labelKey: 'nav.talent_radar',        icon: Users },
+      { to: '/people-intelligence', labelKey: 'nav.people_intelligence', icon: Users },
+      { to: '/system-intelligence', labelKey: 'nav.system_intelligence', icon: Server },
+      { to: '/meeting-cadence',     labelKey: 'nav.meeting_cadence',     icon: Scale },
+      { to: '/bernt',               labelKey: 'nav.bernt',               icon: Terminal },
+      { to: '/agent',               labelKey: 'nav.agent',               icon: Terminal },
     ],
   },
 ]
@@ -417,8 +439,24 @@ export function Shell({ children }: ShellProps) {
                     className="fixed inset-0 z-40"
                     onClick={() => setNotifOpen(false)}
                   />
-                  <div className="absolute right-0 top-full mt-2 z-50 w-[min(420px,calc(100vw-1rem))] max-h-[80vh] overflow-y-auto rounded-2xl border border-gray-200 shadow-lg bg-white">
-                    <div className="p-4">
+                  <div
+                    style={{
+                      position: 'fixed',
+                      top: 60,
+                      right: 8,
+                      left: 8,
+                      maxWidth: 440,
+                      marginLeft: 'auto',
+                      maxHeight: 'calc(100vh - 80px)',
+                      overflowY: 'auto',
+                      zIndex: 9999,
+                      borderRadius: 16,
+                      border: '1px solid var(--color-border)',
+                      boxShadow: '0 8px 40px rgba(26,26,46,0.18)',
+                      background: '#fff',
+                    }}
+                  >
+                    <div style={{ padding: 16 }}>
                       <NotificationCenter />
                     </div>
                   </div>

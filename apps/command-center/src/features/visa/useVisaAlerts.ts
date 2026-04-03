@@ -1,4 +1,11 @@
-import { VISA_APPLICATIONS } from './visaData'
+/**
+ * useVisaAlerts — returnerar aktiva alerts baserat på live-data från API.
+ * Fallback: tom array om API inte svarar. Ingen hårdkodad data.
+ */
+
+import { useState, useEffect } from 'react'
+import { useApi } from '../../shared/auth/useApi'
+import type { VisaDeadline } from './useVisaData'
 
 export interface VisaAlert {
   id:       string
@@ -8,37 +15,50 @@ export interface VisaAlert {
 }
 
 export function useVisaAlerts(): VisaAlert[] {
-  return VISA_APPLICATIONS.flatMap(app => {
-    const alerts: VisaAlert[] = []
+  const { apiFetch } = useApi()
+  const [alerts, setAlerts] = useState<VisaAlert[]>([])
 
-    // Deadline < 30 dagar
-    if (app.target_date) {
-      const daysLeft = Math.ceil((new Date(app.target_date).getTime() - Date.now()) / 86400000)
-      if (daysLeft < 30 && daysLeft > 0 && app.status !== 'approved') {
-        alerts.push({
-          id:       app.id,
-          person:   app.person_name,
-          message:  `${app.visa_type === 'investor_visa' ? 'Investor Visa' : app.visa_type === 'tourist' ? 'Tourist' : app.visa_type} deadline om ${daysLeft} dagar`,
-          severity: daysLeft < 7 ? 'critical' : 'warning',
+  useEffect(() => {
+    let cancelled = false
+
+    async function fetchDeadlines() {
+      try {
+        const res = await apiFetch('/v1/visa/deadlines')
+        if (!res.ok || cancelled) return
+
+        const data: VisaDeadline[] | { data: VisaDeadline[] } = await res.json()
+        const deadlines: VisaDeadline[] = Array.isArray(data) ? data : data.data ?? []
+
+        if (cancelled) return
+
+        const mapped: VisaAlert[] = deadlines.map(d => {
+          const daysLeft = Math.ceil(
+            (new Date(d.due_date).getTime() - Date.now()) / 86_400_000
+          )
+          const severity: VisaAlert['severity'] =
+            d.severity ?? (daysLeft < 7 ? 'critical' : daysLeft < 30 ? 'warning' : 'info')
+
+          return {
+            id:       d.id,
+            person:   d.person_name,
+            message:  daysLeft > 0
+              ? `${d.description} — om ${daysLeft} dagar`
+              : `${d.description} — passerat`,
+            severity,
+          }
         })
+
+        setAlerts(mapped)
+      } catch {
+        // Tyst fallback — visa inga alerts vid API-fel
+        if (!cancelled) setAlerts([])
       }
     }
 
-    // Dokument saknas (bara om ansökan är påbörjad)
-    if (app.status !== 'not_started') {
-      const missingDocs = app.steps
-        .flatMap(s => s.documents)
-        .filter(d => d.required && d.status === 'needed').length
-      if (missingDocs > 0) {
-        alerts.push({
-          id:       `${app.id}-docs`,
-          person:   app.person_name,
-          message:  `${missingDocs} dokument saknas`,
-          severity: 'info',
-        })
-      }
-    }
+    fetchDeadlines()
 
-    return alerts
-  })
+    return () => { cancelled = true }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  return alerts
 }

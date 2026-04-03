@@ -8,6 +8,7 @@
 import React, { useState, useMemo } from 'react'
 import { useQmsEntities, useQmsDashboard, useQmsControls } from './useQmsData'
 import { ControlDetail } from './ControlDetail'
+import { ComplianceTimeline } from './ComplianceTimeline'
 import type { QmsStatus, IsoControl } from './qmsTypes'
 
 const STATUS_LABELS: Record<QmsStatus, string> = {
@@ -57,6 +58,7 @@ export function QmsDashboard() {
   const [selectedCategory, setSelectedCategory] = useState('')
   const [selectedControlId, setSelectedControlId] = useState<string | null>(null)
   const [search, setSearch] = useState('')
+  const [activeTab, setActiveTab] = useState<'controls' | 'timeline'>('controls')
 
   const { dashboard } = useQmsDashboard(selectedSlug)
   const { controls, standards, loading: ctrlLoading } = useQmsControls(
@@ -153,6 +155,33 @@ export function QmsDashboard() {
             </div>
           </div>
         )}
+
+        {/* Tab selector */}
+        <div style={{ display: 'flex', gap: '0', marginBottom: '20px', borderBottom: '2px solid #E2D9C8' }}>
+          {([['controls', '🗂️ Kontroller'], ['timeline', '📋 Revisionsspår']] as const).map(([tab, label]) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              style={{
+                padding: '10px 24px', fontSize: '13px', fontWeight: 700,
+                cursor: 'pointer', border: 'none', background: 'transparent',
+                color: activeTab === tab ? '#0A3D62' : '#7F8C8D',
+                borderBottom: activeTab === tab ? '3px solid #E8B84B' : '3px solid transparent',
+                marginBottom: '-2px', transition: 'all 0.15s',
+              }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {/* Revisionsspår */}
+        {activeTab === 'timeline' && (
+          <ComplianceTimeline entitySlug={selectedSlug} />
+        )}
+
+        {/* Kontroller tab */}
+        {activeTab === 'controls' && <>
 
         {/* Filters */}
         <div style={{ display: 'flex', gap: '12px', marginBottom: '16px', flexWrap: 'wrap', alignItems: 'center' }}>
@@ -267,6 +296,7 @@ export function QmsDashboard() {
             </div>
           </div>
         )}
+        </> /* end controls tab */}
       </div>
 
       {/* Control Detail slide-over */}
