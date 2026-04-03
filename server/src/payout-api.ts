@@ -13,10 +13,20 @@ payoutRouter.post('/mission/:missionId', async (req, res) => {
   }
 })
 
-// GET /api/payouts/photographer/:photographerId — Fotografens intjäning
+// GET /api/payouts/zoomer/:zoomerId — Zoomers intjäning
+payoutRouter.get('/zoomer/:zoomerId', async (req, res) => {
+  try {
+    const earnings = await PayoutEngine.getZoomerEarnings(req.params.zoomerId)
+    res.json({ ok: true, data: earnings })
+  } catch (err: unknown) {
+    res.status(500).json({ ok: false, error: (err as Error).message })
+  }
+})
+
+// GET /api/payouts/photographer/:photographerId — deprecated, use /zoomer/:zoomerId
 payoutRouter.get('/photographer/:photographerId', async (req, res) => {
   try {
-    const earnings = await PayoutEngine.getPhotographerEarnings(req.params.photographerId)
+    const earnings = await PayoutEngine.getZoomerEarnings(req.params.photographerId)
     res.json({ ok: true, data: earnings })
   } catch (err: unknown) {
     res.status(500).json({ ok: false, error: (err as Error).message })

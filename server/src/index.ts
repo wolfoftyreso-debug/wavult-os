@@ -85,6 +85,7 @@ import { knowledgeEngineRouter } from "./routes/knowledge-engine";
 // Auth router
 // ---------------------------------------------------------------------------
 import authRouter from "./auth";
+import "./shared/middleware/auth-types";
 
 // ---------------------------------------------------------------------------
 // DMS — Dealer Management System (wavult automotive)
@@ -272,14 +273,6 @@ const ERROR_MESSAGES: Record<string, Record<string, string>> = {
   },
 };
 
-// Extend Express Request type with locale
-declare global {
-  namespace Express {
-    interface Request {
-      locale: string;
-    }
-  }
-}
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   const acceptLanguage = (req.headers['accept-language'] as string) || 'sv';
@@ -408,7 +401,7 @@ function isPrivateUrl(urlStr: string): boolean {
 
 // Status probe — checks external URLs for the dashboard (authenticated, SSRF-protected)
 app.get("/api/status-probe", async (req: Request, res: Response) => {
-  if (!(req as any).user) return res.status(401).json({ ok: false, error: 'Unauthorized' });
+  if (!req.user) return res.status(401).json({ ok: false, error: 'Unauthorized' });
   const url = req.query.url as string;
   if (!url || !url.startsWith('https://')) {
     return res.status(400).json({ ok: false, error: 'invalid url' });
@@ -445,7 +438,7 @@ app.post("/api/subscribe", (req: Request, res: Response) => {
 // Debug auth endpoint — verifies API key bypass
 app.get("/api/auth-test", (req: Request, res: Response) => {
   const apiKey = req.headers['x-api-key'] as string;
-  const user = (req as any).user;
+  const user = req.user;
   res.json({ apiKey: apiKey ? 'present' : 'missing', user: user ? 'set' : 'null', match: apiKey === 'wavult-openclaw-2026' });
 });
 
@@ -493,7 +486,7 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
   // Internal API key — must be set via WAVULT_API_KEY env var (SSM Parameter Store).
   // Never hardcode this value in source code.
   if (apiKey && process.env.WAVULT_API_KEY && apiKey === process.env.WAVULT_API_KEY) {
-    (req as any).user = {
+    req.user = {
       id: '00000000-0000-0000-0000-000000000001',
       org_id: '00020001-0000-0000-0000-000000000001',
       role: 'ADMIN',
@@ -506,7 +499,7 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
 
 app.use(async (req: Request, _res: Response, next: NextFunction) => {
   // Skip if already authenticated via API key
-  if ((req as any).user) return next();
+  if (req.user) return next();
 
   const authHeader = req.headers.authorization;
 
@@ -536,7 +529,7 @@ app.use(async (req: Request, _res: Response, next: NextFunction) => {
           .single();
 
         if (dbUser) {
-          (req as any).user = {
+          req.user = {
             id: dbUser.id,
             org_id: dbUser.org_id,
             role: dbUser.role,
@@ -560,7 +553,7 @@ app.use(async (req: Request, _res: Response, next: NextFunction) => {
               .update({ auth_id: user.id })
               .eq("id", dbUserByEmail.id);
 
-            (req as any).user = {
+            req.user = {
               id: dbUserByEmail.id,
               org_id: dbUserByEmail.org_id,
               role: dbUserByEmail.role,
@@ -575,18 +568,18 @@ app.use(async (req: Request, _res: Response, next: NextFunction) => {
             // which could allow an authenticated-but-unregistered Supabase user to
             // bypass role checks and potentially read cross-org data. Fixed 2026-03-21.
             console.warn(`Auth warning: Supabase user ${user.id} (${user.email}) has no matching users row — treating as unauthenticated`);
-            (req as any).user = null;
+            req.user = null;
           }
         }
       } else {
-        (req as any).user = null;
+        req.user = null;
       }
     } catch (err) {
       console.warn("Auth token verification failed:", err);
-      (req as any).user = null;
+      req.user = null;
     }
   } else {
-    (req as any).user = null;
+    req.user = null;
   }
 
   // Allow request through regardless - individual routes can enforce auth
@@ -768,7 +761,7 @@ app.use('/api/payouts', payoutRouter);                     // POST /api/payouts/
 // Auth helper for inline routes
 // ---------------------------------------------------------------------------
 const auth = (req: Request, res: Response, next: NextFunction) => {
-  if (!(req as any).user) return res.status(401).json({ error: "Unauthorized" });
+  if (!req.user) return res.status(401).json({ error: "Unauthorized" });
   next();
 };
 
@@ -920,8 +913,8 @@ app.post('/api/task-executions', auth, validate(CreateTaskExecutionSchema), asyn
     .from('task_executions')
     .insert({
       task_type_id: taskType.id,
-      user_id: (req as any).user.id,
-      org_id: (req as any).user.org_id,
+      user_id: req.user.id,
+      org_id: req.user.org_id,
       queue_source: queue_source || 'huvudbefattning',
       status: 'queued',
       current_step: 0,
@@ -945,7 +938,7 @@ app.get('/api/task-executions/my', auth, async (req, res) => {
   let query = supabase
     .from('task_executions')
     .select('*, task_types(position_code, name, standard_minutes, manual_type, attention_type)')
-    .eq('user_id', (req as any).user.id)
+    .eq('user_id', req.user.id)
     .order('priority_score', { ascending: false });
   
   if (qs) query = query.eq('status', qs as string);
@@ -994,7 +987,7 @@ app.patch('/api/task-executions/:id/advance', auth, validate(AdvanceTaskSchema),
     .eq('id', req.params.id)
     .single();
   if (!exec) return res.status(404).json({ error: 'Not found' });
-  if (exec.user_id !== (req as any).user.id) return res.status(403).json({ error: 'Not your task' });
+  if (exec.user_id !== req.user.id) return res.status(403).json({ error: 'Not your task' });
 
   const { data: positions } = await supabase
     .from('task_positions')
@@ -1034,8 +1027,8 @@ app.patch('/api/task-executions/:id/advance', auth, validate(AdvanceTaskSchema),
     entity_id: req.params.id,
     event_type: isComplete ? 'task.completed' : 'task.step_advanced',
     payload: { step: nextStep, total: positions ? positions.length : 0, is_complete: isComplete },
-    triggered_by: (req as any).user.id,
-    org_id: (req as any).user.org_id
+    triggered_by: req.user.id,
+    org_id: req.user.org_id
   });
 
   res.json(data);
@@ -1047,7 +1040,7 @@ app.patch('/api/task-executions/:id/pause', auth, async (req, res) => {
     .from('task_executions')
     .update({ status: 'paused', paused_at: new Date().toISOString() })
     .eq('id', req.params.id)
-    .eq('user_id', (req as any).user.id)
+    .eq('user_id', req.user.id)
     .select()
     .single();
   if (error) return res.status(500).json({ error: error.message });
@@ -1059,7 +1052,7 @@ app.patch('/api/task-executions/:id/resume', auth, async (req, res) => {
     .from('task_executions')
     .update({ status: 'active', paused_at: null })
     .eq('id', req.params.id)
-    .eq('user_id', (req as any).user.id)
+    .eq('user_id', req.user.id)
     .select()
     .single();
   if (error) return res.status(500).json({ error: error.message });
@@ -1081,7 +1074,7 @@ app.patch('/api/task-executions/:id/override', auth, validate(OverrideTaskSchema
   await supabase.from('audit_logs').insert({
     entity_type: 'task_execution', entity_id: req.params.id,
     action: 'priority_override', details: { reason },
-    user_id: (req as any).user.id, org_id: (req as any).user.org_id
+    user_id: req.user.id, org_id: req.user.org_id
   });
 
   res.json(data);
@@ -1092,7 +1085,7 @@ app.get('/api/queues/my', auth, async (req, res) => {
   const { data, error } = await supabase
     .from('user_queues')
     .select('*, queue_assignments(*, task_executions(*, task_types(position_code, name, standard_minutes, attention_type)))')
-    .eq('user_id', (req as any).user.id)
+    .eq('user_id', req.user.id)
     .eq('is_active', true)
     .order('sort_order');
   if (error) return res.status(500).json({ error: error.message });
@@ -1104,7 +1097,7 @@ app.post('/api/queues', auth, validate(CreateQueueSchema), async (req, res) => {
   const { queue_name, queue_type } = req.body;
   const { data, error } = await supabase
     .from('user_queues')
-    .insert({ user_id: (req as any).user.id, queue_name, queue_type })
+    .insert({ user_id: req.user.id, queue_name, queue_type })
     .select()
     .single();
   if (error) return res.status(500).json({ error: error.message });
@@ -1116,7 +1109,7 @@ app.get('/api/velocity/my', auth, async (req, res) => {
   const { data: today } = await supabase
     .from('task_executions')
     .select('id, status, actual_minutes, completed_at')
-    .eq('user_id', (req as any).user.id)
+    .eq('user_id', req.user.id)
     .gte('created_at', new Date().toISOString().split('T')[0]);
 
   const completed = (today || []).filter((t: any) => t.status === 'completed').length;
@@ -1137,7 +1130,7 @@ app.get('/api/velocity/team', auth, async (req, res) => {
   const { data: users } = await supabase
     .from('users')
     .select('id, full_name, role')
-    .eq('org_id', (req as any).user.org_id);
+    .eq('org_id', req.user.org_id);
 
   const today = new Date().toISOString().split('T')[0];
   const userIds = (users || []).map((u: any) => u.id);

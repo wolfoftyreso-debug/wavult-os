@@ -6,7 +6,7 @@ export const missionRouter = Router()
 
 // POST /api/missions — Skapa uppdrag (kräver autentisering)
 missionRouter.post('/', async (req: Request, res: Response) => {
-  if (!(req as any).user) {
+  if (!req.user) {
     return res.status(401).json({ ok: false, error: 'Authentication required to create missions' })
   }
   try {
@@ -44,10 +44,20 @@ missionRouter.get('/client/:orgId', async (req: Request, res: Response) => {
   }
 })
 
-// GET /api/missions/photographer/:photographerId — Fotografens uppdrag
+// GET /api/missions/zoomer/:zoomerId — Zoomers uppdrag
+missionRouter.get('/zoomer/:zoomerId', async (req: Request, res: Response) => {
+  try {
+    const missions = await MissionEngine.getZoomerMissions(req.params.zoomerId)
+    res.json({ ok: true, data: missions })
+  } catch (err: unknown) {
+    res.status(500).json({ ok: false, error: (err as Error).message })
+  }
+})
+
+// GET /api/missions/photographer/:photographerId — deprecated, use /zoomer/:zoomerId
 missionRouter.get('/photographer/:photographerId', async (req: Request, res: Response) => {
   try {
-    const missions = await MissionEngine.getPhotographerMissions(req.params.photographerId)
+    const missions = await MissionEngine.getZoomerMissions(req.params.photographerId)
     res.json({ ok: true, data: missions })
   } catch (err: unknown) {
     res.status(500).json({ ok: false, error: (err as Error).message })
@@ -56,11 +66,11 @@ missionRouter.get('/photographer/:photographerId', async (req: Request, res: Res
 
 // POST /api/missions/:id/assign — Zoomer accepterar uppdrag (kräver autentisering)
 missionRouter.post('/:id/assign', async (req: Request, res: Response) => {
-  if (!(req as any).user) {
+  if (!req.user) {
     return res.status(401).json({ ok: false, error: 'Authentication required' })
   }
   // zoomerId kan skickas i body, annars används inloggad users id
-  const zoomerId = req.body.zoomerId ?? (req as any).user.id
+  const zoomerId = req.body.zoomerId ?? req.user.id
   try {
     await MissionEngine.assignMission(req.params.id, zoomerId)
     res.json({ ok: true })
@@ -69,17 +79,17 @@ missionRouter.post('/:id/assign', async (req: Request, res: Response) => {
   }
 })
 
-// POST /api/missions/:id/start — Fotograf startar uppdrag
+// POST /api/missions/:id/start — Zoomer startar uppdrag
 missionRouter.post('/:id/start', async (req: Request, res: Response) => {
   try {
-    await MissionEngine.startMission(req.params.id, req.body.photographerId)
+    await MissionEngine.startMission(req.params.id, req.body.zoomerId ?? req.body.photographerId)
     res.json({ ok: true })
   } catch (err: unknown) {
     res.status(400).json({ ok: false, error: (err as Error).message })
   }
 })
 
-// POST /api/missions/:id/deliver — Fotograf levererar bild
+// POST /api/missions/:id/deliver — Zoomer levererar bild
 missionRouter.post('/:id/deliver', async (req: Request, res: Response) => {
   try {
     const result = await MissionEngine.deliverImage({ missionId: req.params.id, ...req.body })

@@ -5,7 +5,7 @@
  * 1. Mission completed → trigger_mission_payout() SQL-funktion
  * 2. PayoutEngine.processPhotographerPayout() → Revolut Payouts API
  * 3. Journalpost skapas i Ledger Core
- * 4. Fotograf notifieras
+ * 4. Zoomer notifieras
  */
 
 import { supabase } from './supabase'
@@ -58,14 +58,14 @@ export const PayoutEngine = {
     if (error || !payout) throw new Error(`Failed to trigger payout: ${error?.message}`)
 
     // Schemalägg utbetalning
-    return PayoutEngine.processPhotographerPayout(payout.id)
+    return PayoutEngine.processZoomerPayout(payout.id)
   },
 
   /**
-   * Processa en fotograf-utbetalning via Revolut
+   * Processa en zoomer-utbetalning via Revolut
    */
-  async processPhotographerPayout(payoutId: string): Promise<PayoutResult> {
-    // Hämta payout + fotograf
+  async processZoomerPayout(payoutId: string): Promise<PayoutResult> {
+    // Hämta payout + zoomer
     const { data: payout } = await supabase
       .from('photographer_payouts')
       .select('*, photographers(display_name, revolut_account_id, email)')
@@ -88,19 +88,19 @@ export const PayoutEngine = {
       status: 'PROCESSING',
     }).eq('id', payoutId)
 
-    const photographer = payout.photographers as { display_name: string; revolut_account_id?: string; email?: string }
+    const zoomer = payout.photographers as { display_name: string; revolut_account_id?: string; email?: string }
 
     try {
       // Sandbox: simulera Revolut-transfer
       // Production: använd Revolut Business Payouts API
       let revolutTransferId: string | undefined
 
-      if (REVOLUT_API_KEY && photographer.revolut_account_id) {
+      if (REVOLUT_API_KEY && zoomer.revolut_account_id) {
         const transfer = await revolutRequest<{ id: string }>('POST', '/pay', {
           request_id: payoutId,
           account_id: process.env.REVOLUT_ACCOUNT_ID,
           receiver: {
-            counterparty_id: photographer.revolut_account_id,
+            counterparty_id: zoomer.revolut_account_id,
           },
           amount: payout.net_minor / 100,
           currency: payout.currency.toUpperCase(),
@@ -116,7 +116,7 @@ export const PayoutEngine = {
       await supabase.from('journal_entries').insert({
         org_id: payout.org_id,
         entry_date: new Date().toISOString().split('T')[0],
-        description: `Photographer payout: ${photographer.display_name} — mission ${payout.mission_id?.slice(0, 8)}`,
+        description: `Zoomer payout: ${zoomer.display_name} — mission ${payout.mission_id?.slice(0, 8)}`,
         reference: payoutId,
         currency: payout.currency,
         account_number: '2100',
@@ -166,9 +166,9 @@ export const PayoutEngine = {
   },
 
   /**
-   * Hämta fotograf-intjäning (för dashboard)
+   * Hämta zoomer-intjäning (för dashboard)
    */
-  async getPhotographerEarnings(photographerId: string): Promise<{
+  async getZoomerEarnings(zoomerId: string): Promise<{
     totalEarned: number
     pendingPayout: number
     completedPayouts: number
@@ -177,7 +177,7 @@ export const PayoutEngine = {
     const { data: payouts } = await supabase
       .from('photographer_payouts')
       .select('net_minor, status, currency')
-      .eq('photographer_id', photographerId)
+      .eq('photographer_id', zoomerId)
 
     const total = (payouts ?? []).reduce((s, p) => s + (p.status === 'COMPLETED' ? p.net_minor : 0), 0)
     const pending = (payouts ?? []).reduce((s, p) => s + (p.status === 'PENDING' ? p.net_minor : 0), 0)
@@ -202,6 +202,16 @@ export const PayoutEngine = {
       .limit(months * 30)
 
     return data ?? []
+  },
+
+  /** @deprecated Use processZoomerPayout */
+  processPhotographerPayout(payoutId: string) {
+    return PayoutEngine.processZoomerPayout(payoutId)
+  },
+
+  /** @deprecated Use getZoomerEarnings */
+  getPhotographerEarnings(photographerId: string) {
+    return PayoutEngine.getZoomerEarnings(photographerId)
   },
 }
 

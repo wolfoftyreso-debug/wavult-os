@@ -34,7 +34,7 @@ export interface CreateMissionInput {
 
 export interface DeliverableInput {
   missionId: string
-  photographerId: string
+  zoomerId: string
   fileKey: string
   fileUrl?: string
   fileSizeBytes?: number
@@ -113,26 +113,26 @@ export const MissionEngine = {
   },
 
   /**
-   * Fotograf startar ett uppdrag
+   * Zoomer startar ett uppdrag
    */
-  async startMission(missionId: string, photographerId: string): Promise<void> {
+  async startMission(missionId: string, zoomerId: string): Promise<void> {
     await supabase.rpc('transition_mission', {
       p_mission_id: missionId,
       p_to_status: 'IN_PROGRESS',
-      p_actor_id: photographerId,
+      p_actor_id: zoomerId,
       p_actor_type: 'PHOTOGRAPHER',
     })
   },
 
   /**
-   * Fotograf levererar en bild
+   * Zoomer levererar en bild
    */
   async deliverImage(input: DeliverableInput): Promise<{ deliverableId: string }> {
     const { data, error } = await supabase
       .from('mission_deliverables')
       .insert({
         mission_id: input.missionId,
-        photographer_id: input.photographerId,
+        photographer_id: input.zoomerId,
         file_key: input.fileKey,
         file_url: input.fileUrl,
         file_size_bytes: input.fileSizeBytes,
@@ -168,7 +168,7 @@ export const MissionEngine = {
       await supabase.rpc('transition_mission', {
         p_mission_id: input.missionId,
         p_to_status: 'DELIVERED',
-        p_actor_id: input.photographerId,
+        p_actor_id: input.zoomerId,
         p_actor_type: 'PHOTOGRAPHER',
         p_metadata: { deliverables_count: deliveredCount },
       })
@@ -199,7 +199,7 @@ export const MissionEngine = {
       .eq('mission_id', missionId)
       .eq('status', 'UPLOADED')
 
-    // Uppdatera fotografens statistik (non-critical)
+    // Uppdatera zoomers statistik (non-critical)
     if (mission.assigned_photographer_id) {
       void supabase.rpc('increment_photographer_stats', {
         p_photographer_id: mission.assigned_photographer_id,
@@ -268,20 +268,25 @@ export const MissionEngine = {
   },
 
   /**
-   * Hämta uppdrag för en fotograf
+   * Hämta uppdrag för en zoomer
    */
-  async getPhotographerMissions(photographerId: string, status?: MissionStatus): Promise<unknown[]> {
+  async getZoomerMissions(zoomerId: string, status?: MissionStatus): Promise<unknown[]> {
     let query = supabase
       .from('missions')
       .select('*')
-      .eq('assigned_photographer_id', photographerId)
+      .eq('assigned_photographer_id', zoomerId)
       .order('created_at', { ascending: false })
 
     if (status) query = query.eq('status', status)
 
     const { data, error } = await query
-    if (error) throw new Error(`Failed to get photographer missions: ${error.message}`)
+    if (error) throw new Error(`Failed to get zoomer missions: ${error.message}`)
     return data ?? []
+  },
+
+  /** @deprecated Use getZoomerMissions */
+  getPhotographerMissions(photographerId: string, status?: MissionStatus) {
+    return MissionEngine.getZoomerMissions(photographerId, status)
   },
 }
 
