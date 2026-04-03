@@ -148,6 +148,82 @@ router.post('/v1/ai/tts', async (req: Request, res: Response) => {
   }
 })
 
+// POST /v1/ai/image — image generation proxy via API Core (never call providers directly from clients)
+// Body: { prompt, model?, count? }
+// Returns: { images: [{ b64: string, mimeType: string }], model, count }
+// Supports:
+//   - gemini-2.5-flash-image  → generateContent (multimodal, inline b64)
+//   - imagen-3.0-generate-002 → generateImages  (Imagen API)
+router.post('/v1/ai/image', async (req: Request, res: Response) => {
+  const {
+    prompt,
+    model = 'gemini-2.5-flash-image',
+    count = 1,
+  } = req.body
+
+  if (!prompt) return res.status(400).json({ error: 'prompt required' })
+
+  const apiKey = process.env.GEMINI_API_KEY || ''
+  if (!apiKey) return res.status(500).json({ error: 'GEMINI_API_KEY not configured in API Core' })
+
+  try {
+    // Gemini Flash image model — uses generateContent with responseModalities
+    if (model.includes('flash-image') || model.includes('gemini')) {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { responseModalities: ['IMAGE', 'TEXT'] },
+          }),
+        }
+      )
+      if (!response.ok) {
+        const err = await response.text()
+        return res.status(response.status).json({ error: 'Gemini image generation failed', detail: err })
+      }
+      const data = await response.json() as any
+      const images: { b64: string; mimeType: string }[] = []
+      for (const part of data?.candidates?.[0]?.content?.parts || []) {
+        if (part.inlineData?.data) {
+          images.push({ b64: part.inlineData.data, mimeType: part.inlineData.mimeType || 'image/png' })
+        }
+      }
+      return res.json({ images, model, count: images.length })
+    }
+
+    // Imagen models — uses generateImages
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateImages?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: { text: prompt },
+          number_of_images: Math.min(count, 4),
+          safety_filter_level: 'BLOCK_ONLY_HIGH',
+          person_generation: 'ALLOW_ADULT',
+        }),
+      }
+    )
+    if (!response.ok) {
+      const err = await response.text()
+      return res.status(response.status).json({ error: 'Imagen generation failed', detail: err })
+    }
+    const data = await response.json() as any
+    const images = (data.generatedImages || []).map((img: any) => ({
+      b64: img.image?.imageBytes || '',
+      mimeType: 'image/png',
+    }))
+    return res.json({ images, model, count: images.length })
+
+  } catch (err) {
+    return res.status(502).json({ error: 'Image generation failed', detail: String(err) })
+  }
+})
+
 // GET /v1/ai/cost — cost summary (from CloudWatch logs ideally, simplified here)
 router.get('/v1/ai/cost', async (_req: Request, res: Response) => {
   return res.json({
