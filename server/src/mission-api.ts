@@ -4,8 +4,11 @@ import { supabase } from './supabase'
 
 export const missionRouter = Router()
 
-// POST /api/missions — Skapa uppdrag
+// POST /api/missions — Skapa uppdrag (kräver autentisering)
 missionRouter.post('/', async (req: Request, res: Response) => {
+  if (!(req as any).user) {
+    return res.status(401).json({ ok: false, error: 'Authentication required to create missions' })
+  }
   try {
     const result = await MissionEngine.createMission(req.body)
     res.status(201).json({ ok: true, data: result })
@@ -51,10 +54,15 @@ missionRouter.get('/photographer/:photographerId', async (req: Request, res: Res
   }
 })
 
-// POST /api/missions/:id/assign — Fotograf accepterar uppdrag
+// POST /api/missions/:id/assign — Zoomer accepterar uppdrag (kräver autentisering)
 missionRouter.post('/:id/assign', async (req: Request, res: Response) => {
+  if (!(req as any).user) {
+    return res.status(401).json({ ok: false, error: 'Authentication required' })
+  }
+  // zoomerId kan skickas i body, annars används inloggad users id
+  const zoomerId = req.body.zoomerId ?? (req as any).user.id
   try {
-    await MissionEngine.assignMission(req.params.id, req.body.photographerId)
+    await MissionEngine.assignMission(req.params.id, zoomerId)
     res.json({ ok: true })
   } catch (err: unknown) {
     res.status(400).json({ ok: false, error: (err as Error).message })

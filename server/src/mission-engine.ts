@@ -98,36 +98,18 @@ export const MissionEngine = {
   },
 
   /**
-   * Fotograf accepterar ett uppdrag
+   * Zoomer accepterar ett uppdrag — atomisk assignment via PostgreSQL RPC.
+   *
+   * SELECT + UPDATE separerat skapar en race condition där två zoomers
+   * kan assignas till samma mission. RPC:n gör en conditional UPDATE
+   * (WHERE status = 'OPEN') i en enda databastransaktion — atomar och korrekt.
    */
-  async assignMission(missionId: string, photographerId: string): Promise<void> {
-    const { data: mission } = await supabase
-      .from('missions')
-      .select('status, org_id')
-      .eq('id', missionId)
-      .single()
-
-    if (!mission) throw new Error('Mission not found')
-    if (mission.status !== 'OPEN') throw new Error(`Mission is ${mission.status}, not OPEN`)
-
-    await supabase
-      .from('missions')
-      .update({
-        status: 'ASSIGNED',
-        assigned_photographer_id: photographerId,
-        assigned_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', missionId)
-
-    await supabase.from('mission_events').insert({
-      mission_id: missionId,
-      event_type: 'ASSIGNED',
-      from_status: 'OPEN',
-      to_status: 'ASSIGNED',
-      actor_id: photographerId,
-      actor_type: 'PHOTOGRAPHER',
+  async assignMission(missionId: string, zoomerId: string): Promise<void> {
+    const { error } = await supabase.rpc('assign_mission', {
+      p_mission_id: missionId,
+      p_zoomer_id:  zoomerId,
     })
+    if (error) throw new Error(error.message)
   },
 
   /**

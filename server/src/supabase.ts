@@ -22,8 +22,11 @@ export const supabaseAnonKey = process.env.SUPABASE_ANON_KEY ?? "";
 // hanging for 10+ seconds per request.
 // ---------------------------------------------------------------------------
 
-const EMPTY_RESULT = { data: [], error: null, count: null, status: 200, statusText: "OK (fallback)" };
-const EMPTY_SINGLE = { data: null, error: null, count: null, status: 200, statusText: "OK (fallback)" };
+// _isFallback flag: lets critical systems (governance, audit, compliance) detect that
+// the database is unreachable and avoid reporting false "ok" status.
+// Check with: isFallbackResult(result) or isSupabaseFallback()
+const EMPTY_RESULT = { data: [], error: null, count: null, status: 200, statusText: "OK (fallback)", _isFallback: true };
+const EMPTY_SINGLE = { data: null, error: null, count: null, status: 200, statusText: "OK (fallback)", _isFallback: true };
 
 function chainable(terminal: () => Promise<any>): any {
   const proxy: any = new Proxy(() => {}, {
@@ -104,6 +107,21 @@ export const supabase: SupabaseClient = new Proxy({} as SupabaseClient, {
 
 export function isSupabaseFallback(): boolean {
   return _fallbackMode;
+}
+
+/**
+ * Check if a Supabase query result came from the fallback client.
+ * Use this in governance, audit, and compliance routes to avoid
+ * reporting false "ok" when the database is unreachable.
+ *
+ * @example
+ * const result = await supabase.from('audit_issues').select('*')
+ * if (isFallbackResult(result)) {
+ *   return res.json({ ok: false, error: 'Database unavailable — cannot perform audit' })
+ * }
+ */
+export function isFallbackResult(result: any): boolean {
+  return result?._isFallback === true;
 }
 
 

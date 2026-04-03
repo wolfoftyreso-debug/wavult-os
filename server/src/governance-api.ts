@@ -1,11 +1,16 @@
 import { Router } from 'express'
 import { runFullGovernanceSweep, runLedgerAudit, runPaymentAudit, runSystemHealth } from './governance'
-import { supabase } from './supabase'
+import { supabase, isSupabaseFallback } from './supabase'
+
+const DB_UNAVAILABLE_WARNING = 'Database unavailable — results are incomplete. Do not use for compliance decisions.'
 
 export const governanceRouter = Router()
 
 // POST /api/governance/sweep — Kör full sweep
 governanceRouter.post('/sweep', async (req, res) => {
+  if (isSupabaseFallback()) {
+    return res.status(503).json({ ok: false, error: DB_UNAVAILABLE_WARNING })
+  }
   try {
     const { orgId } = req.body as { orgId?: string }
     const result = await runFullGovernanceSweep(orgId)
@@ -18,6 +23,9 @@ governanceRouter.post('/sweep', async (req, res) => {
 
 // POST /api/governance/audit/ledger
 governanceRouter.post('/audit/ledger', async (req, res) => {
+  if (isSupabaseFallback()) {
+    return res.status(503).json({ ok: false, error: DB_UNAVAILABLE_WARNING })
+  }
   try {
     const { orgId } = req.body as { orgId?: string }
     const result = await runLedgerAudit(orgId)
@@ -30,6 +38,9 @@ governanceRouter.post('/audit/ledger', async (req, res) => {
 
 // POST /api/governance/audit/payments
 governanceRouter.post('/audit/payments', async (req, res) => {
+  if (isSupabaseFallback()) {
+    return res.status(503).json({ ok: false, error: DB_UNAVAILABLE_WARNING })
+  }
   try {
     const { orgId } = req.body as { orgId?: string }
     const result = await runPaymentAudit(orgId)
@@ -42,6 +53,9 @@ governanceRouter.post('/audit/payments', async (req, res) => {
 
 // POST /api/governance/health — Kör system health check
 governanceRouter.post('/health', async (_req, res) => {
+  if (isSupabaseFallback()) {
+    return res.status(503).json({ ok: false, error: DB_UNAVAILABLE_WARNING })
+  }
   try {
     const result = await runSystemHealth()
     res.json({ ok: true, data: result })
