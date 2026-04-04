@@ -1,32 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
-  <!-- Vänster böjd arm (C-form, öppnar uppåt-höger, böjer sig nedåt-vänster) -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 280">
+
+  <!-- VÄNSTER CRESCENT: solid halvmåne, öppnar mot höger -->
+  <!-- Yttre båge vänster, inre båge höger = crescent-form -->
   <path d="
-    M 158 58
-    C 158 58 78 72 58 158
-    C 48 202 64 244 92 262
-    L 122 232
-    C 98 218 88 192 96 158
-    C 108 108 168 90 168 90
+    M 100,30
+    A 110,110 0 1 0 100,250
+    A 65,65 0 1 1 100,30
     Z
   " fill="#FFFFFF"/>
 
-  <!-- Höger böjd arm (spegelvänd) -->
+  <!-- HÖGER CRESCENT: spegelvänd, öppnar mot vänster -->
   <path d="
-    M 242 58
-    C 242 58 322 72 342 158
-    C 352 202 336 244 308 262
-    L 278 232
-    C 302 218 312 192 304 158
-    C 292 108 232 90 232 90
+    M 260,30
+    A 110,110 0 1 1 260,250
+    A 65,65 0 1 0 260,30
     Z
   " fill="#FFFFFF"/>
 
-  <!-- Mitten: horisontell bar överst -->
-  <rect x="155" y="44" width="90" height="18" rx="2" fill="#FFFFFF"/>
+  <!-- MITTEN: tunn horisontell bar -->
+  <rect x="148" y="28" width="64" height="13" rx="2" fill="#FFFFFF"/>
 
-  <!-- Mittendel: inverterad triangel/tratt ned till spets -->
-  <polygon points="155,62 245,62 204,248 196,248" fill="#FFFFFF"/>
+  <!-- MITTEN: inverterad triangel från bar ned till lång spets -->
+  <polygon points="148,41 212,41 184,230 176,230" fill="#FFFFFF"/>
 
-  <!-- Skarp spets nedåt -->
-  <polygon points="195,235 205,235 200,278" fill="#FFFFFF"/>
+  <!-- SPETS: förlängning -->
+  <polygon points="176,220 184,220 180,260" fill="#FFFFFF"/>
+
 </svg>
