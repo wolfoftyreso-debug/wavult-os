@@ -1,5 +1,6 @@
 import dgsRouter from './routes/decisions-governance'
 import configRouter from './routes/config'
+import agentSchedulerRouter from './routes/agent-scheduler'
 import express from 'express'
 import rateLimit from 'express-rate-limit'
 import { taskRouter } from './routes/tasks'
@@ -119,6 +120,7 @@ app.use('/', flightsRouter)
 app.use('/', twilioRouter)
 app.use('/', aiApiRouter)
 app.use('/', agentsRouter)              // Agent Mesh — 10 expert agents med intelligent routing
+app.use(agentSchedulerRouter)           // Proactive Agent Engine — autonoma agenter (scheduler + actions + goals)
 app.use('/', mediaApiRouter)
 
 // NVIDIA NIM — status endpoint
@@ -156,3 +158,25 @@ app.listen(PORT, () => {
   console.log(`[Wavult Core] Listening on port ${PORT}`)
   console.log(`[Wavult Core] Engines: state + financial + fraud + event`)
 })
+
+// ─── Proactive Agent Scheduler ────────────────────────────────────────────────
+// Kör alla agenter var 6:e timme + en gång vid uppstart (30s delay)
+import { runAllProactiveAgents } from './ai/agents/proactive'
+
+setInterval(async () => {
+  console.log('[scheduler] Running proactive agents...')
+  try {
+    await runAllProactiveAgents()
+  } catch (e) {
+    console.error('[scheduler] Agent run failed:', e)
+  }
+}, 6 * 60 * 60 * 1000) // 6h
+
+setTimeout(async () => {
+  console.log('[scheduler] Initial proactive agent run...')
+  try {
+    await runAllProactiveAgents()
+  } catch (e) {
+    console.error('[scheduler] Initial agent run failed:', e)
+  }
+}, 30_000)
