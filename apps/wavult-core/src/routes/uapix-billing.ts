@@ -1,5 +1,6 @@
-import { Router } from 'express'
+import { Router, Request } from 'express'
 import { Pool } from 'pg'
+import crypto from 'crypto'
 
 const router = Router()
 const getDb = () => new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } })
@@ -187,16 +188,41 @@ router.post('/v1/uapix/billing/portal', async (req, res) => {
   }
 })
 
+// ─── Stripe webhook signature verification ────────────────────────────────────
+function verifyStripeSignature(req: Request, secret: string): boolean {
+  const sig = req.headers['stripe-signature'] as string
+  if (!sig) return false
+  const raw = (req as any).rawBody as Buffer | undefined
+  if (!raw) return false
+  // Stripe signature format: t=<ts>,v1=<hmac>,...
+  const parts: Record<string, string> = {}
+  for (const pair of sig.split(',')) {
+    const idx = pair.indexOf('=')
+    if (idx > 0) parts[pair.slice(0, idx)] = pair.slice(idx + 1)
+  }
+  if (!parts.t || !parts.v1) return false
+  const payload = `${parts.t}.${raw.toString('utf8')}`
+  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex')
+  return crypto.timingSafeEqual(Buffer.from(parts.v1, 'hex'), Buffer.from(expected, 'hex'))
+}
+
 // POST /v1/uapix/billing/webhook — Stripe webhooks
 // Register this URL in Stripe Dashboard: https://api.wavult.com/v1/uapix/billing/webhook
 router.post('/v1/uapix/billing/webhook', async (req, res) => {
-  // TODO: verify Stripe signature in production
-  // const sig = req.headers['stripe-signature'] as string
-  // stripe.webhooks.constructEvent(req.body, sig, STRIPE_WEBHOOK_SECRET)
+  const webhookSecret = process.env.STRIPE_UAPIX_WEBHOOK_SECRET || process.env.STRIPE_WEBHOOK_SECRET
+  if (webhookSecret) {
+    if (!verifyStripeSignature(req, webhookSecret)) {
+      console.warn('[uapix-billing] Stripe signature verification failed')
+      return res.status(400).json({ error: 'Invalid Stripe signature' })
+    }
+  } else {
+    console.warn('[uapix-billing] STRIPE_UAPIX_WEBHOOK_SECRET not set — skipping signature check')
+  }
 
   let event: any
   try {
-    event = typeof req.body === 'string' ? JSON.parse(req.body) : req.body
+    const raw = (req as any).rawBody
+    event = raw ? JSON.parse(raw.toString()) : (typeof req.body === 'string' ? JSON.parse(req.body) : req.body)
   } catch {
     return res.status(400).json({ error: 'Invalid JSON' })
   }

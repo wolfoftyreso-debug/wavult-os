@@ -1,5 +1,6 @@
-import { Router } from 'express'
+import { Router, Request } from 'express'
 import { Pool } from 'pg'
+import crypto from 'crypto'
 
 const router = Router()
 const getDb = () => new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } })
@@ -155,8 +156,8 @@ router.post('/v1/apifly/billing/checkout', async (req, res) => {
         mode: 'subscription',
         'line_items[0][price]': priceId,
         'line_items[0][quantity]': '1',
-        success_url: 'https://apifly.dev/dashboard?upgraded=true',
-        cancel_url: 'https://apifly.dev/pricing',
+        success_url: 'https://apifly.se/portal?upgraded=true',
+        cancel_url: 'https://apifly.se/pricing',
         customer_email: customer.email,
         'metadata[customer_id]': customer.id,
         'metadata[plan]': plan,
@@ -205,7 +206,7 @@ router.post('/v1/apifly/billing/portal', async (req, res) => {
       },
       body: new URLSearchParams({
         customer: customer.stripe_customer_id,
-        return_url: 'https://apifly.dev/dashboard',
+        return_url: 'https://apifly.se/portal',
       }),
     })
 
@@ -220,13 +221,40 @@ router.post('/v1/apifly/billing/portal', async (req, res) => {
   }
 })
 
+// ─── Stripe webhook signature verification ────────────────────────────────────
+function verifyStripeSignature(req: Request, secret: string): boolean {
+  const sig = req.headers['stripe-signature'] as string
+  if (!sig) return false
+  const raw = (req as any).rawBody as Buffer | undefined
+  if (!raw) return false
+  const parts: Record<string, string> = {}
+  for (const pair of sig.split(',')) {
+    const idx = pair.indexOf('=')
+    if (idx > 0) parts[pair.slice(0, idx)] = pair.slice(idx + 1)
+  }
+  if (!parts.t || !parts.v1) return false
+  const payload = `${parts.t}.${raw.toString('utf8')}`
+  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex')
+  return crypto.timingSafeEqual(Buffer.from(parts.v1, 'hex'), Buffer.from(expected, 'hex'))
+}
+
 // POST /v1/apifly/billing/webhook — Stripe webhooks
 // Register: https://api.wavult.com/v1/apifly/billing/webhook
 router.post('/v1/apifly/billing/webhook', async (req, res) => {
-  // TODO: verify Stripe signature in production
+  const webhookSecret = process.env.STRIPE_APIFLY_WEBHOOK_SECRET || process.env.STRIPE_WEBHOOK_SECRET
+  if (webhookSecret) {
+    if (!verifyStripeSignature(req, webhookSecret)) {
+      console.warn('[apifly-billing] Stripe signature verification failed')
+      return res.status(400).json({ error: 'Invalid Stripe signature' })
+    }
+  } else {
+    console.warn('[apifly-billing] STRIPE_APIFLY_WEBHOOK_SECRET not set — skipping signature check')
+  }
+
   let event: any
   try {
-    event = typeof req.body === 'string' ? JSON.parse(req.body) : req.body
+    const raw = (req as any).rawBody
+    event = raw ? JSON.parse(raw.toString()) : (typeof req.body === 'string' ? JSON.parse(req.body) : req.body)
   } catch {
     return res.status(400).json({ error: 'Invalid JSON' })
   }

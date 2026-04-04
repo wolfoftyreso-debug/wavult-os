@@ -77,6 +77,22 @@ app.use((req, _res, next) => {
   next()
 })
 
+// Preserve raw body for Stripe webhook signature verification
+app.use((req, res, next) => {
+  if (req.path.includes('/billing/webhook') || req.path.includes('/revolut/webhook') || req.path.includes('/payments/webhook')) {
+    express.raw({ type: 'application/json', limit: '1mb' })(req, res, (err) => {
+      if (err) return next(err)
+      ;(req as any).rawBody = req.body
+      // Re-parse for route handlers
+      if (Buffer.isBuffer(req.body)) {
+        try { req.body = JSON.parse(req.body.toString()) } catch { /* keep as buffer */ }
+      }
+      next()
+    })
+  } else {
+    next()
+  }
+})
 app.use(express.json({ limit: '1mb' }))
 app.use(express.urlencoded({ extended: false, limit: '1mb' }))
 
