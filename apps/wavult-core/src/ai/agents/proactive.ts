@@ -8,7 +8,10 @@ import type { AgentId } from './types'
 // Läs DB-URL från SSM/env
 const getDb = () => {
   const { Pool } = require('pg')
-  return new Pool({ connectionString: process.env.DATABASE_URL || process.env.WAVULT_DB_URL })
+  return new Pool({
+    connectionString: process.env.DATABASE_URL || process.env.WAVULT_DB_URL,
+    ssl: { rejectUnauthorized: false },
+  })
 }
 
 export interface AgentAction {

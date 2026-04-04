@@ -17,7 +17,7 @@ router.post('/v1/agents/run', async (_req, res) => {
 // GET /v1/agents/actions — lista senaste agent-handlingar
 router.get('/v1/agents/actions', async (req, res) => {
   const { Pool } = require('pg')
-  const db = new Pool({ connectionString: process.env.DATABASE_URL || process.env.WAVULT_DB_URL })
+  const db = new Pool({ connectionString: process.env.DATABASE_URL || process.env.WAVULT_DB_URL, ssl: { rejectUnauthorized: false } })
   try {
     const limit = Math.min(parseInt(req.query.limit as string) || 50, 500)
     const { rows } = await db.query(
@@ -35,7 +35,7 @@ router.get('/v1/agents/actions', async (req, res) => {
 // GET /v1/agents/goals — agent-definierade mål
 router.get('/v1/agents/goals', async (_req, res) => {
   const { Pool } = require('pg')
-  const db = new Pool({ connectionString: process.env.DATABASE_URL || process.env.WAVULT_DB_URL })
+  const db = new Pool({ connectionString: process.env.DATABASE_URL || process.env.WAVULT_DB_URL, ssl: { rejectUnauthorized: false } })
   try {
     const { rows } = await db.query(
       `SELECT * FROM agent_goals WHERE status = 'active' ORDER BY created_at DESC`,
