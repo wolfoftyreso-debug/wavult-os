@@ -25,7 +25,7 @@ export type ModelId =
 export interface ModelConfig {
   id: ModelId
   name: string
-  provider: 'local' | 'anthropic' | 'google' | 'openai'
+  provider: 'local' | 'anthropic' | 'google' | 'openai' | 'deepseek'
   endpoint: string
   costPer1kTokens: number  // USD
   maxContextTokens: number
