@@ -5,7 +5,15 @@ import { CommandDashboard } from './CommandDashboard'
 import { useEntityScope } from '../../shared/scope/EntityScopeContext'
 import { useTranslation } from '../../shared/i18n/useTranslation'
 import { useVisaAlerts } from '../visa/useVisaAlerts'
-import { useCorpEntities } from '../corporate/hooks/useCorporate'
+// Corp entities — statisk data, ingen Supabase
+const STATIC_CORP_ENTITIES = [
+  { id: '1', name: 'Wavult Group Holding DMCC',         short_name: 'WGH',  jurisdiction: 'UAE (DIFC)',     status: 'aktiv',    flag: '🇦🇪', color: '#E8B84B' },
+  { id: '2', name: 'Wavult Operations Holding AB',      short_name: 'WOH',  jurisdiction: 'Sverige',        status: 'aktiv',    flag: '🇸🇪', color: '#0A3D62' },
+  { id: '3', name: 'Optical Zoom UAB',                  short_name: 'OZ-LT', jurisdiction: 'Litauen',       status: 'aktiv',    flag: '🇱🇹', color: '#2D7A4F' },
+  { id: '4', name: 'Optical Zoom Inc',                  short_name: 'OZ-US', jurisdiction: 'Delaware, USA', status: 'aktiv',    flag: '🇺🇸', color: '#2C6EA6' },
+  { id: '5', name: 'LandveX AC',                        short_name: 'LVX-AE', jurisdiction: 'UAE (DIFC)',   status: 'forming',  flag: '🇦🇪', color: '#C9A84C' },
+  { id: '6', name: 'LandveX Inc',                       short_name: 'LVX-US', jurisdiction: 'Texas, USA',   status: 'forming',  flag: '🇺🇸', color: '#4A7A5B' },
+]
 
 // ─── InfoDrawer ────────────────────────────────────────────────────────────────
 function InfoDrawer({ title, children, onClose }: { title: string; children: React.ReactNode; onClose: () => void }) {
@@ -97,8 +105,8 @@ function VisaAlertBanner() {
 
 // ─── CEO Dashboard — Earth & Stone ────────────────────────────────────────────
 function CeoDashboard() {
-  const { data: corpEntities, refetch: refetchEntities, isFetching } = useCorpEntities()
-  const activeCount = corpEntities?.filter(e => e.status === 'aktiv').length ?? 6
+  const corpEntities = STATIC_CORP_ENTITIES
+  const activeCount = corpEntities.filter(e => e.status === 'aktiv').length
 
   const [drawer, setDrawer] = useState<{ title: string; content: React.ReactNode } | null>(null)
 
@@ -162,19 +170,13 @@ function CeoDashboard() {
                   </span>
                 </div>
               ))}
-              {!corpEntities && <p className="text-sm text-[var(--color-text-muted)]">Laddar...</p>}
+              
             </div>
           ))}
         >
           <div className="label-xs mb-2">C-01 · AKTIVA BOLAG</div>
           <div className="text-3xl font-bold text-[var(--color-text-primary)] flex items-center gap-2">
-            {isFetching ? <span className="animate-pulse">…</span> : activeCount}
-            <button
-              onClick={e => { e.stopPropagation(); refetchEntities() }}
-              title="Uppdatera"
-              className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] ml-1"
-              style={{ fontSize: 14 }}
-            >↻</button>
+            {activeCount}
           </div>
           <div className="text-xs text-[var(--color-text-secondary)] mt-2">WGH, WOH, OZ UAB, OZ Inc, LVX AC, LVX Inc</div>
         </button>
@@ -193,12 +195,7 @@ function CeoDashboard() {
                   </div>
                 </div>
               ))}
-              <button
-                onClick={() => refetchEntities()}
-                className="mt-4 text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] flex items-center gap-1"
-              >
-                ↻ Uppdatera data
-              </button>
+              
             </div>
           ))}
         >
