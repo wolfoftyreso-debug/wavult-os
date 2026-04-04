@@ -109,7 +109,11 @@ router.get('/v1/qms/:entitySlug/standards', async (req: Request, res: Response) 
 router.get('/v1/qms/:entitySlug/controls', async (req: Request, res: Response) => {
   try {
     const { entitySlug } = req.params
-    const { standard, category } = req.query
+    const { standard, category, lang } = req.query
+    // i18n: return English fields when lang=en, Swedish (default) otherwise
+    const useLang = (lang as string) || 'sv'
+    const textField = useLang === 'en' ? 'implementation_text_en' : 'implementation_text'
+    const gapField = useLang === 'en' ? 'gap_analysis_en' : 'gap_analysis'
 
     const { data: entity } = await sb()
       .from('qms_entities')
@@ -139,20 +143,27 @@ router.get('/v1/qms/:entitySlug/controls', async (req: Request, res: Response) =
     const { data: controls, error: ctrlErr } = await controlsQuery
     if (ctrlErr) throw ctrlErr
 
-    // Fetch implementations for this entity
+    // Fetch implementations for this entity (with i18n text fields)
     const { data: impls } = await sb()
       .from('qms_implementations')
-      .select('control_id, status, responsible_person, target_date')
+      .select(`control_id, status, responsible_person, target_date, implementation_text, implementation_text_en, gap_analysis, gap_analysis_en`)
       .eq('entity_id', entity.id)
 
     const implMap = new Map<string, any>()
     for (const impl of impls ?? []) {
-      implMap.set(impl.control_id, impl)
+      // Return the appropriate language text
+      const implWithLang = {
+        ...impl,
+        implementation_text: useLang === 'en' ? (impl.implementation_text_en ?? impl.implementation_text) : impl.implementation_text,
+        gap_analysis: useLang === 'en' ? (impl.gap_analysis_en ?? impl.gap_analysis) : impl.gap_analysis,
+      }
+      implMap.set(impl.control_id, implWithLang)
     }
 
     const result = (controls ?? []).map(ctrl => ({
       ...ctrl,
-      implementation: implMap.get(ctrl.id) ?? { status: 'not_started' }
+      implementation: implMap.get(ctrl.id) ?? { status: 'not_started' },
+      _lang: useLang
     }))
 
     res.json(result)
@@ -166,6 +177,7 @@ router.get('/v1/qms/:entitySlug/controls', async (req: Request, res: Response) =
 router.get('/v1/qms/:entitySlug/controls/:controlId', async (req: Request, res: Response) => {
   try {
     const { entitySlug, controlId } = req.params
+    const useLang = ((req.query.lang as string) || 'sv')
 
     const { data: entity } = await sb()
       .from('qms_entities')
@@ -200,11 +212,19 @@ router.get('/v1/qms/:entitySlug/controls/:controlId', async (req: Request, res: 
       evidence = e ?? []
     }
 
+    // Apply i18n to implementation text
+    const implWithLang = impl ? {
+      ...impl,
+      implementation_text: useLang === 'en' ? (impl.implementation_text_en ?? impl.implementation_text) : impl.implementation_text,
+      gap_analysis: useLang === 'en' ? (impl.gap_analysis_en ?? impl.gap_analysis) : impl.gap_analysis,
+    } : null
+
     res.json({
       ...control,
-      implementation: impl ?? { status: 'not_started' },
+      implementation: implWithLang ?? { status: 'not_started' },
       mappings,
-      evidence
+      evidence,
+      _lang: useLang
     })
   } catch (err: any) {
     console.error('[qms] GET /controls/:id error:', err)
