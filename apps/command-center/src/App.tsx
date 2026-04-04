@@ -96,6 +96,7 @@ const CorpFittPlatform       = lazy(() => import('./features/corpfitt-platform/C
 const UAPIXView              = lazy(() => import('./features/uapix/UAPIXView'))
 const DISSGView              = lazy(() => import('./features/dissg/DISSGView'))
 const ApiflyView             = lazy(() => import('./features/apifly/ApiflyView'))
+const ApiflyAdminView        = lazy(() => import('./features/apifly/ApiflyAdminView').then(m => ({ default: m.ApiflyAdminView })))
 const MLCSPlatform           = lazy(() => import('./features/mlcs-platform/MLCSView'))
 const SystemAuditDashboard   = lazy(() => import('./features/system-audit/SystemAuditDashboard').then(m => ({ default: m.SystemAuditDashboard })))
 const UXQualityDashboard     = lazy(() => import('./features/ux-quality/UXQualityDashboard').then(m => ({ default: m.UXQualityDashboard })))
@@ -224,6 +225,7 @@ function AuthenticatedApp() {
               <Route path="/uapix" element={<UAPIXView />} />
               <Route path="/dissg" element={<DISSGView />} />
               <Route path="/apifly" element={<ApiflyView />} />
+              <Route path="/apifly-admin" element={<ApiflyAdminView />} />
               <Route path="/mlcs" element={<MLCSPlatform />} />
               <Route path="/landvex-portal" element={<LandvexPortal />} />
               <Route path="/quixzoom-ads" element={<QuixzoomAds />} />
