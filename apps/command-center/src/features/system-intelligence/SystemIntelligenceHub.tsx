@@ -656,176 +656,139 @@ function MarketSignals() {
   )
 }
 
-// ─── Main Component ───────────────────────────────────────────────────────────
+// ─── Strategic Overview ───────────────────────────────────────────────────────
 
-// ─── PIX Philosophy ───────────────────────────────────────────────────────────
+// TODO: Connect to /v1/qms/wavult-os/dashboard or Strategic Brief API
+// when endpoint is ready. Currently uses empty reactive state.
+function useStrategicData() {
+  const [data, _setData] = useState<null>(null)
+  // Future: fetch('/v1/qms/wavult-os/dashboard').then(res => res.json()).then(setData)
+  return { data, loading: false }
+}
 
-function PixPhilosophy() {
-  const pixLayers = [
-    { layer: 'Core Layer', description: 'PIX Event Layer + Ledger + Identity + Company Core', color: '#2563EB', note: 'Aldrig modulärt — grunden som aldrig byts ut' },
-    { layer: 'Module Layer', description: 'Execution · Process · Finance · Workforce · Workshop · Intelligence', color: '#3B82F6', note: 'Vad kunder betalar för — bygger på Core' },
-    { layer: 'Industry Packs', description: 'Automotive Pack · Construction Pack · Healthcare Pack · Restaurant Pack', color: '#10B981', note: 'Pre-konfigurerade bundles per bransch' },
-    { layer: 'Intelligence Layer', description: 'Control Tower · Root Cause Engine · PIX Analytics · AI Insights', color: '#F59E0B', note: 'Premium-lager med högst marginal' },
+function StrategicOverview() {
+  const { data: _data, loading: _loading } = useStrategicData()
+
+  const zoomercycle = [
+    { event: 'mission_created', desc: 'En ny bilduppgift läggs till på kartan — en zoomer tilldelas', color: '#2563EB' },
+    { event: 'zoomer_assigned', desc: 'Zoomer accepterar uppdrag och påbörjar det', color: '#3B82F6' },
+    { event: 'image_captured', desc: 'Bild tagen och uppladdad — leverans sker', color: '#E8B84B' },
+    { event: 'submission_reviewed', desc: 'Kvalitetsgodkänd av systemet — zoomer valideras', color: '#10B981' },
+    { event: 'payment_triggered', desc: 'Zoomer betalas — uppdragscykeln avslutas', color: '#0A3D62' },
   ]
 
-  const quixzoomPix = [
-    { event: 'mission_created', desc: 'En ny bilduppgift läggs till på kartan — en PIX föds', color: '#2563EB' },
-    { event: 'photographer_assigned', desc: 'Fotograf accepterar uppdrag — PIX byter status', color: '#3B82F6' },
-    { event: 'photo_captured', desc: 'Bild tagen och uppladdad — en operationell pixel levererad', color: '#F59E0B' },
-    { event: 'submission_reviewed', desc: 'Kvalitetsgodkänd av AI/admin — PIX valideras', color: '#10B981' },
-    { event: 'payment_triggered', desc: 'Fotograf betalas — PIX avslutas med ekonomisk signal', color: '#EC4899' },
+  const products = [
+    { name: 'quiXzoom', tagline: 'Last Mile Intelligence Capture', status: 'Launch Q2 2026, Sverige', color: '#E8B84B' },
+    { name: 'LandveX', tagline: 'Right control. Right cost. Right interval.', status: 'Fas 3 efter quiXzoom', color: '#0A3D62' },
+    { name: 'Quixom Ads', tagline: 'B2B dataplattform', status: 'Fas 2 monetisering', color: '#10B981' },
   ]
 
-  const competitors = [
-    { name: 'Palantir Foundry', cost: '€500K+/år', setup: '18 månader', verdict: 'Generisk ontologi — kräver datascientists' },
-    { name: 'SAP', cost: '€100K+/år', setup: '12-24 månader', verdict: 'Enterprise-only, oöverkomlig komplexitet' },
-    { name: 'Wavult OS', cost: '€499-1299/mo', setup: 'Dag 1', verdict: 'Pre-built för verkligheten — inte konsultprojekt' },
+  const gtmSteps = [
+    { step: '1', label: 'quiXzoom', desc: 'Crowdsourcad bildplattform — zoomers tar uppdrag och bygger databasen', color: '#E8B84B' },
+    { step: '2', label: 'Quixom Ads', desc: 'B2B dataplattform monetiserar bilddata och hyperlokal intelligens', color: '#F59E0B' },
+    { step: '3', label: 'LandveX', desc: 'Enterprise-försäljning av larm, händelserapporter och analysabonnemang till kommuner och Trafikverket', color: '#0A3D62' },
   ]
 
   return (
     <div className="flex flex-col gap-8">
-      {/* Hero */}
-      <div className="rounded-2xl bg-gradient-to-br from-blue-600/10 to-blue-500/10 border border-blue-600/20 p-6">
-        <div className="text-2xl font-bold text-text-primary mb-2">PIX — Operational Pixels</div>
-        <div className="text-sm text-gray-600 leading-relaxed max-w-2xl">
-          Varje operation består av tusentals små, konkreta händelser. Vi kallar dem <strong className="text-blue-400">PIX</strong> — operational pixels.
-          När dessa inte är synliga blir verksamheten ogenomskinlig. När de är synliga — blir allt tydligt.
-        </div>
-        <div className="mt-4 grid grid-cols-3 gap-4">
-          <div className="text-center">
-            <div className="text-3xl font-bold text-blue-700">∞</div>
-            <div className="text-xs text-gray-9000">PIX per operation</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-blue-700">0s</div>
-            <div className="text-xs text-gray-9000">Delay till synlighet</div>
-          </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-green-700">1</div>
-            <div className="text-xs text-gray-9000">Källa för sanning</div>
-          </div>
+      {/* Wavult OS — intern plattform */}
+      <div className="rounded-2xl border border-[#DDD5C5] bg-[#F5F0E8] p-6">
+        <div className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Wavult OS</div>
+        <div className="text-xl font-bold text-[#0A3D62] mb-3">Internt enterprise-operativsystem</div>
+        <p className="text-sm text-gray-600 leading-relaxed">
+          Wavult OS är det interna enterprise-operativsystemet som driver alla Wavult Group-produkter.
+          Det är inte en produkt som säljs — det är ryggraden som möjliggör quiXzoom, LandveX och Quixom Ads.
+        </p>
+        <div className="mt-4 flex gap-3 flex-wrap">
+          {['quiXzoom', 'LandveX', 'Quixom Ads'].map(p => (
+            <div key={p} className="rounded-lg border border-[#DDD5C5] bg-[#F0EBE1] px-3 py-1.5 text-xs font-medium text-[#0A3D62]">
+              {p}
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Core Philosophy */}
+      {/* Produktportfölj */}
       <div>
-        <div className="text-xs font-semibold text-gray-9000 uppercase tracking-wider mb-3">Kärnprincip</div>
-        <div className="rounded-xl border border-surface-border bg-[#F0EBE1] p-5">
-          <div className="text-lg font-bold text-text-primary mb-2 italic">"Systems should run the business. Not the other way around."</div>
-          <p className="text-sm text-gray-600 leading-relaxed">
-            Avancerade bolag som Amazon, Nvidia och Tesla uppnår inte hög output av slumpen. De opererar på system som
-            <strong className="text-text-primary"> spårar verkligheten i realtid</strong>, kontinuerligt rekalibrerar och förbättrar sig
-            själva genom struktur. Wavult OS ger detta till alla bolag — inte som rapporter, utan som verklighet.
-          </p>
-        </div>
-      </div>
-
-      {/* Architecture Layers */}
-      <div>
-        <div className="text-xs font-semibold text-gray-9000 uppercase tracking-wider mb-3">Arkitekturlager</div>
-        <div className="flex flex-col gap-2">
-          {pixLayers.map((layer, i) => (
+        <div className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3">Produktportfölj</div>
+        <div className="flex flex-col gap-3">
+          {products.map(p => (
             <div
-              key={layer.layer}
+              key={p.name}
               className="rounded-xl border p-4 flex items-start gap-4"
-              style={{ borderColor: layer.color + '33', backgroundColor: layer.color + '0A' }}
+              style={{ borderColor: p.color + '33', backgroundColor: p.color + '0A' }}
             >
-              <div
-                className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5"
-                style={{ backgroundColor: layer.color + '22', color: layer.color }}
-              >
-                {i + 1}
-              </div>
               <div className="flex-1">
-                <div className="font-semibold text-text-primary text-sm">{layer.layer}</div>
-                <div className="text-xs text-gray-600 mt-0.5">{layer.description}</div>
-                <div className="text-xs mt-1 italic" style={{ color: layer.color }}>{layer.note}</div>
+                <div className="flex items-center gap-2 mb-1 flex-wrap">
+                  <span className="font-bold text-[#0A3D62] text-sm">{p.name}</span>
+                  <span className="text-xs text-gray-600">— {p.tagline}</span>
+                </div>
+                <div
+                  className="text-xs font-medium px-2 py-0.5 rounded inline-block"
+                  style={{ backgroundColor: p.color + '22', color: p.color === '#0A3D62' ? '#0A3D62' : p.color }}
+                >
+                  {p.status}
+                </div>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* quiXzoom PIX flow */}
+      {/* GTM-sekvens */}
       <div>
-        <div className="text-xs font-semibold text-gray-9000 uppercase tracking-wider mb-3">quiXzoom: Varje bild = en PIX</div>
-        <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-5">
+        <div className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3">GTM-sekvens</div>
+        <div className="flex flex-col gap-2">
+          {gtmSteps.map((step, i) => (
+            <div key={step.step} className="flex items-start gap-3">
+              <div className="flex flex-col items-center gap-1 flex-shrink-0">
+                <div
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
+                  style={{ backgroundColor: step.color + '22', color: step.color === '#0A3D62' ? '#0A3D62' : step.color }}
+                >
+                  {step.step}
+                </div>
+                {i < gtmSteps.length - 1 && <div className="w-px h-5 bg-[#DDD5C5]" />}
+              </div>
+              <div className="flex-1 rounded-xl border border-[#DDD5C5] bg-[#F0EBE1] px-4 py-3 mb-1">
+                <div className="font-semibold text-[#0A3D62] text-sm mb-0.5">{step.label}</div>
+                <div className="text-xs text-gray-600">{step.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* quiXzoom Zoomer-cykel */}
+      <div>
+        <div className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3">quiXzoom — Zoomer-cykeln</div>
+        <div className="rounded-xl border border-[#E8B84B]/30 bg-[#E8B84B]/5 p-5">
           <p className="text-sm text-gray-600 mb-4">
-            quiXzoom är PIX-konceptet applicerat på bildinfrastruktur. Varje foto-uppdrag genererar en kedja av operationella pixels —
-            från <span className="text-amber-300">uppdrag skapat</span> till <span className="text-green-300">betalning triggrad</span>.
+            Varje uppdrag i quiXzoom genererar en kedja av händelser — från att uppgiften skapas till att zoomern betalas.
           </p>
           <div className="flex flex-col gap-2">
-            {quixzoomPix.map((pix, i) => (
-              <div key={pix.event} className="flex items-center gap-3">
+            {zoomercycle.map((step, i) => (
+              <div key={step.event} className="flex items-center gap-3">
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <div
                     className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold"
-                    style={{ backgroundColor: pix.color + '22', color: pix.color }}
+                    style={{ backgroundColor: step.color + '22', color: step.color }}
                   >
                     {i + 1}
                   </div>
-                  {i < quixzoomPix.length - 1 && (
-                    <div className="w-px h-4 bg-[#EDE8DC] ml-2" />
+                  {i < zoomercycle.length - 1 && (
+                    <div className="w-px h-4 bg-[#DDD5C5] ml-2" />
                   )}
                 </div>
-                <div className="flex-1 rounded-lg bg-[#F0EBE1] border border-surface-border px-3 py-2">
-                  <div className="flex items-center gap-2">
-                    <code className="text-xs font-mono" style={{ color: pix.color }}>{pix.event}</code>
-                    <span className="text-xs text-gray-9000">— {pix.desc}</span>
+                <div className="flex-1 rounded-lg bg-[#F0EBE1] border border-[#DDD5C5] px-3 py-2">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <code className="text-xs font-mono" style={{ color: step.color }}>{step.event}</code>
+                    <span className="text-xs text-gray-600">— {step.desc}</span>
                   </div>
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      </div>
-
-      {/* Competitor comparison */}
-      <div>
-        <div className="text-xs font-semibold text-gray-9000 uppercase tracking-wider mb-3">Systemic Thinking — vs Konkurrenter</div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="border-b border-surface-border">
-                <th className="text-left text-gray-9000 pb-2 pr-4">System</th>
-                <th className="text-left text-gray-9000 pb-2 pr-4">Kostnad</th>
-                <th className="text-left text-gray-9000 pb-2 pr-4">Driftsättning</th>
-                <th className="text-left text-gray-9000 pb-2">Verklighet</th>
-              </tr>
-            </thead>
-            <tbody>
-              {competitors.map((c, i) => (
-                <tr key={c.name} className={`border-b border-[#DDD5C5] ${i === competitors.length - 1 ? 'bg-green-500/5' : ''}`}>
-                  <td className={`py-2 pr-4 font-medium ${i === competitors.length - 1 ? 'text-green-700' : 'text-gray-900'}`}>{c.name}</td>
-                  <td className={`py-2 pr-4 ${i === competitors.length - 1 ? 'text-green-300' : 'text-red-700'}`}>{c.cost}</td>
-                  <td className={`py-2 pr-4 ${i === competitors.length - 1 ? 'text-green-300' : 'text-amber-700'}`}>{c.setup}</td>
-                  <td className="py-2 text-gray-9000">{c.verdict}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Modular strategy */}
-      <div className="rounded-xl border border-surface-border bg-[#F0EBE1] p-5">
-        <div className="text-xs font-semibold text-gray-9000 uppercase tracking-wider mb-3">Modulär Strategi</div>
-        <div className="grid grid-cols-2 gap-3 text-xs">
-          <div>
-            <div className="text-red-700 font-semibold mb-1">❌ Säljer INTE</div>
-            <div className="text-gray-9000">• Licenser per användare</div>
-            <div className="text-gray-9000">• Per-seat pricing</div>
-            <div className="text-gray-9000">• Isolerade verktyg</div>
-          </div>
-          <div>
-            <div className="text-green-700 font-semibold mb-1">✅ Säljer</div>
-            <div className="text-gray-600">• Kapacitet + funktion</div>
-            <div className="text-gray-600">• Team-flat pricing</div>
-            <div className="text-gray-600">• Operativsystem (BOS)</div>
-          </div>
-        </div>
-        <div className="mt-3 text-xs text-gray-9000 italic border-t border-surface-border pt-3">
-          Sell modularity. Build as modular monolith. Extract to microservices under scale pressure.
         </div>
       </div>
     </div>
@@ -845,7 +808,7 @@ export function SystemIntelligenceHub() {
     { id: 'risker', label: 'Riskmatris', icon: '⚠️' },
     { id: 'beslut', label: 'Beslutslogg', icon: '📋' },
     { id: 'marknad', label: 'Marknadssignaler', icon: '📈' },
-    { id: 'pix', label: 'PIX-filosofi', icon: '⚡' },
+    { id: 'pix', label: 'Strategi', icon: '🎯' },
   ]
 
   // Overall group health = average
@@ -953,7 +916,7 @@ export function SystemIntelligenceHub() {
 
         {activeTab === 'marknad' && <MarketSignals />}
 
-        {activeTab === 'pix' && <PixPhilosophy />}
+        {activeTab === 'pix' && <StrategicOverview />}
       </div>
     </div>
   )
