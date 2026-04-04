@@ -90,6 +90,7 @@ const InfraMonitor           = lazy(() => import('./features/infrastructure/Infr
 const MediaPipelineView      = lazy(() => import('./features/media-pipeline/MediaPipelineView').then(m => ({ default: m.MediaPipelineView })))
 const BerntWidget            = lazy(() => import('./features/bernt/BerntWidget').then(m => ({ default: m.BerntWidget })))
 const AgentCommandPanel      = lazy(() => import('./features/agent/AgentCommandPanel').then(m => ({ default: m.AgentCommandPanel })))
+const AgentHub               = lazy(() => import('./features/agent/AgentHub').then(m => ({ default: m.AgentHub })))
 const CorpFittPlatform       = lazy(() => import('./features/corpfitt-platform/CorpFittView'))
 const UAPIXView              = lazy(() => import('./features/uapix/UAPIXView'))
 const DISSGView              = lazy(() => import('./features/dissg/DISSGView'))
@@ -243,7 +244,8 @@ function AuthenticatedApp() {
               <Route path="/infra-monitor" element={<InfraMonitor />} />
               <Route path="/media-pipeline" element={<MediaPipelineView />} />
               <Route path="/bernt" element={<BerntWidget />} />
-              <Route path="/agent" element={<AgentCommandPanel />} />
+              <Route path="/agent" element={<AgentHub />} />
+              <Route path="/agent/legacy" element={<AgentCommandPanel />} />
               <Route path="/system/audit" element={<SystemAuditDashboard />} />
               <Route path="/ux-quality" element={<UXQualityDashboard />} />
             </Routes>
