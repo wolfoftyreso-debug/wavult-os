@@ -1,129 +1,58 @@
-data "aws_availability_zones" "available" {
-  state = "available"
+# VPC — Data sources for existing infrastructure
+# The primary VPC (hypbit-vpc) and its subnets already exist.
+# We reference them via data sources to avoid recreating.
+
+data "aws_vpc" "main" {
+  id = var.vpc_id
 }
 
-locals {
-  azs             = slice(data.aws_availability_zones.available.names, 0, var.az_count)
-  public_subnets  = [for i, az in local.azs : cidrsubnet(var.vpc_cidr, 8, i)]
-  private_subnets = [for i, az in local.azs : cidrsubnet(var.vpc_cidr, 8, i + 10)]
+data "aws_subnet" "private_a" {
+  id = var.private_subnet_a
 }
 
-resource "aws_vpc" "main" {
-  cidr_block           = var.vpc_cidr
-  enable_dns_support   = true
-  enable_dns_hostnames = true
-
-  tags = { Name = "hypbit-vpc" }
+data "aws_subnet" "private_b" {
+  id = var.private_subnet_b
 }
 
-resource "aws_internet_gateway" "main" {
-  vpc_id = aws_vpc.main.id
-  tags   = { Name = "hypbit-igw" }
+data "aws_subnet" "public_a" {
+  id = var.public_subnet_a
 }
 
-# ── Public subnets ────────────────────────────────────────────────────────────
-resource "aws_subnet" "public" {
-  count                   = length(local.azs)
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = local.public_subnets[count.index]
-  availability_zone       = local.azs[count.index]
-  map_public_ip_on_launch = true
-
-  tags = { Name = "hypbit-public-${local.azs[count.index]}" }
+data "aws_subnet" "public_b" {
+  id = var.public_subnet_b
 }
 
-resource "aws_route_table" "public" {
-  vpc_id = aws_vpc.main.id
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.main.id
-  }
-  tags = { Name = "hypbit-public-rt" }
+# Security Groups — data sources for existing SGs
+data "aws_security_group" "alb" {
+  id = var.alb_sg_id
 }
 
-resource "aws_route_table_association" "public" {
-  count          = length(aws_subnet.public)
-  subnet_id      = aws_subnet.public[count.index].id
-  route_table_id = aws_route_table.public.id
+data "aws_security_group" "ecs" {
+  id = var.ecs_sg_id
 }
 
-# ── Private subnets ───────────────────────────────────────────────────────────
-resource "aws_subnet" "private" {
-  count             = length(local.azs)
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = local.private_subnets[count.index]
-  availability_zone = local.azs[count.index]
-
-  tags = { Name = "hypbit-private-${local.azs[count.index]}" }
+data "aws_security_group" "supabase_alb" {
+  id = var.supabase_alb_sg_id
 }
 
-# NAT Gateway for private subnets (single NAT to save cost)
-resource "aws_eip" "nat" {
-  domain = "vpc"
-  tags   = { Name = "hypbit-nat-eip" }
+data "aws_security_group" "identity_core" {
+  id = var.identity_core_sg_id
 }
 
-resource "aws_nat_gateway" "main" {
-  allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.public[0].id
-  depends_on    = [aws_internet_gateway.main]
-  tags          = { Name = "hypbit-nat" }
-}
-
-resource "aws_route_table" "private" {
-  vpc_id = aws_vpc.main.id
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.main.id
-  }
-  tags = { Name = "hypbit-private-rt" }
-}
-
-resource "aws_route_table_association" "private" {
-  count          = length(aws_subnet.private)
-  subnet_id      = aws_subnet.private[count.index].id
-  route_table_id = aws_route_table.private.id
-}
-
-# ── Security groups ───────────────────────────────────────────────────────────
-resource "aws_security_group" "alb" {
-  name        = "hypbit-alb-sg"
-  description = "Allow HTTPS/HTTP inbound to ALB"
-  vpc_id      = aws_vpc.main.id
+# Security Group for Gitea EFS
+resource "aws_security_group" "gitea_efs" {
+  name        = "gitea-efs-sg"
+  description = "Security group for Gitea EFS"
+  vpc_id      = data.aws_vpc.main.id
 
   ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = { Name = "hypbit-alb-sg" }
-}
-
-resource "aws_security_group" "ecs" {
-  name        = "hypbit-ecs-sg"
-  description = "Allow traffic from ALB to ECS tasks"
-  vpc_id      = aws_vpc.main.id
-
-  ingress {
-    from_port       = var.api_port
-    to_port         = var.api_port
+    from_port       = 2049
+    to_port         = 2049
     protocol        = "tcp"
-    security_groups = [aws_security_group.alb.id]
+    security_groups = [data.aws_security_group.ecs.id]
+    description     = "NFS from ECS tasks"
   }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -131,5 +60,45 @@ resource "aws_security_group" "ecs" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = { Name = "hypbit-ecs-sg" }
+  tags = {
+    Name        = "gitea-efs-sg"
+    Environment = var.environment
+    Project     = "wavult"
+  }
+
+  lifecycle {
+    ignore_changes = [ingress, egress]
+  }
+}
+
+# Security Group for n8n EFS
+resource "aws_security_group" "n8n_efs" {
+  name        = "n8n-efs-sg"
+  description = "EFS mount target security group for n8n"
+  vpc_id      = data.aws_vpc.main.id
+
+  ingress {
+    from_port       = 2049
+    to_port         = 2049
+    protocol        = "tcp"
+    security_groups = [data.aws_security_group.ecs.id]
+    description     = "NFS from ECS tasks"
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name        = "n8n-efs-sg"
+    Environment = var.environment
+    Project     = "wavult"
+  }
+
+  lifecycle {
+    ignore_changes = [ingress, egress]
+  }
 }

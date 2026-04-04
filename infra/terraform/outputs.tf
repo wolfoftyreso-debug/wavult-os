@@ -1,57 +1,88 @@
-output "api_url" {
-  description = "API endpoint"
-  value       = "https://api.${var.product_prefix}.${var.domain}"
+# Outputs — Key infrastructure values
+
+output "ecs_cluster_name" {
+  description = "ECS Cluster name"
+  value       = aws_ecs_cluster.wavult.name
 }
 
-output "app_url" {
-  description = "Operatörsstation URL"
-  value       = "https://app.${var.product_prefix}.${var.domain}"
+output "ecs_cluster_arn" {
+  description = "ECS Cluster ARN"
+  value       = aws_ecs_cluster.wavult.arn
 }
 
-output "admin_url" {
-  description = "Ledningsportal URL"
-  value       = "https://admin.${var.product_prefix}.${var.domain}"
+output "alb_dns_name" {
+  description = "ALB DNS name"
+  value       = aws_lb.wavult_api.dns_name
 }
 
-output "crm_url" {
-  description = "CRM URL"
-  value       = "https://crm.${var.product_prefix}.${var.domain}"
+output "alb_arn" {
+  description = "ALB ARN"
+  value       = aws_lb.wavult_api.arn
 }
 
-output "sales_url" {
-  description = "Försäljning URL"
-  value       = "https://sales.${var.product_prefix}.${var.domain}"
+output "alb_zone_id" {
+  description = "ALB hosted zone ID (for Route53/Cloudflare CNAME)"
+  value       = aws_lb.wavult_api.zone_id
 }
 
-output "ecr_repository_url" {
-  description = "ECR repository URL för Docker images"
-  value       = aws_ecr_repository.api.repository_url
+output "rds_identity_core_endpoint" {
+  description = "RDS wavult-identity-core endpoint"
+  value       = aws_db_instance.identity_core.endpoint
+  sensitive   = true
 }
 
-output "cloudfront_distribution_ids" {
-  description = "CloudFront distribution IDs per app"
-  value       = merge(
-    { for app, dist in aws_cloudfront_distribution.frontends : app => dist.id },
-    { landing = aws_cloudfront_distribution.landing.id }
-  )
+output "rds_identity_ecs_endpoint" {
+  description = "RDS wavult-identity-ecs endpoint"
+  value       = aws_db_instance.identity_ecs.endpoint
+  sensitive   = true
 }
 
-output "landing_cloudfront_id" {
-  description = "Landing page CloudFront distribution ID"
-  value       = aws_cloudfront_distribution.landing.id
+output "ecr_registry" {
+  description = "ECR registry URL"
+  value       = "${var.aws_account_id}.dkr.ecr.${var.aws_region}.amazonaws.com"
 }
 
-output "landing_url" {
-  description = "Landing page URL"
-  value       = "https://${var.domain}"
+output "ecs_execution_role_arn" {
+  description = "ECS task execution role ARN"
+  value       = aws_iam_role.ecs_task_execution.arn
 }
 
-output "alb_dns" {
-  description = "ALB DNS-namn"
-  value       = aws_lb.api.dns_name
+output "ecs_task_role_arn" {
+  description = "ECS task role ARN"
+  value       = aws_iam_role.ecs_task.arn
 }
 
-output "cloudflare_zone_id" {
-  description = "Cloudflare Zone ID för pixdrift.com"
-  value       = data.cloudflare_zone.main.zone_id
+output "vpc_id" {
+  description = "Primary VPC ID"
+  value       = data.aws_vpc.main.id
+}
+
+output "private_subnet_ids" {
+  description = "Private subnet IDs"
+  value       = [var.private_subnet_a, var.private_subnet_b]
+}
+
+output "public_subnet_ids" {
+  description = "Public subnet IDs"
+  value       = [var.public_subnet_a, var.public_subnet_b]
+}
+
+output "terraform_state_bucket" {
+  description = "Terraform state S3 bucket"
+  value       = "wavult-terraform-state"
+}
+
+output "terraform_lock_table" {
+  description = "Terraform DynamoDB lock table"
+  value       = "wavult-terraform-locks"
+}
+
+output "gitea_efs_id" {
+  description = "Gitea EFS file system ID"
+  value       = aws_efs_file_system.gitea.id
+}
+
+output "n8n_efs_id" {
+  description = "n8n EFS file system ID"
+  value       = aws_efs_file_system.n8n.id
 }

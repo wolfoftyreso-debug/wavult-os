@@ -1,125 +1,108 @@
-# ============================================================
-# CloudFront — landningssida + 4 frontend-appar
-# ============================================================
+# CloudFront Distributions
+# 19 distributions inventoried — managed via data sources (existing)
+# New distributions should be added as resources below.
 
-# ── Landing distribution (E2CZK80C8S8JPF) ────────────────────────────────────
-# pixdrift.com och www.pixdrift.com → statisk HTML landningssida
-# Använder S3 website endpoint (http-only) för full static hosting
-resource "aws_cloudfront_distribution" "landing" {
-  enabled             = true
-  is_ipv6_enabled     = true
-  default_root_object = "index.html"
-  aliases             = [var.domain, "www.${var.domain}"]
-  price_class         = "PriceClass_100"
-  comment             = "pixdrift.com landing page"
+# ─── DATA SOURCES (existing distributions) ────────────────────────────────────
 
-  origin {
-    domain_name = aws_s3_bucket_website_configuration.landing.website_endpoint
-    origin_id   = "pixdrift-landing-s3"
-
-    custom_origin_config {
-      http_port              = 80
-      https_port             = 443
-      origin_protocol_policy = "http-only"
-      origin_ssl_protocols   = ["TLSv1.2"]
-    }
-  }
-
-  default_cache_behavior {
-    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
-    cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = "pixdrift-landing-s3"
-    viewer_protocol_policy = "redirect-to-https"
-    compress               = true
-
-    forwarded_values {
-      query_string = false
-      cookies { forward = "none" }
-    }
-
-    min_ttl     = 0
-    default_ttl = 3600
-    max_ttl     = 86400
-  }
-
-  # Returnera index.html för 404 (SPA-style för landningssidans routing)
-  custom_error_response {
-    error_code         = 404
-    response_code      = 200
-    response_page_path = "/index.html"
-  }
-
-  restrictions {
-    geo_restriction { restriction_type = "none" }
-  }
-
-  viewer_certificate {
-    acm_certificate_arn      = local.cloudfront_cert_arn
-    ssl_support_method       = "sni-only"
-    minimum_protocol_version = "TLSv1.2_2021"
-  }
-
-  lifecycle {
-    # E2CZK80C8S8JPF skapades manuellt — importeras till TF state
-    # Undvik destroy+recreate vid första apply
-    prevent_destroy = true
-  }
+data "aws_cloudfront_distribution" "wavult_com" {
+  id = "E281H61AW2WQOH" # wavult.com, www.wavult.com
 }
 
-# ── App-distributioner (workstation/admin/crm/sales) ─────────────────────────
+data "aws_cloudfront_distribution" "wavult_group_web" {
+  id = "E2JOYHG1LYOXGM" # hypbit.com, www.hypbit.com, brief.wavult.com
+}
 
-resource "aws_cloudfront_distribution" "frontends" {
-  for_each = local.frontends
-  comment  = "pixdrift ${each.key} app"
+data "aws_cloudfront_distribution" "app_hypbit" {
+  id = "E2Z3B93KJXH71F" # app.hypbit.com
+}
 
-  enabled             = true
-  is_ipv6_enabled     = true
-  default_root_object = "index.html"
-  aliases             = [each.value]
-  price_class         = "PriceClass_100"
+data "aws_cloudfront_distribution" "quixzoom_app" {
+  id = "E2QUO7HIHWWP18" # app.quixzoom.com
+}
 
-  origin {
-    domain_name              = aws_s3_bucket.frontend[each.key].bucket_regional_domain_name
-    origin_id                = "s3-${each.key}"
-    origin_access_control_id = aws_cloudfront_origin_access_control.frontend[each.key].id
-  }
+data "aws_cloudfront_distribution" "quixzoom_landing" {
+  id = "EE30B9WM5ZYM7" # quixzoom.com, www.quixzoom.com
+}
 
-  default_cache_behavior {
-    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
-    cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = "s3-${each.key}"
-    viewer_protocol_policy = "redirect-to-https"
-    compress               = true
+data "aws_cloudfront_distribution" "git_wavult" {
+  id = "E1YSFJFNQ5QH94" # git.wavult.com
+}
 
-    forwarded_values {
-      query_string = false
-      cookies { forward = "none" }
+data "aws_cloudfront_distribution" "landvex" {
+  id = "E2M3J95HLUR89H" # landvex.com, www.landvex.com
+}
+
+data "aws_cloudfront_distribution" "pixdrift_landing" {
+  id = "E2CZK80C8S8JPF" # pixdrift.com, www.pixdrift.com
+}
+
+data "aws_cloudfront_distribution" "pixdrift_sales" {
+  id = "E1R5ZQK0FQYN5D" # sales.bc.pixdrift.com
+}
+
+data "aws_cloudfront_distribution" "pixdrift_admin" {
+  id = "EN6V1PLNRWZV" # admin.bc.pixdrift.com
+}
+
+data "aws_cloudfront_distribution" "pixdrift_crm" {
+  id = "E2P38O4WNORKE9" # crm.bc.pixdrift.com
+}
+
+data "aws_cloudfront_distribution" "pixdrift_app" {
+  id = "E30M5LZSQ7FMEZ" # app.bc.pixdrift.com
+}
+
+data "aws_cloudfront_distribution" "pixdrift_developers" {
+  id = "EC7A2RM42H14M" # developers.pixdrift.com
+}
+
+data "aws_cloudfront_distribution" "pixdrift_press" {
+  id = "E1HICRMY8BLBZC" # press.pixdrift.com
+}
+
+data "aws_cloudfront_distribution" "pixdrift_status" {
+  id = "EGHB0CHLK9CDI" # status.pixdrift.com
+}
+
+# ─── WAVULT.COM — Production CloudFront ───────────────────────────────────────
+# Main wavult.com distribution — references S3 bucket wavult-group-web
+
+resource "aws_cloudfront_origin_access_control" "wavult_group_web" {
+  name                              = "wavult-group-web-oac"
+  description                       = "OAC for wavult-group-web S3 bucket"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+}
+
+# OAC for quixzoom app
+resource "aws_cloudfront_origin_access_control" "quixzoom_app" {
+  name                              = "quixzoom-app-oac"
+  description                       = "OAC for quixzoom-app-prod S3 bucket"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+}
+
+# Cache policies
+resource "aws_cloudfront_cache_policy" "wavult_spa" {
+  name        = "wavult-spa-cache"
+  comment     = "Cache policy for Wavult SPA apps"
+  default_ttl = 86400
+  max_ttl     = 31536000
+  min_ttl     = 0
+
+  parameters_in_cache_key_and_forwarded_to_origin {
+    cookies_config {
+      cookie_behavior = "none"
     }
-
-    min_ttl     = 0
-    default_ttl = 3600
-    max_ttl     = 86400
-  }
-
-  # SPA routing — returnera index.html för 404
-  custom_error_response {
-    error_code         = 404
-    response_code      = 200
-    response_page_path = "/index.html"
-  }
-  custom_error_response {
-    error_code         = 403
-    response_code      = 200
-    response_page_path = "/index.html"
-  }
-
-  restrictions {
-    geo_restriction { restriction_type = "none" }
-  }
-
-  viewer_certificate {
-    acm_certificate_arn      = local.cloudfront_cert_arn
-    ssl_support_method       = "sni-only"
-    minimum_protocol_version = "TLSv1.2_2021"
+    headers_config {
+      header_behavior = "none"
+    }
+    query_strings_config {
+      query_string_behavior = "none"
+    }
+    enable_accept_encoding_gzip   = true
+    enable_accept_encoding_brotli = true
   }
 }

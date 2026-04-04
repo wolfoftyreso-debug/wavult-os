@@ -1,0 +1,46 @@
+# terraform.tfvars.example
+# Copy to terraform.tfvars and fill in sensitive values.
+# NEVER commit terraform.tfvars to git.
+
+aws_region     = "eu-north-1"
+aws_account_id = "155407238699"
+environment    = "prod"
+
+# VPC (existing — do not change unless migrating)
+vpc_id           = "vpc-0e880ea5814b9f1be"
+private_subnet_a = "subnet-03988a059aa0325db"
+private_subnet_b = "subnet-000bd8dc692433914"
+public_subnet_a  = "subnet-0b7ddc8cce64c0f91"
+public_subnet_b  = "subnet-061d38a263044a64f"
+
+# Security Groups (existing)
+ecs_sg_id           = "sg-0ffa8db73ad957c38"
+alb_sg_id           = "sg-0f8e8a9781a6cbc2e"
+supabase_alb_sg_id  = "sg-00ebef0804ffe2ce2"
+identity_core_sg_id = "sg-0508068d3b4301b8c"
+
+# IAM (existing)
+ecs_task_role_arn      = "arn:aws:iam::155407238699:role/hypbit-ecs-task"
+ecs_execution_role_arn = "arn:aws:iam::155407238699:role/hypbit-ecs-task-execution"
+
+# ALB Certificate
+alb_certificate_arn = "arn:aws:acm:eu-north-1:155407238699:certificate/a1d70f03-57f5-41c9-bf79-3dfd44dd5481"
+
+# RDS credentials — get from SSM or 1Password
+# rds_master_username = "SET_FROM_SSM_/wavult/prod/RDS_USER"
+# rds_master_password = "SET_FROM_SSM_/wavult/prod/RDS_PASSWORD"
+
+# Docker images (use specific tags in production, not latest)
+wavult_os_api_image = "155407238699.dkr.ecr.eu-north-1.amazonaws.com/wavult-os-api:latest"
+wavult_core_image   = "155407238699.dkr.ecr.eu-north-1.amazonaws.com/wavult-core:latest"
+identity_core_image = "155407238699.dkr.ecr.eu-north-1.amazonaws.com/identity-core:latest"
+quixzoom_api_image  = "155407238699.dkr.ecr.eu-north-1.amazonaws.com/quixzoom-api:latest"
+landvex_api_image   = "155407238699.dkr.ecr.eu-north-1.amazonaws.com/landvex-api:latest"
+team_pulse_image    = "155407238699.dkr.ecr.eu-north-1.amazonaws.com/team-pulse:latest"
+bos_scheduler_image = "155407238699.dkr.ecr.eu-north-1.amazonaws.com/bos-scheduler:latest"
+gitea_runner_image  = "155407238699.dkr.ecr.eu-north-1.amazonaws.com/gitea-act-runner:latest"
+gitea_image         = "gitea/gitea:latest"
+n8n_image           = "n8nio/n8n:latest"
+redis_image         = "redis:7-alpine"
+kafka_image         = "bitnami/kafka:latest"
+supabase_kong_image = "kong:2.8.1"
