@@ -9,7 +9,7 @@ import crypto from 'crypto'
 const router = Router()
 const getDb = () => new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
+  ssl: { rejectUnauthorized: false, checkServerIdentity: () => undefined }
 })
 
 // ─── Schema ───────────────────────────────────────────────────────────────────

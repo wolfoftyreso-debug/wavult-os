@@ -3,7 +3,7 @@ import { Pool } from 'pg'
 import crypto from 'crypto'
 
 const router = Router()
-const getDb = () => new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } })
+const getDb = () => new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false, checkServerIdentity: () => undefined } })
 
 const STRIPE_KEY = process.env.STRIPE_SECRET_KEY || ''
 
