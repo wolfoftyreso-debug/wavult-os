@@ -350,6 +350,46 @@ export async function runOkrAgent(): Promise<AgentAction[]> {
   return actions
 }
 
+// ─── Certifiering — kontrollera om systemet är redo för TÜV-bokning ─────────
+export async function checkCertificationReadiness(): Promise<{ pct: number; blocking: string[]; ready: boolean }> {
+  const db = getDb()
+  try {
+    const { rows } = await db.query(`
+      SELECT criterion_code, description, is_met, category
+      FROM certification_booking_criteria
+      WHERE entity_slug = 'wavult-os' AND is_mandatory = true
+      ORDER BY category, criterion_code
+    `)
+
+    const total = rows.length
+    const met = rows.filter((r: any) => r.is_met).length
+    const blocking = rows.filter((r: any) => !r.is_met).map((r: any) => `${r.criterion_code}: ${r.description}`)
+    const pct = total > 0 ? Math.round(met / total * 100) : 0
+    const ready = pct >= 100
+
+    // Logga readiness
+    await db.query(`
+      INSERT INTO certification_readiness_log (entity_slug, criteria_met, criteria_total, readiness_pct, booking_triggered, blocking_criteria)
+      VALUES ('wavult-os', $1, $2, $3, $4, $5)
+    `, [met, total, pct, ready, JSON.stringify(blocking)])
+
+    if (ready) {
+      // Skicka notifikation till Dennis — tid att boka TÜV
+      await db.query(`
+        INSERT INTO notifications (user_id, title, message, priority, type, read, created_at)
+        VALUES ('dennis', '🎉 Certifieringsklart — Boka TÜV nu!',
+          'Alla 15 bokningskriterier är uppfyllda. Kontakta TÜV Rheinland eller DNV för pre-assessment. Estimerad ledtid: 6-12 månader till certifikat.',
+          'critical', 'certification_ready', false, now())
+      `)
+    }
+
+    console.log(`[proactive] Certification readiness: ${pct}% (${met}/${total}), ready=${ready}`)
+    return { pct, blocking, ready }
+  } finally {
+    await db.end()
+  }
+}
+
 // ─── Master scheduler — kör alla agenter ─────────────────────────────────────
 export async function runAllProactiveAgents(): Promise<{ agent: string; actions: number }[]> {
   console.log('[proactive] Running all agents...')
@@ -371,6 +411,16 @@ export async function runAllProactiveAgents(): Promise<{ agent: string; actions:
       console.error(`[proactive] ${name.toUpperCase()} failed:`, e.message)
       results.push({ agent: name, actions: 0 })
     }
+  }
+
+  // Certifieringscheck — kör separat (returnerar inte AgentAction[])
+  try {
+    const cert = await checkCertificationReadiness()
+    results.push({ agent: 'certification', actions: cert.ready ? 1 : 0 })
+    console.log(`[proactive] CERTIFICATION: ${cert.pct}% redo, ${cert.blocking.length} blockerande kriterier`)
+  } catch (e: any) {
+    console.error('[proactive] CERTIFICATION failed:', e.message)
+    results.push({ agent: 'certification', actions: 0 })
   }
 
   return results
