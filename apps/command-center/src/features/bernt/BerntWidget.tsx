@@ -1,21 +1,11 @@
 // ─── Bernt — Persistent AI Widget ────────────────────────────────────────────
 // Din inbyggda AI-assistent i Wavult OS. Alltid tillgänglig, oavsett modul.
-// Röstinput via Web Speech API. Ansluten till Bernt-tunnel.
+// Röstinput via Web Speech API. Kontext-medveten, 5-sekunders polling.
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useTranslation } from '../../shared/i18n/useTranslation'
-import { validateAgentMessage, renderAgentMessage, type AgentMessage } from '../../shared/i18n/agentTypes'
-
-const BERNT_TUNNEL_KEY = 'bernt_tunnel_url'
-const DEFAULT_TUNNEL = 'https://bernt.wavult.com'
-
-interface Message {
-  id: string
-  role: 'user' | 'bernt'
-  text: string
-  ts: number
-  agentMsg?: AgentMessage
-}
+import { useAuth } from '../../shared/auth/AuthContext'
+import { useBerntChat, type SystemAction } from '../agent/useBerntChat'
 
 const BERNT_STARTERS = [
   'Vad är nästa prioritet?',
@@ -62,114 +52,70 @@ function useSpeechRecognition(onResult: (text: string) => void) {
   return { listening, start, stop }
 }
 
+// ─── SystemAction Badges ──────────────────────────────────────────────────────
+
+function ActionBadge({ action }: { action: SystemAction }) {
+  const color =
+    action.status === 'done'
+      ? { bg: '#16a34a15', border: '#16a34a30', text: '#4ade80' }
+      : action.status === 'failed'
+        ? { bg: '#ef444415', border: '#ef444430', text: '#f87171' }
+        : { bg: '#2563eb15', border: '#2563eb30', text: '#60a5fa' }
+
+  const icon = action.status === 'done' ? '✓' : action.status === 'failed' ? '✗' : '⟳'
+
+  return (
+    <span
+      className="inline-flex items-center gap-1 text-[9px] font-mono px-1.5 py-0.5 rounded"
+      style={{ background: color.bg, border: `1px solid ${color.border}`, color: color.text }}
+    >
+      {icon} {action.description}
+    </span>
+  )
+}
+
 // ─── Main Widget ──────────────────────────────────────────────────────────────
 
 export function BerntWidget() {
   const { t } = useTranslation()
+  const { user } = useAuth()
   const [open, setOpen] = useState(false)
-  const [messages, setMessages] = useState<Message[]>([
-    { id: 'welcome', role: 'bernt', text: 'Hej Erik! Vad kan jag hjälpa dig med?', ts: Date.now() },
-  ])
   const [input, setInput] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [usingFallback, setUsingFallback] = useState(false)
-  const [tunnelUrl, setTunnelUrl] = useState(() => localStorage.getItem(BERNT_TUNNEL_KEY) || DEFAULT_TUNNEL)
-  const [showSettings, setShowSettings] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
+
+  // Konversations-ID baserat på user + date → synkroniserar webb ↔ app
+  const userId = user?.email ?? 'anonymous'
+  const conversationId = `${userId}-${new Date().toISOString().slice(0, 10)}`
+
+  const { messages, sendMessage, isLoading, isConnected } = useBerntChat(conversationId)
+
+  // Welcome message (visas lokalt tills polling hämtar historik)
+  const displayMessages =
+    messages.length === 0
+      ? [
+          {
+            id: 'welcome',
+            role: 'assistant' as const,
+            content: 'Hej! Vad kan jag hjälpa dig med?',
+            timestamp: new Date().toISOString(),
+          },
+        ]
+      : messages
 
   useEffect(() => {
     if (open) bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages, open])
+  }, [displayMessages, open])
 
-  const sendMessage = useCallback(async (text: string) => {
-    if (!text.trim()) return
-    const userMsg: Message = { id: `u-${Date.now()}`, role: 'user', text: text.trim(), ts: Date.now() }
-    setMessages(prev => [...prev, userMsg])
-    setInput('')
-    setLoading(true)
+  const handleSend = useCallback(
+    (text: string) => {
+      if (!text.trim()) return
+      sendMessage(text.trim())
+      setInput('')
+    },
+    [sendMessage]
+  )
 
-    if (!tunnelUrl) {
-      setMessages(prev => [...prev, {
-        id: `b-${Date.now()}`, role: 'bernt',
-        text: t('bernt.tunnel_not_configured'),
-        ts: Date.now()
-      }])
-      setLoading(false)
-      return
-    }
-
-    try {
-      const res = await fetch(`${tunnelUrl}/api/voice`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ transcript: text.trim(), user: 'Erik Svensson', source: 'wavult-os' }),
-      })
-      const data = await res.json()
-      const rawReply = data.reply || data.text || data.message || null
-
-      // Try to parse as structured AgentMessage
-      let messageText: string
-      let agentMsg: AgentMessage | undefined
-
-      if (rawReply && typeof rawReply === 'object') {
-        // Already a JSON object — try to validate as AgentMessage
-        try {
-          const validated = validateAgentMessage(rawReply)
-          agentMsg = validated
-          messageText = renderAgentMessage(validated, t)
-        } catch {
-          console.warn('[Agent] Invalid AgentMessage structure:', rawReply)
-          messageText = JSON.stringify(rawReply)
-        }
-      } else if (typeof rawReply === 'string') {
-        // Try to parse as JSON first
-        if (rawReply.trim().startsWith('{')) {
-          try {
-            const parsed: unknown = JSON.parse(rawReply)
-            const validated = validateAgentMessage(parsed)
-            agentMsg = validated
-            messageText = renderAgentMessage(validated, t)
-          } catch {
-            // Not a valid AgentMessage — treat as raw text
-            console.warn('[Agent] Raw text detected — should use translation key:', rawReply.slice(0, 80))
-            messageText = rawReply
-          }
-        } else {
-          console.warn('[Agent] Raw text detected — should use translation key:', rawReply.slice(0, 80))
-          messageText = rawReply
-        }
-      } else {
-        messageText = t('status.no_reply')
-      }
-
-      setMessages(prev => [...prev, {
-        id: `b-${Date.now()}`,
-        role: 'bernt',
-        text: messageText,
-        ts: Date.now(),
-        agentMsg,
-      }])
-    } catch {
-      setMessages(prev => [...prev, {
-        id: `b-${Date.now()}`, role: 'bernt',
-        text: t('bernt.tunnel_unreachable'),
-        ts: Date.now()
-      }])
-      setUsingFallback(true)
-    } finally {
-      setLoading(false)
-    }
-  }, [tunnelUrl, t])
-
-  const { listening, start: startListen, stop: stopListen } = useSpeechRecognition(sendMessage)
-
-  const saveTunnel = (url: string) => {
-    setTunnelUrl(url)
-    localStorage.setItem(BERNT_TUNNEL_KEY, url)
-    setShowSettings(false)
-  }
-
-  const connected = !!tunnelUrl
+  const { listening, start: startListen, stop: stopListen } = useSpeechRecognition(handleSend)
 
   return (
     <>
@@ -184,7 +130,7 @@ export function BerntWidget() {
         title="Bernt — AI-assistent"
       >
         <span className="text-xl">{open ? '✕' : '🤖'}</span>
-        {connected && !open && (
+        {isConnected && !open && (
           <span className="absolute -top-0.5 -right-0.5 h-3 w-3 rounded-full bg-green-400 border-2 border-white" />
         )}
       </button>
@@ -203,80 +149,93 @@ export function BerntWidget() {
           {/* Header */}
           <div
             className="flex items-center gap-2.5 px-4 py-3 flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg, #FFFFFF 0%, #F5F0E8 100%)', borderBottom: '1px solid #DDD5C5' }}
+            style={{
+              background: 'linear-gradient(135deg, #FFFFFF 0%, #F5F0E8 100%)',
+              borderBottom: '1px solid #DDD5C5',
+            }}
           >
-            <div className="h-7 w-7 rounded-full flex items-center justify-center text-sm"
-              style={{ background: 'linear-gradient(135deg, #2563EB, #1D4ED8)' }}>
+            <div
+              className="h-7 w-7 rounded-full flex items-center justify-center text-sm"
+              style={{ background: 'linear-gradient(135deg, #2563EB, #1D4ED8)' }}
+            >
               🤖
             </div>
             <div className="flex-1">
               <p className="text-xs font-bold text-text-primary">Bernt</p>
-              {usingFallback && (
-                <div style={{ fontSize: 9, color: '#92400e', background: 'rgba(234,179,8,0.12)', borderRadius: 4, padding: '1px 6px', marginBottom: 2 }}>
-                  Tunnel ej ansluten
-                </div>
-              )}
               <div className="flex items-center gap-1">
-                <span className={`h-1.5 w-1.5 rounded-full ${connected ? 'bg-green-400' : 'bg-yellow-400'}`} />
-                <p className="text-[9px] font-mono" style={{ color: connected ? '#4ade80' : '#facc15' }}>
-                  {connected ? t('status.connected') : t('status.not_configured')}
+                <span
+                  className={`h-1.5 w-1.5 rounded-full ${isConnected ? 'bg-green-400' : 'bg-yellow-400'}`}
+                />
+                <p
+                  className="text-[9px] font-mono"
+                  style={{ color: isConnected ? '#4ade80' : '#facc15' }}
+                >
+                  {isConnected ? 'CONNECTED' : 'OFFLINE'}
                 </p>
               </div>
             </div>
-            <button
-              onClick={() => setShowSettings(s => !s)}
-              className="text-text-muted hover:text-gray-600 transition-colors text-sm"
-              title={t('nav.settings')}
-            >⚙️</button>
           </div>
 
-          {/* Settings panel */}
-          {showSettings && (
-            <div className="px-4 py-3 flex-shrink-0 border-b border-surface-border animate-fade-in">
-              <p className="text-xs text-text-muted font-mono mb-1.5">{t('bernt.tunnel_url_label')}</p>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  defaultValue={tunnelUrl}
-                  placeholder="https://xxx.trycloudflare.com"
-                  className="flex-1 text-xs bg-white border border-surface-border rounded-lg px-2.5 py-1.5 text-text-primary placeholder-gray-700 focus:outline-none focus:border-blue-600/50"
-                  onKeyDown={e => e.key === 'Enter' && saveTunnel((e.target as HTMLInputElement).value)}
-                  id="tunnel-input"
-                />
-                <button
-                  onClick={() => saveTunnel((document.getElementById('tunnel-input') as HTMLInputElement)?.value || '')}
-                  className="text-xs px-2.5 py-1.5 rounded-lg font-semibold"
-                  style={{ background: '#2563EB20', color: '#60A5FA', border: '1px solid #2563EB30' }}
-                >
-                  {t('action.save')}
-                </button>
-              </div>
-              <p className="text-[9px] text-gray-600 mt-1.5">{t('bernt.tunnel_url_hint')}</p>
+          {/* Offline banner */}
+          {!isConnected && (
+            <div
+              className="px-4 py-2 flex-shrink-0 text-[10px]"
+              style={{
+                background: 'rgba(234,179,8,0.08)',
+                borderBottom: '1px solid rgba(234,179,8,0.2)',
+                color: '#92400e',
+              }}
+            >
+              Bernt är offline just nu. Meddelanden sparas och skickas när anslutningen återupprättas.
             </div>
           )}
 
           {/* Messages */}
           <div className="flex-1 overflow-y-auto px-3 py-3 space-y-2.5">
-            {messages.map(msg => (
-              <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+            {displayMessages.map(msg => (
+              <div
+                key={msg.id}
+                className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
+              >
                 <div
                   className="max-w-[85%] px-3 py-2 rounded-xl text-xs leading-relaxed"
-                  style={msg.role === 'user'
-                    ? { background: '#2563EB25', color: '#93C5FD', border: '1px solid #2563EB30' }
-                    : { background: '#F5F0E8', color: '#0A3D62', border: '1px solid #DDD5C5' }
+                  style={
+                    msg.role === 'user'
+                      ? { background: '#2563EB25', color: '#93C5FD', border: '1px solid #2563EB30' }
+                      : { background: '#F5F0E8', color: '#0A3D62', border: '1px solid #DDD5C5' }
                   }
                 >
-                  {msg.text}
+                  {msg.content}
                 </div>
+                {/* System actions badges */}
+                {msg.actions && msg.actions.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-1 max-w-[85%]">
+                    {msg.actions.map((action, i) => (
+                      <ActionBadge key={i} action={action} />
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
-            {loading && (
+            {isLoading && (
               <div className="flex justify-start">
-                <div className="px-3 py-2 rounded-xl text-xs" style={{ background: '#F5F0E8', border: '1px solid #DDD5C5' }}>
+                <div
+                  className="px-3 py-2 rounded-xl text-xs"
+                  style={{ background: '#F5F0E8', border: '1px solid #DDD5C5' }}
+                >
                   <span className="flex gap-1">
-                    <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: '300ms' }} />
+                    <span
+                      className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce"
+                      style={{ animationDelay: '0ms' }}
+                    />
+                    <span
+                      className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce"
+                      style={{ animationDelay: '150ms' }}
+                    />
+                    <span
+                      className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-bounce"
+                      style={{ animationDelay: '300ms' }}
+                    />
                   </span>
                 </div>
               </div>
@@ -285,14 +244,18 @@ export function BerntWidget() {
           </div>
 
           {/* Quick starters */}
-          {messages.length <= 1 && (
+          {displayMessages.length <= 1 && (
             <div className="px-3 pb-2 flex flex-wrap gap-1.5 flex-shrink-0">
               {BERNT_STARTERS.map(s => (
                 <button
                   key={s}
-                  onClick={() => sendMessage(s)}
+                  onClick={() => handleSend(s)}
                   className="text-[9px] font-mono px-2 py-1 rounded-full transition-colors"
-                  style={{ background: '#2563EB10', color: '#60A5FA', border: '1px solid #2563EB20' }}
+                  style={{
+                    background: '#2563EB10',
+                    color: '#60A5FA',
+                    border: '1px solid #2563EB20',
+                  }}
                 >
                   {s}
                 </button>
@@ -301,15 +264,18 @@ export function BerntWidget() {
           )}
 
           {/* Input */}
-          <div className="px-3 pb-3 flex-shrink-0 flex gap-2" style={{ borderTop: '1px solid #DDD5C5' }}>
+          <div
+            className="px-3 pb-3 flex-shrink-0 flex gap-2"
+            style={{ borderTop: '1px solid #DDD5C5' }}
+          >
             <input
               type="text"
               value={input}
               onChange={e => setInput(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && !loading && sendMessage(input)}
-              placeholder="Skriv eller tala..."
+              onKeyDown={e => e.key === 'Enter' && !isLoading && handleSend(input)}
+              placeholder="Skriv till Bernt..."
               className="flex-1 text-xs bg-white border border-surface-border rounded-xl px-3 py-2 text-text-primary placeholder-gray-700 focus:outline-none focus:border-blue-600/40 mt-2"
-              disabled={loading}
+              disabled={isLoading}
             />
             <button
               onClick={listening ? stopListen : startListen}
@@ -324,8 +290,8 @@ export function BerntWidget() {
               {listening ? '⏹' : '🎤'}
             </button>
             <button
-              onClick={() => !loading && sendMessage(input)}
-              disabled={!input.trim() || loading}
+              onClick={() => !isLoading && handleSend(input)}
+              disabled={!input.trim() || isLoading}
               className="mt-2 h-8 w-8 rounded-xl flex items-center justify-center transition-all flex-shrink-0 disabled:opacity-30"
               style={{ background: '#2563EB20', border: '1px solid #2563EB30', color: '#60A5FA' }}
             >
