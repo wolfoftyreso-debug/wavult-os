@@ -4,6 +4,7 @@ import apiflyRouter from './routes/apifly'              // Apifly — kundbacken
 import uapixBillingRouter from './routes/uapix-billing'  // UAPIX — Stripe billing (checkout, portal, webhooks)
 import uapixCustomersRouter from './routes/uapix-customers'  // UAPIX — Customer auth, keys, usage, proxy
 import apiflyBillingRouter from './routes/apifly-billing' // Apifly — Stripe billing (checkout, portal, webhooks)
+import apiflyAuthRouter from './routes/apifly-auth'       // Apifly — BankID + Phone OTP auth
 import paymentsExtendedRouter from './routes/payments-extended'
 import paymentsBnplRouter from './routes/payments-bnpl'          // Klarna + Swish
 import aiVideoRouter from './routes/ai-video'                    // Stability + Runway + Groq
@@ -108,6 +109,7 @@ app.use('/', apiflyRouter)               // Apifly — kundbackend + universal A
 app.use('/', uapixBillingRouter)         // UAPIX billing — Stripe checkout, portal, webhook, plans
 app.use('/', uapixCustomersRouter)      // UAPIX customers — auth, keys, usage, proxy, admin
 app.use('/', apiflyBillingRouter)        // Apifly billing — Stripe checkout, portal, webhook, plans
+app.use('/', apiflyAuthRouter)           // Apifly auth — BankID + Phone OTP
 app.use('/', paymentsExtendedRouter)    // Stripe + BankSign extended
 app.use('/', paymentsBnplRouter)        // Klarna + Swish BNPL
 app.use('/', aiVideoRouter)             // Stability AI + Runway + Groq
