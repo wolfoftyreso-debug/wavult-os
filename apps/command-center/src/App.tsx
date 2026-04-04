@@ -94,6 +94,7 @@ const AgentCommandPanel      = lazy(() => import('./features/agent/AgentCommandP
 const AgentHub               = lazy(() => import('./features/agent/AgentHub').then(m => ({ default: m.AgentHub })))
 const CorpFittPlatform       = lazy(() => import('./features/corpfitt-platform/CorpFittView'))
 const UAPIXView              = lazy(() => import('./features/uapix/UAPIXView'))
+const UapixAdminView         = lazy(() => import('./features/uapix/UapixAdminView'))
 const DISSGView              = lazy(() => import('./features/dissg/DISSGView'))
 const ApiflyView             = lazy(() => import('./features/apifly/ApiflyView'))
 const ApiflyAdminView        = lazy(() => import('./features/apifly/ApiflyAdminView').then(m => ({ default: m.ApiflyAdminView })))
@@ -223,6 +224,7 @@ function AuthenticatedApp() {
               <Route path="/zoomer-app" element={<QuixzoomApp />} />
               <Route path="/corpfitt" element={<CorpFittPlatform />} />
               <Route path="/uapix" element={<UAPIXView />} />
+              <Route path="/uapix-admin" element={<UapixAdminView />} />
               <Route path="/dissg" element={<DISSGView />} />
               <Route path="/apifly" element={<ApiflyView />} />
               <Route path="/apifly-admin" element={<ApiflyAdminView />} />

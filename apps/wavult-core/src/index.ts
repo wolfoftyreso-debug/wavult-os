@@ -1,5 +1,6 @@
 import apiflyRouter from './routes/apifly'              // Apifly — kundbackend + proxy
 import uapixBillingRouter from './routes/uapix-billing'  // UAPIX — Stripe billing (checkout, portal, webhooks)
+import uapixCustomersRouter from './routes/uapix-customers'  // UAPIX — Customer auth, keys, usage, proxy
 import apiflyBillingRouter from './routes/apifly-billing' // Apifly — Stripe billing (checkout, portal, webhooks)
 import paymentsExtendedRouter from './routes/payments-extended'
 import paymentsBnplRouter from './routes/payments-bnpl'          // Klarna + Swish
@@ -101,6 +102,7 @@ const healthLimiter = rateLimit({
 // Routes
 app.use('/', apiflyRouter)               // Apifly — kundbackend + universal API proxy
 app.use('/', uapixBillingRouter)         // UAPIX billing — Stripe checkout, portal, webhook, plans
+app.use('/', uapixCustomersRouter)      // UAPIX customers — auth, keys, usage, proxy, admin
 app.use('/', apiflyBillingRouter)        // Apifly billing — Stripe checkout, portal, webhook, plans
 app.use('/', paymentsExtendedRouter)    // Stripe + BankSign extended
 app.use('/', paymentsBnplRouter)        // Klarna + Swish BNPL
