@@ -44,6 +44,7 @@ import auditRouter from './routes/audit'
 import taxRouter from './routes/tax-integration'
 import visaRouter from './routes/visa'
 import qmsRouter from './routes/qms'
+import tuvRouter from './routes/tuv'
 import academyRouter from './routes/academy'
 import taxAutomationRouter from './routes/tax-automation'
 import deploymentsRouter from './routes/deployments'
@@ -130,6 +131,7 @@ app.use('/api/cockpit', cockpitRouter)           // Cockpit — live metrics: la
 app.use('/v1/system', systemAuditRouter)        // System Audit — parallella health-checks, healthScore
 app.use('/', llmRouter)                         // Intern LLM-gateway — Llama 4 Scout via Ollama
 app.use('/', qmsRouter)                         // QMS — ISO 9001/27001/GDPR/NIS2 compliance tracking
+app.use('/', tuvRouter)                         // TÜV Rheinland Audit — sessions, suppliers, sprint
 app.use('/', rtmRouter)                         // RTM — Release to Manufacturing gate
 app.use('/', jurisdictionRouter)                // Jurisdiction — Legal Boundary Intelligence per marknad
 app.use('/', academyRouter)                     // Academy — ISO/compliance-kurser + kompetensmatris-koppling
@@ -236,7 +238,7 @@ app.listen(PORT, () => {
 
 // ─── Proactive Agent Scheduler ────────────────────────────────────────────────
 // Kör alla agenter var 6:e timme + en gång vid uppstart (30s delay)
-import { runAllProactiveAgents } from './ai/agents/proactive'
+import { runAllProactiveAgents, runWeeklyAudit } from './ai/agents/proactive'
 
 setInterval(async () => {
   console.log('[scheduler] Running proactive agents...')
@@ -255,3 +257,20 @@ setTimeout(async () => {
     console.error('[scheduler] Initial agent run failed:', e)
   }
 }, 30_000)
+
+// ─── Veckovis Revision — varje måndag 06:00 ──────────────────────────────────
+function scheduleWeeklyAudit() {
+  const now = new Date()
+  const nextMonday = new Date(now)
+  nextMonday.setDate(now.getDate() + ((1 + 7 - now.getDay()) % 7 || 7))
+  nextMonday.setHours(6, 0, 0, 0)
+  const msToMonday = nextMonday.getTime() - now.getTime()
+
+  setTimeout(() => {
+    runWeeklyAudit().catch(console.error)
+    setInterval(() => runWeeklyAudit().catch(console.error), 7 * 24 * 60 * 60 * 1000)
+  }, msToMonday)
+
+  console.log(`[scheduler] Weekly audit scheduled: next run ${nextMonday.toISOString()}`)
+}
+scheduleWeeklyAudit()

@@ -228,3 +228,47 @@ export function useQmsAudit(entitySlug: string | null): UseQmsAuditResult {
 
   return { sessions, loading, error, refetch, startSession }
 }
+
+// ─── useReadinessDashboard ────────────────────────────────────────────────────
+export interface ReadinessCriterion {
+  criterion_code: string
+  category: string
+  description: string
+  is_met: boolean
+  met_at: string | null
+  check_type: string
+}
+
+export interface ReadinessDashboard {
+  readiness_pct: number
+  criteria_met: number
+  criteria_total: number
+  booking_triggered: boolean
+  last_checked: string | null
+  criteria: ReadinessCriterion[]
+  history: { checked_at: string; readiness_pct: number }[]
+  target_dates: { thailand: string; pre_assessment: string; full_certification: string }
+}
+
+export function useReadinessDashboard() {
+  const { apiFetch } = useApi()
+  const [data, setData] = useState<ReadinessDashboard | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [tick, setTick] = useState(0)
+
+  const refetch = useCallback(() => setTick(t => t + 1), [])
+
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+    apiFetch('/v1/qms/readiness')
+      .then(r => r.json())
+      .then(d => { if (!cancelled) setData(d) })
+      .catch(e => { if (!cancelled) setError(e.message) })
+      .finally(() => { if (!cancelled) setLoading(false) })
+    return () => { cancelled = true }
+  }, [tick])
+
+  return { data, loading, error, refetch }
+}

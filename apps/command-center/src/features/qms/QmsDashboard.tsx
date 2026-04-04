@@ -6,7 +6,7 @@
  */
 
 import React, { useState, useMemo } from 'react'
-import { useQmsEntities, useQmsDashboard, useQmsControls } from './useQmsData'
+import { useQmsEntities, useQmsDashboard, useQmsControls, useReadinessDashboard } from './useQmsData'
 import { ControlDetail } from './ControlDetail'
 import { ComplianceTimeline } from './ComplianceTimeline'
 import type { QmsStatus, IsoControl } from './qmsTypes'
@@ -52,6 +52,7 @@ const CATEGORY_OPTIONS = [
 
 export function QmsDashboard() {
   const { entities, loading: entLoading } = useQmsEntities()
+  const { data: readiness } = useReadinessDashboard()
 
   const [selectedSlug, setSelectedSlug] = useState<string>('wavult-os')
   const [selectedStandard, setSelectedStandard] = useState('')
@@ -152,6 +153,95 @@ export function QmsDashboard() {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* ─── Certification Readiness Widget ─── */}
+        {readiness && (
+          <div style={{ background: '#fff', border: '2px solid #E8B84B', borderRadius: '14px', padding: '24px', marginBottom: '24px' }}>
+            <div style={{ display: 'flex', gap: '32px', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+
+              {/* Cirkulär progress-ring */}
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: '140px' }}>
+                <svg width="120" height="120" viewBox="0 0 120 120">
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="#E2D9C8" strokeWidth="10" />
+                  <circle
+                    cx="60" cy="60" r="50" fill="none"
+                    stroke={readiness.readiness_pct >= 100 ? '#27AE60' : readiness.readiness_pct >= 70 ? '#E8B84B' : '#E74C3C'}
+                    strokeWidth="10"
+                    strokeDasharray={`${2 * Math.PI * 50 * readiness.readiness_pct / 100} ${2 * Math.PI * 50 * (1 - readiness.readiness_pct / 100)}`}
+                    strokeLinecap="round"
+                    transform="rotate(-90 60 60)"
+                    style={{ transition: 'stroke-dasharray 0.6s ease' }}
+                  />
+                  <text x="60" y="56" textAnchor="middle" fontSize="22" fontWeight="800" fill="#0A3D62">{readiness.readiness_pct}%</text>
+                  <text x="60" y="73" textAnchor="middle" fontSize="9" fill="#7F8C8D" fontWeight="600">CERTIFIERINGSREDO</text>
+                </svg>
+                <div style={{ fontSize: '12px', color: '#5D6D7E', marginTop: '6px', textAlign: 'center' }}>
+                  {readiness.criteria_met}/{readiness.criteria_total} kriterier
+                </div>
+                {readiness.booking_triggered && (
+                  <div style={{ background: '#EAFAF1', color: '#1D6A39', borderRadius: '20px', padding: '4px 12px', fontSize: '11px', fontWeight: 700, marginTop: '8px' }}>
+                    🎉 TÜV-REDO
+                  </div>
+                )}
+              </div>
+
+              {/* Kriterielista */}
+              <div style={{ flex: 1, minWidth: '280px' }}>
+                <h3 style={{ margin: '0 0 12px', fontSize: '14px', fontWeight: 800, color: '#0A3D62' }}>
+                  Bokningskriterier
+                  {readiness.last_checked && (
+                    <span style={{ fontSize: '11px', color: '#7F8C8D', fontWeight: 400, marginLeft: '10px' }}>
+                      kontrollerades {new Date(readiness.last_checked).toLocaleDateString('sv-SE')}
+                    </span>
+                  )}
+                </h3>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 16px' }}>
+                  {readiness.criteria.map(c => (
+                    <div key={c.criterion_code} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '3px 0' }}>
+                      <span style={{ fontSize: '14px', lineHeight: 1 }}>{c.is_met ? '✅' : '❌'}</span>
+                      <span style={{ fontSize: '11px', color: c.is_met ? '#1D6A39' : '#E74C3C', fontWeight: 600 }}>{c.criterion_code}</span>
+                      <span style={{ fontSize: '11px', color: '#5D6D7E', flex: 1 }} title={c.description}>
+                        {c.description.length > 32 ? c.description.slice(0, 32) + '…' : c.description}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Tidslinje + nästa revision */}
+              <div style={{ minWidth: '200px' }}>
+                <h3 style={{ margin: '0 0 12px', fontSize: '14px', fontWeight: 800, color: '#0A3D62' }}>Milstolpar</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {[
+                    { label: '🇹🇭 Thailand Workcamp', date: readiness.target_dates.thailand },
+                    { label: '📋 Pre-assessment', date: readiness.target_dates.pre_assessment },
+                    { label: '🏆 Fullcertifikat', date: readiness.target_dates.full_certification },
+                  ].map(m => (
+                    <div key={m.label} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#E8B84B', flexShrink: 0 }} />
+                      <div>
+                        <div style={{ fontSize: '12px', fontWeight: 700, color: '#0A3D62' }}>{m.label}</div>
+                        <div style={{ fontSize: '11px', color: '#7F8C8D' }}>{m.date}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ marginTop: '16px', padding: '10px', background: '#F5F0E8', borderRadius: '8px', border: '1px solid #E2D9C8' }}>
+                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#0A3D62', marginBottom: '2px' }}>⏰ Nästa veckorevision</div>
+                  <div style={{ fontSize: '11px', color: '#5D6D7E' }}>
+                    {(() => {
+                      const now = new Date()
+                      const next = new Date(now)
+                      next.setDate(now.getDate() + ((1 + 7 - now.getDay()) % 7 || 7))
+                      next.setHours(6, 0, 0, 0)
+                      return next.toLocaleDateString('sv-SE', { weekday: 'long', day: 'numeric', month: 'short' }) + ' kl 06:00'
+                    })()}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}

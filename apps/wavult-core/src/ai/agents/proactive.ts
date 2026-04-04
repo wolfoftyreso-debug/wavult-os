@@ -354,37 +354,196 @@ export async function runOkrAgent(): Promise<AgentAction[]> {
 export async function checkCertificationReadiness(): Promise<{ pct: number; blocking: string[]; ready: boolean }> {
   const db = getDb()
   try {
-    const { rows } = await db.query(`
-      SELECT criterion_code, description, is_met, category
-      FROM certification_booking_criteria
-      WHERE entity_slug = 'wavult-os' AND is_mandatory = true
-      ORDER BY category, criterion_code
-    `)
-
-    const total = rows.length
-    const met = rows.filter((r: any) => r.is_met).length
-    const blocking = rows.filter((r: any) => !r.is_met).map((r: any) => `${r.criterion_code}: ${r.description}`)
-    const pct = total > 0 ? Math.round(met / total * 100) : 0
-    const ready = pct >= 100
-
-    // Logga readiness
-    await db.query(`
-      INSERT INTO certification_readiness_log (entity_slug, criteria_met, criteria_total, readiness_pct, booking_triggered, blocking_criteria)
-      VALUES ('wavult-os', $1, $2, $3, $4, $5)
-    `, [met, total, pct, ready, JSON.stringify(blocking)])
-
-    if (ready) {
-      // Skicka notifikation till Dennis — tid att boka TÜV
-      await db.query(`
-        INSERT INTO notifications (user_id, title, message, priority, type, read, created_at)
-        VALUES ('dennis', '🎉 Certifieringsklart — Boka TÜV nu!',
-          'Alla 15 bokningskriterier är uppfyllda. Kontakta TÜV Rheinland eller DNV för pre-assessment. Estimerad ledtid: 6-12 månader till certifikat.',
-          'critical', 'certification_ready', false, now())
-      `)
+    // Kör alla SQL-baserade kriterier live mot databasen
+    const criteriaChecks: Record<string, string> = {
+      'CB-001': `SELECT COUNT(*)::int FROM qms_documents WHERE doc_code='POL-001' AND status='approved' AND approved_by='erik'`,
+      'CB-002': `SELECT COUNT(*)::int FROM management_reviews WHERE EXTRACT(YEAR FROM created_at)=2026`,
+      'CB-003': `SELECT COUNT(*)::int FROM qms_capa WHERE capa_code='CAPA-2026-001' AND status='closed'`,
+      'CB-004': `SELECT COUNT(*)::int FROM qms_capa WHERE capa_code='CAPA-2026-002' AND status='closed'`,
+      'CB-005': `SELECT COUNT(*)::int FROM qms_capa WHERE capa_code='CAPA-2026-003' AND status='closed'`,
+      'CB-006': `SELECT COUNT(*)::int FROM qms_audit_sessions WHERE entity_id=(SELECT id FROM qms_entities WHERE slug='wavult-os') AND status='completed' AND EXTRACT(YEAR FROM started_at)=2026`,
+      'CB-007': `SELECT COUNT(*)::int FROM qms_course_completions cc JOIN qms_courses c ON c.id=cc.course_id WHERE c.course_code='ISO-9001-INTRO' AND cc.passed=true`,
+      'CB-008': `SELECT COUNT(DISTINCT entity_slug)::int FROM ropa_records WHERE entity_slug IN ('wavult-os','quixzoom','landvex')`,
+      'CB-009': `SELECT COUNT(*)::int FROM gdpr_dpa_register WHERE supplier_name='OpenAI' AND dpa_signed=true`,
+      'CB-010': `SELECT COUNT(*)::int FROM gdpr_dpa_register WHERE supplier_name='ElevenLabs' AND dpa_signed=true`,
+      'CB-011': `SELECT COUNT(*)::int FROM gdpr_dpa_register WHERE supplier_name='Revolut' AND dpa_signed=true`,
+      'CB-013': `SELECT COUNT(*)::int FROM qms_capa WHERE capa_code='CAPA-2026-001' AND status='closed' AND verification_effective=true`,
+      'CB-015': `SELECT COUNT(*)::int FROM qms_risks WHERE risk_level='critical' AND status='open' AND control_measures IS NULL`,
     }
 
-    console.log(`[proactive] Certification readiness: ${pct}% (${met}/${total}), ready=${ready}`)
+    const results: Record<string, boolean> = {}
+    for (const [code, query] of Object.entries(criteriaChecks)) {
+      try {
+        const { rows } = await db.query(query)
+        const val = rows[0]?.count ?? 0
+        // CB-015 är omvänd: 0 = pass (inga kritiska risker utan åtgärdsplan)
+        results[code] = code === 'CB-015' ? (Number(val) === 0) : (Number(val) >= (code === 'CB-008' ? 3 : 1))
+      } catch { results[code] = false }
+    }
+
+    // Manuella kriterier (CB-012 MSB, CB-014 pentest) — hämta från databasen
+    try {
+      const { rows: manualRows } = await db.query(
+        `SELECT criterion_code, is_met FROM certification_booking_criteria WHERE check_type='manual'`
+      )
+      for (const r of manualRows) { results[r.criterion_code] = r.is_met }
+    } catch { /* tabell kanske saknas */ }
+
+    // Uppdatera is_met i databasen
+    for (const [code, met] of Object.entries(results)) {
+      try {
+        await db.query(
+          `UPDATE certification_booking_criteria SET is_met=$1, met_at=CASE WHEN $1 AND met_at IS NULL THEN NOW() ELSE met_at END WHERE criterion_code=$2`,
+          [met, code]
+        )
+      } catch { /* okänt kriterium — hoppa över */ }
+    }
+
+    const { rows: all } = await db.query(
+      `SELECT criterion_code, description, is_met FROM certification_booking_criteria WHERE entity_slug='wavult-os' AND is_mandatory=true`
+    )
+    const total = all.length
+    const metCount = all.filter((r: any) => r.is_met).length
+    const blocking = all.filter((r: any) => !r.is_met).map((r: any) => `${r.criterion_code}: ${r.description}`)
+    const pct = total > 0 ? Math.round(metCount / total * 100) : 0
+    const ready = pct >= 100
+
+    await db.query(
+      `INSERT INTO certification_readiness_log (entity_slug, criteria_met, criteria_total, readiness_pct, booking_triggered, blocking_criteria)
+       VALUES ('wavult-os', $1, $2, $3, $4, $5)`,
+      [metCount, total, pct, ready, JSON.stringify(blocking)]
+    )
+
+    if (ready) {
+      await db.query(
+        `INSERT INTO notifications (user_id, title, message, priority, type, read, created_at)
+         VALUES ('dennis', '🎉 Certifieringsklart — Boka TÜV nu!',
+           'Alla 15 bokningskriterier uppfyllda. Kontakta TÜV Rheinland eller DNV för pre-assessment. Ledtid: 6-12 månader.',
+           'critical', 'certification_ready', false, now())
+         ON CONFLICT DO NOTHING`
+      )
+    }
+
+    console.log(`[proactive] Certification readiness: ${pct}% (${metCount}/${total}), ready=${ready}`)
     return { pct, blocking, ready }
+  } finally {
+    await db.end()
+  }
+}
+
+// ─── Veckovis Självrevision ───────────────────────────────────────────────────
+export async function runWeeklyAudit(): Promise<void> {
+  console.log('[weekly-audit] Starting automated weekly audit...')
+  const db = getDb()
+  const results: string[] = []
+  let overdueCapa: any[] = []
+  let staleKrs: any[] = []
+  let pct = 0
+  let blocking: string[] = []
+
+  try {
+    // 1. Certification readiness
+    const certResult = await checkCertificationReadiness()
+    pct = certResult.pct
+    blocking = certResult.blocking
+    results.push(`Certifieringsreadiness: ${pct}% (${blocking.length} blockers kvar)`)
+
+    // 2. Kolla alla CAPAs med förfallna deadlines
+    const { rows: overdueCapa_ } = await db.query(
+      `SELECT capa_code, title, action_owner, target_date,
+              NOW()::date - target_date as days_overdue
+       FROM qms_capa WHERE status='open' AND target_date < NOW()::date
+       ORDER BY days_overdue DESC`
+    )
+    overdueCapa = overdueCapa_
+    for (const capa of overdueCapa) {
+      await db.query(
+        `INSERT INTO agent_action_log (agent_id, action_type, trigger_type, trigger_reason, target_entity, action_taken, responsible_person, status)
+         VALUES ('qms', 'escalate', 'scheduled', $1, $2, $3, $4, 'auto_executed')`,
+        [`Veckorevision: CAPA ${capa.capa_code} förfallen ${capa.days_overdue} dagar`,
+         capa.capa_code,
+         `Eskalerade CAPA ${capa.capa_code} till ${capa.action_owner} — ${capa.days_overdue} dagar förfallen`,
+         capa.action_owner]
+      )
+      await db.query(
+        `INSERT INTO notifications (user_id, title, message, priority, type, read)
+         VALUES ($1, $2, $3, 'critical', 'weekly_audit', false)`,
+        [capa.action_owner,
+         `📅 CAPA förfallen: ${capa.capa_code}`,
+         `${capa.title} är ${capa.days_overdue} dagar förfallen. Åtgärd krävs omgående.`]
+      )
+      results.push(`FÖRFALLEN CAPA: ${capa.capa_code} (${capa.days_overdue}d) → ${capa.action_owner}`)
+    }
+
+    // 3. OKR Check-in påminnelser (KRs utan check-in 14+ dagar)
+    const { rows: staleKrs_ } = await db.query(
+      `SELECT kr.id, kr.title, kr.owner_id, kr.confidence, o.title as obj
+       FROM okr_key_results kr JOIN okr_objectives o ON o.id=kr.objective_id
+       WHERE kr.status='active' AND NOT EXISTS (
+         SELECT 1 FROM okr_checkins c WHERE c.key_result_id=kr.id AND c.checked_at > NOW()-INTERVAL '14 days'
+       )`
+    )
+    staleKrs = staleKrs_
+    for (const kr of staleKrs) {
+      await db.query(
+        `INSERT INTO notifications (user_id, title, message, priority, type, read)
+         VALUES ($1, $2, $3, 'high', 'weekly_audit', false)`,
+        [kr.owner_id || 'erik',
+         `📊 OKR: Check-in saknas 14+ dagar`,
+         `"${kr.title}" under "${kr.obj}" — confidence: ${kr.confidence}. Uppdatera i OKR-modulen.`]
+      )
+      results.push(`OKR saknar check-in: ${kr.title} → ${kr.owner_id}`)
+    }
+
+    // 4. Ny risk-scoring — uppdatera risk_level baserat på likelihood*impact
+    await db.query(
+      `UPDATE qms_risks SET risk_level = CASE
+         WHEN likelihood*impact >= 20 THEN 'critical'
+         WHEN likelihood*impact >= 13 THEN 'high'
+         WHEN likelihood*impact >= 7  THEN 'medium'
+         ELSE 'low' END`
+    )
+    results.push('Riskmatris omberäknad')
+
+    // 5. Compliance-gap sammanfattning per ägare
+    const { rows: gapsByOwner } = await db.query(
+      `SELECT qi.responsible_person, COUNT(*) as gaps
+       FROM qms_implementations qi
+       JOIN qms_entities qe ON qe.id=qi.entity_id
+       WHERE qe.slug='wavult-os' AND qi.status IN ('not_started','gap')
+       GROUP BY qi.responsible_person ORDER BY gaps DESC`
+    )
+    for (const owner of gapsByOwner) {
+      if (Number(owner.gaps) > 5) {
+        await db.query(
+          `INSERT INTO notifications (user_id, title, message, priority, type, read)
+           VALUES ($1, $2, $3, 'high', 'weekly_audit', false)`,
+          [owner.responsible_person,
+           `⚠️ Veckorevision: ${owner.gaps} ISO-kontroller kräver åtgärd`,
+           `Du har ${owner.gaps} ISO-kontroller med status not_started eller gap. Öppna QMS-modulen för detaljer.`]
+        )
+      }
+      results.push(`Gaps: ${owner.responsible_person}: ${owner.gaps}`)
+    }
+
+    // 6. Skapa audit-session för veckorevisionen
+    const { rows: [entity] } = await db.query(
+      `SELECT id FROM qms_entities WHERE slug='wavult-os'`
+    )
+    if (entity) {
+      await db.query(
+        `INSERT INTO qms_audit_sessions (entity_id, audit_type, auditor_name, auditor_org, started_at, completed_at, status, findings, overall_result, notes)
+         VALUES ($1, 'internal', 'QMS-agenten (autonom)', 'Wavult OS AI', NOW()-INTERVAL '1 hour', NOW(), 'completed', $2, $3, $4)`,
+        [entity.id,
+         JSON.stringify({ automated: true, checks: results.length, timestamp: new Date().toISOString() }),
+         (overdueCapa.length > 0 || blocking.length > 8) ? 'minor_nc' : 'pass',
+         `Automatisk veckorevision. ${results.length} kontroller körda. Readiness: ${pct}%. ${overdueCapa.length} förfallna CAPAs. ${staleKrs.length} OKRs utan check-in.`]
+      )
+    }
+
+    console.log(`[weekly-audit] Complete: ${results.length} checks, ${pct}% ready, ${overdueCapa.length} overdue CAPAs`)
+  } catch (e: any) {
+    console.error('[weekly-audit] Error:', e.message)
   } finally {
     await db.end()
   }

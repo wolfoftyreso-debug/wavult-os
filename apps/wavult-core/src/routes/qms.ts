@@ -901,4 +901,48 @@ router.post('/v1/qms/:entitySlug/audit', async (req: Request, res: Response) => 
   }
 })
 
+// ─── GET /v1/qms/readiness — certification readiness dashboard ────────────────
+router.get('/v1/qms/readiness', async (_req: Request, res: Response) => {
+  const db = (() => {
+    const { Pool } = require('pg')
+    return new Pool({
+      connectionString: process.env.DATABASE_URL || process.env.WAVULT_DB_URL,
+      ssl: { rejectUnauthorized: false },
+    })
+  })()
+  try {
+    const { rows: criteria } = await db.query(
+      `SELECT criterion_code, category, description, is_met, met_at, check_type
+       FROM certification_booking_criteria WHERE entity_slug='wavult-os' ORDER BY category, criterion_code`
+    )
+    const { rows: latestRows } = await db.query(
+      `SELECT * FROM certification_readiness_log ORDER BY checked_at DESC LIMIT 1`
+    )
+    const latest = latestRows[0]
+    const { rows: history } = await db.query(
+      `SELECT checked_at, readiness_pct FROM certification_readiness_log
+       WHERE entity_slug='wavult-os' ORDER BY checked_at DESC LIMIT 10`
+    )
+    res.json({
+      readiness_pct: latest?.readiness_pct ?? 0,
+      criteria_met: latest?.criteria_met ?? 0,
+      criteria_total: latest?.criteria_total ?? 15,
+      booking_triggered: latest?.booking_triggered ?? false,
+      last_checked: latest?.checked_at,
+      criteria,
+      history,
+      target_dates: {
+        thailand: '2026-04-11',
+        pre_assessment: '2026-Q3',
+        full_certification: '2026-Q4'
+      }
+    })
+  } catch (err: any) {
+    console.error('[qms] GET /readiness error:', err)
+    res.status(500).json({ error: err.message })
+  } finally {
+    await db.end()
+  }
+})
+
 export default router
