@@ -27,6 +27,7 @@ interface Repo {
   description: string
   versions: Version[]
   tags?: string[]
+  heroImage?: string
 }
 
 // ── Lock SVG ──────────────────────────────────────────────────────────────────
@@ -143,17 +144,13 @@ function CockpitOverlay({ url, label, isLive, onClose, allPages = [] }: { url: s
 }
 
 // ── Version Thumbnail ──────────────────────────────────────────────────────────
-function Thumb({ v, repoName, onClick }: { v: Version; repoName: string; onClick: () => void }) {
-  const [loaded, setLoaded] = useState(false)
-  const [errored, setErrored] = useState(false)
-
-  // Sizes depend on type and slot
+function Thumb({ v, repoName, repo, onClick }: { v: Version; repoName: string; repo: Repo; onClick: () => void }) {
+  // Sizes depend on type and slot — 3x original values
   const isLive = v.slot === 'live'
   // Mobile app: portrait phone shape
   const isApp = !!repoName.match(/mobile|app|ios|android/i) || !!v.label?.toLowerCase().includes('app')
-  const W = isApp ? (isLive ? 130 : 100) : (isLive ? 240 : 180)
-  const H = isApp ? (isLive ? 240 : 185) : (isLive ? 150 : 115)
-  const SCALE = isApp ? (W / 375) : (W / 1200)
+  const W = isApp ? (isLive ? 390 : 300) : (isLive ? 720 : 540)
+  const H = isApp ? (isLive ? 720 : 555) : (isLive ? 450 : 345)
 
   const colors = {
     archive: { border:'rgba(10,61,98,.2)',  bg:'rgba(10,61,98,.04)', tag:'ARKIV',  tagColor:'rgba(10,61,98,.45)' },
@@ -168,25 +165,32 @@ function Thumb({ v, repoName, onClick }: { v: Version; repoName: string; onClick
       onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.transform='translateY(-4px)';(e.currentTarget as HTMLElement).style.boxShadow='0 10px 28px rgba(10,61,98,.14)'}}
       onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.transform='';(e.currentTarget as HTMLElement).style.boxShadow=''}}
     >
-      {/* iFrame preview */}
+      {/* Hero image thumbnail */}
       <div style={{ width:'100%', height:H, overflow:'hidden', position:'relative', background:'#F5F0E8' }}>
-        {!loaded && !errored && (
-          <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', background:'#F5F0E8' }}>
-            <span style={{ fontSize:isLive?24:18, opacity:.4 }}>{v.slot==='live'?'🌐':v.slot==='dev'?'🔧':'📦'}</span>
-          </div>
-        )}
-        {v.url && !errored && (
-          <iframe
-            src={v.url}
-            style={{ width:`${Math.round(100/SCALE)}%`, height:`${Math.round(H/SCALE)}px`, transform:`scale(${SCALE})`, transformOrigin:'top left', pointerEvents:'none', border:'none', display:loaded?'block':'none' }}
-            onLoad={()=>setLoaded(true)}
-            onError={()=>setErrored(true)}
-            sandbox="allow-scripts allow-same-origin"
-            title={`${repoName} ${v.version}`}
+        {repo.heroImage ? (
+          <img
+            src={repo.heroImage}
+            alt={`${repo.name} screenshot`}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'top',
+              display: 'block',
+            }}
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).style.display = 'none'
+              const fb = e.currentTarget.nextSibling as HTMLElement
+              if (fb) fb.style.display = 'flex'
+            }}
           />
-        )}
+        ) : null}
+        {/* Fallback om bild inte laddar */}
+        <div style={{ display: repo.heroImage ? 'none' : 'flex', position:'absolute', inset:0, alignItems:'center', justifyContent:'center', background:'#F5F0E8' }}>
+          <span style={{ fontSize: 28, opacity: 0.35 }}>🌐</span>
+        </div>
         {/* Phone notch for apps */}
-        {isApp && loaded && (
+        {isApp && (
           <div style={{ position:'absolute', top:0, left:'50%', transform:'translateX(-50%)', width:40, height:14, background:colors.bg, borderRadius:'0 0 10px 10px', zIndex:2 }} />
         )}
         {/* Live badge */}
@@ -257,7 +261,7 @@ function RepoRow({ repo }: { repo: Repo }) {
             {archive.map((v,i)=>(
               <div key={v.id} style={{display:'flex',alignItems:'center'}}>
                 {i>0&&<Arrow/>}
-                <Thumb v={v} repoName={repo.name} onClick={()=>setCockpit(v)} />
+                <Thumb v={v} repoName={repo.name} repo={repo} onClick={()=>setCockpit(v)} />
               </div>
             ))}
             <Arrow />
@@ -267,8 +271,8 @@ function RepoRow({ repo }: { repo: Repo }) {
           )}
 
           {/* LIVE */}
-          {live.length > 0 ? live.map(v=><Thumb key={v.id} v={v} repoName={repo.name} onClick={()=>setCockpit(v)} />) : (
-            <div style={{ width:240, height:150, border:'1.5px dashed rgba(10,61,98,.12)', borderRadius:10, display:'flex', alignItems:'center', justifyContent:'center', background:'rgba(10,61,98,.02)', flexShrink:0 }}>
+          {live.length > 0 ? live.map(v=><Thumb key={v.id} v={v} repoName={repo.name} repo={repo} onClick={()=>setCockpit(v)} />) : (
+            <div style={{ width:720, height:450, border:'1.5px dashed rgba(10,61,98,.12)', borderRadius:10, display:'flex', alignItems:'center', justifyContent:'center', background:'rgba(10,61,98,.02)', flexShrink:0 }}>
               <span style={{ fontSize:11, color:'rgba(10,61,98,.25)', fontFamily:'monospace' }}>No live version</span>
             </div>
           )}
@@ -279,7 +283,7 @@ function RepoRow({ repo }: { repo: Repo }) {
             {dev.map((v,i)=>(
               <div key={v.id} style={{display:'flex',alignItems:'center'}}>
                 {i>0&&<Arrow/>}
-                <Thumb v={v} repoName={repo.name} onClick={()=>setCockpit(v)} />
+                <Thumb v={v} repoName={repo.name} repo={repo} onClick={()=>setCockpit(v)} />
               </div>
             ))}
           </>}
@@ -306,6 +310,7 @@ const STATUS_FILTERS: { key: RepoStatus|'all', label: string, color: string }[] 
 const ALL_REPOS: Repo[] = [
   // ── Wavult OS
   { id:'wavult-os', name:'Wavult OS', domain:'os.wavult.com', status:'live', description:'Command center', repo_url:'https://git.wavult.com/wavult/wavult-os',
+    heroImage: 'https://image.thum.io/get/width/1200/https://wavult-os.pages.dev',
     versions:[
       { id:'os-prev', slot:'archive', version:'v2.x', url:'', label:'Previous' },
       { id:'os-live', slot:'live',    version:'v3.0', url:'https://os.wavult.com', label:'Production' },
@@ -314,101 +319,121 @@ const ALL_REPOS: Repo[] = [
 
   // ── Wavult Group
   { id:'wavult-com', name:'Wavult Group', domain:'wavult.com', status:'live', description:'Main site', repo_url:'https://git.wavult.com/wavult/wavult.com',
+    heroImage: 'https://image.thum.io/get/width/1200/https://wavult.com',
     versions:[
       { id:'wv-live', slot:'live', version:'v1.0', url:'https://wavult.com', label:'Production' },
     ]},
 
   // ── quiXzoom — main + all markets
   { id:'quixzoom', name:'quiXzoom', domain:'quixzoom.com', status:'live', description:'Visual intelligence network', repo_url:'https://git.wavult.com/wavult/quixzoom.com',
+    heroImage: 'https://image.thum.io/get/width/1200/https://quixzoom.com',
     versions:[
       { id:'qz-live', slot:'live', version:'v1.0', url:'https://quixzoom.com', label:'Global' },
       { id:'qz-dev',  slot:'dev',  version:'v1.1', url:'https://quixzoom-landing-prod.pages.dev', label:'Next' },
     ]},
   { id:'quixzoom-se', name:'quiXzoom Sverige', domain:'quixzoom.com/markets/se', status:'live', description:'🇸🇪 Swedish market', repo_url:'https://git.wavult.com/wavult/quixzoom.com',
+    heroImage: 'https://image.thum.io/get/width/1200/https://quixzoom.com',
     versions:[
       { id:'qz-se', slot:'live', version:'v1.0', url:'https://quixzoom-landing-prod.cloudflare.net/markets/se/', label:'Live' },
     ]},
   { id:'quixzoom-en', name:'quiXzoom International', domain:'quixzoom.com/markets/en', status:'live', description:'🇬🇧 English', repo_url:'https://git.wavult.com/wavult/quixzoom.com',
+    heroImage: 'https://image.thum.io/get/width/1200/https://quixzoom.com',
     versions:[
       { id:'qz-en', slot:'live', version:'v1.0', url:'https://quixzoom-landing-prod.pages.dev/markets/en/', label:'Live' },
     ]},
   { id:'quixzoom-th', name:'quiXzoom Thailand', domain:'quixzoom.com/markets/th', status:'dev', description:'🇹🇭 Thai market', repo_url:'https://git.wavult.com/wavult/quixzoom.com',
+    heroImage: 'https://image.thum.io/get/width/1200/https://quixzoom.com',
     versions:[
       { id:'qz-th', slot:'dev', version:'v1.0', url:'', label:'Staging' },
     ]},
   { id:'quixzoom-ke', name:'quiXzoom Kenya', domain:'quixzoom.com/markets/ke', status:'dev', description:'🇰🇪 Kenya', repo_url:'https://git.wavult.com/wavult/quixzoom.com',
+    heroImage: 'https://image.thum.io/get/width/1200/https://quixzoom.com',
     versions:[
       { id:'qz-ke', slot:'dev', version:'v1.0', url:'', label:'Staging' },
     ]},
 
   // ── LandveX — main + all markets
   { id:'landvex', name:'LandveX', domain:'landvex.com', status:'live', description:'Infrastructure intelligence', repo_url:'https://git.wavult.com/wavult/landvex.com',
+    heroImage: 'https://image.thum.io/get/width/1200/https://landvex.com',
     versions:[
       { id:'lv-live', slot:'live', version:'v1.0', url:'https://landvex.com', label:'Global' },
     ]},
   { id:'landvex-eu', name:'LandveX EU', domain:'landvex.com/eu', status:'live', description:'🇪🇺 European market', repo_url:'https://git.wavult.com/wavult/landvex.com',
+    heroImage: 'https://image.thum.io/get/width/1200/https://landvex.com',
     versions:[
       { id:'lv-eu', slot:'live', version:'v1.0', url:'https://landvex-prod.s3.eu-north-1.amazonaws.com/eu/index.html', label:'Live' },
     ]},
   { id:'landvex-se', name:'LandveX Sverige', domain:'landvex.com/se', status:'live', description:'🇸🇪 Sweden', repo_url:'https://git.wavult.com/wavult/landvex.com',
+    heroImage: 'https://image.thum.io/get/width/1200/https://landvex.com',
     versions:[
       { id:'lv-se', slot:'live', version:'v1.0', url:'https://landvex-prod.s3.eu-north-1.amazonaws.com/se/index.html', label:'Live' },
     ]},
   { id:'landvex-nl', name:'LandveX Netherlands', domain:'landvex.com/nl', status:'live', description:'🇳🇱 Netherlands', repo_url:'https://git.wavult.com/wavult/landvex.com',
+    heroImage: 'https://image.thum.io/get/width/1200/https://landvex.com',
     versions:[
       { id:'lv-nl', slot:'live', version:'v1.0', url:'https://landvex-prod.s3.eu-north-1.amazonaws.com/nl/index.html', label:'Live' },
     ]},
   { id:'landvex-de', name:'LandveX Deutschland', domain:'landvex.com/de', status:'live', description:'🇩🇪 Germany', repo_url:'https://git.wavult.com/wavult/landvex.com',
+    heroImage: 'https://image.thum.io/get/width/1200/https://landvex.com',
     versions:[
       { id:'lv-de', slot:'live', version:'v1.0', url:'https://landvex-prod.s3.eu-north-1.amazonaws.com/de/index.html', label:'Live' },
     ]},
   { id:'landvex-fr', name:'LandveX France', domain:'landvex.com/fr', status:'live', description:'🇫🇷 France', repo_url:'https://git.wavult.com/wavult/landvex.com',
+    heroImage: 'https://image.thum.io/get/width/1200/https://landvex.com',
     versions:[
       { id:'lv-fr', slot:'live', version:'v1.0', url:'https://landvex-prod.s3.eu-north-1.amazonaws.com/fr/index.html', label:'Live' },
     ]},
   { id:'landvex-us', name:'LandveX USA', domain:'landvex.com/us', status:'live', description:'🇺🇸 United States', repo_url:'https://git.wavult.com/wavult/landvex.com',
+    heroImage: 'https://image.thum.io/get/width/1200/https://landvex.com',
     versions:[
       { id:'lv-us', slot:'live', version:'v1.0', url:'https://landvex-prod.s3.eu-north-1.amazonaws.com/us/index.html', label:'Live' },
     ]},
 
   // ── SupportFounds
   { id:'supportfounds', name:'SupportFounds', domain:'supportfounds.com', status:'dev', description:'Venture engine', repo_url:'https://git.wavult.com/wavult/wavult.com',
+    heroImage: 'https://image.thum.io/get/width/1200/https://supportfounds.com',
     versions:[
       { id:'sf-dev', slot:'dev', version:'v1.0', url:'https://d14gf6x22fx96q.cloudfront.net/supportfounds/index.html', label:'Preview' },
     ]},
 
   // ── Lunina Foundation
   { id:'lunina', name:'Lunina Foundation', domain:'luninafoundation.pages.dev', status:'live', description:'Education NGO', repo_url:'https://git.wavult.com/wavult/luninafoundation.org',
+    heroImage: 'https://image.thum.io/get/width/1200/https://wavult.com',
     versions:[
       { id:'lf-live', slot:'live', version:'v1.0', url:'https://lunina-foundation.pages.dev', label:'Live' },
     ]},
 
   // ── CorpFitt
   { id:'corpfitt', name:'CorpFitt', domain:'corpfitt.com', status:'dev', description:'Global fitness access', repo_url:'https://git.wavult.com/wavult/corpfitt-app',
+    heroImage: 'https://image.thum.io/get/width/1200/https://wavult.com',
     versions:[
       { id:'cf-dev', slot:'dev', version:'v1.0', url:'https://d14gf6x22fx96q.cloudfront.net/corpfitt/index.html', label:'Preview' },
     ]},
 
   // ── MLCS
   { id:'mlcs', name:'MLCS Protocol', domain:'mlcs.com', status:'offline', description:'Clinical knowledge platform', repo_url:'https://git.wavult.com/wavult/mlcs.com',
+    heroImage: 'https://image.thum.io/get/width/1200/https://wavult.com',
     versions:[
       { id:'ml-dev', slot:'dev', version:'v1.0-enterprise', url:'', label:'Building' },
     ]},
 
   // ── Cert Integrity
   { id:'cert', name:'Cert Integrity Engine', domain:'certintegrity.com', status:'offline', description:'Lab certification', repo_url:'https://git.wavult.com/wavult/cert-integrity-engine',
+    heroImage: 'https://image.thum.io/get/width/1200/https://wavult.com',
     versions:[
       { id:'ci-dev', slot:'dev', version:'v1.0-enterprise', url:'', label:'Building' },
     ]},
 
   // ── Wavult Mobile
   { id:'wavult-mobile', name:'Wavult Mobile', domain:'app.quixzoom.com', status:'dev', description:'iOS/Android app', repo_url:'https://git.wavult.com/wavult/quixzoom-mobile',
+    heroImage: 'https://image.thum.io/get/width/1200/https://quixzoom.com',
     versions:[
       { id:'wm-dev', slot:'dev', version:'v0.9', url:'https://dewrtqzc20flx.cloudfront.net', label:'TestFlight' },
     ]},
 
   // ── Gitea
   { id:'gitea', name:'Gitea', domain:'git.wavult.com', status:'live', description:'Internal Git', repo_url:'https://git.wavult.com/wavult',
+    heroImage: 'https://image.thum.io/get/width/1200/https://wavult.com',
     versions:[
       { id:'gt-live', slot:'live', version:'v1.25.5', url:'https://git.wavult.com', label:'Self-hosted' },
     ]},
@@ -460,6 +485,7 @@ function giteaRepoToRepo(gr: GiteaRepo): Repo {
     repo_url: gr.html_url,
     status: hasLive ? 'live' : 'dev',
     description: gr.description || gr.name,
+    heroImage: hasLive ? `https://image.thum.io/get/width/1200/${liveUrl}` : 'https://image.thum.io/get/width/1200/https://wavult.com',
     versions: hasLive ? [
       { id: `${gr.id}-live`, slot: 'live', version: 'latest', url: liveUrl, label: 'Production' },
     ] : [
