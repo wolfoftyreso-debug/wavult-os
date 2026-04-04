@@ -20,8 +20,8 @@ html, body, #root {
   --color-bg-muted:        #E5DFD0;   /* hover states */
   --color-surface:         #FDFAF5;   /* cards, modals — slightly lighter */
   --color-surface-raised:  #FFFFFF;   /* elevated cards */
-  --color-border:          #DED9CC;   /* COL-06 subtle border */
-  --color-border-strong:   #C4BFB2;   /* strong border */
+  --color-border:          #D5CFC0;   /* lite starkare */
+  --color-border-strong:   #B8B0A0;   /* tydligare separation */
 
   /* ── Text ────────────────────────────────────────────────── */
   --color-text-primary:    #1A1A1A;   /* charcoal — primary text */
@@ -104,11 +104,15 @@ html, body, #root {
   --radius-xl: 12px;
   --radius-2xl: 16px;
 
-  /* ── Elevation — warm shadows ────────────────────────────── */
-  --shadow-sm:   0 1px 3px rgba(26,26,46,0.06), 0 1px 2px rgba(26,26,46,0.04);
-  --shadow-md:   0 4px 12px rgba(26,26,46,0.08), 0 2px 4px rgba(26,26,46,0.04);
-  --shadow-lg:   0 8px 24px rgba(26,26,46,0.10), 0 4px 8px rgba(26,26,46,0.06);
-  --shadow-xl:   0 16px 48px rgba(26,26,46,0.12), 0 8px 16px rgba(26,26,46,0.08);
+  /* ── Elevation — warm brownish shadows ──────────────────── */
+  --shadow-xs:      0 1px 2px rgba(26,22,14,0.06);
+  --shadow-sm:      0 1px 3px rgba(26,22,14,0.10), 0 1px 2px rgba(26,22,14,0.06);
+  --shadow-md:      0 4px 12px rgba(26,22,14,0.12), 0 2px 4px rgba(26,22,14,0.08);
+  --shadow-lg:      0 8px 24px rgba(26,22,14,0.16), 0 4px 8px rgba(26,22,14,0.10);
+  --shadow-xl:      0 16px 48px rgba(26,22,14,0.20), 0 8px 16px rgba(26,22,14,0.12);
+  --shadow-card:    0 2px 8px rgba(26,22,14,0.10), 0 1px 2px rgba(26,22,14,0.06);
+  --shadow-raised:  0 4px 16px rgba(26,22,14,0.14), 0 2px 4px rgba(26,22,14,0.08);
+  --shadow-floating: 0 12px 40px rgba(26,22,14,0.20), 0 4px 12px rgba(26,22,14,0.12);
 
   /* ── Sidebar — Obsidian (Earth & Stone) ─────────────────── */
   --sidebar-bg:            #242321;   /* Obsidian — djup varm mörkgrå */

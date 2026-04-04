@@ -49,8 +49,8 @@
     --color-bg-grouped:    #EDE7DD;
 
     /* ── BORDERS ── */
-    --color-border:        #DDD8CE;
-    --color-border-strong: #C8C1B4;
+    --color-border:        #D5CFC0;
+    --color-border-strong: #B8B0A0;
 
     /* ── TEXT ── */
     --color-text-primary:    #1A1A2E;
@@ -76,11 +76,15 @@
     --color-brand:        #1A1A2E;
     --color-brand-hover:  #12122A;
 
-    /* ── SHADOWS — warm ── */
-    --shadow-xs: 0 1px 2px rgba(26,26,46,0.04);
-    --shadow-sm: 0 1px 3px rgba(26,26,46,0.06), 0 1px 2px rgba(26,26,46,0.04);
-    --shadow-md: 0 4px 12px rgba(26,26,46,0.08), 0 2px 4px rgba(26,26,46,0.04);
-    --shadow-lg: 0 8px 24px rgba(26,26,46,0.10), 0 4px 8px rgba(26,26,46,0.06);
+    /* ── SHADOWS — warm brownish ── */
+    --shadow-xs:      0 1px 2px rgba(26,22,14,0.06);
+    --shadow-sm:      0 1px 3px rgba(26,22,14,0.10), 0 1px 2px rgba(26,22,14,0.06);
+    --shadow-md:      0 4px 12px rgba(26,22,14,0.12), 0 2px 4px rgba(26,22,14,0.08);
+    --shadow-lg:      0 8px 24px rgba(26,22,14,0.16), 0 4px 8px rgba(26,22,14,0.10);
+    --shadow-xl:      0 16px 48px rgba(26,22,14,0.20), 0 8px 16px rgba(26,22,14,0.12);
+    --shadow-card:    0 2px 8px rgba(26,22,14,0.10), 0 1px 2px rgba(26,22,14,0.06);
+    --shadow-raised:  0 4px 16px rgba(26,22,14,0.14), 0 2px 4px rgba(26,22,14,0.08);
+    --shadow-floating: 0 12px 40px rgba(26,22,14,0.20), 0 4px 12px rgba(26,22,14,0.12);
 
     /* ── TYPOGRAPHY ── */
     --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
@@ -181,6 +185,7 @@
   .shadow-sm { box-shadow: var(--shadow-sm) !important; }
   .shadow-md { box-shadow: var(--shadow-md) !important; }
   .shadow-lg { box-shadow: var(--shadow-lg) !important; }
+  .shadow    { box-shadow: var(--shadow-card) !important; }
 
   /* Scrollbar — warm toned */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -282,11 +287,41 @@
 
   /* ─── Cards ───────────────────────────────────────────────────────────────── */
   .card {
-    background: var(--color-bg-primary);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
+    background: var(--color-surface-raised, #FFFFFF);
+    border: 1px solid var(--color-border, #D5CFC0);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-card);
   }
+
+  /* ─── Depth & Elevation utilities ────────────────────────────────────────── */
+  .sidebar-depth {
+    box-shadow: inset -1px 0 0 rgba(139,115,85,0.25),
+                4px 0 20px rgba(0,0,0,0.15);
+  }
+
+  .tab-active-lift {
+    box-shadow: 0 -2px 0 0 var(--color-accent, #E8B84B) inset,
+                0 2px 8px rgba(26,22,14,0.10);
+    background: var(--color-surface-raised, #FFFFFF);
+  }
+
+  .topbar-glass {
+    background: rgba(247,242,232,0.92);
+    backdrop-filter: blur(12px) saturate(1.4);
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    border-bottom: 1px solid rgba(213,207,192,0.8);
+    box-shadow: 0 1px 12px rgba(26,22,14,0.08);
+  }
+
+  /* Elevation levels */
+  .elevation-0 { box-shadow: none; }
+  .elevation-1 { box-shadow: var(--shadow-xs); }
+  .elevation-2 { box-shadow: var(--shadow-sm); }
+  .elevation-3 { box-shadow: var(--shadow-card); }
+  .elevation-4 { box-shadow: var(--shadow-md); }
+  .elevation-5 { box-shadow: var(--shadow-raised); }
+  .elevation-6 { box-shadow: var(--shadow-lg); }
+  .elevation-7 { box-shadow: var(--shadow-floating); }
 
   /* ─── Typography helpers ──────────────────────────────────────────────────── */
   .label-xs {
@@ -337,9 +372,10 @@
 
 /* Sharp card */
 .card-sharp {
-  background: var(--color-surface, var(--color-bg-primary));
-  border: 1px solid var(--color-border);
+  background: var(--color-surface, #FDFAF5);
+  border: 1px solid var(--color-border, #D5CFC0);
   border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Precision table */
@@ -558,15 +594,20 @@
 /* ── Metric card with illustration ──────────────────────────── */
 .metric-card {
   background: var(--color-surface, #FDFAF5);
-  border: 1px solid var(--color-border, #DDD5C5);
+  border: 1px solid var(--color-border, #D5CFC0);
   border-radius: 12px;
   padding: 20px 24px;
   display: flex;
   align-items: center;
   gap: 16px;
-  transition: border-color .2s;
+  box-shadow: var(--shadow-card);
+  transition: border-color .2s, box-shadow .2s, transform .2s;
 }
-.metric-card:hover { border-color: rgba(232,184,75,.4); }
+.metric-card:hover {
+  border-color: rgba(232,184,75,.4);
+  box-shadow: var(--shadow-raised);
+  transform: translateY(-2px);
+}
 .metric-card .metric-illus {
   width: 52px;
   height: 52px;
@@ -775,16 +816,19 @@ h3 { font-size: clamp(14px, 1.5vw, 17px); font-weight: 700; color: var(--color-b
 /* ── Stat widget ─────────────────────────────────────────────── */
 .stat-widget {
   background: var(--color-surface, #FDFAF5);
-  border: 1px solid var(--color-border, #DDD5C5);
+  border: 1px solid var(--color-border, #D5CFC0);
   border-radius: 12px;
   padding: 20px 24px;
   position: relative;
   overflow: hidden;
-  transition: border-color .2s, box-shadow .2s;
+  box-shadow: var(--shadow-card);
+  transition: border-color .2s, box-shadow .2s, transform .2s;
 }
 .stat-widget:hover {
   border-color: rgba(232,184,75,.35);
-  box-shadow: 0 4px 20px rgba(10,61,98,.06);
+  box-shadow: var(--shadow-raised);
+  transform: translateY(-2px);
+  transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1);
 }
 .stat-widget-illus {
   position: absolute;

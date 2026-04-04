@@ -219,7 +219,7 @@ export function FinanceHub() {
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium transition-colors whitespace-nowrap flex-shrink-0 border-b-2 -mb-px ${
               activeTab === tab.id
-                ? 'border-blue-700 text-blue-700'
+                ? 'border-blue-700 text-blue-700 tab-active-lift'
                 : 'border-transparent text-gray-9000 hover:text-gray-600 hover:border-gray-300'
             }`}
           >

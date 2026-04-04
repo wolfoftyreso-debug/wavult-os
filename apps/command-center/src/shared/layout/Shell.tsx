@@ -299,6 +299,7 @@ export function Shell({ children }: ShellProps) {
         className={`
           fixed md:static inset-y-0 left-0 z-40
           w-60 flex-shrink-0 flex flex-col
+          sidebar-depth
           transition-transform duration-200 ease-in-out
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         `}
@@ -358,13 +359,9 @@ export function Shell({ children }: ShellProps) {
 
         {/* Topbar */}
         <header
-          className="flex-shrink-0 flex items-center justify-between px-6"
+          className="flex-shrink-0 flex items-center justify-between px-6 topbar-glass"
           style={{
             height: 52,
-            background: 'var(--color-topbar-bg, rgba(247,242,232,0.95))',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            borderBottom: '1px solid #DED9CC',
           }}
         >
 
