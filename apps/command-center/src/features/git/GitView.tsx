@@ -748,6 +748,13 @@ function RepoRow({ repo }: { repo: Repo }) {
         />
       )}
 
+      {browsing && (
+        <FileViewer
+          repoFullName={repo.fullName}
+          onClose={() => setBrowsing(false)}
+        />
+      )}
+
       {showArchiveDialog && (
         <ArchiveDialog
           repoName={repo.name}
