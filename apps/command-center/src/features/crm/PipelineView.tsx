@@ -15,7 +15,7 @@ import {
 const STAGE_ACTIVE: CRMStage[] = ['Lead', 'Kvalificerad', 'Demo/Möte', 'Offert', 'Förhandling']
 const STAGE_CLOSED: CRMStage[] = ['Vunnen', 'Förlorad']
 
-const PRODUCTS: Array<CRMProduct | 'Alla'> = ['Alla', 'quiXzoom', 'Landvex', 'Hypbit']
+const PRODUCTS: Array<CRMProduct | 'Alla'> = ['Alla', 'quiXzoom', 'Landvex', 'Wavult OS']
 const ASSIGNEES: Array<TeamMember | 'Alla'> = ['Alla', 'Leon', 'Dennis', 'Erik']
 
 function DealCard({

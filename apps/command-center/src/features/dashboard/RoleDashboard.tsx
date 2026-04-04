@@ -140,7 +140,7 @@ function Opsdashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Section title="Aktiva initiativ">
           {[
-            { text: 'Hypbit Command Center — rollsystem live', status: 'active' },
+            { text: 'Wavult OS Command Center — rollsystem live', status: 'active' },
             { text: 'quiXzoom API — ECS eu-north-1 live', status: 'active' },
             { text: 'Landvex sajt — CF Pages, senaste deploy live', status: 'active' },
             { text: 'Bolagsstruktur UAE — väntar på rättslig rådgivning', status: 'blocked' },
@@ -149,7 +149,7 @@ function Opsdashboard() {
         </Section>
         <Section title="Team — daglig status">
           {[
-            { text: 'Johan: Hypbit infrastruktur + ECS pipeline', status: 'active' },
+            { text: 'Johan: Wavult OS infrastruktur + ECS pipeline', status: 'active' },
             { text: 'Winston: Kassaflöde + budgetuppföljning', status: 'active' },
             { text: 'Dennis: Texas LLC docs + compliance', status: 'in-progress' },
             { text: 'Leon: Q1 execution koordinering', status: 'active' },
@@ -336,7 +336,7 @@ function CpoDashboard() {
           {[
             { text: 'quiXzoom — crowdsourcad kamerainfrastruktur (zoomer-plattform)', status: 'active' },
             { text: 'Optical Insight / Landvex — B2G kontrollsystem', status: 'active' },
-            { text: 'Hypbit — internt operativsystem för Wavult Group', status: 'active' },
+            { text: 'Wavult OS — internt operativsystem för Wavult Group', status: 'active' },
             { text: 'Quixom Ads — fas 2, monetisering av quiXzoom-data', status: 'planned' },
           ]}
         </Section>

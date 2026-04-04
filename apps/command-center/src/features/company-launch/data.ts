@@ -412,7 +412,7 @@ export const COMPANY_LAUNCHES: CompanyLaunch[] = [
       {
         id: 'wg-ae-05',
         title: 'Registrera varumärken hos UAE IP Dept',
-        description: 'Registrera varumärkena Landvex, QuiXzoom, Hypbit och Optical Insight hos UAE Ministry of Economy (IP-avdelningen).',
+        description: 'Registrera varumärkena Landvex, QuiXzoom, Wavult OS och Optical Insight hos UAE Ministry of Economy (IP-avdelningen).',
         owner: 'dennis',
         category: 'ip',
         estimated_days: 30,

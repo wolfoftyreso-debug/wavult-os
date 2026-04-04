@@ -1,6 +1,6 @@
 // ─── CRM Data Types ────────────────────────────────────────────────────────────
 
-export type CRMProduct = 'quiXzoom' | 'Landvex' | 'Hypbit'
+export type CRMProduct = 'quiXzoom' | 'Landvex' | 'Wavult OS'
 export type CRMStage =
   | 'Lead'
   | 'Kvalificerad'
@@ -107,7 +107,7 @@ export const STAGE_COLORS: Record<CRMStage, string> = {
 export const PRODUCT_COLORS: Record<CRMProduct, string> = {
   quiXzoom: '#3B82F6',
   Landvex: '#10B981',
-  Hypbit: '#2563EB',
+  'Wavult OS': '#2563EB',
 }
 
 export const DEAL_STATUS_COLORS: Record<DealStatus, string> = {

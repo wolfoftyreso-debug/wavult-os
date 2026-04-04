@@ -81,7 +81,7 @@ export function CRMHub() {
           <div>
             <h1 className="text-sm font-semibold text-text-primary">CRM</h1>
             <p className="text-sm text-gray-600 mt-0.5">
-              {activeEntity.shortName} Sales — quiXzoom · Landvex · Hypbit
+              {activeEntity.shortName} Sales — quiXzoom · Landvex · Wavult OS
             </p>
           </div>
           <QuickStats />

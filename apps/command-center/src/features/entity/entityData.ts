@@ -281,7 +281,7 @@ export const ENTITY_FINANCE: EntityFinance[] = [
     cashflow_status: 'ok',
     intercompany_in: [],
     intercompany_out: ['wavult-operations'],
-    billing_notes: 'Hypbit OS är internt. Kostnads-center under WOP.',
+    billing_notes: 'Wavult OS är internt. Kostnads-center under WOP.',
     open_items: [
       { label: 'AWS cost tracking per module', status: 'watch' },
     ],
@@ -300,7 +300,7 @@ export const ENTITY_LEGAL: EntityLegal[] = [
     contracts: [
       { name: 'IP Assignment Agreement', status: 'risk', note: 'Not executed. Code must transfer to WGH.' },
       { name: 'Shareholder Agreement', status: 'watch', note: 'Drafting in progress.' },
-      { name: 'Trademark registrations', status: 'watch', note: 'quiXzoom, Hypbit, Landvex pending.' },
+      { name: 'Trademark registrations', status: 'watch', note: 'quiXzoom, Wavult OS, Landvex pending.' },
     ],
     open_items: [
       { label: 'DIFC incorporation completion', status: 'watch' },
@@ -412,9 +412,9 @@ export const ENTITY_SYSTEMS: EntitySystem[] = [
   {
     entity_id: 'wavult-operations',
     systems: [
-      { name: 'Hypbit API', type: 'api', url: 'https://api.bc.pixdrift.com', status: 'live', note: 'ECS eu-north-1 · wavult cluster' },
-      { name: 'Hypbit DB', type: 'database', status: 'live', note: 'Supabase znmxtnxx · EU West' },
-      { name: 'Hypbit Command Center', type: 'frontend', url: 'http://localhost:5175', status: 'live', note: 'This app — local dev' },
+      { name: 'Wavult OS API', type: 'api', url: 'https://api.wavult.com', status: 'live', note: 'ECS eu-north-1 · wavult cluster' },
+      { name: 'Wavult OS DB', type: 'database', status: 'live', note: 'Supabase znmxtnxx · EU West' },
+      { name: 'Wavult OS Command Center', type: 'frontend', url: 'http://localhost:5175', status: 'live', note: 'This app — local dev' },
     ],
     pipelines: [
       { name: 'Deploy API to ECS', status: 'passing', last_run: '14 min ago' },
@@ -478,7 +478,7 @@ export const ENTITY_SYSTEMS: EntitySystem[] = [
   {
     entity_id: "wavult-system",
     systems: [
-      { name: 'wavult-api', type: 'api', url: 'https://api.bc.pixdrift.com', status: 'live', note: 'ECS eu-north-1' },
+      { name: 'wavult-api', type: 'api', url: 'https://api.wavult.com', status: 'live', note: 'ECS eu-north-1' },
       { name: 'Supabase wavult-os', type: 'database', status: 'live', note: 'znmxtnxx · 13 tables' },
       { name: 'S3 EU Primary', type: 'infra', status: 'live', note: 'wavult-images-eu-primary · CRR → eu-backup' },
       { name: 'CloudFront', type: 'infra', status: 'live', note: 'E2QUO7HIHWWP18 · quiXzoom' },
@@ -518,12 +518,12 @@ export const ENTITY_OPS: EntityOps[] = [
     entity_id: 'wavult-operations',
     active_work: [
       { label: 'Thailand Workcamp prep', owner: 'Leon', status: 'active' },
-      { label: 'Team onboarding to Hypbit OS', owner: 'Johan', status: 'active' },
+      { label: 'Team onboarding to Wavult OS', owner: 'Johan', status: 'active' },
       { label: 'Q1 execution plan', owner: 'Leon', status: 'active' },
     ],
     deliverables: [
       { label: 'Thailand Workcamp', due: '11 april 2026', status: 'on-track' },
-      { label: 'All systems live in Hypbit', due: 'april 2026', status: 'on-track' },
+      { label: 'All systems live in Wavult OS', due: 'april 2026', status: 'on-track' },
     ],
     kpis: [
       { label: 'Team active', value: '5/5', delta: '', good: true },

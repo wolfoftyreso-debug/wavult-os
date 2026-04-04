@@ -327,7 +327,7 @@ export const CURRICULUM: Lesson[] = [
     color: '#F59E0B',
     title: 'quiXzoom — crowdsourcad bilddata, zoomers och uppdrag',
     analogy:
-      'Tänk dig Uber, men istället för att transportera människor transporterar du bilddata. "Zoomers" är fotograferna (driverna) som tar uppdrag på en karta — fotografera denna korsning, dokumentera denna byggnad. Beställarna är kommuner, försäkringsbolag och infrastrukturägare som behöver aktuell visuell data.',
+      'Tänk dig Uber, men istället för att transportera människor transporterar du bilddata. "Zoomers" är fältoperatörerna (driverna) som tar uppdrag på en karta — fotografera denna korsning, dokumentera denna byggnad. Beställarna är kommuner, försäkringsbolag och infrastrukturägare som behöver aktuell visuell data.',
     technical:
       'quiXzoom bygger på: quixzoom-api:6 (ECS), quixzoom databas (RDS), quixzoom-mobile (React Native app för zoomers), quixzoom-landing (Cloudflare Pages). Flöde: Uppdragsgivare skapar mission → zoomers ser det på kartan → accepterar → fotograferar → laddar upp → AI-verifiering → godkänd → utbetalning.',
     connection:
@@ -921,7 +921,7 @@ export const CURRICULUM: Lesson[] = [
     analogy:
       'Varje stor lansering börjar litet. Uber startade i San Francisco. AirBnB på en konferens. Vi startar quiXzoom i den svenska skärgården — specifik geografi, tydlig use case, mätbara resultat.',
     technical:
-      'Lanseringsplan: Juni 2026, Stockholms skärgård (Värmdö, Nacka, Lidingö kommuner som pilotkunder). Pilotfokus: LandveX kajevidokumentation, bryggedokumentation, kommunal infrastruktur. Zoomer-rekrytering: 50 lokala fotografer. Target: 500 completed missions första månaden. Tech: BankID-verifiering för zoomers.',
+      'Lanseringsplan: Juni 2026, Stockholms skärgård (Värmdö, Nacka, Lidingö kommuner som pilotkunder). Pilotfokus: LandveX kajevidokumentation, bryggedokumentation, kommunal infrastruktur. Zoomer-rekrytering: 50 lokala zoomers. Target: 500 completed missions första månaden. Tech: BankID-verifiering för zoomers.',
     connection:
       'identity-core → BankID-integration (dag 54) → Zoomer-verifiering. quixzoom-api → missions i skärgårdens koordinater. Betalning: Swish till zoomers (via Stripe Connect). LandveX: Kommunala pilotkunder (via Landvex AB).',
     tomorrow: 'Nederländerna — expansion Q1 2027, strategin',
@@ -939,7 +939,7 @@ export const CURRICULUM: Lesson[] = [
     analogy:
       'Nederländerna är Europas tech-testlaboratorium — hög digital mognad, täta städer (perfekt för geodata), stark kommunal förvaltning med digitaliseringsbudget, och English-first affärsmiljö.',
     technical:
-      'Holland Q1 2027: Target: Gemeente Amsterdam, Rotterdam, Utrecht som LandveX-kunder. Legal: QuiXzoom UAB (Litauen) tecknar avtal med holländska kommuner (EU-till-EU). Zoomer-rekrytering: Amsterdam fotografer via Instagram/TikTok-kampanj. Infrastruktur: Cloudflare-zon (wavult.nl, quixzoom.nl).',
+      'Holland Q1 2027: Target: Gemeente Amsterdam, Rotterdam, Utrecht som LandveX-kunder. Legal: QuiXzoom UAB (Litauen) tecknar avtal med holländska kommuner (EU-till-EU). Zoomer-rekrytering: Amsterdam zoomers via Instagram/TikTok-kampanj. Infrastruktur: Cloudflare-zon (wavult.nl, quixzoom.nl).',
     connection:
       'Expansion-checklist: Cloudflare-zon → lokal domän. Kommunal sales-outreach. Zoomer-onboarding (lokal app store). LandveX-dashboard på holländska. Stripe (EUR-pricing). QuiXzoom UAB som faktureringspart.',
     tomorrow: 'Pricing — hur vi prissätter optisk intelligens',

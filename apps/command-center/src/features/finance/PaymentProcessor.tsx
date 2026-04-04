@@ -150,7 +150,7 @@ const PSP_RULES: PSPRule[] = [
     condition: 'Kundbetalningar (SEK, kortbetalning)',
     psp: 'stripe',
     reason: 'Stripe bäst-i-klassen för kortbetalningar, SCA-kompatibel',
-    examples: ['QuixZoom abonnemang', 'Hypbit licenser', 'Optical Insight enterprise'],
+    examples: ['QuixZoom abonnemang', 'Wavult OS licenser', 'Optical Insight enterprise'],
   },
   {
     condition: 'Fakturering och återkommande prenumerationer',
