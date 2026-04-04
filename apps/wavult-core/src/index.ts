@@ -32,6 +32,7 @@ import auditRouter from './routes/audit'
 import taxRouter from './routes/tax-integration'
 import visaRouter from './routes/visa'
 import qmsRouter from './routes/qms'
+import academyRouter from './routes/academy'
 import taxAutomationRouter from './routes/tax-automation'
 import deploymentsRouter from './routes/deployments'
 import cockpitRouter from './routes/cockpit'
@@ -105,6 +106,7 @@ app.use('/api/cockpit', cockpitRouter)           // Cockpit — live metrics: la
 app.use('/v1/system', systemAuditRouter)        // System Audit — parallella health-checks, healthScore
 app.use('/', llmRouter)                         // Intern LLM-gateway — Llama 4 Scout via Ollama
 app.use('/', qmsRouter)                         // QMS — ISO 9001/27001/GDPR/NIS2 compliance tracking
+app.use('/', academyRouter)                     // Academy — ISO/compliance-kurser + kompetensmatris-koppling
 app.use('/', okrRouter)                         // OKR — Google-modellen: Objectives, Key Results, Check-ins
 app.use('/api/config', configRouter)
 app.use('/api/dgs', dgsRouter)
