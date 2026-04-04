@@ -64,15 +64,15 @@ resource "aws_db_instance" "identity_core" {
   storage_encrypted            = true
   username                     = var.rds_master_username
   password                     = var.rds_master_password
-  db_name                      = "identity"
+  db_name                      = "wavult_identity"
   multi_az                     = true
   publicly_accessible          = false
   deletion_protection          = true
   skip_final_snapshot          = false
   final_snapshot_identifier    = "wavult-identity-core-final"
-  backup_retention_period      = 7
-  backup_window                = "03:00-04:00"
-  maintenance_window           = "Mon:04:00-Mon:05:00"
+  backup_retention_period      = 14
+  backup_window                = "02:00-03:00"
+  maintenance_window           = "Sun:03:00-Sun:04:00"
   auto_minor_version_upgrade   = true
   db_subnet_group_name         = aws_db_subnet_group.identity_core.name
   vpc_security_group_ids       = [aws_security_group.rds.id]
@@ -85,7 +85,7 @@ resource "aws_db_instance" "identity_core" {
   }
 
   lifecycle {
-    ignore_changes = [password, engine_version]
+    ignore_changes = [password, engine_version, db_name]
   }
 }
 
@@ -101,15 +101,15 @@ resource "aws_db_instance" "identity_ecs" {
   storage_encrypted            = true
   username                     = var.rds_master_username
   password                     = var.rds_master_password
-  db_name                      = "wavult"
+  db_name                      = "wavult_identity"
   multi_az                     = true
   publicly_accessible          = false
   deletion_protection          = true
   skip_final_snapshot          = false
   final_snapshot_identifier    = "wavult-identity-ecs-final"
-  backup_retention_period      = 7
-  backup_window                = "03:00-04:00"
-  maintenance_window           = "Mon:04:00-Mon:05:00"
+  backup_retention_period      = 14
+  backup_window                = "02:00-03:00"
+  maintenance_window           = "Sun:03:00-Sun:04:00"
   auto_minor_version_upgrade   = true
   db_subnet_group_name         = aws_db_subnet_group.identity_ecs.name
   vpc_security_group_ids       = [aws_security_group.rds.id]
@@ -122,6 +122,6 @@ resource "aws_db_instance" "identity_ecs" {
   }
 
   lifecycle {
-    ignore_changes = [password, engine_version]
+    ignore_changes = [password, engine_version, db_name]
   }
 }
