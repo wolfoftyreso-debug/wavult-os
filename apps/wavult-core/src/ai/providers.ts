@@ -125,13 +125,48 @@ export async function callGoogle(model: ModelConfig, req: AIRequest): Promise<st
  * Delegerar till rätt provider-adapter baserat på model.provider.
  * Kastar Error med tydligt meddelande om provider är okänd.
  */
+export async function callDeepSeek(model: ModelConfig, req: AIRequest): Promise<string> {
+  const DEEPSEEK_KEY = process.env.DEEPSEEK_API_KEY
+  if (!DEEPSEEK_KEY) throw new Error('DEEPSEEK_API_KEY not set')
+
+  const modelName = model.id === 'deepseek-r1' ? 'deepseek-reasoner' : 'deepseek-chat'
+  const messages: Array<{role: string; content: string}> = []
+  if (req.system) messages.push({ role: 'system', content: req.system })
+  messages.push({ role: 'user', content: req.prompt })
+
+  const res = await fetch(model.endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${DEEPSEEK_KEY}`,
+    },
+    body: JSON.stringify({
+      model: modelName,
+      messages,
+      max_tokens: req.max_tokens ?? 4096,
+      temperature: req.temperature ?? 0.7,
+    }),
+    signal: AbortSignal.timeout(120_000),
+  })
+
+  if (!res.ok) {
+    const err = await res.text().catch(() => `HTTP ${res.status}`)
+    throw new Error(`DeepSeek error ${res.status}: ${err}`)
+  }
+
+  const data = await res.json() as any
+  const content = data.choices?.[0]?.message?.content
+  if (!content) throw new Error('DeepSeek returned empty response')
+  return content
+}
+
 export async function callProvider(model: ModelConfig, req: AIRequest): Promise<string> {
   switch (model.provider) {
     case 'local':     return callLocal(model, req)
     case 'anthropic': return callAnthropic(model, req)
     case 'google':    return callGoogle(model, req)
+    case 'deepseek':  return callDeepSeek(model, req)
     case 'openai':
-      // OpenAI-provider används primärt för Whisper STT — inte text completion
       throw new Error(`OpenAI text completion not implemented via orchestrator; use whisper-api for STT`)
     default:
       throw new Error(`Unknown provider: ${(model as ModelConfig).provider}`)

@@ -13,6 +13,8 @@ export type TaskType =
 export type ModelId =
   | 'llama4-scout'
   | 'llama4-maverick'
+  | 'deepseek-v3'
+  | 'deepseek-r1'
   | 'claude-haiku'
   | 'claude-sonnet'
   | 'gemini-flash'

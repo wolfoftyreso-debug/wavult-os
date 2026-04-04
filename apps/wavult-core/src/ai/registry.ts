@@ -7,6 +7,7 @@ const LLAMA_HOST = process.env.LLAMA_HOST || 'http://localhost:11434'
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY || ''
 const GEMINI_KEY = process.env.GEMINI_API_KEY || ''
 const OPENAI_KEY = process.env.OPENAI_API_KEY || ''
+const DEEPSEEK_KEY = process.env.DEEPSEEK_API_KEY || ''
 
 export const MODEL_REGISTRY: Record<ModelId, ModelConfig> = {
   'llama4-scout': {
@@ -89,18 +90,38 @@ export const MODEL_REGISTRY: Record<ModelId, ModelConfig> = {
     strengths: ['stt'],
     available: !!OPENAI_KEY,
   },
+  'deepseek-v3': {
+    id: 'deepseek-v3',
+    name: 'DeepSeek V3',
+    provider: 'deepseek',
+    endpoint: 'https://api.deepseek.com/v1/chat/completions',
+    costPer1kTokens: 0.00027,
+    maxContextTokens: 64_000,
+    strengths: ['chat', 'code', 'analysis', 'reasoning'],
+    available: !!DEEPSEEK_KEY,
+  },
+  'deepseek-r1': {
+    id: 'deepseek-r1',
+    name: 'DeepSeek R1 (Reasoner)',
+    provider: 'deepseek',
+    endpoint: 'https://api.deepseek.com/v1/chat/completions',
+    costPer1kTokens: 0.00055,
+    maxContextTokens: 64_000,
+    strengths: ['reasoning', 'analysis', 'code'],
+    available: !!DEEPSEEK_KEY,
+  },
 }
 
-// Routing-matris: task_type → prioritetsordning av modeller
+// Routing-matris — DeepSeek V3 som billig/snabb fallback, R1 för reasoning
 export const ROUTING_MATRIX: Record<TaskType, ModelId[]> = {
-  chat:           ['llama4-scout', 'gemini-flash', 'claude-haiku', 'claude-sonnet'],
-  code:           ['claude-sonnet', 'claude-haiku', 'llama4-scout', 'gemini-pro'],
-  analysis:       ['llama4-scout', 'gemini-pro', 'claude-sonnet', 'gemini-flash'],
+  chat:           ['llama4-scout', 'deepseek-v3', 'gemini-flash', 'claude-haiku', 'claude-sonnet'],
+  code:           ['claude-sonnet', 'deepseek-v3', 'claude-haiku', 'llama4-scout', 'gemini-pro'],
+  analysis:       ['llama4-scout', 'deepseek-v3', 'gemini-pro', 'claude-sonnet', 'gemini-flash'],
   embedding:      ['llama4-scout', 'gemini-flash'],
   stt:            ['whisper-local', 'whisper-api'],
-  classification: ['llama4-scout', 'gemini-flash', 'claude-haiku'],
-  document:       ['gemini-pro', 'llama4-maverick', 'claude-sonnet', 'llama4-scout'],
-  reasoning:      ['claude-sonnet', 'gemini-pro', 'llama4-scout'],
+  classification: ['llama4-scout', 'deepseek-v3', 'gemini-flash', 'claude-haiku'],
+  document:       ['gemini-pro', 'llama4-maverick', 'claude-sonnet', 'deepseek-v3', 'llama4-scout'],
+  reasoning:      ['deepseek-r1', 'claude-sonnet', 'gemini-pro', 'deepseek-v3', 'llama4-scout'],
 }
 
 export function selectModel(taskType: TaskType, override?: ModelId): ModelConfig {
