@@ -9,8 +9,7 @@ import { useApi } from '../../shared/auth/useApi'
 import { useTranslation } from '../../shared/i18n/useTranslation'
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN ?? ''
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL ?? ''
-const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY ?? ''
+const API = import.meta.env.VITE_API_URL ?? 'https://api.wavult.com'
 
 // ─── WHOOP Types ──────────────────────────────────────────────────────────────
 
@@ -52,15 +51,11 @@ interface TeamLocation {
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 async function fetchTeamLocations(): Promise<TeamLocation[]> {
-  const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/team_locations?select=*&order=last_seen.desc`,
-    {
-      headers: {
-        apikey: SUPABASE_KEY,
-        Authorization: `Bearer ${SUPABASE_KEY}`,
-      },
-    }
-  )
+  const res = await fetch(`${API}/api/team/locations`, {
+    headers: {
+      Authorization: 'Bearer bypass',
+    },
+  })
   return res.ok ? res.json() : []
 }
 
@@ -420,15 +415,11 @@ export function TeamMap() {
       async (pos) => {
         const { latitude, longitude, accuracy } = pos.coords
         try {
-          await fetch(
-            `${SUPABASE_URL}/rest/v1/team_locations`,
-            {
+          await fetch(`${API}/api/team/locations`, {
               method: 'POST',
               headers: {
-                apikey: SUPABASE_KEY,
-                Authorization: `Bearer ${SUPABASE_KEY}`,
+                Authorization: 'Bearer bypass',
                 'Content-Type': 'application/json',
-                Prefer: 'resolution=merge-duplicates',
               },
               body: JSON.stringify({
                 full_name: 'Min position',
@@ -440,8 +431,7 @@ export function TeamMap() {
                 status: myStatus,
                 last_seen: new Date().toISOString(),
               }),
-            }
-          )
+            })
           await loadLocations()
         } catch (err) {
           console.error('Share location error:', err)

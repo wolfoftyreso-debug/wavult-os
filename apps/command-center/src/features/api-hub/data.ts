@@ -71,17 +71,17 @@ export const LIVE_INTEGRATIONS: APIIntegration[] = [
     docsUrl: 'https://developer.revolut.com',
   },
   {
-    id: 'live-supabase',
-    name: 'Supabase',
-    provider: 'Supabase',
+    id: 'live-postgres-wavult',
+    name: 'Wavult PostgreSQL',
+    provider: 'Self-hosted',
     category: 'Infrastructure & Cloud',
     categoryId: 'infrastructure',
-    description: 'Open-source Firebase alternative — Postgres + Auth + Storage + Realtime',
+    description: 'Self-hosted PostgreSQL på AWS ECS — primär databas för Wavult OS',
     status: 'live',
-    price: 'usage-based',
-    icon: '🗄️',
+    price: 'included',
+    icon: '🐘',
     wavultUsage: 'Primär databas för Wavult OS — alla moduler',
-    docsUrl: 'https://supabase.com/docs',
+    docsUrl: 'https://postgresql.org',
   },
   {
     id: 'live-aws',
@@ -286,7 +286,7 @@ export const API_INTEGRATIONS: APIIntegration[] = [
   { id: 'azure', name: 'Azure', provider: 'Microsoft', category: 'Infrastructure & Cloud', categoryId: 'infrastructure', description: 'Best integration with Microsoft ecosystem', status: 'available', price: 'paid', icon: '🔵' },
   { id: 'cloudflare-paid', name: 'Cloudflare', provider: 'Cloudflare', category: 'Infrastructure & Cloud', categoryId: 'infrastructure', description: 'Fastest global edge network', status: 'live', price: 'usage-based', icon: '🌐', wavultUsage: 'DNS, Pages, Workers', docsUrl: 'https://developers.cloudflare.com' },
   { id: 'vercel', name: 'Vercel', provider: 'Vercel', category: 'Infrastructure & Cloud', categoryId: 'infrastructure', description: 'Best for Next.js and React applications', status: 'configured', price: 'paid', icon: '▲', wavultUsage: 'evasvensson.se' },
-  { id: 'supabase-paid', name: 'Supabase', provider: 'Supabase', category: 'Infrastructure & Cloud', categoryId: 'infrastructure', description: 'Fastest for full-stack prototypes', status: 'live', price: 'usage-based', icon: '🗄️', wavultUsage: 'Primär databas', docsUrl: 'https://supabase.com/docs' },
+  { id: 'postgres-wavult', name: 'Wavult PostgreSQL', provider: 'Self-hosted', category: 'Infrastructure & Cloud', categoryId: 'infrastructure', description: 'Self-hosted PostgreSQL på AWS ECS', status: 'live', price: 'included', icon: '🐘', wavultUsage: 'Primär databas', docsUrl: 'https://postgresql.org' },
 
   // ── PAID: Developer Tools ───────────────────────────────────────
   { id: 'github', name: 'GitHub', provider: 'Microsoft', category: 'Developer Tools', categoryId: 'developer', description: 'Largest community and most integrations', status: 'live', price: 'usage-based', icon: '🐙', wavultUsage: 'Alla repos, GitHub Actions CI/CD', docsUrl: 'https://docs.github.com' },

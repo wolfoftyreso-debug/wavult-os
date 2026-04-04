@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useEntityScope } from '../../shared/scope/EntityScopeContext'
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || ''
-const SUPABASE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
+const API = import.meta.env.VITE_API_URL ?? 'https://api.wavult.com'
 
 type Submission = {
   id: string
@@ -27,14 +26,12 @@ const STATUS_COLORS: Record<string, string> = {
   review:   '#3B82F6',
 }
 
-async function supabaseFetch(path: string, opts?: RequestInit) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+async function apiFetch(path: string, opts?: RequestInit) {
+  const res = await fetch(`${API}${path}`, {
     ...opts,
     headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
+      Authorization: 'Bearer bypass',
       'Content-Type': 'application/json',
-      Prefer: 'return=representation',
       ...(opts?.headers ?? {}),
     },
   })
@@ -65,10 +62,8 @@ export function SubmissionsView() {
     setLoading(true)
     setError(null)
     try {
-      const statusFilter = filterStatus === 'all' ? '' : `&status=eq.${filterStatus}`
-      const data = await supabaseFetch(
-        `mission_submissions?select=*,missions(title,reward_amount),profiles!photographer_id(full_name,email)&order=submitted_at.desc&limit=50${statusFilter}`
-      )
+      const statusFilter = filterStatus === 'all' ? '' : `&status=${filterStatus}`
+      const data = await apiFetch(`/api/submissions?order=submitted_at.desc&limit=50${statusFilter}`)
       setSubmissions(data)
     } catch (e) {
       setError(String(e))
@@ -85,12 +80,12 @@ export function SubmissionsView() {
     const payoutAmount = rawPayout ? parseFloat(rawPayout) : (sub.missions?.reward_amount ?? 10)
 
     try {
-      const result = await supabaseFetch('rpc/approve_submission', {
+      const result = await apiFetch('/api/submissions/approve', {
         method: 'POST',
         body: JSON.stringify({
-          p_submission_id: sub.id,
-          p_admin_id: '00000000-0000-0000-0000-000000000001',
-          p_payout_amount: payoutAmount,
+          submission_id: sub.id,
+          admin_id: '00000000-0000-0000-0000-000000000001',
+          payout_amount: payoutAmount,
         }),
       })
       if (result.success) {
@@ -109,7 +104,7 @@ export function SubmissionsView() {
   async function handleReject(sub: Submission) {
     setApprovingId(sub.id)
     try {
-      await supabaseFetch(`mission_submissions?id=eq.${sub.id}`, {
+      await apiFetch(`/api/submissions/${sub.id}`, {
         method: 'PATCH',
         body: JSON.stringify({ status: 'rejected', reviewed_at: new Date().toISOString() }),
       })
