@@ -414,9 +414,23 @@ function TripCard({ trip, onUpdate }: { trip: Trip; onUpdate: (t: Trip) => void 
 
   const handleStepAction = useCallback(async (key: keyof Trip['steps']) => {
     const current = trip.steps[key].status
-    if (current === 'confirmed' || current === 'processing') return
+    if (current === 'confirmed') return
 
-    // Optimistically set to processing
+    // Öppna rätt extern tjänst direkt
+    const externalLinks: Record<string, string> = {
+      flights:       `https://www.google.com/travel/flights/search?tfs=CBwQAhoeEgoyMDI2LTA0LTExagwIAxIIL20vMGQ5anJyBggDEgJUSA`,
+      transport:     'https://m.uber.com/ul/',
+      wellness:      'https://gympass.com',
+      insurance:     'https://hedvig.com',
+      documents:     '',  // öppnar upload-dialog lokalt
+      visa:          `https://www.migrationsverket.se/Privatpersoner/Resa-till-Sverige/Visering.html`,
+      accommodation: 'https://www.booking.com',
+    }
+
+    const url = externalLinks[key as string]
+    if (url) window.open(url, '_blank')
+
+    // Sätt till processing och trigga automation
     const updated: Trip = {
       ...trip,
       steps: {
