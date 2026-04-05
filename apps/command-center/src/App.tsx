@@ -37,6 +37,7 @@ const PayrollHub             = lazy(() => import('./features/payroll').then(m =>
 const CRMHub                 = lazy(() => import('./features/crm').then(m => ({ default: m.CRMHub })))
 const FinanceHub             = lazy(() => import('./features/finance').then(m => ({ default: m.FinanceHub })))
 const CorporateHub           = lazy(() => import('./features/corporate').then(m => ({ default: m.CorporateHub })))
+const CompendiumView         = lazy(() => import('./features/corporate/CompendiumView').then(m => ({ default: m.CompendiumView })))
 const MilestonesHub          = lazy(() => import('./features/milestones').then(m => ({ default: m.MilestonesHub })))
 const SettingsHub            = lazy(() => import('./features/settings/SettingsHub').then(m => ({ default: m.SettingsHub })))
 const ProcurementHub         = lazy(() => import('./features/procurement/ProcurementHub').then(m => ({ default: m.ProcurementHub })))
@@ -209,6 +210,7 @@ function AuthenticatedApp() {
               <Route path="/milestones" element={<MilestonesHub />} />
               <Route path="/settings" element={<SettingsHub />} />
               <Route path="/corporate" element={<CorporateHub />} />
+              <Route path="/corporate/compendium" element={<CompendiumView />} />
               <Route path="/reports" element={<ReportsHub />} />
               <Route path="/communications" element={<CommHub />} />
               <Route path="/media" element={<MediaHub />} />

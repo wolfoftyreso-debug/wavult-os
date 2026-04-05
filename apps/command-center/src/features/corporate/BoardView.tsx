@@ -7,7 +7,7 @@ type MeetingType = CorpBoardMeeting['type']
 type MeetingStatus = CorpBoardMeeting['status']
 
 const STATUS_STYLES: Record<MeetingStatus, string> = {
-  'planerat':        'bg-blue-500/15 text-blue-700 border-blue-500/30',
+  'planerat':        'bg-[#E8B84B]/15 text-[#B8760A] border-[#E8B84B]/30',
   'genomfört':       'bg-yellow-500/15 text-yellow-700 border-yellow-500/30',
   'protokoll klart': 'bg-green-500/15 text-green-700 border-green-500/30',
 }
@@ -88,7 +88,7 @@ function MeetingDetail({ meeting, company, onClose }: {
                     <span className="h-1.5 w-1.5 rounded-full bg-gray-600" />
                     {a}
                     {a === meeting.chairperson && <span className="text-[9px] text-yellow-700/80 font-mono ml-1">ordf.</span>}
-                    {a === meeting.minutes_taker && <span className="text-[9px] text-blue-700/80 font-mono ml-1">sekreterare</span>}
+                    {a === meeting.minutes_taker && <span className="text-[9px] text-[#0A3D62]/80 font-mono ml-1">sekreterare</span>}
                   </li>
                 ))}
               </ul>
@@ -158,12 +158,12 @@ export function BoardView() {
       {/* Stats */}
       <div className="flex gap-3 flex-wrap">
         {[
-          { label: 'Totalt', value: counts.total, color: 'bg-gray-400' },
-          { label: 'Planerade', value: counts.planerat, color: 'bg-blue-400' },
-          { label: 'Protokoll klart', value: counts.klar, color: 'bg-green-400' },
+          { label: 'Totalt', value: counts.total, dotColor: '#6B7280' },
+          { label: 'Planerade', value: counts.planerat, dotColor: '#E8B84B' },
+          { label: 'Protokoll klart', value: counts.klar, dotColor: '#22C55E' },
         ].map(s => (
           <div key={s.label} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#EDE8DC] border border-surface-border text-xs">
-            <span className={`h-1.5 w-1.5 rounded-full ${s.color}`} />
+            <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: s.dotColor }} />
             <span className="text-gray-9000">{s.label}:</span>
             <span className="text-text-primary font-semibold">{s.value}</span>
           </div>
@@ -179,7 +179,7 @@ export function BoardView() {
           </select>
           <button
             onClick={() => setShowForm(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 border border-blue-200 text-blue-700 text-xs font-medium hover:bg-brand-accent/25 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0A3D62] text-white text-xs font-bold hover:bg-[#072E4A] transition-colors"
           >
             + Nytt beslut
           </button>
@@ -188,8 +188,20 @@ export function BoardView() {
 
       {/* Table */}
       {meetings.length === 0 ? (
-        <div className="text-center py-16 text-gray-9000 text-sm rounded-xl border border-surface-border bg-white">
-          Inga styrelsemöten registrerade ännu.
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-[#F5F0E8] flex items-center justify-center mb-4">
+            <span className="text-3xl">🏛️</span>
+          </div>
+          <h3 className="text-sm font-bold text-[#0A3D62] mb-2">Inga styrelsemöten än</h3>
+          <p className="text-xs text-gray-500 max-w-xs mb-4">
+            Planera ert första styrelsemöte för att börja dokumentera beslut och protokoll.
+          </p>
+          <button
+            onClick={() => setShowForm(true)}
+            className="px-4 py-2 bg-[#0A3D62] text-white text-xs font-bold rounded-lg hover:bg-[#072E4A]"
+          >
+            + Planera styrelsemöte
+          </button>
         </div>
       ) : (
       <div className="rounded-xl border border-surface-border overflow-hidden">
@@ -322,7 +334,7 @@ export function BoardView() {
               <button onClick={() => { setShowForm(false); setForm(EMPTY_FORM) }} className="px-4 py-2 text-xs text-gray-9000 hover:text-text-primary transition-colors">Avbryt</button>
               <button
                 onClick={() => { setShowForm(false); setForm(EMPTY_FORM) }}
-                className="px-4 py-2 text-xs bg-blue-50 border border-blue-200 text-blue-700 rounded-lg hover:bg-brand-accent/25 transition-colors"
+                className="px-4 py-2 text-xs bg-[#0A3D62] text-white font-bold rounded-lg hover:bg-[#072E4A] transition-colors"
               >
                 Spara beslut
               </button>

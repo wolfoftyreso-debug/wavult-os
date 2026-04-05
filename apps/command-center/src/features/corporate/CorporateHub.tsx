@@ -5,10 +5,9 @@ import { JurisdictionView } from './JurisdictionView'
 import { DocumentVault } from './DocumentVault'
 import { ComplianceTracker } from './ComplianceTracker'
 import { OwnershipView } from './OwnershipView'
-import { CompendiumView } from './CompendiumView'
 import { useCorpEntities, useCorpBoardMeetings, useCorpComplianceStats } from './hooks/useCorporate'
 
-type Tab = 'board' | 'jurisdictions' | 'documents' | 'compliance' | 'ownership' | 'compendium'
+type Tab = 'board' | 'jurisdictions' | 'documents' | 'compliance' | 'ownership'
 
 const TABS: Array<{ id: Tab; label: string; icon: string }> = [
   { id: 'board',         label: 'Styrelse & Beslut',  icon: '🏛️' },
@@ -16,7 +15,6 @@ const TABS: Array<{ id: Tab; label: string; icon: string }> = [
   { id: 'documents',     label: 'Bolagsdokument',     icon: '📁' },
   { id: 'compliance',    label: 'Compliance',         icon: '✅' },
   { id: 'ownership',     label: 'Ägarstruktur',       icon: '🔗' },
-  { id: 'compendium',    label: 'Kompendium',         icon: '📋' },
 ]
 
 function QuickStats() {
@@ -33,15 +31,15 @@ function QuickStats() {
   return (
     <div className="flex gap-3 flex-wrap text-xs">
       {[
-        { label: 'Bolag', value: activeCompanies, color: 'bg-indigo-400' },
-        { label: 'Planerade möten', value: upcomingMeetings, color: 'bg-blue-400' },
-        { label: 'Compliance öppna', value: pendingCompliance, color: 'bg-yellow-400' },
-        { label: 'Förfallna', value: overdue, color: 'bg-red-400' },
-        { label: 'Brådskande (30d)', value: urgentDeadlines, color: 'bg-orange-400' },
+        { label: 'Bolag', value: activeCompanies, color: '#0A3D62' },
+        { label: 'Planerade möten', value: upcomingMeetings, color: '#E8B84B' },
+        { label: 'Compliance öppna', value: pendingCompliance, color: '#B8760A' },
+        { label: 'Förfallna', value: overdue, color: '#C0392B' },
+        { label: 'Brådskande (30d)', value: urgentDeadlines, color: '#E67E22' },
       ].map(s => (
         <div key={s.label} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted/30 border border-surface-border">
-          <span className={`h-1.5 w-1.5 rounded-full ${s.color}`} />
-          <span className="text-gray-9000">{s.label}:</span>
+          <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: s.color }} />
+          <span className="text-gray-500">{s.label}:</span>
           <span className="text-text-primary font-semibold">{s.value}</span>
         </div>
       ))}
@@ -63,8 +61,8 @@ export function CorporateHub() {
             <span className="text-xl">⚖️</span>
             <div>
               <h1 className="text-[16px] font-bold text-text-primary">Bolagsadmin</h1>
-              <p className="text-xs text-gray-9000 font-mono">
-                {activeEntity.shortName} — {entities.length} entiteter · SE · US-DE · US-TX · LT · AE
+              <p className="text-xs text-gray-500 font-mono">
+                {activeEntity.shortName} — {entities.length} entiteter · {entities.map(e => e.jurisdiction?.split(',')[0]?.split(' ')[0]).filter((j,i,a) => j && a.indexOf(j)===i).join(' · ')}
               </p>
             </div>
           </div>
@@ -73,15 +71,15 @@ export function CorporateHub() {
       </div>
 
       {/* Tab navigation */}
-      <div className="flex gap-1 px-4 md:px-6 py-2 border-b border-surface-border flex-shrink-0 overflow-x-auto">
+      <div className="flex gap-0 px-4 md:px-6 border-b border-surface-border flex-shrink-0 overflow-x-auto">
         {TABS.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap flex-shrink-0 ${
+            className={`flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium transition-colors whitespace-nowrap flex-shrink-0 border-b-2 ${
               activeTab === tab.id
-                ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                : 'text-gray-9000 hover:text-gray-600 hover:bg-muted/30'
+                ? 'border-[#E8B84B] text-[#0A3D62]'
+                : 'border-transparent text-gray-500 hover:text-[#0A3D62] hover:border-[#E8B84B]/30'
             }`}
           >
             <span className="text-sm leading-none">{tab.icon}</span>
@@ -97,7 +95,6 @@ export function CorporateHub() {
         {activeTab === 'documents'     && <DocumentVault />}
         {activeTab === 'compliance'    && <ComplianceTracker />}
         {activeTab === 'ownership'     && <OwnershipView />}
-        {activeTab === 'compendium'    && <CompendiumView />}
       </div>
     </div>
   )

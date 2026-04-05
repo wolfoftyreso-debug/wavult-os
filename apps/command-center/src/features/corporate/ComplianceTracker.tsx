@@ -4,7 +4,7 @@ import { useTranslation } from '../../shared/i18n/useTranslation'
 
 const STATUS_STYLES: Record<ComplianceStatus, { pill: string; dot: string; labelKey: string; icon: string }> = {
   'ej påbörjad': { pill: 'bg-gray-100 text-gray-600 border-gray-200',         dot: 'bg-gray-400', labelKey: 'corporate.compliance.statusNotStarted', icon: '○' },
-  'pågår':       { pill: 'bg-blue-50 text-blue-700 border-blue-200',          dot: 'bg-blue-400', labelKey: 'corporate.compliance.statusInProgress',  icon: '◑' },
+  'pågår':       { pill: 'bg-[#F5F0E8] text-[#0A3D62] border-[#0A3D62]',          dot: 'bg-[#0A3D62]', labelKey: 'corporate.compliance.statusInProgress',  icon: '◑' },
   'klar':        { pill: 'bg-green-50 text-green-700 border-green-200',       dot: 'bg-green-400',labelKey: 'corporate.compliance.statusDone',        icon: '✓' },
   'förfallen':   { pill: 'bg-red-50 text-red-700 border-red-200',             dot: 'bg-red-500',  labelKey: 'corporate.compliance.statusOverdue',     icon: '!' },
 }
@@ -65,11 +65,11 @@ export function ComplianceTracker() {
     <div className="space-y-5">
 
       {/* ── FÖRKLARING — vad är detta ─────────────────── */}
-      <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 flex gap-3 items-start">
+      <div className="rounded-xl border border-[#0A3D62] bg-[#F5F0E8] px-4 py-3 flex gap-3 items-start">
         <span className="text-lg flex-shrink-0">ℹ️</span>
         <div>
-          <p className="text-xs font-semibold text-blue-800 mb-0.5">{t('corporate.compliance.infoTitle')}</p>
-          <p className="text-xs text-blue-700 leading-relaxed">
+          <p className="text-xs font-semibold text-[#0A3D62] mb-0.5">{t('corporate.compliance.infoTitle')}</p>
+          <p className="text-xs text-[#0A3D62] leading-relaxed">
             {t('corporate.compliance.infoBody')}
           </p>
         </div>
@@ -87,10 +87,10 @@ export function ComplianceTracker() {
           <div className="text-[10px] text-gray-400 mt-1">{progress}% genomfört</div>
         </div>
 
-        <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 shadow-card">
-          <div className="text-3xl font-bold text-blue-700">{totals.pagar}</div>
-          <div className="text-xs font-semibold text-blue-800 mt-1">{t('corporate.compliance.summaryInProgress')}</div>
-          <div className="text-xs text-blue-600 mt-0.5">Ansvariga arbetar med dessa</div>
+        <div className="rounded-xl border border-[#0A3D62] bg-[#F5F0E8] p-4 shadow-card">
+          <div className="text-3xl font-bold text-[#0A3D62]">{totals.pagar}</div>
+          <div className="text-xs font-semibold text-[#0A3D62] mt-1">{t('corporate.compliance.summaryInProgress')}</div>
+          <div className="text-xs text-[#0A3D62] mt-0.5">Ansvariga arbetar med dessa</div>
         </div>
 
         <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 shadow-card">

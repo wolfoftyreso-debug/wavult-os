@@ -39,7 +39,7 @@ const RED    = '#dc2626'
 
 // ─── Category meta ────────────────────────────────────────────────────────────
 const CAT_META: Record<string, { label: string; icon: string; color: string }> = {
-  legal:         { label: 'Legal',          icon: '⚖️',  color: '#1e40af' },
+  legal:         { label: 'Legal',          icon: '⚖️',  color: '#0A3D62' },
   banking:       { label: 'Banking',        icon: '🏦',  color: '#065f46' },
   registration:  { label: 'Registrering',   icon: '📝',  color: '#92400e' },
   documentation: { label: 'Dokumentation',  icon: '📄',  color: '#7c3aed' },
@@ -733,8 +733,8 @@ function CompareTable({ onSelect, onStartTrust }: { onSelect: (id: string) => vo
                   </td>
                   <td style={{ padding: '11px 14px' }}>
                     <span style={{
-                      background: j.type === 'trust' ? '#dbeafe' : j.type === 'foundation' ? '#fce7f3' : '#d1fae5',
-                      color: j.type === 'trust' ? '#1e40af' : j.type === 'foundation' ? '#9d174d' : '#065f46',
+                      background: j.type === 'trust' ? '#E8F0E8' : j.type === 'foundation' ? '#fce7f3' : '#d1fae5',
+                      color: j.type === 'trust' ? '#0A3D62' : j.type === 'foundation' ? '#9d174d' : '#065f46',
                       fontSize: 11, fontWeight: 600, padding: '3px 8px', borderRadius: 20,
                     }}>
                       {j.type === 'trust' ? 'Trust' : j.type === 'foundation' ? 'Foundation' : 'Trust + Foundation'}
@@ -1059,14 +1059,14 @@ function RecommendationView({ onSelect, onStartTrust }: { onSelect: (id: string)
     <div>
       {/* Header */}
       <div style={{
-        background: `linear-gradient(135deg, ${NAVY}, #1a5276)`,
-        borderRadius: 14, padding: '24px 28px', marginBottom: 28, color: 'white',
+        background: 'linear-gradient(135deg, #0A3D62 0%, #0d4d78 100%)',
+        borderRadius: 14, padding: '24px 28px', marginBottom: 28,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
           <span style={{ fontSize: 32 }}>💡</span>
           <div>
-            <h2 style={{ margin: 0, fontSize: 20, fontWeight: 800 }}>Wavults Rekommenderade Struktur</h2>
-            <div style={{ opacity: 0.8, fontSize: 13, marginTop: 4 }}>
+            <h2 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: '#F5F0E8' }}>Wavults Rekommenderade Struktur</h2>
+            <div style={{ fontSize: 13, marginTop: 4, color: 'rgba(245,240,232,0.7)' }}>
               Anpassad för Wavult Groups befintliga Dubai-närvaro
             </div>
           </div>
@@ -1088,59 +1088,114 @@ function RecommendationView({ onSelect, onStartTrust }: { onSelect: (id: string)
 
       {/* Two-tier structure */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 28 }}>
-        {[
-          { tier: 'Tier 1 — Primär', j: tier1, tag: 'Rekommenderad primärstruktur' },
-          { tier: 'Tier 2 — Alternativ', j: tier2, tag: 'För europeiska tillgångar' },
-        ].map(({ tier, j, tag }) => (
-          <div key={j.id} style={{
-            background: 'white', border: `2px solid ${j.id === 'difc' ? GOLD : '#e2e8f0'}`,
+        {tier1 && (
+          <div style={{
+            background: 'white', border: `2px solid ${GOLD}`,
             borderRadius: 14, padding: 20,
           }}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', letterSpacing: '0.08em', marginBottom: 10 }}>
-              {tier.toUpperCase()}
+            <div style={{ fontSize: 10, fontWeight: 700, color: '#8B6914', letterSpacing: '0.08em', marginBottom: 10 }}>
+              TIER 1 — PRIMÄR
             </div>
             <div
-              onClick={() => onSelect(j.id)}
+              onClick={() => onSelect(tier1.id)}
               style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, cursor: 'pointer' }}
             >
-              <span style={{ fontSize: 36 }}>{j.flag}</span>
+              <span style={{ fontSize: 36 }}>{tier1.flag}</span>
               <div>
-                <div style={{ fontWeight: 700, color: NAVY, fontSize: 15 }}>{j.name}</div>
-                <div style={{ fontSize: 12, color: '#64748b' }}>{j.structure}</div>
+                <div style={{ fontWeight: 700, color: NAVY, fontSize: 15 }}>{tier1.name}</div>
+                <div style={{ fontSize: 12, color: '#64748b' }}>{tier1.structure}</div>
               </div>
             </div>
             <div style={{
-              background: j.id === 'difc' ? `${GOLD}20` : CREAM,
+              background: `${GOLD}20`,
               borderRadius: 8, padding: '8px 12px', fontSize: 12, color: '#374151', marginBottom: 12,
             }}>
-              {tag}
+              Rekommenderad primärstruktur
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 14 }}>
-              {[
-                { k: 'Skatt', v: j.tax_rate, color: taxColor(j.tax_rate) },
-                { k: 'Setup', v: fmtUSD(j.setup_cost_usd), color: NAVY },
-                { k: 'Årsavgift', v: fmtUSD(j.annual_cost_usd) + '/år', color: NAVY },
-                { k: 'Tid', v: j.setup_weeks + ' veckor', color: '#d97706' },
-              ].map(item => (
-                <div key={item.k}>
-                  <div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 600 }}>{item.k}</div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: item.color }}>{item.v}</div>
-                </div>
-              ))}
+              <div>
+                <div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 600 }}>Skatt</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: taxColor(tier1.tax_rate) }}>{tier1.tax_rate}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 600 }}>Setup</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: NAVY }}>${tier1.setup_cost_usd.toLocaleString()}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 600 }}>Årsavgift</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: NAVY }}>${tier1.annual_cost_usd.toLocaleString()}/år</div>
+              </div>
+              <div>
+                <div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 600 }}>Tid</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: GOLD }}>{tier1.setup_weeks} veckor</div>
+              </div>
             </div>
             <button
-              onClick={() => onStartTrust(j.id)}
+              onClick={() => onStartTrust(tier1.id)}
               style={{
-                width: '100%', padding: '8px', borderRadius: 8, border: 'none',
-                background: j.id === 'difc' ? GOLD : NAVY,
-                color: j.id === 'difc' ? NAVY : 'white',
+                width: '100%', padding: '10px', borderRadius: 8, border: 'none',
+                background: GOLD, color: NAVY,
                 fontWeight: 700, fontSize: 12, cursor: 'pointer',
               }}
             >
-              ⚡ Starta {j.name}
+              ⚡ Starta {tier1.name.split('(')[0].trim()}
             </button>
           </div>
-        ))}
+        )}
+        {tier2 && (
+          <div style={{
+            background: 'white', border: `2px solid #e2e8f0`,
+            borderRadius: 14, padding: 20,
+          }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', letterSpacing: '0.08em', marginBottom: 10 }}>
+              TIER 2 — ALTERNATIV
+            </div>
+            <div
+              onClick={() => onSelect(tier2.id)}
+              style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, cursor: 'pointer' }}
+            >
+              <span style={{ fontSize: 36 }}>{tier2.flag}</span>
+              <div>
+                <div style={{ fontWeight: 700, color: NAVY, fontSize: 15 }}>{tier2.name}</div>
+                <div style={{ fontSize: 12, color: '#64748b' }}>{tier2.structure}</div>
+              </div>
+            </div>
+            <div style={{
+              background: CREAM,
+              borderRadius: 8, padding: '8px 12px', fontSize: 12, color: '#374151', marginBottom: 12,
+            }}>
+              För europeiska tillgångar
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 14 }}>
+              <div>
+                <div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 600 }}>Skatt</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: taxColor(tier2.tax_rate) }}>{tier2.tax_rate}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 600 }}>Setup</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: NAVY }}>${tier2.setup_cost_usd.toLocaleString()}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 600 }}>Årsavgift</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: NAVY }}>${tier2.annual_cost_usd.toLocaleString()}/år</div>
+              </div>
+              <div>
+                <div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 600 }}>Tid</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#d97706' }}>{tier2.setup_weeks} veckor</div>
+              </div>
+            </div>
+            <button
+              onClick={() => onStartTrust(tier2.id)}
+              style={{
+                width: '100%', padding: '10px', borderRadius: 8, border: 'none',
+                background: NAVY, color: 'white',
+                fontWeight: 700, fontSize: 12, cursor: 'pointer',
+              }}
+            >
+              ⚡ Starta {tier2.name.split('(')[0].trim()}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* IP Structure diagram */}
@@ -1268,30 +1323,40 @@ export function TrustView() {
         {/* Main tab bar: Mina Trusts | Jurisdiktioner */}
         <div style={{
           display: 'flex', gap: 4, marginBottom: 16,
-          background: 'white', borderRadius: 12, padding: 6,
-          border: '1px solid #e2e8f0',
+          borderBottom: '2px solid #DDD5C5',
         }}>
-          {[
-            { id: 'myTrusts', label: '🏛️ Mina Trusts' },
-            { id: 'jurisdictions', label: '🌍 Jurisdiktioner' },
-          ].map(tab => {
-            const isActive = currentMainTab === tab.id
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setCurrentMainTab(tab.id as typeof currentMainTab)}
-                style={{
-                  flex: 1, padding: '10px 16px', borderRadius: 8, border: 'none',
-                  cursor: 'pointer', fontSize: 14, fontWeight: isActive ? 700 : 500,
-                  background: isActive ? NAVY : 'transparent',
-                  color: isActive ? 'white' : '#64748b',
-                  transition: 'all 0.15s',
-                }}
-              >
-                {tab.label}
-              </button>
-            )
-          })}
+          {(() => {
+            const hasTrustsNow = JSON.parse(localStorage.getItem('wavult_trusts') ?? '[]').length
+            return [
+              { id: 'myTrusts', label: '🏛️ Mina Trusts', count: hasTrustsNow },
+              { id: 'jurisdictions', label: '🌍 Jurisdiktioner', count: 0 },
+            ].map(tab => {
+              const isActive = currentMainTab === tab.id
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setCurrentMainTab(tab.id as typeof currentMainTab)}
+                  style={{
+                    padding: '10px 16px', border: 'none', borderBottom: `2px solid ${isActive ? GOLD : 'transparent'}`,
+                    marginBottom: -2, cursor: 'pointer', fontSize: 14,
+                    fontWeight: isActive ? 700 : 500,
+                    background: 'transparent',
+                    color: isActive ? NAVY : '#64748b',
+                    transition: 'all 0.15s',
+                    display: 'flex', alignItems: 'center', gap: 6,
+                  }}
+                >
+                  {tab.label}
+                  {tab.count > 0 && (
+                    <span style={{
+                      background: GOLD, color: NAVY,
+                      fontSize: 10, fontWeight: 800, padding: '1px 6px', borderRadius: 20,
+                    }}>{tab.count}</span>
+                  )}
+                </button>
+              )
+            })
+          })()}
         </div>
 
         {/* MY TRUSTS VIEW */}
@@ -1309,22 +1374,26 @@ export function TrustView() {
           <>
             {/* Sub-tab bar */}
             <div style={{
-              display: 'flex', gap: 4, marginBottom: 24, overflowX: 'auto',
-              background: 'white', borderRadius: 12, padding: 6,
-              border: '1px solid #e2e8f0', flexShrink: 0,
+              display: 'flex', gap: 0, marginBottom: 24, overflowX: 'auto',
+              borderBottom: '2px solid #DDD5C5',
+              flexShrink: 0,
             }}>
               {JURISDICTION_TABS.map(tab => {
                 const isActive = activeTab === tab.id
+                const isRec = tab.id === 'recommendation'
                 return (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
                     style={{
-                      padding: '8px 14px', borderRadius: 8, border: 'none',
+                      padding: '8px 14px', border: 'none',
+                      borderBottom: `2px solid ${isActive ? GOLD : 'transparent'}`,
+                      marginBottom: -2,
                       cursor: 'pointer', fontSize: 13, fontWeight: isActive ? 700 : 500,
                       whiteSpace: 'nowrap', flexShrink: 0, transition: 'all 0.15s',
-                      background: isActive ? NAVY : 'transparent',
-                      color: isActive ? 'white' : '#64748b',
+                      background: isRec && isActive ? GOLD : 'transparent',
+                      color: isRec && isActive ? NAVY : isActive ? NAVY : '#64748b',
+                      borderRadius: isRec ? '8px 8px 0 0' : 0,
                     }}
                   >
                     {tab.label}

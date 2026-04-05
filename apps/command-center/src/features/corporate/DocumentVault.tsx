@@ -97,13 +97,13 @@ export function DocumentVault() {
           <div className="flex gap-1.5 flex-wrap">
             <button
               onClick={() => setSelectedCategory('all')}
-              className={`px-2.5 py-1 rounded-lg text-xs border transition-colors ${selectedCategory === 'all' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-[#EDE8DC] text-gray-9000 border-surface-border hover:text-gray-900'}`}
+              className={`px-2.5 py-1 rounded-lg text-xs border transition-colors ${selectedCategory === 'all' ? 'bg-[#F5F0E8] text-[#0A3D62] border-[#0A3D62]' : 'bg-[#EDE8DC] text-gray-9000 border-surface-border hover:text-gray-900'}`}
             >Alla</button>
             {CATEGORIES.map(cat => (
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-2.5 py-1 rounded-lg text-xs border transition-colors ${selectedCategory === cat ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-[#EDE8DC] text-gray-9000 border-surface-border hover:text-gray-900'}`}
+                className={`px-2.5 py-1 rounded-lg text-xs border transition-colors ${selectedCategory === cat ? 'bg-[#F5F0E8] text-[#0A3D62] border-[#0A3D62]' : 'bg-[#EDE8DC] text-gray-9000 border-surface-border hover:text-gray-900'}`}
               >{cat}</button>
             ))}
           </div>
@@ -196,7 +196,7 @@ export function DocumentVault() {
                       {doc.url ? (
                         <button
                           onClick={() => handleDownload(doc)}
-                          className="text-xs text-blue-700 hover:text-blue-900 font-medium transition-colors flex items-center gap-1 ml-auto"
+                          className="text-xs text-[#0A3D62] hover:text-[#0A3D62] font-medium transition-colors flex items-center gap-1 ml-auto"
                         >⬇ Hämta</button>
                       ) : (
                         <button

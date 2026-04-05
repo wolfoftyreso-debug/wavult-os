@@ -44,7 +44,7 @@ export function JurisdictionView() {
             onClick={() => setSelectedCompany('all')}
             className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
               selectedCompany === 'all'
-                ? 'bg-blue-50 text-blue-700 border-blue-200'
+                ? 'bg-[#F5F0E8] text-[#0A3D62] border-[#0A3D62]'
                 : 'bg-[#EDE8DC] text-gray-9000 border-surface-border hover:text-gray-900'
             }`}
           >
