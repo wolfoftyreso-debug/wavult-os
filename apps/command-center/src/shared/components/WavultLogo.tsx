@@ -100,7 +100,7 @@ export function WavultLogo({
           fontFamily: 'var(--font-mono, monospace)',
           textTransform: 'uppercase' as const,
         }}>
-          WAVULT OS
+          WAVULT DS
         </span>
       )}
     </div>

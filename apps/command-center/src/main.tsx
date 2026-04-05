@@ -27,7 +27,7 @@ class GlobalErrorBoundary extends Component<
           padding: '2rem', textAlign: 'center',
         }}>
           <div style={{ fontSize: '11px', letterSpacing: '0.2em', color: '#52525B', marginBottom: '1.5rem' }}>
-            WAVULT OS — SYSTEM ERROR
+            WAVULT DS — SYSTEM ERROR
           </div>
           <div style={{ fontSize: '14px', color: '#EF4444', marginBottom: '1rem', maxWidth: '600px' }}>
             {err.message}
