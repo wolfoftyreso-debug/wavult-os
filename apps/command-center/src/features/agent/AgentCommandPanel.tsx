@@ -23,7 +23,7 @@ const severityConfig: Record<AgentSeverity, {
     text: '',
     icon: AlertTriangle,
     dot: '',
-    style: { background: 'rgba(192,57,43,0.12)', border: '1px solid rgba(192,57,43,0.30)', color: '#C0392B' },
+    style: { background: 'rgba(192,57,43,0.22)', border: '1px solid rgba(220,80,60,0.45)', color: '#FF7B6E' },
   },
   high: {
     bg: '',
@@ -31,7 +31,7 @@ const severityConfig: Record<AgentSeverity, {
     text: '',
     icon: Clock,
     dot: '',
-    style: { background: 'rgba(230,126,34,0.12)', border: '1px solid rgba(230,126,34,0.30)', color: '#E67E22' },
+    style: { background: 'rgba(230,126,34,0.18)', border: '1px solid rgba(230,126,34,0.40)', color: '#FFAD5C' },
   },
   medium: {
     bg: '',
@@ -39,7 +39,7 @@ const severityConfig: Record<AgentSeverity, {
     text: '',
     icon: ArrowRight,
     dot: '',
-    style: { background: 'rgba(43,91,168,0.10)', border: '1px solid rgba(43,91,168,0.25)', color: '#2B5BA8' },
+    style: { background: 'rgba(80,130,220,0.18)', border: '1px solid rgba(80,130,220,0.35)', color: '#8BBFFF' },
   },
   low: {
     bg: '',
@@ -47,7 +47,7 @@ const severityConfig: Record<AgentSeverity, {
     text: '',
     icon: Clock,
     dot: '',
-    style: { background: 'rgba(58,53,48,0.08)', border: '1px solid rgba(58,53,48,0.15)', color: '#6B6560' },
+    style: { background: 'rgba(245,240,232,0.07)', border: '1px solid rgba(245,240,232,0.15)', color: 'rgba(245,240,232,0.55)' },
   },
   info: {
     bg: '',
@@ -55,7 +55,7 @@ const severityConfig: Record<AgentSeverity, {
     text: '',
     icon: CheckCircle,
     dot: '',
-    style: { background: 'rgba(45,106,79,0.10)', border: '1px solid rgba(45,106,79,0.25)', color: '#2D6A4F' },
+    style: { background: 'rgba(60,180,120,0.15)', border: '1px solid rgba(60,180,120,0.30)', color: '#6FE0A8' },
   },
 }
 
