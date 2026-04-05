@@ -808,3 +808,44 @@ export const ADDITIONAL_TRUST_JURISDICTIONS: TrustJurisdiction[] = [
 
 // Alla jurisdiktioner kombinerat
 export const ALL_TRUST_JURISDICTIONS = [...TRUST_JURISDICTIONS, ...ADDITIONAL_TRUST_JURISDICTIONS]
+
+// Schweiz läggs till i ALL_TRUST_JURISDICTIONS
+const SWISS_JURISDICTION: TrustJurisdiction = {
+  id: 'switzerland',
+  name: 'Schweiz (Zug / Genève)',
+  flag: '🇨🇭',
+  type: 'foundation',
+  structure: 'Swiss Foundation (Stiftung) / Swiss Trust Company',
+  governing_law: 'Schweizerisches Zivilgesetzbuch (ZGB) Art. 80-89a',
+  advantages: [
+    'Världens mest respekterade jurisdiktion för wealth management',
+    'Swiss IP Box — 10% effektiv skatt på IP-inkomster',
+    'Zürich/Zug: Europas "Crypto Valley" — ledande för digital asset trusts',
+    'Politisk neutralitet sedan 1815 — oöverträffad stabilitet',
+    'Stark banksekretesskul tur (CRS-undantag för äldre strukturer)',
+    'Direktdemokrati — lagar ändras via folkomröstning, inte godtyckligt',
+    'Zug: crypto-vänlig, låg kantonsskatt (~14%)',
+  ],
+  tax_rate: '~14% (Zug kantonal), 10% IP Box',
+  tax_treaty: true,
+  capital_gains_tax: '0% (privatperson)',
+  estate_tax: '0% (direkt arvinge, Zug)',
+  setup_cost_usd: 45000,
+  annual_cost_usd: 20000,
+  setup_weeks: 12,
+  requires_local_trustee: false,
+  requires_substance: true,
+  public_register: true,
+  best_for: ['IP-holding (IP Box)', 'Digital assets/Crypto', 'Prestige-struktur', 'Familjeförmögenhet', 'Generationsskifte'],
+  setup_steps: [
+    { id: 'ch-1', order: 1, title: 'Välj Swiss-advokat och kanton', description: 'Zug: lägst skatt, crypto-vänlig. Genève: internationell prestige. Advokat: Lenz & Staehelin, Baker McKenzie Zürich, Homburger', duration: '1-2 veckor', category: 'legal', requires: [], status: 'not_started' },
+    { id: 'ch-2', order: 2, title: 'Stiftungsurkunde (Foundation Charter)', description: 'Notarialt bestyrkt stiftelseurkund med ändamål (måste vara allmännyttigt eller familjeändamål), styrelse och destinatärer', duration: '4-6 veckor', cost_usd: 20000, category: 'legal', requires: ['passport', 'proof_of_address', 'source_of_wealth'], status: 'not_started' },
+    { id: 'ch-3', order: 3, title: 'Registrering i Handelsregister', description: 'Obligatorisk registrering hos kantonal handelsregister — stiftelsen blir publik juridisk person', duration: '2-3 veckor', cost_usd: 2000, category: 'registration', requires: ['foundation_charter'], status: 'not_started' },
+    { id: 'ch-4', order: 4, title: 'Substance — lokal styrelse', description: 'Minst en schweizisk styrelseledamot krävs för trovärdighet och skattebehandling', duration: '2-4 veckor', cost_usd: 5000, category: 'legal', requires: ['registration'], status: 'not_started' },
+    { id: 'ch-5', order: 5, title: 'Bankkonto Schweiz', description: 'UBS Private Banking, Credit Suisse (numera UBS), Julius Bär, Pictet, Lombard Odier — alla kräver substans och KYC', duration: '8-16 veckor', category: 'banking', requires: ['registration', 'local_board', 'kyc_complete'], status: 'not_started' },
+    { id: 'ch-6', order: 6, title: 'IP Box-ansökan (valfritt)', description: 'Ansök om Swiss IP Box hos kantonal skattemyndighet för 10% effektiv skatt på patent/IP-royalties', duration: '4-8 veckor', cost_usd: 3000, category: 'tax', requires: ['bank_account', 'ip_valuation'], status: 'not_started' },
+  ],
+}
+
+// Uppdatera ALL_TRUST_JURISDICTIONS med Schweiz
+;(ALL_TRUST_JURISDICTIONS as TrustJurisdiction[]).push(SWISS_JURISDICTION)
