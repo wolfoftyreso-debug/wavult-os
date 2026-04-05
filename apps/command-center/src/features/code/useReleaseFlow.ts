@@ -87,7 +87,7 @@ export function useReleaseFlow() {
         ? {
             ...r,
             status: 'approved',
-            approved_by: 'erik@hypbit.com',
+            approved_by: 'erik@wavult.com',
             approved_at: new Date().toISOString(),
             approval_note: note,
             updated_at: new Date().toISOString(),

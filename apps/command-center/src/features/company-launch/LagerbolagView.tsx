@@ -4,10 +4,10 @@ import { CheckCircle, ChevronRight, ChevronLeft, AlertCircle, ExternalLink, Buil
 // ─── Team registry (Wavult) ────────────────────────────────────────────────────
 const WAVULT_TEAM = [
   { name: 'Erik Svensson', role: 'Styrelseordförande', email: 'erik@wavult.com', phone: '+46709123223' },
-  { name: 'Dennis Bjarnemark', role: 'Ledamot / Legal & Operations', email: 'dennis@hypbit.com', phone: '0761474243' },
-  { name: 'Winston Gustav Bjarnemark', role: 'CFO / Ledamot', email: 'winston@hypbit.com', phone: '0768123548' },
-  { name: 'Leon Maurizio Russo De Cerame', role: 'VD (operativt)', email: 'leon@hypbit.com', phone: '+46738968949' },
-  { name: 'Johan Putte Berglund', role: 'CTO / Ledamot', email: 'johan@hypbit.com', phone: '+46736977576' },
+  { name: 'Dennis Bjarnemark', role: 'Ledamot / Legal & Operations', email: 'dennis@wavult.com', phone: '0761474243' },
+  { name: 'Winston Gustav Bjarnemark', role: 'CFO / Ledamot', email: 'winston@wavult.com', phone: '0768123548' },
+  { name: 'Leon Maurizio Russo De Cerame', role: 'VD (operativt)', email: 'leon@wavult.com', phone: '+46738968949' },
+  { name: 'Johan Putte Berglund', role: 'CTO / Ledamot', email: 'johan@wavult.com', phone: '+46736977576' },
 ]
 
 // ─── Providers ────────────────────────────────────────────────────────────────

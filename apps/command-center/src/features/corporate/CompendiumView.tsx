@@ -12,6 +12,34 @@ import { useEntityScope } from '../../shared/scope/EntityScopeContext'
 
 type Audience = 'investor' | 'staff' | 'supplier' | 'partner' | 'customer'
 
+// ─── Entity Products ──────────────────────────────────────────────────────────
+
+const ENTITY_PRODUCTS: Record<string, Array<{ name: string; desc: string; badge: string }>> = {
+  '1': [ // WGH Dubai — moderbolag
+    { name: 'Wavult OS', desc: 'Komplett enterprise operativsystem för verksamhetsdrift — ekonomi, compliance, team, CRM.', badge: 'Enterprise' },
+    { name: 'quiXzoom', desc: 'Crowdsourcad kamerainfrastruktur — zoomers samlar bilddata för infrastrukturägare.', badge: 'Beta' },
+    { name: 'LandveX', desc: 'Optisk intelligens för infrastrukturägare — rätt kontroll, rätt kostnad, rätt intervall.', badge: 'Kommande' },
+    { name: 'DISSG', desc: 'Distribuerat intelligensystem för samhällskritisk data.', badge: 'Planerad' },
+    { name: 'Apifly', desc: 'En nyckel. Alla API:er. Byggt av Winston Bjarnemark, 17, Stockholm.', badge: 'Beta' },
+  ],
+  '2': [ // WOH Sverige
+    { name: 'Wavult OS', desc: 'Enterprise operativsystem för Wavult-koncernens svenska verksamhet.', badge: 'Enterprise' },
+    { name: 'quiXzoom Sverige', desc: 'Crowdsourcad bilddata — lansering Sverige juni 2026.', badge: 'Beta' },
+  ],
+  '3': [ // OZ UAB Litauen
+    { name: 'quiXzoom EU', desc: 'EU-bas för quiXzoom-plattformen — zoomers och bilddata för den europeiska marknaden.', badge: 'Beta' },
+  ],
+  '4': [ // OZ Inc Delaware
+    { name: 'quiXzoom US', desc: 'quiXzoom Inc — US-marknad. Delaware C-Corp.', badge: 'Planerad' },
+  ],
+  '5': [ // LVX AE
+    { name: 'LandveX Enterprise', desc: 'Optisk infrastrukturintelligens — UAE och MENA-marknaden.', badge: 'Kommande' },
+  ],
+  '6': [ // LVX US Texas
+    { name: 'LandveX US', desc: 'LandveX för den amerikanska infrastrukturmarknaden.', badge: 'Planerad' },
+  ],
+}
+
 interface AudienceTab {
   id: Audience
   label: string
@@ -397,9 +425,9 @@ function InvestorView() {
       <BoardOverview />
       <ContactSection
         contacts={[
-          { role: 'Group CEO', name: 'Erik Svensson', email: 'erik@hypbit.com' },
-          { role: 'Chief Legal & Operations', name: 'Dennis Bjarnemark', email: 'dennis@hypbit.com' },
-          { role: 'CFO', name: 'Winston Bjarnemark', email: 'winston@hypbit.com' },
+          { role: 'Group CEO', name: 'Erik Svensson', email: 'erik@wavult.com' },
+          { role: 'Chief Legal & Operations', name: 'Dennis Bjarnemark', email: 'dennis@wavult.com' },
+          { role: 'CFO', name: 'Winston Bjarnemark', email: 'winston@wavult.com' },
         ]}
       />
     </div>
@@ -495,9 +523,9 @@ function StaffView() {
       </SectionCard>
 
       <ContactSection contacts={[
-        { role: 'HR & Kultur', name: 'Erik Svensson', email: 'erik@hypbit.com' },
-        { role: 'Legal & Ops', name: 'Dennis Bjarnemark', email: 'dennis@hypbit.com' },
-        { role: 'Teknik', name: 'Johan Berglund', email: 'johan@hypbit.com' },
+        { role: 'HR & Kultur', name: 'Erik Svensson', email: 'erik@wavult.com' },
+        { role: 'Legal & Ops', name: 'Dennis Bjarnemark', email: 'dennis@wavult.com' },
+        { role: 'Teknik', name: 'Johan Berglund', email: 'johan@wavult.com' },
       ]} />
     </div>
   )
@@ -544,7 +572,7 @@ function SupplierView() {
           { label: 'Betalningsvillkor', value: '30 dagar netto' },
           { label: 'Valuta', value: 'SEK / EUR (enligt avtal)' },
           { label: 'Faktureringsformat', value: 'PDF eller e-faktura (Svefaktura)' },
-          { label: 'Fakturaadress', value: 'invoice@hypbit.com' },
+          { label: 'Fakturaadress', value: 'invoice@wavult.com' },
         ]} />
       </SectionCard>
 
@@ -594,8 +622,8 @@ function SupplierView() {
       </SectionCard>
 
       <ContactSection contacts={[
-        { role: 'Procurement', name: 'Dennis Bjarnemark', email: 'dennis@hypbit.com' },
-        { role: 'Finance & Faktura', name: 'Winston Bjarnemark', email: 'winston@hypbit.com' },
+        { role: 'Procurement', name: 'Dennis Bjarnemark', email: 'dennis@wavult.com' },
+        { role: 'Finance & Faktura', name: 'Winston Bjarnemark', email: 'winston@wavult.com' },
       ]} />
     </div>
   )
@@ -658,16 +686,18 @@ function PartnerView() {
       </SectionCard>
 
       <ContactSection contacts={[
-        { role: 'Partnerships', name: 'Erik Svensson', email: 'erik@hypbit.com' },
-        { role: 'Teknisk integration', name: 'Johan Berglund', email: 'johan@hypbit.com' },
+        { role: 'Partnerships', name: 'Erik Svensson', email: 'erik@wavult.com' },
+        { role: 'Teknisk integration', name: 'Johan Berglund', email: 'johan@wavult.com' },
       ]} />
     </div>
   )
 }
 
 function CustomerView() {
+  const { activeEntity } = useEntityScope()
   const { data: entities, isLoading } = useCorpEntities()
-  const primaryEntity = entities?.[0]
+  const primaryEntity = entities?.find(e => e.id === activeEntity.id) ?? entities?.[0]
+  const products = ENTITY_PRODUCTS[activeEntity.id] ?? ENTITY_PRODUCTS['1']
 
   return (
     <div className="flex flex-col gap-5">
@@ -701,11 +731,7 @@ function CustomerView() {
       <SectionCard>
         <SectionTitle icon="📦" title="Produkter & Tjänster" />
         <div className="flex flex-col gap-2">
-          {[
-            { name: 'Wavult OS', desc: 'Komplett operativsystem för verksamhetsdrift — ekonomi, compliance, team, CRM i ett system.', badge: 'Enterprise' },
-            { name: 'QuixZoom', desc: 'Crowdsourcad kamerainfrastruktur och bildintelligenslösning för infrastrukturägare.', badge: 'Beta' },
-            { name: 'Optical Insight', desc: 'AI-analyserade händelsebaserade alerts och intelligens för fastigheter och myndigheter.', badge: 'Kommande' },
-          ].map(p => (
+          {products.map(p => (
             <div key={p.name} className="rounded-xl border border-[#E8D9C0] bg-white/50 px-4 py-3">
               <div className="flex items-center justify-between mb-1">
                 <p className="font-semibold text-[#0A3D62] text-sm">{p.name}</p>
@@ -720,16 +746,16 @@ function CustomerView() {
       <SectionCard>
         <SectionTitle icon="🛠️" title="Support" />
         <InfoList items={[
-          { label: 'E-post support', value: 'support@hypbit.com' },
-          { label: 'Svarstid', value: 'Inom 1 arbetsdag' },
-          { label: 'Affärstider', value: 'Mån–Fre 09:00–17:00 (CET)' },
+          { label: 'E-post support', value: 'support@wavult.com' },
+          { label: 'Svarstid', value: 'Inom 2 arbetsdagar' },
+          { label: 'Affärstider', value: 'Mån–Fre 09:00–18:00 (CET/GST)' },
           { label: 'SLA', value: 'Enligt avtal' },
         ]} />
       </SectionCard>
 
       <ContactSection contacts={[
-        { role: 'Kundansvarig', name: 'Leon Russo De Cerame', email: 'leon@hypbit.com' },
-        { role: 'Teknisk support', name: 'Johan Berglund', email: 'johan@hypbit.com' },
+        { role: 'Kundansvarig', name: 'Leon Russo De Cerame', email: 'leon@wavult.com' },
+        { role: 'Teknisk support', name: 'Johan Berglund', email: 'johan@wavult.com' },
       ]} />
     </div>
   )

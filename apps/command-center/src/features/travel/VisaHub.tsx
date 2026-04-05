@@ -216,11 +216,11 @@ export function VisaHub() {
   const trips: Trip[] = FALLBACK_TRIPS // supplement from applications when data available
 
   const TEAM: TeamMember[] = [
-    { id: 'erik',    name: 'Erik Svensson',          firstName: 'Erik',    phone: '+46709123223',  email: 'erik@hypbit.com' },
-    { id: 'leon',    name: 'Leon Russo De Cerame',   firstName: 'Leon',    phone: '+46738968949',  email: 'leon@hypbit.com' },
-    { id: 'dennis',  name: 'Dennis Bjarnemark',      firstName: 'Dennis',  phone: '+46761474243',  email: 'dennis@hypbit.com' },
-    { id: 'winston', name: 'Winston Bjarnemark',     firstName: 'Winston', phone: '+46768123548',  email: 'winston@hypbit.com' },
-    { id: 'johan',   name: 'Johan Berglund',         firstName: 'Johan',   phone: '+46736977576',  email: 'johan@hypbit.com' },
+    { id: 'erik',    name: 'Erik Svensson',          firstName: 'Erik',    phone: '+46709123223',  email: 'erik@wavult.com' },
+    { id: 'leon',    name: 'Leon Russo De Cerame',   firstName: 'Leon',    phone: '+46738968949',  email: 'leon@wavult.com' },
+    { id: 'dennis',  name: 'Dennis Bjarnemark',      firstName: 'Dennis',  phone: '+46761474243',  email: 'dennis@wavult.com' },
+    { id: 'winston', name: 'Winston Bjarnemark',     firstName: 'Winston', phone: '+46768123548',  email: 'winston@wavult.com' },
+    { id: 'johan',   name: 'Johan Berglund',         firstName: 'Johan',   phone: '+46736977576',  email: 'johan@wavult.com' },
   ]
 
   const [selectedTrip, setSelectedTrip] = useState<Trip>(trips[0])

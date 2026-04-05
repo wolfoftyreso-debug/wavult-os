@@ -340,7 +340,7 @@ const QUICK_LINKS = [
   { name: 'PostgreSQL', url: 'https://db.wavult.com', icon: '🗄️', sub: 'self-hosted eu-north-1' },
   { name: 'Gitea', url: 'https://git.wavult.com/wavult', icon: '🐙', sub: 'git.wavult.com/wavult' },
   { name: 'Cloudflare', url: 'https://dash.cloudflare.com', icon: '🔥', sub: '6 zoner' },
-  { name: 'Loopia Mail', url: 'https://webmail.loopia.se', icon: '✉️', sub: 'erik@hypbit.com' },
+  { name: 'Loopia Mail', url: 'https://webmail.loopia.se', icon: '✉️', sub: 'erik@wavult.com' },
   { name: 'n8n', url: 'https://n8n.wavult.com', icon: '⚡', sub: 'Workflows' },
 ]
 

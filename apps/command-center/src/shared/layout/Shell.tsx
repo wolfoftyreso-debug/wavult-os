@@ -412,7 +412,7 @@ export function Shell({ children }: ShellProps) {
 
         {/* Footer */}
         <div className="px-4 py-3 mt-2" style={{ borderTop: '1px solid var(--sidebar-border, rgba(139,115,85,0.20))' }}>
-          <p style={{ fontSize: 12, color: 'var(--sidebar-text, #E5E5E1)', fontFamily: 'var(--font-mono)', opacity: 0.5 }}>Wavult Group 2026</p>
+          <p style={{ fontSize: 12, color: 'var(--sidebar-text, #E5E5E1)', fontFamily: 'var(--font-mono)', opacity: 0.5 }}>Wavult Group {new Date().getFullYear()}</p>
         </div>
       </aside>
 
