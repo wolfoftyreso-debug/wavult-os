@@ -104,6 +104,7 @@ const SystemAuditDashboard   = lazy(() => import('./features/system-audit/System
 const SystemOversiktView     = lazy(() => import('./features/system/SystemOversiktView').then(m => ({ default: m.SystemOversiktView })))
 const UXQualityDashboard     = lazy(() => import('./features/ux-quality/UXQualityDashboard').then(m => ({ default: m.UXQualityDashboard })))
 const ProfileView            = lazy(() => import('./features/profile/ProfileView').then(m => ({ default: m.ProfileView })))
+const CodeView               = lazy(() => import('./features/code/CodeView').then(m => ({ default: m.CodeView })))
 
 // ─── Page loader fallback ───────────────────────────────────────────────────────
 function PageLoader() {
@@ -268,6 +269,8 @@ function AuthenticatedApp() {
               <Route path="/system" element={<SystemOversiktView />} />
               <Route path="/ux-quality" element={<UXQualityDashboard />} />
               <Route path="/profile" element={<ProfileView />} />
+              <Route path="/code" element={<CodeView />} />
+              <Route path="/code/:repoId" element={<CodeView />} />
             </Routes>
           </Suspense>
         </Shell>

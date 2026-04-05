@@ -152,6 +152,12 @@ const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
+    labelKey: 'Dev',
+    items: [
+      { to: '/code', labelKey: 'Code', icon: Terminal },
+    ],
+  },
+  {
     labelKey: 'nav.group.devInfra',
     items: [
       { to: '/infrastructure',      labelKey: 'Infrastruktur',       icon: Server },
