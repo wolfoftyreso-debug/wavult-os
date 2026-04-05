@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRole } from '../../shared/auth/RoleContext'
 import { TimeMachineView } from './TimeMachine'
+import { DynastyAgents } from './DynastyAgents'
 
 const API = import.meta.env.VITE_API_URL ?? 'https://api.wavult.com'
 
@@ -351,6 +352,7 @@ export function DevOSView() {
   const [activeGraphId, setActiveGraphId] = useState<string | null>(null)
   const [recentGraphs, setRecentGraphs] = useState<TaskGraph[]>([])
   const [showTimeMachine, setShowTimeMachine] = useState(false)
+  const [activeTab, setActiveTab] = useState<'orchestrator' | 'dynasty'>('orchestrator')
 
   useEffect(() => {
     const stored = localStorage.getItem('devos_recent_graphs')
@@ -379,12 +381,12 @@ export function DevOSView() {
       {/* Left: Create + History */}
       <div className="w-80 flex-shrink-0 border-r border-surface-border bg-[#FDFAF5] flex flex-col">
         <div className="px-4 py-3 border-b border-surface-border">
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center justify-between gap-2 mb-2">
             <div className="flex items-center gap-2">
               <span className="text-lg">🧠</span>
               <div>
-                <h2 className="text-sm font-bold text-[#0A3D62]">DevOS Orchestrator</h2>
-                <p className="text-[10px] text-gray-400">AI genererar task graphs</p>
+                <h2 className="text-sm font-bold text-[#0A3D62]">DevOS</h2>
+                <p className="text-[10px] text-gray-400">AI-native development platform</p>
               </div>
             </div>
             <button
@@ -399,31 +401,60 @@ export function DevOSView() {
               ⏪
             </button>
           </div>
+          {/* Tabs */}
+          <div className="flex rounded-lg bg-[#F5F0E8] p-0.5 gap-0.5">
+            <button
+              onClick={() => setActiveTab('orchestrator')}
+              className={`flex-1 text-[10px] font-semibold py-1 rounded-md transition-colors ${
+                activeTab === 'orchestrator'
+                  ? 'bg-white text-[#0A3D62] shadow-sm'
+                  : 'text-gray-400 hover:text-gray-600'
+              }`}
+            >
+              Skapa Graph
+            </button>
+            <button
+              onClick={() => setActiveTab('dynasty')}
+              className={`flex-1 text-[10px] font-semibold py-1 rounded-md transition-colors ${
+                activeTab === 'dynasty'
+                  ? 'bg-white text-[#0A3D62] shadow-sm'
+                  : 'text-gray-400 hover:text-gray-600'
+              }`}
+            >
+              Dynasty Agents
+            </button>
+          </div>
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          <CreateGraphPanel onCreated={handleCreated} />
+          {activeTab === 'orchestrator' ? (
+            <>
+              <CreateGraphPanel onCreated={handleCreated} />
 
-          {recentGraphs.length > 0 && (
-            <div>
-              <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-2">Senaste</div>
-              <div className="space-y-1.5">
-                {recentGraphs.map(g => (
-                  <button
-                    key={g.id}
-                    onClick={() => setActiveGraphId(g.id)}
-                    className={`w-full text-left px-3 py-2 rounded-lg text-xs transition-colors ${
-                      activeGraphId === g.id
-                        ? 'bg-[#0A3D62] text-white'
-                        : 'bg-white border border-surface-border hover:border-[#0A3D62]/30 text-gray-700'
-                    }`}
-                  >
-                    <div className="font-mono text-[9px] opacity-60">{g.id.slice(0, 8)}</div>
-                    <div className="truncate mt-0.5">{g.intent || g.project_id}</div>
-                  </button>
-                ))}
-              </div>
-            </div>
+              {recentGraphs.length > 0 && (
+                <div>
+                  <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-2">Senaste</div>
+                  <div className="space-y-1.5">
+                    {recentGraphs.map(g => (
+                      <button
+                        key={g.id}
+                        onClick={() => setActiveGraphId(g.id)}
+                        className={`w-full text-left px-3 py-2 rounded-lg text-xs transition-colors ${
+                          activeGraphId === g.id
+                            ? 'bg-[#0A3D62] text-white'
+                            : 'bg-white border border-surface-border hover:border-[#0A3D62]/30 text-gray-700'
+                        }`}
+                      >
+                        <div className="font-mono text-[9px] opacity-60">{g.id.slice(0, 8)}</div>
+                        <div className="truncate mt-0.5">{g.intent || g.project_id}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <DynastyAgents />
           )}
         </div>
       </div>
