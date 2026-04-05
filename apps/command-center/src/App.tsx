@@ -105,6 +105,7 @@ const SystemOversiktView     = lazy(() => import('./features/system/SystemOversi
 const UXQualityDashboard     = lazy(() => import('./features/ux-quality/UXQualityDashboard').then(m => ({ default: m.UXQualityDashboard })))
 const ProfileView            = lazy(() => import('./features/profile/ProfileView').then(m => ({ default: m.ProfileView })))
 const CodeView               = lazy(() => import('./features/code/CodeView').then(m => ({ default: m.CodeView })))
+const DevOSView              = lazy(() => import('./features/devos/DevOSView').then(m => ({ default: m.DevOSView })))
 
 // ─── Page loader fallback ───────────────────────────────────────────────────────
 function PageLoader() {
@@ -272,6 +273,7 @@ function AuthenticatedApp() {
               <Route path="/code" element={<CodeView />} />
               <Route path="/code/:repoId" element={<CodeView />} />
               <Route path="/code/release/:releaseId" element={<CodeView />} />
+              <Route path="/devos" element={<DevOSView />} />
             </Routes>
           </Suspense>
         </Shell>

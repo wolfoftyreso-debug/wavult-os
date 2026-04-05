@@ -149,6 +149,7 @@ const NAV_GROUPS: NavGroup[] = [
     roles: ['group-ceo', 'cto', 'admin'],
     items: [
       { to: '/system', labelKey: 'Systemöversikt', icon: Activity },
+      { to: '/devos',  labelKey: 'DevOS',          icon: Zap },
     ],
   },
   {
