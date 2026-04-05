@@ -264,7 +264,7 @@ function CeoDashboard() {
 
   return (
     <div className="space-y-8 max-w-6xl">
-      <Breadcrumbs crumbs={[{ label: 'Wavult OS', href: '/' }, { label: 'Dashboard' }, { label: isRoot ? 'Group CEO' : activeEntity.name }]} />
+      <Breadcrumbs crumbs={[{ label: 'Wavult DS', href: '/' }, { label: 'Dashboard' }, { label: isRoot ? 'Group CEO' : activeEntity.name }]} />
       <VisaAlertBanner />
       <WelcomeBanner />
 
@@ -455,7 +455,7 @@ function Opsdashboard() {
 
   return (
     <div className="space-y-8 max-w-6xl">
-      <Breadcrumbs crumbs={[{ label: 'Wavult OS', href: '/' }, { label: 'Dashboard' }, { label: 'CEO Operations' }]} />
+      <Breadcrumbs crumbs={[{ label: 'Wavult DS', href: '/' }, { label: 'Dashboard' }, { label: 'CEO Operations' }]} />
       <div>
         <h1 style={{ fontSize: 13, fontWeight: 600, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.06em" }}>CEO Operations</h1>
         <p style={{ color: "var(--color-text-secondary)", marginTop: 4, fontSize: 14 }}>Daglig drift & execution — Wavult Operations</p>
@@ -497,7 +497,7 @@ function Opsdashboard() {
             </div>
           ))}
           items={[
-            { text: 'Wavult OS Command Center — rollsystem live', status: 'active' },
+            { text: 'Wavult DS Command Center — rollsystem live', status: 'active' },
             { text: 'quiXzoom API — ECS eu-north-1 live', status: 'active' },
             { text: 'Landvex sajt — CF Pages, senaste deploy live', status: 'active' },
             { text: 'Bolagsstruktur UAE — väntar på rättslig rådgivning', status: 'blocked' },
@@ -516,7 +516,7 @@ function Opsdashboard() {
             </div>
           ))}
           items={[
-            { text: 'Johan: Wavult OS infrastruktur + ECS pipeline', status: 'active' },
+            { text: 'Johan: Wavult DS infrastruktur + ECS pipeline', status: 'active' },
             { text: 'Winston: Kassaflöde + budgetuppföljning', status: 'active' },
             { text: 'Dennis: Texas LLC docs + compliance', status: 'in-progress' },
             { text: 'Leon: Q1 execution koordinering', status: 'active' },
@@ -645,7 +645,7 @@ function CfoDashboard() {
 
   return (
     <div className="space-y-8 max-w-6xl">
-      <Breadcrumbs crumbs={[{ label: 'Wavult OS', href: '/' }, { label: 'Dashboard' }, { label: isRoot ? 'CFO' : activeEntity.name }]} />
+      <Breadcrumbs crumbs={[{ label: 'Wavult DS', href: '/' }, { label: 'Dashboard' }, { label: isRoot ? 'CFO' : activeEntity.name }]} />
       <div>
         <h1 style={{ fontSize: 13, fontWeight: 600, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.06em" }}>{cfoData.heading}</h1>
         <p style={{ color: "var(--color-text-secondary)", marginTop: 4, fontSize: 14 }}>{cfoData.subtitle}</p>
@@ -724,7 +724,7 @@ function CtoDashboard() {
 
   return (
     <div className="space-y-8 max-w-6xl">
-      <Breadcrumbs crumbs={[{ label: 'Wavult OS', href: '/' }, { label: 'Dashboard' }, { label: 'Group CTO' }]} />
+      <Breadcrumbs crumbs={[{ label: 'Wavult DS', href: '/' }, { label: 'Dashboard' }, { label: 'Group CTO' }]} />
       <div>
         <h1 style={{ fontSize: 13, fontWeight: 600, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.06em" }}>Group CTO</h1>
         <p style={{ color: "var(--color-text-secondary)", marginTop: 4, fontSize: 14 }}>Teknisk arkitektur & infrastruktur — Wavult Ecosystem</p>
@@ -819,7 +819,7 @@ function CloDashboard() {
 
   return (
     <div className="space-y-8 max-w-6xl">
-      <Breadcrumbs crumbs={[{ label: 'Wavult OS', href: '/' }, { label: 'Dashboard' }, { label: 'Chief Legal & Compliance' }]} />
+      <Breadcrumbs crumbs={[{ label: 'Wavult DS', href: '/' }, { label: 'Dashboard' }, { label: 'Chief Legal & Compliance' }]} />
       <div>
         <h1 style={{ fontSize: 13, fontWeight: 600, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.06em" }}>Chief Legal & Compliance</h1>
         <p style={{ color: "var(--color-text-secondary)", marginTop: 4, fontSize: 14 }}>Bolagsstruktur, avtal & risk — Wavult Ecosystem</p>
@@ -902,7 +902,7 @@ function CpoDashboard() {
 
   return (
     <div className="space-y-8 max-w-6xl">
-      <Breadcrumbs crumbs={[{ label: 'Wavult OS', href: '/' }, { label: 'Dashboard' }, { label: 'CPO' }]} />
+      <Breadcrumbs crumbs={[{ label: 'Wavult DS', href: '/' }, { label: 'Dashboard' }, { label: 'CPO' }]} />
       <div>
         <h1 style={{ fontSize: 22, fontWeight: 700, color: "var(--color-text-primary)" }}>Chief Product Officer</h1>
         <p style={{ color: "var(--color-text-secondary)", marginTop: 4, fontSize: 14 }}>Produktstrategi & roadmap — Vakant (interim: Erik)</p>
@@ -930,7 +930,7 @@ function CpoDashboard() {
           items={[
             { text: 'quiXzoom — crowdsourcad kamerainfrastruktur (zoomer-plattform)', status: 'active' },
             { text: 'Optical Insight / Landvex — B2G kontrollsystem', status: 'active' },
-            { text: 'Wavult OS — internt operativsystem för Wavult Group', status: 'active' },
+            { text: 'Wavult DS — internt operativsystem för Wavult Group', status: 'active' },
             { text: 'Quixom Ads — fas 2, monetisering av quiXzoom-data', status: 'planned' },
           ]}
         />
@@ -1203,7 +1203,7 @@ export function RoleDashboard() {
           border: 0,
         }}
       >
-        {effectiveRole.title} — Wavult OS Dashboard
+        {effectiveRole.title} — Wavult DS Dashboard
       </h1>
       <ScopeBanner />
       {dashboard}

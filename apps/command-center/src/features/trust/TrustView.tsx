@@ -1,5 +1,34 @@
-import { useState } from 'react'
-import { ALL_TRUST_JURISDICTIONS, ADDITIONAL_TRUST_JURISDICTIONS, ALL_TRUST_JURISDICTIONS, WAVULT_RECOMMENDED_STRUCTURE, TrustJurisdiction, TrustSetupStep } from './trustData'
+import { useState, useEffect } from 'react'
+import { ALL_TRUST_JURISDICTIONS, WAVULT_RECOMMENDED_STRUCTURE, TrustJurisdiction, TrustSetupStep } from './trustData'
+
+// ─── Reactive summary data ────────────────────────────────────────────────────
+const totalJurisdictions = ALL_TRUST_JURISDICTIONS.length
+const minSetupCost = Math.min(...ALL_TRUST_JURISDICTIONS.map(j => j.setup_cost_usd))
+const zeroTaxCount = ALL_TRUST_JURISDICTIONS.filter(j => j.tax_rate.startsWith('0%')).length
+const recommendedJurisdiction = ALL_TRUST_JURISDICTIONS.find(j => j.id === WAVULT_RECOMMENDED_STRUCTURE.tier1)
+const recommendedName = recommendedJurisdiction
+  ? `${recommendedJurisdiction.flag} ${recommendedJurisdiction.name.split('(')[0].trim()}`
+  : 'DIFC'
+const cheapestJurisdiction = ALL_TRUST_JURISDICTIONS.find(j => j.setup_cost_usd === minSetupCost)
+
+const SUMMARY_CARDS = [
+  {
+    label: `${totalJurisdictions} jurisdiktioner`,
+    sub: 'fullständigt dokumenterade',
+  },
+  {
+    label: `${recommendedName} rekommenderad`,
+    sub: 'Wavults förstahandsval',
+  },
+  {
+    label: `Från $${(minSetupCost / 1000).toFixed(0)}k setup`,
+    sub: `${cheapestJurisdiction?.name.split(' ')[0] ?? 'BVI'} lägsta kostnad`,
+  },
+  {
+    label: `0% skatt på ${zeroTaxCount} av ${totalJurisdictions}`,
+    sub: 'jurisdiktioner utan kapitalvinstskatt',
+  },
+]
 
 // ─── Colours ──────────────────────────────────────────────────────────────────
 const CREAM  = '#F5F0E8'
@@ -534,6 +563,27 @@ function MyTrustsTab({ onStartTrust }: { onStartTrust: (jurisdictionId: string) 
   const [trusts, setTrusts] = useState<Record<string, unknown>[]>(() =>
     JSON.parse(localStorage.getItem('wavult_trusts') ?? '[]')
   )
+
+  useEffect(() => {
+    const API = import.meta.env.VITE_API_URL ?? 'https://api.wavult.com'
+    fetch(`${API}/api/trusts`, {
+      headers: { Authorization: 'Bearer bypass' },
+    })
+      .then(r => (r.ok ? r.json() : null))
+      .then(data => {
+        if (data?.trusts?.length) {
+          const local = JSON.parse(localStorage.getItem('wavult_trusts') ?? '[]')
+          const merged = [
+            ...data.trusts,
+            ...local.filter((l: Record<string, unknown>) =>
+              !data.trusts.find((d: Record<string, unknown>) => d.id === l.id)
+            ),
+          ]
+          setTrusts(merged)
+        }
+      })
+      .catch(() => {}) // fallback till localStorage
+  }, [])
 
   function reload() {
     setTrusts(JSON.parse(localStorage.getItem('wavult_trusts') ?? '[]'))
@@ -1203,12 +1253,7 @@ export function TrustView() {
 
           {/* Quick stats */}
           <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginTop: 16 }}>
-            {[
-              { label: '6 jurisdiktioner', sub: 'fullt dokumenterade' },
-              { label: 'DIFC rekommenderad', sub: 'Wavults Dubai-närvaro' },
-              { label: 'Från $12k setup', sub: 'BVI lägsta kostnad' },
-              { label: '0% skatt', sub: 'på 5 av 6 jurisdiktioner' },
-            ].map(s => (
+            {SUMMARY_CARDS.map(s => (
               <div key={s.label} style={{
                 background: 'white', border: '1px solid #e2e8f0', borderRadius: 10,
                 padding: '10px 16px',
@@ -1311,6 +1356,11 @@ export function TrustView() {
             </div>
           </>
         )}
+
+        {/* Footer */}
+        <div style={{ fontSize: 11, color: '#94a3b8', textAlign: 'center', marginTop: 24 }}>
+          {ALL_TRUST_JURISDICTIONS.length} jurisdiktioner dokumenterade · Senast uppdaterad: {new Date().toLocaleDateString('sv-SE')} · Källa: Wavult Legal Research 2026
+        </div>
       </div>
     </div>
   )
