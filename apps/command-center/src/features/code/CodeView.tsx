@@ -945,8 +945,18 @@ export function CodeView() {
           </div>
         </div>
 
+        {/* ── MEMORY: Project Memory Graph ── */}
+        <div className="w-64 flex flex-col border-r border-[#D8CFC4] bg-[#FAFAF8] shrink-0">
+          <div className="flex items-center gap-2 px-3 py-2 border-b border-[#D8CFC4] bg-[#EDE8DF] shrink-0">
+            <span className="text-[10px] font-bold text-[#0A3D62] uppercase tracking-wide flex-1">🧠 Projektminne</span>
+          </div>
+          <div className="flex-1 min-h-0 overflow-hidden">
+            <MemoryPanel memory={memory} loading={memoryLoading} />
+          </div>
+        </div>
+
         {/* ── RIGHT: Preview ── */}
-        <div className="w-96 flex flex-col bg-[#F0EDE8] shrink-0">
+        <div className="w-80 flex flex-col bg-[#F0EDE8] shrink-0">
           <div className="flex items-center gap-2 px-4 py-2 border-b border-[#D8CFC4] bg-[#EDE8DF] shrink-0">
             <Play size={12} className="text-[#0A3D62]" />
             <span className="text-[10px] font-bold text-[#0A3D62] uppercase tracking-wide flex-1">Preview</span>
