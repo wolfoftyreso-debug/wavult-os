@@ -211,10 +211,14 @@ export function TalentRadar() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('/api/talent')
+    const controller = new AbortController()
+    const t = setTimeout(() => controller.abort(), 8000)
+    fetch('/api/talent', { signal: controller.signal })
       .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json() })
       .then(() => setLoading(false))
       .catch(e => { setError(e.message); setLoading(false) })
+      .finally(() => clearTimeout(t))
+    return () => { controller.abort(); clearTimeout(t) }
   }, [])
 
   if (loading) return <div style={{ padding: 24 }}>{[1,2,3].map(i => <div key={i} style={{ background: 'var(--color-bg-muted)', borderRadius: 10, height: 72, marginBottom: 10, animation: 'pulse 1.5s ease-in-out infinite' }} />)}</div>

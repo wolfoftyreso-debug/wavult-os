@@ -28,10 +28,14 @@ export function QuixzoomAds() {
   const [usingFallback, setUsingFallback] = useState(false)
 
   useEffect(() => {
-    fetch('/api/quixzoom/ads/packages')
+    const controller = new AbortController()
+    const t = setTimeout(() => controller.abort(), 8000)
+    fetch('/api/quixzoom/ads/packages', { signal: controller.signal })
       .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
       .then(d => { setPackages(d.packages ?? []); setLoading(false) })
       .catch(() => { setLoading(false); setUsingFallback(false) })
+      .finally(() => clearTimeout(t))
+    return () => { controller.abort(); clearTimeout(t) }
   }, [])
 
   if (loading) {

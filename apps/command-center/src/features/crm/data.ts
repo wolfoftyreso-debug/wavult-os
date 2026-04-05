@@ -104,9 +104,10 @@ export const STAGE_COLORS: Record<CRMStage, string> = {
   Förlorad: '#374151',
 }
 
-export const PRODUCT_COLORS: Record<CRMProduct, string> = {
+export const PRODUCT_COLORS: Record<string, string> = {
   quiXzoom: '#3B82F6',
   Landvex: '#10B981',
+  Hypbit: '#7C3AED',
   'Wavult OS': '#2563EB',
 }
 

@@ -8,10 +8,14 @@ function useFinanceFlow() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   useEffect(() => {
-    fetch('/api/finance/flow')
+    const controller = new AbortController()
+    const t = setTimeout(() => controller.abort(), 8000)
+    fetch('/api/finance/flow', { signal: controller.signal })
       .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
       .then(d => { setItems(d.items ?? []); setLoading(false) })
       .catch(e => { setError(String(e)); setLoading(false) })
+      .finally(() => clearTimeout(t))
+    return () => { controller.abort(); clearTimeout(t) }
   }, [])
   return { items, loading, error }
 }

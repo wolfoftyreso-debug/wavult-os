@@ -268,10 +268,14 @@ export function TasksView() {
   const [usingFallback, setUsingFallback] = useState(false)
 
   useEffect(() => {
-    fetch('/api/tasks')
+    const controller = new AbortController()
+    const t = setTimeout(() => controller.abort(), 8000)
+    fetch('/api/tasks', { signal: controller.signal })
       .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
       .then(d => { if (d.tasks?.length) setTasks(d.tasks); setLoading(false) })
       .catch(e => { setTaskError(String(e)); setUsingFallback(true); setLoading(false) })
+      .finally(() => clearTimeout(t))
+    return () => { controller.abort(); clearTimeout(t) }
   }, [])
 
   if (loading) return <div style={{ padding: 24 }}>{[1,2,3,4].map(i => <div key={i} style={{ background: 'var(--color-bg-muted)', borderRadius: 10, height: 56, marginBottom: 10, animation: 'pulse 1.5s ease-in-out infinite' }} />)}</div>

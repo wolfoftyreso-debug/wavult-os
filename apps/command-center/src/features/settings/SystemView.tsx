@@ -59,10 +59,14 @@ export function SystemView() {
   const [usingFallback, setUsingFallback] = useState(false)
 
   const fetchMetrics = useCallback(() => {
-    fetch('/api/cockpit/metrics', { credentials: 'include' })
+    const controller = new AbortController()
+    const t = setTimeout(() => controller.abort(), 8000)
+    fetch('/api/cockpit/metrics', { credentials: 'include', signal: controller.signal })
       .then(r => (r.ok ? r.json() : null))
       .then(data => { if (data) setLiveMetrics(data); else setUsingFallback(true) })
       .catch(() => setUsingFallback(true))
+      .finally(() => clearTimeout(t))
+    return () => { controller.abort(); clearTimeout(t) }
   }, [])
 
   useEffect(() => {

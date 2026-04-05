@@ -20,10 +20,14 @@ function useApiflyRoutes() {
   const [usingFallback, setUsingFallback] = useState(false)
 
   useEffect(() => {
-    fetch('/api/apifly/routes')
+    const controller = new AbortController()
+    const t = setTimeout(() => controller.abort(), 8000)
+    fetch('/api/apifly/routes', { signal: controller.signal })
       .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json() })
       .then(d => { setRoutes(d.routes ?? []); setLoading(false) })
       .catch(() => { setRoutes(FALLBACK_ROUTES); setUsingFallback(true); setLoading(false) })
+      .finally(() => clearTimeout(t))
+    return () => { controller.abort(); clearTimeout(t) }
   }, [])
 
   return { routes, loading, usingFallback }

@@ -656,7 +656,7 @@ function CfoDashboard() {
           isRoot
             ? { label: 'Bolag med ekonomi', value: '6', delta: 'WGH, WOP, QZ UAB, QZ Inc, LVX AB, LVX Inc', color: '#3B82F6',
                 drawerContent: <p className="text-sm text-[var(--color-text-secondary)]">6 bolag med ekonomisk redovisning: Wavult Group Holding, Wavult Operations, QuiXzoom UAB, QuiXzoom Inc, Landvex AB, Landvex Inc.</p> }
-            : { label: 'Bolag', value: activeEntity.short_name ?? activeEntity.name, delta: activeEntity.jurisdiction ?? '', color: '#3B82F6',
+            : { label: 'Bolag', value: activeEntity.shortName ?? activeEntity.name, delta: activeEntity.jurisdiction ?? '', color: '#3B82F6',
                 drawerContent: <p className="text-sm text-[var(--color-text-secondary)]">{activeEntity.name} — aktiv entitet i Wavult Group.</p> },
           { label: 'Struktur', value: cfoData.financialStructure.filter(i => i.status === 'active').length + '/' + cfoData.financialStructure.length, delta: `${cfoData.financialStructure.filter(i => i.status === 'planned' || i.status === 'blocked').length} återstår`, color: '#10B981',
             drawerContent: <p className="text-sm text-[var(--color-text-secondary)]">{cfoData.financialStructure.filter(i => i.status === 'active').length} aktiva finansstrukturer av {cfoData.financialStructure.length} totalt.</p> },

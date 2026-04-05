@@ -8,10 +8,14 @@ function useTeamStatus() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   useEffect(() => {
-    fetch('/api/team/status')
+    const controller = new AbortController()
+    const t = setTimeout(() => controller.abort(), 8000)
+    fetch('/api/team/status', { signal: controller.signal })
       .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
       .then(d => { setMembers(d.members ?? []); setLoading(false) })
       .catch(e => { setError(String(e)); setLoading(false) })
+      .finally(() => clearTimeout(t))
+    return () => { controller.abort(); clearTimeout(t) }
   }, [])
   return { members, loading, error }
 }

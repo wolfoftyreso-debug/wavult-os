@@ -8,10 +8,14 @@ function useExports() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   useEffect(() => {
-    fetch('/api/exports')
+    const controller = new AbortController()
+    const t = setTimeout(() => controller.abort(), 8000)
+    fetch('/api/exports', { signal: controller.signal })
       .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
       .then(d => { setJobs(d.jobs ?? []); setLoading(false) })
       .catch(e => { setError(String(e)); setLoading(false) })
+      .finally(() => clearTimeout(t))
+    return () => { controller.abort(); clearTimeout(t) }
   }, [])
   return { jobs, loading, error }
 }

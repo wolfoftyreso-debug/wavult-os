@@ -371,10 +371,14 @@ function JurisdictionDetail({
 
   useEffect(() => {
     setLoading(true)
-    fetch(`${API}/v1/jurisdiction/${code}`)
+    const controller = new AbortController()
+    const t = setTimeout(() => controller.abort(), 8000)
+    fetch(`${API}/v1/jurisdiction/${code}`, { signal: controller.signal })
       .then(r => r.json())
       .then(data => { setDetail(data); setLoading(false) })
       .catch(() => setLoading(false))
+      .finally(() => clearTimeout(t))
+    return () => { controller.abort(); clearTimeout(t) }
   }, [code])
 
   if (loading) return (
@@ -515,14 +519,17 @@ export function JurisdictionView() {
   const PRODUCTS = ['quixzoom', 'landvex', 'quixom_ads', 'wavult_os']
 
   useEffect(() => {
-    fetch(`${API}/v1/jurisdiction`)
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 8000)
+    fetch(`${API}/v1/jurisdiction`, { signal: controller.signal })
       .then(r => r.json())
       .then(data => {
         setJurisdictions(data)
         if (data.length > 0) setSelectedCode(data[0].country_code)
-        setLoading(false)
       })
-      .catch(() => setLoading(false))
+      .catch(() => {}) // empty state
+      .finally(() => { clearTimeout(timeout); setLoading(false) })
+    return () => { controller.abort(); clearTimeout(timeout) }
   }, [])
 
   const totalGaps = jurisdictions.reduce((s, j) => s + (j.gap_count || 0), 0)

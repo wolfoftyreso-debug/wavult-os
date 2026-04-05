@@ -150,7 +150,7 @@ function EcsSection({ token }: { token: string | null }) {
   function getColor(svc: typeof services[0]) {
     if (svc.deprecated) return C.gray
     if (svc.running === null) return C.gray
-    if (svc.desired === 0) return C.gray
+    if (svc.desired === null || svc.desired === 0) return C.gray
     if (svc.running >= svc.desired) return C.green
     return C.red
   }
@@ -568,7 +568,7 @@ function GitHubSection() {
 const ACTION_SERVICES = ECS_SERVICES.filter(s => !s.deprecated).map(s => s.name)
 
 function ActionsSection({ token }: { token: string | null }) {
-  const [selectedService, setSelectedService] = useState(ACTION_SERVICES[0])
+  const [selectedService, setSelectedService] = useState<string>(ACTION_SERVICES[0])
   const [selectedDomain, setSelectedDomain] = useState('wavult.com')
   const [confirmAction, setConfirmAction] = useState<string | null>(null)
   const [lastResult, setLastResult] = useState<string | null>(null)

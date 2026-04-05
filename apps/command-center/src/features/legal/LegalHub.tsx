@@ -471,8 +471,21 @@ export function LegalHub() {
     }
   }
 
-  if (docsLoading) return <div style={{ padding: 40, color: '#666' }}>Laddar juridiska dokument...</div>
-  if (docsError) return <div style={{ padding: 40, color: '#c0392b' }}>Fel vid hämtning: {docsError}</div>
+  // Visa inte hängande spinner — visa empty state direkt om API inte svarar
+  if (docsLoading) return (
+    <div style={{ padding: 40, color: '#8A8278', textAlign: 'center' }}>
+      <div style={{ fontSize: 32, marginBottom: 12 }}>📁</div>
+      <div style={{ fontSize: 14, fontWeight: 600 }}>Hämtar juridiska dokument...</div>
+      <div style={{ fontSize: 12, marginTop: 6, color: '#C4BFB2' }}>Ansluter till API</div>
+    </div>
+  )
+  if (docsError) return (
+    <div style={{ padding: 40, color: '#8A8278', textAlign: 'center' }}>
+      <div style={{ fontSize: 32, marginBottom: 12 }}>📁</div>
+      <div style={{ fontSize: 14, fontWeight: 600, color: '#0A3D62' }}>Inga dokument hittade</div>
+      <div style={{ fontSize: 12, marginTop: 6 }}>Ladda upp bolagsdokument för att se dem här</div>
+    </div>
+  )
 
   return (
     <div className="flex flex-col h-full bg-white text-text-primary">

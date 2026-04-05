@@ -182,7 +182,9 @@ function useQmsEntities() {
 
   useEffect(() => {
     setLoading(true)
-    fetch(`${API_BASE}/v1/qms/entities`)
+    const controller = new AbortController()
+    const t = setTimeout(() => controller.abort(), 8000)
+    fetch(`${API_BASE}/v1/qms/entities`, { signal: controller.signal })
       .then(r => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`)
         return r.json()
@@ -196,7 +198,8 @@ function useQmsEntities() {
         setError('Kunde inte hämta compliance-data')
         setEntities([])
       })
-      .finally(() => setLoading(false))
+      .finally(() => { clearTimeout(t); setLoading(false) })
+    return () => { controller.abort(); clearTimeout(t) }
   }, [])
 
   return { entities, loading, error }

@@ -3,7 +3,7 @@
 // Categories: 12 free + 22 paid = 34 categories, 400+ integrations
 
 export type IntegrationStatus = 'live' | 'configured' | 'available' | 'planned'
-export type IntegrationPrice = 'free' | 'paid' | 'usage-based'
+export type IntegrationPrice = 'free' | 'paid' | 'usage-based' | 'included'
 
 export interface APIIntegration {
   id: string

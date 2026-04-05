@@ -250,7 +250,7 @@ function GraphDetail({ graphId, onBack }: { graphId: string; onBack: () => void 
     await fetch(`${API}/api/devos/tasks/${taskId}/approve`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: 'Bearer bypass' },
-      body: JSON.stringify({ approver: role?.label })
+      body: JSON.stringify({ approver: role?.title ?? role?.name })
     })
   }
 

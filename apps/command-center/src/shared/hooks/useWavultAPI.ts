@@ -37,14 +37,21 @@ export function useWavultAPI<T>(
     if (skip) return
     setLoading(true)
     setError(null)
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 8000) // 8s timeout — aldrig hänger
     try {
-      const res = await apiFetch(path, fetchOptions)
+      const res = await apiFetch(path, { ...fetchOptions, signal: controller.signal })
       if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
       const json = await res.json() as T
       setData(json)
     } catch (err) {
-      setError(err instanceof Error ? err.message : String(err))
+      if (err instanceof Error && err.name === 'AbortError') {
+        setError('Timeout — API svarade inte')
+      } else {
+        setError(err instanceof Error ? err.message : String(err))
+      }
     } finally {
+      clearTimeout(timeout)
       setLoading(false)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps

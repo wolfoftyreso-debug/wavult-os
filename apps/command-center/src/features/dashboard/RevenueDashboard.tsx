@@ -28,10 +28,12 @@ export function RevenueDashboard() {
 
   useEffect(() => {
     async function fetchMetrics() {
+      const controller = new AbortController()
+      const t = setTimeout(() => controller.abort(), 8000)
       try {
         const [missRes, zoomerRes] = await Promise.all([
-          window.fetch('https://api.wavult.com/v1/missions'),
-          window.fetch('https://api.wavult.com/v1/zoomers'),
+          window.fetch('https://api.wavult.com/v1/missions', { signal: controller.signal }),
+          window.fetch('https://api.wavult.com/v1/zoomers', { signal: controller.signal }),
         ])
 
         const missions = missRes.ok ? await missRes.json() : []
@@ -59,6 +61,7 @@ export function RevenueDashboard() {
         setMetrics(FALLBACK_METRICS)
         setUsingFallback(true)
       } finally {
+        clearTimeout(t)
         setLoading(false)
       }
     }
