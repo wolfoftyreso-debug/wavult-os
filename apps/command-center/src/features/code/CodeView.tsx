@@ -10,10 +10,12 @@ import { useQuery } from '@tanstack/react-query'
 import {
   Terminal, GitBranch, RefreshCw, ChevronRight, ChevronDown,
   File, Folder, Send, Check, GitCommit, Play, AlertCircle, Loader2,
-  Download, Upload
+  Download, Upload, Rocket,
 } from 'lucide-react'
 import JSZip from 'jszip'
 import { useGiteaRepos, GiteaRepo } from '../git/useGiteaRepos'
+import { useReleaseFlow } from './useReleaseFlow'
+import { ReleasePipeline } from './ReleasePipeline'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -344,6 +346,22 @@ export function CodeView() {
   const [showCommitModal, setShowCommitModal] = useState(false)
   const [previewKey, setPreviewKey] = useState(0)
 
+  // View state: 'editor' | 'pipeline'
+  const [view, setView] = useState<'editor' | 'pipeline'>('editor')
+
+  // Release flow
+  const {
+    releases,
+    activeRelease,
+    setActiveRelease,
+    createRelease,
+    updateChecklist,
+    submitForApproval,
+    approveRelease,
+    rejectRelease,
+    deployLive,
+  } = useReleaseFlow()
+
   // ZIP state
   const [zipProgress, setZipProgress] = useState<string | null>(null)
   const [importStatus, setImportStatus] = useState<string | null>(null)
@@ -583,7 +601,7 @@ export function CodeView() {
   const previewUrl = selectedRepo?.website || null
 
   return (
-    <div className="flex flex-col h-full overflow-hidden bg-[#F5F0E8]">
+    <div className="relative flex flex-col h-full overflow-hidden bg-[#F5F0E8]">
       {/* Topbar */}
       <div className="flex items-center gap-3 px-4 py-2 border-b border-[#D8CFC4] bg-[#EDE8DF] shrink-0">
         <Terminal size={16} className="text-[#0A3D62]" />
@@ -665,7 +683,39 @@ export function CodeView() {
             Commit {appliedChanges.length} fil{appliedChanges.length !== 1 ? 'er' : ''}
           </button>
         )}
+
+        {/* Publicera button */}
+        {selectedRepo && (
+          <button
+            onClick={() => {
+              const lastMsg = commitMsg.trim() || `feat: release ${selectedRepo.name}`
+              const release = createRelease(selectedRepo.name, 'main', lastMsg)
+              setActiveRelease(release)
+              setView('pipeline')
+            }}
+            className="flex items-center gap-1.5 text-xs px-4 py-1.5 rounded-md bg-[#E8B84B] text-[#0A3D62] font-bold hover:bg-[#D4A53A] transition-colors"
+          >
+            <Rocket size={13} />
+            Publicera
+          </button>
+        )}
       </div>
+
+      {/* Pipeline view overlay */}
+      {view === 'pipeline' && activeRelease && (
+        <div className="absolute inset-0 z-20 bg-[#F5F0E8]">
+          <ReleasePipeline
+            release={activeRelease}
+            releases={releases}
+            onBack={() => setView('editor')}
+            onUpdateChecklist={updateChecklist}
+            onSubmitForApproval={submitForApproval}
+            onApprove={approveRelease}
+            onReject={rejectRelease}
+            onDeployLive={deployLive}
+          />
+        </div>
+      )}
 
       {/* 3-column body */}
       <div className="flex flex-1 min-h-0 overflow-hidden">

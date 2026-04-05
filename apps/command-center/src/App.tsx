@@ -271,6 +271,7 @@ function AuthenticatedApp() {
               <Route path="/profile" element={<ProfileView />} />
               <Route path="/code" element={<CodeView />} />
               <Route path="/code/:repoId" element={<CodeView />} />
+              <Route path="/code/release/:releaseId" element={<CodeView />} />
             </Routes>
           </Suspense>
         </Shell>
