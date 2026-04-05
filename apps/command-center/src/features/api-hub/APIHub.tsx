@@ -124,7 +124,7 @@ function IntegrationModal({
             href={integration.docsUrl}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-[#1A1A2E] hover:bg-[#12122A] text-text-primary text-sm rounded-lg transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[#0A3D62] hover:bg-[#072E4A] text-white text-sm rounded-lg transition-colors"
           >
             📖 Öppna dokumentation
           </a>
@@ -266,8 +266,8 @@ export function APIHub() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                   activeTab === tab.id
-                    ? 'bg-[#1A1A2E] text-gray-900'
-                    : 'text-gray-900/60 hover:text-text-primary hover:bg-[#EDE8DC]'
+                    ? 'bg-[#0A3D62] text-white'
+                    : 'text-gray-600 hover:text-text-primary hover:bg-[#EDE8DC]'
                 }`}
               >
                 <span>{tab.icon}</span>
@@ -310,7 +310,7 @@ export function APIHub() {
                   onClick={() => setSelectedCategory(cat.id)}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
                     selectedCategory === cat.id
-                      ? 'bg-[#1A1A2E] border-[#1A1A2E] text-gray-900'
+                      ? 'bg-[#0A3D62] border-[#0A3D62] text-white'
                       : 'border-gray-300 text-gray-900/60 hover:border-[#DDD5C5] hover:text-text-primary bg-[#F0EBE1]'
                   }`}
                 >
