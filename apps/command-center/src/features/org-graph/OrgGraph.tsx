@@ -1,1001 +1,646 @@
-import { useState, useCallback, useMemo, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import {
-  ENTITIES, RELATIONSHIPS,
-  getChildren, getRelationships, getRoleMappings,
-  Entity, EntityRelationship, RelationshipType,
-} from './data'
-import { useRole } from '../../shared/auth/RoleContext'
-import { useEntityScope } from '../../shared/scope/EntityScopeContext'
-import { ROLE_PERMISSIONS, GraphPermissions } from './permissions'
-import { COMMAND_CHAIN, getDirectReports, getApexRole } from './commandChain'
-import { generateIncidents, computePropagation, getRoleKPIs, getKPIStatus, KPI_STATUS_COLOR } from '../incidents/incidentEngine'
-import { MARKET_SITES, SITE_STATUS_COLOR } from '../market-sites/data'
-import { useTranslation } from '../../shared/i18n/useTranslation'
-import { useOrgGraph } from './useOrgGraph'
+import { useState } from 'react'
 
-// ─── Layout constants ──────────────────────────────────────────────────────────
+// ─── Types ─────────────────────────────────────────────────────────────────────
 
-const LAYER_Y: Record<number, number> = { 0: 70, 1: 240, 2: 430, 3: 630 }
-const LAYER_LABEL: Record<number, string> = {
-  0: 'HOLDING / IP',
-  1: 'OPERATIONS',
-  2: 'PRODUCT ENTITIES',
-  3: 'SYSTEMS',
-}
-const CARD_W = 220
-const CARD_H = 120
-const SVG_W = 1120
+type ViewLevel = 'dynasty' | 'entity' | 'individual'
+type SelectedNode = { type: 'entity'; id: string } | { type: 'person'; id: string } | null
+type KPIStatus = 'warning' | 'on_track' | 'active' | 'pending' | 'critical' | 'good'
+type EntityStatus = 'live' | 'forming' | 'planned'
 
-// ─── Command chain layout (right-side column) ─────────────────────────────────
-// Apex sits at layer 0 y-level, direct reports at layer 1 y-level.
-// Always rendered in a fixed right column — never overlaps entities.
-const CMD_X_START = SVG_W + 40       // starts just past the main graph
-const CMD_NODE_W  = 210
-const CMD_NODE_H  = 105
-const CMD_GAP     = 28               // vertical gap between apex and reports
-const CMD_APEX_Y  = LAYER_Y[0]       // same y as holding layer
-const TOTAL_W     = CMD_X_START + CMD_NODE_W + 32  // full svg width with command column
+// ─── Corporate Hierarchy ───────────────────────────────────────────────────────
 
-// ─── Layout engine ─────────────────────────────────────────────────────────────
-
-function layoutNodes(visibleLayers: number[], liveEntities: Entity[]): Map<string, { x: number; y: number }> {
-  const positions = new Map<string, { x: number; y: number }>()
-  const byLayer: Record<number, Entity[]> = {}
-  liveEntities.filter(e => visibleLayers.includes(e.layer)).forEach(e => {
-    if (!byLayer[e.layer]) byLayer[e.layer] = []
-    byLayer[e.layer].push(e)
-  })
-  Object.entries(byLayer).forEach(([layer, nodes]) => {
-    const ly = parseInt(layer)
-    const count = nodes.length
-    const gap = SVG_W / (count + 1)
-    nodes.forEach((node, i) => {
-      positions.set(node.id, { x: gap * (i + 1) - CARD_W / 2, y: LAYER_Y[ly] })
-    })
-  })
-  return positions
+interface CorpEntity {
+  id: string
+  shortName: string
+  name: string
+  jurisdiction: string
+  flag: string
+  layer: number
+  color: string
+  type: string
+  children: string[]
+  parent: string | null
+  status: EntityStatus
+  description: string
 }
 
-// ─── Animated Flow Edge ───────────────────────────────────────────────────────
-// Each relationship type has a particle flowing along it.
-// KPI stress = faster particles + thicker stroke + vibration on line.
-// Flow direction is always from → to (ownership down, financial_flow down, etc.)
+const CORP_HIERARCHY: CorpEntity[] = [
+  {
+    id: '1', shortName: 'WGH', name: 'Wavult Group Holding DMCC',
+    jurisdiction: 'UAE (DIFC)', flag: '🇦🇪', layer: 0,
+    color: '#E8B84B', type: 'HOLDING',
+    children: ['2', '5', '6'], parent: null, status: 'forming',
+    description: 'Dubai Free Zone IP Holding. Äger ALL grupp-IP, varumärken och patent. Licensierar till dotterbolag via royalty 5–15%.',
+  },
+  {
+    id: '2', shortName: 'WOH', name: 'Wavult Operations Holding AB',
+    jurisdiction: 'Sverige', flag: '🇸🇪', layer: 1,
+    color: '#0A3D62', type: 'OPERATIONS',
+    children: ['3', '4'], parent: '1', status: 'planned',
+    description: 'Operativt holdingbolag i Sverige. Koordinerar EU-verksamhet och teamet.',
+  },
+  {
+    id: '3', shortName: 'OZ-LT', name: 'Optical Zoom UAB',
+    jurisdiction: 'Litauen', flag: '🇱🇹', layer: 2,
+    color: '#2D7A4F', type: 'PRODUCT',
+    children: [], parent: '2', status: 'planned',
+    description: 'EU-entitet för Optical Zoom. GDPR-kompatibel, täcker alla EU-marknader från Sverige.',
+  },
+  {
+    id: '4', shortName: 'OZ-US', name: 'Optical Zoom Inc',
+    jurisdiction: 'Delaware, USA', flag: '🇺🇸', layer: 2,
+    color: '#2C6EA6', type: 'PRODUCT',
+    children: [], parent: '2', status: 'planned',
+    description: 'US-entitet för Optical Zoom. Delaware C-Corp optimerad för US-investeringar och kapitalresning.',
+  },
+  {
+    id: '5', shortName: 'LVX-AE', name: 'LandveX AC',
+    jurisdiction: 'UAE (DIFC)', flag: '🇦🇪', layer: 1,
+    color: '#C9A84C', type: 'PRODUCT',
+    children: [], parent: '1', status: 'forming',
+    description: 'LandveX UAE-entitet. DIFC Free Zone för MENA-marknad. AI-analys av infrastrukturdata.',
+  },
+  {
+    id: '6', shortName: 'LVX-US', name: 'LandveX Inc',
+    jurisdiction: 'Texas, USA', flag: '🇺🇸', layer: 1,
+    color: '#4A7A5B', type: 'PRODUCT',
+    children: [], parent: '1', status: 'forming',
+    description: 'LandveX US-entitet. Texas LLC för US municipal och federal infrastruktur. Hamnar, flygplatser, kommuner.',
+  },
+]
 
-// Stress level per entity (from incident propagation)
-const FLOW_CONFIG: Record<RelationshipType, {
-  stroke: string; dash: string; label: string;
-  particleColor: string; particleSize: number; speed: number;
-  baseWidth: number;       // normal line thickness
-  highlightWidth: number;  // when highlighted
-  glowColor: string;       // SVG drop-shadow color
-  symbol?: string;         // optional text symbol on particle (€/$)
-}> = {
-  // Default: only ownership is visible. Others shown on hover/filter only.
-  // VISUAL HIERARCHY: ownership=thick white, everything else=very faint
-  ownership:      { stroke: '#FFFFFF', dash: 'none', label: 'Ägarskap',     particleColor: '#FFFFFF', particleSize: 3,   speed: 2,   baseWidth: 2.5, highlightWidth: 4,   glowColor: '#ffffff33' },
-  financial_flow: { stroke: '#10B981', dash: 'none', label: 'Kapitalflöde', particleColor: '#34D399', particleSize: 2,   speed: 2,   baseWidth: 1.2, highlightWidth: 2,   glowColor: '#10B98133', symbol: '€' },
-  licensing:      { stroke: '#F59E0B', dash: '6 4',  label: 'IP-licens',    particleColor: '#FCD34D', particleSize: 2,   speed: 3,   baseWidth: 1,   highlightWidth: 2,   glowColor: '#F59E0B33' },
-  service:        { stroke: '#0EA5E9', dash: '4 3',  label: 'Tjänst',       particleColor: '#38BDF8', particleSize: 2,   speed: 3,   baseWidth: 1,   highlightWidth: 2,   glowColor: '#0EA5E933' },
-  control:        { stroke: '#EF4444', dash: 'none', label: 'Kontroll',      particleColor: '#F87171', particleSize: 3,   speed: 2,   baseWidth: 1.5, highlightWidth: 3,   glowColor: '#EF444433' },
+// ─── Team Command Chain ────────────────────────────────────────────────────────
+
+interface TeamKPI {
+  label: string
+  value: string
+  status: KPIStatus
 }
-// Keep REL_STYLE alias for Legend compatibility
-const REL_STYLE = Object.fromEntries(
-  Object.entries(FLOW_CONFIG).map(([k, v]) => [k, { stroke: v.stroke, dash: v.dash, label: v.label }])
-) as Record<RelationshipType, { stroke: string; dash: string; label: string }>
 
-function buildEdgePath(
-  fx: number, fy: number, tx: number, ty: number
-): string {
+interface TeamMember {
+  id: string
+  name: string
+  role: string
+  reportsTo: string | null
+  entity: string
+  avatar: string
+  kpis: TeamKPI[]
+  owns: string[]
+}
+
+const TEAM_COMMAND_CHAIN: TeamMember[] = [
+  {
+    id: 'erik',
+    name: 'Erik Svensson',
+    role: 'Chairman & Group CEO',
+    reportsTo: null,
+    entity: 'WGH',
+    avatar: '/avatars/erik.png',
+    owns: ['Group strategy', 'Capital allocation', 'IP & brand', 'System architecture', 'Vision'],
+    kpis: [
+      { label: 'Entiteter etablerade', value: '4/6', status: 'warning' },
+      { label: 'Sverige go-live', value: 'Juni 2026', status: 'on_track' },
+    ]
+  },
+  {
+    id: 'leon',
+    name: 'Leon Russo De Cerame',
+    role: 'CEO — Operations',
+    reportsTo: 'erik',
+    entity: 'WOH',
+    avatar: '/avatars/leon.png',
+    owns: ['Daglig exekvering', 'Resurshantering', 'Sales & revenue', 'Team-koordinering'],
+    kpis: [
+      { label: 'Aktiva projekt', value: '4', status: 'active' },
+      { label: 'First MRR', value: 'Pre-revenue', status: 'pending' },
+    ]
+  },
+  {
+    id: 'winston',
+    name: 'Winston Bjarnemark',
+    role: 'CFO',
+    reportsTo: 'erik',
+    entity: 'WOH',
+    avatar: '/avatars/winston.png',
+    owns: ['Finansiella flöden', 'Intercompany billing', 'Budget & forecast', 'Banking'],
+    kpis: [
+      { label: 'Bankkonton öppnade', value: '0', status: 'critical' },
+      { label: 'Intercompany avtal', value: '0 signerade', status: 'critical' },
+    ]
+  },
+  {
+    id: 'johan',
+    name: 'Johan Berglund',
+    role: 'Group CTO',
+    reportsTo: 'erik',
+    entity: 'WOH',
+    avatar: '/avatars/johan.png',
+    owns: ['Systemarkitektur', 'Infrastruktur', 'CI/CD & DevOps', 'Säkerhet'],
+    kpis: [
+      { label: 'ECS-tjänster live', value: '11/13', status: 'on_track' },
+      { label: 'System uptime', value: '99%', status: 'good' },
+    ]
+  },
+  {
+    id: 'dennis',
+    name: 'Dennis Bjarnemark',
+    role: 'Board / Chief Legal',
+    reportsTo: 'erik',
+    entity: 'WGH',
+    avatar: '/avatars/dennis.png',
+    owns: ['Bolagsstruktur', 'Avtal & juridik', 'IP-skydd', 'Compliance'],
+    kpis: [
+      { label: 'Entiteter inkorporerade', value: '4/6', status: 'warning' },
+      { label: 'Nyckelavtal signerade', value: '0', status: 'critical' },
+    ]
+  },
+]
+
+// ─── Entity detail data ────────────────────────────────────────────────────────
+
+interface EntityKPI {
+  label: string
+  value: string
+  status: KPIStatus
+}
+
+interface TimelineItem {
+  date: string
+  event: string
+  done: boolean
+}
+
+interface EntityDetail {
+  incorporation: string
+  bankStatus: string
+  complianceStatus: string
+  kpis: EntityKPI[]
+  timeline: TimelineItem[]
+  teamIds: string[]
+}
+
+const ENTITY_DETAILS: Record<string, EntityDetail> = {
+  '1': {
+    incorporation: 'DMCC Free Zone LLC',
+    bankStatus: 'Emirates NBD — pending',
+    complianceStatus: 'Forming',
+    teamIds: ['erik', 'dennis'],
+    kpis: [
+      { label: 'Entiteter etablerade', value: '4/6', status: 'warning' },
+      { label: 'IP-avtal signerade', value: '0', status: 'critical' },
+      { label: 'Bankkonto öppnat', value: 'Nej', status: 'critical' },
+      { label: 'Royalty-avtal', value: '0 aktiva', status: 'pending' },
+    ],
+    timeline: [
+      { date: '2025 Q4', event: 'Bolagsstruktur beslutad', done: true },
+      { date: 'Q1 2026', event: 'DMCC-ansökan inlämnad', done: false },
+      { date: 'Q2 2026', event: 'Bankkonto öppnat (ENBD)', done: false },
+      { date: 'Q3 2026', event: 'IP-avtal med dotterbolag signerade', done: false },
+    ],
+  },
+  '2': {
+    incorporation: 'AB (Aktiebolag)',
+    bankStatus: 'Inte öppnat',
+    complianceStatus: 'Planerat',
+    teamIds: ['leon', 'winston', 'johan'],
+    kpis: [
+      { label: 'Inkorporering', value: 'Ej påbörjad', status: 'critical' },
+      { label: 'Aktiva projekt', value: '4', status: 'active' },
+      { label: 'Bankkonto', value: 'Saknas', status: 'critical' },
+      { label: 'Intercompany-avtal', value: '0', status: 'critical' },
+    ],
+    timeline: [
+      { date: 'Q2 2026', event: 'AB registreras hos Bolagsverket', done: false },
+      { date: 'Q2 2026', event: 'Bankkonto öppnat (Revolut/Handelsbanken)', done: false },
+      { date: 'Q3 2026', event: 'Intercompany-avtal med WGH signerade', done: false },
+      { date: 'Q4 2026', event: 'Dotterbolag aktivt i prodution', done: false },
+    ],
+  },
+  '3': {
+    incorporation: 'UAB (Litauisk LLC)',
+    bankStatus: 'Inte öppnat',
+    complianceStatus: 'Planerat',
+    teamIds: ['leon', 'johan'],
+    kpis: [
+      { label: 'Formation', value: 'Ej startad', status: 'pending' },
+      { label: 'MRR', value: 'Pre-revenue', status: 'pending' },
+      { label: 'Lanseringsmarknad', value: 'Sverige jun 2026', status: 'on_track' },
+      { label: 'EU-compliance', value: 'GDPR redo', status: 'on_track' },
+    ],
+    timeline: [
+      { date: 'Q2 2026', event: 'UAB registrering i Vilnius', done: false },
+      { date: 'Q3 2026', event: 'Bankkonto öppnat', done: false },
+      { date: 'Q4 2026', event: 'Första kundfaktura (EU)', done: false },
+    ],
+  },
+  '4': {
+    incorporation: 'Delaware C-Corp',
+    bankStatus: 'Inte öppnat',
+    complianceStatus: 'Planerat',
+    teamIds: ['leon', 'johan'],
+    kpis: [
+      { label: 'Formation', value: 'Ej startad', status: 'pending' },
+      { label: 'US expansion', value: 'Fas 2', status: 'pending' },
+      { label: 'Investeringsförberedelse', value: 'Ej startad', status: 'pending' },
+      { label: 'US marknadsintro', value: 'H2 2026', status: 'on_track' },
+    ],
+    timeline: [
+      { date: 'Q3 2026', event: 'Delaware C-Corp formation', done: false },
+      { date: 'Q3 2026', event: 'US bankkonto (Silicon Valley Bank/Chase)', done: false },
+      { date: 'Q4 2026', event: 'US marknadsintroduktion', done: false },
+    ],
+  },
+  '5': {
+    incorporation: 'DIFC FZCO',
+    bankStatus: 'Emirates NBD — pågår',
+    complianceStatus: 'Forming',
+    teamIds: ['erik', 'dennis'],
+    kpis: [
+      { label: 'Formation', value: 'Pågår', status: 'warning' },
+      { label: 'MENA Pipeline', value: '2 leads', status: 'on_track' },
+      { label: 'Bankkonto', value: 'Ej öppnat', status: 'critical' },
+      { label: 'Produktlansering', value: 'Q3 2026', status: 'on_track' },
+    ],
+    timeline: [
+      { date: 'Q1 2026', event: 'DIFC-ansökan inlämnad', done: false },
+      { date: 'Q2 2026', event: 'Bankkonto (Emirates NBD)', done: false },
+      { date: 'Q3 2026', event: 'Första MENA-kund', done: false },
+    ],
+  },
+  '6': {
+    incorporation: 'Texas LLC',
+    bankStatus: 'JPMorgan Chase — pending',
+    complianceStatus: 'Forming',
+    teamIds: ['erik', 'dennis'],
+    kpis: [
+      { label: 'Formation', value: 'Pågår', status: 'warning' },
+      { label: 'US Pipeline', value: '3 leads', status: 'on_track' },
+      { label: 'Bankkonto', value: 'JPMorgan — pågår', status: 'warning' },
+      { label: 'Kommunal-pipeline', value: 'Q3 2026', status: 'on_track' },
+    ],
+    timeline: [
+      { date: 'Q1 2026', event: 'Texas LLC formation (Houston)', done: true },
+      { date: 'Q2 2026', event: 'Bankkonto öppnat', done: false },
+      { date: 'Q3 2026', event: 'Första municipal-kontrakt', done: false },
+    ],
+  },
+}
+
+// ─── Helpers ───────────────────────────────────────────────────────────────────
+
+function getKPIColor(status: KPIStatus): string {
+  const map: Record<KPIStatus, string> = {
+    critical: '#EF4444',
+    warning: '#F59E0B',
+    pending: '#9CA3AF',
+    on_track: '#10B981',
+    active: '#10B981',
+    good: '#10B981',
+  }
+  return map[status] ?? '#9CA3AF'
+}
+
+function getKPILabel(status: KPIStatus): string {
+  const map: Record<KPIStatus, string> = {
+    critical: 'KRITISKT',
+    warning: 'VARNING',
+    pending: 'VÄNTAR',
+    on_track: 'OK',
+    active: 'AKTIVT',
+    good: 'BRA',
+  }
+  return map[status] ?? status.toUpperCase()
+}
+
+function getStatusColor(status: EntityStatus): string {
+  return { live: '#10B981', forming: '#F59E0B', planned: '#9CA3AF' }[status] ?? '#9CA3AF'
+}
+
+function getStatusLabel(status: EntityStatus): string {
+  return { live: 'LIVE', forming: 'FORMING', planned: 'PLANERAT' }[status] ?? status.toUpperCase()
+}
+
+function getEntity(id: string): CorpEntity | undefined {
+  return CORP_HIERARCHY.find(e => e.id === id)
+}
+
+function getPerson(id: string): TeamMember | undefined {
+  return TEAM_COMMAND_CHAIN.find(p => p.id === id)
+}
+
+function getInitial(name: string): string {
+  return name.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase()
+}
+
+// ─── Dynasty SVG Layout ────────────────────────────────────────────────────────
+
+const CARD_W = 200
+const CARD_H = 110
+const SVG_MAIN_W = 880
+
+// Hardcoded positions for clarity
+const NODE_POSITIONS: Record<string, { x: number; y: number }> = {
+  '1': { x: 340, y: 70 },   // WGH — centered
+  '2': { x: 60,  y: 260 },  // WOH
+  '5': { x: 330, y: 260 },  // LVX-AE
+  '6': { x: 620, y: 260 },  // LVX-US
+  '3': { x: 20,  y: 450 },  // OZ-LT (under WOH)
+  '4': { x: 240, y: 450 },  // OZ-US (under WOH)
+}
+
+// Derived ownership edges from CORP_HIERARCHY
+const OWNERSHIP_EDGES = CORP_HIERARCHY.flatMap(e =>
+  e.children.map(childId => ({ from: e.id, to: childId }))
+)
+
+// ─── SVG Components ────────────────────────────────────────────────────────────
+
+function OwnershipEdge({ from, to, dimmed }: { from: string; to: string; dimmed: boolean }) {
+  const fp = NODE_POSITIONS[from]
+  const tp = NODE_POSITIONS[to]
+  if (!fp || !tp) return null
+
+  const fx = fp.x + CARD_W / 2
+  const fy = fp.y + CARD_H
+  const tx = tp.x + CARD_W / 2
+  const ty = tp.y
   const midY = (fy + ty) / 2
-  const isSameLayer = Math.abs(fy - ty) < 10
-  return isSameLayer
-    ? `M ${fx} ${fy} Q ${(fx + tx) / 2} ${fy - 40} ${tx} ${ty}`
-    : `M ${fx} ${fy} C ${fx} ${midY}, ${tx} ${midY}, ${tx} ${ty}`
-}
-
-function Edge({
-  rel, positions, opacity, highlighted, stressed, muted, showAllEdges,
-}: {
-  rel: EntityRelationship
-  positions: Map<string, { x: number; y: number }>
-  opacity: number
-  highlighted: boolean
-  stressed: boolean      // KPI failure on from-entity — triggers stress animation
-  muted: boolean         // Flow overlay off — show lines only, no particles
-  showAllEdges: boolean  // Show all relationship types with particles
-}) {
-  const from = positions.get(rel.from_entity_id)
-  const to   = positions.get(rel.to_entity_id)
-  if (!from || !to) return null
-
-  const cfg = FLOW_CONFIG[rel.type]
-  const fx  = from.x + CARD_W / 2
-  const fy  = from.y + CARD_H
-  const tx  = to.x + CARD_W / 2
-  const ty  = to.y
-  const d   = buildEdgePath(fx, fy, tx, ty)
-
-  const pathId     = `path-${rel.id}`
-  const markerId   = `arr-${rel.id}`
-  const animId     = `anim-${rel.id}`
-
-  // Stress: thicker + red tint + faster particles
-  const strokeColor  = stressed ? '#EF4444' : cfg.stroke
-  const strokeW      = stressed ? cfg.highlightWidth + 1 : highlighted ? cfg.highlightWidth : cfg.baseWidth
-  const particleSpd  = stressed ? cfg.speed * 0.35 : cfg.speed
-  const glowFilter   = stressed
-    ? `drop-shadow(0 0 8px #EF444499)`
-    : highlighted ? `drop-shadow(0 0 5px ${cfg.glowColor})` : `drop-shadow(0 0 2px ${cfg.glowColor}44)`
+  const d = `M ${fx} ${fy} C ${fx} ${midY}, ${tx} ${midY}, ${tx} ${ty}`
 
   return (
-    <g style={{ opacity, transition: 'opacity 0.3s' }}>
+    <g style={{ opacity: dimmed ? 0.2 : 0.9, transition: 'opacity 0.3s' }}>
       <defs>
-        <marker id={markerId} markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto">
-          <path d="M0,0 L0,7 L8,3.5 z" fill={strokeColor} opacity={0.9} />
+        <marker id={`arr-${from}-${to}`} markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto">
+          <path d="M0,0 L0,7 L8,3.5 z" fill="#C4B9A4" opacity={0.8} />
         </marker>
       </defs>
-
-      {/* Invisible wide hit area */}
-      <path id={pathId} d={d} fill="none" stroke="transparent" strokeWidth={16} />
-
-      {/* Ownership: soft pulse on the line itself */}
-      {rel.type === 'ownership' && !stressed && (
-        <path d={d} fill="none" stroke={cfg.stroke} strokeWidth={cfg.baseWidth + 2} opacity={0}>
-          <animate attributeName="opacity" values="0;0.2;0" dur="3s" repeatCount="indefinite" />
-        </path>
-      )}
-
-      {/* Main line */}
       <path
         d={d}
         fill="none"
-        stroke={strokeColor}
-        strokeWidth={strokeW}
-        strokeDasharray={cfg.dash === 'none' ? undefined : cfg.dash}
-        markerEnd={`url(#${markerId})`}
-        style={{ filter: glowFilter, transition: 'all 0.3s' }}
+        stroke="#C4B9A4"
+        strokeWidth={1.8}
+        markerEnd={`url(#arr-${from}-${to})`}
       />
-
-      {/* ── Primary particle — only show non-ownership particles when showAllEdges === true ── */}
-      {opacity > 0.3 && !muted && !cfg.symbol && (rel.type === 'ownership' || showAllEdges) && (
-        <circle r={cfg.particleSize * (stressed ? 1.5 : 1)} fill={stressed ? '#EF4444' : cfg.particleColor} opacity={0.92}>
-          <animateMotion id={animId} dur={`${particleSpd}s`} repeatCount="indefinite" path={d} />
-        </circle>
-      )}
-
-      {/* Financial flow: € symbol particle instead of plain circle */}
-      {opacity > 0.3 && !muted && cfg.symbol && !stressed && showAllEdges && (
-        <>
-          <text fontSize={9} fontWeight="700" fill={cfg.particleColor} opacity={0.95} textAnchor="middle">
-            {cfg.symbol}
-            <animateMotion dur={`${particleSpd}s`} repeatCount="indefinite" path={d} />
-          </text>
-          {/* Trailing dot */}
-          <circle r={3.5} fill={cfg.particleColor} opacity={0.4}>
-            <animateMotion dur={`${particleSpd}s`} begin={`${particleSpd * 0.45}s`} repeatCount="indefinite" path={d} />
-          </circle>
-          {/* Third faint dot */}
-          <circle r={2.5} fill={cfg.particleColor} opacity={0.25}>
-            <animateMotion dur={`${particleSpd}s`} begin={`${particleSpd * 0.78}s`} repeatCount="indefinite" path={d} />
-          </circle>
-        </>
-      )}
-
-      {/* Financial stressed — dollar sign flickering + rapid dots */}
-      {opacity > 0.3 && !muted && cfg.symbol && stressed && showAllEdges && (
-        <>
-          <text fontSize={9} fontWeight="700" fill="#EF4444" opacity={0.95} textAnchor="middle">
-            ⚠
-            <animateMotion dur={`${particleSpd}s`} repeatCount="indefinite" path={d} />
-          </text>
-          <circle r={4} fill="#EF4444" opacity={0.7}>
-            <animateMotion dur={`${particleSpd * 0.6}s`} begin={`${particleSpd * 0.3}s`} repeatCount="indefinite" path={d} />
-          </circle>
-        </>
-      )}
-
-      {/* Stress: second rapid particle (non-financial) */}
-      {stressed && !cfg.symbol && (
-        <circle r={3} fill="#FF4444" opacity={0.6}>
-          <animateMotion dur={`${particleSpd * 0.65}s`} begin={`${particleSpd * 0.3}s`} repeatCount="indefinite" path={d} />
-        </circle>
-      )}
-
-      {/* Control: second always-on particle for dominance */}
-      {rel.type === 'control' && !stressed && opacity > 0.3 && !muted && showAllEdges && (
-        <circle r={2.5} fill={cfg.particleColor} opacity={0.5}>
-          <animateMotion dur={`${particleSpd}s`} begin={`${particleSpd * 0.6}s`} repeatCount="indefinite" path={d} />
-        </circle>
-      )}
+      {/* Flowing particle */}
+      <circle r={3} fill="#DDD5C5" opacity={0.8}>
+        <animateMotion dur="2.5s" repeatCount="indefinite" path={d} />
+      </circle>
     </g>
   )
 }
 
-// ─── Node card ────────────────────────────────────────────────────────────────
-
-function NodeCard({
-  entity, position, selected, dimmed, expanded, stressed, cascadeStressed, onClick,
+function EntityNodeSVG({
+  entity,
+  isSelected,
+  isDimmed,
+  onClick,
 }: {
-  entity: Entity
-  position: { x: number; y: number }
-  selected: boolean
-  dimmed: boolean
-  expanded: boolean
-  stressed: boolean
-  cascadeStressed: boolean
+  entity: CorpEntity
+  isSelected: boolean
+  isDimmed: boolean
   onClick: () => void
 }) {
-  const statusColor = { live: '#10B981', forming: '#F59E0B', planned: '#6B7280' }[entity.active_status]
-  const roles = getRoleMappings(entity.id)
-  const childCount = getChildren(entity.id).length
-
-  const nodeFilter = stressed
-    ? `drop-shadow(0 0 16px #EF444488)`
-    : cascadeStressed
-      ? `drop-shadow(0 0 10px #F59E0B55)`
-      : selected ? `drop-shadow(0 0 12px ${entity.color})` : 'none'
+  const pos = NODE_POSITIONS[entity.id]
+  if (!pos) return null
+  const statusColor = getStatusColor(entity.status)
 
   return (
     <g
-      transform={`translate(${position.x}, ${position.y})`}
+      transform={`translate(${pos.x}, ${pos.y})`}
       onClick={onClick}
       className="cursor-pointer"
       style={{
-        opacity: dimmed ? 0.25 : 1,
-        filter: nodeFilter,
-        transition: 'all 0.3s',
+        opacity: isDimmed ? 0.25 : 1,
+        filter: isSelected ? `drop-shadow(0 0 12px ${entity.color}88)` : 'none',
+        transition: 'all 0.25s',
       }}
     >
-      {/* Stress pulse ring — animated outer glow */}
-      {stressed && (
+      {/* Selected glow ring */}
+      {isSelected && (
         <rect
           x={-3} y={-3}
           width={CARD_W + 6} height={CARD_H + 6}
           rx={13}
           fill="none"
-          stroke="#EF4444"
-          strokeWidth={1.5}
-        >
-          <animate attributeName="opacity" values="0.8;0.2;0.8" dur="1.4s" repeatCount="indefinite" />
-          <animate attributeName="stroke-width" values="1.5;3;1.5" dur="1.4s" repeatCount="indefinite" />
-        </rect>
-      )}
-      {cascadeStressed && !stressed && (
-        <rect
-          x={-2} y={-2}
-          width={CARD_W + 4} height={CARD_H + 4}
-          rx={12}
-          fill="none"
-          stroke="#F59E0B"
-          strokeWidth={1}
-        >
-          <animate attributeName="opacity" values="0.5;0.1;0.5" dur="2.2s" repeatCount="indefinite" />
-        </rect>
+          stroke="#E8B84B"
+          strokeWidth={2}
+          opacity={0.9}
+        />
       )}
 
-      {/* Shadow */}
-      <rect width={CARD_W} height={CARD_H} rx={10} fill={stressed ? '#EF4444' : entity.color} opacity={selected ? 0.12 : stressed ? 0.08 : 0.04} />
+      {/* Card shadow */}
+      <rect width={CARD_W} height={CARD_H} rx={10} fill="#0A3D62" opacity={0.05} y={2} x={1} />
 
-      {/* Card */}
+      {/* Card body */}
       <rect
         width={CARD_W}
         height={CARD_H}
         rx={10}
-        fill={stressed ? '#FEF2F2' : cascadeStressed ? '#FEF9C3' : '#FFFFFF'}
-        stroke={stressed ? '#EF4444' : cascadeStressed ? '#F59E0B55' : selected ? entity.color : entity.color + '45'}
-        strokeWidth={stressed ? 2 : selected ? 2 : 1}
+        fill="#FFFFFF"
+        stroke={isSelected ? '#E8B84B' : '#DDD5C5'}
+        strokeWidth={isSelected ? 2 : 1}
       />
 
-      {/* Top accent bar — red when stressed */}
-      <rect width={CARD_W} height={3} rx={1.5} fill={stressed ? '#EF4444' : cascadeStressed ? '#F59E0B' : entity.color} opacity={0.9} />
+      {/* Top accent bar */}
+      <rect width={CARD_W} height={4} rx={2} fill={entity.color} />
 
-      {/* ── MICRO-ANIMATION: breathing glow behind card (live entities only) ── */}
-      {entity.active_status === 'live' && !stressed && (
-        <rect
-          x={-1} y={-1}
-          width={CARD_W + 2} height={CARD_H + 2}
-          rx={11}
-          fill="none"
-          stroke={entity.color}
-          strokeWidth={1}
-          opacity={0}
-        >
-          <animate attributeName="opacity" values="0;0.35;0" dur="3s" repeatCount="indefinite" />
-        </rect>
-      )}
-
-      {/* ── MICRO-ANIMATION: financial flicker — small $ pulse on left edge ── */}
-      {entity.active_status === 'live' && (
-        <text
-          x={CARD_W - 8} y={CARD_H - 8}
-          fontSize={7}
-          fill="#0A3D62"
-          textAnchor="middle"
-          fontFamily="monospace"
-          fontWeight="700"
-        >
-          €
-          <animate attributeName="opacity" values="0;0.7;0;0.5;0" dur="4.5s" repeatCount="indefinite" begin="1s" />
-        </text>
-      )}
-
-      {/* Flag + shortname */}
-      <text x={14} y={30} fontSize={14} fill={entity.color} fontWeight="700" fontFamily="monospace">
-        {typeof entity.flag === 'string' && entity.flag.length <= 2 ? entity.flag : ''} {entity.shortName}
+      {/* Flag + shortName */}
+      <text x={14} y={30} fontSize={13} fill={entity.color} fontWeight="700" fontFamily="monospace">
+        {entity.flag} {entity.shortName}
       </text>
 
-      {/* Full name — truncate if long */}
-      <text x={14} y={48} fontSize={11} fill="#0A3D62" fontFamily="sans-serif" fontWeight="500">
-        {entity.name.length > 24 ? entity.name.slice(0, 23) + '…' : entity.name}
+      {/* Full name */}
+      <text x={14} y={48} fontSize={11} fill="#1C1C1E" fontFamily="sans-serif" fontWeight="500">
+        {entity.name.length > 25 ? entity.name.slice(0, 24) + '…' : entity.name}
       </text>
 
-      {/* Jurisdiction + type */}
+      {/* Jurisdiction */}
       <text x={14} y={64} fontSize={10} fill="#9CA3AF">
-        {entity.jurisdiction} · {entity.type.toUpperCase()}
-              {(entity as any).wg_id && (
-                <div style={{ fontFamily: 'monospace', fontSize: 11, color: '#1E40AF', background: '#F5F3FF', padding: '2px 8px', borderRadius: 4, display: 'inline-block', marginTop: 4 }}>
-                  {(entity as any).wg_id}
-                </div>
-              )}
+        {entity.jurisdiction} · {entity.type}
       </text>
 
-      {/* Status indicator — pulses when live */}
-      <circle cx={CARD_W - 14} cy={16} r={4.5} fill={statusColor} />
-      {entity.active_status === 'live' && (
-        <circle cx={CARD_W - 14} cy={16} r={4.5} fill="none" stroke={statusColor} strokeWidth={1.5}>
-          <animate attributeName="r" values="4.5;8;4.5" dur="2.5s" repeatCount="indefinite" />
+      {/* Status dot */}
+      <circle cx={CARD_W - 14} cy={16} r={4} fill={statusColor} />
+      {entity.status === 'live' && (
+        <circle cx={CARD_W - 14} cy={16} r={4} fill="none" stroke={statusColor} strokeWidth={1.5}>
+          <animate attributeName="r" values="4;8;4" dur="2.5s" repeatCount="indefinite" />
           <animate attributeName="opacity" values="0.7;0;0.7" dur="2.5s" repeatCount="indefinite" />
         </circle>
       )}
 
-      {/* ── MICRO-ANIMATION: rotating gear ⚙ for active/live entities ── */}
-      {entity.active_status === 'live' && (
-        <g transform={`translate(${CARD_W - 30}, ${CARD_H - 22})`} opacity={0.4}>
-          <text fontSize={11} fill={entity.color} textAnchor="middle" x={0} y={9}>
-            ⚙
-            <animateTransform
-              attributeName="transform"
-              type="rotate"
-              from="0 0 4.5"
-              to="360 0 4.5"
-              dur="8s"
-              repeatCount="indefinite"
-            />
-          </text>
-        </g>
-      )}
+      {/* Status label */}
+      <text x={CARD_W - 14} y={30} textAnchor="end" fontSize={8} fill={statusColor} fontWeight="600" fontFamily="monospace">
+        {getStatusLabel(entity.status)}
+      </text>
 
-      {/* Forming indicator — slow pulse */}
-      {entity.active_status === 'forming' && (
-        <g transform={`translate(${CARD_W - 30}, ${CARD_H - 22})`} opacity={0}>
-          <text fontSize={9} fill="#F59E0B" textAnchor="middle" x={0} y={9}>◐</text>
-          <animate attributeName="opacity" values="0;0.5;0" dur="2s" repeatCount="indefinite" />
-        </g>
-      )}
-
-      {/* Role avatars — square photos, professional grid */}
-      {roles.slice(0, 5).map((rm, i) => {
-        const cmdRole = COMMAND_CHAIN.find(c => c.person === rm.person)
-        const photoUrl = cmdRole?.avatar
-          ?? `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(rm.person)}&backgroundColor=transparent`
-        const clipId = `clip-sq-${rm.person.replace(/[\s.]/g, '-')}-${i}`
-        const SIZE = 22
-        const GAP = 26
-        const x0 = 14
-        return (
-          <g key={rm.person} transform={`translate(${x0 + i * GAP}, 76)`}>
-            {/* Square background with entity color tint */}
-            <rect width={SIZE} height={SIZE} rx={3} fill={rm.color + '22'} stroke={rm.color + '60'} strokeWidth={1} />
-            <clipPath id={clipId}>
-              <rect width={SIZE} height={SIZE} rx={3} />
-            </clipPath>
-            <image
-              href={photoUrl}
-              x={0} y={0} width={SIZE} height={SIZE}
-              clipPath={`url(#${clipId})`}
-              preserveAspectRatio="xMidYMid slice"
-            />
-          </g>
-        )
-      })}
-
-      {/* Children / expand indicator */}
-      {childCount > 0 && (
-        <g transform={`translate(${CARD_W - 24}, ${CARD_H - 18})`}>
-          <rect width={18} height={12} rx={3} fill={expanded ? entity.color + '30' : '#F3F4F6'} />
-          <text x={9} y={9} textAnchor="middle" fontSize={8} fill={expanded ? entity.color : '#6B7280'} fontWeight="700">
-            {expanded ? '▲' : `+${childCount}`}
-          </text>
-        </g>
-      )}
+      {/* Click hint */}
+      <text x={CARD_W / 2} y={CARD_H - 10} textAnchor="middle" fontSize={8} fill="#C4B9A4">
+        Klicka för detaljer →
+      </text>
     </g>
   )
 }
 
-// ─── Entity Panel — Precision Control Interface ───────────────────────────────
-// Answers: What is this? Why does it exist? Who owns it? Is it healthy? What next?
+// ─── Command Chain SVG column ──────────────────────────────────────────────────
 
-// Reusable section block
-function PanelSection({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <div className="text-[9px] font-bold text-gray-600 uppercase tracking-[0.15em] mb-2 px-1">{label}</div>
-      {children}
-    </div>
-  )
-}
+const CMD_X_START = SVG_MAIN_W + 32
+const CMD_NODE_W = 230
+const CMD_NODE_H = 115
+const CMD_GAP = 22
+const CMD_APEX_Y = 70
+const TOTAL_SVG_W = CMD_X_START + CMD_NODE_W + 28
 
-// "Next action" logic — computed from health + incidents
-function computeNextAction(entity: Entity, incidents: ReturnType<typeof generateIncidents>): { text: string; urgency: 'critical' | 'warn' | 'ok' } {
-  const entityIncidents = incidents.filter(i =>
-    i.rca.affected_entities.includes(entity.id) || i.role_id === entity.id
-  )
-  const critical = entityIncidents.find(i => i.severity === 'critical')
-  if (critical) return { text: critical.rca.dependency_chain[0] ?? 'Resolve critical KPI failure', urgency: 'critical' }
-
-  const statusMap: Record<string, string> = {
-    forming: `Complete incorporation — ${entity.jurisdiction} legal filing required`,
-    planned: 'Initiate formation process',
-    live: 'Operational — monitor KPIs',
-  }
-  return { text: statusMap[entity.active_status] ?? 'No action required', urgency: entity.active_status === 'live' ? 'ok' : 'warn' }
-}
-
-function DrillPanel({
-  entity, perms, onClose, liveEntities,
+function CommandChainNodeSVG({
+  person,
+  x,
+  y,
+  isSelected,
+  onClick,
 }: {
-  entity: Entity
-  perms: GraphPermissions
-  onClose: () => void
-  liveEntities: Entity[]
-}) {
-  const navigate  = useNavigate()
-  const incidents = useMemo(() => generateIncidents(), [])
-
-  const rels     = getRelationships(entity.id)
-  const roles    = getRoleMappings(entity.id)
-  const children = getChildren(entity.id)
-  const outgoing = rels.filter(r => r.from_entity_id === entity.id && perms.visibleRelTypes.includes(r.type))
-  const incoming = rels.filter(r => r.to_entity_id === entity.id && perms.visibleRelTypes.includes(r.type))
-  const nextAction = computeNextAction(entity, incidents)
-
-  const statusColor = { live: '#10B981', forming: '#F59E0B', planned: '#6B7280' }[entity.active_status]
-
-  // Metadata filtered by permissions — only surface visible fields
-  const metaEntries = Object.entries(entity.metadata).filter(([k]) => {
-    if (!perms.canSeeFinancialMeta && /revenue|fee|royalty|tax|bank|billing/i.test(k)) return false
-    if (!perms.canSeeLegalMeta && /legal|jurisdic|form|compliance/i.test(k)) return false
-    if (!perms.canSeeTechMeta && /system|deploy|module|auth/i.test(k)) return false
-    return true
-  })
-
-  const urgencyStyle = {
-    critical: { bg: '#EF444412', border: '#EF444430', text: '#F87171', dot: '#EF4444' },
-    warn:     { bg: '#F59E0B10', border: '#F59E0B28', text: '#FCD34D', dot: '#F59E0B' },
-    ok:       { bg: '#10B98110', border: '#10B98128', text: '#6EE7B7', dot: '#10B981' },
-  }[nextAction.urgency]
-
-  return (
-    <div className="h-full flex flex-col bg-white border-l border-surface-border overflow-hidden" style={{ width: 340 }}>
-
-      {/* ── SNAPSHOT ─────────────────────────────────────────────── */}
-      <div className="flex-shrink-0 px-5 pt-5 pb-4 border-b border-surface-border">
-        {/* Identity row */}
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-3 min-w-0">
-            <span className="text-2xl flex-shrink-0">{entity.flag}</span>
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-bold text-text-primary text-[15px] leading-tight">{entity.shortName}</span>
-                <span className="text-xs font-mono px-1.5 py-0.5 rounded"
-                  style={{ background: statusColor + '18', color: statusColor }}>
-                  {entity.active_status.toUpperCase()}
-                </span>
-              </div>
-              <div className="text-xs text-gray-9000 mt-0.5 truncate">{entity.name}</div>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <button
-              onClick={() => navigate(`/entities/${entity.id}`)}
-              className="text-xs px-2.5 py-1.5 rounded-lg font-bold tracking-wide transition-all hover:opacity-80"
-              style={{ background: entity.color + '22', color: entity.color, border: `1px solid ${entity.color}38` }}
-            >
-              OPEN
-            </button>
-            <button onClick={onClose}
-              className="text-gray-9000 hover:text-gray-600 transition-colors w-6 h-6 flex items-center justify-center rounded hover:bg-[#EDE8DC]">
-              ✕
-            </button>
-          </div>
-        </div>
-
-        {/* Impact strip: type · jurisdiction · layer */}
-        <div className="flex items-center gap-2 mt-3 flex-wrap">
-          <span className="text-xs text-gray-9000 font-mono uppercase">{entity.type}</span>
-          <span className="text-gray-800">·</span>
-          <span className="text-xs text-gray-9000">{entity.jurisdiction}</span>
-          <span className="text-gray-800">·</span>
-          <span className="text-xs font-mono" style={{ color: entity.color }}>Layer {entity.layer}</span>
-          {children.length > 0 && (
-            <>
-              <span className="text-gray-800">·</span>
-              <span className="text-xs text-gray-9000">{children.length} subsidiaries</span>
-            </>
-          )}
-        </div>
-
-        {/* Next action — always visible */}
-        <div className="mt-3 px-3 py-2 rounded-xl flex items-start gap-2.5"
-          style={{ background: urgencyStyle.bg, border: `1px solid ${urgencyStyle.border}` }}>
-          <span className="h-1.5 w-1.5 rounded-full flex-shrink-0 mt-1.5"
-            style={{ background: urgencyStyle.dot }} />
-          <div className="min-w-0">
-            <div className="text-[9px] font-bold uppercase tracking-wide mb-0.5"
-              style={{ color: urgencyStyle.text }}>
-              {nextAction.urgency === 'critical' ? 'CRITICAL — ACTION REQUIRED' : nextAction.urgency === 'warn' ? 'NEXT STEP' : 'STATUS'}
-            </div>
-            <p className="text-xs text-gray-600 leading-snug">{nextAction.text}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* ── SCROLLABLE SECTIONS ───────────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
-
-        {/* 2. PURPOSE */}
-        <PanelSection label="Purpose — why it exists">
-          <p className="text-xs text-gray-9000 leading-relaxed px-1">{entity.description}</p>
-        </PanelSection>
-
-        {/* 3. HOW IT WORKS — key facts */}
-        {metaEntries.length > 0 && (
-          <PanelSection label="How it works">
-            <div className="rounded-xl border border-surface-border overflow-hidden">
-              {metaEntries.map(([k, v], i) => (
-                <div key={k}
-                  className={`flex gap-3 px-3 py-2 ${i < metaEntries.length - 1 ? 'border-b border-gray-100' : ''}`}>
-                  <span className="text-xs text-gray-9000 font-mono w-24 flex-shrink-0 pt-0.5 leading-relaxed">{k}</span>
-                  <span className="text-xs text-gray-600 leading-relaxed flex-1">{v}</span>
-                </div>
-              ))}
-            </div>
-          </PanelSection>
-        )}
-
-        {/* 4. PERFORMANCE — live KPIs from incidentEngine */}
-        {(() => {
-          const entityRoles = roles.map(r => COMMAND_CHAIN.find(c => c.person === r.person)).filter(Boolean)
-          const allKPIs = entityRoles.flatMap(c => getRoleKPIs(c!.id))
-          if (allKPIs.length === 0) return null
-          return (
-            <PanelSection label="Performance">
-              <div className="space-y-1.5">
-                {allKPIs.map(kpi => {
-                  const st = getKPIStatus(kpi)
-                  const c  = KPI_STATUS_COLOR[st]
-                  const pct = Math.min(100, Math.round((kpi.current_value / kpi.target_value) * 100))
-                  return (
-                    <div key={kpi.id} className="rounded-lg px-3 py-2 border border-surface-border/50 bg-[#F0EBE1]">
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-xs text-gray-600">{kpi.name}</span>
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-xs font-bold font-mono" style={{ color: c }}>{kpi.current}</span>
-                          <span className="text-[9px] px-1 py-px rounded font-mono"
-                            style={{ background: c + '18', color: c }}>{st.toUpperCase()}</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="flex-1 h-1 rounded-full bg-gray-200">
-                          <div className="h-1 rounded-full transition-all" style={{ width: `${pct}%`, background: c }} />
-                        </div>
-                        <span className="text-[9px] text-gray-600 font-mono w-12 text-right">→ {kpi.target}</span>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </PanelSection>
-          )
-        })()}
-
-        {/* 5. RESPONSIBILITY TREE */}
-        {roles.length > 0 && (
-          <PanelSection label="Responsibility">
-            <div className="space-y-1.5">
-              {roles.map(r => {
-                const cmdRole  = COMMAND_CHAIN.find(c => c.person === r.person)
-                const superior = cmdRole?.reports_to ? COMMAND_CHAIN.find(c => c.id === cmdRole.reports_to) : null
-                const kpiStatus = cmdRole ? getRoleKPIs(cmdRole.id).some(k => getKPIStatus(k) === 'red')
-                  ? 'red' : getRoleKPIs(cmdRole.id).some(k => getKPIStatus(k) === 'yellow') ? 'yellow' : 'green'
-                  : null
-                return (
-                  <div key={r.person} className="flex items-center gap-3 px-3 py-2 rounded-lg border border-gray-100"
-                    style={{ background: r.color + '06' }}>
-                    {(() => {
-                      const cmdR = COMMAND_CHAIN.find(c => c.person === r.person)
-                      const photoUrl = cmdR?.avatar
-                        ?? `/avatars/${r.person.split(' ')[0].toLowerCase()}.png`
-                      return (
-                        <div className="h-7 w-7 rounded-lg overflow-hidden flex-shrink-0 border"
-                          style={{ borderColor: r.color + '40' }}>
-                          <img src={photoUrl} alt={r.person} className="w-full h-full object-cover" />
-                        </div>
-                      )
-                    })()}
-                    <div className="flex-1 min-w-0">
-                      <div className="text-xs font-semibold text-text-primary">{r.person}</div>
-                      <div className="text-xs text-gray-9000">{r.role_type}</div>
-                    </div>
-                    <div className="flex items-center gap-1.5 flex-shrink-0">
-                      {kpiStatus && (
-                        <span className="h-1.5 w-1.5 rounded-full"
-                          style={{ background: KPI_STATUS_COLOR[kpiStatus as 'red' | 'yellow' | 'green'] }} />
-                      )}
-                      {superior && (
-                        <span className="text-[9px] text-gray-600 font-mono">↑ {superior.person}</span>
-                      )}
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </PanelSection>
-        )}
-
-        {/* 6. DEPENDENCIES */}
-        {(outgoing.length > 0 || incoming.length > 0) && (
-          <PanelSection label="Dependencies">
-            <div className="space-y-1">
-              {outgoing.map(r => {
-                const s = REL_STYLE[r.type]
-                const target = liveEntities.find(e => e.id === r.to_entity_id)
-                return (
-                  <div key={r.id} className="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-gray-100">
-                    <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: s.stroke }} />
-                    <span className="text-xs text-gray-9000 w-20 flex-shrink-0">{s.label}</span>
-                    <span className="text-xs text-gray-9000">→</span>
-                    <span className="text-xs font-semibold flex-1" style={{ color: target?.color ?? '#fff' }}>
-                      {target?.shortName}
-                    </span>
-                    <span className="text-[9px] text-gray-600 truncate max-w-[80px]">{r.label}</span>
-                  </div>
-                )
-              })}
-              {incoming.map(r => {
-                const s = REL_STYLE[r.type]
-                const source = liveEntities.find(e => e.id === r.from_entity_id)
-                return (
-                  <div key={r.id} className="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-surface-border/50 bg-[#F0EBE1]">
-                    <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: s.stroke }} />
-                    <span className="text-xs font-semibold" style={{ color: source?.color ?? '#fff' }}>
-                      {source?.shortName}
-                    </span>
-                    <span className="text-xs text-gray-9000">→</span>
-                    <span className="text-xs text-gray-9000 flex-1">{s.label}</span>
-                  </div>
-                )
-              })}
-            </div>
-          </PanelSection>
-        )}
-
-        {/* 7. HISTORY — formation timeline */}
-        <PanelSection label="History">
-          <div className="space-y-1">
-            {[
-              { date: entity.metadata['incorporated'] ?? '—', label: 'Incorporated', done: entity.active_status !== 'planned' },
-              { date: entity.metadata['first_revenue'] ?? '—', label: 'First revenue', done: false },
-              { date: entity.metadata['operational_since'] ?? '—', label: 'Operational', done: entity.active_status === 'live' },
-            ].map((item, i) => (
-              <div key={i} className="flex items-center gap-2.5 px-3 py-1.5">
-                <span className="h-1.5 w-1.5 rounded-full flex-shrink-0"
-                  style={{ background: item.done ? '#10B981' : '#F3F4F6' }} />
-                <span className="text-xs text-gray-9000 w-28 flex-shrink-0">{item.label}</span>
-                <span className="text-xs font-mono text-gray-9000">{item.date}</span>
-              </div>
-            ))}
-          </div>
-        </PanelSection>
-
-        {/* 8. TARGET STATE */}
-        <PanelSection label="Target state">
-          <div className="rounded-xl border border-surface-border px-3 py-3">
-            <div className="space-y-2">
-              {[
-                entity.active_status === 'planned'  && { label: 'Incorporated', status: 'pending' },
-                entity.active_status !== 'live'     && { label: 'Operational', status: 'pending' },
-                                                       { label: 'Revenue generating', status: 'target' },
-                                                       { label: 'Intercompany agreements signed', status: 'target' },
-              ].filter(Boolean).map((item, i: number) => {
-                const typedItem = item as { label: string; status: string }
-                return (
-                <div key={i} className="flex items-center gap-2">
-                  <span className="text-[9px] font-mono px-1.5 py-0.5 rounded"
-                    style={{
-                      background: typedItem.status === 'pending' ? '#F59E0B15' : '#2563EB15',
-                      color: typedItem.status === 'pending' ? '#F59E0B' : '#2563EB',
-                    }}>
-                    {typedItem.status === 'pending' ? 'PENDING' : 'TARGET'}
-                  </span>
-                  <span className="text-xs text-gray-9000">{typedItem.label}</span>
-                </div>
-              )})}
-            </div>
-          </div>
-        </PanelSection>
-
-        {/* Subsidiary list if any */}
-        {children.length > 0 && (
-          <PanelSection label={`Subsidiaries (${children.length})`}>
-            <div className="space-y-1">
-              {children.map(c => {
-                const cs = { live: '#10B981', forming: '#F59E0B', planned: '#6B7280' }[c.active_status]
-                return (
-                  <div key={c.id} className="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-gray-100">
-                    <span className="text-sm">{c.flag}</span>
-                    <span className="text-xs font-semibold flex-1" style={{ color: c.color }}>{c.shortName}</span>
-                    <span className="text-[9px] font-mono text-gray-9000">{c.jurisdiction}</span>
-                    <span className="h-1.5 w-1.5 rounded-full" style={{ background: cs }} />
-                  </div>
-                )
-              })}
-            </div>
-          </PanelSection>
-        )}
-
-        {/* Markets linked to this entity */}
-        {(() => {
-          const linkedSites = MARKET_SITES.filter(s => s.entity_id === entity.id)
-          if (linkedSites.length === 0) return null
-          return (
-            <PanelSection label={`Markets (${linkedSites.length})`}>
-              <div className="space-y-1">
-                {linkedSites.map(site => {
-                  const sc = SITE_STATUS_COLOR[site.status]
-                  return (
-                    <div key={site.id}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-lg border border-surface-border/50 cursor-pointer hover:border-surface-border transition-colors"
-                      onClick={() => navigate('/markets')}
-                    >
-                      <span className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: sc }} />
-                      <span className="text-xs font-semibold text-text-primary flex-1">{site.name}</span>
-                      <span className="text-[9px] font-mono" style={{ color: sc }}>{site.status}</span>
-                    </div>
-                  )
-                })}
-              </div>
-            </PanelSection>
-          )
-        })()}
-      </div>
-    </div>
-  )
-}
-
-// ─── Legend ───────────────────────────────────────────────────────────────────
-
-function Legend({ visibleTypes }: { visibleTypes: RelationshipType[] }) {
-  return (
-    <div className="flex flex-wrap gap-4 text-xs text-gray-9000">
-      {(Object.entries(REL_STYLE) as [RelationshipType, typeof REL_STYLE[RelationshipType]][])
-        .filter(([t]) => visibleTypes.includes(t))
-        .map(([type, s]) => (
-          <div key={type} className="flex items-center gap-1.5">
-            <svg width={24} height={10}>
-              <line x1={0} y1={5} x2={24} y2={5}
-                stroke={s.stroke} strokeWidth={1.5}
-                strokeDasharray={s.dash === 'none' ? undefined : s.dash}
-              />
-              <polygon points="20,2 24,5 20,8" fill={s.stroke} />
-            </svg>
-            <span style={{ color: s.stroke }}>{s.label}</span>
-          </div>
-        ))}
-      <div className="flex items-center gap-1.5 ml-4 pl-4 border-l border-surface-border">
-        <span className="h-2 w-2 rounded-full bg-[#10B981]" />
-        <span>Live</span>
-        <span className="h-2 w-2 rounded-full bg-[#F59E0B] ml-2" />
-        <span>Forming</span>
-        <span className="h-2 w-2 rounded-full bg-[#6B7280] ml-2" />
-        <span>Planned</span>
-      </div>
-      <div className="flex items-center gap-1.5 ml-4 pl-4 border-l border-surface-border">
-        <svg width={20} height={10}>
-          <line x1={0} y1={5} x2={14} y2={5} stroke="#2563EB" strokeWidth={2.5} />
-          <polygon points="12,2 17,5 12,8" fill="#2563EB" />
-        </svg>
-        <span style={{ color: '#2563EB' }}>reports_to</span>
-        <span className="h-2 w-2 rounded-full bg-[#10B981] ml-2" />
-        <span>On track</span>
-        <span className="h-2 w-2 rounded-full bg-[#F59E0B] ml-1" />
-        <span>Watch</span>
-        <span className="h-2 w-2 rounded-full bg-[#EF4444] ml-1" />
-        <span>Action needed</span>
-      </div>
-    </div>
-  )
-}
-
-// ─── Org Hierarchy SVG overlay ────────────────────────────────────────────────
-// Rendered as a permanent column to the right of entity nodes.
-// Straight vertical lines — no curves. Always on.
-
-function CommandChainNode({
-  role, x, y, selected, isPrimary, isCascade, onClick,
-}: {
-  role: typeof COMMAND_CHAIN[0]
+  person: TeamMember
   x: number
   y: number
-  selected: boolean
-  isPrimary: boolean    // has red KPIs — node pulses
-  isCascade: boolean    // affected by upstream failure
+  isSelected: boolean
   onClick: () => void
 }) {
-  const kpis      = getRoleKPIs(role.id)
-  const reports   = COMMAND_CHAIN.find(r => r.id === role.reports_to)
-
-  // Incident status drives node appearance
-  const incidentColor = isPrimary ? '#EF4444' : isCascade ? '#F59E0B' : role.color
-  const glowFilter    = isPrimary
-    ? `drop-shadow(0 0 12px #EF444480)`
-    : selected ? `drop-shadow(0 0 10px ${role.color}80)` : 'none'
+  const superior = person.reportsTo ? getPerson(person.reportsTo) : null
 
   return (
     <g transform={`translate(${x}, ${y})`} onClick={onClick} className="cursor-pointer"
-      style={{ filter: glowFilter, transition: 'all 0.3s' }}>
+      style={{
+        filter: isSelected ? 'drop-shadow(0 0 10px #E8B84B88)' : 'none',
+        transition: 'all 0.25s',
+      }}>
+      {/* Selected glow */}
+      {isSelected && (
+        <rect x={-2} y={-2} width={CMD_NODE_W + 4} height={CMD_NODE_H + 4} rx={11}
+          fill="none" stroke="#E8B84B" strokeWidth={2} opacity={0.9} />
+      )}
 
-      {/* Card bg — clean dark background, neutral border */}
+      {/* Card */}
       <rect width={CMD_NODE_W} height={CMD_NODE_H} rx={9}
         fill="#FFFFFF"
-        stroke="#DDD5C5"
-        strokeWidth={1}
+        stroke={isSelected ? '#E8B84B' : '#DDD5C5'}
+        strokeWidth={isSelected ? 2 : 1}
       />
 
-      {/* Left status border — 3px colored bar on the left edge */}
-      <rect x={0} y={0} width={3} height={CMD_NODE_H} rx={1.5} fill={incidentColor} opacity={0.9} />
+      {/* Left color bar */}
+      <rect x={0} y={0} width={4} height={CMD_NODE_H} rx={2} fill="#DDD5C5" />
 
-      {/* Incident indicator */}
-      {isPrimary && (
-        <text x={CMD_NODE_W - 8} y={14} textAnchor="end" fontSize={10}>🔴</text>
-      )}
-      {!isPrimary && isCascade && (
-        <text x={CMD_NODE_W - 8} y={14} textAnchor="end" fontSize={10}>⚠️</text>
-      )}
+      {/* Avatar circle */}
+      <circle cx={26} cy={38} r={20} fill="#F5F0E8" stroke="#DDD5C5" strokeWidth={1} />
+      <text x={26} y={43} textAnchor="middle" fontSize={12} fontWeight="700" fill="#0A3D62" fontFamily="sans-serif">
+        {getInitial(person.name)}
+      </text>
 
-      {/* Avatar — square photo */}
-      <rect x={10} y={12} width={38} height={38} rx={5} fill={role.color} fillOpacity={0.15} stroke={role.color} strokeOpacity={0.3} strokeWidth={1} />
-      <clipPath id={`clip-cmd-${role.id}`}>
-        <rect x={10} y={12} width={38} height={38} rx={5} />
-      </clipPath>
-      <image
-        href={role.avatar ?? `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(role.person)}&backgroundColor=transparent`}
-        x={10} y={12} width={38} height={38}
-        clipPath={`url(#clip-cmd-${role.id})`}
-        preserveAspectRatio="xMidYMid slice"
-      />
+      {/* Name */}
+      <text x={54} y={28} fontSize={12} fontWeight="700" fill="#1C1C1E" fontFamily="sans-serif">
+        {person.name.split(' ')[0]} {person.name.split(' ').slice(1).join(' ').slice(0, 12)}
+      </text>
 
-      {/* Name + title */}
-      <text x={56} y={28} fontSize={13} fontWeight="700" fill="#1C1C1E">{role.person}</text>
-      <text x={56} y={42} fontSize={11} fill={isPrimary ? '#DC2626' : '#6B7280'} fontWeight="500">{role.title}</text>
+      {/* Role */}
+      <text x={54} y={42} fontSize={10} fill="#E8B84B" fontWeight="600">
+        {person.role.length > 22 ? person.role.slice(0, 21) + '…' : person.role}
+      </text>
 
-      {/* reports_to */}
-      {reports && (
-        <text x={56} y={55} fontSize={10} fill="#6B7280">
-          {'↑ '}{reports.person}
-        </text>
-      )}
-      {!reports && (
-        <text x={56} y={55} fontSize={10} fill="#6B7280">◆ Apex</text>
-      )}
+      {/* Reports to */}
+      <text x={54} y={56} fontSize={9} fill="#9CA3AF">
+        {superior ? `↑ ${superior.name.split(' ')[0]}` : '◆ Apex'}
+      </text>
 
-      {/* KPI status bar — live from incidentEngine */}
-      {kpis.slice(0, 2).map((kpi, i) => {
-        const kStatus = getKPIStatus(kpi)
-        const kColor  = KPI_STATUS_COLOR[kStatus]
-        const barW    = (kpi.current_value / kpi.target_value) * (CMD_NODE_W - 22)
-        const y_pos   = 70 + i * 16
+      {/* KPIs — two mini bars */}
+      {person.kpis.slice(0, 2).map((kpi, i) => {
+        const kColor = getKPIColor(kpi.status)
+        const y0 = 68 + i * 20
         return (
-          <g key={kpi.id}>
-            <text x={10} y={y_pos} fontSize={9} fill="#9CA3AF">{kpi.name}</text>
-            <rect x={10} y={y_pos + 3} width={CMD_NODE_W - 22} height={4} rx={2} fill="#DDD5C5" />
-            <rect x={10} y={y_pos + 3} width={Math.min(barW, CMD_NODE_W - 22)} height={4} rx={2} fill={kColor} />
-            <text x={CMD_NODE_W - 10} y={y_pos} textAnchor="end" fontSize={9} fontWeight="700" fill={kColor}>
-              {kpi.current}
+          <g key={kpi.label}>
+            <text x={10} y={y0 + 8} fontSize={8} fill="#9CA3AF">{kpi.label}</text>
+            <text x={CMD_NODE_W - 8} y={y0 + 8} textAnchor="end" fontSize={8} fontWeight="700" fill={kColor}>
+              {kpi.value}
             </text>
+            <rect x={10} y={y0 + 11} width={CMD_NODE_W - 20} height={3} rx={1.5} fill="#EDE8DC" />
           </g>
         )
       })}
+
+      {/* Click hint */}
+      <text x={CMD_NODE_W - 8} y={CMD_NODE_H - 5} textAnchor="end" fontSize={7} fill="#C4B9A4">
+        →
+      </text>
     </g>
   )
 }
 
-function CommandChainLayer({
-  visible, selectedCmdId, onSelectCmd, primaryFailures, cascadeFailures,
+function CommandChainSVG({
+  selectedPersonId,
+  onSelectPerson,
 }: {
-  visible: boolean
-  selectedCmdId: string | null
-  onSelectCmd: (id: string | null) => void
-  primaryFailures: string[]
-  cascadeFailures: string[]
+  selectedPersonId: string | null
+  onSelectPerson: (id: string) => void
 }) {
-  if (!visible) return null
-
-  const apex    = getApexRole()
-  const reports = getDirectReports(apex.id)
-
-  // Apex: top position (layer 0 y)
-  // Reports: stacked vertically below apex, single column
-  const reportTotalH = reports.length * (CMD_NODE_H + 16)
+  const apex = TEAM_COMMAND_CHAIN.find(p => p.reportsTo === null)!
+  const reports = TEAM_COMMAND_CHAIN.filter(p => p.reportsTo === apex.id)
+  const totalHeight = CMD_APEX_Y + CMD_NODE_H + CMD_GAP + reports.length * (CMD_NODE_H + 14) + 40
 
   return (
     <g>
       {/* Column background */}
       <rect
         x={CMD_X_START - 16}
-        y={CMD_APEX_Y - 24}
+        y={CMD_APEX_Y - 22}
         width={CMD_NODE_W + 32}
-        height={CMD_APEX_Y + CMD_NODE_H + CMD_GAP + reportTotalH + 48}
+        height={totalHeight}
         rx={14}
         fill="#F5F0E8"
         stroke="#DDD5C5"
         strokeWidth={1}
       />
-      {/* Column label */}
-      <text x={CMD_X_START} y={CMD_APEX_Y - 10} fontSize={8} fill="#0A3D62" fontWeight="700" letterSpacing="2">
+      <text x={CMD_X_START + CMD_NODE_W / 2} y={CMD_APEX_Y - 8}
+        textAnchor="middle" fontSize={8} fill="#0A3D62" fontWeight="700" letterSpacing="2">
         COMMAND CHAIN
       </text>
 
-      {/* Apex */}
-      <CommandChainNode
-        role={apex}
+      {/* Apex node */}
+      <CommandChainNodeSVG
+        person={apex}
         x={CMD_X_START}
         y={CMD_APEX_Y}
-        selected={selectedCmdId === apex.id}
-        isPrimary={primaryFailures.includes(apex.id)}
-        isCascade={cascadeFailures.includes(apex.id)}
-        onClick={() => onSelectCmd(selectedCmdId === apex.id ? null : apex.id)}
+        isSelected={selectedPersonId === apex.id}
+        onClick={() => onSelectPerson(apex.id)}
       />
 
-      {/* Trunk + connectors */}
+      {/* Trunk line */}
       {(() => {
-        const apexCx  = CMD_X_START + CMD_NODE_W / 2
+        const apexCx = CMD_X_START + CMD_NODE_W / 2
         const apexBot = CMD_APEX_Y + CMD_NODE_H
-        const busY    = apexBot + CMD_GAP / 2
+        const busY = apexBot + CMD_GAP / 2
         const firstRepY = CMD_APEX_Y + CMD_NODE_H + CMD_GAP
-
+        const lastRepMid = firstRepY + (reports.length - 1) * (CMD_NODE_H + 14) + CMD_NODE_H / 2
         return (
           <g>
-            <line x1={apexCx} y1={apexBot} x2={apexCx} y2={busY} stroke="#2563EB80" strokeWidth={3} />
-            <text x={apexCx + 6} y={busY - 3} fontSize={7} fill="#374151" fontFamily="monospace">reports_to</text>
-            {/* Vertical line down the whole stack */}
-            <line
-              x1={apexCx} y1={busY}
-              x2={apexCx} y2={firstRepY + reportTotalH - 16}
-              stroke="#DDD5C5" strokeWidth={1.5}
-            />
+            <line x1={apexCx} y1={apexBot} x2={apexCx} y2={busY} stroke="#DDD5C5" strokeWidth={2} />
+            <line x1={apexCx} y1={busY} x2={apexCx} y2={lastRepMid} stroke="#DDD5C5" strokeWidth={1.5} />
           </g>
         )
       })()}
 
-      {/* Direct reports — stacked vertically */}
-      {reports.map((r, i) => {
-        const ry = CMD_APEX_Y + CMD_NODE_H + CMD_GAP + i * (CMD_NODE_H + 16)
+      {/* Direct reports */}
+      {reports.map((person, i) => {
+        const ry = CMD_APEX_Y + CMD_NODE_H + CMD_GAP + i * (CMD_NODE_H + 14)
         const cx = CMD_X_START + CMD_NODE_W / 2
         return (
-          <g key={r.id}>
-            {/* Tick from spine */}
-            <line x1={cx} y1={ry + CMD_NODE_H / 2} x2={CMD_X_START} y2={ry + CMD_NODE_H / 2}
-              stroke="#DDD5C5" strokeWidth={1} strokeDasharray="3 3" />
-            <CommandChainNode
-              role={r}
+          <g key={person.id}>
+            <line
+              x1={cx} y1={ry + CMD_NODE_H / 2}
+              x2={CMD_X_START} y2={ry + CMD_NODE_H / 2}
+              stroke="#DDD5C5" strokeWidth={1} strokeDasharray="4 3"
+            />
+            <CommandChainNodeSVG
+              person={person}
               x={CMD_X_START}
               y={ry}
-              selected={selectedCmdId === r.id}
-              isPrimary={primaryFailures.includes(r.id)}
-              isCascade={cascadeFailures.includes(r.id)}
-              onClick={() => onSelectCmd(selectedCmdId === r.id ? null : r.id)}
+              isSelected={selectedPersonId === person.id}
+              onClick={() => onSelectPerson(person.id)}
             />
           </g>
         )
@@ -1004,303 +649,585 @@ function CommandChainLayer({
   )
 }
 
+// ─── Dynasty View ──────────────────────────────────────────────────────────────
+
+function DynastyView({
+  selectedEntityId,
+  selectedPersonId,
+  onSelectEntity,
+  onSelectPerson,
+}: {
+  selectedEntityId: string | null
+  selectedPersonId: string | null
+  onSelectEntity: (id: string) => void
+  onSelectPerson: (id: string) => void
+}) {
+  const apex = TEAM_COMMAND_CHAIN.find(p => p.reportsTo === null)!
+  const reports = TEAM_COMMAND_CHAIN.filter(p => p.reportsTo === apex.id)
+  const svgHeight = Math.max(
+    450 + CARD_H + 60,
+    CMD_APEX_Y + CMD_NODE_H + CMD_GAP + reports.length * (CMD_NODE_H + 14) + 80
+  )
+
+  const layerLabels: Record<number, string> = {
+    0: 'LAYER 0 — HOLDING / IP',
+    1: 'LAYER 1 — OPERATIONS',
+    2: 'LAYER 2 — PRODUCT ENTITIES',
+  }
+  const layerY: Record<number, number> = { 0: 70, 1: 260, 2: 450 }
+  const layerH = CARD_H + 40
+
+  return (
+    <div className="flex-1 overflow-auto bg-[#F5F0E8]">
+      <svg
+        viewBox={`0 0 ${TOTAL_SVG_W} ${svgHeight}`}
+        style={{ minWidth: TOTAL_SVG_W, width: '100%', minHeight: svgHeight }}
+      >
+        {/* Grid */}
+        <defs>
+          <pattern id="grid-og" width="36" height="36" patternUnits="userSpaceOnUse">
+            <circle cx="18" cy="18" r="1" fill="#DDD5C5" opacity={0.6} />
+          </pattern>
+        </defs>
+        <rect width={TOTAL_SVG_W} height={svgHeight} fill="url(#grid-og)" />
+
+        {/* Layer bands */}
+        {[0, 1, 2].map(ly => (
+          <g key={ly}>
+            <rect
+              x={0} y={layerY[ly] - 20}
+              width={SVG_MAIN_W} height={layerH}
+              fill={ly % 2 === 0 ? '#F5F0E8' : '#EDE8DC'}
+            />
+            <text x={14} y={layerY[ly] - 5} fontSize={9} fill="#C4B9A4" fontWeight="700" letterSpacing="1.5">
+              {layerLabels[ly]}
+            </text>
+          </g>
+        ))}
+
+        {/* Ownership edges */}
+        {OWNERSHIP_EDGES.map(({ from, to }) => (
+          <OwnershipEdge
+            key={`${from}-${to}`}
+            from={from}
+            to={to}
+            dimmed={selectedEntityId !== null && selectedEntityId !== from && selectedEntityId !== to}
+          />
+        ))}
+
+        {/* Entity nodes */}
+        {CORP_HIERARCHY.map(entity => (
+          <EntityNodeSVG
+            key={entity.id}
+            entity={entity}
+            isSelected={selectedEntityId === entity.id}
+            isDimmed={selectedEntityId !== null && selectedEntityId !== entity.id
+              && entity.parent !== selectedEntityId
+              && !entity.children.includes(selectedEntityId)}
+            onClick={() => onSelectEntity(entity.id)}
+          />
+        ))}
+
+        {/* Separator */}
+        <line
+          x1={SVG_MAIN_W + 8} y1={20}
+          x2={SVG_MAIN_W + 8} y2={svgHeight - 20}
+          stroke="#DDD5C5" strokeWidth={1}
+        />
+
+        {/* Command Chain */}
+        <CommandChainSVG
+          selectedPersonId={selectedPersonId}
+          onSelectPerson={onSelectPerson}
+        />
+      </svg>
+    </div>
+  )
+}
+
+// ─── KPI Card component ────────────────────────────────────────────────────────
+
+function KPICard({ kpi }: { kpi: EntityKPI | TeamKPI }) {
+  const color = getKPIColor(kpi.status)
+  return (
+    <div className="rounded-xl border border-[#DDD5C5] bg-white p-4 shadow-sm flex flex-col gap-2">
+      <div className="text-xs text-gray-500">{kpi.label}</div>
+      <div className="flex items-center justify-between">
+        <span className="text-base font-bold" style={{ color }}>{kpi.value}</span>
+        <span className="text-[9px] font-mono px-1.5 py-0.5 rounded"
+          style={{ background: color + '18', color }}>
+          {getKPILabel(kpi.status)}
+        </span>
+      </div>
+    </div>
+  )
+}
+
+// ─── Entity Detail View ────────────────────────────────────────────────────────
+
+function EntityDetailView({
+  entityId,
+  onSelectPerson,
+}: {
+  entityId: string
+  onSelectPerson: (id: string) => void
+}) {
+  const entity = getEntity(entityId)
+  const details = ENTITY_DETAILS[entityId]
+  if (!entity || !details) return null
+
+  const teamMembers = details.teamIds.map(id => getPerson(id)).filter(Boolean) as TeamMember[]
+  const statusColor = getStatusColor(entity.status)
+
+  return (
+    <div className="flex-1 overflow-auto px-6 py-4">
+      <div className="max-w-5xl mx-auto flex flex-col gap-5">
+
+        {/* Entity header */}
+        <div className="rounded-2xl border border-[#DDD5C5] bg-white p-6 shadow-sm">
+          <div className="flex items-start justify-between">
+            <div className="flex items-center gap-4">
+              <span className="text-5xl">{entity.flag}</span>
+              <div>
+                <div className="flex items-center gap-3">
+                  <h2 className="text-xl font-bold text-[#0A3D62]">{entity.name}</h2>
+                  <span className="text-xs font-mono px-2 py-0.5 rounded font-semibold"
+                    style={{ background: statusColor + '18', color: statusColor }}>
+                    {getStatusLabel(entity.status)}
+                  </span>
+                </div>
+                <div className="flex gap-3 mt-1 text-xs text-gray-500">
+                  <span>{entity.jurisdiction}</span>
+                  <span>·</span>
+                  <span>{entity.type}</span>
+                  <span>·</span>
+                  <span className="font-mono">{entity.shortName}</span>
+                </div>
+                <p className="mt-2 text-sm text-gray-600 leading-relaxed max-w-xl">{entity.description}</p>
+              </div>
+            </div>
+            <div className="text-right text-xs text-gray-500">
+              <div className="font-mono mb-1">{details.incorporation}</div>
+              <div>Bank: {details.bankStatus}</div>
+              <div>Compliance: <span style={{ color: statusColor }}>{details.complianceStatus}</span></div>
+            </div>
+          </div>
+        </div>
+
+        {/* 3 columns: Team / KPIs / Compliance */}
+        <div className="grid grid-cols-3 gap-4">
+          {/* Team */}
+          <div className="rounded-2xl border border-[#DDD5C5] bg-white p-4 shadow-sm">
+            <div className="text-[9px] font-bold text-gray-600 uppercase tracking-widest mb-3">Team</div>
+            <div className="flex flex-col gap-2">
+              {teamMembers.length === 0 && (
+                <p className="text-xs text-gray-400 italic">Ingen team tilldelad ännu</p>
+              )}
+              {teamMembers.map(person => (
+                <button
+                  key={person.id}
+                  onClick={() => onSelectPerson(person.id)}
+                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-[#F5F0E8] transition-colors text-left"
+                >
+                  <div className="w-9 h-9 rounded-full bg-[#F5F0E8] border border-[#DDD5C5] flex items-center justify-center text-sm font-bold text-[#0A3D62] flex-shrink-0">
+                    {getInitial(person.name)}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-xs font-semibold text-[#0A3D62] truncate">{person.name}</div>
+                    <div className="text-[10px] text-gray-500 truncate">{person.role}</div>
+                  </div>
+                  <span className="text-xs text-gray-300 ml-auto">›</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* KPIs */}
+          <div className="rounded-2xl border border-[#DDD5C5] bg-white p-4 shadow-sm">
+            <div className="text-[9px] font-bold text-gray-600 uppercase tracking-widest mb-3">KPIs</div>
+            <div className="flex flex-col gap-2">
+              {details.kpis.map(kpi => {
+                const color = getKPIColor(kpi.status)
+                return (
+                  <div key={kpi.label} className="flex items-center justify-between py-1.5 border-b border-[#F5F0E8] last:border-0">
+                    <span className="text-xs text-gray-600">{kpi.label}</span>
+                    <span className="text-xs font-bold font-mono" style={{ color }}>{kpi.value}</span>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Compliance */}
+          <div className="rounded-2xl border border-[#DDD5C5] bg-white p-4 shadow-sm">
+            <div className="text-[9px] font-bold text-gray-600 uppercase tracking-widest mb-3">Compliance</div>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between py-1.5 border-b border-[#F5F0E8]">
+                <span className="text-xs text-gray-600">Legal form</span>
+                <span className="text-xs font-mono text-[#0A3D62]">{details.incorporation}</span>
+              </div>
+              <div className="flex items-center justify-between py-1.5 border-b border-[#F5F0E8]">
+                <span className="text-xs text-gray-600">Jurisdiktion</span>
+                <span className="text-xs font-mono text-[#0A3D62]">{entity.jurisdiction}</span>
+              </div>
+              <div className="flex items-center justify-between py-1.5 border-b border-[#F5F0E8]">
+                <span className="text-xs text-gray-600">Status</span>
+                <span className="text-xs font-bold" style={{ color: getStatusColor(entity.status) }}>
+                  {details.complianceStatus}
+                </span>
+              </div>
+              <div className="flex items-center justify-between py-1.5">
+                <span className="text-xs text-gray-600">Bank</span>
+                <span className="text-xs text-gray-500">{details.bankStatus}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Timeline */}
+        <div className="rounded-2xl border border-[#DDD5C5] bg-white p-5 shadow-sm">
+          <div className="text-[9px] font-bold text-gray-600 uppercase tracking-widest mb-4">Juridisk tidslinje</div>
+          <div className="flex gap-0">
+            {details.timeline.map((item, i) => (
+              <div key={i} className="flex-1 relative">
+                {/* Connector line */}
+                {i < details.timeline.length - 1 && (
+                  <div className="absolute top-[7px] left-1/2 w-full h-px"
+                    style={{ background: item.done ? '#10B981' : '#DDD5C5' }} />
+                )}
+                <div className="flex flex-col items-center gap-2 text-center px-2">
+                  <div className="relative z-10 w-3.5 h-3.5 rounded-full border-2 flex-shrink-0"
+                    style={{
+                      background: item.done ? '#10B981' : '#FFFFFF',
+                      borderColor: item.done ? '#10B981' : '#DDD5C5',
+                    }} />
+                  <div className="text-[9px] font-mono text-gray-400">{item.date}</div>
+                  <div className="text-[10px] text-gray-600 leading-snug">{item.event}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Parent / children */}
+        {(entity.parent || entity.children.length > 0) && (
+          <div className="rounded-2xl border border-[#DDD5C5] bg-white p-5 shadow-sm">
+            <div className="text-[9px] font-bold text-gray-600 uppercase tracking-widest mb-3">Struktur</div>
+            <div className="flex flex-wrap gap-3">
+              {entity.parent && (() => {
+                const parent = getEntity(entity.parent)
+                return parent ? (
+                  <div className="flex items-center gap-2 text-xs text-gray-500">
+                    <span>Ägs av:</span>
+                    <span className="font-bold" style={{ color: parent.color }}>{parent.flag} {parent.shortName}</span>
+                  </div>
+                ) : null
+              })()}
+              {entity.children.length > 0 && (
+                <div className="flex items-center gap-2 text-xs text-gray-500 flex-wrap">
+                  <span>Dotterbolag:</span>
+                  {entity.children.map(cid => {
+                    const child = getEntity(cid)
+                    return child ? (
+                      <span key={cid} className="font-bold" style={{ color: child.color }}>
+                        {child.flag} {child.shortName}
+                      </span>
+                    ) : null
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ─── Individual View ───────────────────────────────────────────────────────────
+
+function ResponsibilitySection({ person }: { person: TeamMember }) {
+  const entityIds = CORP_HIERARCHY
+    .filter(e => e.shortName === person.entity || ENTITY_DETAILS[e.id]?.teamIds.includes(person.id))
+    .map(e => e)
+
+  return (
+    <div className="rounded-2xl border border-[#DDD5C5] bg-white p-5 shadow-sm">
+      <div className="text-[9px] font-bold text-gray-600 uppercase tracking-widest mb-4">Ansvar & bolagskoppling</div>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <div className="text-xs font-semibold text-[#0A3D62] mb-2">Ansvarsdomäner</div>
+          <ul className="space-y-1">
+            {person.owns.map(domain => (
+              <li key={domain} className="flex items-center gap-2 text-xs text-gray-600">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#E8B84B] flex-shrink-0" />
+                {domain}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <div className="text-xs font-semibold text-[#0A3D62] mb-2">Bolagskopplingar</div>
+          <div className="space-y-1.5">
+            {entityIds.map(entity => (
+              <div key={entity.id} className="flex items-center gap-2 p-2 rounded-lg bg-[#F5F0E8]">
+                <span className="text-sm">{entity.flag}</span>
+                <span className="text-xs font-semibold" style={{ color: entity.color }}>{entity.shortName}</span>
+                <span className="text-[10px] text-gray-400 ml-auto">{entity.type}</span>
+              </div>
+            ))}
+            {entityIds.length === 0 && (
+              <p className="text-xs text-gray-400 italic">Primärt: {person.entity}</p>
+            )}
+          </div>
+        </div>
+      </div>
+      {person.reportsTo && (() => {
+        const superior = getPerson(person.reportsTo)
+        return superior ? (
+          <div className="mt-4 pt-4 border-t border-[#F5F0E8] flex items-center gap-2 text-xs text-gray-500">
+            <span>Rapporterar till:</span>
+            <span className="font-bold text-[#0A3D62]">{superior.name}</span>
+            <span className="text-gray-400">({superior.role})</span>
+          </div>
+        ) : null
+      })()}
+    </div>
+  )
+}
+
+function IndividualView({ personId }: { personId: string }) {
+  const person = getPerson(personId)
+  if (!person) return null
+  const subordinates = TEAM_COMMAND_CHAIN.filter(p => p.reportsTo === personId)
+
+  return (
+    <div className="flex-1 overflow-auto px-6 py-4">
+      <div className="max-w-3xl mx-auto flex flex-col gap-5">
+
+        {/* Person header — gold border */}
+        <div className="rounded-2xl border-2 border-[#E8B84B] bg-white p-6 shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 rounded-full bg-[#F5F0E8] border border-[#DDD5C5] flex items-center justify-center text-2xl font-bold text-[#0A3D62] flex-shrink-0">
+              {getInitial(person.name)}
+            </div>
+            <div className="flex-1">
+              <h2 className="text-xl font-bold text-[#0A3D62]">{person.name}</h2>
+              <p className="text-sm text-[#E8B84B] font-semibold mt-0.5">{person.role}</p>
+              <p className="text-xs text-gray-500">{person.entity}</p>
+            </div>
+            {!person.reportsTo && (
+              <div className="text-xs font-mono px-2 py-1 rounded-lg bg-[#E8B84B1A] text-[#E8B84B] font-semibold">
+                ◆ APEX
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* KPIs grid */}
+        <div>
+          <div className="text-[9px] font-bold text-gray-600 uppercase tracking-widest mb-3">KPIs</div>
+          <div className="grid grid-cols-2 gap-3">
+            {person.kpis.map(kpi => (
+              <KPICard key={kpi.label} kpi={kpi} />
+            ))}
+          </div>
+        </div>
+
+        {/* Responsibility section */}
+        <ResponsibilitySection person={person} />
+
+        {/* Subordinates if any */}
+        {subordinates.length > 0 && (
+          <div className="rounded-2xl border border-[#DDD5C5] bg-white p-5 shadow-sm">
+            <div className="text-[9px] font-bold text-gray-600 uppercase tracking-widest mb-3">
+              Direktrapporterar ({subordinates.length})
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              {subordinates.map(sub => (
+                <div key={sub.id} className="flex items-center gap-3 p-3 rounded-xl bg-[#F5F0E8]">
+                  <div className="w-8 h-8 rounded-full bg-white border border-[#DDD5C5] flex items-center justify-center text-sm font-bold text-[#0A3D62]">
+                    {getInitial(sub.name)}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-xs font-semibold text-[#0A3D62] truncate">{sub.name}</div>
+                    <div className="text-[10px] text-gray-500 truncate">{sub.role}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ─── Breadcrumb ────────────────────────────────────────────────────────────────
+
+function Breadcrumb({
+  viewLevel,
+  selected,
+  onDynasty,
+}: {
+  viewLevel: ViewLevel
+  selected: SelectedNode
+  onDynasty: () => void
+}) {
+  return (
+    <div className="flex items-center gap-2 text-xs text-gray-500">
+      <button
+        onClick={onDynasty}
+        className={`hover:text-[#0A3D62] transition-colors ${viewLevel === 'dynasty' ? 'text-[#0A3D62] font-bold' : ''}`}
+      >
+        Dynasty
+      </button>
+      {selected?.type === 'entity' && (() => {
+        const entity = getEntity(selected.id)
+        return entity ? (
+          <>
+            <span className="text-gray-300">›</span>
+            <span className="text-[#0A3D62] font-bold">{entity.flag} {entity.shortName}</span>
+          </>
+        ) : null
+      })()}
+      {selected?.type === 'person' && (() => {
+        const person = getPerson(selected.id)
+        return person ? (
+          <>
+            <span className="text-gray-300">›</span>
+            <span className="text-[#0A3D62] font-bold">{person.name}</span>
+          </>
+        ) : null
+      })()}
+    </div>
+  )
+}
+
 // ─── Main OrgGraph component ───────────────────────────────────────────────────
 
 export function OrgGraph() {
-  const { entities: liveEntities, relationships: liveRels, roleMappings: liveRoles } = useOrgGraph()
-  const { t: _t } = useTranslation() // ready for i18n
-  const { effectiveRole } = useRole()
-  const { scopedEntities, activeEntity: scopeEntity } = useEntityScope()
+  const [viewLevel, setViewLevel] = useState<ViewLevel>('dynasty')
+  const [selected, setSelected] = useState<SelectedNode>(null)
 
-  // Resolve permissions from current role
-  const perms: GraphPermissions = useMemo(() => {
-    const roleId = effectiveRole?.id ?? 'group-ceo'
-    return ROLE_PERMISSIONS[roleId] ?? ROLE_PERMISSIONS['group-ceo']
-  }, [effectiveRole])
+  const handleEntityClick = (id: string) => {
+    setSelected({ type: 'entity', id })
+    setViewLevel('entity')
+  }
 
-  const positions = useMemo(() => layoutNodes(perms.visibleLayers, liveEntities), [perms.visibleLayers, liveEntities])
-  const visibleEntities = useMemo(() => {
-    // Always show ALL entities in visible layers — scope dims rather than hides
-    return liveEntities.filter(e => perms.visibleLayers.includes(e.layer))
-  }, [perms.visibleLayers])
+  const handlePersonClick = (id: string) => {
+    setSelected({ type: 'person', id })
+    setViewLevel('individual')
+  }
 
-  // Entities outside current scope get dimmed (not hidden)
-  const scopedIds = useMemo(() => new Set(scopedEntities.map(e => e.id)), [scopedEntities])
-  const visibleRels = useMemo(() =>
-    liveRels.filter(r =>
-      perms.visibleRelTypes.includes(r.type) &&
-      positions.has(r.from_entity_id) &&
-      positions.has(r.to_entity_id)
-    ),
-    [perms, positions]
-  )
+  const handleDynasty = () => {
+    setViewLevel('dynasty')
+    setSelected(null)
+  }
 
-  const [selectedEntity, setSelectedEntity] = useState<Entity | null>(null)
-  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
-  const [showCommandChain, setShowCommandChain] = useState(true)
-  const showFlow = true // always on
-  const showStress = true // always on — stress propagation visible via incident data
-  const [selectedCmdId, setSelectedCmdId]     = useState<string | null>(null)
-  const [showAllEdges, setShowAllEdges]       = useState(false)
-
-  // Live incident propagation — drives visual "bleeding" in the graph
-  const incidents = useMemo(() => generateIncidents(), [])
-  const propagation = useMemo(() => computePropagation(incidents), [incidents])
-
-  // Sync entity-switcher (sidebar) → graph selection
-  useEffect(() => {
-    if (scopeEntity && scopeEntity.id !== 'wavult-group') {
-      setSelectedEntity(scopeEntity)
-    } else {
-      setSelectedEntity(null)
-    }
-  }, [scopeEntity])
-
-  const handleNodeClick = useCallback((entity: Entity) => {
-    setSelectedEntity(prev => prev?.id === entity.id ? null : entity)
-    setExpandedIds(prev => {
-      const next = new Set(prev)
-      const children = getChildren(entity.id)
-      if (children.length > 0) {
-        if (next.has(entity.id)) next.delete(entity.id)
-        else next.add(entity.id)
-      }
-      return next
-    })
-  }, [])
-
-  // Compute which entities should be dimmed
-  const dimmedIds = useMemo(() => {
-    const outOfScope = new Set(visibleEntities.filter(e => !scopedIds.has(e.id)).map(e => e.id))
-
-    if (!perms.dimmedByDefault && !selectedEntity) return outOfScope
-
-    if (selectedEntity) {
-      const connectedRels = getRelationships(selectedEntity.id).filter(r => perms.visibleRelTypes.includes(r.type))
-      const connectedIds = new Set<string>([selectedEntity.id])
-      connectedRels.forEach(r => { connectedIds.add(r.from_entity_id); connectedIds.add(r.to_entity_id) })
-      const selectionDimmed = new Set(visibleEntities.filter(e => !connectedIds.has(e.id)).map(e => e.id))
-      // Merge: dim if out-of-scope OR not connected to selection
-      outOfScope.forEach(id => selectionDimmed.add(id))
-      return selectionDimmed
-    }
-    // dimmedByDefault with no selection: dim non-highlighted rel entities
-    if (perms.dimmedByDefault && perms.highlightRelTypes.length > 0) {
-      const highlightedEntityIds = new Set<string>()
-      visibleRels.filter(r => perms.highlightRelTypes.includes(r.type)).forEach(r => {
-        highlightedEntityIds.add(r.from_entity_id)
-        highlightedEntityIds.add(r.to_entity_id)
-      })
-      const roleDimmed = new Set(visibleEntities.filter(e => !highlightedEntityIds.has(e.id)).map(e => e.id))
-      outOfScope.forEach(id => roleDimmed.add(id))
-      return roleDimmed
-    }
-    return outOfScope
-  }, [selectedEntity, perms, visibleEntities, visibleRels, scopedIds])
-
-  // Compute edge opacity
-  // Non-ownership edges get very low opacity unless highlighted or showAllEdges mode
-  const edgeOpacity = useCallback((rel: EntityRelationship) => {
-    const isOwnership = rel.type === 'ownership'
-    const isHighlightType = perms.highlightRelTypes.includes(rel.type)
-    if (selectedEntity) {
-      const rels = getRelationships(selectedEntity.id)
-      const isConnected = rels.some(r => r.id === rel.id)
-      if (!isConnected) return 0.08
-      return isOwnership ? 0.9 : showAllEdges ? 0.6 : 0.5
-    }
-    if (perms.dimmedByDefault) return isHighlightType ? (isOwnership ? 0.9 : showAllEdges ? 0.6 : 0.08) : 0.08
-    return isOwnership ? 0.9 : (showAllEdges ? 0.6 : 0.08)
-  }, [selectedEntity, perms, showAllEdges])
-
-  const edgeHighlighted = useCallback((rel: EntityRelationship) => {
-    if (selectedEntity) {
-      return getRelationships(selectedEntity.id).some(r => r.id === rel.id)
-    }
-    return perms.highlightRelTypes.includes(rel.type)
-  }, [selectedEntity, perms])
-
-  // SVG height — must accommodate command chain column when shown
-  const maxLayer = Math.max(...perms.visibleLayers)
-  const reports = getDirectReports(getApexRole().id)
-  const cmdColHeight = CMD_APEX_Y + CMD_NODE_H + CMD_GAP + reports.length * (CMD_NODE_H + 16) + 60
-  const svgHeight = Math.max(LAYER_Y[maxLayer] + CARD_H + 60, showCommandChain ? cmdColHeight : 0)
-  const svgW = showCommandChain ? TOTAL_W : SVG_W
+  const viewButtons = [
+    { id: 'dynasty' as ViewLevel, label: '🏛 Dynasty', desc: 'Hela koncernen' },
+    { id: 'entity' as ViewLevel, label: '🏢 Bolag', desc: 'Valt bolag' },
+    { id: 'individual' as ViewLevel, label: '👤 Person', desc: 'Vald person' },
+  ]
 
   return (
-    <div className="flex h-full overflow-hidden">
-      {/* Mobile hint banner */}
-      <div className="md:hidden absolute top-12 left-0 right-0 z-10 px-4 py-2 bg-amber-500/10 border-b border-amber-500/20 flex items-center gap-2">
-        <span className="text-amber-700 text-xs">📐 Graf-vy — skrolla horisontellt för att navigera</span>
-      </div>
-      {/* ── Graph area ── */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden md:pt-0 pt-8">
-        {/* ── Toolbar — precision control bar ── */}
-        <div className="flex-shrink-0 flex items-center justify-between gap-4 px-5 py-2.5 border-b border-surface-border bg-[#F0EBE1]">
-          {/* Left: title + count */}
-          <div className="flex items-center gap-3 min-w-0">
-            <h1 className="text-sm font-bold text-text-primary tracking-tight">Corporate Graph</h1>
-            <span className="text-xs text-gray-600 font-mono">
-              {visibleEntities.length}e · {visibleRels.length}r
-            </span>
-            {scopeEntity.id !== 'wavult-group' && (
-              <span
-                className="text-[9px] font-mono px-1.5 py-0.5 rounded"
-                style={{ background: scopeEntity.color + '15', color: scopeEntity.color }}
+    <div className="flex flex-col h-full overflow-hidden bg-[#F5F0E8]">
+
+      {/* Toolbar */}
+      <div className="flex-shrink-0 flex items-center justify-between gap-4 px-5 py-2.5 border-b border-[#DDD5C5] bg-[#F0EBE1]">
+        {/* Left: breadcrumb */}
+        <Breadcrumb viewLevel={viewLevel} selected={selected} onDynasty={handleDynasty} />
+
+        {/* Right: view level buttons */}
+        <div className="flex items-center gap-2">
+          <span className="text-[9px] text-gray-400 font-mono uppercase tracking-widest mr-1">VY</span>
+          {viewButtons.map(v => {
+            const isDisabled = (v.id === 'entity' && selected?.type !== 'entity') ||
+              (v.id === 'individual' && selected?.type !== 'person')
+            return (
+              <button
+                key={v.id}
+                disabled={isDisabled}
+                onClick={() => !isDisabled && setViewLevel(v.id)}
+                title={v.desc}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  viewLevel === v.id
+                    ? 'bg-[#0A3D62] text-white'
+                    : isDisabled
+                      ? 'bg-white border border-[#DDD5C5] text-gray-300 cursor-not-allowed'
+                      : 'bg-white border border-[#DDD5C5] text-gray-600 hover:border-[#0A3D62] cursor-pointer'
+                }`}
               >
-                scope: {scopeEntity.shortName}
-              </span>
-            )}
-          </div>
-
-          {/* Right: Viewing Context + 3 overlays */}
-          <div className="flex items-center gap-2">
-            {/* 1. Viewing Context — single dropdown */}
-            <select
-              value={perms.overlayMode}
-              disabled
-              className="text-xs bg-white border border-surface-border text-gray-9000 rounded-lg px-2.5 py-1.5 font-mono cursor-default focus:outline-none appearance-none"
-              title="Viewing context — determined by your role"
-            >
-              <option>👁 {perms.overlayMode === 'full' ? 'Full view' : perms.overlayMode === 'financial' ? 'Financial view' : perms.overlayMode === 'legal' ? 'Legal view' : 'Technical view'}</option>
-            </select>
-
-            {/* Divider */}
-            <div className="w-px h-5 bg-gray-200" />
-
-            {/* 2. Overlay toggle: Org Hierarchy */}
-            <button
-              onClick={() => setShowCommandChain(p => !p)}
-              className="text-xs px-3 py-1.5 rounded-lg border font-medium transition-all"
-              style={showCommandChain
-                ? { background: '#2563EB18', color: '#60A5FA', borderColor: '#2563EB35' }
-                : { background: 'transparent', color: '#4B5563', borderColor: '#DDD5C5' }
-              }
-            >
-              Chain
-            </button>
-
-            {/* 5. Show all relationships toggle */}
-            <button
-              onClick={() => setShowAllEdges(s => !s)}
-              className={`px-2 py-1 text-xs rounded font-mono border transition-colors ${showAllEdges ? 'bg-[#EDE8DC] border-[#DDD5C5] text-gray-900' : 'border-surface-border text-gray-9000 hover:text-gray-9000'}`}
-            >
-              {showAllEdges ? '← Enkel vy' : '+ Visa alla relationer'}
-            </button>
-
-            {/* Clear — only when entity selected */}
-            {selectedEntity && (
-              <>
-                <div className="w-px h-5 bg-gray-200" />
-                <button
-                  onClick={() => setSelectedEntity(null)}
-                  className="text-xs text-gray-9000 hover:text-gray-9000 px-2 py-1.5 transition-colors font-mono"
-                >
-                  ✕ clear
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* SVG canvas */}
-        <div className="flex-1 overflow-auto bg-[#F0EBE1]">
-          <svg
-            viewBox={`0 0 ${svgW} ${svgHeight}`}
-            style={{ minWidth: showCommandChain ? TOTAL_W : 700, width: '100%', minHeight: svgHeight }}
-          >
-            {/* Background grid */}
-            <defs>
-              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#DDD5C5" strokeWidth="0.5" />
-              </pattern>
-            </defs>
-            <rect width={svgW} height={svgHeight} fill="url(#grid)" />
-
-            {/* Layer bands */}
-            {perms.visibleLayers.map(ly => (
-              <g key={ly}>
-                <rect
-                  x={0} y={LAYER_Y[ly] - 20}
-                  width={SVG_W} height={CARD_H + 40}
-                  fill={ly % 2 === 0 ? '#F5F0E8' : '#EDE8DC'}
-                />
-                <text x={14} y={LAYER_Y[ly] - 5} fontSize={11} fill="#9CA3AF" fontWeight="600" letterSpacing="1.9">
-                  {LAYER_LABEL[ly]}
-                </text>
-              </g>
-            ))}
-
-            {/* Edges */}
-            {visibleRels.map(rel => (
-              <Edge
-                key={rel.id}
-                rel={rel}
-                positions={positions}
-                opacity={edgeOpacity(rel)}
-                highlighted={edgeHighlighted(rel)}
-                stressed={showStress && (propagation.primary_failures.includes(rel.from_entity_id) || propagation.cascade_failures.includes(rel.from_entity_id))}
-                muted={!showFlow}
-                showAllEdges={showAllEdges}
-              />
-            ))}
-
-            {/* Nodes */}
-            {visibleEntities.map(entity => {
-              const pos = positions.get(entity.id)
-              if (!pos) return null
-              return (
-                <NodeCard
-                  key={entity.id}
-                  entity={entity}
-                  position={pos}
-                  selected={selectedEntity?.id === entity.id}
-                  dimmed={dimmedIds.has(entity.id)}
-                  expanded={expandedIds.has(entity.id)}
-                  stressed={showStress && propagation.primary_failures.includes(entity.id)}
-                  cascadeStressed={showStress && propagation.cascade_failures.includes(entity.id)}
-                  onClick={() => handleNodeClick(entity)}
-                />
-              )
-            })}
-
-            {/* ── Org Hierarchy Layer (always right, togglable) ── */}
-            <CommandChainLayer
-              visible={showCommandChain}
-              selectedCmdId={selectedCmdId}
-              onSelectCmd={setSelectedCmdId}
-              primaryFailures={propagation.primary_failures}
-              cascadeFailures={propagation.cascade_failures}
-            />
-
-            {/* Separator line between entity graph and command column */}
-            {showCommandChain && (
-              <line
-                x1={CMD_X_START - 20} y1={20}
-                x2={CMD_X_START - 20} y2={svgHeight - 20}
-                stroke="#DDD5C5" strokeWidth={1}
-              />
-            )}
-          </svg>
-        </div>
-
-        {/* Legend */}
-        <div className="flex-shrink-0 px-5 py-2 border-t border-surface-border bg-white">
-          <Legend visibleTypes={perms.visibleRelTypes} />
+                {v.label}
+              </button>
+            )
+          })}
         </div>
       </div>
 
-      {/* ── Detail panel ── */}
-      {selectedEntity && (
-        <div className="fixed md:static inset-0 md:inset-auto md:w-[320px] md:flex-shrink-0 z-50 md:z-auto">
-          <DrillPanel
-            entity={selectedEntity}
-            perms={perms}
-            onClose={() => setSelectedEntity(null)}
-            liveEntities={liveEntities}
-          />
+      {/* Content area */}
+      {viewLevel === 'dynasty' && (
+        <DynastyView
+          selectedEntityId={selected?.type === 'entity' ? selected.id : null}
+          selectedPersonId={selected?.type === 'person' ? selected.id : null}
+          onSelectEntity={handleEntityClick}
+          onSelectPerson={handlePersonClick}
+        />
+      )}
+
+      {viewLevel === 'entity' && selected?.type === 'entity' && (
+        <EntityDetailView
+          entityId={selected.id}
+          onSelectPerson={handlePersonClick}
+        />
+      )}
+
+      {viewLevel === 'individual' && selected?.type === 'person' && (
+        <IndividualView personId={selected.id} />
+      )}
+
+      {/* Empty state fallback */}
+      {viewLevel === 'entity' && selected?.type !== 'entity' && (
+        <div className="flex-1 flex items-center justify-center text-gray-400 text-sm">
+          Välj ett bolag i Dynasty-vyn
         </div>
       )}
+      {viewLevel === 'individual' && selected?.type !== 'person' && (
+        <div className="flex-1 flex items-center justify-center text-gray-400 text-sm">
+          Välj en person i Dynasty-vyn
+        </div>
+      )}
+
+      {/* Legend bar */}
+      <div className="flex-shrink-0 px-5 py-2 border-t border-[#DDD5C5] bg-white flex items-center gap-6 flex-wrap text-xs text-gray-500">
+        <div className="flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-[#10B981]" />
+          <span>Live</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-[#F59E0B]" />
+          <span>Forming</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-[#9CA3AF]" />
+          <span>Planerat</span>
+        </div>
+        <div className="flex items-center gap-1.5 ml-4 pl-4 border-l border-[#DDD5C5]">
+          <svg width="20" height="8">
+            <line x1="0" y1="4" x2="14" y2="4" stroke="#C4B9A4" strokeWidth="1.5" />
+            <polygon points="12,1 16,4 12,7" fill="#C4B9A4" />
+          </svg>
+          <span>Ägarskap</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="w-5 h-px" style={{ background: '#E8B84B', display: 'inline-block' }} />
+          <span>Markerat element</span>
+        </div>
+        <div className="ml-auto text-[10px] font-mono text-gray-400">
+          {CORP_HIERARCHY.length} entiteter · {TEAM_COMMAND_CHAIN.length} i command chain
+        </div>
+      </div>
     </div>
   )
 }
