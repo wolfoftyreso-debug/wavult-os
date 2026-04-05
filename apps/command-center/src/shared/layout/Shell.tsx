@@ -5,21 +5,20 @@ import {
   LayoutDashboard, AlertTriangle, GitBranch, Network,
   Users, Briefcase, Megaphone,
   DollarSign, Receipt, ShoppingCart, CreditCard,
-  Scale, Flag, Layers,
+  Scale, Flag,
   BookOpen, Server, Settings, ShieldCheck,
-  Bell, Inbox, User, LayoutGrid,
-  Smartphone, MapPin, Package, ArrowRight,
+  Bell,
+  Smartphone, MapPin, Package,
   Building2, MessageSquare, FileText, Activity,
   Plane,
-  Phone,
   Terminal,
   Globe,
   Rocket,
-  GitMerge,
   Database,
   Zap,
   Film,
   Shield,
+  Target,
 } from 'lucide-react'
 import { useRole, ROLES } from '../auth/RoleContext'
 import { useTheme } from '../theme/ThemeContext'
@@ -56,140 +55,83 @@ interface NavGroup {
 
 const NAV_GROUPS: NavGroup[] = [
   {
-    labelKey: null,
+    labelKey: 'Verksamhet',
     items: [
-      { to: '/',       labelKey: 'nav.command', icon: LayoutDashboard },
-      { to: '/ops',    labelKey: 'nav.ops',     icon: LayoutGrid },
-      { to: '/person', labelKey: 'nav.person',  icon: User },
-      { to: '/alerts', labelKey: 'nav.alerts',  icon: AlertTriangle },
+      { to: '/',                labelKey: 'Dashboard',      icon: LayoutDashboard },
+      { to: '/org',             labelKey: 'Org & Hierarki', icon: Network },
+      { to: '/strategic-brief', labelKey: 'Strategi',       icon: Flag },
+      { to: '/decisions',       labelKey: 'Beslut',         icon: Zap },
+      { to: '/okr',             labelKey: 'OKR & Mål',      icon: Target },
+      { to: '/milestones',      labelKey: 'Milstolpar',     icon: Rocket },
     ],
   },
   {
-    labelKey: 'nav.group.corporate',
+    labelKey: 'Bolag & Juridik',
     items: [
-      { to: '/entities',       labelKey: 'Bolagsöversikt', icon: Building2 },
-      { to: '/company-launch', labelKey: 'Bolagsstart',    icon: Rocket },
-      { to: '/trust',          labelKey: 'Trust & Foundation', icon: Shield },
-      { to: '/corporate',      labelKey: 'Corporate',      icon: Building2 },
-      { to: '/corporate/compendium', labelKey: 'Kompendium', icon: BookOpen },
-      { to: '/legal',          labelKey: 'Legal Hub',      icon: Scale },
-      { to: '/jurisdiction',   labelKey: 'Jurisdiktion',   icon: Globe },
-      { to: '/qms',            labelKey: 'QMS',            icon: ShieldCheck },
-      { to: '/tuv',            labelKey: 'TÜV Audit',      icon: Activity },
-      { to: '/governance',     labelKey: 'Governance',     icon: ShieldCheck },
+      { to: '/entities',             labelKey: 'Bolagsöversikt',     icon: Building2 },
+      { to: '/company-launch',       labelKey: 'Bolagsstart',        icon: Rocket },
+      { to: '/trust',                labelKey: 'Trust & Foundation',  icon: Shield },
+      { to: '/legal',                labelKey: 'Legal Hub',          icon: Scale },
+      { to: '/jurisdiction',         labelKey: 'Jurisdiktion',       icon: Globe },
+      { to: '/corporate/compendium', labelKey: 'Kompendium',         icon: BookOpen },
+      { to: '/qms',                  labelKey: 'QMS & Compliance',   icon: ShieldCheck },
     ],
   },
   {
-    labelKey: 'nav.group.organisation',
+    labelKey: 'Ekonomi',
     items: [
-      { to: '/org',                  labelKey: 'Organisationsöversikt', icon: Network },
-      { to: '/org/context',          labelKey: 'Kontext',               icon: Network },
-      { to: '/org/command',          labelKey: 'Kommandostruktur',      icon: GitBranch },
-      { to: '/people-governance',    labelKey: 'People',                icon: Users },
-      { to: '/people',               labelKey: 'Personalregister',      icon: Users },
-      { to: '/team-map',             labelKey: 'Team Map',              icon: MapPin },
-      { to: '/talent-radar',         labelKey: 'Talent Radar',          icon: Users },
-      { to: '/people-intelligence',  labelKey: 'People Intelligence',   icon: Users },
-      { to: '/crm',                  labelKey: 'CRM',                   icon: Briefcase },
+      { to: '/finance',      labelKey: 'Finance',        icon: DollarSign },
+      { to: '/payroll',      labelKey: 'Lön & Personal', icon: Receipt },
+      { to: '/transactions', labelKey: 'Transaktioner',  icon: CreditCard },
+      { to: '/reports',      labelKey: 'Rapporter',      icon: FileText },
+      { to: '/procurement',  labelKey: 'Inköp',          icon: ShoppingCart },
     ],
   },
   {
-    labelKey: 'nav.group.ekonomi',
+    labelKey: 'Team & People',
     items: [
-      { to: '/finance',      labelKey: 'Finance Hub',  icon: DollarSign },
-      { to: '/transactions', labelKey: 'Transaktioner', icon: Receipt },
-      { to: '/payroll',      labelKey: 'Lön',           icon: CreditCard },
-      { to: '/procurement',  labelKey: 'Inköp',         icon: ShoppingCart },
-      { to: '/causal-os',    labelKey: 'Simulering',    icon: GitBranch },
-      { to: '/insurance',    labelKey: 'Försäkring',    icon: ShieldCheck },
+      { to: '/people',              labelKey: 'Team',               icon: Users },
+      { to: '/people-intelligence', labelKey: 'People Intelligence', icon: Activity },
+      { to: '/talent-radar',        labelKey: 'Talent Radar',       icon: Zap },
+      { to: '/wavult-id',           labelKey: 'Wavult ID',          icon: Shield },
+      { to: '/travel',              labelKey: 'Resor',              icon: Plane },
     ],
   },
   {
-    labelKey: 'nav.group.operations',
+    labelKey: 'Produkter',
     items: [
-      { to: '/milestones',      labelKey: 'Milestones',       icon: Flag },
-      { to: '/projects',        labelKey: 'Projekt',          icon: Layers },
-      { to: '/tasks',           labelKey: 'Tasks',            icon: Layers },
-      { to: '/decisions',       labelKey: 'Beslut',           icon: Scale },
-      { to: '/meeting-cadence', labelKey: 'Möten',            icon: MessageSquare },
-      { to: '/campaigns',       labelKey: 'Kampanjer',        icon: Megaphone },
-      { to: '/submissions',     labelKey: 'Submissions',      icon: Inbox },
-      { to: '/reports',         labelKey: 'Rapporter',        icon: FileText },
-      { to: '/strategic-brief', labelKey: 'Strategisk Brief', icon: FileText },
-      { to: '/incidents',       labelKey: 'Incidents',        icon: AlertTriangle },
+      { to: '/zoomer-app',     labelKey: 'quiXzoom',     icon: Smartphone },
+      { to: '/quixzoom-ads',   labelKey: 'quiXzoom Ads', icon: Megaphone },
+      { to: '/landvex-portal', labelKey: 'LandveX',      icon: MapPin },
+      { to: '/uapix',          labelKey: 'UAPIX',        icon: Package },
+      { to: '/apifly',         labelKey: 'Apifly',       icon: Zap },
     ],
   },
   {
-    labelKey: 'nav.group.kommunikation',
+    labelKey: 'Marknad & CRM',
     items: [
-      { to: '/communications', labelKey: 'Kommunikation', icon: MessageSquare },
-      { to: '/media',          labelKey: 'Media',         icon: Film },
+      { to: '/crm',       labelKey: 'CRM',       icon: Briefcase },
+      { to: '/campaigns', labelKey: 'Kampanjer', icon: Megaphone },
+      { to: '/media',     labelKey: 'Media',     icon: Film },
     ],
   },
   {
-    labelKey: 'nav.group.marknader',
+    labelKey: 'Drift & Infra',
     items: [
-      { to: '/markets', labelKey: 'Marknader',  icon: Globe },
-      { to: '/markets', labelKey: 'MarketMap',  icon: MapPin },
-    ],
-  },
-  {
-    labelKey: 'nav.group.plattformar',
-    items: [
-      { to: '/zoomer-app',     labelKey: 'Zoomer-app',     icon: Smartphone },
-      { to: '/landvex-portal', labelKey: 'Landvex Portal', icon: MapPin },
-      { to: '/quixzoom-ads',   labelKey: 'Quixom Ads',     icon: Package },
-      { to: '/uapix',          labelKey: 'UAPIX',          icon: Shield },
-      { to: '/apifly',         labelKey: 'Apifly',         icon: Zap },
-      { to: '/dissg',          labelKey: 'DISSG',          icon: Network },
-      { to: '/corpfitt',       labelKey: 'Corp-Fitt',      icon: Activity },
-      { to: '/mlcs',           labelKey: 'MLCS',           icon: BookOpen },
-    ],
-  },
-  {
-    labelKey: 'System',
-    roles: ['group-ceo', 'cto', 'admin'],
-    items: [
-      { to: '/system', labelKey: 'Systemöversikt', icon: Activity },
-      { to: '/devos',  labelKey: 'DevOS',          icon: Zap },
+      { to: '/git',            labelKey: 'Git',            icon: GitBranch },
+      { to: '/system',         labelKey: 'Systemöversikt', icon: Server },
+      { to: '/infrastructure', labelKey: 'Infrastruktur',  icon: Server },
+      { to: '/terraform',      labelKey: 'Terraform',      icon: Database },
+      { to: '/communications', labelKey: 'Kommunikation',  icon: MessageSquare },
+      { to: '/automation',     labelKey: 'Automation',     icon: Zap },
     ],
   },
   {
     labelKey: 'Dev',
+    roles: ['group-ceo', 'cto', 'admin'],
     items: [
-      { to: '/code', labelKey: 'Code', icon: Terminal },
-    ],
-  },
-  {
-    labelKey: 'nav.group.devInfra',
-    items: [
-      { to: '/infrastructure',      labelKey: 'Infrastruktur',       icon: Server },
-      { to: '/terraform',           labelKey: 'Terraform',           icon: Server },
-      { to: '/system-graph',        labelKey: 'System Graph',        icon: Network },
-      { to: '/system-status',       labelKey: 'System Status',       icon: Activity },
-      { to: '/system-intelligence', labelKey: 'System Intelligence', icon: Server },
-      { to: '/git',                 labelKey: 'Gitea',               icon: GitMerge },
-      { to: '/database',            labelKey: 'Databas',             icon: Database },
-      { to: '/domains',             labelKey: 'Domäner',             icon: Globe },
-      { to: '/automation',          labelKey: 'Automation',          icon: Zap },
-      { to: '/deployments',         labelKey: 'Deployments',         icon: GitBranch },
-      { to: '/infra-monitor',       labelKey: 'Infra Monitor',       icon: Server },
-      { to: '/media-pipeline',      labelKey: 'Media Pipeline',      icon: Film },
-      { to: '/network-map',         labelKey: 'Network Map',         icon: Network },
-    ],
-  },
-  {
-    labelKey: 'nav.group.verktyg',
-    items: [
-      { to: '/api-hub',    labelKey: 'API Hub',       icon: Zap },
-      { to: '/llm-hub',    labelKey: 'LLM Hub',       icon: Terminal },
-      { to: '/knowledge',  labelKey: 'Knowledge',     icon: BookOpen },
-      { to: '/wavult-id',  labelKey: 'Wavult ID',     icon: ShieldCheck },
-      { to: '/whoop',      labelKey: 'WHOOP',         icon: Activity },
-      { to: '/travel',     labelKey: 'Resor',         icon: Plane },
-      { to: '/openclaw',   labelKey: 'OpenClaw',      icon: Terminal },
-      { to: '/ux-quality', labelKey: 'UX Quality',    icon: Activity },
-      { to: '/settings',   labelKey: 'Inställningar', icon: Settings },
+      { to: '/code',  labelKey: 'Code',  icon: Terminal },
+      { to: '/devos', labelKey: 'DevOS', icon: Zap },
     ],
   },
 ]
@@ -220,16 +162,7 @@ function SidebarNav({ criticalAlertCount, onNavigate, onAuditLog, entityAccentCo
       {visibleGroups.map((group, gi) => (
         <div key={gi} className={gi > 0 ? 'mt-4' : ''}>
           {group.labelKey && (
-            <div
-              className="px-3 py-1 mb-1"
-              style={{
-                fontSize: 11,
-                fontWeight: 600,
-                letterSpacing: '0.06em',
-                textTransform: 'uppercase',
-                color: 'var(--sidebar-text, rgba(245,240,232,0.75))',
-              }}
-            >
+            <div className="text-[9px] font-bold text-[#8A8278] uppercase tracking-wider px-3 py-1.5 mt-4 first:mt-0">
               {t(group.labelKey)}
             </div>
           )}
@@ -249,19 +182,19 @@ function SidebarNav({ criticalAlertCount, onNavigate, onAuditLog, entityAccentCo
                   }}
                   className="flex items-center gap-3 min-w-0"
                   style={{
-                    padding: '8px 12px',
+                    padding: '6px 12px',
                     paddingLeft: isActive ? '9px' : '12px',
                     borderRadius: 'var(--radius-md)',
-                    fontSize: 14,
+                    fontSize: 12,
                     fontWeight: isActive ? 600 : 400,
-                    color: isActive ? 'var(--sidebar-text-active, #F5F0E8)' : 'var(--sidebar-text, #E5E5E1)',
-                    background: isActive ? 'var(--sidebar-item-active, #3A3530)' : 'transparent',
-                    borderLeft: isActive ? `3px solid ${entityAccentColor ?? 'var(--sidebar-accent, #8B7355)'}` : '3px solid transparent',
+                    color: isActive ? '#0A3D62' : 'var(--sidebar-text, #E5E5E1)',
+                    background: isActive ? '#F5F0E8' : 'transparent',
+                    borderLeft: isActive ? '2px solid #E8B84B' : '2px solid transparent',
                     transition: 'all var(--transition-fast)',
                     textDecoration: 'none',
                   }}
-                  onMouseEnter={e => !isActive && ((e.currentTarget as HTMLAnchorElement).style.background = 'var(--sidebar-item-hover, rgba(245,240,232,0.06))')}
-                  onMouseLeave={e => !isActive && ((e.currentTarget as HTMLAnchorElement).style.background = 'transparent')}
+                  onMouseEnter={e => !isActive && ((e.currentTarget as HTMLAnchorElement).style.background = '#F5F0E8') && ((e.currentTarget as HTMLAnchorElement).style.color = '#0A3D62')}
+                  onMouseLeave={e => !isActive && ((e.currentTarget as HTMLAnchorElement).style.background = 'transparent') && ((e.currentTarget as HTMLAnchorElement).style.color = 'var(--sidebar-text, #E5E5E1)')}
                   end={item.to === '/'}
                 >
                   <item.icon className="w-4 h-4 flex-shrink-0" />
