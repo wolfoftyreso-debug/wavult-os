@@ -22,7 +22,8 @@ function QuickStats() {
   const { data: meetings = [] } = useCorpBoardMeetings()
   const { data: stats } = useCorpComplianceStats()
 
-  const activeCompanies = entities.filter(c => c.status === 'aktiv').length
+  const activeCompanies = entities.length  // totalt antal bolag i systemet
+  const activeFull = entities.filter(c => c.status === 'aktiv').length
   const upcomingMeetings = meetings.filter(m => m.status === 'planerat').length
   const pendingCompliance = stats ? stats.total - stats.completed : 0
   const overdue = stats?.overdue ?? 0
@@ -31,7 +32,7 @@ function QuickStats() {
   return (
     <div className="flex gap-3 flex-wrap text-xs">
       {[
-        { label: 'Bolag', value: activeCompanies, color: '#0A3D62' },
+        { label: `Bolag (${activeFull}/${activeCompanies})`, value: activeCompanies, color: '#0A3D62' },
         { label: 'Planerade möten', value: upcomingMeetings, color: '#E8B84B' },
         { label: 'Compliance öppna', value: pendingCompliance, color: '#B8760A' },
         { label: 'Förfallna', value: overdue, color: '#C0392B' },
