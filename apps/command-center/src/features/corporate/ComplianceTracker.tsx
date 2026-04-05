@@ -158,7 +158,8 @@ export function ComplianceTracker() {
         <div className="flex gap-1.5 flex-wrap">
           <button
             onClick={() => setSelectedStatus('all')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${selectedStatus === 'all' ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-600 border-surface-border hover:border-gray-400'}`}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${selectedStatus === 'all' ? 'text-white' : 'bg-white text-gray-600 border-surface-border hover:border-gray-400'}`}
+                  style={selectedStatus === 'all' ? { background: 'var(--color-text, #1A1A2E)', borderColor: 'var(--color-text, #1A1A2E)' } : {}}
           >Alla</button>
           {ALL_STATUSES.map(s => (
             <button

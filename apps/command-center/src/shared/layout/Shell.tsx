@@ -191,10 +191,11 @@ interface ShellProps {
   children: React.ReactNode
 }
 
-function SidebarNav({ criticalAlertCount, onNavigate, onAuditLog }: {
+function SidebarNav({ criticalAlertCount, onNavigate, onAuditLog, entityAccentColor }: {
   criticalAlertCount: number
   onNavigate?: () => void
   onAuditLog?: (module: string, label: string) => void
+  entityAccentColor?: string
 }) {
   const { pathname } = useLocation()
   const { t } = useTranslation()
@@ -246,7 +247,7 @@ function SidebarNav({ criticalAlertCount, onNavigate, onAuditLog }: {
                     fontWeight: isActive ? 600 : 400,
                     color: isActive ? 'var(--sidebar-text-active, #F5F0E8)' : 'var(--sidebar-text, #E5E5E1)',
                     background: isActive ? 'var(--sidebar-item-active, #3A3530)' : 'transparent',
-                    borderLeft: isActive ? '3px solid var(--sidebar-accent, #8B7355)' : '3px solid transparent',
+                    borderLeft: isActive ? `3px solid ${entityAccentColor ?? 'var(--sidebar-accent, #8B7355)'}` : '3px solid transparent',
                     transition: 'all var(--transition-fast)',
                     textDecoration: 'none',
                   }}
@@ -331,25 +332,55 @@ export function Shell({ children }: ShellProps) {
         }}
       >
         {/* Logo */}
-        <div className="flex items-center px-4" style={{ height: 52, borderBottom: '1px solid var(--sidebar-border, rgba(201,168,76,0.15))' }}>
-          <div className="flex items-center gap-2.5 min-w-0">
-            <WavultLogo
-              size={36}
-              color="white"
-              bgColor="transparent"
-              showWordmark={true}
-            />
+        <div className="flex flex-col px-4 pt-3 pb-2" style={{ borderBottom: '1px solid var(--sidebar-border, rgba(201,168,76,0.15))' }}>
+          <div className="flex items-center">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <WavultLogo
+                size={32}
+                color="white"
+                bgColor="transparent"
+                showWordmark={true}
+              />
+            </div>
+            {/* Close btn (mobile) */}
+            <button
+              className="ml-auto md:hidden p-1"
+              style={{ color: 'var(--sidebar-text, rgba(245,240,232,0.75))' }}
+              onClick={() => setSidebarOpen(false)}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M18 6L6 18M6 6l12 12"/>
+              </svg>
+            </button>
           </div>
-          {/* Close btn (mobile) */}
-          <button
-            className="ml-auto md:hidden p-1"
-            style={{ color: 'var(--sidebar-text, rgba(245,240,232,0.75))' }}
-            onClick={() => setSidebarOpen(false)}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M18 6L6 18M6 6l12 12"/>
-            </svg>
-          </button>
+          {/* Active entity badge */}
+          {scopeEntity && (
+            <div className="flex items-center gap-1.5 mt-1.5">
+              <span
+                style={{
+                  display: 'inline-block',
+                  width: 8,
+                  height: 8,
+                  borderRadius: '50%',
+                  background: scopeEntity.color ?? '#8B7355',
+                  flexShrink: 0,
+                }}
+              />
+              <span style={{
+                fontSize: 10,
+                fontWeight: 600,
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                color: 'rgba(245,240,232,0.65)',
+                fontFamily: 'var(--font-mono, monospace)',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}>
+                {scopeEntity.name}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Entity Switcher — prominent at top of nav */}
@@ -363,6 +394,7 @@ export function Shell({ children }: ShellProps) {
           criticalAlertCount={criticalAlertCount}
           onNavigate={() => setSidebarOpen(false)}
           onAuditLog={(module, label) => log({ type: 'navigate', module, label: `Navigerade till ${label}` })}
+          entityAccentColor={scopeEntity?.color}
         />
 
         {/* Agent Claw — priority queue */}
