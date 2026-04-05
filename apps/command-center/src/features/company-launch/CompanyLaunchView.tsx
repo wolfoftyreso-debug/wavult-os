@@ -450,7 +450,7 @@ function LaunchCompanyModal({
 }
 
 export function CompanyLaunchView() {
-  const [activeTab, setActiveTab] = useState<'bolag' | 'tracker' | 'wizard' | 'formation' | 'sok-bolag' | 'lagerbolag' | 'certificates' | 'uae' | 'lithuania' | 'delaware'>('bolag')
+  const [activeTab, setActiveTab] = useState<'bolag' | 'tracker' | 'wizard' | 'sok-bolag' | 'lagerbolag' | 'certificates' | 'uae' | 'lithuania' | 'delaware'>('bolag')
   const [companies, setCompanies] = useState<CompanyLaunch[]>(COMPANY_LAUNCHES)
   const [selectedId, setSelectedId] = useState<string>(COMPANY_LAUNCHES[0].id)
   const [apiLoading, setApiLoading] = useState(false)
@@ -590,16 +590,7 @@ export function CompanyLaunchView() {
         >
           🏢 Bolag
         </button>
-        <button
-          onClick={() => setActiveTab('formation')}
-          className={`px-4 py-2 text-xs font-semibold rounded-t-lg border-b-2 transition-colors ${
-            activeTab === 'formation'
-              ? 'border-blue-600 text-blue-700 bg-muted/30'
-              : 'border-transparent text-gray-9000 hover:text-gray-700'
-          }`}
-        >
-          🌍 Bilda bolag
-        </button>
+
         <button
           onClick={() => setActiveTab('tracker')}
           className={`px-4 py-2 text-xs font-semibold rounded-t-lg border-b-2 transition-colors ${
@@ -614,11 +605,11 @@ export function CompanyLaunchView() {
           onClick={() => setActiveTab('wizard')}
           className={`px-4 py-2 text-xs font-semibold rounded-t-lg border-b-2 transition-colors ${
             activeTab === 'wizard'
-              ? 'border-indigo-500 text-indigo-500 bg-muted/30'
+              ? 'border-[#E8B84B] text-[#0A3D62] bg-[#E8B84B]/10'
               : 'border-transparent text-gray-9000 hover:text-gray-700'
           }`}
         >
-          🚀 Starta ny registrering
+          + Ny registrering
         </button>
         <button
           onClick={() => setActiveTab('sok-bolag')}
@@ -706,13 +697,6 @@ export function CompanyLaunchView() {
       {activeTab === 'bolag' && (
         <div className="flex-1 overflow-hidden">
           <CompanyCreator />
-        </div>
-      )}
-
-      {/* ── Formation tab ── */}
-      {activeTab === 'formation' && (
-        <div className="flex-1 overflow-y-auto">
-          <CompanyFormation />
         </div>
       )}
 
