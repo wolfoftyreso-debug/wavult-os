@@ -69,6 +69,7 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { to: '/entities',       labelKey: 'Bolagsöversikt', icon: Building2 },
       { to: '/company-launch', labelKey: 'Bolagsstart',    icon: Rocket },
+      { to: '/trust',          labelKey: 'Trust & Foundation', icon: Shield },
       { to: '/corporate',      labelKey: 'Corporate',      icon: Building2 },
       { to: '/legal',          labelKey: 'Legal Hub',      icon: Scale },
       { to: '/jurisdiction',   labelKey: 'Jurisdiktion',   icon: Globe },

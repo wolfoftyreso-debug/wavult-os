@@ -32,6 +32,7 @@ const LegalHub               = lazy(() => import('./features/legal/LegalHub').th
 const JurisdictionView       = lazy(() => import('./features/legal/JurisdictionView').then(m => ({ default: m.JurisdictionView })))
 const SubmissionsView        = lazy(() => import('./features/submissions/SubmissionsView').then(m => ({ default: m.SubmissionsView })))
 const CompanyLaunchView      = lazy(() => import('./features/company-launch/CompanyLaunchView').then(m => ({ default: m.CompanyLaunchView })))
+const TrustView              = lazy(() => import('./features/trust/TrustView').then(m => ({ default: m.TrustView })))
 const PayrollHub             = lazy(() => import('./features/payroll').then(m => ({ default: m.PayrollHub })))
 const CRMHub                 = lazy(() => import('./features/crm').then(m => ({ default: m.CRMHub })))
 const FinanceHub             = lazy(() => import('./features/finance').then(m => ({ default: m.FinanceHub })))
@@ -200,6 +201,7 @@ function AuthenticatedApp() {
               <Route path="/legal" element={<LegalHub />} />
               <Route path="/jurisdiction" element={<JurisdictionView />} />
               <Route path="/company-launch" element={<CompanyLaunchView />} />
+              <Route path="/trust" element={<TrustView />} />
               <Route path="/finance" element={<FinanceHub />} />
               <Route path="/crm" element={<CRMHub />} />
               <Route path="/payroll" element={<PayrollHub />} />
