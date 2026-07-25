@@ -1,0 +1,276 @@
+openapi: 3.0.3
+info:
+  title: Wavult Aero — AMOS Edge Aviation Network (AEAN) Control Plane
+  version: 0.1.0
+  description: |
+    Cloud control plane for the onboard edge-internet optimisation
+    appliance. ISO-by-design: every mutation is hash-chained into an
+    append-only event log and bound to a four-eyes approval flow for
+    production-impacting changes. See docs/aero/SYSTEM_ARCHITECTURE.md
+    for the full architecture and docs/aero/THREAT_MODEL.md for
+    DO-326A threat analysis.
+  contact:
+    name: Wavult Aero (quality@wavult.com)
+servers:
+  - url: https://aero.api.wavult.com
+    description: Production (eu-north-1)
+  - url: http://localhost:3017
+    description: Local development
+security:
+  - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT issued by identity-core, audience "wavult-aero" for operator routes or "wavult-aero-edge" for edge-node ingest.
+  schemas:
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error: { type: string }
+        details: { type: object, additionalProperties: true }
+    Aircraft:
+      type: object
+      required: [tail_number, icao24, aircraft_type, operator_icao, certifying_authority, registration_country]
+      properties:
+        tail_number: { type: string, example: SE-RJP }
+        icao24: { type: string, example: 4AC1F3 }
+        aircraft_type: { type: string, example: A320 }
+        operator_icao: { type: string, example: SAS }
+        certifying_authority:
+          type: string
+          enum: [EASA, FAA, CAA-UK, CASA, TCCA]
+        registration_country: { type: string, example: SE }
+    EdgeNodeEnrol:
+      type: object
+      required: [hardware_id, tail_number, tpm_ek_cert_pem, tpm_quote, firmware_version, model]
+      properties:
+        hardware_id: { type: string }
+        tail_number: { type: string }
+        tpm_ek_cert_pem: { type: string }
+        tpm_quote: { type: string }
+        firmware_version: { type: string }
+        model:
+          type: string
+          enum: [AEAN-EDGE-1U, AEAN-EDGE-2U, AEAN-EDGE-RACK]
+    TelemetryBatch:
+      type: object
+      required: [batch_id, samples, events]
+      properties:
+        batch_id: { type: string, format: uuid }
+        flight_id: { type: string }
+        flight_phase:
+          type: string
+          enum: [ground, taxi, takeoff, climb, cruise, descent, approach, landing]
+        samples:
+          type: array
+          maxItems: 1000
+          items:
+            type: object
+            required: [ts, metric, value, unit]
+            properties:
+              ts: { type: string, format: date-time }
+              metric: { type: string }
+              value: { type: number }
+              unit: { type: string }
+        events:
+          type: array
+          maxItems: 500
+          items:
+            type: object
+            required: [ts, kind, severity]
+            properties:
+              ts: { type: string, format: date-time }
+              kind:
+                type: string
+                enum:
+                  - cache_hit
+                  - cache_miss
+                  - prefetch_accurate
+                  - prefetch_wasted
+                  - link_up
+                  - link_down
+                  - integrity_alarm
+                  - tamper_alarm
+                  - unauthorized_access
+                  - user_session_start
+                  - user_session_end
+              severity:
+                type: string
+                enum: [info, low, medium, high, critical]
+              detail: { type: object, additionalProperties: true }
+paths:
+  /health:
+    get:
+      summary: Liveness
+      security: []
+      responses:
+        '200':
+          description: Alive
+  /health/ready:
+    get:
+      summary: Readiness (DB reachable, migrations applied)
+      security: []
+      responses:
+        '200': { description: Ready }
+        '503': { description: Not ready }
+  /health/status:
+    get:
+      summary: Detailed service status (breaker, build info)
+      security: []
+      responses:
+        '200': { description: OK }
+  /v1/fleet/aircraft:
+    post:
+      summary: Register an aircraft
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Aircraft' }
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '409':
+          description: Already registered
+    get:
+      summary: List aircraft for the caller's org
+      responses:
+        '200': { description: OK }
+  /v1/fleet/aircraft/{tail}/history:
+    get:
+      summary: Full hash-chained event history for an aircraft
+      parameters:
+        - in: path
+          name: tail
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /v1/fleet/edge-nodes/enrol:
+    post:
+      summary: Enrol a new onboard edge appliance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/EdgeNodeEnrol' }
+      responses:
+        '201': { description: Created }
+        '400': { description: Validation or attestation failed }
+        '404': { description: Aircraft not registered }
+  /v1/fleet/edge-nodes/{id}/retire:
+    post:
+      summary: Retire an edge node
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Retired }
+        '404': { description: Not found }
+  /v1/fleet/edge-nodes:
+    get:
+      summary: List edge nodes in the org
+      responses:
+        '200': { description: OK }
+  /v1/telemetry/ingest:
+    post:
+      summary: Ingest a telemetry batch (edge-node audience only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/TelemetryBatch' }
+      responses:
+        '202': { description: Accepted }
+        '400': { description: Validation error }
+        '404': { description: Unknown edge node }
+        '409': { description: Edge node not active }
+  /v1/content-packs:
+    post:
+      summary: Publish a new signed content pack
+      responses:
+        '201': { description: Created }
+        '400': { description: Validation error }
+        '409': { description: Version exists }
+  /v1/content-packs/sync:
+    get:
+      summary: Edge-node sync — fetch the set of active packs for the node
+      responses:
+        '200': { description: OK }
+        '404': { description: Edge node not active }
+  /v1/prefetch-policies:
+    post:
+      summary: Draft a new prefetch policy
+      responses:
+        '201': { description: Drafted }
+    get:
+      summary: List prefetch policies in the org
+      responses:
+        '200': { description: OK }
+  /v1/prefetch-policies/{id}/{version}/submit:
+    post:
+      summary: Submit a policy for review
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+        - in: path
+          name: version
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Submitted }
+  /v1/prefetch-policies/{id}/{version}/approve:
+    post:
+      summary: Approve a submitted policy (reviewer)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+        - in: path
+          name: version
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Approved }
+  /v1/prefetch-policies/{id}/{version}/release:
+    post:
+      summary: Release an approved policy to staging (QA)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+        - in: path
+          name: version
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Released }
+  /v1/prefetch-policies/{id}/{version}/promote:
+    post:
+      summary: Promote a released policy to production (admin)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+        - in: path
+          name: version
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Promoted }

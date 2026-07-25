@@ -18,6 +18,7 @@ import mapsRouter from './routes/maps'
 import dgsRouter from './routes/decisions-governance'
 import configRouter from './routes/config'
 import agentSchedulerRouter from './routes/agent-scheduler'
+import aeroProxyRouter from './routes/aero-proxy'   // AEAN — wavult-aero proxy (/v1/aero/*)
 import express from 'express'
 import rateLimit from 'express-rate-limit'
 import { taskRouter } from './routes/tasks'
@@ -153,6 +154,7 @@ app.use('/', mediaExtendedRouter)       // Pexels + Coverr media
 app.use('/', commsRouter)               // Resend email + Telegram
 app.use('/', perplexityRouter)          // Perplexity AI search
 app.use('/', mapsRouter)                // Mapbox geocoding
+app.use('/', aeroProxyRouter)           // AEAN — wavult-aero control plane proxy (/v1/aero/*)
 app.use('/v1/task', taskRouter)
 app.use('/v1/payment', paymentRouter)
 app.use('/v1/payout', payoutRouter)
